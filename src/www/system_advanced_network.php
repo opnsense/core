@@ -64,12 +64,8 @@ function generate_new_duid($duid_type)
             }
             $new_duid = $new_duid.':'.$timestamp.':'.$mac;
             break;
-        case '2': //LL
-            $ts = time() - 946684800;
-            $hts = dechex($ts);
-            $timestamp = sprintf("%s",$hts);
-            $timestamp_array = str_split($timestamp,2);
-            $timestamp = implode(":",$timestamp_array);
+        case '2': //LL - NO TIMESTAMP: Just 00:03:00:01: + Link layer address in canonical form, so says RFC.
+            $mac = get_mac_address(getenv('REMOTE_ADDR'));
             $type = "\x00\x03\x00\x01";
             for ($count = 0; $count < strlen($type); ) {
                 $new_duid .= bin2hex( $type[$count]);
@@ -78,7 +74,7 @@ function generate_new_duid($duid_type)
                     $new_duid .= ':';
                 }
             }
-            $new_duid = $new_duid.':'.$timestamp;
+            $new_duid = $new_duid.':'.$mac;
             break;
         case '3': //UUID
             $type = "\x00\x00\x00\x04".openssl_random_pseudo_bytes(16);
