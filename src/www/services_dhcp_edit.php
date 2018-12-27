@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
       'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
-      'ddnsupdate', 'ntpserver', 'tftp', 'ipaddr',
-      'winsserver', 'dnsserver');
+      'ddnsupdate', 'ntpserver', 'tftp', 'bootfilename', 'ipaddr', 'winsserver', 'dnsserver');
+    
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpd'][$if]['staticmap'][$id][$fieldname];
@@ -225,8 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $mapent = array();
         $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr', 'filename', 'rootpath',
           'arp_table_static_entry', 'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist',
-          'ddnsdomain', 'ddnsupdate', 'tftp',
-          'ldap', 'winsserver', 'dnsserver');
+          'ddnsdomain', 'ddnsupdate', 'tftp', 'bootfilename', 'ldap', 'winsserver', 'dnsserver');
 
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -502,8 +501,11 @@ include("head.inc");
                       <input type="button" onclick="show_tftp_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show TFTP configuration");?>
                     </div>
                     <div id="showtftp" style="display:none">
+                    <?=gettext("Set TFTP hostname");?>
                       <input name="tftp" type="text" id="tftp" size="50" value="<?=$pconfig['tftp'];?>" /><br />
-                      <?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server.");?>
+                      <?=gettext("Set Bootfile");?>
+                      <input name="bootfilename" type="text" id="bootfilename" size="1024" value="<?=$pconfig['bootfilename'];?>" /><br />
+                      <?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server and optionally a full path for a bootfile (dhcp option 67).");?><br />
                     </div>
                   </td>
                 </tr>

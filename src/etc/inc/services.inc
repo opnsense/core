@@ -778,6 +778,11 @@ EOPP;
                 $dhcpdconf .= "    option tftp-server-name \"{$poolconf['tftp']}\";\n";
             }
 
+            // bootfile-name
+            if (!empty($poolconf['bootfilename']) && (empty($dhcpifconf['bootfilename']) || $poolconf['bootfilename'] != $dhcpifconf['bootfilename'])) {
+                $dhcpdconf .= "    option bootfile-name \"{$poolconf['bootfilename']}\";\n";
+            }
+
             // ldap-server
             if (!empty($poolconf['ldap']) && (empty($dhcpifconf['ldap']) || $poolconf['ldap'] != $dhcpifconf['ldap'])) {
                 $dhcpdconf .= "    option ldap-server \"{$poolconf['ldap']}\";\n";
@@ -844,6 +849,11 @@ EOD;
         // tftp-server-name
         if (!empty($dhcpifconf['tftp'])) {
             $dhcpdconf .= "  option tftp-server-name \"{$dhcpifconf['tftp']}\";\n";
+        }
+
+        // bootfile-name
+        if (!empty($dhcpifconf['bootfilename'])) {
+            $dhcpdconf .= "  option bootfile-name \"{$dhcpifconf['bootfilename']}\";\n";
         }
 
         // add pac url if it applies
@@ -981,6 +991,11 @@ EOD;
                 // tftp-server-name
                 if (!empty($sm['tftp']) && ($sm['tftp'] != $dhcpifconf['tftp'])) {
                     $dhcpdconf .= "  option tftp-server-name \"{$sm['tftp']}\";\n";
+                }
+
+                // bootfile-name
+                if (!empty($sm['bootfilename']) && ($sm['bootfilename'] != $dhcpifconf['bootfilename'])) {
+                    $dhcpdconf .= "  option bootfile-name \"{$sm['bootfilename']}\";\n";
                 }
 
                 $dhcpdconf .= "}\n";
