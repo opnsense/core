@@ -113,8 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         fclose($fin);
     }
-    
-        
+
     $leases_count = count($leases_content);
     exec("/usr/sbin/ndp -an", $rawdata);
     $ndpdata = array();
