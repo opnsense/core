@@ -51,7 +51,7 @@ bootstrap_and_exit()
 	fi
 
 	# clean up after a finished import
-	if [ -d ${MNT} && "$(mount | grep -cw ${MNT})" != "0" ]; then
+	if [ -d ${MNT} -a "$(mount | grep -cw ${MNT})" != "0" ]; then
 		if [ -n "${PART}" ]; then
 			umount ${MNT}
 		elif [ -n "${POOL}" ]; then
