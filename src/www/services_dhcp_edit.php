@@ -51,9 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // read form data
     $pconfig = array();
-    $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
+    $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'descr', 'arp_table_static_entry',
       'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
-      'ddnsupdate', 'ntpserver', 'tftp', 'bootfilename', 'ipaddr', 'winsserver', 'dnsserver');
+      'ddnsupdate', 'ntpserver', 'tftp', 'bootfilename', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 
+      'rootpath', 'ipaddr', 'winsserver', 'dnsserver');
     
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
@@ -84,6 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['ntpserver'][1])) {
         $pconfig['ntp2'] = $pconfig['ntpserver'][1];
     }
+
+    // handle booleans
+    $pconfig['netboot'] = isset($pconfig['netboot']);
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
 
@@ -223,9 +228,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0){
         $mapent = array();
-        $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr', 'filename', 'rootpath',
+        $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr',
           'arp_table_static_entry', 'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist',
-          'ddnsdomain', 'ddnsupdate', 'tftp', 'bootfilename', 'ldap', 'winsserver', 'dnsserver');
+          'ddnsdomain', 'ddnsupdate', 'tftp', 'bootfilename', 'netboot', 'nextserver', 'filename', 'filename32',
+          'filename64', 'rootpath',  'ldap', 'winsserver', 'dnsserver');
 
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -304,6 +310,12 @@ include("head.inc");
     $("#showtftpbox").hide();
     $("#showtftp").show();
   }
+  
+  function show_netboot_config() {
+    $("#shownetbootbox").html('');
+    $("#shownetboot").show();
+  }
+
 //]]>
 </script>
 <?php include("fbegin.inc"); ?>
@@ -506,6 +518,33 @@ include("head.inc");
                       <?=gettext("Set Bootfile");?>
                       <input name="bootfilename" type="text" id="bootfilename" size="1024" value="<?=$pconfig['bootfilename'];?>" /><br />
                       <?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server and optionally a full path for a bootfile (dhcp option 67).");?><br />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
+                  <td>
+                    <div id="shownetbootbox">
+                      <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Network booting");?>
+                    </div>
+                    <div id="shownetboot" style="display:none">
+                      <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
+                      <strong><?=gettext("Enables network booting.");?></strong>
+                      <br/><br/>
+                      <?=gettext('Set next-server IP');?>
+                      <input name="nextserver" type="text" id="nextserver" value="<?=$pconfig['nextserver'];?>" /><br />
+                      <?=gettext('Set default bios filename');?>
+                      <input name="filename" type="text" id="filename" value="<?=$pconfig['filename'];?>" /><br />
+                      <?=gettext('Set UEFI 32bit filename');?>
+                      <input name="filename32" type="text" id="filename32" value="<?=$pconfig['filename32'];?>" /><br />
+                      <?=gettext('Set UEFI 64bit filename');?>
+                      <input name="filename64" type="text" id="filename64" value="<?=$pconfig['filename64'];?>" /><br />
+                      <?=gettext("Note: You need both a filename and a boot server configured for this to work!");?><br/>
+                      <?=gettext("You will need all three filenames and a boot server configured for UEFI to work!");?>
+                      <br/><br/>
+                      <?=gettext('Set root-path string');?>
+                      <input name="rootpath" type="text" id="rootpath" size="90" value="<?=$pconfig['rootpath'];?>" /><br />
+                      <?=gettext("Note: string-format: iscsi:(servername):(protocol):(port):(LUN):targetname");?>
                     </div>
                   </td>
                 </tr>

@@ -934,12 +934,27 @@ EOD;
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdconf .= "  option host-name \"{$dhhostname}\";\n";
                 }
-                if (!empty($sm['filename'])) {
-                    $dhcpdconf .= "  filename \"{$sm['filename']}\";\n";
-                }
 
-                if (!empty($sm['rootpath'])) {
-                    $dhcpdconf .= "  option root-path \"{$sm['rootpath']}\";\n";
+                if (isset($sm['netboot'])) {
+                    if (!empty($sm['nextserver'])) {
+                        $dhcpdconf .= "  next-server {$sm['nextserver']};\n";
+                    }
+                    if (!empty($sm['filename']) && !empty($sm['filename32']) && !empty($sm['filename64'])) {
+                        $dhcpdconf .= "  if option arch = 00:06 {\n";
+                        $dhcpdconf .= "    filename \"{$sm['filename32']}\";\n";
+                        $dhcpdconf .= "  } else if option arch = 00:07 {\n";
+                        $dhcpdconf .= "    filename \"{$sm['filename64']}\";\n";
+                        $dhcpdconf .= "  } else if option arch = 00:09 {\n";
+                        $dhcpdconf .= "    filename \"{$sm['filename64']}\";\n";
+                        $dhcpdconf .= "  } else {\n";
+                        $dhcpdconf .= "    filename \"{$sm['filename']}\";\n";
+                        $dhcpdconf .= "  }\n\n";
+                    } elseif (!empty($sm['filename'])) {
+                        $dhcpdconf .= "  filename \"{$sm['filename']}\";\n";
+                    }
+                    if (!empty($sm['rootpath'])) {
+                        $dhcpdconf .= "  option root-path \"{$sm['rootpath']}\";\n";
+                    }
                 }
 
                 if (!empty($sm['gateway']) && ($sm['gateway'] != $dhcpifconf['gateway'])) {
