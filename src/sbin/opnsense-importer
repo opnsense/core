@@ -51,11 +51,11 @@ bootstrap_and_exit()
 	fi
 
 	# clean up after a finished import
-	if [ -d ${MNT} ]; then
+	if [ -d ${MNT} && "$(mount | grep -cw ${MNT})" != "0" ]; then
 		if [ -n "${PART}" ]; then
-			umount ${MNT} && rm -rf ${MNT}
+			umount ${MNT}
 		elif [ -n "${POOL}" ]; then
-			zpool export ${POOL} && rm -rf ${MNT}
+			zpool export ${POOL}
 		fi
 	fi
 
@@ -141,8 +141,8 @@ zfs_probe()
 	zpool get -H cachefile | while read ZPOOL ZMORE; do
 		if [ "$(mount | grep -w / | grep -c ${ZPOOL})" = "0" ]; then
 			zpool export ${ZPOOL} >/dev/null 2>/dev/null
-			echo "zfs/${ZPOOL}"
 		fi
+		echo "zfs/${ZPOOL}"
 	done
 }
 
