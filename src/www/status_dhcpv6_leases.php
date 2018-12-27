@@ -97,15 +97,24 @@ $interfaces = legacy_config_get_interfaces(array('virtual' => false));
 $leasesfile = services_dhcpdv6_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $awk = "/usr/bin/awk";
+    $leases_content = array();
 
-    /* this pattern sticks comments into a single array item */
-    $cleanpattern = "'{ gsub(\"^#.*\", \"\");} { gsub(\"^server-duid.*\", \"\");} { gsub(\";$\", \"\"); print;}'";
-    /* We then split the leases file by } */
-    $splitpattern = "'BEGIN { RS=\"}\";} {for (i=1; i<=NF; i++) printf \"%s \", \$i; printf \"}\\n\";}'";
-
-    /* stuff the leases file in a proper format into a array by line */
-    exec("/bin/cat {$leasesfile} | {$awk} {$cleanpattern} | {$awk} {$splitpattern} | /usr/bin/grep '^ia-.. '", $leases_content);
+    $fin = @fopen($leasesfile, "r");
+    $section = array();
+    if ($fin) {
+        while (($line = fgets($fin, 4096)) !== false) {
+            if (strpos($line, "ia-") !== false) {
+                $section = array();
+            } elseif (strpos($line, "}") === 0 && count($section) > 0) {
+                $output = implode($section, "");
+                $leases_content[] = $output;
+            }
+            $section[] = rtrim($line, "\n;");
+        }
+        fclose($fin);
+    }
+    
+        
     $leases_count = count($leases_content);
     exec("/usr/sbin/ndp -an", $rawdata);
     $ndpdata = array();
