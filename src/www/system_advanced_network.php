@@ -148,24 +148,7 @@ function is_duid($duid)
 /* read duid from disk or return blank DUID string */
 function read_duid()
 {
-    $parts = array();
-    $skip = 2;
-
-    if (file_exists('/var/db/dhcp6c_duid')) {
-        $size = filesize('/var/db/dhcp6c_duid');
-        if ($size > $skip && ($fd = fopen('/var/db/dhcp6c_duid', 'r'))) {
-            $ret = unpack('Slen/H*buf', fread($fd, $size));
-            fclose($fd);
-
-            if (isset($ret['len']) && isset($ret['buf'])) {
-                if ($ret['len'] + $skip == $size && strlen($ret['buf']) == $ret['len'] * 2) {
-                    $parts = str_split($ret['buf'], 2);
-                }
-            }
-        }
-    }
-
-    $duid = strtoupper(implode(':', $parts));
+    $duid = dhcp6c_duid_read();
 
     if (!is_duid($duid)) {
         $duid = 'XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX';
@@ -235,8 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['ipv6duid'])) {
             unset($config['system']['ipv6duid']);
             /* clear the file as this means auto-generate */
-            @unlink('/var/db/dhcp6c_duid');
-            @unlink('/conf/dhcp6c_duid');
+            dhcp6c_duid_clear();
         }
 
         $savemsg = get_std_save_message();
