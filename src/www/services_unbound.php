@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2018 Fabian Franz
  * Copyright (C) 2014-2016 Deciso B.V.
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
@@ -132,11 +133,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$service_hook = 'unbound';
-
 $interfaces = get_configured_interface_with_descr();
 
+foreach (array('server', 'client') as $mode) {
+    foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
+        if (!isset($setting['disable'])) {
+            $interfaces[] = array(
+                'name' => "OpenVPN {$mode} (" . (!empty($setting['description']) ?
+                    $setting['description'] : $setting['vpnid']) . ")",
+                'value' => 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'],
+            );
+        }
+    }
+}
+
 legacy_html_escape_form_data($pconfig);
+
+$service_hook = 'unbound';
 
 include_once("head.inc");
 
