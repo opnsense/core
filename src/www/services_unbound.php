@@ -138,11 +138,9 @@ $interfaces = get_configured_interface_with_descr();
 foreach (array('server', 'client') as $mode) {
     foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
         if (!isset($setting['disable'])) {
-            $interfaces[] = array(
-                'name' => "OpenVPN {$mode} (" . (!empty($setting['description']) ?
-                    $setting['description'] : $setting['vpnid']) . ")",
-                'value' => 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'],
-            );
+            $interfaces['ovpn' . substr($mode, 0, 1) . $setting['vpnid']] =
+                "OpenVPN {$mode} (" . (!empty($setting['description']) ?
+                $setting['description'] : $setting['vpnid']) . ")";
         }
     }
 }
