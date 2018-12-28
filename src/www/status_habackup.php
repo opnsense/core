@@ -143,7 +143,7 @@ include("head.inc");
                 // reload all services
                 $(".xmlrpc_srv_status_act").each(function(){
                     if ($(this).data('service_action') == 'restart') {
-                        params = {};
+                        let params = {};
                         params['action'] = $(this).data('service_action');
                         params['service'] = $(this).data('service_name');
                         params['id'] = $(this).data('service_id');
@@ -152,7 +152,7 @@ include("head.inc");
                 });
             } else if ($(this).data('service_action') != undefined) {
                 // reload single service
-                params = {};
+                let params = {};
                 params['action'] = $(this).data('service_action');
                 params['service'] = $(this).data('service_name');
                 params['id'] = $(this).data('service_id');
