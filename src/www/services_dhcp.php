@@ -210,10 +210,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['wins1']) && !is_ipaddrv4($pconfig['wins1'])) || (!empty($pconfig['wins2']) && !is_ipaddrv4($pconfig['wins2']))) {
             $input_errors[] = gettext("A valid IP address must be specified for the primary/secondary WINS servers.");
         }
-        $parent_ip = get_interface_ip($pconfig['if']);
-        if (is_ipaddrv4($parent_ip) && $pconfig['gateway'] && $pconfig['gateway'] != "none") {
-            $parent_sn = get_interface_subnet($pconfig['if']);
-            if(!ip_in_subnet($pconfig['gateway'], gen_subnet($parent_ip, $parent_sn) . "/" . $parent_sn) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
+        $parent_net = find_interface_network(get_real_interface($pconfig['if']));
+        if (is_subnetv4($parent_net) && $pconfig['gateway'] && $pconfig['gateway'] != "none") {
+            if (!ip_in_subnet($pconfig['gateway'], $parent_net) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
                 $input_errors[] = sprintf(gettext("The gateway address %s does not lie within the chosen interface's subnet."), $pconfig['gateway']);
             }
         }
@@ -307,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid MTU value must be specified.");
         }
 
-        if(is_array($pconfig['numberoptions']['item'])) {
+        if (is_array($pconfig['numberoptions']['item'])) {
             foreach ($pconfig['numberoptions']['item'] as $numberoption) {
               if ($numberoption['type'] == 'text' && strstr($numberoption['value'], '"')) {
                   $input_errors[] = gettext("Text type cannot include quotation marks.");
@@ -437,7 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $exec_filter_configure = true;
                 }
                 $previous = !empty($config['dhcpd'][$if]['failover_peerip']) ? $config['dhcpd'][$if]['failover_peerip'] : "";
-                if($previous <> $pconfig['failover_peerip']) {
+                if ($previous != $pconfig['failover_peerip']) {
                     mwexec("/bin/rm -rf /var/dhcpd/var/db/*");
                 }
             }
@@ -1025,7 +1024,7 @@ include("head.inc");
                             foreach($numberoptions as $item):?>
                               <tr>
                                 <td>
-                                  <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
+                                  <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
                                 </td>
                                 <td>
                                   <input name="numberoptions_number[]" type="text" value="<?=$item['number'];?>" />
@@ -1072,7 +1071,7 @@ include("head.inc");
                             <tfoot>
                               <tr>
                                 <td colspan="4">
-                                  <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
+                                  <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
                                 </td>
                               </tr>
                             </tfoot>
@@ -1131,7 +1130,7 @@ include("head.inc");
                     $i = 0;
                     foreach ($config['dhcpd'][$if]['staticmap'] as $mapent): ?>
 <?php
-                        if($mapent['mac'] <> "" || $mapent['ipaddr'] <> ""): ?>
+                        if ($mapent['mac'] != '' || $mapent['ipaddr'] != ''): ?>
                     <tr>
                       <td>
 <?php
