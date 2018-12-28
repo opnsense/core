@@ -539,7 +539,7 @@ function unbound_add_host_entries()
     }
 
     foreach ($interfaces as $interface) {
-        if ($interface == 'lo0') {
+        if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
         }
 
