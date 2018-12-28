@@ -132,19 +132,19 @@ if ($pkg['step'][$stepid]['stepsubmitbeforesave']) {
 
 if ($_POST && !$input_errors) {
     foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
-        if (!empty($field['bindstofield']) and $field['type'] != 'submit') {
+        if (!empty($field['bindstofield']) && $field['type'] != 'submit') {
             $fieldname = $field['name'];
-            $fieldname = str_replace(" ", "", $fieldname);
+            $fieldname = str_replace(' ', '', $fieldname);
             $fieldname = strtolower($fieldname);
             // update field with posted values.
             if ($field['unsetfield'] != '')
-                $unset_fields = "yes";
+                $unset_fields = 'yes';
             else
-                $unset_fields = "";
+                $unset_fields = '';
             if ($field['arraynum'] != '')
                 $arraynum = $field['arraynum'];
             else
-                $arraynum = "";
+                $arraynum = '';
 
             update_config_field($field['bindstofield'], $_POST[$fieldname], $unset_fields, $arraynum, $field['type']);
         }
@@ -172,11 +172,11 @@ $extraBreadcrumb = $pkg['step'][$stepid]['title'];
 function update_config_field($field, $updatetext, $unset, $arraynum, $field_type)
 {
     global $config;
-    $field_split = explode("->", $field);
+    $field_split = explode('->', $field);
     $field_conv = '';
     foreach ($field_split as $f)
         $field_conv .= "['" . $f . "']";
-    if ($field_conv == "")
+    if ($field_conv == '')
         return;
     if ($arraynum != '')
         $field_conv .= "[" . $arraynum . "]";
@@ -213,28 +213,28 @@ function redirect_url()
     $urlport = '';
 
     switch ($config['system']['webgui']['protocol']) {
-        case "http":
-            $proto = "http";
+        case 'http':
+            $proto = 'http';
             break;
-        case "https":
-            $proto = "https";
+        case 'https':
+            $proto = 'https';
             break;
         default:
-            $proto = "http";
+            $proto = 'http';
             break;
     }
     $port = $config['system']['webgui']['port'];
-    if ($port != "") {
-        if (($port == "443" and $proto != "https") or ($port == "80" and $proto != "http")) {
-            $urlport = ":" . $port;
-        } elseif ($port != "80" and $port != "443") {
-            $urlport = ":" . $port;
+    if ($port != '') {
+        if (($port == '443' && $proto != 'https') || ($port == '80' && $proto != 'http')) {
+            $urlport = ':' . $port;
+        } elseif ($port != '80' && $port != '443') {
+            $urlport = ':' . $port;
         }
     }
     $http_host = $_SERVER['SERVER_NAME'];
     $urlhost = $http_host;
     // If finishing the setup wizard, check if accessing on a LAN or WAN address that changed
-    if ($title == "Reload in progress") {
+    if ($title == 'Reload in progress') {
         if (is_ipaddr($urlhost)) {
             $host_if = find_ip_interface($urlhost);
             if ($host_if) {
@@ -403,9 +403,9 @@ include("head.inc");
             print_input_errors($input_errors);
         if (isset($savemsg))
             print_info_box($savemsg);
-        if ($_GET['message'] != "")
+        if ($_GET['message'] != '')
             print_info_box(htmlspecialchars($_GET['message']));
-        if ($_POST['message'] != "")
+        if ($_POST['message'] != '')
             print_info_box(htmlspecialchars($_POST['message']));
         ?>
 
@@ -429,8 +429,8 @@ include("head.inc");
                                     $name = strtolower($name);
 
                                     if (!empty($field['bindstofield']) && !isset($field['value'])) {
-                                        $arraynum = "";
-                                        $field_conv = "";
+                                        $arraynum = '';
+                                        $field_conv = '';
                                         $field_split = explode("->", $field['bindstofield']);
                                         // arraynum is used in cases where there is an array of the same field
                                         // name such as dnsserver (2 of them)
@@ -506,8 +506,8 @@ include("head.inc");
                                             }
                                             break;
                                         case "interfaces_selection":
-                                            $size = "";
-                                            $multiple = "";
+                                            $size = '';
+                                            $multiple = '';
                                             $name = strtolower($name);
                                             echo "<td style=\"width:22%; text-align:right\">\n";
                                             echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
@@ -520,7 +520,7 @@ include("head.inc");
                                             }
                                             echo "<select class='form-control' id='{$name}' name='{$name}' {$size} {$multiple}>\n";
                                             if ($field['add_to_interfaces_selection'] != '') {
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($field['add_to_interfaces_selection'] == $value) $SELECTED = " selected=\"selected\"";
                                                 echo "<option value='" . $field['add_to_interfaces_selection'] . "'" . $SELECTED . ">" . $field['add_to_interfaces_selection'] . "</option>\n";
                                             }
@@ -530,7 +530,7 @@ include("head.inc");
                                                 $interfaces['any'] = 'any';
                                             }
                                             foreach ($interfaces as $ifname => $iface) {
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($value == $ifname) $SELECTED = " selected=\"selected\"";
                                                 $to_echo = "<option value='" . $ifname . "'" . $SELECTED . ">" . $iface . "</option>\n";
                                                 $to_echo .= "<!-- {$value} -->";
@@ -573,8 +573,8 @@ include("head.inc");
 
                                             break;
                                         case "certca_selection":
-                                            $size = "";
-                                            $multiple = "";
+                                            $size = '';
+                                            $multiple = '';
                                             $name = strtolower($name);
                                             echo "<td style=\"width:22%; text-align:right\">\n";
                                             echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
@@ -583,7 +583,7 @@ include("head.inc");
                                             if ($field['size'] != '') $size = "size=\"{$field['size']}\"";
                                             echo "<select id='{$name}' name='{$name}' {$size}>\n";
                                             if ($field['add_to_certca_selection'] != '') {
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($field['add_to_certca_selection'] == $value) $SELECTED = " selected=\"selected\"";
                                                 echo "<option value='" . $field['add_to_certca_selection'] . "'" . $SELECTED . ">" . $field['add_to_certca_selection'] . "</option>\n";
                                             }
@@ -592,7 +592,7 @@ include("head.inc");
                                                     continue;
                                                 }
                                                 $name = htmlspecialchars($ca['descr']);
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($value == $name) $SELECTED = " selected=\"selected\"";
                                                 $to_echo = "<option value='" . $ca['refid'] . "'" . $SELECTED . ">" . $name . "</option>\n";
                                                 $to_echo .= "<!-- {$value} -->";
@@ -608,14 +608,14 @@ include("head.inc");
                                             }
                                             echo "</select>\n";
 
-                                            if ($field['description'] != "") {
+                                            if ($field['description'] != '') {
                                                 echo "<br /> " . gettext($field['description']);
                                             }
 
                                             break;
                                         case "cert_selection":
-                                            $size = "";
-                                            $multiple = "";
+                                            $size = '';
+                                            $multiple = '';
                                             $name = strtolower($name);
                                             echo "<td style=\"width:22%; text-align:right\">\n";
                                             echo ($field['displayname'] ? gettext($field['displayname']) : gettext($field['name'])) . ":\n";
@@ -624,7 +624,7 @@ include("head.inc");
                                             if ($field['size'] != '') $size = "size=\"{$field['size']}\"";
                                             echo "<select id='{$name}' name='{$name}' {$size}>\n";
                                             if ($field['add_to_cert_selection'] != '') {
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($field['add_to_cert_selection'] == $value) $SELECTED = " selected=\"selected\"";
                                                 echo "<option value='" . $field['add_to_cert_selection'] . "'" . $SELECTED . ">" . $field['add_to_cert_selection'] . "</option>\n";
                                             }
@@ -632,7 +632,7 @@ include("head.inc");
                                                 if (stristr($ca['descr'], "webconf"))
                                                     continue;
                                                 $name = htmlspecialchars($ca['descr']);
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($value == $name) $SELECTED = " selected=\"selected\"";
                                                 $to_echo = "<option value='" . $ca['refid'] . "'" . $SELECTED . ">" . $name . "</option>\n";
                                                 $to_echo .= "<!-- {$value} -->";
@@ -668,7 +668,7 @@ include("head.inc");
                                                 echo "<td class=\"vtable\">\n";
                                             echo "<select class='form-control' " . $size . "id='" . $name . "' name='" . $name . "'>\n";
                                             foreach (list_dh_parameters() as $length) {
-                                                $selected = "";
+                                                $selected = '';
                                                 if ($value == $length)
                                                     $selected = " selected=\"selected\"";
                                                 echo "\t<option value=\"" . html_safe($length) . "\"" . $selected . ">";
@@ -697,7 +697,7 @@ include("head.inc");
                                             if ($field['multiple'] == "yes") $multiple = "multiple=\"multiple\" ";
                                             if (!$field['dontcombinecells'])
                                                 echo "<td class=\"vtable\">\n";
-                                            $onchange = "";
+                                            $onchange = '';
                                             foreach ($field['options']['option'] as $opt) {
                                                 if ($opt['enablefields'] != '') {
                                                     $onchange = "onchange=\"enableitems(this.selectedIndex);\" ";
@@ -705,7 +705,7 @@ include("head.inc");
                                             }
                                             echo "<select class='form-control' " . $onchange . $multiple . $size . "id='" . $name . "' name='" . $name . "'>\n";
                                             foreach ($field['options']['option'] as $opt) {
-                                                $selected = "";
+                                                $selected = '';
                                                 if ($value == $opt['value'])
                                                     $selected = " selected=\"selected\"";
                                                 echo "\t<option value='" . $opt['value'] . "'" . $selected . ">";
@@ -811,7 +811,7 @@ include("head.inc");
                                                 echo "<td class=\"vtable\">";
                                             echo "<select class='form-control' id='{$name}' name='{$name}'>\n";
                                             foreach ($languagelist as $langkey => $langval) {
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($value == $langkey) $SELECTED = " selected=\"selected\"";
                                                 echo "<option value=\"" . htmlspecialchars($langkey) . "\" {$SELECTED}>";
                                                 echo htmlspecialchars($langval);
@@ -842,7 +842,7 @@ include("head.inc");
                                             foreach ($timezonelist as $tz) {
                                                 if (strstr($tz, "GMT"))
                                                     continue;
-                                                $SELECTED = "";
+                                                $SELECTED = '';
                                                 if ($value == $tz) $SELECTED = " selected=\"selected\"";
                                                 echo "<option value=\"" . htmlspecialchars($tz) . "\" {$SELECTED}>";
                                                 echo htmlspecialchars($tz);
@@ -865,7 +865,7 @@ include("head.inc");
                                                 echo gettext($field['name']);
                                                 echo ":</td>";
                                             }
-                                            $checked = "";
+                                            $checked = '';
                                             if ($value != '')
                                                 $checked = " checked=\"checked\"";
                                             echo "<td class=\"vtable\"><input value=\"on\" type='checkbox' id='" . $name . "' name='" . $name . "' " . $checked;
@@ -903,7 +903,7 @@ include("head.inc");
                             foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
                                 switch ($field['type']) {
                                     case "refresh":
-                                        if ($field['page'] != "" && $field['time'] != '') {
+                                        if ($field['page'] != '' && $field['time'] != '') {
                                             echo '<meta http-equiv="refresh" content="' . $field['time'] . ';url=' . redirect_url() . '/' . $field['page'] . '">';
                                         }
                                         break 2;
@@ -933,9 +933,9 @@ include("head.inc");
 
     <?php
     $isfirst = 0;
-    $aliases = "";
+    $aliases = '';
     $addrisfirst = 0;
-    $aliasesaddr = "";
+    $aliasesaddr = '';
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias_name) {
         if ($isfirst == 1) {
             $aliases .= ",";
