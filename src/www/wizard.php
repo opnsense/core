@@ -286,7 +286,7 @@ include("head.inc");
         function enablechange() {
             <?php
             foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
-                if (isset($field['enablefields']) or isset($field['checkenablefields'])) {
+                if (isset($field['enablefields']) || isset($field['checkenablefields'])) {
                     print "\t" . 'if (document.iform.' . strtolower($field['name']) . '.checked) {' . "\n";
                     if (isset($field['enablefields'])) {
                         $enablefields = explode(',', $field['enablefields']);
@@ -326,7 +326,7 @@ include("head.inc");
         function disablechange() {
             <?php
             foreach ($pkg['step'][$stepid]['fields']['field'] as $field) {
-                if (isset($field['disablefields']) or isset($field['checkdisablefields'])) {
+                if (isset($field['disablefields']) || isset($field['checkdisablefields'])) {
                     print "\t" . 'if (document.iform.' . strtolower($field['name']) . '.checked) {' . "\n";
                     if (isset($field['disablefields'])) {
                         $enablefields = explode(',', $field['disablefields']);
@@ -869,9 +869,9 @@ include("head.inc");
                                             if ($value != '')
                                                 $checked = " checked=\"checked\"";
                                             echo "<td class=\"vtable\"><input value=\"on\" type='checkbox' id='" . $name . "' name='" . $name . "' " . $checked;
-                                            if (isset($field['enablefields']) or isset($field['checkenablefields']))
+                                            if (isset($field['enablefields']) || isset($field['checkenablefields']))
                                                 echo " onclick=\"enablechange()\"";
-                                            else if (isset($field['disablefields']) or isset($field['checkdisablefields']))
+                                            else if (isset($field['disablefields']) || isset($field['checkdisablefields']))
                                                 echo " onclick=\"disablechange()\"";
                                             echo " />\n";
 
