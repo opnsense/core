@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once('guiconfig.inc');
 require_once("system.inc");
@@ -171,37 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo $exp_data;
         }
         exit;
-    } elseif ($act == "p12") {
-        // export cert+key in p12 format
-        if (isset($id)) {
-            $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
-            $args = array();
-            $args['friendly_name'] = $a_cert[$id]['descr'];
-
-            $ca = lookup_ca($a_cert[$id]['caref']);
-            if ($ca) {
-                $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
-            }
-            set_error_handler (
-                function () {
-                    return;
-                }
-            );
-
-            $exp_data = "";
-            $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
-            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ""));
-
-            openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
-            $exp_size = strlen($exp_data);
-            restore_error_handler();
-
-            header("Content-Type: application/octet-stream");
-            header("Content-Disposition: attachment; filename={$exp_name}");
-            header("Content-Length: $exp_size");
-            echo $exp_data;
-        }
-        exit;
     } elseif ($act == "csr") {
         if (!isset($id)) {
             header(url_safe('Location: /system_certmanager.php'));
@@ -228,6 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
     if (isset($a_cert[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -246,6 +216,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
         }
         header(url_safe('Location: /system_certmanager.php'));
+        exit;
+    } elseif ($act == "p12") {
+        // export cert+key in p12 format
+        if (isset($id)) {
+            $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
+            $args = array();
+            $args['friendly_name'] = $a_cert[$id]['descr'];
+
+            $ca = lookup_ca($a_cert[$id]['caref']);
+            if ($ca) {
+                $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
+            }
+            set_error_handler (
+                function () {
+                    return;
+                }
+            );
+
+            $exp_data = '';
+            $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
+            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ''));
+            $res_pw = !empty($pconfig['password']) ? $pconfig['password'] : null;
+            openssl_pkcs12_export($res_crt, $exp_data, $res_key, $res_pw, $args);
+            restore_error_handler();
+
+            $output = json_encode(array(
+              'filename' => $exp_name,
+              'content' => base64_encode($exp_data)
+            ));
+            header("Content-Type: application/json;charset=UTF-8");
+            // header("Content-Length: ". strlen($output));
+            echo $output;
+        }
         exit;
     } elseif ($act == "csr") {
         $input_errors = array();
@@ -285,7 +288,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif (!empty($_POST['save'])) {
         $input_errors = array();
-        $pconfig = $_POST;
 
         /* input validation */
         if ($pconfig['certmethod'] == "import") {
@@ -563,6 +565,67 @@ if (empty($act)) {
       });
     });
 
+    $('.p12btn').on('click', function(event) {
+        event.preventDefault();
+        var id = $(this).data('id');
+
+        let password_input = $('<input type="password" class="form-control password_field" placeholder="<?=html_safe(gettext("Password"));?>">');
+        let confirm_input = $('<input type="password" class="form-control password_field" placeholder="<?=html_safe(gettext("Confirm"));?>">');
+        let dialog_items = $('<div class = "form-group">');
+        dialog_items.append(
+          $("<span>").text("<?=html_safe(gettext('Optionally use a password to protect your export'));?>"),
+          $('<table class="table table-condensed"/>').append(
+            $("<tbody/>").append(
+              $("<tr/>").append($("<td/>").append(password_input)),
+              $("<tr/>").append($("<td/>").append(confirm_input)),
+            )
+          )
+        );
+
+        // highlight password/confirm when not equal
+        let keyup_pass = function() {
+            if (confirm_input.val() !== password_input.val()) {
+                $(".password_field").addClass("has-warning");
+                $(".password_field").closest('div').addClass('has-warning');
+            } else {
+                $(".password_field").removeClass("has-warning");
+                $(".password_field").closest('div').removeClass('has-warning');
+            }
+        }
+        confirm_input.on('keyup', keyup_pass);
+        password_input.on('keyup', keyup_pass);
+
+
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: "<?= gettext("Certificates");?>",
+            message: dialog_items,
+            buttons: [
+                {
+                    label: "<?=html_safe(gettext("Close"));?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }, {
+                    label: '<i class="fa fa-download fa-fw"></i> <?=html_safe(gettext("Download"));?>',
+                    action: function(dialogRef) {
+                        $.post('system_certmanager.php', {'id': id, 'act': 'p12', 'password': password_input.val()}, function (data) {
+                            var link = $('<a></a>')
+                                .attr('href','data:application/octet-stream;base64,' + data.content)
+                                .attr('download', data.filename)
+                                .appendTo('body');
+                            link.ready(function() {
+                                link.get(0).click();
+                                link.empty();
+                            });
+                        });
+                        dialogRef.close();
+                    }
+                }
+            ]
+        });
+    });
+
     $(".act_info").click(function(event){
         event.preventDefault();
         var id = $(this).data('id');
@@ -588,7 +651,7 @@ if (empty($act)) {
     function removeRowAltNm() {
         if ( $('#altNametable > tbody > tr').length == 1 ) {
             $('#altNametable > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
+              $(this).val('');
             });
         } else {
             $(this).parent().parent().remove();
@@ -606,7 +669,7 @@ if (empty($act)) {
             // copy last row and reset values
             $('#altNametable > tbody').append('<tr>'+$('#altNametable > tbody > tr:last').html()+'</tr>');
             $('#altNametable > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
+              $(this).val('');
             });
             $(".act-removerow-altnm").click(removeRowAltNm);
         });
@@ -643,8 +706,8 @@ $( document ).ready(function() {
 //<![CDATA[
   function internalca_change() {
 
-    index = document.iform.caref.selectedIndex;
-    caref = document.iform.caref[index].value;
+    let index = document.iform.caref.selectedIndex;
+    let caref = document.iform.caref[index].value;
 
     switch (caref) {
   <?php
@@ -726,7 +789,7 @@ $( document ).ready(function() {
                   <select name="certmethod" id="certmethod">
 <?php
                   foreach ($cert_methods as $method => $desc) :?>
-                    <option value="<?=$method;?>" <?=$pconfig['certmethod'] == $method ? "selected=\"selected\"":"";?>>
+                    <option value="<?=$method;?>" <?=$pconfig['certmethod'] == $method ? 'selected="selected"' : ''; ?>>
                       <?=$desc;?>
                     </option>
 <?php
@@ -786,7 +849,7 @@ $( document ).ready(function() {
                       if (!$ca['prv']) {
                           continue;
                       }?>
-                    <option value="<?=$ca['refid'];?>" <?=isset($pconfig['caref']) && isset($ca['refid']) && $pconfig['caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>><?=$ca['descr'];?></option>
+                    <option value="<?=$ca['refid'];?>" <?=isset($pconfig['caref']) && isset($ca['refid']) && $pconfig['caref'] == $ca['refid'] ? 'selected="selected"' : '';?>><?=$ca['descr'];?></option>
 <?php
                   endforeach; ?>
                   </select>
@@ -799,9 +862,9 @@ $( document ).ready(function() {
                 <td><a id="help_for_digest_cert_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type");?> </td>
                 <td>
                     <select name="cert_type">
-                        <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Client Certificate");?> </option>
-                        <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
-                        <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
+                        <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? 'selected="selected"' : '';?>> <?=gettext("Client Certificate");?> </option>
+                        <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? 'selected="selected"' : '';?>> <?=gettext("Server Certificate");?> </option>
+                        <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? 'selected="selected"' : '';?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
                     <div class="hidden" data-for="help_for_digest_cert_type">
                       <?=gettext("Choose the type of certificate to generate here, the type defines it's constraints");?>
@@ -814,7 +877,7 @@ $( document ).ready(function() {
                   <select name='keylen'>
 <?php
                   foreach ($cert_keylens as $len) :?>
-                    <option value="<?=$len;?>" <?=$pconfig['keylen'] == $len ? "selected=\"selected\"" : "";?>><?=$len;?></option>
+                    <option value="<?=$len;?>" <?=$pconfig['keylen'] == $len ? 'selected="selected"' : '';?>><?=$len;?></option>
 <?php
                   endforeach; ?>
                   </select>
@@ -826,7 +889,7 @@ $( document ).ready(function() {
                   <select name='digest_alg' id='digest_alg'>
 <?php
                   foreach ($openssl_digest_algs as $digest_alg) :?>
-                    <option value="<?=$digest_alg;?>" <?=$pconfig['digest_alg'] == $digest_alg ? "selected=\"selected\"" : "";?>>
+                    <option value="<?=$digest_alg;?>" <?=$pconfig['digest_alg'] == $digest_alg ? 'selected="selected"' : '';?>>
                       <?=strtoupper($digest_alg);?>
                     </option>
 <?php
@@ -852,7 +915,7 @@ $( document ).ready(function() {
                   <select name="dn_country" id="dn_country" class="selectpicker">
 <?php
                   foreach (get_country_codes() as $cc => $cn):?>
-                    <option value="<?=$cc;?>" <?=$pconfig['dn_country'] == $cc ? "selected=\"selected\"" : "";?>>
+                    <option value="<?=$cc;?>" <?=$pconfig['dn_country'] == $cc ? 'selected="selected"' : '';?>>
                       <?=$cc;?> (<?=$cn;?>)
                     </option>
 <?php
@@ -952,10 +1015,10 @@ $( document ).ready(function() {
                         <tr>
                           <td>
                             <select name="altname_type[]" id="altname_type">
-                              <option value="DNS" <?=$altname_type == "DNS" ? "selected=\"selected\"" : "";?>><?=gettext("DNS");?></option>
-                              <option value="IP" <?=$altname_type == "IP" ? "selected=\"selected\"" : "";?>><?=gettext("IP");?></option>
-                              <option value="email" <?=$altname_type == "email" ? "selected=\"selected\"" : "";?>><?=gettext("email");?></option>
-                              <option value="URI" <?=$altname_type == "URI" ? "selected=\"selected\"" : "";?>><?=gettext("URI");?></option>
+                              <option value="DNS" <?=$altname_type == 'DNS' ? 'selected="selected"' : '';?>><?=gettext('DNS');?></option>
+                              <option value="IP" <?=$altname_type == 'IP' ? 'selected="selected"' : '';?>><?=gettext('IP');?></option>
+                              <option value="email" <?=$altname_type == 'email' ? 'selected="selected"' : '';?>><?=gettext('email');?></option>
+                              <option value="URI" <?=$altname_type == 'URI' ? 'selected="selected"' : '';?>><?=gettext('URI');?></option>
                             </select>
                           </td>
                           <td>
@@ -1182,7 +1245,7 @@ $( document ).ready(function() {
                 <td>
                   <textarea name="csr" id="csr" cols="65" rows="7" class="formfld_cert" readonly="readonly"><?=$pconfig['csr'];?></textarea>
                   <br />
-                  <?=gettext("Copy the certificate signing data from here and forward it to your certificate authority for signing.");?></td>
+                  <?=gettext("Copy the certificate signing data from here and forward it to your certificate authority for signing.");?>
                 </td>
               </tr>
               <tr>
@@ -1190,7 +1253,7 @@ $( document ).ready(function() {
                 <td>
                   <textarea name="cert" id="cert" cols="65" rows="7" class="formfld_cert"><?=$pconfig['cert'];?></textarea>
                   <br />
-                  <?=gettext("Paste the certificate received from your certificate authority here.");?></td>
+                  <?=gettext("Paste the certificate received from your certificate authority here.");?>
                 </td>
               </tr>
               <tr>
@@ -1311,7 +1374,7 @@ $( document ).ready(function() {
                     <i class="fa fa-download fa-fw"></i>
                   </a>
 
-                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
+                  <a data-id="<?=$i;?>"  class="btn btn-default btn-xs p12btn" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
                       <i class="fa fa-download fa-fw"></i>
                   </a>
 <?php
