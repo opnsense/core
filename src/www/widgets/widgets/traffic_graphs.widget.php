@@ -52,9 +52,9 @@
           traffic_graph_widget_data.push(data);
       }
 
-      chart_data_in = [];
-      chart_data_out = [];
-      chart_data_keys = {};
+      let chart_data_in = [];
+      let chart_data_out = [];
+      let chart_data_keys = {};
       for (var i=traffic_graph_widget_data.length-1 ; i > 0 ; --i) {
           var elapsed_time = traffic_graph_widget_data[i]['time'] - traffic_graph_widget_data[i-1]['time'];
           for (var key in traffic_graph_widget_data[i]['interfaces']) {
@@ -67,6 +67,7 @@
                   chart_data_out[chart_data_out.length] = {'key': intf_item['name'], 'values': []};
               }
               if (chart_data_keys[key] != undefined) {
+                  let bps_in, bps_out;
                   if (elapsed_time > 0) {
                       bps_in = ((parseInt(intf_item['bytes received']) - parseInt(prev_intf_item['bytes received']))/elapsed_time)*8;
                       bps_out = ((parseInt(intf_item['bytes transmitted']) - parseInt(prev_intf_item['bytes transmitted']))/elapsed_time)*8;
