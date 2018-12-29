@@ -722,9 +722,9 @@ function unbound_acls_subnets()
     foreach ($active_interfaces as $ubif => $ubextra) {
         foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
             if (!empty($ubextra['net4']) && is_subnetv4($subnet)) {
-                $subnet = explode('/', $subnet)[0] . $ubextra['net4'];
+                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net4'];
             } elseif (!empty($ubextra['net6']) && is_subnetv6($subnet)) {
-                $subnet = explode('/', $subnet)[0] . $ubextra['net6'];
+                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net6'];
             }
             $subnets[] = $subnet;
         }
