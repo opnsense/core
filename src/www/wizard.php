@@ -213,28 +213,28 @@ function redirect_url()
     $urlport = '';
 
     switch ($config['system']['webgui']['protocol']) {
-        case "http":
-            $proto = "http";
+        case 'http':
+            $proto = 'http';
             break;
-        case "https":
-            $proto = "https";
+        case 'https':
+            $proto = 'https';
             break;
         default:
-            $proto = "http";
+            $proto = 'http';
             break;
     }
     $port = $config['system']['webgui']['port'];
     if ($port != '') {
-        if (($port == "443" && $proto != "https") or ($port == "80" && $proto != "http")) {
-            $urlport = ":" . $port;
-        } elseif ($port != "80" && $port != "443") {
-            $urlport = ":" . $port;
+        if (($port == '443' && $proto != 'https') || ($port == '80' && $proto != 'http')) {
+            $urlport = ':' . $port;
+        } elseif ($port != '80' && $port != '443') {
+            $urlport = ':' . $port;
         }
     }
     $http_host = $_SERVER['SERVER_NAME'];
     $urlhost = $http_host;
     // If finishing the setup wizard, check if accessing on a LAN or WAN address that changed
-    if ($title == "Reload in progress") {
+    if ($title == 'Reload in progress') {
         if (is_ipaddr($urlhost)) {
             $host_if = find_ip_interface($urlhost);
             if ($host_if) {
