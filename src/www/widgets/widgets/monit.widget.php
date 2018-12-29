@@ -56,6 +56,7 @@ $( document ).ready(function() {
    ];
 
    // avoid running code twice due to <script> location within <body>
+
    if (typeof monitPollInit === 'undefined') {
       monitPollInit = false;
    } else {
@@ -64,7 +65,7 @@ $( document ).ready(function() {
 
    function monitStatusPoll() {
       var pollInterval = 10000;
-      ajaxCall(url="/api/monit/status/get/xml", sendData={}, callback=function(data, status) {
+      ajaxCall("/api/monit/status/get/xml", {}, function(data, status) {
          $("#grid-monit").bootgrid("clear");
          if (data['result'] === 'ok') {
             pollInterval = data['status']['server']['poll'] * 1000;
