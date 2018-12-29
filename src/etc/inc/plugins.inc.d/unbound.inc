@@ -160,8 +160,7 @@ private-address: fe80::/10       # Link-local address (LLA)
 EOF;
     }
 
-    // Determine interfaces to run on
-    $bindints = "";
+    $bindints = '';
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = explode(",", $config['unbound']['active_interface']);
         foreach ($active_interfaces as $ubif) {
