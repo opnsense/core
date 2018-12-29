@@ -161,7 +161,6 @@ EOF;
     }
 
     $bindints = '';
-
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = explode(',', $config['unbound']['active_interface']);
         $active_interfaces[] = 'lo0';
