@@ -33,15 +33,15 @@
 function return_dpinger_defaults()
 {
     return array(
-        'alert_interval' => '1',	/* XXX not implemented in GUI */
-        'data_payload' => '0',		/* XXX not implemented in GUI */
+        'alert_interval' => '1',
+        'data_payload' => '0', /* XXX not implemented in GUI */
         'interval' => '1',
         'latencyhigh' => '500',
         'latencylow' => '200',
-        'loss_interval' => '2',		/* XXX not implemented in GUI */
+        'loss_interval' => '2',
         'losshigh' => '20',
         'losslow' => '10',
-        'time_period' => '60',		/* XXX not implemented in GUI */
+        'time_period' => '60',
     );
 }
 

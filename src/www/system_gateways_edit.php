@@ -274,6 +274,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if (!empty($pconfig['alert_interval'])) {
+        if (!is_numeric($pconfig['alert_interval'])) {
+            $input_errors[] = gettext("The alert interval needs to be a numeric value.");
+        } elseif ($pconfig['alert_interval'] < 1) {
+            $input_errors[] = gettext("The alert interval needs to be positive.");
+        }
+    }
+
+    if (!empty($pconfig['time_period'])) {
+        if (!is_numeric($pconfig['time_period'])) {
+            $input_errors[] = gettext("The time period needs to be a numeric value.");
+        } elseif ($pconfig['time_period'] < 1) {
+            $input_errors[] = gettext("The time period needs to be positive.");
+        }
+    }
+
+    if (!empty($pconfig['loss_interval'])) {
+        if (!is_numeric($pconfig['loss_interval'])) {
+            $input_errors[] = gettext("The loss interval needs to be a numeric value.");
+        } elseif ($pconfig['loss_interval'] < 1) {
+            $input_errors[] = gettext("The loss interval needs to be positive.");
+        }
+    }
+
     if (count($input_errors) == 0) {
         // A result of obfuscating the list of gateways is that over here we need to map things back that should
         // be aligned with the configuration. Not going to fix this now.
@@ -336,7 +360,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $gateway['defaultgw'] = true;
         }
 
-        foreach (array('latencylow', 'latencyhigh', 'losslow', 'losshigh') as $fieldname) {
+        foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
@@ -420,6 +444,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'monitor_disable',
         'name',
         'weight',
+        'alert_interval',
+        'time_period',
+        'loss_interval',
     );
     foreach ($copy_fields as $fieldname) {
         if (isset($configId) && isset($a_gateways[$configId][$fieldname])) {
@@ -453,7 +480,7 @@ $( document ).ready(function() {
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
-  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])))): ?>
+  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['alert_interval']) && ($pconfig['alert_interval'] > $dpinger_default['alert_interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
     $("#btn_advanced").click();
 <?php
   endif;?>
@@ -488,8 +515,8 @@ $( document ).ready(function() {
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    <?= gettext('Disable this gateway') ?>
                     <div class="hidden" data-for="help_for_disabled">
-                      <strong><?=gettext("Disable this gateway");?></strong><br />
                       <?=gettext("Set this option to disable this gateway without removing it from the list.");?>
                     </div>
                   </td>
@@ -585,8 +612,8 @@ $( document ).ready(function() {
                   <td><a id="help_for_monitor" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Monitor IP"); ?></td>
                   <td>
                       <input name="monitor" type="text" value="<?=$pconfig['gateway'] == $pconfig['monitor'] ? "" : $pconfig['monitor'] ;?>" size="28" />
+                      <?= gettext('Alternative monitor IP') ?>
                       <div class="hidden" data-for="help_for_monitor">
-                        <strong><?=gettext("Alternative monitor IP"); ?></strong> <br />
                         <?=gettext("Enter an alternative address here to be used to monitor the link. This is used for the " .
                                                 "quality RRD graphs as well as the load balancer entries. Use this if the gateway does not respond " .
                                                 "to ICMP echo requests (pings)"); ?>.
@@ -597,8 +624,8 @@ $( document ).ready(function() {
                   <td><a id="help_for_force_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mark Gateway as Down"); ?></td>
                   <td>
                     <input name="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
+                    <?= gettext('Mark Gateway as Down') ?>
                     <div class="hidden" data-for="help_for_force_down">
-                      <strong><?=gettext("Mark Gateway as Down"); ?></strong><br />
                       <?=gettext("This will force this gateway to be considered Down"); ?>
                     </div>
                   </td>
@@ -684,10 +711,37 @@ $( document ).ready(function() {
                 <tr class="advanced hidden">
                   <td><a id="help_for_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Probe Interval");?></td>
                   <td>
-                    <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" onclick="calculated_change()" />
+                    <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" />
                     <div class="hidden" data-for="help_for_interval">
                       <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $dpinger_default['interval']) ?><br /><br />
                       <?=gettext("NOTE: The quality graph is averaged over seconds, not intervals, so as the probe interval is increased the accuracy of the quality graph is decreased.");?>
+                    </div>
+                  </td>
+                </tr>
+                 <tr class="advanced hidden">
+                  <td><a id="help_for_alert_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alert Interval");?></td>
+                  <td>
+                    <input name="alert_interval" id="alert_interval" type="text" value="<?=$pconfig['alert_interval'];?>" />
+                    <div class="hidden" data-for="help_for_alert_interval">
+                      <?= sprintf(gettext('Time interval between alerts. Default is %d.'), $dpinger_default['alert_interval']) ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="advanced hidden">
+                  <td><a id="help_for_time_period" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time Period");?></td>
+                  <td>
+                    <input name="time_period" id="interval" type="text" value="<?=$pconfig['time_period'];?>" />
+                    <div class="hidden" data-for="help_for_time_period">
+                      <?= sprintf(gettext('The time period over which results are averaged. Default is %d.'), $dpinger_default['time_period']) ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="advanced hidden">
+                  <td><a id="help_for_loss_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Loss Interval");?></td>
+                  <td>
+                    <input name="loss_interval" id="loss_interval" type="text" value="<?=$pconfig['loss_interval'];?>" />
+                    <div class="hidden" data-for="help_for_loss_interval">
+                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d.'), $dpinger_default['loss_interval']) ?>
                     </div>
                   </td>
                 </tr>
