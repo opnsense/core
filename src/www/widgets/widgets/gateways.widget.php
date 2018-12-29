@@ -73,6 +73,7 @@ $gateways = return_gateways_array();
 <?php endif ?>
 
               // set color on status text
+              let status_color;
               switch (gateway['status']) {
                 case 'force_down':
                 case 'down':
@@ -86,7 +87,7 @@ $gateways = return_gateways_array();
                   status_color = 'success';
                   break;
                 default:
-                  status_color = 'default'
+                  status_color = 'default';
                   break;
               }
 
