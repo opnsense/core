@@ -182,6 +182,24 @@
                     </Constraints>
                 </perHostTrotteling>
             </traffic>
+            <parentproxy>
+                <enabled type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enabled>
+                <host type="HostnameField">
+                    <Required>N</Required>
+                </host>
+                <port type="PortField">
+                    <Required>N</Required>
+                </port>
+                <localdomains type="CSVListField">
+                    <Required>N</Required>
+                </localdomains>
+                <localips type="CSVListField">
+                    <Required>N</Required>
+                </localips>
+            </parentproxy>
         </general>
         <forward>
             <interfaces type="InterfaceField">
