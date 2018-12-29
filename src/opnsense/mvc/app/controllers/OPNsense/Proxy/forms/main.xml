@@ -227,13 +227,17 @@
             <field>
                 <id>proxy.general.parentproxy.localdomains</id>
                 <label>Local Domains</label>
-                <type>text</type>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <allownew>true</allownew>
                 <help>List of domains not to be sent via parent proxy.</help>
             </field>
             <field>
                 <id>proxy.general.parentproxy.localips</id>
                 <label>Local IPs</label>
-                <type>text</type>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <allownew>true</allownew>
                 <help>List of IP addresses not to be sent via parent proxy.</help>
             </field>
         </subtab>
