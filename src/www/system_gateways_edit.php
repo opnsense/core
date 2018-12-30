@@ -521,6 +521,18 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Name') ?></td>
+                  <td>
+                    <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Description') ?></td>
+                  <td>
+                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
@@ -551,18 +563,6 @@ $( document ).ready(function() {
                     <div class="hidden" data-for="help_for_ipprotocol">
                         <?=gettext("Choose the Internet Protocol this gateway uses."); ?>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Name') ?></td>
-                  <td>
-                    <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
-                  </td>
-                </tr>
-                <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Description') ?></td>
-                  <td>
-                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                   </td>
                 </tr>
                 <tr>
