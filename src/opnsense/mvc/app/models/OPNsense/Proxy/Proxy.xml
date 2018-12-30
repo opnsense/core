@@ -203,7 +203,7 @@
                     <Required>N</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>A host must be set.</ValidationMessage>
+                            <ValidationMessage>A port must be set.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>enabled</field1>
