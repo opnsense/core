@@ -3996,6 +3996,13 @@ function get_interface_ip($interface = 'wan')
         return get_configured_carp_interface_list($interface);
     }
 
+    // handle <if>|<ip> notation. it's used for ip alias vip ips,
+    // e.g. gre parent interface with ip alias
+    $pipe_pos = strpos($interface, '|');
+    if ($pipe_pos !== FALSE) {
+	return substr($interface, $pipe_pos + 1);
+    }
+
     return null;
 }
 
