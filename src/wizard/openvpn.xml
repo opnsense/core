@@ -150,8 +150,7 @@
                         <value>ssl</value>
                     </option>
                 </options>
-                <description>The protocol used by your LDAP server. It can either be standard TCP or SSL encrypted.
-                </description>
+                <description>The protocol used by your LDAP server. It can either be standard TCP or SSL encrypted.</description>
             </field>
             <field>
                 <name>scope</name>
@@ -182,10 +181,7 @@
                 <type>input</type>
                 <size>40</size>
                 <bindstofield>wizardtemp->step2->authscope</bindstofield>
-                <description>Semicolon separated. This will be prepended to the search base DN above or you can specify
-                    full container path, e.g. CN=Users;DC=example or
-                    CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com
-                </description>
+                <description>Semicolon separated. This will be prepended to the search base DN above or you can specify full container path, e.g. CN=Users;DC=example or CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com</description>
             </field>
             <field>
                 <name>userdn</name>
@@ -201,9 +197,7 @@
                 <type>password</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step2->passdn</bindstofield>
-                <description>If a user DN was supplied above, this password will also be used when performing a bind
-                    operation.
-                </description>
+                <description>If a user DN was supplied above, this password will also be used when performing a bind operation.</description>
             </field>
             <field>
                 <name>nameattr</name>
@@ -224,9 +218,7 @@
                 <displayname>Member Naming Attribute</displayname>
                 <type>input</type>
                 <bindstofield>wizardtemp->step2->memberattr</bindstofield>
-                <description>Typically "member" (OpenLDAP), "memberOf" (Microsoft AD), "uniqueMember" (Novell
-                    eDirectory)
-                </description>
+                <description>Typically "member" (OpenLDAP), "memberOf" (Microsoft AD), "uniqueMember" (Novell eDirectory)</description>
             </field>
             <field>
                 <type>submit</type>
@@ -298,8 +290,7 @@
                 <type>input</type>
                 <size>8</size>
                 <bindstofield>wizardtemp->step2->port</bindstofield>
-                <description>Port used by the RADIUS server for accepting Authentication requests, typically 1812.
-                </description>
+                <description>Port used by the RADIUS server for accepting Authentication requests, typically 1812.</description>
             </field>
             <field>
                 <name>secret</name>
@@ -354,9 +345,7 @@
             <field>
                 <name>descr</name>
                 <displayname>Descriptive name</displayname>
-                <description>A name for your reference, to identify this certificate. This is the same as common-name
-                    field for other Certificates.
-                </description>
+                <description>A name for your reference, to identify this certificate. This is the same as common-name field for other Certificates.</description>
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step6->certca</bindstofield>
@@ -364,9 +353,7 @@
             <field>
                 <name>keylength</name>
                 <displayname>Key length</displayname>
-                <description>Size of the key which will be generated. The larger the key, the more security is offers,
-                    but larger keys are generally slower to use.
-                </description>
+                <description>Size of the key which will be generated. The larger the key, the more security is offers, but larger keys are generally slower to use.</description>
                 <type>select</type>
                 <value>2048</value>
                 <bindstofield>wizardtemp->step6->keylength</bindstofield>
@@ -413,8 +400,7 @@
             <field>
                 <name>state</name>
                 <displayname>State or Province</displayname>
-                <description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).
-                </description>
+                <description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).</description>
                 <type>input</type>
                 <size>30</size>
                 <bindstofield>wizardtemp->step6->state</bindstofield>
@@ -438,9 +424,7 @@
             <field>
                 <name>email</name>
                 <displayname>Email</displayname>
-                <description>Email address for the Certificate contact. Often the email of the person generating the
-                    certificate (i.e. You.)
-                </description>
+                <description>Email address for the Certificate contact. Often the email of the person generating the certificate (i.e. You.)</description>
                 <type>input</type>
                 <size>30</size>
                 <bindstofield>wizardtemp->step6->email</bindstofield>
@@ -490,9 +474,7 @@
             <field>
                 <name>descr</name>
                 <displayname>Descriptive name</displayname>
-                <description>A name for your reference, to identify this certificate. This is also known as the
-                    certificate's "Common Name".
-                </description>
+                <description>A name for your reference, to identify this certificate. This is also known as the certificate's "Common Name".</description>
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step9->certname</bindstofield>
@@ -500,9 +482,7 @@
             <field>
                 <name>keylength</name>
                 <displayname>Key length</displayname>
-                <description>Size of the key which will be generated. The larger the key, the more security is offers,
-                    but larger keys are generally slower to use.
-                </description>
+                <description>Size of the key which will be generated. The larger the key, the more security is offers, but larger keys are generally slower to use.</description>
                 <type>select</type>
                 <value>2048</value>
                 <bindstofield>wizardtemp->step9->keylength</bindstofield>
@@ -549,8 +529,7 @@
             <field>
                 <name>state</name>
                 <displayname>State or Province</displayname>
-                <description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).
-                </description>
+                <description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Kentucky).</description>
                 <type>input</type>
                 <size>30</size>
                 <bindstofield>wizardtemp->step9->state</bindstofield>
@@ -574,9 +553,7 @@
             <field>
                 <name>email</name>
                 <displayname>Email</displayname>
-                <description>Email address for the Certificate contact. Often the email of the person generating the
-                    certificate (i.e. You.)
-                </description>
+                <description>Email address for the Certificate contact. Often the email of the person generating the certificate (i.e. You.)</description>
                 <type>input</type>
                 <size>30</size>
                 <bindstofield>wizardtemp->step9->email</bindstofield>
@@ -637,15 +614,12 @@
                         <value>TCP6</value>
                     </option>
                 </options>
-                <description>Protocol to use for OpenVPN connections. If you are unsure, leave this set to UDP.
-                </description>
+                <description>Protocol to use for OpenVPN connections. If you are unsure, leave this set to UDP.</description>
             </field>
             <field>
                 <name>localport</name>
                 <displayname>Local Port</displayname>
-                <description>Local port upon which OpenVPN will listen for connections. The default port is 1194. Leave
-                    this blank to auto-select an unused port.
-                </description>
+                <description>Local port upon which OpenVPN will listen for connections. The default port is 1194. Leave this blank to auto-select an unused port.</description>
                 <type>input</type>
                 <size>10</size>
                 <bindstofield>wizardtemp->step10->localport</bindstofield>
@@ -653,9 +627,7 @@
             <field>
                 <name>description</name>
                 <displayname>Description</displayname>
-                <description>A name for this OpenVPN instance, for your reference. It can be set however you like, but
-                    is often used to distinguish the purpose of the service (e.g. "Remote Technical Staff").
-                </description>
+                <description>A name for this OpenVPN instance, for your reference. It can be set however you like, but is often used to distinguish the purpose of the service (e.g. "Remote Technical Staff").</description>
                 <type>input</type>
                 <size>30</size>
                 <bindstofield>wizardtemp->step10->descr</bindstofield>
@@ -695,10 +667,7 @@
                 <type>dhparam_selection</type>
                 <value>2048</value>
                 <bindstofield>wizardtemp->step10->dhkey</bindstofield>
-                <description>Length of Diffie-Hellman (DH) key exchange parameters, used for establishing a secure
-                    communications channel. As with other such settings, the larger values are more secure, but may be
-                    slower in operation.
-                </description>
+                <description>Length of Diffie-Hellman (DH) key exchange parameters, used for establishing a secure communications channel. As with other such settings, the larger values are more secure, but may be slower in operation.</description>
             </field>
             <field>
                 <name>crypto</name>
@@ -711,10 +680,7 @@
                         <value>dummy</value>
                     </option>
                 </options>
-                <description>The method used to encrypt traffic between endpoints. This setting must match on the client
-                    and server side, but is otherwise set however you like. Certain algorithms will perform better on
-                    different hardware, depending on the availability of supported VPN accelerator chips.
-                </description>
+                <description>The method used to encrypt traffic between endpoints. This setting must match on the client and server side, but is otherwise set however you like. Certain algorithms will perform better on different hardware, depending on the availability of supported VPN accelerator chips.</description>
             </field>
             <field>
                 <name>digest</name>
@@ -728,9 +694,7 @@
                     </option>
                 </options>
                 <value>SHA1</value>
-                <description>The method used to authenticate traffic between endpoints. This setting must match on the
-                    client and server side, but is otherwise set however you like.
-                </description>
+                <description>The method used to authenticate traffic between endpoints. This setting must match on the client and server side, but is otherwise set however you like.</description>
             </field>
             <field>
                 <name>engine</name>
@@ -743,8 +707,7 @@
                         <value>dummy</value>
                     </option>
                 </options>
-                <description>The hardware cryptographic accelerator to use for this VPN connection, if any.
-                </description>
+                <description>The hardware cryptographic accelerator to use for this VPN connection, if any.</description>
             </field>
             <field>
                 <type>listtopic</type>
@@ -756,11 +719,7 @@
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step10->tunnelnet</bindstofield>
-                <description>This is the IPv4 virtual network used for private communications between this server and
-                    client hosts expressed using CIDR (eg. 10.0.8.0/24). The first network address will be assigned to
-                    the server virtual interface. The remaining network addresses can optionally be assigned to
-                    connecting clients. (see Address Pool)
-                </description>
+                <description>This is the IPv4 virtual network used for private communications between this server and client hosts expressed using CIDR (eg. 10.0.8.0/24). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
             </field>
             <field>
                 <displayname>IPv6 Tunnel Network</displayname>
@@ -768,11 +727,7 @@
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step10->tunnelnetv6</bindstofield>
-                <description>This is the IPv6 virtual network used for private communications between this server and
-                    client hosts expressed using CIDR (eg. fe80::/64). The first network address will be assigned to the
-                    server virtual interface. The remaining network addresses can optionally be assigned to connecting
-                    clients. (see Address Pool)
-                </description>
+                <description>This is the IPv6 virtual network used for private communications between this server and client hosts expressed using CIDR (eg. fe80::/64). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
             </field>
             <field>
                 <displayname>Redirect Gateway</displayname>
@@ -787,11 +742,7 @@
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step10->localnet</bindstofield>
-                <description>These are the IPv4 networks that will be accessible from the remote endpoint. Expressed as
-                    a comma-separated list of one or more CIDR ranges. You may leave this blank if you don't want to add
-                    a route to the local network through this tunnel on the remote machine. This is generally set to
-                    your LAN network.
-                </description>
+                <description>These are the IPv4 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
             </field>
             <field>
                 <displayname>IPv6 Local Network</displayname>
@@ -799,11 +750,7 @@
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step10->localnetv6</bindstofield>
-                <description>These are the IPv6 networks that will be accessible from the remote endpoint. Expressed as
-                    a comma-separated list of one or more IP/PREFIX. You may leave this blank if you don't want to add a
-                    route to the local network through this tunnel on the remote machine. This is generally set to your
-                    LAN network.
-                </description>
+                <description>These are the IPv6 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. You may leave this blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network.</description>
             </field>
             <field>
                 <displayname>IPv4 Remote Network</displayname>
@@ -811,11 +758,7 @@
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step10->remotenet</bindstofield>
-                <description>These are the IPv4 networks that will be routed through the tunnel, so that a site-to-site
-                    VPN can be established without manually changing the routing tables. Expressed as a comma-separated
-                    list of one or more CIDR ranges. If this is a site-to-site VPN, enter the remote LAN/s here. You may
-                    leave this blank if you don't want a site-to-site VPN.
-                </description>
+                <description>These are the IPv4 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. Expressed as a comma-separated list of one or more CIDR ranges. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't want a site-to-site VPN.</description>
             </field>
             <field>
                 <displayname>IPv6 Remote Network</displayname>
@@ -823,17 +766,12 @@
                 <type>input</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step10->remotenetv6</bindstofield>
-                <description>These are the IPv6 networks that will be routed through the tunnel, so that a site-to-site
-                    VPN can be established without manually changing the routing tables. Expressed as a comma-separated
-                    list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may
-                    leave this blank if you don't want a site-to-site VPN.
-                </description>
+                <description>These are the IPv6 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. Expressed as a comma-separated list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't want a site-to-site VPN.</description>
             </field>
             <field>
                 <displayname>Concurrent Connections</displayname>
                 <name>concurrentcon</name>
-                <description>Specify the maximum number of clients allowed to concurrently connect to this server.
-                </description>
+                <description>Specify the maximum number of clients allowed to concurrently connect to this server.</description>
                 <type>input</type>
                 <size>10</size>
                 <bindstofield>wizardtemp->step10->concurrentcon</bindstofield>
@@ -841,10 +779,7 @@
             <field>
                 <displayname>Compression</displayname>
                 <name>compression</name>
-                <description>Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically
-                    disable compression for a period of time if OpenVPN detects that the data in the packets is not
-                    being compressed efficiently.
-                </description>
+                <description>Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently.</description>
                 <bindstofield>wizardtemp->step10->compression</bindstofield>
                 <type>select</type>
                 <options>
@@ -858,8 +793,7 @@
                 <displayname>Type-of-Service</displayname>
                 <name>tos</name>
                 <type>checkbox</type>
-                <description>Set the TOS IP header value of tunnel packets to match the encapsulated packet value.
-                </description>
+                <description>Set the TOS IP header value of tunnel packets to match the encapsulated packet value.</description>
                 <bindstofield>wizardtemp->step10->tos</bindstofield>
             </field>
             <field>
@@ -873,9 +807,7 @@
                 <displayname>Duplicate Connections</displayname>
                 <name>duplicate_cn</name>
                 <type>checkbox</type>
-                <description>Allow multiple concurrent connections from clients using the same Common Name. This is not
-                    generally recommended, but may be needed for some scenarios.
-                </description>
+                <description>Allow multiple concurrent connections from clients using the same Common Name. This is not generally recommended, but may be needed for some scenarios.</description>
                 <bindstofield>wizardtemp->step10->duplicate_cn</bindstofield>
             </field>
             <field>
@@ -887,8 +819,7 @@
                 <name>dynip</name>
                 <type>checkbox</type>
                 <value>on</value>
-                <description>Allow connected clients to retain their connections if their IP address changes.
-                </description>
+                <description>Allow connected clients to retain their connections if their IP address changes.</description>
                 <bindstofield>wizardtemp->step10->dynip</bindstofield>
             </field>
             <field>
@@ -953,9 +884,7 @@
                 <type>checkbox</type>
                 <displayname>NetBIOS Options</displayname>
                 <bindstofield>wizardtemp->step10->nbtenable</bindstofield>
-                <description>Enable NetBIOS over TCP/IP. If this option is not set, all NetBIOS-over-TCP/IP options
-                    (including WINS) will be disabled.
-                </description>
+                <description>Enable NetBIOS over TCP/IP. If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled.</description>
             </field>
             <field>
                 <displayname>NetBIOS Node Type</displayname>
@@ -968,48 +897,35 @@
                         <value>dummy</value>
                     </option>
                 </options>
-                <description>Possible options: b-node (broadcasts), p-node (point-to-point name queries to a WINS
-                    server), m-node (broadcast then query name server), and h-node (query name server, then broadcast).
-                </description>
+                <description>Possible options: b-node (broadcasts), p-node (point-to-point name queries to a WINS server), m-node (broadcast then query name server), and h-node (query name server, then broadcast).</description>
             </field>
             <field>
                 <displayname>NetBIOS Scope ID</displayname>
                 <name>nbtscope</name>
                 <type>input</type>
                 <bindstofield>wizardtemp->step10->nbtscope</bindstofield>
-                <description>A NetBIOS Scope ID provides an extended naming service for NetBIOS over TCP/IP. The NetBIOS
-                    Scope ID isolates NetBIOS traffic on a single network to only those nodes with the same NetBIOS
-                    Scope ID.
-                </description>
+                <description>A NetBIOS Scope ID provides an extended naming service for NetBIOS over TCP/IP. The NetBIOS Scope ID isolates NetBIOS traffic on a single network to only those nodes with the same NetBIOS Scope ID.</description>
             </field>
             <field>
                 <displayname>WINS Server 1</displayname>
                 <name>winsserver1</name>
                 <type>input</type>
                 <bindstofield>wizardtemp->step10->wins1</bindstofield>
-                <description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which
-                    allows them to browse Windows shares. This is typically an Active Directory Domain Controller,
-                    designated WINS server, or Samba server.
-                </description>
+                <description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which allows them to browse Windows shares. This is typically an Active Directory Domain Controller, designated WINS server, or Samba server.</description>
             </field>
             <field>
                 <displayname>WINS Server 2</displayname>
                 <name>winsserver2</name>
                 <type>input</type>
                 <bindstofield>wizardtemp->step10->wins2</bindstofield>
-                <description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which
-                    allows them to browse Windows shares. This is typically an Active Directory Domain Controller,
-                    designated WINS server, or Samba server.
-                </description>
+                <description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which allows them to browse Windows shares. This is typically an Active Directory Domain Controller, designated WINS server, or Samba server.</description>
             </field>
             <field>
                 <name>Advanced</name>
                 <type>textarea</type>
                 <cols>30</cols>
                 <rows>5</rows>
-                <description>Enter any additional options you would like to add to the OpenVPN server configuration
-                    here, separated by a semicolon. EXAMPLE: push "route 10.0.0.0 255.255.255.0"
-                </description>
+                <description>Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon. EXAMPLE: push "route 10.0.0.0 255.255.255.0"</description>
                 <bindstofield>wizardtemp->step10->advanced</bindstofield>
             </field>
             <field>
@@ -1030,11 +946,7 @@
             </field>
             <field>
                 <type>text</type>
-                <description>Firewall Rules control what network traffic is permitted. You must add rules to allow
-                    traffic to the OpenVPN server's IP and port, as well as allowing traffic from connected clients
-                    through the tunnel. These rules can be automatically added here, or configured manually after
-                    completing the wizard.
-                </description>
+                <description>Firewall Rules control what network traffic is permitted. You must add rules to allow traffic to the OpenVPN server's IP and port, as well as allowing traffic from connected clients through the tunnel. These rules can be automatically added here, or configured manually after completing the wizard.</description>
             </field>
             <field>
                 <type>listtopic</type>
@@ -1043,8 +955,7 @@
             <field>
                 <name>ovpnrule</name>
                 <displayname>Firewall Rule</displayname>
-                <description>Add a rule to permit traffic from clients on the Internet to the OpenVPN server process.
-                </description>
+                <description>Add a rule to permit traffic from clients on the Internet to the OpenVPN server process.</description>
                 <type>checkbox</type>
                 <bindstofield>wizardtemp->step11->ovpnrule</bindstofield>
             </field>
@@ -1055,8 +966,7 @@
             <field>
                 <name>ovpnallow</name>
                 <displayname>OpenVPN rule</displayname>
-                <description>Add a rule to allow all traffic from connected clients to pass across the VPN tunnel.
-                </description>
+                <description>Add a rule to allow all traffic from connected clients to pass across the VPN tunnel.</description>
                 <type>checkbox</type>
                 <bindstofield>wizardtemp->step11->ovpnallow</bindstofield>
             </field>
