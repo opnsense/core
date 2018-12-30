@@ -515,7 +515,6 @@ $( document ).ready(function() {
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                    <?= gettext('Disable this gateway') ?>
                     <div class="hidden" data-for="help_for_disabled">
                       <?=gettext("Set this option to disable this gateway without removing it from the list.");?>
                     </div>
@@ -555,30 +554,21 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Name') ?></td>
                   <td>
                     <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" data-for="help_for_name">
-                      <?=gettext("Gateway name"); ?>
-                    </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Description') ?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" data-for="help_for_descr">
-                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>
-                    </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('IP address') ?></td>
                   <td>
                     <input name="gateway" type="text" size="28" value="<?=!empty($pconfig['dynamic']) ? "dynamic" : $pconfig['gateway'];?>"/>
-                    <div class="hidden" data-for="help_for_gateway">
-                      <?=gettext("Gateway IP address"); ?>
-                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -586,7 +576,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_defaultgw">
-                      <?=gettext("This will select the above gateway as the default gateway"); ?>
+                      <?= gettext('This will select the above gateway as the default gateway.') ?>
                     </div>
                   </td>
                 </tr>
@@ -604,7 +594,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_monitor_disable">
-                      <?=gettext("This will consider this gateway as always being up"); ?>
+                      <?= gettext('This will consider this gateway as always being "up".') ?>
                     </div>
                   </td>
                 </tr>
@@ -612,7 +602,6 @@ $( document ).ready(function() {
                   <td><a id="help_for_monitor" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Monitor IP"); ?></td>
                   <td>
                       <input name="monitor" type="text" value="<?=$pconfig['gateway'] == $pconfig['monitor'] ? "" : $pconfig['monitor'] ;?>" size="28" />
-                      <?= gettext('Alternative monitor IP') ?>
                       <div class="hidden" data-for="help_for_monitor">
                         <?=gettext("Enter an alternative address here to be used to monitor the link. This is used for the " .
                                                 "quality RRD graphs as well as the load balancer entries. Use this if the gateway does not respond " .
@@ -624,9 +613,8 @@ $( document ).ready(function() {
                   <td><a id="help_for_force_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mark Gateway as Down"); ?></td>
                   <td>
                     <input name="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
-                    <?= gettext('Mark Gateway as Down') ?>
                     <div class="hidden" data-for="help_for_force_down">
-                      <?=gettext("This will force this gateway to be considered Down"); ?>
+                      <?= gettext('This will force this gateway to be considered "down".') ?>
                     </div>
                   </td>
                 </tr>
@@ -713,8 +701,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" />
                     <div class="hidden" data-for="help_for_interval">
-                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $dpinger_default['interval']) ?><br /><br />
-                      <?=gettext("NOTE: The quality graph is averaged over seconds, not intervals, so as the probe interval is increased the accuracy of the quality graph is decreased.");?>
+                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $dpinger_default['interval']) ?>
                     </div>
                   </td>
                 </tr>
