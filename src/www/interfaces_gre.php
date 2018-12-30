@@ -123,7 +123,16 @@ $main_buttons = array(
                   $i = 0;
                   foreach ($a_gres as $gre): ?>
                     <tr>
-                      <td><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($gre['if']));?></td>
+                      <td>
+<?php
+                      if (is_ipaddr($gre['if'])):?>
+                        [<?=htmlspecialchars($gre['if']);?>]
+<?php
+                      else:?>
+                        <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($gre['if']));?>
+<?php
+                      endif;?>
+                      </td>
                       <td><?=$gre['remote-addr'];?></td>
                       <td><?=$gre['descr'];?></td>
                       <td>

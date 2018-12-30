@@ -153,7 +153,7 @@ include("head.inc");
                           $portlist[$cif] = $carpip." (".get_vip_descr($carpip).")";
                       }
                       foreach ($aliaslist as $aliasip => $aliasif) {
-                          $portlist[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                          $portlist[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                       }
 
                       foreach ($portlist as $ifn => $ifinfo):?>
