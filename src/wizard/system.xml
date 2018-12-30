@@ -102,7 +102,7 @@
             </field>
             <field>
                 <name>Override DNS</name>
-                <description>Allow DNS servers to be overridden by DHCP/PPP on WAN</description>
+                <typehint>Allow DNS servers to be overridden by DHCP/PPP on WAN</typehint>
                 <type>checkbox</type>
                 <bindstofield>system->dnsallowoverride</bindstofield>
             </field>

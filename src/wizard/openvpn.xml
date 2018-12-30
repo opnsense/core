@@ -298,7 +298,6 @@
                 <type>password</type>
                 <size>20</size>
                 <bindstofield>wizardtemp->step2->password</bindstofield>
-                <description></description>
             </field>
             <field>
                 <name>Add new Server</name>
@@ -640,7 +639,7 @@
                 <name>TLS Authentication</name>
                 <type>checkbox</type>
                 <value>on</value>
-                <description>Enable authentication of TLS packets.</description>
+                <typehint>Enable authentication of TLS packets.</typehint>
                 <bindstofield>wizardtemp->step10->tlsauth</bindstofield>
             </field>
             <field>
@@ -649,7 +648,7 @@
                 <disablefields>tlssharedkey</disablefields>
                 <value>on</value>
                 <type>checkbox</type>
-                <description>Automatically generate a shared TLS authentication key.</description>
+                <typehint>Automatically generate a shared TLS authentication key.</typehint>
                 <bindstofield>wizardtemp->step10->gentlskey</bindstofield>
             </field>
             <field>
@@ -733,7 +732,7 @@
                 <displayname>Redirect Gateway</displayname>
                 <name>redirectgw</name>
                 <type>checkbox</type>
-                <description>Force all client generated traffic through the tunnel.</description>
+                <typehint>Force all client generated traffic through the tunnel.</typehint>
                 <bindstofield>wizardtemp->step10->rdrgw</bindstofield>
             </field>
             <field>
@@ -793,21 +792,21 @@
                 <displayname>Type-of-Service</displayname>
                 <name>tos</name>
                 <type>checkbox</type>
-                <description>Set the TOS IP header value of tunnel packets to match the encapsulated packet value.</description>
+                <typehint>Set the TOS IP header value of tunnel packets to match the encapsulated packet value.</typehint>
                 <bindstofield>wizardtemp->step10->tos</bindstofield>
             </field>
             <field>
                 <displayname>Inter-Client Communication</displayname>
                 <name>interclient</name>
                 <type>checkbox</type>
-                <description>Allow communication between clients connected to this server.</description>
+                <typehint>Allow communication between clients connected to this server.</typehint>
                 <bindstofield>wizardtemp->step10->interclient</bindstofield>
             </field>
             <field>
                 <displayname>Duplicate Connections</displayname>
                 <name>duplicate_cn</name>
                 <type>checkbox</type>
-                <description>Allow multiple concurrent connections from clients using the same Common Name. This is not generally recommended, but may be needed for some scenarios.</description>
+                <typehint>Allow multiple concurrent connections from clients using the same Common Name. This is not generally recommended, but may be needed for some scenarios.</typehint>
                 <bindstofield>wizardtemp->step10->duplicate_cn</bindstofield>
             </field>
             <field>
@@ -819,7 +818,7 @@
                 <name>dynip</name>
                 <type>checkbox</type>
                 <value>on</value>
-                <description>Allow connected clients to retain their connections if their IP address changes.</description>
+                <typehint>Allow connected clients to retain their connections if their IP address changes.</typehint>
                 <bindstofield>wizardtemp->step10->dynip</bindstofield>
             </field>
             <field>
@@ -827,7 +826,7 @@
                 <name>addrpool</name>
                 <type>checkbox</type>
                 <value>on</value>
-                <description>Provide a virtual adapter IP address to clients (see Tunnel Network).</description>
+                <typehint>Provide a virtual adapter IP address to clients (see Tunnel Network).</typehint>
                 <bindstofield>wizardtemp->step10->addrpool</bindstofield>
             </field>
             <field>
@@ -884,7 +883,7 @@
                 <type>checkbox</type>
                 <displayname>NetBIOS Options</displayname>
                 <bindstofield>wizardtemp->step10->nbtenable</bindstofield>
-                <description>Enable NetBIOS over TCP/IP. If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled.</description>
+                <typehint>Enable NetBIOS over TCP/IP. If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled.</typehint>
             </field>
             <field>
                 <displayname>NetBIOS Node Type</displayname>
@@ -955,7 +954,7 @@
             <field>
                 <name>ovpnrule</name>
                 <displayname>Firewall Rule</displayname>
-                <description>Add a rule to permit traffic from clients on the Internet to the OpenVPN server process.</description>
+                <typehint>Add a rule to permit traffic from clients on the Internet to the OpenVPN server process.</typehint>
                 <type>checkbox</type>
                 <bindstofield>wizardtemp->step11->ovpnrule</bindstofield>
             </field>
@@ -966,7 +965,7 @@
             <field>
                 <name>ovpnallow</name>
                 <displayname>OpenVPN rule</displayname>
-                <description>Add a rule to allow all traffic from connected clients to pass across the VPN tunnel.</description>
+                <typehint>Add a rule to allow all traffic from connected clients to pass across the VPN tunnel.</typehint>
                 <type>checkbox</type>
                 <bindstofield>wizardtemp->step11->ovpnallow</bindstofield>
             </field>
