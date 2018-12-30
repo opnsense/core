@@ -1171,9 +1171,6 @@ function interface_ppps_configure($interface)
         return 0;
     }
 
-    // mpd5 requires a /var/spool/lock directory for PPP modem links.
-    @mkdir("/var/spool/lock", 0777, true);
-
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
     if (!file_exists('/var/etc/mpd.script')) {
         symlink('/usr/local/sbin/mpd.script', '/var/etc/mpd.script');

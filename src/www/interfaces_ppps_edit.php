@@ -231,11 +231,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $ppp['mru'] = implode(',', $port_data['mru']);
         $ppp['mrru'] = implode(',', $port_data['mrru']);
 
-        // XXX this was already in here, but is probably not the correct place to create this
-        if (!is_dir('/var/spool/lock')) {
-            mwexec('/bin/mkdir -p /var/spool/lock');
-        }
-
         if (isset($id)) {
             $a_ppps[$id] = $ppp;
         }  else {
@@ -243,11 +238,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
+
         $iflist = get_configured_interface_with_descr();
         foreach ($iflist as $pppif => $ifdescr) {
-          if ($config['interfaces'][$pppif]['if'] == $ppp['if'])
-            interface_ppps_configure($pppif);
+            if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
+                interface_ppps_configure($pppif);
+            }
         }
+
         header(url_safe('Location: /interfaces_ppps.php'));
         exit;
     }
