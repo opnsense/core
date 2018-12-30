@@ -189,9 +189,27 @@
                 </enabled>
                 <host type="HostnameField">
                     <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A host must be set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>enabled</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </host>
                 <port type="PortField">
                     <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A host must be set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>enabled</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </port>
                 <localdomains type="CSVListField">
                     <Required>N</Required>
