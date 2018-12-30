@@ -221,6 +221,7 @@ if (count($input_errors)) {
         <fields>
             <field>
                 <name>SelectedType</name>
+                <displayname>IPv4 Configuration Type</displayname>
                 <type>select</type>
                 <donotdisable>true</donotdisable>
                 <options>

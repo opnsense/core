@@ -875,14 +875,18 @@ include("head.inc");
                                                 echo " onclick=\"disablechange()\"";
                                             echo " />\n";
 
+                                            if ($field['typehint'] != '') {
+                                                echo $field['typehint'];
+                                            }
+
                                             if ($field['description'] != '') {
-                                                echo gettext($field['description']);
+                                                echo '<br/><br/>' . gettext($field['description']);
                                             }
 
                                             break;
                                     }
 
-                                    if ($field['typehint'] != '') {
+                                    if ($field['type'] != 'checkbox' && $field['typehint'] != '') {
                                         echo $field['typehint'];
                                     }
 
