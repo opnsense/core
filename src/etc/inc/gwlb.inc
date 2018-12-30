@@ -34,7 +34,6 @@ function return_dpinger_defaults()
 {
     return array(
         'alert_interval' => '1',
-        'data_payload' => '0', /* XXX not implemented in GUI */
         'interval' => '1',
         'latencyhigh' => '500',
         'latencylow' => '200',
@@ -204,12 +203,6 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
 
         /* command to run on alarm */
         $params .= '-C /usr/local/etc/rc.monitor ';
-
-        $params .= exec_safe(
-            '-d %s ',
-            isset($gateway['data_payload']) && is_numeric($gateway['data_payload']) ?
-                $gateway['data_payload'] : $dpinger_default['data_payload']
-        );
 
         $params .= exec_safe(
             '-s %ss ',
