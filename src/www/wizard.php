@@ -773,7 +773,7 @@ include("head.inc");
                                             }
                                             if (!$field['dontcombinecells'])
                                                 echo "<td class=\"vtable\">";
-                                            echo "<select class='form-control' id='{$name}' name='{$name}' style='max-width:5em;'>\n";
+                                            echo "<select class='form-control' id='{$name}' name='{$name}'>\n";
                                             $CHECKED = ' selected="selected"';
                                             for ($x = 1; $x <= 32; $x++) {
                                                 if ($x == 31) {

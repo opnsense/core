@@ -282,7 +282,6 @@ if (count($input_errors)) {
                 <name>IP Address</name>
                 <bindstofield>interfaces->wan->ipaddr</bindstofield>
                 <type>input</type>
-                <typehint> / </typehint>
                 <combinefieldsbegin>true</combinefieldsbegin>
                 <validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
                 <message>IP Address field is invalid</message>
@@ -362,7 +361,6 @@ if (count($input_errors)) {
                 <combinefieldsbegin>true</combinefieldsbegin>
                 <name>PPTP Local IP Address</name>
                 <type>input</type>
-                <typehint> / </typehint>
                 <bindstofield>wizardtemp->wan->localip</bindstofield>
                 <validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
                 <message>PPTP Local IP Address field is invalid</message>
