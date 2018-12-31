@@ -114,7 +114,7 @@ class UIModelGrid
                                     $row[$fieldname] .= $fieldValue['value'];
                                 }
                             }
-                            if (empty($row[$fieldname])) {
+                            if ($row[$fieldname] === null) {
                                 $row[$fieldname] = "";
                             }
                         }
