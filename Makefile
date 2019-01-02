@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -292,18 +292,33 @@ upgrade: upgrade-check clean-package package
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
 
-lint: plist-check
-	find ${.CURDIR}/src ${.CURDIR}/Scripts \
+lint-shell:
+	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
-	find ${.CURDIR}/src ${.CURDIR}/Scripts \
+
+lint-xml:
+	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
-	find ${.CURDIR}/src \
+
+lint-exec:
+.for DIR in ${.CURDIR}/src/etc/rc.d # XXX e.g. src/opnsense/scripts
+.if exists(${DIR})
+	@find ${DIR} -type f ! -name "*.xml" -print0 | \
+	    xargs -0 -t -n1 test -x || \
+	    (echo "Missing executable permission in ${DIR}"; exit 1)
+.endif
+.endfor
+
+lint-php:
+	@find ${.CURDIR}/src \
 	    ! -name "*.xml" ! -name "*.xml.sample" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
 	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
 	    ! -name "*.tgz" ! -name "*.xml.dist" ! -name "*.tgb" \
 	    -type f -print0 | xargs -0 -n1 php -l
+
+lint: plist-check lint-shell lint-xml lint-exec lint-php
 
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
