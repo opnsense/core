@@ -42,25 +42,21 @@ require_once("XMLRPC_Client.inc") ;
  * fetch carp vips from config with modified advskew for the backup host to use
  * @return array
  */
-function get_vip_config_section()
+function get_vip_config_section(): array
 {
     global $config;
 
     if (!isset($config['virtualip']['vip'])) {
-        return;
+        return [];
     }
-    $temp = array();
-    $temp['vip'] = array();
+    $temp = [];
+    $temp['vip'] = [];
     foreach($config['virtualip']['vip'] as $section) {
-        if ($section['mode'] != "carp") {
+        if ($section['mode'] != 'carp') {
             continue;
         }
-        if (isset($section['advskew']) && $section['advskew'] != '') {
-            $advskew = intval($section['advskew'])+100;
-            if ($advskew > 254) {
-                $advskew = 254;
-            }
-            $section['advskew'] = $advskew;
+        if (!empty($section['advskew'])) {
+            $section['advskew'] = min(intval($section['advskew']) + 100, 254);
         }
         $temp['vip'][] = $section;
     }
