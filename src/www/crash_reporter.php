@@ -73,7 +73,7 @@ $crash_report_header = sprintf(
     $g['product_hash'],
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
-    OPENSSL_VERSION_TEXT,
+    trim(shell_exec('/usr/local/bin/openssl version')),
     PHP_VERSION
 );
 
