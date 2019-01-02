@@ -330,10 +330,10 @@ legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 $all_interfaces = legacy_config_get_interfaces();
 $ifdetails = legacy_interfaces_details();
-foreach ($interfaces as $portname => &$portinfo) {
+foreach (array_keys($interfaces) as $portname) {
     $portused = false;
     if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
-        $portinfo['status'] = $ifdetails[$portname]['status'];
+        $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
     }
     foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
@@ -342,7 +342,7 @@ foreach ($interfaces as $portname => &$portinfo) {
         }
     }
     if (!$portused) {
-        $unused_interfaces[$portname] = $portinfo;
+        $unused_interfaces[$portname] = $interfaces[$portname];
     }
 }
 
