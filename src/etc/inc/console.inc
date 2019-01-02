@@ -221,7 +221,7 @@ EOD;
         }
     } while (!$lanif);
 
-    $done = !$lanif;    /* only if lan was set */
+    $done = 0;
     while (!$done) {
         /* optional interfaces */
         $optif = array();
