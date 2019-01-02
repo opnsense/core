@@ -97,6 +97,8 @@ function filter_core_get_antilockout()
 
     if (!empty($config['interfaces']['lan']['if'])) {
         $lockout_if = 'lan';
+    } elseif (!empty($config['interfaces']['opt1']['if'])) {
+        $lockout_if = 'opt1';
     } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
         $lockout_if = 'wan';
     } else {
@@ -533,5 +535,4 @@ function filter_core_rules_system($fw, $defaults)
             }
         }
     }
-
 }

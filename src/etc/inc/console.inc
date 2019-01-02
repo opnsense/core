@@ -221,7 +221,7 @@ EOD;
         }
     } while (!$lanif);
 
-    $done = 0;
+    $done = false;
     while (!$done) {
         /* optional interfaces */
         $optif = array();
@@ -237,7 +237,8 @@ EOD;
                 printf("\nOptional interface %s description found: %s", $io, $config['interfaces']['opt' . $io]['descr']);
             }
 
-            printf("\nEnter the Optional %s interface name or 'a' for auto-detection\n" .
+            printf("\nEnter the Optional interface %s name or 'a' for auto-detection\n" .
+                "NOTE: this enables full Firewalling/NAT mode.\n" .
                 "(or nothing if finished): ", $io);
 
             if ($interactive) {
