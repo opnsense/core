@@ -141,9 +141,10 @@ function filter_core_get_antilockout()
 
 /**
  * recursively collect port alias(es) contents
- * @param $aliasname string alias name or null to fetch all aliases
- * @param $aliases aliases already parsed (prevent deadlock)
+ * @param string|null $aliasname alias name, or null to fetch all aliases
+ * @param array $aliases aliases already parsed (prevent deadlock)
  * @return array containing ports
+ * @throws \OPNsense\Base\ModelException
  */
 function filter_core_get_port_alias($aliasname, $aliases=array())
 {

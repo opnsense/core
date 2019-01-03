@@ -51,7 +51,7 @@ abstract class Singleton
 
     /**
      * Do not clone
-     * @throws Exception
+     * @throws \Exception
      */
     final private function __clone()
     {

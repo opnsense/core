@@ -62,9 +62,9 @@ class Shell
     /**
      * execute command or list of commands
      *
-     * @param string/Array() $command command to execute
+     * @param string/array $command command to execute
      * @param bool $mute
-     * @param Array() &$output
+     * @param array &$output
      */
     public function exec($command, $mute = false, &$output = null)
     {
@@ -81,7 +81,7 @@ class Shell
      * execute shell command
      * @param string $command command to execute
      * @param bool $mute
-     * @param Array() &$output
+     * @param array &$output
      * @return int
      */
     private function execSingle($command, $mute = false, &$output = null)
