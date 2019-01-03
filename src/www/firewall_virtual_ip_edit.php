@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway'])) {
-            $input_errors[] = gettext("A valid IP address must be specified.");
+            $input_errors[] = gettext("A valid gateway IP address must be specified.");
         }
 
         /* ipalias and carp should not use network or broadcast address */
