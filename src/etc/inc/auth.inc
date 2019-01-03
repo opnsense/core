@@ -712,6 +712,10 @@ function ldap_setup_caenv($authcfg)
     putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
 }
 
+/**
+ * @param $name
+ * @return array|bool
+ */
 function auth_get_authserver($name)
 {
     global $config;
