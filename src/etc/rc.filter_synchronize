@@ -52,13 +52,14 @@ function get_vip_config_section(): array
     $temp = [];
     $temp['vip'] = [];
     foreach($config['virtualip']['vip'] as $section) {
-        if ($section['mode'] != 'carp') {
-            continue;
+        if ($section['mode'] === 'carp' ||
+            ($section['mode'] === 'ipalias' && isset($section['vhid']) && $section['vhid'] > 0)
+        ) {
+            if (!empty($section['advskew'])) {
+                $section['advskew'] = min(intval($section['advskew']) + 100, 254);
+            }
+            $temp['vip'][] = $section;
         }
-        if (!empty($section['advskew'])) {
-            $section['advskew'] = min(intval($section['advskew']) + 100, 254);
-        }
-        $temp['vip'][] = $section;
     }
     return $temp;
 }
@@ -170,7 +171,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     foreach ($sections as $section) {
         switch ($section) {
             case 'virtualip':
-                // only carp type VIP's may be transfered to the backup host
+                // Sync only eligible VIPs to the backup host
                 $transport_data[$section] = get_vip_config_section();
                 break;
             default:
