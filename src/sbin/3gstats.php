@@ -80,4 +80,3 @@ while (true) {
     $i++;
 }
 fclose($handle);
-?>
