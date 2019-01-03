@@ -84,29 +84,15 @@ function unbound_optimization()
 {
     $optimization = array();
 
-    /*
-     * Set the number of threads equal to the nearest power of 2 when counting the number of CPUs.
-     * Use 1 to disable threading, if for some reason this sysctl fails.
-     */
-    $numprocs = pow(2, floor(log(intval(get_single_sysctl('kern.smp.cpus')), 2)));
-    if ($numprocs > 0) {
-        $optimization['number_threads'] = "num-threads: {$numprocs}";
-    } else {
-        $optimization['number_threads'] = "num-threads: 1";
-    }
+    $numprocs = intval(get_single_sysctl('kern.smp.cpus'));
+    $numprocs = $numprocs <= 0 ? 1 : $numprocs;
+    $numslabs = pow(2, ceil(log($numprocs, 2)));
 
-    // Slabs to help reduce lock contention.
-    if ($numprocs > 4) {
-        $optimization['msg_cache_slabs'] = "msg-cache-slabs: {$numprocs}";
-        $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: {$numprocs}";
-        $optimization['infra_cache_slabs'] = "infra-cache-slabs: {$numprocs}";
-        $optimization['key_cache_slabs'] = "key-cache-slabs: {$numprocs}";
-    } else {
-        $optimization['msg_cache_slabs'] = "msg-cache-slabs: 4";
-        $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: 4";
-        $optimization['infra_cache_slabs'] = "infra-cache-slabs: 4";
-        $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
-    }
+    $optimization['number_threads'] = "num-threads: {$numprocs}";
+    $optimization['msg_cache_slabs'] = "msg-cache-slabs: {$numslabs}";
+    $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: {$numslabs}";
+    $optimization['infra_cache_slabs'] = "infra-cache-slabs: {$numslabs}";
+    $optimization['key_cache_slabs'] = "key-cache-slabs: {$numslabs}";
 
     return $optimization;
 }
