@@ -86,7 +86,7 @@ function unbound_optimization()
 
     $numprocs = intval(get_single_sysctl('kern.smp.cpus'));
     $numprocs = $numprocs <= 0 ? 1 : $numprocs;
-    $numslabs = pow(2, ceil(log($numprocs, 2)));
+    $numslabs = pow(2, floor(log($numprocs, 2)) + 1);
 
     $optimization['number_threads'] = "num-threads: {$numprocs}";
     $optimization['msg_cache_slabs'] = "msg-cache-slabs: {$numslabs}";
