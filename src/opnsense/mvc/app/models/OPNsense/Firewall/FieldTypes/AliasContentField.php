@@ -90,10 +90,10 @@ class AliasContentField extends BaseField
     }
 
     /**
-     * return seperator character used
+     * return separator character used
      * @return string
      */
-    public function getSeperatorChar()
+    public function getSeparatorChar()
     {
         return $this->separatorchar;
     }
