@@ -713,7 +713,7 @@ function ldap_setup_caenv($authcfg)
 }
 
 /**
- * @param $name
+ * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication
  * @return array|bool
  */
 function auth_get_authserver($name)
