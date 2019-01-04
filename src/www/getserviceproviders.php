@@ -130,4 +130,3 @@ if (isset($_REQUEST['country']) && !isset($_REQUEST['provider'])) {
 } else {
     country_list();
 }
-?>
