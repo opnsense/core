@@ -438,12 +438,11 @@ function unbound_configure_do($verbose = false, $interface = '')
 
     unbound_generate_config();
 
-    $domain = $config['system']['domain'];
-    if (isset($config['unbound']['regdhcpdomain'])) {
-        $domain = $config['unbound']['regdhcpdomain'];
-    }
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     if (isset($config['unbound']['regdhcp'])) {
+        $domain = $config['system']['domain'];
+        if (isset($config['unbound']['regdhcpdomain'])) {
+            $domain = $config['unbound']['regdhcpdomain'];
+        }
         mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
     }
     mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
