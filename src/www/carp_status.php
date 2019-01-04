@@ -56,16 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     foreach ($a_vip as $vip) {
-        if ($vip['mode'] == 'carp') {
+        if (!empty($vip['vhid'])) {
             switch ($act) {
                 case 'maintenance':
-                    interface_carp_configure($vip);
+                case 'enable':
+                    if ($vip['mode'] == 'carp') {
+                        interface_carp_configure($vip);
+                    } else {
+                        interface_ipalias_configure($vip);
+                    }
                     break;
                 case 'disable':
                     interface_vip_bring_down($vip);
-                    break;
-                case 'enable':
-                    interface_carp_configure($vip);
                     break;
                 default:
                     break;
