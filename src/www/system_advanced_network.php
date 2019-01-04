@@ -124,7 +124,7 @@ function is_duid($duid)
         $valid_duid = true;
     }
 
-    /* max DUID length is 128, but with the seperators it could be up to 254 */
+    /* max DUID length is 128, but with the separators it could be up to 254 */
     if ($duid_length < 6 || $duid_length > 254) {
         $valid_duid = false;
     }

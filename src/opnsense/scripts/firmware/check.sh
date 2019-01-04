@@ -156,7 +156,7 @@ if [ "$pkg_running" == "" ]; then
                     else
                       i=`echo $i | tr -d :`
                       if [ -z "$packages_downgraded" ]; then
-                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
+                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
                       fi
@@ -232,7 +232,7 @@ if [ "$pkg_running" == "" ]; then
                           # prevents leaking base / kernel advertising here
                           pkg_upgraded="yes"
                         fi
-                        packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
+                        packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
                       fi
@@ -283,7 +283,7 @@ if [ "$pkg_running" == "" ]; then
               base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
-                  packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
+                  packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"base\","
                 fi
@@ -311,7 +311,7 @@ if [ "$pkg_running" == "" ]; then
               kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
-                  packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
+                  packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
                 fi

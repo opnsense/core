@@ -747,7 +747,7 @@ endif; ?>
                     <div class="hidden" data-for="help_for_spd">
                         <strong><?=gettext("Register additional Security Policy Database entries"); ?></strong><br/>
                         <?=gettext("Strongswan automatically creates SPD policies for the networks defined in this phase2. ".
-                                   "If you need to allow other networks to use this ipsec tunnel, you can add them here as a comma seperated list.".
+                                   "If you need to allow other networks to use this ipsec tunnel, you can add them here as a comma-separated list.".
                                    "When configured, you can use network address translation to push packets through this tunnel from these networks."); ?><br/>
                         <small><?=gettext("e.g. 192.168.1.0/24, 192.168.2.0/24"); ?></small>
                     </div>

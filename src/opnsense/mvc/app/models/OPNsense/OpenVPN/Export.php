@@ -38,7 +38,7 @@ class Export extends BaseModel
 {
     /**
      * get or create server to store defaults
-     * @param $vpnid openvpn unique reference (number)
+     * @param string $vpnid openvpn unique reference (number)
      * @return mixed server object
      */
     public function getServer($vpnid)

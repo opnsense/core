@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
-    // fields containing array data (comma seperated)
+    // fields containing array data (comma separated)
     $explode_fields = array('mtu', 'mru', 'mrru', 'bandwidth', 'localip', 'gateway', 'localip', 'subnet', 'ports');
     foreach ($explode_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {

@@ -152,7 +152,7 @@ function legacy_move_config_list_items($source, $id, $items) {
 /**
  * Retrieve description text of firewall alias by specifying the alias name.
  * @param string $name alias name to retrieve the description from
- * @return description of alias, or null if no description was set or alias
+ * @return string|null description of alias, or null if no description was set or alias
  *   does not exist.
  */
 function get_alias_description($name)

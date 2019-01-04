@@ -180,7 +180,7 @@ class DomainSorter(object):
             :param mode: file open mode
         """
         self._num_targets = 20
-        self._seperator = '|'
+        self._separator = '|'
         self._buckets = dict()
         self._sort_map = dict()
         # setup target
@@ -220,7 +220,7 @@ class DomainSorter(object):
         """
         target = key[0]
         if target in self._sort_map:
-            for part in (key, self._seperator, value, '\n'):
+            for part in (key, self._separator, value, '\n'):
                 self._sort_map[target].write(part)
         else:
             # not supposed to happen, every key should have a calculated target pool

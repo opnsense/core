@@ -97,7 +97,7 @@ function hook_stacked_form_tables(match)
                       }
                   }
                   if (children.length == 1) {
-                      // simple seperator line, colspan = 2
+                      // simple separator line, colspan = 2
                       $(this).before($(this).clone().removeAttr("id").attr('colspan', 1).addClass('hidden-sm hidden-md hidden-lg'));
                       $(this).addClass('hidden-xs');
                   } else if (children.length == 2) {
