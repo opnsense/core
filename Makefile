@@ -150,6 +150,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
+MFCDIR?=${WRKDIR}/mfc
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
 		phpunit6-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
@@ -267,7 +268,7 @@ package-check:
 		exit 1; \
 	fi
 
-package: plist-check package-check clean-work
+package: plist-check package-check clean-wrksrc
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
@@ -287,7 +288,7 @@ upgrade-check:
 		exit 1; \
 	fi
 
-upgrade: upgrade-check clean-package package
+upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
@@ -388,12 +389,23 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 diff:
 	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
 
-mfc:
-	@git checkout stable/${CORE_ABI}
+mfc: clean-mfcdir
 .for MFC in ${mfc_ARGS}
+.if exists(${MFC})
+	@cp -r ${MFC} ${MFCDIR}
+	@git checkout stable/${CORE_ABI}
+	@rm -r ${MFC}
+	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
+	@git add .
+	@if ! git diff --quiet HEAD; then \
+		git commit -m "mfc: sync ${MFC}"; \
+	fi
+.else
+	@git checkout stable/${CORE_ABI}
 	@git cherry-pick -x ${MFC}
-.endfor
+.endif
 	@git checkout master
+.endfor
 
 test: want-phpunit6-php${CORE_PHP}
 	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_PKGVERSION}" ]; then \
@@ -403,17 +415,23 @@ test: want-phpunit6-php${CORE_PHP}
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
 	    phpunit --configuration PHPunit.xml
 
-clean-package:
-	@rm -rf ${PKGDIR}
-
-clean-src:
+checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \
 	    ${GIT} checkout -f ${.CURDIR}/src && \
 	    ${GIT} clean -xdqf ${.CURDIR}/src
 
-clean-work:
-	@rm -rf ${WRKSRC}
+clean-pkgdir:
+	@rm -rf ${PKGDIR}
+	@mkdir -p ${PKGDIR}
 
-clean: clean-package clean-src clean-work
+clean-mfcdir:
+	@rm -rf ${MFCDIR}
+	@mkdir -p ${MFCDIR}
+
+clean-wrksrc:
+	@rm -rf ${WRKSRC}
+	@mkdir -p ${WRKSRC}
+
+clean: clean-pkgdir clean-wrksrc clean-mfcdir
 
 .PHONY: license plist
