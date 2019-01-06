@@ -41,7 +41,7 @@
                 <label>Ignore hosts in access.log</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -51,7 +51,7 @@
                 <label>Use alternate DNS-servers</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type IP addresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -331,7 +331,7 @@
                 <label>Allowed Subnets</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
@@ -340,7 +340,7 @@
                 <label>Unrestricted IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -349,7 +349,7 @@
                 <label>Banned host IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -367,7 +367,7 @@
             <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
             <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
         </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -385,7 +385,7 @@
             <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
             <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
         </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -401,7 +401,7 @@
             <b class="text-primary">^(.)+Macintosh(.)+Firefox/37\.0</b> -> matches on <b>Macintosh version of Firefox revision 37.0</b><br/>
             <b class="text-primary">^Mozilla</b> -> matches on <b>all Mozilla based browsers</b><br/>
         </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -418,7 +418,7 @@
             <b class="text-primary">video/flv</b> -> matches on <b>Flash Video</b><br/>
             <b class="text-primary">application/x-javascript</b> -> matches on <b>javascripts</b><br/>
         </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -429,7 +429,7 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help><![CDATA[Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -440,7 +440,7 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help><![CDATA[Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -561,7 +561,7 @@
             <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
             <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
         </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>

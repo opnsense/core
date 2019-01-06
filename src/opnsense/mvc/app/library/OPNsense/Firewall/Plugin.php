@@ -206,7 +206,7 @@ class Plugin
 
     /**
      * fetch anchors as text (pf ruleset part)
-     * @param string $types anchor types (fw for filter, other options are nat,rdr,binat. comma separated)
+     * @param string $types anchor types (fw for filter, other options are nat,rdr,binat. comma-separated)
      * @param string $placement placement head,tail
      * @return string
      */

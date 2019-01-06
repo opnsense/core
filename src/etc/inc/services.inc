@@ -643,8 +643,11 @@ EOPP;
             }
         }
 
-        /* Create classes - These all contain comma separated lists. Join them into one
-           big comma separated string then split them all up. */
+        /*
+         * Create classes - These all contain comma-separated lists.
+         * Join them into one big comma-separated string then split
+         * them all up.
+         */
         $all_mac_strings = array();
         foreach ($all_pools as $poolconf) {
             if (!empty($poolconf['mac_allow'])) {

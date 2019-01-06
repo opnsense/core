@@ -913,9 +913,9 @@ include("head.inc");
                           <input type="button" onclick="show_maccontrol_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show MAC Address Control");?>
                         </div>
                         <div id="showmaccontrol" style="display:none">
-                          <?= sprintf(gettext("Enter a list of partial MAC addresses to allow, comma separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
+                          <?= sprintf(gettext("Enter a list of partial MAC addresses to allow, comma-separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
                           <input name="mac_allow" type="text" id="mac_allow" value="<?= $pconfig['mac_allow'] ?>" />
-                          <?= sprintf(gettext("Enter a list of partial MAC addresses to deny access, comma separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
+                          <?= sprintf(gettext("Enter a list of partial MAC addresses to deny access, comma-separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
                           <input name="mac_deny" type="text" id="mac_deny" value="<?= $pconfig['mac_deny'] ?>" /><br />
                         </div>
                       </td>
