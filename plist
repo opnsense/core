@@ -824,6 +824,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/externalACLs.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/nobumpsites.acl
+/usr/local/opnsense/service/templates/OPNsense/Proxy/parentproxy.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/post-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/pre-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/rc.conf.d
