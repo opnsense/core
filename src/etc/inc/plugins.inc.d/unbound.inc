@@ -229,7 +229,8 @@ EOF;
     $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
     $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
 
-    $do_ip6 = isset($config['system']['ipv6allow']) && !isset($config['system']['prefer_ipv4']) ? 'yes' : 'no';
+    /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
+    $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
 
     if (isset($config['unbound']['regdhcp'])) {
         $include_dhcpleases = 'include: /var/unbound/dhcpleases.conf';
