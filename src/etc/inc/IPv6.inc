@@ -127,7 +127,7 @@ class Net_IPv6
      *
      * @param String $ip the (compressed) IP as Hex representation
      *
-     * @return Array the first element is the IP, the second the prefix length
+     * @return array the first element is the IP, the second the prefix length
      * @since  1.2.0
      * @access public
      * @static
@@ -658,7 +658,7 @@ class Net_IPv6
      * @param Boolean $uncompress if true, the address will be uncompressed
      *                            before processing
      *
-     * @return Array  [0] contains the IPv6 part,
+     * @return array  [0] contains the IPv6 part,
      *                [1] the IPv4 part (hex format)
      * @access public
      * @static
@@ -768,7 +768,7 @@ class Net_IPv6
      * @param String $ipToParse the IPv6 address
      * @param String $bits      the optional count of netmask bits
      *
-     * @return Array ['start', 'end'] the lowest and highest IPv6 address
+     * @return array ['start', 'end'] the lowest and highest IPv6 address
      * @access public
      * @static
      * @author Nicholas Williams
