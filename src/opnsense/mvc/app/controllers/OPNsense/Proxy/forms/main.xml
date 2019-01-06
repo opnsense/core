@@ -205,6 +205,42 @@
                 <help><![CDATA[Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).]]></help>
             </field>
         </subtab>
+        <subtab id="proxy-general-parentproxy" description="Parent Proxy Settings">
+            <field>
+                <id>proxy.general.parentproxy.enabled</id>
+                <label>Enable Parent Proxy</label>
+                <type>checkbox</type>
+                <help>Enable parent proxy feature</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.host</id>
+                <label>Host</label>
+                <type>text</type>
+                <help>Parent proxy IP address or hostname.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.port</id>
+                <label>Port</label>
+                <type>text</type>
+                <help>Parent proxy port.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.localdomains</id>
+                <label>Local Domains</label>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <allownew>true</allownew>
+                <help>List of domains not to be sent via parent proxy.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.localips</id>
+                <label>Local IPs</label>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <allownew>true</allownew>
+                <help>List of IP addresses not to be sent via parent proxy.</help>
+            </field>
+        </subtab>
     </tab>
     <tab id="proxy-forward" description="Forward Proxy">
         <subtab id="proxy-forward-general" description="General Forward Settings">
