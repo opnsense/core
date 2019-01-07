@@ -169,7 +169,7 @@ function restore_config_section_xmlrpc($new_config)
     $oldvips = array();
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
-            if (vip_is_eligible_for_sync($vip)) {
+            if (!empty($vip['vhid'])) {
                 // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
                 $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = $vip ;
             } else {
@@ -200,7 +200,7 @@ function restore_config_section_xmlrpc($new_config)
         $anyproxyarp = false;
         if (isset($config['virtualip']['vip'])) {
           foreach ($config['virtualip']['vip'] as $vip) {
-              if (vip_is_eligible_for_sync($vip) && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
+              if (!empty($vip['vhid']) && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
                   $is_changed = false;
                   foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
                       if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"][$chk_key] != $vip[$chk_key]) {
@@ -253,10 +253,4 @@ function restore_config_section_xmlrpc($new_config)
     unset($old_config);
 
     return true;
-}
-
-function vip_is_eligible_for_sync(array $vip)
-{
-    return $vip['mode'] === 'carp' ||
-        ($vip['mode'] === 'ipalias' && isset($vip['vhid']) && $vip['vhid'] > 0);
 }

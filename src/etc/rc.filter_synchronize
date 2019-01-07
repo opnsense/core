@@ -52,10 +52,8 @@ function get_vip_config_section(): array
     $temp = [];
     $temp['vip'] = [];
     foreach($config['virtualip']['vip'] as $section) {
-        if ($section['mode'] === 'carp' ||
-            ($section['mode'] === 'ipalias' && isset($section['vhid']) && $section['vhid'] > 0)
-        ) {
-            if (!empty($section['advskew'])) {
+        if (!empty($section['vhid'])) {
+            if (isset($section['advskew']) && $section['advskew'] !== '') {
                 $section['advskew'] = min(intval($section['advskew']) + 100, 254);
             }
             $temp['vip'][] = $section;
