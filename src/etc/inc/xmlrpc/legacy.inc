@@ -171,7 +171,8 @@ function restore_config_section_xmlrpc($new_config)
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
             if (!empty($vip['vhid'])) {
                 // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
-                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = $vip ;
+                $vipKey = get_unique_vip_key($vip);
+                $oldvips[$vipKey] = $vip ;
             } else {
                 $vipbackup[] = $vip;
             }
@@ -200,16 +201,17 @@ function restore_config_section_xmlrpc($new_config)
         $anyproxyarp = false;
         if (isset($config['virtualip']['vip'])) {
           foreach ($config['virtualip']['vip'] as $vip) {
-              if (!empty($vip['vhid']) && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
+              $vipKey = get_unique_vip_key($vip);
+              if (!empty($vip['vhid']) && isset($oldvips[$vipKey])) {
                   $is_changed = false;
                   foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
-                      if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"][$chk_key] != $vip[$chk_key]) {
+                      if ($oldvips[$vipKey][$chk_key] != $vip[$chk_key]) {
                           $is_changed = true;
                           break;
                       }
                   }
                   if (!$is_changed) {
-                      unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
+                      unset($oldvips[$vipKey]);
                       if (does_vip_exist($vip)) {
                           continue; // Skip reconfiguring this vips since nothing has changed.
                       }
@@ -253,4 +255,12 @@ function restore_config_section_xmlrpc($new_config)
     unset($old_config);
 
     return true;
+}
+
+function get_unique_vip_key($vip)
+{
+    if($vip['mode'] === 'carp')
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}";
+    else
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}_{$vip['subnet']}_{$vip['subnet_bits']}_{$vip['gateway']}";
 }
