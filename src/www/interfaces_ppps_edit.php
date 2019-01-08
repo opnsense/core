@@ -325,7 +325,7 @@ include("head.inc");
         $("#show_advanced").click(function(){
             $(".act_show_advanced").show();
             $("#show_advanced_opt").hide();
-        })
+        });
 
         // ppp -> country change
         $("#country").change(function(){

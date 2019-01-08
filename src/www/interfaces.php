@@ -1440,7 +1440,7 @@ include("head.inc");
 
       //
       $("#type").change(function(){
-          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide()
+          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide();
           $("#rfc3118").hide();
           if ($("#type").val() == "dhcp" || $("#type6").val() == "dhcp6") {
              $("#rfc3118").show();

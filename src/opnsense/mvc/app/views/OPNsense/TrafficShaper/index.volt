@@ -83,9 +83,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             if ('rows' in response) {
                                 for (var i = 0; i < response.rowCount; i++) {
                                     response.rows[i]['displaysrc'] = {'not':response.rows[i].source_not == '1',
-                                                                      'val':response.rows[i].source}
+                                                                      'val':response.rows[i].source};
                                     response.rows[i]['displaydst'] = {'not':response.rows[i].destination_not == '1',
-                                                                      'val':response.rows[i].destination}
+                                                                      'val':response.rows[i].destination};
                                 }
                             }
                             return response;

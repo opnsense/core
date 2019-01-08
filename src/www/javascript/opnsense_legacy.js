@@ -137,7 +137,7 @@ function hook_stacked_form_tables(match)
                           ++index;
                       }
                   });
-              }
+              };
               $( window ).resize(root_node.do_resize);
               root_node.do_resize();
           }

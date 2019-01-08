@@ -430,7 +430,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                                 alert_enabled.prop('checked', true);
                                             }
                                             $.each(rule_data.action, function(key, value){
-                                                var opt = $('<option/>').attr("value", key).text(value.value)
+                                                var opt = $('<option/>').attr("value", key).text(value.value);
                                                 if (value.selected == 1) {
                                                     opt.attr('selected', 'selected');
                                                 }
@@ -493,7 +493,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
                 );
             }
-        })
+        });
 
 
 

@@ -591,7 +591,7 @@ if (empty($act)) {
                 $(".password_field").removeClass("has-warning");
                 $(".password_field").closest('div').removeClass('has-warning');
             }
-        }
+        };
         confirm_input.on('keyup', keyup_pass);
         password_input.on('keyup', keyup_pass);
 

@@ -235,7 +235,7 @@ include("fbegin.inc");?>
           if ($(this).data('callback') != undefined) {
               callbacks.push({'function' : $(this).data('callback'), 'plugin': $(this).data('plugin'), 'sender': $(this)});
           }
-      })
+      });
       // collect data for provided plugins
       $.ajax("/widgets/api/get.php",{type: 'get', cache: false, dataType: "json", data: {'load': plugins.join(',')}})
         .done(function(response) {

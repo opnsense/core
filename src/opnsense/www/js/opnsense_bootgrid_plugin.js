@@ -95,7 +95,7 @@ function stdBootgridUI(obj, sourceUrl, options) {
             });
         });
 
-    })
+    });
 
     return grid;
 }

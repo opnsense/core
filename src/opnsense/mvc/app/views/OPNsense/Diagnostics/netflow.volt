@@ -47,7 +47,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
         $("#act_refresh_cache_stats").click(function(){
             ajaxGet('/api/diagnostics/netflow/cacheStats', {}, function(data, status) {
-                var html = []
+                var html = [];
                 // convert to plain Array
                 var data_arr = $.makeArray(data)[0];
                 // sort by flow

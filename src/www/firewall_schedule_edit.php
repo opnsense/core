@@ -575,7 +575,7 @@ function addTimeRange(){
 
 
     //get time specified
-    starttimehour =  document.getElementById("starttimehour").value
+    starttimehour =  document.getElementById("starttimehour").value;
     starttimemin = document.getElementById("starttimemin").value;
     stoptimehour = document.getElementById("stoptimehour").value;
     stoptimemin = document.getElementById("stoptimemin").value;
@@ -587,7 +587,7 @@ function addTimeRange(){
     + stoptimemin;
 
     //get description for time range
-    tempdescr = document.getElementById("timerangedescr").value
+    tempdescr = document.getElementById("timerangedescr").value;
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;

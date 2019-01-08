@@ -372,10 +372,10 @@ POSSIBILITY OF SUCH DAMAGE.
                             grid_details();
                         }
                     });
-                    chart.legend.margin({top: 0, right: 0, left: 0, bottom: 20})
+                    chart.legend.margin({top: 0, right: 0, left: 0, bottom: 20});
                     return chart;
                   });
-              }
+              };
               if ($("#reverse_lookup").is(':checked')) {
                   var addresses = [];
                   data.map(function(item){
@@ -475,7 +475,7 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrDetails/'+time_url+'/service_port,protocol,if,src_addr,dst_addr/octets/100/',
             {'filter_field': filters['filter_field'].join(','), 'filter_value': filters['filter_value'].join(',')}, function(data, status){
             if (status == 'success'){
-                let html = []
+                let html = [];
                 // count total traffic
                 let grand_total = 0;
                 data.map(function(item){

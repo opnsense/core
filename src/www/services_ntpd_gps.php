@@ -88,14 +88,14 @@ include("head.inc");
         } else {
             $("#gpsselect").prop('checked', true);
         }
-    })
+    });
     $("#gpsselect").click(function(){
         if ($(this).prop('checked')) {
             $("#gpsprefer").prop('checked', false);
         } else {
             $("#gpsprefer").prop('checked', true);
         }
-    })
+    });
     $("#showgpsinitbox").click(function(event){
         $("#showgpsinitbox").parent().hide();
         $("#showgpsinit").show();

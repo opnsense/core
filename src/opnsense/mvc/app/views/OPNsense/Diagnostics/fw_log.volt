@@ -30,7 +30,7 @@ POSSIBILITY OF SUCH DAMAGE.
     'use strict';
 
     $( document ).ready(function() {
-        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' }
+        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' };
         var interface_descriptions = {};
         let hostnameMap = {};
 
@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
         function reverse_lookup() {
             let to_fetch = [];
              $(".address").each(function(){
-                let address = $(this).data('address')
+                let address = $(this).data('address');
                 if (!hostnameMap.hasOwnProperty(address) && !to_fetch.includes(address)) {
                     to_fetch.push(address);
                 }
@@ -55,7 +55,7 @@ POSSIBILITY OF SUCH DAMAGE.
                           $(this).removeClass('address');
                     }
                 });
-            }
+            };
             if (to_fetch.length > 0) {
                 ajaxGet('/api/diagnostics/dns/reverse_lookup', { 'address': to_fetch }, function(data, status) {
                     $.each(to_fetch, function(index, address) {

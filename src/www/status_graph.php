@@ -251,7 +251,7 @@ include("head.inc");
                         })
                         .y(function(d) {
                             return y(d);
-                        })
+                        });
                     var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
                     var graphIn = d3.select(svg).append("svg:svg")
                           .attr("width", w + m[1] + m[3] + "px")
