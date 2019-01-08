@@ -37,7 +37,7 @@ function adjust_utc($dt)
 {
     foreach (config_read_array('dhcpd') as $dhcpd) {
         if (!empty($dhcpd['dhcpleaseinlocaltime'])) {
-            /* if we want local time, so specify this is actually UTC */
+            /* we want local time, so specify this is actually UTC */
             return strftime('%Y/%m/%d %H:%M:%S', strtotime("{$dt} UTC"));
         }
     }
