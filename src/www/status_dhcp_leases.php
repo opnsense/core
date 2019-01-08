@@ -37,18 +37,30 @@ function adjust_gmt($dt)
 {
     global $config;
 
+   $dhcpleaseinlocaltime = 'no';
     $dhcpd = array();
-    if (isset($config['dhcpd'])) {
+	
+	if (is_array($config['dhcpd'])) {
         $dhcpd = $config['dhcpd'];
-    }
-
-    foreach ($dhcpd as $dhcpditem) {
-        if (isset($dhcpditem['dhcpleaseinlocaltime']) && $dhcpleaseinlocaltime == "yes") {
-            $ts = strtotime($dt . " GMT");
-            return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
+        foreach ($dhcpd as $dhcpleaseinlocaltime) {
+            $dhcpleaseinlocaltime = $dhcpleaseinlocaltime['dhcpleaseinlocaltime'];
+            if ($dhcpleaseinlocaltime == "yes") {
+                break;
+            }
         }
     }
 
+    $timezone = $config['system']['timezone'];
+    $ts = strtotime($dt . " GMT");
+    if ($dhcpleaseinlocaltime != "yes") {
+        $this_tz = new DateTimeZone($timezone);
+        $dhcp_lt = new DateTime(strftime("%I:%M:%S%p", $ts), $this_tz);
+        $offset = $this_tz->getOffset($dhcp_lt);
+        $ts = $ts - $offset;
+        return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
+    } else {
+        return strftime("%Y/%m/%d %H:%M:%S", $ts);
+    }
     return $dt;
 }
 

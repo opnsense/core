@@ -427,6 +427,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig['ntp2'])) {
                 $dhcpdconf['ntpserver'][] = $pconfig['ntp2'];
             }
+			if (!empty($pconfig['dhcpleaseinlocaltime'])) {
+                $dhcpdconf['ntpserver'][] = $pconfig['dhcpleaseinlocaltime'];
+            }
 
             // handle changes
             if (!isset($pool) && $act != "newpool") {
