@@ -33,33 +33,17 @@ require_once("config.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-function adjust_gmt($dt)
+function adjust_utc($dt)
 {
-    global $config;
-
-    $dhcpleaseinlocaltime = 'no';
-    if (is_array($config['dhcpd'])) {
-        $dhcpd = $config['dhcpd'];
-        foreach ($dhcpd as $dhcpleaseinlocaltime) {
-            $dhcpleaseinlocaltime = $dhcpleaseinlocaltime['dhcpleaseinlocaltime'];
-            if ($dhcpleaseinlocaltime == "yes") {
-                break;
-            }
+    foreach (config_read_array('dhcpd') as $dhcpd) {
+        if (!empty($dhcpd['dhcpleaseinlocaltime'])) {
+            /* if we want local time, so specify this is actually UTC */
+            return strftime('%Y/%m/%d %H:%M:%S', strtotime("{$dt} UTC"));
         }
     }
 
-    $timezone = $config['system']['timezone'];
-    $ts = strtotime($dt . " GMT");
-    if ($dhcpleaseinlocaltime != "yes") {
-        $this_tz = new DateTimeZone($timezone);
-        $dhcp_lt = new DateTime(strftime("%I:%M:%S%p", $ts), $this_tz);
-        $offset = $this_tz->getOffset($dhcp_lt);
-        $ts = $ts - $offset;
-        return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
-    } else {
-        return strftime("%Y/%m/%d %H:%M:%S", $ts);
-    }
-    return $dt;
+    /* lease time is in UTC, here just pretend it's the correct time */
+    return strftime('%Y/%m/%d %H:%M:%S UTC', strtotime($dt));
 }
 
 function remove_duplicate($array, $field)
@@ -353,9 +337,9 @@ $gentitle_suffix = " ($leases_count)";
                 <tr>
                     <td><?=$data['name'];?></td>
                     <td><?=$data['mystate'];?></td>
-                    <td><?=adjust_gmt($data['mydate']);?></td>
+                    <td><?=adjust_utc($data['mydate']);?></td>
                     <td><?=$data['peerstate'];?></td>
-                    <td><?=adjust_gmt($data['peerdate']);?></td>
+                    <td><?=adjust_utc($data['peerdate']);?></td>
                 </tr>
 <?php
               endforeach;?>
@@ -440,8 +424,8 @@ $gentitle_suffix = " ($leases_count)";
                   </td>
                   <td><?=$data['hostname'];?></td>
                   <td><?=$data['descr'];?></td>
-                  <td><?= !empty($data['start']) ? adjust_gmt($data['start']) : '' ?></td>
-                  <td><?= !empty($data['end']) ? adjust_gmt($data['end']) : '' ?></td>
+                  <td><?= !empty($data['start']) ? adjust_utc($data['start']) : '' ?></td>
+                  <td><?= !empty($data['end']) ? adjust_utc($data['end']) : '' ?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">

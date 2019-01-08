@@ -33,35 +33,21 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-function adjust_gmt($dt)
+function adjust_utc($dt)
 {
-    global $config;
-
-    $dhcpv6leaseinlocaltime = 'no';
-    if (is_array($config['dhcpdv6'])) {
-        $dhcpdv6 = $config['dhcpdv6'];
-        foreach ($dhcpdv6 as $dhcpv6leaseinlocaltime) {
-            $dhcpv6leaseinlocaltime = $dhcpv6leaseinlocaltime['dhcpv6leaseinlocaltime'];
-            if ($dhcpv6leaseinlocaltime == "yes") {
-                break;
-            }
+    foreach (config_read_array('dhcpdv6') as $dhcpdv6) {
+        if (!empty($dhcpdv6['dhcpv6leaseinlocaltime'])) {
+            /* if we want local time, so specify this is actually UTC */
+            return strftime('%Y/%m/%d %H:%M:%S', strtotime("{$dt} UTC"));
         }
     }
 
-    $timezone = $config['system']['timezone'];
-    $ts = strtotime($dt . " GMT");
-    if ($dhcpv6leaseinlocaltime != "yes") {
-        $this_tz = new DateTimeZone($timezone);
-        $dhcp_lt = new DateTime(strftime("%I:%M:%S%p", $ts), $this_tz);
-        $offset = $this_tz->getOffset($dhcp_lt);
-        $ts = $ts - $offset;
-        return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
-    } else {
-        return strftime("%Y/%m/%d %H:%M:%S", $ts);
-    }
+    /* lease time is in UTC, here just pretend it's the correct time */
+    return strftime('%Y/%m/%d %H:%M:%S UTC', strtotime($dt));
 }
 
-function remove_duplicate($array, $field) {
+function remove_duplicate($array, $field)
+{
     foreach ($array as $sub) {
         $cmp[] = $sub[$field];
     }
@@ -72,7 +58,8 @@ function remove_duplicate($array, $field) {
     return $new;
 }
 
-function parse_duid($duid_string) {
+function parse_duid($duid_string)
+{
     $parsed_duid = array();
     for ($i=0; $i < strlen($duid_string); $i++) {
         $s = substr($duid_string, $i, 1);
@@ -426,9 +413,9 @@ if (count($pools) > 0):?>
               <tr>
                   <td><?=$data['name'];?></td>
                   <td><?=$data['mystate'];?></td>
-                  <td><?=adjust_gmt($data['mydate']);?></td>
+                  <td><?=adjust_utc($data['mydate']);?></td>
                   <td><?=$data['peerstate'];?></td>
-                  <td><?=adjust_gmt($data['peerdate']);?></td>
+                  <td><?=adjust_utc($data['peerdate']);?></td>
               </tr>
 
 <?php
@@ -496,8 +483,8 @@ endif;?>
                     <?=!empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";?>
                   </td>
                   <td><?=htmlentities($data['descr']);?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['start']) : "";?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
@@ -550,8 +537,8 @@ endif;?>
                   </td>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$data['duid'];?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['start']) : "";?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
                   <td><?=$data['act'];?></td>
                 </tr>
 <?php
