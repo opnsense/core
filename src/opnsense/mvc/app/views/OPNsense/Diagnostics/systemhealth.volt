@@ -396,7 +396,7 @@
 
                     var counter = 1; // used for row count
 
-                    for (index = 0; index < data["d3"]["data"].length; ++index) {
+                    for (let index = 0; index < data["d3"]["data"].length; ++index) {
                         rowcounter = 0;
                         min = 0;
                         max = 0;
