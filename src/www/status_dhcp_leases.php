@@ -37,10 +37,8 @@ function adjust_gmt($dt)
 {
     global $config;
 
-   $dhcpleaseinlocaltime = 'no';
-    $dhcpd = array();
-	
-	if (is_array($config['dhcpd'])) {
+    $dhcpleaseinlocaltime = 'no';
+    if (is_array($config['dhcpd'])) {
         $dhcpd = $config['dhcpd'];
         foreach ($dhcpd as $dhcpleaseinlocaltime) {
             $dhcpleaseinlocaltime = $dhcpleaseinlocaltime['dhcpleaseinlocaltime'];
