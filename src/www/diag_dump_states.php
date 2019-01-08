@@ -32,9 +32,9 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 /* handle AJAX operations */
-if(isset($_POST['action']) && $_POST['action'] == "remove") {
+if (isset($_POST['action']) && $_POST['action'] == "remove") {
     if (isset($_POST['srcip']) && isset($_POST['dstip']) && is_ipaddr($_POST['srcip']) && is_ipaddr($_POST['dstip'])) {
-        $retval = mwexec("/sbin/pfctl -k " . escapeshellarg($_POST['srcip']) . " -k " . escapeshellarg($_POST['dstip']));
+        $retval = mwexecf('/sbin/pfctl -k %s/32 -k %s/32', array($_POST['srcip'], $_POST['dstip']));
         echo htmlentities("|{$_POST['srcip']}|{$_POST['dstip']}|{$retval}|");
     } else {
         echo gettext("invalid input");
@@ -57,9 +57,19 @@ if (isset($_POST['filter']) && isset($_POST['killfilter'])) {
     }
 }
 
-include("head.inc");
-?>
+$states_info = json_decode(configdp_run('filter list states', array(!empty($_POST['filter']) ? $_POST['filter'] : '', 10000)), true);
 
+if (empty($states_info['details'])) {
+    $states_info['details'] = array();
+}
+
+uasort($states_info['details'], function ($a, $b) {
+    return strcasecmp($a['src_addr'], $b['src_addr']);
+});
+
+include("head.inc");
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
   <script>
@@ -69,7 +79,13 @@ include("head.inc");
         event.preventDefault();
         var srcip = $(this).data('srcip');
         var dstip = $(this).data('dstip');
+        var dirout = $(this).data('dirout');
         var rowid = $(this).data('rowid');
+
+        if (!dirout) {
+            srcip = $(this).data('dstip');
+            dstip = $(this).data('srcip');
+        }
 
         $.post(window.location, {action: 'remove', srcip: srcip, dstip: dstip}, function(data) {
             $("."+rowid).hide();
@@ -83,13 +99,6 @@ include("head.inc");
         <section class="col-xs-12">
           <div class="content-box">
             <form  method="post" name="iform">
-<?php
-              if (empty($_POST['filter'])) {
-                  $filter = "''";
-              } else {
-                  $filter = escapeshellarg(htmlspecialchars($_POST['filter']));
-              }
-              $states_info = json_decode(configdp_run('filter list states', array($filter, 10000)), true); ?>
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -106,7 +115,7 @@ include("head.inc");
                     </td>
                     <td>
                       <input type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
-                      <?php if (isset($_POST['filter']) && (is_ipaddr($_POST['filter']) || is_subnet($_POST['filter']))): ?>
+                      <?php if (!empty($_POST['filter']) && (is_ipaddr($_POST['filter']) || is_subnet($_POST['filter']))): ?>
                       <input type="submit" class="btn btn-primary" name="killfilter" value="<?=gettext("Kill");?>" />
                       <?php endif; ?>
                     </td>
@@ -134,9 +143,6 @@ include("head.inc");
                   foreach (legacy_config_get_interfaces() as $intf) {
                       $intfdescr[$intf['if']] = $intf['descr'];
                   }
-                  if (empty($states_info['details'])) {
-                      $states_info['details'] = array();
-                  }
                   foreach ($states_info['details'] as $state):
                     // states can be deleted by source / dest combination, all matching records use the same class.
                     $rowid = str_replace(array('.', ':'), '_', $state['src_addr'].$state['dst_addr']);
@@ -145,7 +151,7 @@ include("head.inc");
                     $isipv4 = strpos($state['src_addr'], ':') === false;
                     $srcport = $isipv4 ? ":{$state['src_port']}" : "[{$state['src_port']}]";
                     $dstport = $isipv4 ? ":{$state['dst_port']}" : "[{$state['dst_port']}]";
-                    $info = $state['src_addr'] . $srcport ;
+                    $info = $state['src_addr'] . $srcport;
                     if (!empty($state['nat_addr'])) {
                         $natport = $isipv4 ? ":{$state['nat_port']}" : "[{$state['nat_port']}]";
                         $info .= " (" .$state['nat_addr'] . $natport . ") ";
@@ -158,7 +164,7 @@ include("head.inc");
                       <td><?= $info ?></td>
                       <td><?= $state['state'];?></td>
                       <td>
-                        <a href="#" data-rowid="r<?=$rowid?>" data-srcip="<?=$state['src_addr']?>" data-dstip="<?=$state['dst_addr'];?>" class="act_del btn btn-default btn-xs" title="<?= gettext('Remove all state entries from') ?> <?= $state['src_addr'] ?> <?= gettext('to') ?> <?= $state['dst_addr'] ?>"><i class="fa fa-remove fa-fw"></i></a>
+                        <a href="#" data-rowid="r<?=$rowid?>" data-srcip="<?=$state['src_addr']?>" data-dstip="<?=$state['dst_addr'];?>" data-dirout="<?= $state['direction'] == 'out' ? '1' : '0' ?>" class="act_del btn btn-default btn-xs" title="<?= html_safe(gettext('Remove all related state entries')) ?>"><i class="fa fa-remove fa-fw"></i></a>
                       </td>
                     </tr>
 <?php
