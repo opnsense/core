@@ -160,7 +160,7 @@ include_once("head.inc");
             $(this).parent().parent().hide();
             $(".showadv").show();
             $(window).trigger('resize');
-        })
+        });
         // show advanced when option set
         if ($("#outgoing_interface").val() != '' || $("#custom_options").val() != '' || $("#enable_wpad").prop('checked')) {
             $("#show_advanced_dns").click();

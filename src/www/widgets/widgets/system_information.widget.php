@@ -84,12 +84,12 @@ require_once("system.inc");
 
       var states_perc = parseInt((parseInt(data['kernel']['pf']['states']) / parseInt(data['kernel']['pf']['maxstates']))*100);
       $("#system_information_widget_states .progress-bar").css("width",  states_perc + "%").attr("aria-valuenow", states_perc + "%");
-      var states_text = states_perc + " % " + "( " + data['kernel']['pf']['states'] + "/" + data['kernel']['pf']['maxstates'] + " )"
+      var states_text = states_perc + " % " + "( " + data['kernel']['pf']['states'] + "/" + data['kernel']['pf']['maxstates'] + " )";
       $("#system_information_widget_states .state_text").html(states_text);
 
       var mbuf_perc = parseInt((parseInt(data['kernel']['mbuf']['total']) / parseInt(data['kernel']['mbuf']['max']))*100);
       $("#system_information_widget_mbuf .progress-bar").css("width",  mbuf_perc + "%").attr("aria-valuenow", mbuf_perc + "%");
-      var mbuf_text = mbuf_perc + " % " + "( " + data['kernel']['mbuf']['total'] + "/" + data['kernel']['mbuf']['max'] + " )"
+      var mbuf_text = mbuf_perc + " % " + "( " + data['kernel']['mbuf']['total'] + "/" + data['kernel']['mbuf']['max'] + " )";
       $("#system_information_widget_mbuf .state_text").html(mbuf_text);
 
       $("#system_information_widget_load").html(data['cpu']['load'].join(','));
@@ -97,7 +97,7 @@ require_once("system.inc");
       var mem_perc = parseInt(data['kernel']['memory']['used'] / data['kernel']['memory']['total']*100);
       $("#system_information_widget_memory .progress-bar").css("width",  mem_perc + "%").attr("aria-valuenow", mem_perc + "%");
       var mem_text = mem_perc + " % " + "( " + parseInt(data['kernel']['memory']['used']/1024/1024) + "/";
-      mem_text += parseInt(data['kernel']['memory']['total']/1024/1024) + " MB )"
+      mem_text += parseInt(data['kernel']['memory']['total']/1024/1024) + " MB )";
       $("#system_information_widget_memory .state_text").html(mem_text);
 
 
@@ -106,7 +106,7 @@ require_once("system.inc");
           var swap_perc = parseInt(data['disk']['swap']['used'] / data['disk']['swap']['total']*100);
           $("#system_information_widget_swap .progress-bar").css("width",  swap_perc + "%").attr("aria-valuenow", swap_perc + "%");
           var swap_text = swap_perc + " % " + "( " + parseInt(data['disk']['swap']['used']/1024) + "/";
-          swap_text += parseInt(data['disk']['swap']['total']/1024) + " MB )"
+          swap_text += parseInt(data['disk']['swap']['total']/1024) + " MB )";
           $("#system_information_widget_swap .state_text").html(swap_text);
           $("#system_information_widget_swap").show();
       } else {

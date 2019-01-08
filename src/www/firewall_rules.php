@@ -262,7 +262,7 @@ $( document ).ready(function() {
               selected_values = [];
               return false;
           }
-      })
+      });
       $(".rule").each(function(){
           // save zebra color
           if ( $(this).children(0).css("background-color") != 'transparent') {
