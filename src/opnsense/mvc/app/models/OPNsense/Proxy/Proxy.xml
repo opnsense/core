@@ -449,6 +449,9 @@
                     <default>icap://[::1]:1344/avscan</default>
                     <Required>N</Required>
                 </RequestURL>
+                <Bypass type="BooleanField">
+                    <Required>N</Required>
+                </Bypass>
                 <ResponseURL type="TextField">
                     <default>icap://[::1]:1344/avscan</default>
                     <Required>N</Required>

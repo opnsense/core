@@ -449,6 +449,16 @@
                 <advanced>false</advanced>
             </field>
             <field>
+                <id>proxy.forward.icap.Bypass</id>
+                <label>Optional ICAP service</label>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help>If this checkbox is checked and ICAP server is broken, traffic will not be blocked.</help>
+                <hint>Select if you want to bypass traffic if ICAP service connection failed.</hint>
+                <allownew>true</allownew>
+                <advanced>false</advanced>
+            </field>
+            <field>
                 <id>proxy.forward.icap.RequestURL</id>
                 <label>Request Modify URL</label>
                 <type>text</type>
