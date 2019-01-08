@@ -58,9 +58,9 @@ $( document ).ready(function() {
    // avoid running code twice due to <script> location within <body>
 
    if (typeof monitPollInit === 'undefined') {
-      monitPollInit = false;
+      let monitPollInit = false;
    } else {
-      monitPollInit = true;
+      let monitPollInit = true;
    }
 
    function monitStatusPoll() {
