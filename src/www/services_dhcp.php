@@ -428,7 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $dhcpdconf['ntpserver'][] = $pconfig['ntp2'];
             }
 			if (!empty($pconfig['dhcpleaseinlocaltime'])) {
-                $dhcpdconf['ntpserver'][] = $pconfig['dhcpleaseinlocaltime'];
+                $dhcpdconf['dhcpleaseinlocaltime'] = $pconfig['dhcpleaseinlocaltime'];
             }
 
             // handle changes
