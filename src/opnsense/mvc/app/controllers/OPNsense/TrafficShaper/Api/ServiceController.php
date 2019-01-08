@@ -73,7 +73,7 @@ class ServiceController extends ApiControllerBase
 
             $backend = new Backend();
             $status = trim($backend->configdRun("ipfw flush"));
-            $status = trim($backend->configdRun("ipfw reload"));
+            $status .= trim($backend->configdRun("ipfw reload"));
             return array("status" => $status);
         } else {
             return array("status" => "failed");

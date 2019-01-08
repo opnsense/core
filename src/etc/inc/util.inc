@@ -479,7 +479,7 @@ function get_ll_scope($addr)
     if (!is_linklocal($addr) || !strstr($addr, "%")) {
         return '';
     }
-    list ($ll, $scope) = explode("%", $addr);
+    $scope = explode("%", $addr)[1];
     return $scope;
 }
 
@@ -988,10 +988,10 @@ function is_alias($name)
 function subnet_size($subnet)
 {
     if (is_subnetv4($subnet)) {
-        list ($ip, $bits) = explode("/", $subnet);
+        $bits = explode("/", $subnet)[1];
         return round(exp(log(2) * (32 - $bits)));
     } elseif (is_subnetv6($subnet)) {
-        list ($ip, $bits) = explode("/", $subnet);
+        $bits = explode("/", $subnet)[1];
         return round(exp(log(2) * (128 - $bits)));
     } else {
         return 0;

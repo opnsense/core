@@ -706,7 +706,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                             strcmp($settings['serverbridge_interface'], "none")) {
                             $realif = get_real_interface($settings['serverbridge_interface']);
                             if (!$realif && strstr($settings['serverbridge_interface'], '_vip')) {
-                                list($vipif, $vhid) = explode('_vip', $settings['serverbridge_interface']);
+                                $vipif = explode('_vip', $settings['serverbridge_interface'])[0];
                                 $realif = get_real_interface($vipif);
                             }
                             list ($biface_ip, $biface_sn) = explode('/', find_interface_network($realif, false));
@@ -751,9 +751,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             $settings['cert_depth'] = 1;
         }
         if (is_numeric($settings['cert_depth'])) {
-            if (($mode == 'client') && empty($settings['certref'])) {
-                $cert = "";
-            } else {
+            if (!($mode == 'client' && empty($settings['certref']))) {
                 $cert = lookup_cert($settings['certref']);
                 /* XXX: Seems not used at all! */
                 $servercn = urlencode(cert_get_cn($cert['crt']));
@@ -1289,7 +1287,7 @@ function openvpn_get_active_servers($type = 'multipoint')
             $server['vpnid'] = $settings['vpnid'];
             $server['mgmt'] = "server{$server['vpnid']}";
             $socket = "unix:///var/etc/openvpn/{$server['mgmt']}.sock";
-            list($tn, $sm) = explode('/', $settings['tunnel_network']);
+            $sm = explode('/', $settings['tunnel_network'])[1];
 
             if ((($server['mode'] == "p2p_shared_key") || ($sm >= 30) ) && ($type == "p2p")) {
                 $servers[] = openvpn_get_client_status($server, $socket);

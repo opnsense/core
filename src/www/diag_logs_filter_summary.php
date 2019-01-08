@@ -155,7 +155,8 @@ function parse_filter_line($line, $interface_names = array())
         return '';
     }
 
-    list($all, $flent['time'], $host, $rule) = $log_split;
+    $flent['time'] = $log_split[1];
+    $rule = $log_split[3];
 
     if (trim($flent['time']) == '') {
         log_error(sprintf('There was an error parsing a rule: no time (%s)', $log_split));
