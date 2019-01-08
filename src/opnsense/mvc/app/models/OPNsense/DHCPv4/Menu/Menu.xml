@@ -1,0 +1,9 @@
+<menu>
+    <Services>
+        <DHCPv4>
+            <Leases order="300" url="/ui/dhcpv4/leases/">
+                <Details url="/ui/dhcpv4/leases/*" visibility="hidden"/>
+            </Leases>
+        </DHCPv4>
+    </Services>
+</menu>

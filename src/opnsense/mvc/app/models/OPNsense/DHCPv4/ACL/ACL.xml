@@ -1,0 +1,9 @@
+<acl>
+    <page-status-dhcpleases>
+        <name>Status: DHCPv4 leases</name>
+        <patterns>
+            <pattern>ui/dhcpv4/lease*</pattern>
+            <pattern>api/dhcpv4/lease*</pattern>
+        </patterns>
+    </page-status-dhcpleases>
+</acl>

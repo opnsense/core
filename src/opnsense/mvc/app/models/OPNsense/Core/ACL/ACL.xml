@@ -491,12 +491,6 @@
             <pattern>status_habackup.php</pattern>
         </patterns>
     </page-status-habackup>
-    <page-status-dhcpleases>
-        <name>Status: DHCP leases</name>
-        <patterns>
-            <pattern>status_dhcp_leases.php*</pattern>
-        </patterns>
-    </page-status-dhcpleases>
     <page-status-dhcpv6leases>
         <name>Status: DHCPv6 leases</name>
         <patterns>

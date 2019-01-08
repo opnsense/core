@@ -340,6 +340,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/ItemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/forms/dialogEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/LeaseController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/PoolController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsController.php
@@ -503,6 +506,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCPv4/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCPv4/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCPv4/DHCPv4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCPv4/DHCPv4.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
@@ -555,6 +562,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
@@ -637,8 +645,10 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/carp_status
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
+/usr/local/opnsense/scripts/dhcp/delete_lease.php
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
+/usr/local/opnsense/scripts/dhcp/process_leases.php
 /usr/local/opnsense/scripts/dns/unbound_dhcpd.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
