@@ -1239,8 +1239,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
                         break;
                     case 'hybrid_rsa_server':
-                        $authentication = "leftauth = xauth-generic\n\trightauth = pubkey";
-                        $authentication .= "\n\trightauth2 = xauth";
+                        $authentication = "leftauth = pubkey\n\trightauth = xauth";
                         break;
                 }
                 if (!empty($ph1ent['certref'])) {
