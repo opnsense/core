@@ -153,7 +153,7 @@ PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit6-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
+		phpunit7-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -407,7 +407,7 @@ mfc: clean-mfcdir
 	@git checkout master
 .endfor
 
-test: want-phpunit6-php${CORE_PHP}
+test: want-phpunit7-php${CORE_PHP}
 	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_PKGVERSION}"; \
 		exit 1; \
