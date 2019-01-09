@@ -429,20 +429,24 @@ include("head.inc");
                                     $name = strtolower($name);
 
                                     if (!empty($field['bindstofield']) && !isset($field['value'])) {
-                                        $arraynum = '';
-                                        $field_conv = '';
+                                        $checkVal = $config;
                                         $field_split = explode("->", $field['bindstofield']);
+
+                                        foreach ($field_split as $f) {
+                                            $checkVal = $checkVal[$f];
+                                        }
                                         // arraynum is used in cases where there is an array of the same field
                                         // name such as dnsserver (2 of them)
-                                        if ($field['arraynum'] != '')
-                                            $arraynum = "[" . $field['arraynum'] . "]";
-                                        foreach ($field_split as $f)
-                                            $field_conv .= "['" . $f . "']";
-                                        if ($field['type'] == "checkbox")
-                                            $toeval = "if (isset(\$config" . $field_conv . $arraynum . ")) { \$value = \$config" . $field_conv . $arraynum . "; if (empty(\$value)) \$value = true; }";
-                                        else
-                                            $toeval = "if (isset(\$config" . $field_conv . $arraynum . ")) \$value = \$config" . $field_conv . $arraynum . ";";
-                                        eval($toeval);
+                                        if ($field['arraynum'] != '') {
+                                            $checkVal = $checkVal[$field['arraynum']];
+                                        }
+
+                                        if (isset($checkVal)) {
+                                            $value = $checkVal;
+                                            if ($field['type'] == 'checkbox' && empty($value)) {
+                                                $value = true;
+                                            }
+                                        }
                                     }
 
                                     if (!$field['combinefieldsend']) {
