@@ -110,9 +110,9 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
-            <pattern>configd_logs.php</pattern>
-            <pattern>diag_logs.php</pattern>
-            <pattern>httpd_logs.php</pattern>
+            <pattern>ui/logs/configd</pattern>
+            <pattern>ui/logs/syslog</pattern>
+            <pattern>ui/logs/httpd</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
@@ -560,7 +560,7 @@
     <page-status-systemlogs-ppp>
         <name>Status: System logs: IPsec VPN</name>
         <patterns>
-            <pattern>diag_logs_ppp.php*</pattern>
+            <pattern>ui/logs/ppp</pattern>
         </patterns>
     </page-status-systemlogs-ppp>
     <page-status-systemlogs-openvpn>

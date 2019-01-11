@@ -89,9 +89,9 @@
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <Backend url="/configd_logs.php"/>
-            <General url="/diag_logs.php"/>
-            <WebGUI VisibleName="Web GUI" url="/httpd_logs.php"/>
+            <Backend url="/ui/logs/configd"/>
+            <General url="/ui/logs/syslog"/>
+            <WebGUI VisibleName="Web GUI" url="/ui/logs/httpd"/>
         </LogFiles>
         <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
             <Services url="/status_services.php">
@@ -113,7 +113,7 @@
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File" url="/diag_logs_ppp.php"/>
+            <LogFile VisibleName="Log File" url="/ui/logs/ppp"/>
         </PPP>
         <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">

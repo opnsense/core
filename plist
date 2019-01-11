@@ -1575,7 +1575,6 @@
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
 /usr/local/www/carp_status.php
-/usr/local/www/configd_logs.php
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
@@ -1601,7 +1600,6 @@
 /usr/local/www/diag_logs_ntpd.php
 /usr/local/www/diag_logs_openvpn.php
 /usr/local/www/diag_logs_pkg.php
-/usr/local/www/diag_logs_ppp.php
 /usr/local/www/diag_logs_proxy.php
 /usr/local/www/diag_logs_resolver.php
 /usr/local/www/diag_logs_routing.php
@@ -1639,7 +1637,6 @@
 /usr/local/www/getserviceproviders.php
 /usr/local/www/guiconfig.inc
 /usr/local/www/head.inc
-/usr/local/www/httpd_logs.php
 /usr/local/www/index.php
 /usr/local/www/interfaces.php
 /usr/local/www/interfaces_assign.php
