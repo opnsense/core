@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.7</version>
+   <version>1.0.8</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -275,6 +275,33 @@
             <mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
          </name>
+         <type type="OptionField">
+            <Required>Y</Required>
+            <OptionValues>
+               <Existence>Existence</Existence>
+               <SystemResource>System Resource</SystemResource>
+               <ProcessResource>Process Resource</ProcessResource>
+               <ProcessDiskIO>Process Disk I/O</ProcessDiskIO>
+               <FileChecksum>File Checksum</FileChecksum>
+               <Timestamp>Timestamp</Timestamp>
+               <FileSize>File Size</FileSize>
+               <FileContent>File Content</FileContent>
+               <FilesystemMountFlags>Filesystem Mount Flags</FilesystemMountFlags>
+               <SpaceUsage>Space Usage</SpaceUsage>
+               <InodeUsage>Inode Usage</InodeUsage>
+               <DiskIO>Disk I/O</DiskIO>
+               <Permisssion>Permission</Permisssion>
+               <UID>UID</UID>
+               <GID>GID</GID>
+               <PID>PID</PID>
+               <PPID>PPID</PPID>
+               <Uptime>Uptime</Uptime>
+               <ProgramStatus>Program Status</ProgramStatus>
+               <NetworkInterface>Network Interface</NetworkInterface>
+               <NetworkPing>Network Ping</NetworkPing>
+               <Custom>Custom</Custom>
+            </OptionValues>
+         </type>
          <condition type="TextField">
             <Required>Y</Required>
             <mask>/^.{1,255}$/u</mask>
