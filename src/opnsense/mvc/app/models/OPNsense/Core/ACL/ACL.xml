@@ -20,14 +20,14 @@
     <page-getserviceproviders>
         <name>AJAX: Get Service Providers</name>
         <patterns>
-            <pattern>license.php</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-getserviceproviders>
     <page-getstats>
         <name>AJAX: Get Stats</name>
         <patterns>
-            <pattern>license.php</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>widgets/api/get.php*</pattern>
         </patterns>
     </page-getstats>
@@ -705,7 +705,7 @@
     <page-system-license>
         <name>System: License</name>
         <patterns>
-            <pattern>license.php*</pattern>
+            <pattern>ui/core/license*</pattern>
         </patterns>
     </page-system-license>
     <page-system-staticroutes>

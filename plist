@@ -332,6 +332,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/LicenseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
@@ -476,7 +477,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UrlField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuInitException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
@@ -495,6 +495,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.xml
@@ -547,6 +548,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/license.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
@@ -1656,7 +1658,6 @@
 /usr/local/www/javascript/wizard/autosuggest.js
 /usr/local/www/javascript/wizard/disablekeys.js
 /usr/local/www/javascript/wizard/suggestions.js
-/usr/local/www/license.php
 /usr/local/www/reboot.php
 /usr/local/www/reporting_settings.php
 /usr/local/www/services_dhcp.php

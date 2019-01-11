@@ -5,7 +5,7 @@
             <Root url="/" visibility="hidden"/>
             <RootArgs url="/?*" visibility="hidden"/>
         </Dashboard>
-        <License order="1" url="/license.php" cssClass="fa fa-balance-scale fa-fw"/>
+        <License order="1" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
         <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
             <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
         </Password>
@@ -149,13 +149,13 @@
         <Rules order="20" cssClass="fa fa-check fa-fw" />
         <NAT order="30" cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
-              <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
+                <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
             <OneToOne order="200" VisibleName="One-to-One" url="/firewall_nat_1to1.php">
-              <Edit url="/firewall_nat_1to1_edit.php*" visibility="hidden"/>
+                <Edit url="/firewall_nat_1to1_edit.php*" visibility="hidden"/>
             </OneToOne>
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
-              <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
+                <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
             <NPTv6 order="400" url="/firewall_nat_npt.php">
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
