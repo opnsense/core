@@ -333,7 +333,7 @@ POSSIBILITY OF SUCH DAMAGE.
                // get the longest key match
                var keyLength = 0;
                $.each(testSyntax.testConditionMapping[conditionType], function(key, value) {
-                  if ($.isArray(testSyntax.testConditionMapping[conditionType])) {
+                  if ($.isNumeric(key)) {
                      key = value;
                   }
                   // escape metacharacters with replace() e.g. ^loadavg \(1min\)
@@ -483,7 +483,7 @@ POSSIBILITY OF SUCH DAMAGE.
          if ($.type(testSyntax.testConditionMapping[conditionType]) === 'object') {
             $.each(testSyntax.testConditionMapping[conditionType], function(key, value) {
                // for arrays use the value as option
-               if ($.isArray(testSyntax.testConditionMapping[conditionType])) {
+               if ($.isNumeric(key)) {
                   key = value;
                }
                $('#monit_test_condition_stage1').append('<option value="' + key + '">' + key + '</option>');
