@@ -1,5 +1,5 @@
 <section class="col-xs-11">
-    <p><a href="{{ product_website }}" target="_blank">{{ product_name_legal }}</a> is Copyright &copy; {{ product_copyright_years }} {{ product_copyright_owner }}<br>All rights reserved.</p>
+    <p><a href="{{ product_website }}" target="_blank">{{ product_name }}{% if product_name == 'OPNsense' %}®{% endif %}</a> is Copyright &copy; {{ product_copyright_years }} {{ product_copyright_owner }}<br>All rights reserved.</p>
     <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
     <ol><li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
         <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li></ol>
