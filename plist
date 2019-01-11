@@ -477,7 +477,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UrlField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuInitException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
