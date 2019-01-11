@@ -202,8 +202,9 @@ class MonitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = array('monit' => ['test' => [
                 'name' => 'CPUUsage',
+                'type' => 'SystemResource',
                 'condition' => 'cpu usage is greater than 75%',
-                 'action' => 'alert'
+                'action' => 'alert'
             ]
         ]);
         $response = self::$setMonit->setAction('test');
@@ -211,6 +212,7 @@ class MonitTest extends \PHPUnit\Framework\TestCase
 
         $_POST = array('monit' => ['test' => [
                 'name' => 'Ping',
+                'type' => 'NetworkPing',
                 'condition' => 'failed ping',
                 'action' => 'alert'
             ]
@@ -239,10 +241,24 @@ class MonitTest extends \PHPUnit\Framework\TestCase
         $_POST = array('monit' => ['service' => [
                 'enabled' => 1,
                 'name'  => 'Localhost',
-                'type'  => 'host',
+                'type'  => 'system',
                 'tests' => $testConfig['test']['Ping']
             ]
         ]);
+        $response = self::$setMonit->setAction('service');
+        $this->assertCount(1, $response['validations']);
+        $this->assertEquals($response['result'], 'failed');
+        $this->assertNotEmpty($response['validations']['monit.service.tests']);
+        $this->cleanupNodes('service');
+
+        $_POST = array('monit' => ['service' => [
+            'enabled' => 1,
+            'name'  => 'Localhost',
+            'type'  => 'host',
+            'tests' => $testConfig['test']['Ping']
+        ]
+        ]);
+
         $response = self::$setMonit->setAction('service');
         $this->assertCount(1, $response['validations']);
         $this->assertEquals($response['result'], 'failed');
