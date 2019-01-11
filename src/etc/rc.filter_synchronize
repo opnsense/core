@@ -85,7 +85,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
         // propagate error to log
         $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
         log_error($error);
-        file_notice("sync_settings", $error, "Settings Sync", "");
+        file_notice($error);
         // print communication details on failure
         echo $client->getDetails();
         return false ;
@@ -94,7 +94,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
     if (!is_array($remote_version) && trim($remote_version) == "Authentication failed") {
         $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
         log_error($error);
-        file_notice("sync_settings", $error, "Settings Sync", "");
+        file_notice($error);
         return false;
     }
 
@@ -214,7 +214,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
         // propagate error to log
         $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
         log_error($error);
-        file_notice("sync_settings", $error, "Settings Sync", "");
+        file_notice($error);
         // print communication details on failure
         echo $client->getDetails();
         return false ;
@@ -223,7 +223,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     if (!is_array($response) && trim($response) == "Authentication failed") {
         $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
         log_error($error);
-        file_notice("sync_settings", $error, "Settings Sync", "");
+        file_notice($error);
         exit;
     }
 
@@ -315,7 +315,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
         // propagate error to log
         $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
         log_error($error);
-        file_notice("sync_settings", $error, "Settings Sync", "");
+        file_notice($error);
         // print communication details on failure
         echo $client->getDetails();
         return false ;
@@ -324,7 +324,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     if (!is_array($response) && trim($response) == "Authentication failed") {
         $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
         log_error($error);
-        file_notice("sync_settings", $error, "Settings Sync", "");
+        file_notice($error);
         exit;
     }
 

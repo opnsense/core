@@ -18,15 +18,7 @@
 /usr/local/etc/inc/interfaces.inc
 /usr/local/etc/inc/interfaces.lib.inc
 /usr/local/etc/inc/legacy_bindings.inc
-/usr/local/etc/inc/notices.basic_sasl_client.inc
-/usr/local/etc/inc/notices.cram_md5_sasl_client.inc
-/usr/local/etc/inc/notices.digest_sasl_client.inc
 /usr/local/etc/inc/notices.inc
-/usr/local/etc/inc/notices.login_sasl_client.inc
-/usr/local/etc/inc/notices.ntlm_sasl_client.inc
-/usr/local/etc/inc/notices.plain_sasl_client.inc
-/usr/local/etc/inc/notices.sasl.inc
-/usr/local/etc/inc/notices.smtp.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
@@ -74,6 +66,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20171219
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20180614
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20181218
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.configure_firmware
@@ -312,6 +305,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
+/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -338,6 +332,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/LicenseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
@@ -452,6 +447,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/AllOrNoneConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/BaseConstraint.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/ComparedToFieldConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/DependConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/SetIfConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/SingleSelectConstraint.php
@@ -481,7 +477,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UrlField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuInitException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
@@ -500,6 +495,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.xml
@@ -527,6 +523,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_6.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_7.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
@@ -551,6 +548,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/license.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
@@ -591,6 +589,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/TestModel.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/TestModel.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModelTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/Constraints/ComparedToFieldConstraintTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthenticationServerFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthenticationServerFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AutoNumberFieldTest.php
@@ -829,6 +828,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/externalACLs.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/nobumpsites.acl
+/usr/local/opnsense/service/templates/OPNsense/Proxy/parentproxy.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/post-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/pre-auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/rc.conf.d
@@ -1658,7 +1658,6 @@
 /usr/local/www/javascript/wizard/autosuggest.js
 /usr/local/www/javascript/wizard/disablekeys.js
 /usr/local/www/javascript/wizard/suggestions.js
-/usr/local/www/license.php
 /usr/local/www/reboot.php
 /usr/local/www/reporting_settings.php
 /usr/local/www/services_dhcp.php
@@ -1694,7 +1693,6 @@
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_advanced_network.php
-/usr/local/www/system_advanced_notifications.php
 /usr/local/www/system_advanced_sysctl.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_camanager.php

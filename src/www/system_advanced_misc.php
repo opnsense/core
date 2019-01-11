@@ -3,6 +3,7 @@
 /*
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -99,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['system']['powerd_normal_mode'])) {
         $pconfig['powerd_normal_mode'] = $config['system']['powerd_normal_mode'];
     }
+    // System Sounds
+    $pconfig['disablebeep'] = isset($config['system']['disablebeep']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -187,6 +190,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dhparamusage'] = $pconfig['dhparamusage'];
         } elseif (isset($config['system']['dhparamusage'])) {
             unset($config['system']['dhparamusage']);
+        }
+
+        // System Sounds
+        if (!empty($pconfig['disablebeep'])) {
+            $config['system']['disablebeep'] = true;
+        } elseif (isset($config['system']['disablebeep'])) {
+            unset($config['system']['disablebeep']);
         }
 
         write_config();
@@ -522,6 +532,24 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+                <tr>
+                    <td style="width:22%"><strong><?= gettext('System Sounds') ?></strong></td>
+                    <td style="width:78%"></td>
+                </tr>
+                <tr>
+                    <td><a id="help_for_disablebeep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
+                    <td>
+                        <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? 'checked="checked"' : '';?>/>
+                        <?=gettext("Disable the startup/shutdown beep"); ?>
+                        <div class="hidden" data-for="help_for_disablebeep">
+                            <?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?>
+                        </div>
+                    </td>
+                </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive">

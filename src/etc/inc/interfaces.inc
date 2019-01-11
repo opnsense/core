@@ -278,7 +278,7 @@ function interfaces_create_wireless_clones($verbose = false)
         flush();
     }
 
-    foreach (get_configured_interface_with_descr() as $if => $unused) {
+    foreach (array_keys(get_configured_interface_with_descr()) as $if) {
         $realif = $config['interfaces'][$if]['if'];
         if (is_interface_wireless($realif)) {
             interface_wireless_clone(interface_get_wireless_clone($realif), $config['interfaces'][$if]);
@@ -707,10 +707,10 @@ function interface_gre_configure(&$gre, $grekey = "")
 
     /* Do not change the order here for more see gre(4) NOTES section. */
     if (is_ipaddrv6($gre['remote-addr'])) {
-        $realifip = get_interface_ipv6($gre['if']);
+        $realifip = is_ipaddr($gre['if']) ? $gre['if'] : get_interface_ipv6($gre['if']);
         mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', array($greif, $realifip, $gre['remote-addr']));
     } else {
-        $realifip = get_interface_ip($gre['if']);
+        $realifip = is_ipaddr($gre['if']) ? $gre['if'] : get_interface_ip($gre['if']);
         mwexecf('/sbin/ifconfig %s tunnel %s %s', array($greif, $realifip, $gre['remote-addr']));
     }
     if ((is_ipaddrv6($gre['tunnel-local-addr'])) || (is_ipaddrv6($gre['tunnel-remote-addr']))) {
@@ -858,7 +858,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
 
     interfaces_bring_up($gifif);
 
-    foreach (get_configured_interface_with_descr() as $ifname => $unused) {
+    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gifif) {
             if (get_interface_gateway($ifname) || get_interface_gateway_v6($ifname)) {
                 system_routing_configure(false, $ifname);
@@ -1036,7 +1036,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
                         if (isset($ppp['ondemand']) && $ifacecfg === false) {
-                            configd_run("interface reconfigure {$interface}");
+                            configdp_run('interface reconfigure', array($interface));
                             break;
                         }
                         killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
@@ -1104,11 +1104,11 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         }
     }
 
-    foreach ($arpflush as $dev => $unused) {
+    foreach (array_keys($arpflush) as $dev) {
         mwexecf('/usr/sbin/arp -d -i %s -a', $dev);
     }
 
-    foreach ($pfctlflush as $dev => $unused) {
+    foreach (array_keys($pfctlflush) as $dev) {
         log_error("Clearing states for stale {$interface} route on {$dev}");
         mwexecf('/sbin/pfctl -i %s -Fs', $dev);
     }
@@ -1170,9 +1170,6 @@ function interface_ppps_configure($interface)
     if (!isset($ifcfg['enable'])) {
         return 0;
     }
-
-    // mpd5 requires a /var/spool/lock directory for PPP modem links.
-    @mkdir("/var/spool/lock", 0777, true);
 
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
     if (!file_exists('/var/etc/mpd.script')) {
@@ -1670,7 +1667,7 @@ function interface_carp_configure(&$vip)
     /* NOTE: Maybe its useless nowdays */
     $realif = get_real_interface($vip['interface']);
     if (!does_interface_exist($realif)) {
-        file_notice("CARP", sprintf(gettext("Interface specified for the virtual IP address %s does not exist. Skipping this VIP."), $vip['subnet']), "Firewall: Virtual IP", "");
+        file_notice(sprintf(gettext("Interface specified for the virtual IP address %s does not exist. Skipping this VIP."), $vip['subnet']));
         return;
     }
 
@@ -1787,7 +1784,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
 
     $baseif = interface_get_wireless_base($ifcfg['if']);
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $unused) {
+    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
         if ($baseif == interface_get_wireless_base($config['interfaces'][$if]['if']) && $ifcfg['if'] != $config['interfaces'][$if]['if']) {
             if (isset($config['interfaces'][$if]['wireless']['standard']) || $sync_changes) {
                 foreach ($shared_settings as $setting) {
@@ -2547,8 +2544,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             plugins_configure('dns', $verbose);
             services_dhcpd_configure($verbose);
             /* XXX move these up the call stack */
-            configd_run("dyndns reload {$interface}");
-            configd_run("rfc2136 reload {$interface}");
+            configdp_run('dyndns reload', array($interface));
+            configdp_run('rfc2136 reload', array($interface));
         }
     }
 
@@ -2858,13 +2855,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
-        $temp = str_replace(':', '', $config['system']['ipv6duid']);
-        $duid_binstring = pack('H*', $temp);
-        $fd = fopen('/var/db/dhcp6c_duid', 'wb');
-        if ($fd) {
-            fwrite($fd, $duid_binstring);
-            fclose($fd);
-        }
+        dhcp6c_duid_write($config['system']['ipv6duid']);
+    /* clear DUID if it is faulty */
+    } elseif (empty(dhcp6c_duid_read())) {
+        dhcp6c_duid_clear();
     }
 
     if (!is_array($wancfg)) {
@@ -3757,7 +3751,7 @@ function get_interface_number_track6($wanif, $targetif)
     $list = link_interface_to_track6($wanif);
     $number = 0;
 
-    foreach ($list as $lanif => $unused) {
+    foreach (array_keys($list) as $lanif) {
         if ($lanif == $targetif) {
             return $number;
         }
@@ -4533,7 +4527,7 @@ function is_ipaddr_configured($ipaddr, $ignore_if = '')
  */
 function get_carp_interface_status($carpinterface)
 {
-    $carp_query = '';
+    $carp_query = [];
 
     /* XXX: Need to find a better way for this! */
     list ($interface, $vhid) = explode("_vip", $carpinterface);

@@ -355,7 +355,7 @@ function configure_interface_hardware($ifs)
     global $config;
     $intf_details = legacy_interface_details($ifs);
     /* skip vlans for checksumming  */
-    if (!stristr($ifs, "_vlan") && is_array($intf_details)) {
+    if (!stristr($ifs, "_vlan") && !empty($intf_details)) {
         // get current settings
         $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
         $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);

@@ -127,7 +127,7 @@ class IDS extends BaseModel
      * retrieve current altered rule status
      * @param string $sid unique id
      * @param string $default default value
-     * @return default, 0, 1 ( default, true, false)
+     * @return string|bool default, 0, 1 ( default, true, false)
      */
     public function getRuleStatus($sid, $default)
     {
@@ -144,7 +144,7 @@ class IDS extends BaseModel
      * @param string $sid unique id
      * @param string $default default value
      * @param bool $response_plain response as text ot model (select list)
-     * @return default, <action value> ( default, true, false)
+     * @return string|bool default, <action value> ( default, true, false)
      */
     public function getRuleAction($sid, $default, $response_plain = false)
     {

@@ -1551,7 +1551,7 @@ class Google_Service_MapsEngine_Assets_Resource extends Google_Service_Resource
    * @opt_param string createdAfter An RFC 3339 formatted date-time value (e.g.
    * 1970-01-01T00:00:00Z). Returned assets will have been created at or after
    * this time.
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string projectId The ID of a Maps Engine project, used to filter
    * the response. To list all available projects with their IDs, send a Projects:
@@ -1577,7 +1577,7 @@ class Google_Service_MapsEngine_Assets_Resource extends Google_Service_Resource
    * this time.
    * @opt_param string role The role parameter indicates that the response should
    * only contain assets where the current user has the specified level of access.
-   * @opt_param string type A comma separated list of asset types. Returned assets
+   * @opt_param string type A comma-separated list of asset types. Returned assets
    * will have one of the types from the provided list. Supported values are
    * 'map', 'layer', 'rasterCollection' and 'table'.
    * @return Google_Service_MapsEngine_AssetsListResponse
@@ -1754,7 +1754,7 @@ class Google_Service_MapsEngine_Layers_Resource extends Google_Service_Resource
    * the response. To list all available projects with their IDs, send a Projects:
    * list request. You can also find your project ID as the value of the
    * DashboardPlace:cid URL parameter when signed in to mapsengine.google.com.
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string search An unstructured search string used to filter the set
    * of results based on asset metadata.
@@ -2051,7 +2051,7 @@ class Google_Service_MapsEngine_Maps_Resource extends Google_Service_Resource
    * the response. To list all available projects with their IDs, send a Projects:
    * list request. You can also find your project ID as the value of the
    * DashboardPlace:cid URL parameter when signed in to mapsengine.google.com.
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string search An unstructured search string used to filter the set
    * of results based on asset metadata.
@@ -2387,7 +2387,7 @@ class Google_Service_MapsEngine_RasterCollections_Resource extends Google_Servic
    * the response. To list all available projects with their IDs, send a Projects:
    * list request. You can also find your project ID as the value of the
    * DashboardPlace:cid URL parameter when signed in to mapsengine.google.com.
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string search An unstructured search string used to filter the set
    * of results based on asset metadata.
@@ -2604,7 +2604,7 @@ class Google_Service_MapsEngine_RasterCollectionsRasters_Resource extends Google
    * @opt_param string createdAfter An RFC 3339 formatted date-time value (e.g.
    * 1970-01-01T00:00:00Z). Returned assets will have been created at or after
    * this time.
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string search An unstructured search string used to filter the set
    * of results based on asset metadata.
@@ -2692,7 +2692,7 @@ class Google_Service_MapsEngine_Rasters_Resource extends Google_Service_Resource
    * 1970-01-01T00:00:00Z). Returned assets will have been created at or after
    * this time.
    * @opt_param string processingStatus
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string search An unstructured search string used to filter the set
    * of results based on asset metadata.
@@ -2955,7 +2955,7 @@ class Google_Service_MapsEngine_Tables_Resource extends Google_Service_Resource
    * the response. To list all available projects with their IDs, send a Projects:
    * list request. You can also find your project ID as the value of the
    * DashboardPlace:cid URL parameter when signed in to mapsengine.google.com.
-   * @opt_param string tags A comma separated list of tags. Returned assets will
+   * @opt_param string tags A comma-separated list of tags. Returned assets will
    * contain all the tags from the list.
    * @opt_param string search An unstructured search string used to filter the set
    * of results based on asset metadata.
@@ -3155,7 +3155,7 @@ class Google_Service_MapsEngine_TablesFeatures_Resource extends Google_Service_R
    * Data for information.
    * @opt_param string limit The total number of features to return from the
    * query, irrespective of the number of pages.
-   * @opt_param string include A comma separated list of optional data to include.
+   * @opt_param string include A comma-separated list of optional data to include.
    * Optional data available: schema.
    * @opt_param string where An SQL-like predicate used to filter results.
    * @opt_param string select A SQL-like projection clause used to specify

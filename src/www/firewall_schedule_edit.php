@@ -487,7 +487,7 @@ function addTimeRange(){
     var firstprint = false;
     var tempFriendlyMonthArray = monthstr.split(",");
     var tempFriendlyDayArray = daystr.split(",");
-    var currentDay, firstDay, nextDay, currentMonth, nextMonth, firstDay, firstMonth = "";
+    var currentDay, firstDay, nextDay, firstMonth = 0;
     for (var k=0; k<tempFriendlyMonthArray.length; k++){
       tempstr = tempFriendlyMonthArray[k];
       if (tempstr != ""){
@@ -575,7 +575,7 @@ function addTimeRange(){
 
 
     //get time specified
-    starttimehour =  document.getElementById("starttimehour").value
+    starttimehour =  document.getElementById("starttimehour").value;
     starttimemin = document.getElementById("starttimemin").value;
     stoptimehour = document.getElementById("stoptimehour").value;
     stoptimemin = document.getElementById("stoptimemin").value;
@@ -587,7 +587,7 @@ function addTimeRange(){
     + stoptimemin;
 
     //get description for time range
-    tempdescr = document.getElementById("timerangedescr").value
+    tempdescr = document.getElementById("timerangedescr").value;
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;

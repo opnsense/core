@@ -48,7 +48,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function supportedOptions()
     {
-        return array("plain_config");
+        return array("plain_config", "random_local_port");
     }
 
     /**
@@ -117,9 +117,9 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "lport 0";
         }
 
-        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_cn'])
+        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_subject_name'])
                 && !empty($this->config['validate_server_cn'])) {
-            $conf[] = "verify-x509-name \"{$this->config['server_cn']}\" name";
+            $conf[] = "verify-x509-name \"{$this->config['server_subject_name']}\" subject";
             if (!empty($this->config['server_cert_is_srv'])) {
                 $conf[] = "remote-cert-tls server";
             }

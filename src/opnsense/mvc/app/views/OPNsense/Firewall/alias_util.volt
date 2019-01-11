@@ -2,44 +2,34 @@
     'use strict';
     $( document ).ready(function() {
         // list alias tables on load, link related events when loaded
-        ajaxGet("/api/firewall/alias_util/aliases/", {}, function(data, status) {
-            if (status == "success") {
+        ajaxGet('/api/firewall/alias_util/aliases/', {}, function(data, status) {
+            if (status === "success") {
                 $.each(data, function(key, value) {
                     $('#tablename').append($("<option/>").attr("value", value).text(value));
                 });
                 $('#tablename').selectpicker('refresh');
                 // link change event, change grid content
                 $('#tablename').change(function(){
-                    $("#alias_content").bootgrid('destroy');
-                    $("#alias_content > tbody").empty();
-                    ajaxGet("/api/firewall/alias_util/list/" + $(this).val(), {}, function(data, status) {
-                        if (status == "success") {
-                            $.each(data, function(key, value) {
-                                $("#alias_content > tbody").append(
-                                    $("<tr/>").append($("<td/>").text(value)).append($("<td/>"))
-                                );
-                            });
-                        }
-                        var grid = $("#alias_content").bootgrid({
-                            ajax: false,
-                            selection: false,
-                            multiSelect: false,
+                    $('#alias_content').bootgrid('destroy');
+                    let grid = $('#alias_content').UIBootgrid({
+                        search: '/api/firewall/alias_util/list/' + $(this).val(),
+                        options: {
+                            rowCount: 20,
                             formatters: {
-                                commands: function (column, row)
-                                {
-                                    return "<button type=\"button\" class=\"btn btn-xs btn-default delete-ip\" data-row-id=\"" + row.ip + "\"><span class=\"fa fa-trash-o\"></span></button>";
-                                }
+                                commands: function (column, row) {
+                                    return '<button type="button" class="btn btn-xs btn-default delete-ip" data-row-id="' + row.ip + '"><span class="fa fa-trash-o"></span></button>';
+                                },
                             }
-                        });
-                        grid.on("loaded.rs.jquery.bootgrid", function(){
-                            grid.find(".delete-ip").on("click", function(e) {
-                                ajaxCall(
-                                    "/api/firewall/alias_util/delete/"+$('#tablename').val(),
-                                    {'address': $(this).data('row-id')},
-                                    function(){
-                                        $('#tablename').change();
+                        }
+                    });
+                    grid.on('loaded.rs.jquery.bootgrid', function () {
+                        grid.find('.delete-ip').on('click', function (e) {
+                            ajaxCall(
+                                '/api/firewall/alias_util/delete/' + $('#tablename').val(),
+                                {'address': $(this).data('row-id')},
+                                function () {
+                                    std_bootgrid_reload('alias_content')
                                 });
-                            });
                         });
                     });
                 });
@@ -48,7 +38,7 @@
         });
 
         // flush table.. first ask user if it's ok to do so..
-        $("#flushtable").click(function(event){
+        $("#flushtable").on('click', function(event){
           event.preventDefault();
           BootstrapDialog.show({
             type: BootstrapDialog.TYPE_DANGER,
@@ -70,7 +60,7 @@
           });
         });
 
-        $("#btn_quick_add").click(function(){
+        $("#btn_quick_add").on('click', function(){
             ajaxCall("/api/firewall/alias_util/add/"+$('#tablename').val(),{'address':$("#quick_add").val()},function(){
                 $("#quick_add").val("");
                 $('#tablename').change();
@@ -79,7 +69,7 @@
         });
 
         // update bogons
-        $("#update_bogons").click(function(event){
+        $("#update_bogons").on('click', function(event){
             event.preventDefault();
             $("#update_bogons_progress").addClass("fa fa-spinner fa-pulse");
             ajaxCall("/api/firewall/alias_util/update_bogons", {}, function(){
@@ -143,7 +133,7 @@
         });
 
         // refresh
-        $("#refresh").click(function(){
+        $("#refresh").on('click', function(){
             $('#tablename').change();
         });
 
@@ -208,7 +198,7 @@
                             <thead>
                                 <tr>
                                     <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
-                                    <th data-column-id="idx" data-formatter="commands"></th>
+                                    <th data-column-id="commands" data-formatter="commands"></th>
                                 </tr>
                             </thead>
                             <tbody>

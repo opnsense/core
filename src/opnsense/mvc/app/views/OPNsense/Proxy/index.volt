@@ -156,18 +156,9 @@
                 case "is_resolvable":
                     show_line("pac\\.match\\.hostname");
                     break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
-                    break;
                 case "dns_domain_levels":
                     show_line("pac\\.match\\.domain_level_from");
                     show_line("pac\\.match\\.domain_level_to");
-                    break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
-                    break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
                     break;
                 case "weekday_range":
                     show_line("pac\\.match\\.weekday_from");

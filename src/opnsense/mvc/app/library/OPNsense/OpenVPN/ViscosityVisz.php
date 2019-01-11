@@ -48,7 +48,7 @@ class ViscosityVisz extends PlainOpenVPN
      */
     public function supportedOptions()
     {
-        return array("plain_config", "p12_password");
+        return array("plain_config", "p12_password", "random_local_port");
     }
 
     /**
@@ -61,8 +61,8 @@ class ViscosityVisz extends PlainOpenVPN
 
     /**
      * Create archive
-     * @param $tempdir used temp directory
-     * @param $content_dir full path to viscosity output files
+     * @param string $tempdir used temp directory
+     * @param string $content_dir full path to viscosity output files
      * @return string full (temp)path to
      */
     protected function archive($tempdir, $content_dir)

@@ -43,7 +43,7 @@ if (isset($config['gateways']['gateway_group'])) {
             $gwname = explode("|", $item)[0];
 
             if (!empty($gateways_status[$gwname])) {
-                $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group['name']);
+                $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
                 if (!empty($msg)) {
                     echo $msg . PHP_EOL;
                     $clean = false;

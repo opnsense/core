@@ -197,9 +197,12 @@ class Radius extends Base implements IAuthConnector
 
     /**
      * stop radius accounting
-     * @param $username     user name
-     * @param $sessionid    session id
-     * @param $session_time total time spend on this session
+     * @param string $username user name
+     * @param string $sessionid session id
+     * @param int $session_time total time spent on this session
+     * @param $bytes_in
+     * @param $bytes_out
+     * @param $ip_address
      */
     public function stopAccounting($username, $sessionid, $session_time, $bytes_in, $bytes_out, $ip_address)
     {
@@ -271,9 +274,12 @@ class Radius extends Base implements IAuthConnector
 
     /**
      * update radius accounting (interim update)
-     * @param $username     user name
-     * @param $sessionid    session id
-     * @param $session_time total time spend on this session
+     * @param string $username user name
+     * @param string $sessionid session id
+     * @param int $session_time total time spend on this session
+     * @param $bytes_in
+     * @param $bytes_out
+     * @param $ip_address
      */
     public function updateAccounting($username, $sessionid, $session_time, $bytes_in, $bytes_out, $ip_address)
     {
@@ -346,8 +352,8 @@ class Radius extends Base implements IAuthConnector
 
     /**
      * authenticate user against radius
-     * @param $username username to authenticate
-     * @param $password user password
+     * @param string $username username to authenticate
+     * @param string $password user password
      * @return bool authentication status
      */
     public function authenticate($username, $password)

@@ -34,4 +34,8 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-filter_configure_sync(true);
+if (count($argv) >= 1 && $argv[1] == 'skip_alias' ) {
+    filter_configure_sync(true, false, false);
+} else {
+    filter_configure_sync(true);
+}

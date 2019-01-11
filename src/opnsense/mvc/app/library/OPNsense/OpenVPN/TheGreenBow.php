@@ -124,8 +124,8 @@ class TheGreenBow extends BaseExporter implements IExportProvider
 
         if (!empty($this->config['digest'])) {
             if (strpos($this->config['digest'], "SHA1") !== false) {
-                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "MD5";
-                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "128";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "SHA1";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "160";
             } elseif ($this->config['digest'] == "SHA256") {
                 $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "SHA2";
                 $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "256";
@@ -135,12 +135,20 @@ class TheGreenBow extends BaseExporter implements IExportProvider
             } elseif ($this->config['digest'] == "SHA512") {
                 $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "SHA2";
                 $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "SHA512";
+            } else {
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Auth = "MD5";
+                $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->AuthSize = "128";
             }
         }
         if (!empty($this->config['compression'])) {
             $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Compression = 'yes';
         } else {
             $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Compression = 'no';
+        }
+
+        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_subject_name'])
+            && !empty($this->config['validate_server_cn'])) {
+            $output->cfg_ssl->cfg_sslconnection->cfg_tunnelestablish->GatewayName = $this->config['server_subject_name'];
         }
 
         $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->RenegSeconds = $this->config['reneg-sec'];

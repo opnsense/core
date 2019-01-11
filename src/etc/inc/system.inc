@@ -288,18 +288,24 @@ function get_searchdomains()
     return array_unique($master_list);
 }
 
-function get_nameservers($realif = '')
+function get_nameservers($interface = null)
 {
     $master_list = array();
 
-    $dns_listsv4 = glob("/var/etc/nameserver_{$realif}*");
-    /* XXX not a great design, please switch */
-    $dns_listsv6 = glob("/var/etc/nameserver_v6{$realif}*");
+    $dns_lists = glob('/var/etc/nameserver_*');
 
-    $dns_lists = array_unique(array_merge($dns_listsv4, $dns_listsv6));
+    if (!empty($interface)) {
+        /* only acquire servers provided for this interface */
+        $realif = get_real_interface($interface);
+        $realifv6 = get_real_interface($interface, 'inet6');
+        $dns_lists = array(
+            "/var/etc/nameserver_{$realif}",
+            "/var/etc/nameserver_v6{$realifv6}",
+        );
+    }
 
     foreach ($dns_lists as $fdns) {
-        $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $contents = @file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!is_array($contents)) {
             continue;
         }
@@ -332,7 +338,7 @@ function system_hosts_generate($verbose = false)
             $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
         }
     } else {
-        foreach (get_configured_interface_with_descr() as $sysif => $unused) {
+        foreach (array_keys(get_configured_interface_with_descr()) as $sysif) {
             if (!interface_has_gateway($sysif)) {
                 $cfgip = get_interface_ip($sysif);
                 if (is_ipaddr($cfgip)) {

@@ -163,7 +163,7 @@ if ($intnum > $count) {
 }
 
 $index = 1;
-foreach ($ifdescrs as $ifname => $unused) {
+foreach (array_keys($ifdescrs) as $ifname) {
     if ($intnum == $index) {
         $interface = $ifname;
         break;
@@ -362,11 +362,9 @@ function console_configure_ip_address($version)
                         if ($intip == gen_subnet($intip, $intbits)) {
                             echo 'You cannot set network address to an interface';
                             continue 2;
-                            $intbits_ok = false;
                         } elseif ($intip == gen_subnet_max($intip, $intbits)) {
                             echo 'You cannot set broadcast address to an interface';
                             continue 2;
-                            $intbits_ok = false;
                         }
                     }
                 } while (!$intbits_ok);

@@ -4,6 +4,7 @@ cache.active:/var/squid/cache/active
 externalACLs.conf:/usr/local/etc/squid/externalACLs.conf
 newsyslog.conf:/etc/newsyslog.conf.d/squid
 nobumpsites.acl:/usr/local/etc/squid/nobumpsites.acl
+parentproxy.conf:/usr/local/etc/squid/pre-auth/parentproxy.conf
 post-auth.conf:/usr/local/etc/squid/post-auth/dummy.conf
 pre-auth.conf:/usr/local/etc/squid/pre-auth/dummy.conf
 rc.conf.d:/etc/rc.conf.d/squid/squid

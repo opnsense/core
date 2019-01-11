@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -122,6 +122,7 @@
      */
     function upgrade() {
         $('#updatelist').hide();
+        $('#update_status').html('');
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
@@ -145,6 +146,7 @@
     function audit($type) {
         $.upgrade_action = 'audit';
         $('#updatelist').hide();
+        $('#update_status').html('');
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
@@ -247,6 +249,7 @@
     function action(pkg_act, pkg_name)
     {
         $('#updatelist').hide();
+        $('#update_status').html('');
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
@@ -363,19 +366,25 @@
     /**
      * show package info
      */
-    function packagesInfo(UNUSED_XXX) {
+    function packagesInfo(reset) {
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
             var installed = {};
 
-            $('#versioninfo > tbody').empty();
-            $('#versioninfo > tbody').append(
-                '<tr>' +
-                '<td>' + data['product_version'] + '</td>' +
-                '<td>{{ lang._('Click to check for updates.') }}</td>' +
-                '</tr>'
-            );
+            if (reset === true) {
+                ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
+                    if (data['log'] != undefined && data['log'] != '') {
+                        $('#update_status').html(data['log']);
+                    } else {
+                        $('#update_status').html('{{ lang._('No previous action log found.') }}');
+                    }
+                    $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
+                });
+
+                $('#update_status').show();
+                $('#updatelist').hide();
+            }
 
             var local_count = 0;
             var plugin_count = 0;
@@ -767,25 +776,11 @@
             </ul>
             <div class="tab-content content-box">
                 <div id="updates" class="tab-pane fade in active">
-                    <table class="table table-striped table-condensed table-responsive" id="versioninfo">
-                        <thead>
-                            <tr>
-                              <th>{{ lang._('Current version') }}</th>
-                              <th>{{ lang._('Next version') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                              <td>{{ lang._('Loading...') }}</td>
-                              <td>{{ lang._('Loading...') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-striped table-condensed table-responsive" id="updatelist">
+                    <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
-                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">

@@ -173,8 +173,10 @@ class Downloader(object):
             if self.is_supported(check_url):
                 version_fetch = self.fetch(url=check_url, auth=auth, headers=headers)
                 if version_fetch:
+                    version_response = version_fetch['handle'].read()
                     hash_value = [json.dumps(input_filter), json.dumps(auth),
-                                  json.dumps(headers), version_fetch['handle'].read()]
+                                  json.dumps(headers), version_response]
+                    syslog.syslog(syslog.LOG_NOTICE, 'version response for %s : %s' % (check_url, version_response))
                     return hashlib.md5('\n'.join(hash_value)).hexdigest()
         return None
 
@@ -218,7 +220,7 @@ class Downloader(object):
             except IOError:
                 syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                 return None
-            syslog.syslog(syslog.LOG_INFO, 'download completed for %s' % frm_url)
+            syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)
 
     @staticmethod
     def is_supported(url):
