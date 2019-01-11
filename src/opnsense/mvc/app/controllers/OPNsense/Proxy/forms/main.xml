@@ -41,7 +41,7 @@
                 <label>Ignore hosts in access.log</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Type subnets/addresses you want to ignore for the access.log. You can also paste a comma-separated list into this field.</help>
+                <help>Type subnets/addresses you want to ignore for the access.log.</help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -51,7 +51,7 @@
                 <label>Use alternate DNS-servers</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Type IPs of alternative DNS servers you like to use. You can also paste a comma-seperated list into this field.</help>
+                <help>Type IPs of alternative DNS servers you like to use.</help>
                 <hint>Type IP addresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -287,7 +287,7 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <allownew>true</allownew>
-                <help>Create a list of sites which may not be inspected, for example bank sites. Prefix the domain with a . to accept all subdomains (e.g. .google.com). You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).</help>
+                <help>Create a list of sites which may not be inspected, for example bank sites. Prefix the domain with a . to accept all subdomains (e.g. .google.com).</help>
             </field>
             <field>
                 <id>proxy.forward.ssl_crtd_storage_max_size</id>
@@ -338,7 +338,7 @@
                 <label>Allowed Subnets</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. You can also paste a comma-separated list into this field.</help>
+                <help>Type subnets you want to allow access to the proxy server.</help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
@@ -347,7 +347,7 @@
                 <label>Unrestricted IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. You can also paste a comma-separated list into this field.</help>
+                <help>Type IP addresses you want to allow access to the proxy server.</help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -356,7 +356,7 @@
                 <label>Banned host IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. You can also paste a comma-separated list into this field.</help>
+                <help>Type IP addresses you want to deny access to the proxy server.</help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -365,7 +365,7 @@
                 <label>Whitelist</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Whitelist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif" You can also paste a comma-separated list into this field.</help>
+                <help>Whitelist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." matches on "http(s)://textONLY.mydomain.*"; "\.gif$" matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" matches on "\123.gif" but not on "\test.gif"</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -374,7 +374,7 @@
                 <label>Blacklist</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Blacklist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif". You can also paste a comma-separated list into this field.</help>
+                <help>Blacklist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." matches on "http(s)://textONLY.mydomain.*"; "\.gif$" matches on "*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" matches on "\123.gif" but not on "\test.gif"</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -383,7 +383,7 @@
                 <label>Block browser/user-agents</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: "^(.)+Macintosh(.)+Firefox/37\.0" -> matches on "Macintosh version of Firefox revision 37.0"; "^Mozilla" -> matches on "all Mozilla based browsers". You can also paste a commanseparated list into this field.</help>
+                <help>Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: "^(.)+Macintosh(.)+Firefox/37\.0" matches on "Macintosh version of Firefox revision 37.0"; "^Mozilla" matches on "all Mozilla based browsers"</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -393,7 +393,7 @@
                 <label>Block specific MIME type reply</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: "video/flv" -> matches on "Flash Video"; "application/x-javascript" -> matches on "javascripts". You can also paste a comma-separated list into this field.</help>
+                <help>Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: "video/flv" matches on "Flash Video"; "application/x-javascript" matches on "javascripts"</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -403,7 +403,7 @@
                 <label>Allowed destination TCP port</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh). You can also paste a comma-separated list into this field.</help>
+                <help>Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).</help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -413,7 +413,7 @@
                 <label>Allowed SSL ports</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh). You can also paste a comma-separated list into this field.</help>
+                <help>Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).</help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -525,7 +525,7 @@
                 <label>Exclusion List</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "https://([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif". You can also paste a comma-separated list into this field.</help>
+                <help>Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" matches on "*.mydomain.com"; "https://([a-zA-Z]+)\.mydomain\." matches on "http(s)://textONLY.mydomain.*"; "\.gif$" matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" matches on "\123.gif" but not on "\test.gif"</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
