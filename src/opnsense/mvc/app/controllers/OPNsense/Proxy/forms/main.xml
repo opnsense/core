@@ -33,7 +33,7 @@
                 <id>proxy.general.logging.enable.storeLog</id>
                 <label>Enable store logging</label>
                 <type>checkbox</type>
-                <help><![CDATA[Enable store logging.]]></help>
+                <help>Enable store logging.</help>
                 <advanced>true</advanced>
             </field>
             <field>
@@ -41,7 +41,7 @@
                 <label>Ignore hosts in access.log</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Type subnets/addresses you want to ignore for the access.log. You can also paste a comma-separated list into this field.</help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -51,7 +51,7 @@
                 <label>Use alternate DNS-servers</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Type IPs of alternative DNS servers you like to use. You can also paste a comma-seperated list into this field.</help>
                 <hint>Type IP addresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -60,55 +60,49 @@
                 <id>proxy.general.dnsV4First</id>
                 <label>Enable DNS v4 first</label>
                 <type>checkbox</type>
-                <help><![CDATA[This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first.
-            Squid will still perform both IPv6 and IPv4 DNS lookups before connecting.
-            <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
-                connectivity is used (and tested). Hiding network problems
-                which would otherwise be detected and warned about.</div>]]></help>
+                <help>This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first. Squid will still perform both IPv6 and IPv4 DNS lookups before connecting. This option will restrict the situations under which IPv6 connectivity is used (and tested) and will hide network problems which would otherwise be detected and warned about.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.useViaHeader</id>
                 <label>Use Via header</label>
                 <type>checkbox</type>
-                <help><![CDATA[If set (default), Squid will include a Via header in requests and replies as required by RFC2616.]]></help>
+                <help>If set (default), Squid will include a Via header in requests and replies as required by RFC2616.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.forwardedForHandling</id>
                 <label>X-Forwarded-For header handling</label>
                 <type>dropdown</type>
-                <help><![CDATA[Select what to do with X-Forwarded-For header.]]></help>
+                <help>Select what to do with X-Forwarded-For header. If set to: "on", Squid will append your client's IP address in the HTTP requests it forwards. By default it looks like X-Forwarded-For: 192.1.2.3; If set to: "off", it will appear as X-Forwarded-For: unknown; "transparent", Squid will not alter the X-Forwarded-For header in any way; If set to: "delete", Squid will delete the entire X-Forwarded-For header; If set to: "truncate", Squid will remove all existing X-Forwarded-For entries, and place the client IP as the sole entry.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.VisibleHostname</id>
                 <label>Visible Hostname</label>
                 <type>text</type>
-                <help><![CDATA[This is the hostname to be displayed in proxy server error messages.]]></help>
+                <help>This is the hostname to be displayed in proxy server error messages.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.VisibleEmail</id>
                 <label>Administrator's Email</label>
                 <type>text</type>
-                <help><![CDATA[This is the email address displayed in error messages to the users.]]></help>
+                <help>This is the email address displayed in error messages to the users.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.suppressVersion</id>
                 <label>Suppress version string</label>
                 <type>checkbox</type>
-                <help><![CDATA[Suppress Squid version string info in HTTP headers and HTML error pages.]]></help>
+                <help>Suppress Squid version string info in HTTP headers and HTML error pages.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.uriWhitespaceHandling</id>
                 <label>Whitespace handling of URI</label>
                 <type>dropdown</type>
-                <help><![CDATA[Select what to do with URI that contain whitespaces.<br/>
-            <div class="text-info"><b>NOTE:</b> the current Squid implementation of encode and chop violates
-                RFC2616 by not using a 301 redirect after altering the URL.</div>]]></help>
+                <help>Select what to do with URI that contain whitespaces. The current Squid implementation of encode and chop violates RFC2616 by not using a 301 redirect after altering the URL.</help>
                 <advanced>true</advanced>
             </field>
         </subtab>
@@ -117,47 +111,47 @@
                 <id>proxy.general.cache.local.cache_mem</id>
                 <label>Memory Cache size in Megabytes</label>
                 <type>text</type>
-                <help><![CDATA[Enter the cache memory size to use or zero to disable completely.]]></help>
+                <help>Enter the cache memory size to use or zero to disable completely.</help>
             </field>
             <field>
                 <id>proxy.general.cache.local.enabled</id>
                 <label>Enable local cache</label>
                 <type>checkbox</type>
-                <help><![CDATA[Enable or disable the local cache. Only UFS directory cache type is supported. Do not enable on embedded systems with SD or CF cards without the /var MFS option as this will wear down your drive.]]></help>
+                <help>Enable or disable the local cache. Only UFS directory cache type is supported. Do not enable on embedded systems with SD or CF cards without the /var MFS option as this will wear down your drive.</help>
             </field>
             <field>
                 <id>proxy.general.cache.local.size</id>
                 <label>Cache size in Megabytes</label>
                 <type>text</type>
-                <help><![CDATA[Enter the storage size for the local cache (default is 100).]]></help>
+                <help>Enter the storage size for the local cache (default is 100).</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.cache.local.directory</id>
                 <label>Cache directory location</label>
                 <type>text</type>
-                <help><![CDATA[Enter the directory location for the local cache (default is /var/squid/cache).]]></help>
+                <help>Enter the directory location for the local cache (default is /var/squid/cache).</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.cache.local.l1</id>
                 <label>Number of first-level subdirectories</label>
                 <type>text</type>
-                <help><![CDATA[Enter the number of first-level subdirectories for the local cache (default is 16).]]></help>
+                <help>Enter the number of first-level subdirectories for the local cache (default is 16).</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.cache.local.l2</id>
                 <label>Number of second-level subdirectories</label>
                 <type>text</type>
-                <help><![CDATA[Enter the number of first-level subdirectories for the local cache (default is 256).]]></help>
+                <help>Enter the number of first-level subdirectories for the local cache (default is 256).</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.cache.local.maximum_object_size</id>
                 <label>Maximum object size (MB)</label>
                 <type>text</type>
-                <help><![CDATA[Set the maximum object size (default 4MB when left empty).]]></help>
+                <help>Set the maximum object size (default 4MB when left empty).</help>
                 <advanced>true</advanced>
             </field>
             <field>
@@ -178,31 +172,31 @@
                 <id>proxy.general.traffic.enabled</id>
                 <label>Enable traffic management.</label>
                 <type>checkbox</type>
-                <help><![CDATA[Enable or disable traffic management.]]></help>
+                <help>Enable or disable traffic management.</help>
             </field>
             <field>
                 <id>proxy.general.traffic.maxDownloadSize</id>
                 <label>Maximum download size (kB)</label>
                 <type>text</type>
-                <help><![CDATA[Enter the maximum size for downloads in kilobytes (leave empty to disable).]]></help>
+                <help>Enter the maximum size for downloads in kilobytes (leave empty to disable).</help>
             </field>
             <field>
                 <id>proxy.general.traffic.maxUploadSize</id>
                 <label>Maximum upload size (kB)</label>
                 <type>text</type>
-                <help><![CDATA[Enter the maximum size for uploads in kilobytes (leave empty to disable).]]></help>
+                <help>Enter the maximum size for uploads in kilobytes (leave empty to disable).</help>
             </field>
             <field>
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
                 <label>Overall bandwidth throttling (kbps)</label>
                 <type>text</type>
-                <help><![CDATA[Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).]]></help>
+                <help>Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).</help>
             </field>
             <field>
                 <id>proxy.general.traffic.perHostTrotteling</id>
                 <label>Per host bandwidth throttling (kbps)</label>
                 <type>text</type>
-                <help><![CDATA[Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).]]></help>
+                <help>Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).</help>
             </field>
         </subtab>
         <subtab id="proxy-general-parentproxy" description="Parent Proxy Settings">
@@ -248,63 +242,44 @@
                 <id>proxy.forward.interfaces</id>
                 <label>Proxy interfaces</label>
                 <type>select_multiple</type>
-                <help><![CDATA[Select interface(s) the proxy will bind to.]]></help>
+                <help>Select interface(s) the proxy will bind to.</help>
                 <hint>Type or select interface.</hint>
             </field>
             <field>
                 <id>proxy.forward.port</id>
                 <label>Proxy port</label>
                 <type>text</type>
-                <help><![CDATA[The port the proxy service will listen to.]]></help>
+                <help>The port the proxy service will listen to.</help>
             </field>
             <field>
                 <id>proxy.forward.transparentMode</id>
                 <label>Enable Transparent HTTP proxy</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-                  Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server.
-                  You may leave the proxy interfaces empty, but remember to set a valid ACL in that case.
-                  <br/>
-                  <a href="/firewall_nat_edit.php?template=transparent_proxy"> Add a new firewall rule </a>
-                  ]]></help>
+                <help><![CDATA[Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server. You may leave the proxy interfaces empty, but remember to set a valid ACL in that case. <a href="/firewall_nat_edit.php?template=transparent_proxy"> Add a new firewall rule </a>]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslbump</id>
                 <label>Enable SSL inspection</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-                  Enable SSL inspection mode,
-                  which allows to log HTTPS connections information, such as requested URL and/or
-                  make the proxy act as a man in the middle between the internet and your clients.<br/>
-                  Be aware of the security implications before enabling this option.
-                  <br/><br/>
-                  If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.<br/>
-                  <a href="/firewall_nat_edit.php?template=transparent_proxy&https=1">Add a new firewall rule </a>
-                  ]]></help>
+                <help><![CDATA[Enable SSL inspection mode, which allows to log HTTPS connections information, such as requested URL and/or make the proxy act as a man in the middle between the internet and your clients. Be aware of the security implications before enabling this option. If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic.<a href="/firewall_nat_edit.php?template=transparent_proxy&https=1">Add a new firewall rule </a>]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslurlonly</id>
                 <label>Log SNI information only</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-                  Do not decode and/or filter SSL content, only log requested domains and IP addresses.<br/>
-                  Some old servers may not provide SNI, so their addresses will not be indicated.<br/>Get more information about
-                  <a href="https://wikipedia.org/wiki/Server_Name_Indication" target="_blank">Server Name Indication</a>.
-                  ]]></help>
+                <help>Do not decode and/or filter SSL content, only log requested domains and IP addresses. Some old servers may not provide SNI, so their addresses will not be indicated.</help>
             </field>
             <field>
                 <id>proxy.forward.sslbumpport</id>
                 <label>SSL Proxy port</label>
                 <type>text</type>
-                <help><![CDATA[The port the ssl proxy service will listen to.]]></help>
+                <help>The port the ssl proxy service will listen to.</help>
             </field>
             <field>
                 <id>proxy.forward.sslcertificate</id>
                 <label>CA to use</label>
                 <type>dropdown</type>
-                <help><![CDATA[
-                  Select a Certificate Authority to use. To create a CA, go to <a href="/system_camanager.php">CA Manager</a>.
-                  ]]></help>
+                <help><![CDATA[Select a Certificate Authority to use. To create a CA, go to <a href="/system_camanager.php">CA Manager</a>.]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslnobumpsites</id>
@@ -312,31 +287,27 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <allownew>true</allownew>
-                <help><![CDATA[
-                  Create a list of sites which may not be inspected, for example bank sites.<br/>
-                  Prefix the domain with a . to accept all subdomains (e.g. .google.com).<br/>
-                  You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).
-                  ]]></help>
+                <help>Create a list of sites which may not be inspected, for example bank sites. Prefix the domain with a . to accept all subdomains (e.g. .google.com). You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).</help>
             </field>
             <field>
                 <id>proxy.forward.ssl_crtd_storage_max_size</id>
                 <label>SSL cache size</label>
                 <type>text</type>
-                <help><![CDATA[Enter the maximum size (in MB) to use for SSL certificates.]]></help>
+                <help>Enter the maximum size (in MB) to use for SSL certificates.</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.forward.sslcrtd_children</id>
                 <label>SSL cert workers</label>
                 <type>text</type>
-                <help><![CDATA[Enter the number of ssl certificate workers to use (sslcrtd_children).]]></help>
+                <help>Enter the number of ssl certificate workers to use (sslcrtd_children).</help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.forward.addACLforInterfaceSubnets</id>
                 <label>Allow interface subnets</label>
                 <type>checkbox</type>
-                <help><![CDATA[When enabled the subnets of the selected interfaces will be added to the allow access list.]]></help>
+                <help>When enabled the subnets of the selected interfaces will be added to the allow access list.</help>
                 <advanced>true</advanced>
             </field>
         </subtab>
@@ -345,20 +316,20 @@
                 <id>proxy.forward.ftpInterfaces</id>
                 <label>FTP proxy interfaces</label>
                 <type>select_multiple</type>
-                <help><![CDATA[Select interface(s) the ftp proxy will bind to.]]></help>
+                <help>Select interface(s) the ftp proxy will bind to.</help>
                 <hint>Type or select interface (Leave blank to disable ftp proxy).</hint>
             </field>
             <field>
                 <id>proxy.forward.ftpPort</id>
                 <label>FTP proxy port</label>
                 <type>text</type>
-                <help><![CDATA[The port the proxy service will listen to.]]></help>
+                <help>The port the proxy service will listen to.</help>
             </field>
             <field>
                 <id>proxy.forward.ftpTransparentMode</id>
                 <label>Enable Transparent mode</label>
                 <type>checkbox</type>
-                <help><![CDATA[Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.]]></help>
+                <help>Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.</help>
             </field>
         </subtab>
         <subtab id="proxy-forward-acl" description="Access Control List">
@@ -367,7 +338,7 @@
                 <label>Allowed Subnets</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. You can also paste a comma-separated list into this field.</help>
                 <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
@@ -376,7 +347,7 @@
                 <label>Unrestricted IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. You can also paste a comma-separated list into this field.</help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -385,7 +356,7 @@
                 <label>Banned host IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. You can also paste a comma-separated list into this field.</help>
                 <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -394,16 +365,7 @@
                 <label>Whitelist</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Whitelist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Whitelist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif" You can also paste a comma-separated list into this field.</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -412,16 +374,7 @@
                 <label>Blacklist</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Blacklist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Blacklist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif". You can also paste a comma-separated list into this field.</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -430,14 +383,7 @@
                 <label>Block browser/user-agents</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Block user-agents.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">^(.)+Macintosh(.)+Firefox/37\.0</b> -> matches on <b>Macintosh version of Firefox revision 37.0</b><br/>
-            <b class="text-primary">^Mozilla</b> -> matches on <b>all Mozilla based browsers</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: "^(.)+Macintosh(.)+Firefox/37\.0" -> matches on "Macintosh version of Firefox revision 37.0"; "^Mozilla" -> matches on "all Mozilla based browsers". You can also paste a commanseparated list into this field.</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -447,14 +393,7 @@
                 <label>Block specific MIME type reply</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Block specific MIME type reply.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">video/flv</b> -> matches on <b>Flash Video</b><br/>
-            <b class="text-primary">application/x-javascript</b> -> matches on <b>javascripts</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: "video/flv" -> matches on "Flash Video"; "application/x-javascript" -> matches on "javascripts". You can also paste a comma-separated list into this field.</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -464,8 +403,7 @@
                 <label>Allowed destination TCP port</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh). You can also paste a comma-separated list into this field.</help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -475,8 +413,7 @@
                 <label>Allowed SSL ports</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh). You can also paste a comma-separated list into this field.</help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -488,7 +425,7 @@
                 <label>Enable ICAP</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[If this checkbox is checked, you can use an ICAP server to filter or replace content.]]></help>
+                <help>If this checkbox is checked, you can use an ICAP server to filter or replace content.</help>
                 <hint>Select if you want to use ICAP.</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
@@ -498,7 +435,7 @@
                 <label>Request Modify URL</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Enter the url where the REQMOD requests should be sent to.]]></help>
+                <help>Enter the url where the REQMOD requests should be sent to.</help>
                 <hint>Enter the URL of the ICAP Server</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
@@ -508,7 +445,7 @@
                 <label>Response Modify URL</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Enter the url where the RESPMOD requests should be sent to.]]></help>
+                <help>Enter the url where the RESPMOD requests should be sent to.</help>
                 <hint>Enter the URL of the ICAP Server</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
@@ -518,7 +455,7 @@
                 <label>Default Options TTL</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Default ttl]]></help>
+                <help>Default ttl</help>
                 <hint>Enter the default ttl.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -528,7 +465,7 @@
                 <label>Send Client IP</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[If you enable this option, the client IP address will be sent to the ICAP server. This can be useful if you want to filter traffic based on IP addresses.]]></help>
+                <help>If you enable this option, the client IP address will be sent to the ICAP server. This can be useful if you want to filter traffic based on IP addresses.</help>
                 <hint>Send the client IP address to the ICAP server.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -538,7 +475,7 @@
                 <label>Send Username</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames. Note, that authentication is required to use usernames.]]></help>
+                <help>If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames. Authentication is required to use usernames.</help>
                 <hint>Check if the username should be sent to the ICAP server.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -548,7 +485,7 @@
                 <label>Encode Username</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[Use this option if your usernames need to be encoded.]]></help>
+                <help>Use this option if your usernames need to be encoded.</help>
                 <hint>Check if you want to encode the username using base64.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -558,7 +495,7 @@
                 <label>Username Header</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[The header which should be used to send the username to the ICAP server.]]></help>
+                <help>The header which should be used to send the username to the ICAP server.</help>
                 <hint>Enter the name of the header.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -568,7 +505,7 @@
                 <label>Enable Preview</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance.]]></help>
+                <help>If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance.</help>
                 <hint>Enable if you want to use previews.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -578,7 +515,7 @@
                 <label>Preview Size</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Enter the size of the preview which is sent to the ICAP server.]]></help>
+                <help>Enter the size of the preview which is sent to the ICAP server.</help>
                 <hint>Enter the size of the preview.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -588,16 +525,7 @@
                 <label>Exclusion List</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Exclusion list destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^https?:\/\/([a-zA-Z]+)\.mydomain\.</b> -> matches on <b>http(s)://textONLY.mydomain.*</b><br/>
-            <b class="text-primary">\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma-separated list into this field.</div>]]></help>
+                <help>Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" -> matches on "*.mydomain.com"; "https://([a-zA-Z]+)\.mydomain\." -> matches on "http(s)://textONLY.mydomain.*"; "\.gif$" -> matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" -> matches on "\123.gif" but not on "\test.gif". You can also paste a comma-separated list into this field.</help>
                 <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
@@ -607,26 +535,25 @@
                 <id>proxy.forward.authentication.method</id>
                 <label>Authentication method</label>
                 <type>select_multiple</type>
-                <help><![CDATA[Select Authentication method]]></help>
+                <help>Select Authentication method</help>
             </field>
             <field>
                 <id>proxy.forward.authentication.realm</id>
                 <label>Authentication Prompt</label>
                 <type>text</type>
-                <help><![CDATA[The prompt will be displayed in the authentication request window.]]></help>
+                <help>The prompt will be displayed in the authentication request window.</help>
             </field>
             <field>
                 <id>proxy.forward.authentication.credentialsttl</id>
                 <label>Authentication TTL (hours)</label>
                 <type>text</type>
-                <help><![CDATA[This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
-            When the TTL expires, the user will be prompted for credentials again.]]></help>
+                <help>This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live). When the TTL expires, the user will be prompted for credentials again.</help>
             </field>
             <field>
                 <id>proxy.forward.authentication.children</id>
                 <label>Authentication processes</label>
                 <type>text</type>
-                <help><![CDATA[The total number of authenticator processes to spawn.]]></help>
+                <help>The total number of authenticator processes to spawn.</help>
             </field>
         </subtab>
         <subtab id="proxy-forward-snmp" description="SNMP Agent Settings">
