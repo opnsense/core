@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2017-2018 EURO-LOG AG
+ *    Copyright (C) 2017-2019 EURO-LOG AG
  *
  *    All rights reserved.
  *

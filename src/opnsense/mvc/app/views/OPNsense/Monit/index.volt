@@ -1,6 +1,6 @@
 {#
 
-Copyright © 2017-2018 by EURO-LOG AG
+Copyright © 2017-2019 by EURO-LOG AG
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -94,7 +94,7 @@ POSSIBILITY OF SUCH DAMAGE.
              $('#btnImportSystemNotificationProgress').removeClass("fa fa-spinner fa-pulse");
              $('#btnImportSystemNotification').blur();
              ajaxCall("/api/monit/service/status", {}, function(data,status) {
-                mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){condition
+                mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
                     formatTokenizersUI();
                     $('.selectpicker').selectpicker('refresh');
                     isSubsystemDirty();
