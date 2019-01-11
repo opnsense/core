@@ -1,0 +1,5 @@
+<menu>
+    <Lobby order="10" cssClass="fa fa-laptop">
+        <License order="1" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
+    </Lobby>
+</menu>
