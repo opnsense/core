@@ -40,7 +40,7 @@ CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
-CORE_ABI?=	18.7
+CORE_ABI?=	19.1
 CORE_ARCH?=	${ARCH}
 CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
@@ -141,7 +141,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			suricata${CORE_SURICATA} \
-			syslog-ng \
 			syslogd \
 			unbound \
 			wpa_supplicant \
