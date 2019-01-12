@@ -34,7 +34,7 @@
         </mirror>
         <mirror>
             <url>http://mirror.as24220.net/opnsense</url>
-            <description>Hostcentral, (HTTP, Melbourne, Australia)</description>
+            <description>Hostcentral (HTTP, Melbourne, Australia)</description>
         </mirror>
         <mirror>
             <url>https://opnsense-mirror.hiho.ch</url>
