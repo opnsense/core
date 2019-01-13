@@ -2045,7 +2045,7 @@ include("head.inc");
                               </table>
                             </div>
                             <div class="hidden" data-for="help_for_gateway">
-                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
                                           'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
@@ -2606,7 +2606,7 @@ include("head.inc");
                               </table>
                             </div>
                             <div class="hidden" data-for="help_for_gatewayv6">
-                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
                                           'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
