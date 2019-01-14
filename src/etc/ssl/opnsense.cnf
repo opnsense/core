@@ -373,7 +373,6 @@ keyUsage = digitalSignature, keyEncipherment
 [ combined_server_client ]
 
 basicConstraints=CA:FALSE
-nsCertType			   = server, client
 nsComment			   = "OPNsense Generated Combined Client/Server Certificate"
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer:always
