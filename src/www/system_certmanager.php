@@ -864,6 +864,7 @@ $( document ).ready(function() {
                     <select name="cert_type">
                         <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? 'selected="selected"' : '';?>> <?=gettext("Client Certificate");?> </option>
                         <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? 'selected="selected"' : '';?>> <?=gettext("Server Certificate");?> </option>
+                        <option value="combined_server_client" <?=$pconfig['cert_type'] == 'combined_server_client' ? 'selected="selected"' : '';?>> <?=gettext("Combined Client/Server Certificate");?> </option>
                         <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? 'selected="selected"' : '';?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
                     <div class="hidden" data-for="help_for_digest_cert_type">
