@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
-# connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
+# connection: error|timeout|unauthenticated|untrusted|misconfigured|unresolved|busy|ok
 # repository: error|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
@@ -97,6 +97,10 @@ if [ "$pkg_running" == "" ]; then
         elif grep -q 'Authentication error' $tmp_pkg_update_file; then
           # TLS or authentication error
           connection="unauthenticated"
+          timer=0
+        elif grep -q 'No trusted public keys found' $tmp_pkg_update_file; then
+          # fingerprint mismatch
+          connection="untrusted"
           timer=0
         fi
       fi
