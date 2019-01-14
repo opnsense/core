@@ -40,8 +40,8 @@ use \OPNsense\Base\UIModelGrid;
  */
 class SettingsController extends ApiMutableModelControllerBase
 {
-    static protected $internalModelName = 'proxy';
-    static protected $internalModelClass = '\OPNsense\Proxy\Proxy';
+    protected static $internalModelName = 'proxy';
+    protected static $internalModelClass = '\OPNsense\Proxy\Proxy';
 
     /**
      *

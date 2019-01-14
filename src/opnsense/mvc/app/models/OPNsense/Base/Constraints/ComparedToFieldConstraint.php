@@ -60,9 +60,11 @@ class ComparedToFieldConstraint extends BaseConstraint
 
             if (!((!$this->isEmpty($node) && !$this->isEmpty($other_node_content)) && // check if all fields are set
                 is_numeric((string)$node) && is_numeric((string)$other_node_content) && // check if both are numeric
-                $this->is_contraint_fulfilled($operator,
-                    floatval((string)$node), floatval((string)$other_node_content)))) {
-
+                $this->is_contraint_fulfilled(
+                    $operator,
+                    floatval((string)$node),
+                    floatval((string)$other_node_content)
+                ))) {
                 $this->appendMessage($validator, $attribute);
             }
         }
@@ -75,7 +77,8 @@ class ComparedToFieldConstraint extends BaseConstraint
      * @param $foreign_value float the value of the referenced field
      * @return bool if the contraint is fulfilled
      */
-    private function is_contraint_fulfilled($operator, $our_value, $foreign_value) {
+    private function is_contraint_fulfilled($operator, $our_value, $foreign_value)
+    {
         switch ($operator) {
             case 'gt':
                 return $our_value > $foreign_value;

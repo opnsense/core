@@ -45,12 +45,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * @var string this implementations internal model name to use (in set/get output)
      */
-    static protected $internalModelName = null;
+    protected static $internalModelName = null;
 
     /**
      * @var string model class name to use
      */
-    static protected $internalModelClass = null;
+    protected static $internalModelClass = null;
 
     /**
      * @var null|BaseModel model object to work on

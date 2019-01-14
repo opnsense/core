@@ -43,22 +43,22 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     /**
      * @var string this implementations internal model service to use
      */
-    static protected $internalServiceName = null;
+    protected static $internalServiceName = null;
 
     /**
      * @var string model class name to use
      */
-    static protected $internalServiceClass = null;
+    protected static $internalServiceClass = null;
 
     /**
      * @var string model template name to use
      */
-    static protected $internalServiceTemplate = null;
+    protected static $internalServiceTemplate = null;
 
     /**
      * @var string model enabled xpath to use
      */
-    static protected $internalServiceEnabled = null;
+    protected static $internalServiceEnabled = null;
 
     /**
      * @var null|BaseModel model object to work on

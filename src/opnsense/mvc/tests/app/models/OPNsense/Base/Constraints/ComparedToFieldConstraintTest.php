@@ -38,7 +38,8 @@ use OPNsense\Base\FieldTypes\IntegerField;
 class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
 {
     // lesser then
-    public function test_if_it_validates_number_ranges_correctly_with_lt_and_no_error() {
+    public function test_if_it_validates_number_ranges_correctly_with_lt_and_no_error()
+    {
         $validator = new \Phalcon\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
@@ -47,7 +48,8 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true, $ret);
     }
 
-    public function test_if_it_validates_number_ranges_correctly_with_lt_and_error() {
+    public function test_if_it_validates_number_ranges_correctly_with_lt_and_error()
+    {
         $validator = new \Phalcon\Validation();
         $validate = $this->make_validator(3, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
@@ -56,7 +58,8 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true, $ret);
     }
     // greater then
-    public function test_if_it_validates_number_ranges_correctly_with_gt_and_no_error() {
+    public function test_if_it_validates_number_ranges_correctly_with_gt_and_no_error()
+    {
         $validator = new \Phalcon\Validation();
         $validate = $this->make_validator(5, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
@@ -65,7 +68,8 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true, $ret);
     }
 
-    public function test_if_it_validates_number_ranges_correctly_with_gt_and_error() {
+    public function test_if_it_validates_number_ranges_correctly_with_gt_and_error()
+    {
         $validator = new \Phalcon\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
@@ -81,7 +85,8 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
      * @param $operator string see the related documentaton
      * @return ComparedToFieldConstraint the created contraint
      */
-    private function make_validator($node_value, $other_field_value, $field, $operator) {
+    private function make_validator($node_value, $other_field_value, $field, $operator)
+    {
         $node = new IntegerField();
         $other_field = new IntegerField();
         $shared_parent = new ArrayField();
