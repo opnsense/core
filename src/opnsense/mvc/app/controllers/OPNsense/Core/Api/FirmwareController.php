@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -253,6 +253,9 @@ class FirmwareController extends ApiControllerBase
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'timeout') {
                 $response['status_msg'] = gettext('Timeout while connecting to the selected mirror.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'untrusted') {
+                $response['status_msg'] = gettext('Could not verify the repository fingerprint.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] != 'ok') {
                 $response['status_msg'] = gettext('An error occurred while connecting to the selected mirror.');
