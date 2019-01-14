@@ -170,21 +170,6 @@ unstructuredName		= An optional company name
 
 basicConstraints=CA:FALSE
 
-# Here are some examples of the usage of nsCertType. If it is omitted
-# the certificate can be used for anything *except* object signing.
-
-# This is OK for an SSL server.
-# nsCertType			= server
-
-# For an object signing certificate this would be used.
-# nsCertType = objsign
-
-# For normal client use this is typical
-# nsCertType = client, email
-
-# and for everything including object signing:
-# nsCertType = client, email, objsign
-
 # This is typical in keyUsage for a client certificate.
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
@@ -195,26 +180,6 @@ nsComment			= "OpenSSL Generated Certificate"
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer:always
 extendedKeyUsage=clientAuth
-
-# This stuff is for subjectAltName and issuerAltname.
-# Import the email address.
-# subjectAltName=email:copy
-# An alternative to produce certificates that aren't
-# deprecated according to PKIX.
-# subjectAltName=email:move
-
-# Copy subject details
-# issuerAltName=issuer:copy
-
-#nsCaRevocationUrl		= http://www.domain.dom/ca-crl.pem
-#nsBaseUrl
-#nsRevocationUrl
-#nsRenewalUrl
-#nsCaPolicyUrl
-#nsSslServerName
-
-# This is required for TSA certificates.
-# extendedKeyUsage = critical,timeStamping
 
 ###OPNsense:subjectAltName###
 
@@ -245,25 +210,6 @@ authorityKeyIdentifier=keyid:always,issuer
 # So we do this instead.
 basicConstraints = CA:true
 
-# Key usage: this is typical for a CA certificate. However since it will
-# prevent it being used as an test self-signed certificate it is best
-# left out by default.
-# keyUsage = cRLSign, keyCertSign
-
-# Some might want this also
-# nsCertType = sslCA, emailCA
-
-# Include email address in subject alt name: another PKIX recommendation
-# subjectAltName=email:copy
-# Copy issuer details
-# issuerAltName=issuer:copy
-
-# DER hex encoding of an extension: beware experts only!
-# obj=DER:02:03
-# Where 'obj' is a standard or added object
-# You can even override a supported extension:
-# basicConstraints= critical, DER:30:03:01:01:FF
-
 ###OPNsense:subjectAltName###
 
 [ crl_ext ]
@@ -282,47 +228,12 @@ authorityKeyIdentifier=keyid:always
 
 basicConstraints=CA:FALSE
 
-# Here are some examples of the usage of nsCertType. If it is omitted
-# the certificate can be used for anything *except* object signing.
-
-# This is OK for an SSL server.
-# nsCertType			= server
-
-# For an object signing certificate this would be used.
-# nsCertType = objsign
-
-# For normal client use this is typical
-# nsCertType = client, email
-
-# and for everything including object signing:
-# nsCertType = client, email, objsign
-
-# This is typical in keyUsage for a client certificate.
-# keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-
 # This will be displayed in Netscape's comment listbox.
 nsComment			= "OpenSSL Generated Certificate"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer
-
-# This stuff is for subjectAltName and issuerAltname.
-# Import the email address.
-# subjectAltName=email:copy
-# An alternative to produce certificates that aren't
-# deprecated according to PKIX.
-# subjectAltName=email:move
-
-# Copy subject details
-# issuerAltName=issuer:copy
-
-#nsCaRevocationUrl		= http://www.domain.dom/ca-crl.pem
-#nsBaseUrl
-#nsRevocationUrl
-#nsRenewalUrl
-#nsCaPolicyUrl
-#nsSslServerName
 
 # This really needs to be in place for it to be a proxy certificate.
 proxyCertInfo=critical,language:id-ppl-anyLanguage,pathlen:3,policy:foo
