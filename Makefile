@@ -301,10 +301,13 @@ lint-xml:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
 
+SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
+
 lint-exec:
-.for DIR in ${.CURDIR}/src/etc/rc.d # XXX e.g. src/opnsense/scripts
+.for DIR in ${.CURDIR}/src/etc/rc.d ${SCRIPTDIRS}
 .if exists(${DIR})
-	@find ${DIR} -type f ! -name "*.xml" -print0 | \
+	@find ${DIR} -path '**/htdocs_default' -prune -o -type f \
+	    ! -name "*.xml" ! -name "*.csv" ! -name "*.sql" -print0 | \
 	    xargs -0 -t -n1 test -x || \
 	    (echo "Missing executable permission in ${DIR}"; exit 1)
 .endif
