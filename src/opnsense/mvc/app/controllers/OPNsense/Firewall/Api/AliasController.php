@@ -39,8 +39,8 @@ use \OPNsense\Base\UserException;
 class AliasController extends ApiMutableModelControllerBase
 {
 
-    static protected $internalModelName = 'alias';
-    static protected $internalModelClass = 'OPNsense\Firewall\Alias';
+    protected static $internalModelName = 'alias';
+    protected static $internalModelClass = 'OPNsense\Firewall\Alias';
 
     /**
      * search aliases

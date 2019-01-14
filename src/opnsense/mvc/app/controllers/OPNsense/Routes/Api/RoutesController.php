@@ -40,8 +40,8 @@ use \OPNsense\Routes\Route;
 class RoutesController extends ApiMutableModelControllerBase
 {
 
-    static protected $internalModelName = 'route';
-    static protected $internalModelClass = '\OPNsense\Routes\Route';
+    protected static $internalModelName = 'route';
+    protected static $internalModelClass = '\OPNsense\Routes\Route';
 
     /**
      * search routes

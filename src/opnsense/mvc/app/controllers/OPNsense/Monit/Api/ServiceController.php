@@ -40,10 +40,10 @@ use \OPNsense\Monit\Monit;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static protected $internalServiceClass = '\OPNsense\Monit\Monit';
-    static protected $internalServiceEnabled = 'general.enabled';
-    static protected $internalServiceTemplate = 'OPNsense/Monit';
-    static protected $internalServiceName = 'monit';
+    protected static $internalServiceClass = '\OPNsense\Monit\Monit';
+    protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceTemplate = 'OPNsense/Monit';
+    protected static $internalServiceName = 'monit';
 
     /**
      * initialize object properties

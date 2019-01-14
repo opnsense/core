@@ -562,7 +562,7 @@ class Config extends Singleton
     /**
      * cleanup, close file handle
      */
-    public function __destruct ()
+    public function __destruct()
     {
         if ($this->config_file_handle !== null) {
             fclose($this->config_file_handle);
@@ -574,7 +574,7 @@ class Config extends Singleton
      * lock configuration
      * @param boolean $reload reload config from open file handle to enforce synchronicity
      */
-    public function lock($reload=true)
+    public function lock($reload = true)
     {
         if ($this->config_file_handle !== null) {
             flock($this->config_file_handle, LOCK_EX);

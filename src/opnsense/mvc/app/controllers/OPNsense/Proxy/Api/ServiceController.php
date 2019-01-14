@@ -38,10 +38,10 @@ use \OPNsense\Proxy\Proxy;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static protected $internalServiceClass = '\OPNsense\Proxy\Proxy';
-    static protected $internalServiceEnabled = 'general.enabled';
-    static protected $internalServiceTemplate = 'OPNsense/Proxy';
-    static protected $internalServiceName = 'proxy';
+    protected static $internalServiceClass = '\OPNsense\Proxy\Proxy';
+    protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceTemplate = 'OPNsense/Proxy';
+    protected static $internalServiceName = 'proxy';
 
     protected function reconfigureForceRestart()
     {

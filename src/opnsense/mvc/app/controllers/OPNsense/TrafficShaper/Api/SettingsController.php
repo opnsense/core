@@ -38,8 +38,8 @@ use \OPNsense\Core\Config;
  */
 class SettingsController extends ApiMutableModelControllerBase
 {
-    static protected $internalModelName = 'ts';
-    static protected $internalModelClass = '\OPNsense\TrafficShaper\TrafficShaper';
+    protected static $internalModelName = 'ts';
+    protected static $internalModelClass = '\OPNsense\TrafficShaper\TrafficShaper';
 
     /**
      * validate and save model after update or insertion.
