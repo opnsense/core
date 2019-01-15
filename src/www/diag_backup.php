@@ -496,5 +496,5 @@ $( document ).ready(function() {
 include("foot.inc");
 
 if ($do_reboot) {
-    system_reboot();
+    configd_run('system reboot', true);
 }

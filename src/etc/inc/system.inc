@@ -901,28 +901,6 @@ function system_timezone_configure($verbose = false)
     }
 }
 
-function system_halt($sync = false)
-{
-    $cmd ='/usr/local/etc/rc.halt';
-
-    if (!$sync) {
-        mwexec_bg($cmd);
-    } else {
-        passthru($cmd);
-    }
-}
-
-function system_reboot($sync = false)
-{
-    $cmd ='/usr/local/etc/rc.reboot';
-
-    if (!$sync) {
-        mwexec_bg($cmd);
-    } else {
-        passthru($cmd);
-    }
-}
-
 function system_sysctl_configure($verbose = false)
 {
     if ($verbose) {
