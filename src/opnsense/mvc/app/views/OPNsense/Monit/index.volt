@@ -1,6 +1,6 @@
 {#
 
-Copyright © 2017-2018 by EURO-LOG AG
+Copyright © 2017-2019 by EURO-LOG AG
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -28,6 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <script>
 
    $( document ).ready(function() {
+
       /**
        * get the isSubsystemDirty value and print a notice
        */
@@ -100,13 +101,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     updateServiceControlUI('monit');
                  });
              });
-          });
-       });
+         });
+      });
 
       /**
-       * general settings
+       * general settings and syntax
        */
-      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
+      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
          isSubsystemDirty();
@@ -161,22 +162,6 @@ POSSIBILITY OF SUCH DAMAGE.
       /**
        * alert settings
        */
-      function openAlertDialog(uuid) {
-         var editDlg = "DialogEditAlert";
-         var setUrl = "/api/monit/settings/set/alert/";
-         var getUrl = "/api/monit/settings/get/alert/";
-         var urlMap = {};
-         urlMap['frm_' + editDlg] = getUrl + uuid;
-         mapDataToFormUI(urlMap).done(function () {
-            $('.selectpicker').selectpicker('refresh');
-            clearFormValidation('frm_' + editDlg);
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            $('#'+editDlg).on('hidden.bs.modal', function () {
-               parent.history.back();
-            });
-         });
-      };
-
       $("#grid-alerts").UIBootgrid({
          'search':'/api/monit/settings/search/alert/',
          'get':'/api/monit/settings/get/alert/',
@@ -244,14 +229,55 @@ POSSIBILITY OF SUCH DAMAGE.
                $('tr[id="row_monit.service.timeout"]').removeClass('hidden');
          }
       };
-      $('#DialogEditService').on('shown.bs.modal', function() {ShowHideFields();});
-      $('#monit\\.service\\.type').on('changed.bs.select', function(e) {ShowHideFields();});
+      
+
+      function SelectServiceTests(){
+         var serviceType = $('#monit\\.service\\.type').val();
+         $('#monit\\.service\\.tests').html('');
+         $.each(serviceTests, function(index, value) {
+            if ($.inArray(value.type, testSyntax.serviceTestMapping[serviceType]) !== -1) {
+               $('#monit\\.service\\.tests').append('<option value="' + value.uuid + '">' + value.name + '</option>');
+            }
+         });
+         $('.selectpicker').selectpicker('refresh');
+      }
+      
+      /**
+       * get service test definitions
+       */
+      var serviceTests = [];
+      $('#DialogEditService').on('shown.bs.modal', function() {
+         $.post("/api/monit/settings/search/test", {current: 1, rowCount: -1}, function(data, status) {
+            if (status == "success") {
+               serviceTests = Object.assign({}, data.rows);
+               
+               var serviceType = $('#monit\\.service\\.type').val();
+               // filter test option list
+               $('#monit\\.service\\.tests > option').each(function(index, option){
+                  $.each(serviceTests, function(index, value) {
+                     if (value.uuid === option.value) {
+                        if ($.inArray(value.type, testSyntax.serviceTestMapping[serviceType]) === -1) {
+                           option.remove();
+                        }
+                        return false;
+                     }
+                  });
+               });
+               $('.selectpicker').selectpicker('refresh');
+            }
+         });
+         ShowHideFields();
+      });
+      $('#monit\\.service\\.type').on('changed.bs.select', function() {
+         SelectServiceTests();
+         ShowHideFields();
+      });
       $('#monit\\.service\\.pidfile').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.match').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.path').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.timeout').on('input', function() {ShowHideFields();});
       $('#monit\\.service\\.address').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
+      $('#monit\\.service\\.interface').on('changed.bs.select', function() {ShowHideFields();});
 
       $("#grid-services").UIBootgrid({
          'search':'/api/monit/settings/search/service/',
@@ -267,32 +293,297 @@ POSSIBILITY OF SUCH DAMAGE.
        * service test settings
        */
 
-      // show hide execute field
-      function ShowHideExecField(){
+      // parse monit.test.condition and split it into testConditionStages array
+      // the testConditionStages array is used to build the #monit_test_condition_form
+      var testConditionStages = [];
+      function ParseTestCondition(conditionString = null) {
+         var conditionType = $('#monit\\.test\\.type option:selected').html();
+         // old behaviour for Custom types needs no parsing
+         if (conditionType === 'Custom') {
+            return;
+         }
+         if (conditionString === null) {
+            conditionString = $('#monit\\.test\\.condition').val();
+         }
+
+         // simple array, e.g 'Existence'
+         if ($.type(testSyntax.testConditionMapping[conditionType]) === 'array') {
+            // defaults to the first element
+            if (conditionString === '') {
+               testConditionStages[0] = testSyntax.testConditionMapping[conditionType][0];
+            } else {
+               $.each(testSyntax.testConditionMapping[conditionType], function(index, value) {
+                  var regExp = new RegExp("^" + value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                  if (conditionString !== undefined && regExp.test(conditionString)) {
+                     testConditionStages[0] = value;
+                     // first match is sufficient since elements are unique
+                     return false;
+                  }
+               });
+            }
+         }
+
+         // objects, e.g. 'System Resource'
+         if ($.type(testSyntax.testConditionMapping[conditionType]) === 'object') {
+            if (conditionString === '') {
+               if ($.type(testSyntax.testConditionMapping[conditionType][0]) === 'string') {
+                  testConditionStages[0] = testSyntax.testConditionMapping[conditionType][0];
+               } else {
+                  testConditionStages[0] = Object.keys(testSyntax.testConditionMapping[conditionType])[0];
+               }
+            } else {
+               // get the longest key match
+               var keyLength = 0;
+               $.each(testSyntax.testConditionMapping[conditionType], function(key, value) {
+                  if ($.isNumeric(key)) {
+                     key = value;
+                  }
+                  // escape metacharacters with replace() e.g. ^loadavg \(1min\)
+                  var regExp = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                  if (regExp.test(conditionString)) {
+                     if (key.length > keyLength) {
+                        keyLength = key.length;
+                        testConditionStages[0] = key;
+                        // no break of the $.each loop because we need the longest match here
+                     }
+                  }
+               });
+            }
+
+            if ($.type(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]) === 'object') {
+               if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]])[0] === '_OPERATOR') {
+                  if (conditionString === '') {
+                     testConditionStages[1] = testSyntax.operators[0];
+                  } else {
+                     $.each(testSyntax.operators, function(index, value) {
+                        var regExp = new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                        if (regExp.test(conditionString)) {
+                           testConditionStages[1] = value;
+                           // first match is sufficient since operators are unique
+                           return false;
+                        }
+                     });
+                  }
+                  if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR'])[0] === '_VALUE') {
+                     if (conditionString === '') {
+                        testConditionStages[2] = '';
+                     } else {
+                        if (testConditionStages[1] === undefined) {
+                           testConditionStages[1] = testSyntax.operators[0];
+                        }
+                        var regExp = new RegExp(testConditionStages[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*' + testConditionStages[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[^\\d]+(\\d+)');
+                        var regRes = conditionString.match(regExp);
+                        if($.type(regRes) === 'array') {
+                           testConditionStages[2] = regRes[1];
+                        } else {
+                           testConditionStages[2] = '';
+                        }
+                     }
+                     if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR'])[1] === '_UNIT') {
+                        if (conditionString === '') {
+                           var unitType = testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR']['_UNIT'];
+                           if (unitType in testSyntax.units) {
+                              testConditionStages[3] = testSyntax.units[unitType][0];
+                           } else {
+                              testConditionStages[3] = unitType;
+                           }
+                        } else {
+                           var regExp = new RegExp(testConditionStages[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*' + testConditionStages[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[^\\d]+\\d+\\s+([^\/]+)');
+                           var regRes = conditionString.match(regExp);
+                           var unitType = testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR']['_UNIT'];
+                           testConditionStages[3] = undefined;
+                           if($.type(regRes) === 'array') {
+                              if (unitType in testSyntax.units) {
+                                 $.each(testSyntax.units.unitType, function(index, value) {
+                                    var regExp = new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                                    if (regExp.test(regRes[1])) {
+                                       testConditionStages[3] = value;
+                                       // first match is sufficient since units are unique
+                                       return false;
+                                    }
+                                 });
+                              } else {
+                                 testConditionStages[3] = unitType;
+                              }
+                           }
+                           if ( testConditionStages[3] === undefined) {
+                              if (unitType in testSyntax.units) {
+                                 testConditionStages[3] = testSyntax.units[unitType][0];
+                              } else {
+                                 testConditionStages[3] = unitType;
+                              }
+                           }
+                        }
+                        if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR'])[2] === '_RATE') {
+                           testConditionStages[4] = testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR']['_RATE'];
+                        }
+                     }
+                  }
+               } else if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]])[0] === '_VALUE') {
+                  if (conditionString === '') {
+                        testConditionStages[1] = '';
+                  } else {
+                     var regExp = new RegExp(testConditionStages[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*' + testConditionStages[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[^\\s]+(.*)');
+                     var regRes = conditionString.match(regExp);
+                     if($.type(regRes) === 'array') {
+                        testConditionStages[1] = regRes[1];
+                     }
+                  }
+               }
+            }
+         }
+      };
+
+      function setStageSelectOnChange(i) {
+         var stage = '#monit_test_condition_stage' + i;
+         $(stage).on('changed.bs.select', function() {
+            testConditionStages[i-1] = $(stage).val();
+            UpdateTestConditionForm();
+            $(stage).focus();
+         });
+      };
+      
+      function setStageInputOnChange(i) {
+         var stage = '#monit_test_condition_stage' + i;
+         $(stage).on('input', function() {
+            testConditionStages[i-1] = $(stage).val();
+            UpdateTestConditionForm();
+            $(stage).focus();
+         });
+      };
+
+      function UpdateTestConditionForm() {
+         var conditionType = $('#monit\\.test\\.type option:selected').html();
+         // old behaviour for custom types
+         if (conditionType === 'Custom') {
+            $('#monit_test_condition_form').remove();
+            $('#monit_test_condition_preview').remove();
+            $('input[id="monit.test.condition"]').removeClass('hidden');
+            return;
+         } else {
+            if (!$('#monit_test_condition_form').length) {
+               $('input[id="monit.test.condition"]').addClass('hidden');
+               $('input[id="monit.test.condition"]').after('<div id="monit_test_condition_preview">' + $('#monit\\.test\\.condition').val() + "</div");
+               $('input[id="monit.test.condition"]').after('<div id="monit_test_condition_form"></div>');
+            }
+         }
+         var newConditionString = '';
+
+         // Stage 1 - left operand
+         $('#monit_test_condition_form').html(
+            '<div class="dropdown bootsrap-select">' +
+            '  <select id="monit_test_condition_stage1" class="selectpicker"></select>' +
+            '</div>');
+         setStageSelectOnChange(1);
+         if ($.type(testSyntax.testConditionMapping[conditionType]) === 'array') {
+            $.each(testSyntax.testConditionMapping[conditionType], function(index, value) {
+               $('#monit_test_condition_stage1').append('<option value="' + value + '">' + value + '</option>');
+            });
+            $('#monit_test_condition_stage1').val(testConditionStages[0]);
+            newConditionString = testConditionStages[0];
+         }
+         if ($.type(testSyntax.testConditionMapping[conditionType]) === 'object') {
+            $.each(testSyntax.testConditionMapping[conditionType], function(key, value) {
+               // for arrays use the value as option
+               if ($.isNumeric(key)) {
+                  key = value;
+               }
+               $('#monit_test_condition_stage1').append('<option value="' + key + '">' + key + '</option>');
+            });
+            $('#monit_test_condition_stage1').val(testConditionStages[0]);
+            newConditionString = testConditionStages[0];
+
+            // Stage 2 - operator/value
+            if ($.type(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]) === 'object') {
+               if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]])[0] === '_OPERATOR') {
+                  // add new dropdown
+                  $('#monit_test_condition_stage1').after('<select id="monit_test_condition_stage2" class="selectpicker"></select>');
+                  setStageSelectOnChange(2);
+                  $.each(testSyntax.operators, function(index, value) {
+                     $('#monit_test_condition_stage2').append('<option value="' + value + '">' + value + '</option>');
+                  });
+                  if (testConditionStages[1] === undefined) {
+                     ParseTestCondition(newConditionString);
+                  }
+                  $('#monit_test_condition_stage2').val(testConditionStages[1]);
+                  newConditionString += ' ' + testConditionStages[1];
+
+                  // Stage 3 - right operand
+                  if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR'])[0] === '_VALUE') {
+                     $('#monit_test_condition_stage2').after('<input type="text" class="form-control" id="monit_test_condition_stage3">');
+                     setStageInputOnChange(3);
+                     $('#monit_test_condition_stage3').val(testConditionStages[2]);
+                     newConditionString += ' ' + testConditionStages[2];
+
+                     // Stage 4 - unit
+                     if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR'])[1] === '_UNIT') {
+                        var unitType = testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR']['_UNIT'];
+                        if (testConditionStages[3] === undefined) {
+                           ParseTestCondition(newConditionString);
+                        }
+                        if (unitType in testSyntax.units) {
+                           $('#monit_test_condition_stage3').after('<select id="monit_test_condition_stage4" class="selectpicker"></select>');
+                           setStageSelectOnChange(4);
+                           $.each(testSyntax.units[unitType], function(index, value) {
+                              $('#monit_test_condition_stage4').append('<option value="' + value + '">' + value + '</option>');
+                           });
+                           if($.inArray(testConditionStages[3], testSyntax.units[unitType]) === -1) {
+                              ParseTestCondition(newConditionString);
+                           }
+                           $('#monit_test_condition_stage4').val(testConditionStages[3]);
+                           newConditionString += ' ' + testConditionStages[3];
+                        } else {
+                           newConditionString += ' ' + unitType;
+                        }
+
+                        // Stage 5 - rate
+                        if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]]['_OPERATOR'])[2] === '_RATE') {
+                           newConditionString += testConditionStages[4];
+                        }
+                     }
+                  }
+               }
+               if (Object.keys(testSyntax.testConditionMapping[conditionType][testConditionStages[0]])[0] === '_VALUE') {
+                  $('#monit_test_condition_stage1').after('<input type="text" class="form-control" id="monit_test_condition_stage2">');
+                  setStageInputOnChange(2);
+                  if (testConditionStages[1] === undefined) {
+                     testConditionStages[1] = '';
+                  }
+                  $('#monit_test_condition_stage2').val(testConditionStages[1]);
+                  newConditionString += ' ' + testConditionStages[1];
+               }
+            }
+         }
+         $('#monit\\.test\\.condition').val(newConditionString);
+         $('#monit_test_condition_preview').html($('#monit\\.test\\.condition').val());
+         $('.selectpicker').selectpicker('refresh');
+      };
+
+      $('#DialogEditTest').on('shown.bs.modal', function() {
+         ParseTestCondition();
+         UpdateTestConditionForm();
+      });
+
+      $('#DialogEditTest').on('hide.bs.modal', function() {
+         $('#monit_test_condition_form').remove();
+         $('#monit_test_condition_preview').remove();
+      });
+
+      $('#monit\\.test\\.type').on('changed.bs.select', function() {
+         $('#monit\\.test\\.condition').val('');
+         testConditionStages = [];
+         ParseTestCondition();
+         UpdateTestConditionForm();
+         $('#monit\\.test\\.type').focus();
+      });
+
+      $('#monit\\.test\\.action').on('changed.bs.select', function() {
          var actiontype = $('#monit\\.test\\.action').val();
          $('tr[id="row_monit.test.path"]').addClass('hidden');
          if (actiontype === 'exec') {
             $('tr[id="row_monit.test.path"]').removeClass('hidden');
          }
-      };
-      $('#DialogEditTest').on('shown.bs.modal', function() {ShowHideExecField();});
-      $('#monit\\.test\\.action').on('changed.bs.select', function(e) {ShowHideExecField();});
-
-      function openTestDialog(uuid) {
-         var editDlg = "TestEditAlert";
-         var setUrl = "/api/monit/settings/set/test/";
-         var getUrl = "/api/monit/settings/get/test/";
-         var urlMap = {};
-         urlMap['frm_' + editDlg] = getUrl + uuid;
-         mapDataToFormUI(urlMap).done(function () {
-            $('.selectpicker').selectpicker('refresh');
-            clearFormValidation('frm_' + editDlg);
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            $('#'+editDlg).on('hidden.bs.modal', function () {
-               parent.history.back();
-            });
-         });
-      };
+      });
 
       $("#grid-tests").UIBootgrid({
          'search':'/api/monit/settings/search/test/',
@@ -300,6 +591,13 @@ POSSIBILITY OF SUCH DAMAGE.
          'set':'/api/monit/settings/set/test/',
          'add':'/api/monit/settings/set/test/',
          'del':'/api/monit/settings/del/test/'
+      });
+
+      var testSyntax = {};
+      ajaxGet("/api/monit/settings/get/0/0/1", {}, function(data,status) {
+         if (status == "success") {
+            testSyntax = Object.assign({}, data.syntax);
+         }
       });
 
    });
@@ -389,6 +687,7 @@ POSSIBILITY OF SUCH DAMAGE.
          <thead>
             <tr>
                 <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+                <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
                 <th data-column-id="condition" data-type="string">{{ lang._('Condition') }}</th>
                 <th data-column-id="action" data-type="string">{{ lang._('Action') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2017-2018 EURO-LOG AG
+ *    Copyright (C) 2017-2019 EURO-LOG AG
  *
  *    All rights reserved.
  *
@@ -53,6 +53,134 @@ class SettingsController extends ApiControllerBase
     private $nodeTypes = array('general', 'alert', 'service', 'test');
 
     /**
+     * @var array with syntax information to build test conditions
+     */
+    private $testSyntax = [
+        'serviceTestMapping' => [
+            'process'    => ['Existence', 'Process Resource', 'Process Disk I/O', 'UID', 'GID', 'PID', 'PPID', 'Uptime', 'Connection', 'Custom'],
+            'file'       => ['Existence', 'File Checksum', 'Timestamp', 'File Size', 'File Content', 'Permisssion', 'UID', 'GID', 'Custom'],
+            'fifo'       => ['Existence', 'Timestamp', 'Permisssion', 'UID', 'GID', 'Custom'],
+            'filesystem' => ['Existence', 'Filesystem Mount Flags', 'Space Usage', 'Inode Usage', 'Disk I/O', 'Permisssion', 'Custom'],
+            'directory'  => ['Existence', 'Timestamp', 'Permisssion', 'UID', 'GID', 'Custom'],
+            'host'       => ['Network Ping', 'Connection', 'Custom'],
+            'system'     => ['System Resource', 'Uptime', 'Custom'],
+            'custom'     => ['Program Status', 'Custom'],
+            'network'    => ['Network Interface', 'Custom']
+        ],
+        'operators' => ['greater', 'less', 'equal', 'notequal'],
+        'units' => [
+            'timeUnits'       => ['seconds', 'minutes', 'hours', 'days'],
+            'amountUnits'     => ['byte', 'kilobyte', 'megabyte', 'gigabyte'],
+            'spaceAmountUnits'     => ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'percent'],
+            'diskAmountUnits' => ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'operations'],
+            'netAmountUnits'  => ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'packets'],
+        ],
+        'testConditionMapping' => [
+            'Existence' => [
+                'exist',
+                'not exist'
+            ],
+            'System Resource' => [
+                'loadavg (1min)'     => ['_OPERATOR' => ['_VALUE' => null]],
+                'loadavg (5min)'     => ['_OPERATOR' => ['_VALUE' => null]],
+                'loadavg (15min)'    => ['_OPERATOR' => ['_VALUE' => null]],
+                'cpu usage'          => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'cpu user usage'     => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'cpu system usage'   => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'cpu wait usage'     => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'memory usage'       => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'swap usage'         => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']]
+            ],
+            'Process Resource' => [
+                'cpu'                => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'total cpu'          => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'threads'            => ['_OPERATOR' => ['_VALUE' => null]],
+                'children'           => ['_OPERATOR' => ['_VALUE' => null]],
+                'memory usage'       => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'amountUnits']],
+                'total memory usage' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']]
+            ],
+            'Process Disk I/O' => [
+                'disk read rate'  => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'operations', '_RATE' => '/s']],
+                'disk write rate' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'operations', '_RATE' => '/s']]
+            ],
+            'File Checksum' => [
+                'failed md5 checksum',
+                'changed md5 checksum',
+                'failed checksum expect' => ['_VALUE' => null]
+            ],
+            'Timestamp' => [
+                'access time'       => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'timeUnits']],
+                'modification time' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'timeUnits']],
+                'change time'       => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'timeUnits']],
+                'timestamp'         => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'timeUnits']],
+                'changed access time',
+                'changed modification time',
+                'changed change time',
+                'changed timestamp'
+            ],
+            'File Size' => [
+                'size' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'amountUnits']],
+                'changed size'
+            ],
+            'File Content' => [
+                'content =' => ['_VALUE' => null],
+                'content !=' => ['_VALUE' => null]
+            ],
+            'Filesystem Mount Flags' => [
+                'changed fsflags'
+            ],
+            'Space Usage' => [
+                'space' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'spaceAmountUnits']],
+                'space free' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'spaceAmountUnits']]
+            ],
+            'Inode Usage' => [
+                'inodes' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'amountUnits']],
+                'inodes free' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'amountUnits']]
+            ],
+            'Disk I/O' => [
+                'read rate'  => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'diskAmountUnits', '_RATE' => '/s']],
+                'write rate' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'diskAmountUnits', '_RATE' => '/s']],
+                'service time' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'millisecond']]
+            ],
+            'Permisssion' => [
+                'failed permission' => ['_VALUE' => null],
+                'changed permission'
+            ],
+            'UID' => [
+                'failed uid' => ['_VALUE' => null]
+            ],
+            'GID' => [
+                'failed uid' => ['_VALUE' => null]
+            ],
+            'PID' => [
+                'changed pid'
+            ],
+            'PPID' => [
+                'changed ppid'
+            ],
+            'Uptime' => [
+                'uptime' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'timeUnits']]
+            ],
+            'Program Status' => [
+                'status' => ['_OPERATOR' => ['_VALUE' => null]],
+                'changed status'
+            ],
+            'Network Interface' => [
+                'failed link',
+                'changed link capacity',
+                'saturation' => ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'percent']],
+                'upload' =>  ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'netAmountUnits', '_RATE' => '/s']],
+                'download' =>  ['_OPERATOR' => ['_VALUE' => null, '_UNIT' => 'netAmountUnits', '_RATE' => '/s']],
+            ],
+            'Network Ping' => [
+                'failed ping4',
+                'failed ping6'
+            ],
+            'Custom' => null
+        ]
+    ];
+
+    /**
      * initialize object properties
      */
     public function onConstruct()
@@ -75,12 +203,18 @@ class SettingsController extends ApiControllerBase
      * query monit settings
      * @param $nodeType
      * @param $uuid
+     * @param $syntax
      * @return array result
      * @throws \Exception
      */
-    public function getAction($nodeType = null, $uuid = null)
+    public function getAction($nodeType = null, $uuid = null, $syntax = null)
     {
         $result = array("result" => "failed");
+        if ($syntax != null) {
+            $result['syntax'] = $this->testSyntax;
+            $result['result'] = 'ok';
+            return $result;
+        }
         if ($this->request->isGet() && $nodeType != null) {
             $this->validateNodeType($nodeType);
             if ($nodeType == 'general') {
@@ -126,6 +260,17 @@ class SettingsController extends ApiControllerBase
 
                 // perform plugin specific validations
                 if ($nodeType == 'service') {
+                    $tests = explode(',', $monitInfo[$nodeType]['tests']);
+                    foreach ($tests as $testUUID) {
+                        $test = $this->mdlMonit->getNodeByReference('test.' . $testUUID);
+                        if ($test != null) {
+                            $testName = $test->name->__toString();
+                            $testType = $test->type->getNodeData()[$test->type->__toString()]['value'];
+                            if (array_search($testType, $this->testSyntax['serviceTestMapping'][$monitInfo[$nodeType]['type']]) === false) {
+                                $result["validations"]['monit.service.tests'] = "Test " . $testName . ' with type ' . $testType . ' not allowed for service type ' . $monitInfo[$nodeType]['type'];
+                            }
+                        }
+                    }
                     switch ($monitInfo[$nodeType]['type']) {
                         case 'process':
                             if (empty($monitInfo[$nodeType]['pidfile']) && empty($monitInfo[$nodeType]['match'])) {
@@ -263,7 +408,7 @@ class SettingsController extends ApiControllerBase
                     $fields = array("enabled", "name", "type");
                     break;
                 case 'test':
-                    $fields = array("name", "condition", "action");
+                    $fields = array("name", "type", "condition", "action");
                     break;
             }
             return $grid->fetchBindRequest($this->request, $fields);
