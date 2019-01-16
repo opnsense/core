@@ -461,6 +461,7 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+<!-- XXX implement and verify inet(6) selection
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('IPv4 gateway group') ?></td>
                 <td>
@@ -483,6 +484,7 @@ include("head.inc");
                   </select>
                 </td>
               </tr>
+-->
           </table>
         </div>
         <div class="content-box tab-content">
