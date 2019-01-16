@@ -76,7 +76,7 @@
       <id>monit.service.depends</id>
       <label>Depends</label>
       <type>select_multiple</type>
-      <help><![CDATA[This is a list with service dependencies.]]></help>
+      <help><![CDATA[Optionally define a (list of) service(s) which are required before monitoring this one, if any of the dependencies are either stopped or unmonitored this service will stop/unmonitor too.]]></help>
    </field>
    <field>
       <id>monit.service.description</id>
