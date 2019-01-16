@@ -30,7 +30,7 @@ use Phalcon\DI\FactoryDefault;
 use Phalcon\Loader;
 
 $di = new FactoryDefault();
-$phalcon_config = include_once("/usr/local/opnsense/mvc/app/config/config.php");
+$phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
 
 $loader = new Loader();
 $loader->registerDirs(
