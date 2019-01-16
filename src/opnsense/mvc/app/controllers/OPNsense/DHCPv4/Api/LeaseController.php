@@ -74,10 +74,11 @@ class LeaseController extends ApiControllerBase
                 if ($cmp === 0) {
                     $cmp = strnatcasecmp($a['ip'], $b['ip']);
                 }
-                if (!$reverse)
+                if (!$reverse) {
                     return $cmp;
-                else
+                } else {
                     return $cmp * -1;
+                }
             }
         );
 

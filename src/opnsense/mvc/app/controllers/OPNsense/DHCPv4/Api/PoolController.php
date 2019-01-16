@@ -70,10 +70,11 @@ class PoolController extends ApiControllerBase
                 if ($cmp === 0) {
                     $cmp = strnatcasecmp($a['name'], $b['name']);
                 }
-                if (!$reverse)
+                if (!$reverse) {
                     return $cmp;
-                else
+                } else {
                     return $cmp * -1;
+                }
             }
         );
 

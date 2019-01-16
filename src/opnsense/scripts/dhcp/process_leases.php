@@ -79,7 +79,7 @@ if ($leasesHandle = @fopen($leasesfile, 'r')) {
         }
 
         if ($currentLease !== '') {
-            switch($words[0]) {
+            switch ($words[0]) {
                 case 'starts':
                     // Ignore number after 'starts', copy rest of line.
                     $leases[$currentLease]['start'] = adjust_utc(implode(' ', array_slice($words, 2)));
@@ -131,7 +131,7 @@ if ($leasesHandle = @fopen($leasesfile, 'r')) {
             }
         }
         if ($currentPool !== '') {
-            switch($words[0]) {
+            switch ($words[0]) {
                 case 'my':
                     $pools[$currentPool]['mystate'] = $words[2];
                     $pools[$currentPool]['mydate'] = adjust_utc(implode(' ', array_slice($words, 4)));
@@ -144,7 +144,7 @@ if ($leasesHandle = @fopen($leasesfile, 'r')) {
         }
     }
     if ($type === 'leases' && !$showAll) {
-        $leases = array_filter($leases, function($lease) {
+        $leases = array_filter($leases, function ($lease) {
             return ($lease['act'] == 'active' || $lease['act'] == 'static');
         });
     }
@@ -205,7 +205,7 @@ if (isset($config['dhcpd'])) {
 
 $backend = new OPNsense\Core\Backend();
 $mac_man = json_decode($backend->configdRun("interface list macdb json"), true);
-array_walk($leases, function(&$lease) use ($mac_man, $ranges, $staticEntries) {
+array_walk($leases, function (&$lease) use ($mac_man, $ranges, $staticEntries) {
     if ($lease['act'] == 'static') {
         if (array_key_exists($lease['ip'], $staticEntries)) {
             $lease = array_merge($lease, $staticEntries[$lease['ip']]);
