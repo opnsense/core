@@ -165,10 +165,8 @@ function restore_config_section_xmlrpc($new_config)
         }
     }
 
-    ///
     $vhidVipsInNewConfig = [];
-    if (isset($new_config['virtualip']['vip']))
-    {
+    if (isset($new_config['virtualip']['vip'])) {
         foreach ($new_config['virtualip']['vip'] as $vip) {
             $vipKey = get_unique_vip_key($vip);
             $vhidVipsInNewConfig[$vipKey] = $vip;
@@ -197,7 +195,7 @@ function restore_config_section_xmlrpc($new_config)
     merge_config_attributes($new_config, $config);
 
     if (count($vipbackup) > 0) {
-        // if $new_config contained VIPS and the old config contained non carp vips, prepend original vips
+        // if $new_config contained VIPs and the old config contained VIPs with no VHID, prepend original VIPs
         foreach ($vipbackup as $vip) {
             array_unshift($config['virtualip']['vip'], $vip);
         }
@@ -227,7 +225,7 @@ function restore_config_section_xmlrpc($new_config)
                   if (!$is_changed) {
                       unset($oldvips[$vipKey]);
                       if (does_vip_exist($vip)) {
-                          continue; // Skip reconfiguring this vips since nothing has changed.
+                          continue; // Skip reconfiguring this VIP since nothing has changed.
                       }
                   }
               }
@@ -247,7 +245,7 @@ function restore_config_section_xmlrpc($new_config)
           }
         }
 
-        // remove old (carp) virtual ip's
+        // remove old (carp/ipalias-with-vhid) virtual ip's
         foreach ($oldvips as $oldvip) {
             interface_vip_bring_down($oldvip);
         }
@@ -273,8 +271,9 @@ function restore_config_section_xmlrpc($new_config)
 
 function get_unique_vip_key($vip)
 {
-    if($vip['mode'] === 'carp')
+    if ($vip['mode'] === 'carp') {
         return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}";
-    else
+    } else {
         return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}_{$vip['subnet']}_{$vip['subnet_bits']}_{$vip['gateway']}";
+    }
 }
