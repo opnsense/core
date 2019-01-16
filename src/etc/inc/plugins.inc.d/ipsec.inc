@@ -157,7 +157,7 @@ function ipsec_interfaces()
 
     $interfaces = array();
 
-    if (isset($config['ipsec']['phase1']) && isset($config['ipsec']['phase2'])) {
+    if (isset($config['ipsec']['phase1'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (empty($ph1ent['disabled'])) {
                 $oic = array('enable' => true);
