@@ -157,22 +157,9 @@ function ipsec_interfaces()
 
     $interfaces = array();
 
-    if (isset($config['ipsec']['phase1']) && isset($config['ipsec']['phase2'])) {
+    if (isset($config['ipsec']['phase1'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
-            if (!empty($ph1ent['disabled'])) {
-                continue;
-            }
-
-            foreach ($config['ipsec']['phase2'] as $ph2ent) {
-                if (!empty($ph2ent['disabled']) || $ph1ent['ikeid'] != $ph2ent['ikeid']) {
-                    continue;
-                }
-
-                if ((!empty($ph2ent['mobile']) && empty($config['ipsec']['client']['enable'])) ||
-                    empty($config['ipsec']['enable'])) {
-                    continue;
-                }
-
+            if (empty($ph1ent['disabled'])) {
                 $oic = array('enable' => true);
                 $oic['if'] = 'enc0';
                 $oic['descr'] = 'IPsec';
@@ -180,8 +167,7 @@ function ipsec_interfaces()
                 $oic['virtual'] = true;
                 $oic['networks'] = array();
                 $interfaces['enc0'] = $oic;
-
-                break 2;
+                break;
             }
         }
     }
