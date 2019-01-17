@@ -72,37 +72,6 @@ POSSIBILITY OF SUCH DAMAGE.
          });
       });
 
-      /**
-      * add button 'Import System Notification'
-      * can't do it via base_dialog
-      */
-      $('<button class="btn btn-primary" id="btn_ImportSystemNotification" type="button" style="margin-left: 3px;">' +
-            '<b> {{ lang._('Import System Notification')}} </b>' +
-            '<i id="frm_ImportSystemNotification_progress"></i>' +
-         '</button>').insertAfter('#btn_ApplyGeneralSettings');
-
-      $('#btnImportSystemNotification').unbind('click').click(function(){
-          $('#btnImportSystemNotificationProgress').addClass("fa fa-spinner fa-pulse");
-          ajaxCall("/api/monit/settings/notification", {}, function(data,status) {
-             $("#responseMsg").addClass("hidden");
-             isSubsystemDirty();
-             updateServiceControlUI('monit');
-             if (data.result) {
-               $("#responseMsg").html(data['result']);
-               $("#responseMsg").removeClass("hidden");
-            }
-             $('#btnImportSystemNotificationProgress').removeClass("fa fa-spinner fa-pulse");
-             $('#btnImportSystemNotification').blur();
-             ajaxCall("/api/monit/service/status", {}, function(data,status) {
-                mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/getGeneral/"}).done(function(){
-                    formatTokenizersUI();
-                    $('.selectpicker').selectpicker('refresh');
-                    isSubsystemDirty();
-                    updateServiceControlUI('monit');
-                 });
-             });
-          });
-       });
 
       /**
        * general settings
@@ -296,9 +265,6 @@ POSSIBILITY OF SUCH DAMAGE.
                <td>
                   <button class="btn btn-primary" id="btnSaveGeneral" type="button">
                      <b>{{ lang._('Save changes') }}</b><i id="btnSaveGeneralProgress"></i>
-                  </button>
-                  <button class="btn btn-primary" id="btnImportSystemNotification" type="button" style="margin-left: 3px;">
-                     <b>{{ lang._('Import System Notification')}}</b><i id="btnImportSystemNotificationProgress"></i>
                   </button>
                </td>
             </tr>
