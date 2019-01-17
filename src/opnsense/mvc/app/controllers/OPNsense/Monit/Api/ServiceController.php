@@ -2,7 +2,7 @@
 
 /**
  *    Copyright (C) 2017-2018 EURO-LOG AG
- *
+ *    Copyright (c) 2019 Deciso B.V.
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@ namespace OPNsense\Monit\Api;
 
 use \OPNsense\Base\ApiMutableServiceControllerBase;
 use \OPNsense\Core\Backend;
-use \OPNsense\Monit\Monit;
 
 /**
  * Class ServiceController
@@ -44,15 +43,6 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceTemplate = 'OPNsense/Monit';
     protected static $internalServiceName = 'monit';
-
-    /**
-     * initialize object properties
-     */
-    public function onConstruct()
-    {
-        // initialize the model via parent to avoid selflock by circular references
-        $this->getModel();
-    }
 
     /**
      * test monit configuration

@@ -277,6 +277,7 @@
          </name>
          <type type="OptionField">
             <Required>Y</Required>
+            <default>Custom</default>
             <OptionValues>
                <Existence>Existence</Existence>
                <SystemResource>System Resource</SystemResource>
