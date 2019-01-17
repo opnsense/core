@@ -62,7 +62,8 @@ class Monit extends BaseModel
      * @param bool $validateFullModel validate full model or only changed fields
      * @return \Phalcon\Validation\Message\Group
      */
-    public function performValidation($validateFullModel = false) {
+    public function performValidation($validateFullModel = false)
+    {
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
         $all_nodes = $this->getFlatNodes();
@@ -81,17 +82,17 @@ class Monit extends BaseModel
                                     $test = $this->getNodeByReference('test.' . $testUUID);
                                     if ($test != null) {
                                         if (!empty($this->testSyntax[(string)$parentNode->type])) {
-                                          $options = $this->testSyntax[(string)$parentNode->type];
-                                          if (!in_array((string)$test->type, $options)) {
-                                            $validationMsg = sprintf(
-                                              gettext("Test %s with type %s not allowed for this service type"),
-                                              (string)$test->name,
-                                              $test->type->getNodeData()[(string)$test->type]['value']
-                                            );
-                                            $messages->appendMessage(
-                                              new \Phalcon\Validation\Message($validationMsg, $key)
-                                            );
-                                          }
+                                            $options = $this->testSyntax[(string)$parentNode->type];
+                                            if (!in_array((string)$test->type, $options)) {
+                                                $validationMsg = sprintf(
+                                                    gettext("Test %s with type %s not allowed for this service type"),
+                                                    (string)$test->name,
+                                                    $test->type->getNodeData()[(string)$test->type]['value']
+                                                );
+                                                $messages->appendMessage(
+                                                    new \Phalcon\Validation\Message($validationMsg, $key)
+                                                );
+                                            }
                                         }
                                     }
                                 }
@@ -100,7 +101,8 @@ class Monit extends BaseModel
                                 if (empty((string)$node) && (string)$parentNode->type == 'process'
                                       && empty((string)$parentNode->match)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                      gettext("Please set at least one of Pidfile or Match."), $key
+                                        gettext("Please set at least one of Pidfile or Match."),
+                                        $key
                                     ));
                                 }
                                 break;
@@ -108,19 +110,22 @@ class Monit extends BaseModel
                                 if (empty((string)$node) && (string)$parentNode->type == 'process'
                                       && empty((string)$parentNode->pidfile)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                      gettext("Please set at least one of Pidfile or Match."), $key
+                                        gettext("Please set at least one of Pidfile or Match."),
+                                        $key
                                     ));
                                 }
                                 break;
                             case 'address':
                                 if (empty((string)$node) && (string)$parentNode->type == 'host') {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                      gettext("Address is mandatory for 'Remote Host' checks."), $key
+                                        gettext("Address is mandatory for 'Remote Host' checks."),
+                                        $key
                                     ));
                                 } elseif (empty((string)$node) && (string)$parentNode->type == 'network'
                                       && empty((string)$parentNode->interface) ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                      gettext("Please set at least one of Address or Interface."), $key
+                                        gettext("Please set at least one of Address or Interface."),
+                                        $key
                                     ));
                                 }
                                 break;
@@ -128,15 +133,19 @@ class Monit extends BaseModel
                                 if (empty((string)$node) && (string)$parentNode->type == 'network'
                                       && empty((string)$parentNode->address) ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                      gettext("Please set at least one of Address or Interface."), $key
+                                        gettext("Please set at least one of Address or Interface."),
+                                        $key
                                     ));
                                 }
                                 break;
                             case 'path':
-                                if (empty((string)$node) && in_array((string)$parentNode->type,
-                                      ['file', 'fifo', 'filesystem', 'directory'])) {
+                                if (empty((string)$node) && in_array(
+                                    (string)$parentNode->type,
+                                    ['file', 'fifo', 'filesystem', 'directory']
+                                )) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                      gettext("Path is mandatory."), $key
+                                        gettext("Path is mandatory."),
+                                        $key
                                     ));
                                 }
                                 break;
