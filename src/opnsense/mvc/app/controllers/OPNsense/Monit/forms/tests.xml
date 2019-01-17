@@ -1,24 +1,30 @@
 <form>
    <field>
-      <id>monit.test.name</id>
+      <id>test.name</id>
       <label>Name</label>
       <type>text</type>
       <help><![CDATA[The name of the test.]]></help>
    </field>
    <field>
-      <id>monit.test.condition</id>
+      <id>test.type</id>
+      <label>Type</label>
+      <type>dropdown</type>
+      <help><![CDATA[The type of the test.]]></help>
+   </field>
+   <field>
+      <id>test.condition</id>
       <label>Condition</label>
       <type>text</type>
       <help><![CDATA[The test condition. E.g.<br><i>cpu is greater than 50%</i><br><i>failed host 127.0.0.1 port 22 protocol ssh</i><br>]]></help>
    </field>
    <field>
-      <id>monit.test.action</id>
+      <id>test.action</id>
       <label>Action</label>
       <type>dropdown</type>
       <help><![CDATA[Simply <i>alert</i> or <i>restart</i> the service or <i>execute</i> a program.]]></help>
    </field>
   <field>
-      <id>monit.test.path</id>
+      <id>test.path</id>
       <label>Path</label>
       <type>text</type>
       <help><![CDATA[Make sure the script is executable by the Monit service.]]></help>

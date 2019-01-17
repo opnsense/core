@@ -1,6 +1,7 @@
 {#
 
-Copyright © 2017-2018 by EURO-LOG AG
+Copyright (c) 2017-2018 by EURO-LOG AG
+Copyright (c) 2019 Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -93,7 +94,7 @@ POSSIBILITY OF SUCH DAMAGE.
              $('#btnImportSystemNotificationProgress').removeClass("fa fa-spinner fa-pulse");
              $('#btnImportSystemNotification').blur();
              ajaxCall("/api/monit/service/status", {}, function(data,status) {
-                mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
+                mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/getGeneral/"}).done(function(){
                     formatTokenizersUI();
                     $('.selectpicker').selectpicker('refresh');
                     isSubsystemDirty();
@@ -106,7 +107,7 @@ POSSIBILITY OF SUCH DAMAGE.
       /**
        * general settings
        */
-      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
+      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/getGeneral/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
          isSubsystemDirty();
@@ -161,29 +162,13 @@ POSSIBILITY OF SUCH DAMAGE.
       /**
        * alert settings
        */
-      function openAlertDialog(uuid) {
-         var editDlg = "DialogEditAlert";
-         var setUrl = "/api/monit/settings/set/alert/";
-         var getUrl = "/api/monit/settings/get/alert/";
-         var urlMap = {};
-         urlMap['frm_' + editDlg] = getUrl + uuid;
-         mapDataToFormUI(urlMap).done(function () {
-            $('.selectpicker').selectpicker('refresh');
-            clearFormValidation('frm_' + editDlg);
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            $('#'+editDlg).on('hidden.bs.modal', function () {
-               parent.history.back();
-            });
-         });
-      };
-
       $("#grid-alerts").UIBootgrid({
-         'search':'/api/monit/settings/search/alert/',
-         'get':'/api/monit/settings/get/alert/',
-         'set':'/api/monit/settings/set/alert/',
-         'add':'/api/monit/settings/set/alert/',
-         'del':'/api/monit/settings/del/alert/',
-         'toggle':'/api/monit/settings/toggle/alert/'
+         'search':'/api/monit/settings/searchAlert/',
+         'get':'/api/monit/settings/getAlert/',
+         'set':'/api/monit/settings/setAlert/',
+         'add':'/api/monit/settings/addAlert/',
+         'del':'/api/monit/settings/delAlert/',
+         'toggle':'/api/monit/settings/toggleAlert/'
       });
 
       /**
@@ -254,12 +239,12 @@ POSSIBILITY OF SUCH DAMAGE.
       $('#monit\\.service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
 
       $("#grid-services").UIBootgrid({
-         'search':'/api/monit/settings/search/service/',
-         'get':'/api/monit/settings/get/service/',
-         'set':'/api/monit/settings/set/service/',
-         'add':'/api/monit/settings/set/service/',
+         'search':'/api/monit/settings/searchService/',
+         'get':'/api/monit/settings/getService/',
+         'set':'/api/monit/settings/setService/',
+         'add':'/api/monit/settings/addService/',
          'del':'/api/monit/settings/del/service/',
-         'toggle':'/api/monit/settings/toggle/service/'
+         'toggle':'/api/monit/settings/toggleService/'
       });
 
 
@@ -278,28 +263,13 @@ POSSIBILITY OF SUCH DAMAGE.
       $('#DialogEditTest').on('shown.bs.modal', function() {ShowHideExecField();});
       $('#monit\\.test\\.action').on('changed.bs.select', function(e) {ShowHideExecField();});
 
-      function openTestDialog(uuid) {
-         var editDlg = "TestEditAlert";
-         var setUrl = "/api/monit/settings/set/test/";
-         var getUrl = "/api/monit/settings/get/test/";
-         var urlMap = {};
-         urlMap['frm_' + editDlg] = getUrl + uuid;
-         mapDataToFormUI(urlMap).done(function () {
-            $('.selectpicker').selectpicker('refresh');
-            clearFormValidation('frm_' + editDlg);
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            $('#'+editDlg).on('hidden.bs.modal', function () {
-               parent.history.back();
-            });
-         });
-      };
 
       $("#grid-tests").UIBootgrid({
-         'search':'/api/monit/settings/search/test/',
-         'get':'/api/monit/settings/get/test/',
-         'set':'/api/monit/settings/set/test/',
-         'add':'/api/monit/settings/set/test/',
-         'del':'/api/monit/settings/del/test/'
+         'search':'/api/monit/settings/searchTest/',
+         'get':'/api/monit/settings/getTest/',
+         'set':'/api/monit/settings/setTest/',
+         'add':'/api/monit/settings/addTest/',
+         'del':'/api/monit/settings/delTest/'
       });
 
    });
