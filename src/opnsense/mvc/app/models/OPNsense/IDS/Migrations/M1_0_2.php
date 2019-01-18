@@ -43,7 +43,9 @@ class M1_0_2 extends BaseModelMigration
     {
         $cfgObj = Config::getInstance()->object();
         $affectedUuids = [];
-
+        if (!isset($cfgObj->OPNsense->IDS->userDefinedRules->rule)) {
+            return;
+        }
         foreach ($cfgObj->OPNsense->IDS->userDefinedRules->rule as $rule) {
             if (!empty($rule->geoip) || !empty($rule->geoip_direction)) {
                 $affectedUuids[] = (string)$rule['uuid'];
