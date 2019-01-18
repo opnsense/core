@@ -119,7 +119,7 @@
       $('#btnSaveGeneral').unbind('click').click(function(){
          $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
          var frm_id = 'frm_GeneralSettings';
-         saveFormToEndpoint("/api/monit/settings/set/general/", frm_id, function(){
+         saveFormToEndpoint("/api/monit/settings/set/", frm_id, function(){
             isSubsystemDirty();
             updateServiceControlUI('monit');
          });
