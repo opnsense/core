@@ -26,8 +26,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
-# connection: error|timeout|unauthenticated|untrusted|revoked|misconfigured|unresolved|busy|ok
-# repository: error|ok
+# connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
+# repository: error|untrusted|revoked|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
 # download_size: <size_of_total_downloads>
@@ -100,12 +100,14 @@ if [ "$pkg_running" == "" ]; then
           timer=0
         elif grep -q 'No trusted public keys found' $tmp_pkg_update_file; then
           # fingerprint mismatch
-          connection="untrusted"
+          repository="untrusted"
+          connection="ok"
           timer=0
         # XXX two space typo here in pkg:
         elif grep -q 'At least one of the  certificates has been revoked' $tmp_pkg_update_file; then
           # fingerprint mismatch
-          connection="revoked"
+          repository="revoked"
+          connection="ok"
           timer=0
         fi
       fi

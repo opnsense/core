@@ -254,16 +254,16 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'timeout') {
                 $response['status_msg'] = gettext('Timeout while connecting to the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'untrusted') {
-                $response['status_msg'] = gettext('Could not verify the repository fingerprint.');
-                $response['status'] = 'error';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'revoked') {
-                $response['status_msg'] = gettext('The repository fingerprint has been revoked.');
-                $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] != 'ok') {
                 $response['status_msg'] = gettext('An error occurred while connecting to the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'untrusted') {
+                $response['status_msg'] = gettext('Could not verify the repository fingerprint.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'revoked') {
+                $response['status_msg'] = gettext('The repository fingerprint has been revoked.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
