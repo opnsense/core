@@ -238,7 +238,6 @@ EOD;
             }
 
             printf("\nEnter the Optional interface %s name or 'a' for auto-detection\n" .
-                "NOTE: this enables full Firewalling/NAT mode.\n" .
                 "(or nothing if finished): ", $io);
 
             if ($interactive) {
