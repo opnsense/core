@@ -165,7 +165,7 @@ class Monit extends BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         @touch("/tmp/monit.dirty");
-        return parent::performValidation($validateFullModel, $disable_validation);
+        return parent::serializeToConfig($validateFullModel, $disable_validation);
     }
 
 
