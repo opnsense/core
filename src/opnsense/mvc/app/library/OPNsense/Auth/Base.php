@@ -1,6 +1,7 @@
 <?php
 /**
  *    Copyright (C) 2017 Deciso B.V.
+ *    Copyright (C) 2019 Fabian Franz
  *
  *    All rights reserved.
  *
@@ -42,7 +43,7 @@ abstract class Base
      * @param string $username username to find
      * @return array
      */
-    private function groups($username)
+    protected function groups($username)
     {
         $groups = array();
         $user = $this->getUser($username);
@@ -54,7 +55,7 @@ abstract class Base
                     if (isset($group->member)) {
                         foreach ($group->member as $member) {
                             if ((string)$uid == (string)$member) {
-                                $groups[] = (string)$group->gid;
+                                $groups[] = $group;
                                 break;
                             }
                         }
@@ -96,7 +97,12 @@ abstract class Base
      */
     public function groupAllowed($username, $gid)
     {
-        return in_array($gid, $this->groups($username));
+        foreach ($this->groups($username) as $group) {
+            if ($gid == (string)$group->gid) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -112,10 +118,9 @@ abstract class Base
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'user' && !empty($value->name) && (string)$value->name == $username) {
                 // user found, stop search
-                $userObject = $value;
-                break;
+                return $value;
             }
         }
-        return $userObject;
+        return null;
     }
 }

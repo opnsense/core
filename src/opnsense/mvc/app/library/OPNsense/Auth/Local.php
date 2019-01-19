@@ -36,6 +36,7 @@ use OPNsense\Core\Config;
  */
 class Local extends Base implements IAuthConnector
 {
+    private $lastProperties = array();
     /**
      * type name in configuration
      * @return string
@@ -60,7 +61,8 @@ class Local extends Base implements IAuthConnector
      */
     public function getLastAuthProperties()
     {
-        return array();
+
+        return $this->lastProperties;
     }
 
     /**
@@ -160,6 +162,8 @@ class Local extends Base implements IAuthConnector
             $passwd = crypt($password, (string)$userObject->password);
             if ($passwd == (string)$userObject->password) {
                 // password ok, return successfully authentication
+                $this->lastProperties = array();
+                $this->lastProperties['groups'] = $this->groups($username);
                 return true;
             }
         }

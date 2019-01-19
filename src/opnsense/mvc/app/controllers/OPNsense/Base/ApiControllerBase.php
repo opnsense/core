@@ -42,7 +42,7 @@ class ApiControllerBase extends ControllerRoot
      * (only for api calls)
      * @return string
      */
-    private function parseJsonBodyData()
+    public function parseJsonBodyData()
     {
         switch ($this->request->getHeader('CONTENT_TYPE')) {
             case 'application/json':
