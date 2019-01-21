@@ -56,11 +56,10 @@ $( document ).ready(function() {
    ];
 
    // avoid running code twice due to <script> location within <body>
-
    if (typeof monitPollInit === 'undefined') {
-      let monitPollInit = false;
+      monitPollInit = false;
    } else {
-      let monitPollInit = true;
+      monitPollInit = true;
    }
 
    function monitStatusPoll() {
