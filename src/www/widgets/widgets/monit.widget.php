@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <style>
 
    .monit-widget-table {
-      width: 100% 
+      width: 100%
    }
 
    .monit-widget-table > thead,
