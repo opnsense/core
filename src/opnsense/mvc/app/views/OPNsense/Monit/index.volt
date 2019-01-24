@@ -211,7 +211,7 @@
          'get':'/api/monit/settings/getService/',
          'set':'/api/monit/settings/setService/',
          'add':'/api/monit/settings/addService/',
-         'del':'/api/monit/settings/del/service/',
+         'del':'/api/monit/settings/delService/',
          'toggle':'/api/monit/settings/toggleService/'
       });
 
