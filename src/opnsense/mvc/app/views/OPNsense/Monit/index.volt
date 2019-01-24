@@ -145,66 +145,66 @@
 
       // show hide fields according to selected service type
       function ShowHideFields(){
-         var servicetype = $('#monit\\.service\\.type').val();
-         $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
-         $('tr[id="row_monit.service.match"]').addClass('hidden');
-         $('tr[id="row_monit.service.path"]').addClass('hidden');
-         $('tr[id="row_monit.service.timeout"]').addClass('hidden');
-         $('tr[id="row_monit.service.address"]').addClass('hidden');
-         $('tr[id="row_monit.service.interface"]').addClass('hidden');
-         $('tr[id="row_monit.service.start"]').removeClass('hidden');
-         $('tr[id="row_monit.service.stop"]').removeClass('hidden');
-         $('tr[id="row_monit.service.depends"]').removeClass('hidden');
+         var servicetype = $('#service\\.type').val();
+         $('tr[id="row_service.pidfile"]').addClass('hidden');
+         $('tr[id="row_service.match"]').addClass('hidden');
+         $('tr[id="row_service.path"]').addClass('hidden');
+         $('tr[id="row_service.timeout"]').addClass('hidden');
+         $('tr[id="row_service.address"]').addClass('hidden');
+         $('tr[id="row_service.interface"]').addClass('hidden');
+         $('tr[id="row_service.start"]').removeClass('hidden');
+         $('tr[id="row_service.stop"]').removeClass('hidden');
+         $('tr[id="row_service.depends"]').removeClass('hidden');
          switch (servicetype) {
             case 'process':
-               var pidfile = $('#monit\\.service\\.pidfile').val();
-               var match = $('#monit\\.service\\.match').val();
+               var pidfile = $('#service\\.pidfile').val();
+               var match = $('#service\\.match').val();
                if (pidfile !== '') {
-                  $('tr[id="row_monit.service.pidfile"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.match"]').addClass('hidden');
+                  $('tr[id="row_service.pidfile"]').removeClass('hidden');
+                  $('tr[id="row_service.match"]').addClass('hidden');
                } else if (match !== '') {
-                  $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
-                  $('tr[id="row_monit.service.match"]').removeClass('hidden');
+                  $('tr[id="row_service.pidfile"]').addClass('hidden');
+                  $('tr[id="row_service.match"]').removeClass('hidden');
                } else {
-                  $('tr[id="row_monit.service.pidfile"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.match"]').removeClass('hidden');
+                  $('tr[id="row_service.pidfile"]').removeClass('hidden');
+                  $('tr[id="row_service.match"]').removeClass('hidden');
                }
                break;
             case 'host':
-               $('tr[id="row_monit.service.address"]').removeClass('hidden');
+               $('tr[id="row_service.address"]').removeClass('hidden');
                break;
             case 'network':
-               var address = $('#monit\\.service\\.address').val();
-               var interface = $('#monit\\.service\\.interface').val();
+               var address = $('#service\\.address').val();
+               var interface = $('#service\\.interface').val();
                if (address !== '') {
-                  $('tr[id="row_monit.service.address"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.interface"]').addClass('hidden');
+                  $('tr[id="row_service.address"]').removeClass('hidden');
+                  $('tr[id="row_service.interface"]').addClass('hidden');
                } else if (interface !== '') {
-                  $('tr[id="row_monit.service.address"]').addClass('hidden');
-                  $('tr[id="row_monit.service.interface"]').removeClass('hidden');
+                  $('tr[id="row_service.address"]').addClass('hidden');
+                  $('tr[id="row_service.interface"]').removeClass('hidden');
                } else {
-                  $('tr[id="row_monit.service.address"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.interface"]').removeClass('hidden');
+                  $('tr[id="row_service.address"]').removeClass('hidden');
+                  $('tr[id="row_service.interface"]').removeClass('hidden');
                }
                break;
             case 'system':
-               $('tr[id="row_monit.service.start"]').addClass('hidden');
-               $('tr[id="row_monit.service.stop"]').addClass('hidden');
-               $('tr[id="row_monit.service.depends"]').addClass('hidden');
+               $('tr[id="row_service.start"]').addClass('hidden');
+               $('tr[id="row_service.stop"]').addClass('hidden');
+               $('tr[id="row_service.depends"]').addClass('hidden');
                break;
             default:
-               $('tr[id="row_monit.service.path"]').removeClass('hidden');
-               $('tr[id="row_monit.service.timeout"]').removeClass('hidden');
+               $('tr[id="row_service.path"]').removeClass('hidden');
+               $('tr[id="row_service.timeout"]').removeClass('hidden');
          }
       };
       $('#DialogEditService').on('shown.bs.modal', function() {ShowHideFields();});
-      $('#monit\\.service\\.type').on('changed.bs.select', function(e) {ShowHideFields();});
-      $('#monit\\.service\\.pidfile').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.match').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.path').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.timeout').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.address').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
+      $('#service\\.type').on('changed.bs.select', function(e) {ShowHideFields();});
+      $('#service\\.pidfile').on('input', function() {ShowHideFields();});
+      $('#service\\.match').on('input', function() {ShowHideFields();});
+      $('#service\\.path').on('input', function() {ShowHideFields();});
+      $('#service\\.timeout').on('input', function() {ShowHideFields();});
+      $('#service\\.address').on('input', function() {ShowHideFields();});
+      $('#service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
 
       $("#grid-services").UIBootgrid({
          'search':'/api/monit/settings/searchService/',
@@ -222,14 +222,14 @@
 
       // show hide execute field
       function ShowHideExecField(){
-         var actiontype = $('#monit\\.test\\.action').val();
-         $('tr[id="row_monit.test.path"]').addClass('hidden');
+         var actiontype = $('#test\\.action').val();
+         $('tr[id="row_test.path"]').addClass('hidden');
          if (actiontype === 'exec') {
-            $('tr[id="row_monit.test.path"]').removeClass('hidden');
+            $('tr[id="row_test.path"]').removeClass('hidden');
          }
       };
       $('#DialogEditTest').on('shown.bs.modal', function() {ShowHideExecField();});
-      $('#monit\\.test\\.action').on('changed.bs.select', function(e) {ShowHideExecField();});
+      $('#test\\.action').on('changed.bs.select', function(e) {ShowHideExecField();});
 
 
       $("#grid-tests").UIBootgrid({

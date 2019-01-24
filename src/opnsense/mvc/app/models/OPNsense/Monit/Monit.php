@@ -42,18 +42,18 @@ class Monit extends BaseModel
      *
      */
     private $testSyntax = [
-        'process'    => ['Existence', 'Process Resource', 'Process Disk I/O',
+        'process'    => ['Existence', 'ProcessResource', 'ProcessDiskIO',
                          'UID', 'GID', 'PID', 'PPID', 'Uptime', 'Connection', 'Custom'],
-        'file'       => ['Existence', 'File Checksum', 'Timestamp', 'File Size',
-                         'File Content', 'Permisssion', 'UID', 'GID', 'Custom'],
+        'file'       => ['Existence', 'FileChecksum', 'Timestamp', 'FileSize',
+                         'FileContent', 'Permisssion', 'UID', 'GID', 'Custom'],
         'fifo'       => ['Existence', 'Timestamp', 'Permisssion', 'UID', 'GID', 'Custom'],
-        'filesystem' => ['Existence', 'Filesystem Mount Flags',
-                         'Space Usage', 'Inode Usage', 'Disk I/O', 'Permisssion', 'Custom'],
+        'filesystem' => ['Existence', 'FilesystemMountFlags',
+                         'SpaceUsage', 'InodeUsage', 'DiskIO', 'Permisssion', 'Custom'],
         'directory'  => ['Existence', 'Timestamp', 'Permisssion', 'UID', 'GID', 'Custom'],
-        'host'       => ['Network Ping', 'Connection', 'Custom'],
-        'system'     => ['System Resource', 'Uptime', 'Custom'],
-        'custom'     => ['Program Status', 'Custom'],
-        'network'    => ['Network Interface', 'Custom']
+        'host'       => ['NetworkPing', 'Connection', 'Custom'],
+        'system'     => ['SystemResource', 'Uptime', 'Custom'],
+        'custom'     => ['ProgramStatus', 'Custom'],
+        'network'    => ['NetworkInterface', 'Custom']
     ];
 
 
