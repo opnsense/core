@@ -73,8 +73,22 @@ class Monit extends BaseModel
                 $parentNode = $node->getParentNode();
                 // perform plugin specific validations
                 switch ($parentNode->getInternalXMLTagName()) {
+                    case 'test':
+                        // test node validations
+                        switch ($node->getInternalXMLTagName()) {
+                            case 'type':
+                                $testUuid = $parentNode->getAttribute('uuid');
+                                if ($node->isFieldChanged() && $this->isTestServiceRelated($testUuid)) {
+                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                        gettext("Cannot change the type. Test is linked to a service."),
+                                        $key
+                                    ));
+                                }
+                                break;
+                        }
+                        break;
                     case 'service':
-                        // service type node validations
+                        // service node validations
                         switch ($node->getInternalXMLTagName()) {
                             case 'tests':
                                 // test dependencies defined in $this->testSyntax
@@ -185,5 +199,21 @@ class Monit extends BaseModel
     public function configClean()
     {
         return @unlink("/tmp/monit.dirty");
+    }
+
+    /**
+     * determine if services have links to this test node
+     * @param uuid of the test node
+     * @return bool
+     */
+    public function isTestServiceRelated($testUUID = null)
+    {
+        $serviceNodes = $this->service->getNodes();
+        foreach ($this->service->iterateItems() as $serviceNode) {
+            if (in_array($testUUID, explode(',', (string)$serviceNode->tests))) {
+                return true;
+            }
+        }
+        return false;
     }
 }
