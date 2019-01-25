@@ -6,12 +6,6 @@
       <help><![CDATA[The name of the test.]]></help>
    </field>
    <field>
-      <id>test.type</id>
-      <label>Type</label>
-      <type>dropdown</type>
-      <help><![CDATA[The type of the test.]]></help>
-   </field>
-   <field>
       <id>test.condition</id>
       <label>Condition</label>
       <type>text</type>
