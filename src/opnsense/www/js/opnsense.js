@@ -30,6 +30,15 @@
  *
  */
 
+/**
+ * IE11 compatibility https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes#Browser_compatibility
+ */
+if (typeof(String.prototype.includes) != 'function') {
+    String.prototype.includes = function (needle) {
+        return this.indexOf(needle) >= 0
+    }
+}
+
  /**
   * html decode text into textarea tag and return decoded value.
   *
