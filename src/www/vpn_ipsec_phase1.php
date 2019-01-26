@@ -438,7 +438,7 @@ include("head.inc");
 <script>
     $( document ).ready(function() {
         $("#iketype").change(function(){
-            if (['ike', 'ikev2'].includes($(this).val())) {
+            if (['ike', 'ikev2'].indexOf($(this).val())>= 0) {
                 $("#mode").prop( "disabled", true );
                 $("#mode_tr").hide();
             } else {
