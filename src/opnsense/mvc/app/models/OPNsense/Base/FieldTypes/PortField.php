@@ -30,6 +30,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
@@ -99,6 +100,11 @@ class PortField extends BaseField
     private $enableWellKown = false;
 
     /**
+     * @var bool enable port ranges
+     */
+    private $enableRanges = false;
+
+    /**
      * @var array collected options
      */
     private static $internalOptionList = null;
@@ -125,11 +131,16 @@ class PortField extends BaseField
      */
     public function setEnableWellKnown($value)
     {
-        if (strtoupper(trim($value)) == "Y") {
-            $this->enableWellKown = true;
-        } else {
-            $this->enableWellKown = false;
-        }
+        $this->enableWellKown =  (strtoupper(trim($value)) == "Y");
+    }
+
+    /**
+     * setter for maximum value
+     * @param integer $value
+     */
+    public function setEnableRanges($value)
+    {
+        $this->enableRanges =  (strtoupper(trim($value)) == "Y");
     }
 
     /**
@@ -142,12 +153,10 @@ class PortField extends BaseField
     }
 
     /**
-     * retrieve field validators for this field type
-     * @return array returns InclusionIn validator
+     * return validation message
      */
-    public function getValidators()
+    private function getValidationMessage()
     {
-        $validators = parent::getValidators();
         if ($this->internalValidationMessage == null) {
             $msg = gettext('Please specify a valid port number (1-65535).');
             if ($this->enableWellKown) {
@@ -156,10 +165,36 @@ class PortField extends BaseField
         } else {
             $msg = $this->internalValidationMessage;
         }
+        return $msg;
+    }
 
+    /**
+     * retrieve field validators for this field type
+     * @return array returns InclusionIn validator
+     */
+    public function getValidators()
+    {
+        $validators = parent::getValidators();
         if (($this->internalIsRequired == true || $this->internalValue != null) &&
             count(self::$internalOptionList) > 0) {
-            $validators[] = new InclusionIn(array('message' => $msg,'domain'=>self::$internalOptionList));
+            if (count(explode("-", $this->internalValue)) == 2 && $this->enableRanges) {
+                // range validation
+                $validators[] = new CallbackValidator(["callback" => function ($data) {
+                    $messages = [];
+                    $tmp = explode('-', $data);
+                    foreach ($tmp as $port) {
+                        if (filter_var($port, FILTER_VALIDATE_INT,
+                              array("options" => array("min_range"=>1, "max_range"=>65535))) === false) {
+                            $messages[] = $this->getValidationMessage();
+                            break;
+                        }
+                    }
+                    return $messages;
+                }]);
+            } else {
+                $validators[] = new InclusionIn(array('message' => $this->getValidationMessage(),
+                                                      'domain'=>self::$internalOptionList));
+            }
         }
         return $validators;
     }
