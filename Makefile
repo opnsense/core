@@ -62,7 +62,7 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_MESSAGE?=		Insert Name Here
+CORE_MESSAGE?=		Carry on my wayward son
 CORE_NAME?=		opnsense-devel
 CORE_TYPE?=		development
 
