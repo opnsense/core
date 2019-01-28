@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"   19.1  ``Insert Name Here''  #[m" logo+
+	s"   19.1  ``Inspiring Iguana''  #[m" logo+
 
 	2drop
 ;
