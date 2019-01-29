@@ -281,7 +281,7 @@
      */
     Tokenize2.prototype.tokenAdd = function(value, text, force){
 
-        value = this.escape(value);
+        value = $('<div/>').text(value).html();
         text = text || value;
         force = force || false;
         this.resetInput();
@@ -995,23 +995,6 @@
 
         this.input.val('');
         this.scaleInput();
-
-    };
-
-    /**
-     * Escape string
-     *
-     * @param {string} string
-     * @returns {string}
-     */
-    Tokenize2.prototype.escape = function(string){
-
-        var $escaping = document.createElement('div');
-        $escaping.innerHTML = string;
-        string = ($escaping.textContent || $escaping.innerText || '');
-        return String(string).replace(/["]/g, function(){
-            return '\"';
-        });
 
     };
 
