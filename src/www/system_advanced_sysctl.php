@@ -104,7 +104,7 @@ if ($act != 'edit') {
 }
 
 include("head.inc");
-
+legacy_html_escape_form_data($pconfig);
 ?>
 <body>
 <script>
