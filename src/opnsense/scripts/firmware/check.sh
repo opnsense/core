@@ -284,8 +284,6 @@ if [ "$pkg_running" == "" ]; then
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
                   base_to_reboot="$(opnsense-update -v)"
-                  # XXX arch return is obsolete
-                  base_to_reboot="${base_to_reboot%-*}"
               fi
             fi
 
@@ -312,8 +310,6 @@ if [ "$pkg_running" == "" ]; then
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
                   kernel_to_reboot="$(opnsense-update -v)"
-                  # XXX arch return is obsolete
-                  kernel_to_reboot="${kernel_to_reboot%-*}"
               fi
             fi
 

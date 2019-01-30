@@ -56,8 +56,6 @@ for PATTERN in ${MTREE_PATTERNS}; do
 done
 
 VERSION=$(opnsense-update -v)
-# XXX only for migration
-VERSION=${VERSION%-*}
 
 set_check()
 {

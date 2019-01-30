@@ -106,9 +106,6 @@ core)
 
 	if [ -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
 		RESULT=$(cat ${VERSION})
-		# XXX this is only required for base/kernel
-		# with old version number that has arch in it
-		product_version=${RESULT%-*}
 	fi
 	if [ -z "${OUTPUT%%*product_size*}" -a -f ${VERSION}.size ]; then
 		product_size=$(cat ${VERSION}.size)
