@@ -436,8 +436,8 @@ ModemIdentGeneric:
 
 ModemIdentCustom:
 	set $ModemDescription "Custom modem"
-        if $SimPin != "" call DialPeerSetPin
-        if $APN != "" call DialPeerSetAPN
+	if $SimPin != "" call DialPeerSetPin
+	if $APN != "" call DialPeerSetAPN
 	set $ModemSetupFunc CustomSetup
 	return
 
