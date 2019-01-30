@@ -105,7 +105,7 @@ core)
 	fi
 
 	if [ -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
-		RESULT=$(cat ${VERSION})
+		product_version=$(cat ${VERSION})
 	fi
 	if [ -z "${OUTPUT%%*product_size*}" -a -f ${VERSION}.size ]; then
 		product_size=$(cat ${VERSION}.size)
