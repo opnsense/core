@@ -577,7 +577,7 @@ if (empty($act)) {
           $('<table class="table table-condensed"/>').append(
             $("<tbody/>").append(
               $("<tr/>").append($("<td/>").append(password_input)),
-              $("<tr/>").append($("<td/>").append(confirm_input)),
+              $("<tr/>").append($("<td/>").append(confirm_input))
             )
           )
         );
