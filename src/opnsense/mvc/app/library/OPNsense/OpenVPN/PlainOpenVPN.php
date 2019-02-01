@@ -111,7 +111,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "reneg-sec {$this->config['reneg-sec']}";
         }
         foreach (explode(",", $this->config['hostname']) as $hostname) {
-            $conf[] = "remote {$hostname} {$this->config['local_port']} {$this->config['protocol']}";
+            $conf[] = "remote {$hostname} {$this->config['local_port']} " . strtolower($this->config['protocol']);
         }
         if (!empty($this->config['random_local_port'])) {
             $conf[] = "lport 0";
