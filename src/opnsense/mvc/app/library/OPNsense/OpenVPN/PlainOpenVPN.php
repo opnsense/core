@@ -117,9 +117,16 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "lport 0";
         }
 
-        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_subject_name'])
+        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_subject'])
                 && !empty($this->config['validate_server_cn'])) {
-            $conf[] = "verify-x509-name \"{$this->config['server_subject_name']}\" subject";
+            $tmp_subject = "";
+            foreach ($this->config['server_subject'] as $key => $value) {
+                if (!empty($tmp_subject)) {
+                    $tmp_subject .= ", ";
+                }
+                $tmp_subject .= "{$key}={$value}" ;
+            }
+            $conf[] = "verify-x509-name \"{$tmp_subject}\" subject";
             if (!empty($this->config['server_cert_is_srv'])) {
                 $conf[] = "remote-cert-tls server";
             }
