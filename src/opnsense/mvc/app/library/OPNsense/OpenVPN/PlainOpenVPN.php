@@ -65,7 +65,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         if (!empty($this->config['client_cn'])) {
             $result[] = $this->config['client_cn'];
         }
-        return implode("_", $result);
+        return preg_replace("/[^a-zA-Z0-9]/", "_", implode("_", $result));
     }
 
     /**
