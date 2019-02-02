@@ -348,6 +348,7 @@ class ExportController extends ApiControllerBase
                                 $inf_crt = openssl_x509_parse($str_crt);
                                 $config['server_cn'] = $inf_crt['subject']['CN'];
                                 $config['server_subject_name'] = $inf_crt['name'];
+                                $config['server_subject'] = $inf_crt['subject'];
                                 // Is server type cert
                                 $config['server_cert_is_srv'] = (
                                     isset($inf_crt['extensions']['extendedKeyUsage']) &&
