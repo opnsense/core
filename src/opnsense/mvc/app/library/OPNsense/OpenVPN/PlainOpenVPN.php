@@ -128,6 +128,10 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "auth-user-pass";
         }
 
+        if (!empty($this->config['compression'])) {
+            $conf[] = "comp-lzo " . $this->config['compression'];
+        }
+
         if (!empty($this->config['plain_config'])) {
             foreach (preg_split('/\r\n|\r|\n/', $this->config['plain_config']) as $line) {
                 if (!empty($line)) {
