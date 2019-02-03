@@ -820,8 +820,8 @@ include("head.inc");
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat_out.php'" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                    <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_nat_out.php'" />
 <?php
                     if (isset($id)):
 ?>

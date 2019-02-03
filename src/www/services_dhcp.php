@@ -1098,7 +1098,7 @@ include("head.inc");
 <?php
                         endif; ?>
                         <input name="if" type="hidden" value="<?=$if;?>" />
-                        <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>"  />
+                        <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>"  />
                       </td>
                     </tr>
                   </table>

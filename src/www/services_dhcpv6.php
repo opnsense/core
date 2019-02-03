@@ -746,7 +746,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td>&nbsp;</td>
                       <td>
                         <input name="if" type="hidden" value="<?=$if;?>" />
-                        <input name="submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>"/>
+                        <input name="submit" type="submit" class="formbtn btn btn-primary" value="<?=html_safe(gettext('Save'));?>"/>
                       </td>
                     </tr>
                   </table>

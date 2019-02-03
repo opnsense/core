@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         </tr>
         <tr>
           <td colspan="2">
-            <input type="submit" id="thermal_sensors_widget_submit" name="thermal_sensors_widget_submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
+            <input type="submit" id="thermal_sensors_widget_submit" name="thermal_sensors_widget_submit" class="btn btn-primary formbtn" value="<?= html_safe(gettext('Save')) ?>" />
           </td>
         </tr>
         <tr>

@@ -1156,8 +1156,8 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_schedule.php'" />
+                        <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_schedule.php'" />
                         <?php if (isset($id)): ?>
                           <input name="id" type="hidden" value="<?=$id;?>" />
                         <?php endif; ?>

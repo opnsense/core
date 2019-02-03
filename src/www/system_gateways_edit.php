@@ -735,7 +735,7 @@ $( document ).ready(function() {
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                     <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
                            onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateways.php';?>'" />
 <?php

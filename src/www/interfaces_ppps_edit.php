@@ -807,8 +807,8 @@ include("head.inc");
                       <tr>
                         <td style="width:22%">&nbsp;</td>
                         <td style="width:78%">
-                          <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                          <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_ppps.php'" />
+                          <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                          <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_ppps.php'" />
                           <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />
                           <?php if (isset($id)): ?>
                             <input name="id" type="hidden" value="<?=$id;?>" />

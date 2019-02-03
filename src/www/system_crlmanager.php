@@ -416,7 +416,7 @@ include("head.inc");
               <tr>
                 <td style="width:22%">&nbsp;</td>
                 <td style="width:78%">
-                  <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                  <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
 <?php
                   if (isset($id)) :?>
                   <input name="id" type="hidden" value="<?=$id;?>" />
@@ -451,7 +451,7 @@ include("head.inc");
               <tr>
                 <td>&nbsp;</td>
                 <td>
-                  <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                  <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                   <input name="id" type="hidden" value="<?=$id;?>" />
                   <input name="act" type="hidden" value="<?=$act;?>" />
                 </td>

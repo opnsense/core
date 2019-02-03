@@ -681,7 +681,7 @@ $main_buttons = array(
             <tr>
               <td style="width:22%">&nbsp;</td>
               <td style="width:78%">
-                <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
               </td>
             </tr>
           </table>
