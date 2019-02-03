@@ -1600,7 +1600,7 @@ endif; ?>
                     <tr>
                       <td style="width:22%">&nbsp;</td>
                       <td style="width:78%">
-                        <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                         <input name="act" type="hidden" value="<?=$act;?>" />
 <?php
                         if (isset($id) && $a_server[$id]) :?>

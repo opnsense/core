@@ -130,7 +130,7 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
       </tr>
       <tr>
         <td colspan="2">
-          <input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
+          <input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="<?= html_safe(gettext('Save')) ?>" />
         </td>
       </tr>
     </table>

@@ -848,7 +848,7 @@ endif; ?>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                    <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
 <?php if (isset($id)) :
 ?>
                     <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />

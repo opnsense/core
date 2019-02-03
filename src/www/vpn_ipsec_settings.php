@@ -225,7 +225,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                       </td>
                     </tr>
                   </table>

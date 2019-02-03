@@ -504,8 +504,8 @@ include("head.inc");
                 <tr>
                   <td></td>
                   <td>
-                    <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
-                    <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_dhcp.php?if=<?= html_safe($if) ?>'" />
+                    <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                    <input type="button" class="formbtn btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/services_dhcp.php?if=<?= html_safe($if) ?>'" />
 <?php
                   if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />

@@ -522,7 +522,7 @@ SureGPS =    #Sure Electronics SKG16B
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                       </td>
                     </tr>
                   </tbody>

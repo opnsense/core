@@ -326,7 +326,7 @@ if (!isset($_GET['act'])) {
                   <td>&nbsp;</td>
                   <td>
                       &nbsp;<br />&nbsp;
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_unbound_acls.php'" />
                   </td>
                 </tr>

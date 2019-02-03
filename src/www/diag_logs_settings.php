@@ -550,7 +550,7 @@ $(document).ready(function() {
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td style="width:22%"></td>
-                    <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" onclick="enable_change(true)" />
+                    <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" onclick="enable_change(true)" />
                     </td>
                   </tr>
                 </table>

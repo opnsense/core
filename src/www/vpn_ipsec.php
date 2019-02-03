@@ -644,7 +644,7 @@ $( document ).ready(function() {
                     </tr>
                     <tr>
                       <td colspan=9>
-                        <input type="submit" name="save" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input type="submit" name="save" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                       </td>
                     </tr>
                 </tbody>

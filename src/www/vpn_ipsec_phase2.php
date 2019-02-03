@@ -764,7 +764,7 @@ endif; ?>
                     <input name="remoteid_type" type="hidden" value="mobile" />
 <?php
                  endif; ?>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                     <input name="ikeid" type="hidden" value="<?=$pconfig['ikeid'];?>" />
                     <input name="uniqid" type="hidden" value="<?=$pconfig['uniqid'];?>" />
                   </td>
