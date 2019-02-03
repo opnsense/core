@@ -51,20 +51,6 @@ if [ -z "${SYSLEVEL}" ]; then
 	exit 1
 fi
 
-if [ -d ${SYSDIR} ]; then
-	# XXX pre-18.7 compat: move all old-style root scripts to new location
-	for _SYSHOOK in $(find -s ${SYSDIR} -type f -depth 1 -name "*.${SYSLEVEL}"); do
-		SYSHOOK=${_SYSHOOK##"${SYSDIR}/"}
-		SYSHOOK=${SYSHOOK%%".${SYSLEVEL}"}
-		SYSNAME=${SYSHOOK#??-}
-
-		echo ">>> Migrating ${SYSLEVEL} script '${SYSNAME}'"
-
-		mkdir -p ${SYSDIR}/${SYSLEVEL}
-		mv ${_SYSHOOK} ${SYSDIR}/${SYSLEVEL}/${SYSHOOK}
-	done
-fi
-
 if [ ! -d ${SYSDIR}/${SYSLEVEL} ]; then
 	# no dir no fun
 	exit 0
