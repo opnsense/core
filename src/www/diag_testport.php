@@ -201,7 +201,7 @@ include("head.inc"); ?>
 <?php elseif (empty($cmd_output)): ?>
         <pre><?=gettext("Connection failed (Refused/Timeout)");?></pre>
 <?php else: ?>
-        <pre><?=$cmd_output;?></pre>
+        <pre><?=htmlspecialchars($cmd_output);?></pre>
 <?php endif ?>
       </section>
 <?php endif ?>
