@@ -436,6 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['dhcpoveridemtu'] = isset($a_interfaces[$if]['dhcpoveridemtu']);
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -1077,6 +1078,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp_config_advanced'] = $pconfig['adv_dhcp_config_advanced'];
                     $new_config['adv_dhcp_config_file_override'] = $pconfig['adv_dhcp_config_file_override'];
                     $new_config['adv_dhcp_config_file_override_path'] = $pconfig['adv_dhcp_config_file_override_path'];
+					if (!empty($pconfig['dhcpoveridemtu'])) {
+                        $new_config['dhcpoveridemtu'] = true;
+                    }
                     break;
                 case "ppp":
                     $new_config['if'] = $pconfig['type'] . $pconfig['ptpid'];
@@ -2178,6 +2182,16 @@ include("head.inc");
                               <?=gettext("The value in this field is sent as the DHCP client identifier " .
                               "and hostname when requesting a DHCP lease. Some ISPs may require " .
                               "this (for client identification)."); ?>
+                            </div>
+                          </td>
+                        </tr>
+						<tr class="dhcp_basic dhcp_advanced">
+                          <td><a id="help_for_dhcpoveridemtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Overide ISP supplied mtu"); ?></td>
+                          <td>
+							<input name="dhcpoveridemtu" type="checkbox" id="dhcpoveridemtu" value="yes" <?= !empty($pconfig['dhcpoveridemtu']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_dhcpdhcpoveridemtu">
+                              <?=gettext("Some ISPs incorrectly set an MTU value and this value is then forced on the WAN interface. By default Opnsense will " .
+                              "ignore the ISP supplied value. Ticking the box will apply the MTU supplied by the ISP"); ?>
                             </div>
                           </td>
                         </tr>

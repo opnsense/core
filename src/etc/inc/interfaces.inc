@@ -3237,7 +3237,9 @@ alias {
 
 EOD;
     }
-
+    if (isset($wancfg['dhcpoveridemtu'])) {
+        $dhclientconf .= "supersede interface-mtu 0;\n";      
+    }
     // DHCP Config File Override
     if (!empty($wancfg['adv_dhcp_config_file_override'])) {
         $dhclientfile = $wancfg['adv_dhcp_config_file_override_path'];
