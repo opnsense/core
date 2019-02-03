@@ -436,6 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -1077,6 +1078,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp_config_advanced'] = $pconfig['adv_dhcp_config_advanced'];
                     $new_config['adv_dhcp_config_file_override'] = $pconfig['adv_dhcp_config_file_override'];
                     $new_config['adv_dhcp_config_file_override_path'] = $pconfig['adv_dhcp_config_file_override_path'];
+                    /* flipped in GUI on purpose */
+                    if (empty($pconfig['dhcpoverridemtu'])) {
+                        $new_config['dhcphonourmtu'] = true;
+                    }
                     break;
                 case "ppp":
                     $new_config['if'] = $pconfig['type'] . $pconfig['ptpid'];
@@ -2178,6 +2183,16 @@ include("head.inc");
                               <?=gettext("The value in this field is sent as the DHCP client identifier " .
                               "and hostname when requesting a DHCP lease. Some ISPs may require " .
                               "this (for client identification)."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcp_basic dhcp_advanced">
+                          <td><a id="help_for_dhcpoverridemtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Override MTU') ?></td>
+                          <td>
+                            <input name="dhcpoverridemtu" type="checkbox" id="dhcpoverridemtu" value="yes" <?= !empty($pconfig['dhcpoverridemtu']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_dhcpoverridemtu">
+                              <?= gettext('An ISP may incorrectly set an MTU value which can cause intermittent network disruption. By default this ' .
+                                'value will be ignored. Unsetting this option will allow to apply the MTU supplied by the ISP instead.'); ?>
                             </div>
                           </td>
                         </tr>

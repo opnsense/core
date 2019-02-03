@@ -3198,8 +3198,7 @@ function interface_dhcp_configure($interface = 'wan')
         $dhclientconf_hostname = "";
     }
 
-    $dhclientconf = "";
-    $dhclientconf .= <<<EOD
+    $dhclientconf = <<<EOD
 interface "{$wanif}" {
   timeout 60;
   retry 15;
@@ -3207,19 +3206,18 @@ interface "{$wanif}" {
   initial-interval 1;
   {$dhclientconf_hostname}
   script "/usr/local/opnsense/scripts/interfaces/dhclient-script";
+
 EOD;
+
+    if (empty($wancfg['dhcphonourmtu'])) {
+        $dhclientconf .= "  supersede interface-mtu 0;\n";
+    }
 
     if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
-        $dhclientconf .= <<<EOD
-
-  reject {$wancfg['dhcprejectfrom']};
-EOD;
+        $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
     }
-    $dhclientconf .= <<<EOD
 
-}
-
-EOD;
+    $dhclientconf .= "}\n";
 
     // DHCP Config File Advanced
     if ($wancfg['adv_dhcp_config_advanced']) {
@@ -3304,24 +3302,24 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
         }
     }
 
-    $dhclientconf  = "interface \"{$wanif}\" {\n";
-    $dhclientconf .= "\n";
-    $dhclientconf .= "# DHCP Protocol Timing Values\n";
+    $dhclientconf = "interface \"{$wanif}\" {\n";
+    $dhclientconf .= "\t# DHCP Protocol Timing Values\n";
     $dhclientconf .= "{$adv_dhcp_pt_timeout}";
     $dhclientconf .= "{$adv_dhcp_pt_retry}";
     $dhclientconf .= "{$adv_dhcp_pt_select_timeout}";
     $dhclientconf .= "{$adv_dhcp_pt_reboot}";
     $dhclientconf .= "{$adv_dhcp_pt_backoff_cutoff}";
     $dhclientconf .= "{$adv_dhcp_pt_initial_interval}";
-    $dhclientconf .= "\n";
-    $dhclientconf .= "# DHCP Protocol Options\n";
+    $dhclientconf .= "\n\t# DHCP Protocol Options\n";
     $dhclientconf .= "{$hostname}";
     $dhclientconf .= "{$send_options}";
     $dhclientconf .= "{$request_options}";
     $dhclientconf .= "{$required_options}";
     $dhclientconf .= "{$option_modifiers}";
-    $dhclientconf .= "\n";
-    $dhclientconf .= "\tscript \"/usr/local/opnsense/scripts/interfaces/dhclient-script\";\n";
+    $dhclientconf .= "\n\tscript \"/usr/local/opnsense/scripts/interfaces/dhclient-script\";\n";
+    if (empty($wancfg['dhcphonourmtu'])) {
+        $dhclientconf .= "\tsupersede interface-mtu 0;\n";
+    }
     if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
     }
