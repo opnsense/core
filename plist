@@ -690,6 +690,7 @@
 /usr/local/opnsense/scripts/ipsec/vici/session.py
 /usr/local/opnsense/scripts/ipsec/vici/test/__init__.py
 /usr/local/opnsense/scripts/ipsec/vici/test/test_protocol.py
+/usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
 /usr/local/opnsense/scripts/netflow/flowctl_stats.py
 /usr/local/opnsense/scripts/netflow/flowd_aggregate.py
