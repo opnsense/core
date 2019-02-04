@@ -331,7 +331,6 @@ class ExportController extends ApiControllerBase
                 }
                 // fetch associated certificate data, add to config
                 $config['server_ca_chain'] = array();
-                $config['server_cn'] = null;
                 $config['server_subject_name'] = null;
                 $config['server_cert_is_srv'] = null;
                 if (!empty($server->certref)) {
@@ -346,9 +345,9 @@ class ExportController extends ApiControllerBase
                                 // certificate CN
                                 $str_crt = base64_decode((string)$cert->crt);
                                 $inf_crt = openssl_x509_parse($str_crt);
-                                $config['server_cn'] = $inf_crt['subject']['CN'];
-                                $config['server_subject_name'] = $inf_crt['name'];
-                                $config['server_subject'] = $inf_crt['subject'];
+
+                                $config['server_subject_name'] = !empty($inf_crt['name']) ? $inf_crt['name'] : null;
+                                $config['server_subject'] = !empty($inf_crt['subject']) ? $inf_crt['subject'] : null;
                                 // Is server type cert
                                 $config['server_cert_is_srv'] = (
                                     isset($inf_crt['extensions']['extendedKeyUsage']) &&
