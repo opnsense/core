@@ -124,7 +124,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
                 if (!empty($tmp_subject)) {
                     $tmp_subject .= ", ";
                 }
-                $tmp_subject .= "{$key}={$value}" ;
+                $tmp_subject .= "{$key}={$value}";
             }
             $conf[] = "verify-x509-name \"{$tmp_subject}\" subject";
             if (!empty($this->config['server_cert_is_srv'])) {
