@@ -79,8 +79,8 @@
     <page-diagnostics-haltsystem>
         <name>Diagnostics: Halt system</name>
         <patterns>
-            <pattern>/ui/core/halt</pattern>
-            <pattern>/api/core/system/halt</pattern>
+            <pattern>ui/core/halt</pattern>
+            <pattern>api/core/system/halt</pattern>
         </patterns>
     </page-diagnostics-haltsystem>
     <page-diagnostics-limiter-info>
@@ -149,8 +149,8 @@
     <page-diagnostics-rebootsystem>
         <name>Diagnostics: Reboot System</name>
         <patterns>
-            <pattern>/ui/core/reboot</pattern>
-            <pattern>/api/core/system/reboot</pattern>
+            <pattern>ui/core/reboot</pattern>
+            <pattern>api/core/system/reboot</pattern>
         </patterns>
     </page-diagnostics-rebootsystem>
     <page-diagnostics-resetstate>
