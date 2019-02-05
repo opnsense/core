@@ -2388,13 +2388,14 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     $mac = get_interface_mac($realhwif);
+
     /*
      * Don't try to reapply the spoofed MAC if it's already applied.
      * When ifconfig link is used, it cycles the interface down/up, which triggers
      * the interface config again, which attempts to spoof the MAC again,
      * which cycles the link again...
      */
-    if (!empty($wancfg['spoofmac']) && ($wancfg['spoofmac'] != $mac)) {
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], $mac)) {
         mwexec("/sbin/ifconfig " . escapeshellarg($realhwif) .
             " link " . escapeshellarg($wancfg['spoofmac']));
 
