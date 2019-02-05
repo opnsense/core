@@ -194,9 +194,10 @@ class Util
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
-            if (!getservbyname($port, "tcp") && !getservbyname($port, "udp")
-                && filter_var($port, FILTER_VALIDATE_INT, array(
+            if (getservbyname($port, "tcp") || getservbyname($port, "udp")
+                || filter_var($port, FILTER_VALIDATE_INT, array(
                     "options" => array("min_range"=>1, "max_range"=>65535))) === false
+                || !is_numeric($port)
             ) {
                 return false;
             }
