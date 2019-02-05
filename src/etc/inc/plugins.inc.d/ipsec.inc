@@ -667,6 +667,17 @@ function ipsec_configure_spd()
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
                     $myid_data = ipsec_find_id($ph1ent, "local");
                     $peerid_spec = ipsec_find_id($ph1ent, "peer");
+                    if (!is_ipaddr($peerid_spec)) {
+                        if (is_ipaddr($ph1ent['remote-gateway'])) {
+                            $peerid_spec = $ph1ent['remote-gateway'];
+                        } else {
+                            log_error(sprintf(
+                                "spdadd: unable to match remote network on %s or %s [skipped]",
+                                $peerid_spec, $ph1ent['remote-gateway']
+                            ));
+                            continue;
+                        }
+                    }
                     foreach (explode(',', $ph2ent['spd']) as $local_net) {
                         $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
                         $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
