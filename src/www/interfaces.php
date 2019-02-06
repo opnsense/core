@@ -599,19 +599,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         interface_configure(false, $ifapply, true);
                     }
                 }
+
+                system_routing_configure();
+                setup_gateways_monitor();
+                filter_configure();
+                plugins_configure('newwanip');
+                rrd_configure();
             }
-
-            /*
-             * XXX possibly wrong to configure interfaces through newwanip
-             * when the interface is dynamic and this gets called again...
-             */
-            plugins_configure('newwanip');
-
-            /* sync filter configuration */
-            system_routing_configure();
-            setup_gateways_monitor();
-            filter_configure();
-            rrd_configure();
         }
         @unlink('/tmp/.interfaces.apply');
         header(url_safe('Location: /interfaces.php?if=%s', array($if)));
