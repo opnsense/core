@@ -75,8 +75,8 @@
                       bps_in = 0;
                       bps_out = 0;
                   }
-                  chart_data_in[chart_data_keys[key]]['values'].push([traffic_graph_widget_data[i]['time']*1000, bps_in])
-                  chart_data_out[chart_data_keys[key]]['values'].push([traffic_graph_widget_data[i]['time']*1000, bps_out])
+                  chart_data_in[chart_data_keys[key]]['values'].push([traffic_graph_widget_data[i]['time']*1000, bps_in]);
+                  chart_data_out[chart_data_keys[key]]['values'].push([traffic_graph_widget_data[i]['time']*1000, bps_out]);
               }
           }
       }

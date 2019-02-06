@@ -137,7 +137,7 @@ $main_buttons = array(
 );
 
 $lockout_spec = filter_core_get_antilockout();
-
+legacy_html_escape_form_data($a_filter);
 ?>
 <body>
 <script>
@@ -262,7 +262,7 @@ $( document ).ready(function() {
               selected_values = [];
               return false;
           }
-      })
+      });
       $(".rule").each(function(){
           // save zebra color
           if ( $(this).children(0).css("background-color") != 'transparent') {

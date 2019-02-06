@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -27,7 +27,7 @@
 
 # This script generates a json structured file with the following content:
 # connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
-# repository: error|ok
+# repository: error|untrusted|revoked|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
 # download_size: <size_of_total_downloads>
@@ -98,6 +98,17 @@ if [ "$pkg_running" == "" ]; then
           # TLS or authentication error
           connection="unauthenticated"
           timer=0
+        elif grep -q 'No trusted public keys found' $tmp_pkg_update_file; then
+          # fingerprint mismatch
+          repository="untrusted"
+          connection="ok"
+          timer=0
+        # XXX two space typo here in pkg:
+        elif grep -q 'At least one of the  certificates has been revoked' $tmp_pkg_update_file; then
+          # fingerprint mismatch
+          repository="revoked"
+          connection="ok"
+          timer=0
         fi
       fi
 
@@ -156,7 +167,7 @@ if [ "$pkg_running" == "" ]; then
                     else
                       i=`echo $i | tr -d :`
                       if [ -z "$packages_downgraded" ]; then
-                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
+                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
                       fi
@@ -232,7 +243,7 @@ if [ "$pkg_running" == "" ]; then
                           # prevents leaking base / kernel advertising here
                           pkg_upgraded="yes"
                         fi
-                        packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
+                        packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
                       fi
@@ -273,8 +284,6 @@ if [ "$pkg_running" == "" ]; then
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
                   base_to_reboot="$(opnsense-update -v)"
-                  # XXX arch return is obsolete
-                  base_to_reboot="${base_to_reboot%-*}"
               fi
             fi
 
@@ -283,7 +292,7 @@ if [ "$pkg_running" == "" ]; then
               base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
-                  packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a seperator
+                  packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"base\","
                 fi
@@ -301,8 +310,6 @@ if [ "$pkg_running" == "" ]; then
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
                   kernel_to_reboot="$(opnsense-update -v)"
-                  # XXX arch return is obsolete
-                  kernel_to_reboot="${kernel_to_reboot%-*}"
               fi
             fi
 
@@ -311,7 +318,7 @@ if [ "$pkg_running" == "" ]; then
               kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ "$packages_upgraded" == "" ]; then
-                  packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a seperator
+                  packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
                 fi

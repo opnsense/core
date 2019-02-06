@@ -408,7 +408,7 @@ include("head.inc");
                     <td>&nbsp;</td>
                     <td>
                       <input name="if" type="hidden" value="<?=$if;?>" />
-                      <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
+                      <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                     </td>
                   </tr>
                 </table>

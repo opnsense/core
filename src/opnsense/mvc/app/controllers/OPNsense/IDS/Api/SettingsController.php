@@ -41,8 +41,8 @@ use \OPNsense\Base\UIModelGrid;
  */
 class SettingsController extends ApiMutableModelControllerBase
 {
-    static protected $internalModelName = 'ids';
-    static protected $internalModelClass = '\OPNsense\IDS\IDS';
+    protected static $internalModelName = 'ids';
+    protected static $internalModelClass = '\OPNsense\IDS\IDS';
 
     /**
      * Query non layered model items

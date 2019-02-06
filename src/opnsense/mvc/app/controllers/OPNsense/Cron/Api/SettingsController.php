@@ -41,8 +41,8 @@ use \OPNsense\Cron\Cron;
 class SettingsController extends ApiMutableModelControllerBase
 {
 
-    static protected $internalModelName = 'job';
-    static protected $internalModelClass = '\OPNsense\Cron\Cron';
+    protected static $internalModelName = 'job';
+    protected static $internalModelClass = '\OPNsense\Cron\Cron';
 
     /**
      * retrieve job settings or return defaults

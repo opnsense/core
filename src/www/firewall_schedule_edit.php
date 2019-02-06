@@ -487,7 +487,7 @@ function addTimeRange(){
     var firstprint = false;
     var tempFriendlyMonthArray = monthstr.split(",");
     var tempFriendlyDayArray = daystr.split(",");
-    var currentDay, firstDay, nextDay, currentMonth, nextMonth, firstDay, firstMonth = "";
+    var currentDay, firstDay, nextDay, firstMonth = 0;
     for (var k=0; k<tempFriendlyMonthArray.length; k++){
       tempstr = tempFriendlyMonthArray[k];
       if (tempstr != ""){
@@ -575,7 +575,7 @@ function addTimeRange(){
 
 
     //get time specified
-    starttimehour =  document.getElementById("starttimehour").value
+    starttimehour =  document.getElementById("starttimehour").value;
     starttimemin = document.getElementById("starttimemin").value;
     stoptimehour = document.getElementById("stoptimehour").value;
     stoptimemin = document.getElementById("stoptimemin").value;
@@ -587,7 +587,7 @@ function addTimeRange(){
     + stoptimemin;
 
     //get description for time range
-    tempdescr = document.getElementById("timerangedescr").value
+    tempdescr = document.getElementById("timerangedescr").value;
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;
@@ -636,31 +636,31 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
     let tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-    td.innerHTML= `<span>${tempFriendlyTime}</span>`;
+    td.innerHTML= "<span>"+tempFriendlyTime+"</span>";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='text' readonly='readonly' name='starttime${schCounter}' id='starttime${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${starttimehour}:${starttimemin}' />`;
+    td.innerHTML="<input type='text' readonly='readonly' name='starttime"+schCounter+"' id='starttime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+starttimehour+":"+starttimemin+"' />";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='text' readonly='readonly' name='stoptime${schCounter}' id='stoptime${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${stoptimehour}:${stoptimemin}' />`;
+    td.innerHTML="<input type='text' readonly='readonly' name='stoptime"+schCounter+"' id='stoptime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+stoptimehour+":"+stoptimemin+"' />";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='text' readonly='readonly' name='timedescr${schCounter}' id='timedescr${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${tempdescr}' />`;
+    td.innerHTML="<input type='text' readonly='readonly' name='timedescr"+schCounter+"' id='timedescr"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+tempdescr+"' />";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick='editRow("${tempTime}",this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-pencil fa-fw"></span></a>`;
+    td.innerHTML = "<a onclick='editRow(\""+tempTime+"\",this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"fa fa-pencil fa-fw\"></span></a>";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick='removeRow(this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-trash fa-fw"></span></a>`;
+    td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"fa fa-trash fa-fw\"></span></a>";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='hidden' id='schedule${schCounter}' name='schedule${schCounter}' value='${tempID}' />`;
+    td.innerHTML="<input type='hidden' id='schedule"+schCounter+"' name='schedule"+schCounter+"' value='"+tempID+"' />";
     tr.appendChild(td);
     tbody.appendChild(tr);
 
@@ -1156,8 +1156,8 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_schedule.php'" />
+                        <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_schedule.php'" />
                         <?php if (isset($id)): ?>
                           <input name="id" type="hidden" value="<?=$id;?>" />
                         <?php endif; ?>

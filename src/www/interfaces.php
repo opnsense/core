@@ -436,6 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -598,19 +599,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         interface_configure(false, $ifapply, true);
                     }
                 }
+
+                system_routing_configure();
+                setup_gateways_monitor();
+                filter_configure();
+                plugins_configure('newwanip');
+                rrd_configure();
             }
-
-            /*
-             * XXX possibly wrong to configure interfaces through newwanip
-             * when the interface is dynamic and this gets called again...
-             */
-            plugins_configure('newwanip');
-
-            /* sync filter configuration */
-            system_routing_configure();
-            setup_gateways_monitor();
-            filter_configure();
-            rrd_configure();
         }
         @unlink('/tmp/.interfaces.apply');
         header(url_safe('Location: /interfaces.php?if=%s', array($if)));
@@ -1077,6 +1072,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp_config_advanced'] = $pconfig['adv_dhcp_config_advanced'];
                     $new_config['adv_dhcp_config_file_override'] = $pconfig['adv_dhcp_config_file_override'];
                     $new_config['adv_dhcp_config_file_override_path'] = $pconfig['adv_dhcp_config_file_override_path'];
+                    /* flipped in GUI on purpose */
+                    if (empty($pconfig['dhcpoverridemtu'])) {
+                        $new_config['dhcphonourmtu'] = true;
+                    }
                     break;
                 case "ppp":
                     $new_config['if'] = $pconfig['type'] . $pconfig['ptpid'];
@@ -1440,7 +1439,7 @@ include("head.inc");
 
       //
       $("#type").change(function(){
-          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide()
+          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide();
           $("#rfc3118").hide();
           if ($("#type").val() == "dhcp" || $("#type6").val() == "dhcp6") {
              $("#rfc3118").show();
@@ -1471,7 +1470,6 @@ include("head.inc");
             }
             case "pppoe":
             case "pptp":
-            case "ppp":
               $("#mtu_calc").show();
               break;
             default:
@@ -2046,7 +2044,7 @@ include("head.inc");
                               </table>
                             </div>
                             <div class="hidden" data-for="help_for_gateway">
-                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
                                           'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
@@ -2179,6 +2177,16 @@ include("head.inc");
                               <?=gettext("The value in this field is sent as the DHCP client identifier " .
                               "and hostname when requesting a DHCP lease. Some ISPs may require " .
                               "this (for client identification)."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcp_basic dhcp_advanced">
+                          <td><a id="help_for_dhcpoverridemtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Override MTU') ?></td>
+                          <td>
+                            <input name="dhcpoverridemtu" type="checkbox" id="dhcpoverridemtu" value="yes" <?= !empty($pconfig['dhcpoverridemtu']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_dhcpoverridemtu">
+                              <?= gettext('An ISP may incorrectly set an MTU value which can cause intermittent network disruption. By default this ' .
+                                'value will be ignored. Unsetting this option will allow to apply the MTU supplied by the ISP instead.'); ?>
                             </div>
                           </td>
                         </tr>
@@ -2607,7 +2615,7 @@ include("head.inc");
                               </table>
                             </div>
                             <div class="hidden" data-for="help_for_gatewayv6">
-                              <?= gettext('If this interface is a muti-WAN interface, select an existing gateway from the list ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
                                           'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
@@ -3546,8 +3554,8 @@ include("head.inc");
                       <tr>
                         <td style="width:22%"></td>
                         <td style="width:78%">
-                          <input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                          <input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces.php'" />
+                          <input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                          <input id="cancel" type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces.php'" />
                           <input name="if" type="hidden" id="if" value="<?=$if;?>" />
 <?php
                           if ($pconfig['if'] == $a_ppps[$pppid]['if']) : ?>

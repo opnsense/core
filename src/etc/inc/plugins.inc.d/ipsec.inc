@@ -157,22 +157,9 @@ function ipsec_interfaces()
 
     $interfaces = array();
 
-    if (isset($config['ipsec']['phase1']) && isset($config['ipsec']['phase2'])) {
+    if (isset($config['ipsec']['phase1'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
-            if (!empty($ph1ent['disabled'])) {
-                continue;
-            }
-
-            foreach ($config['ipsec']['phase2'] as $ph2ent) {
-                if (!empty($ph2ent['disabled']) || $ph1ent['ikeid'] != $ph2ent['ikeid']) {
-                    continue;
-                }
-
-                if ((!empty($ph2ent['mobile']) && empty($config['ipsec']['client']['enable'])) ||
-                    empty($config['ipsec']['enable'])) {
-                    continue;
-                }
-
+            if (empty($ph1ent['disabled'])) {
                 $oic = array('enable' => true);
                 $oic['if'] = 'enc0';
                 $oic['descr'] = 'IPsec';
@@ -180,8 +167,7 @@ function ipsec_interfaces()
                 $oic['virtual'] = true;
                 $oic['networks'] = array();
                 $interfaces['enc0'] = $oic;
-
-                break 2;
+                break;
             }
         }
     }
@@ -681,6 +667,17 @@ function ipsec_configure_spd()
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
                     $myid_data = ipsec_find_id($ph1ent, "local");
                     $peerid_spec = ipsec_find_id($ph1ent, "peer");
+                    if (!is_ipaddr($peerid_spec)) {
+                        if (is_ipaddr($ph1ent['remote-gateway'])) {
+                            $peerid_spec = $ph1ent['remote-gateway'];
+                        } else {
+                            log_error(sprintf(
+                                "spdadd: unable to match remote network on %s or %s [skipped]",
+                                $peerid_spec, $ph1ent['remote-gateway']
+                            ));
+                            continue;
+                        }
+                    }
                     foreach (explode(',', $ph2ent['spd']) as $local_net) {
                         $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
                         $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
@@ -1239,8 +1236,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
                         break;
                     case 'hybrid_rsa_server':
-                        $authentication = "leftauth = xauth-generic\n\trightauth = pubkey";
-                        $authentication .= "\n\trightauth2 = xauth";
+                        $authentication = "leftauth = pubkey\n\trightauth = xauth";
                         break;
                 }
                 if (!empty($ph1ent['certref'])) {

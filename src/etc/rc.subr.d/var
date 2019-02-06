@@ -94,6 +94,7 @@ done
 
 RC_FILES="$(ls /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null || true)"
 MFS_DIRS="
+/var/cache/opnsense-patch
 /var/cache/opnsense-update
 /var/cache/pkg
 /var/crash

@@ -138,7 +138,8 @@ include("fbegin.inc");?>
                             'Please consider donating to the project to help us with our overhead costs. ' .
                             'See %sour website%s to donate or purchase available %s support services.'),
                             '<a target="_new" href="' . $g['product_website'] . '">', '</a>', $g['product_name']) . "</p>\n";
-                        echo '<p class="__nomb">' . sprintf(gettext('Click to %scontinue to the dashboard%s.'), '<a href="/">', '</a>') . "</p>\n";
+                        echo '<p class="__nomb">' . sprintf(gettext('Click to %scontinue to the dashboard%s.'), '<a href="/">', '</a>') . ' ';
+                        echo sprintf(gettext('Or click to %scheck for updates%s.'), '<a href="/ui/core/firmware#checkupdate">', '</a>'). "</p>\n";
                     }
                 ?>
               </div>
@@ -234,7 +235,7 @@ include("fbegin.inc");?>
           if ($(this).data('callback') != undefined) {
               callbacks.push({'function' : $(this).data('callback'), 'plugin': $(this).data('plugin'), 'sender': $(this)});
           }
-      })
+      });
       // collect data for provided plugins
       $.ajax("/widgets/api/get.php",{type: 'get', cache: false, dataType: "json", data: {'load': plugins.join(',')}})
         .done(function(response) {

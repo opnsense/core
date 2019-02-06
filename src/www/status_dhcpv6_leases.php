@@ -33,35 +33,21 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-function adjust_gmt($dt)
+function adjust_utc($dt)
 {
-    global $config;
-
-    $dhcpv6leaseinlocaltime = 'no';
-    if (is_array($config['dhcpdv6'])) {
-        $dhcpdv6 = $config['dhcpdv6'];
-        foreach ($dhcpdv6 as $dhcpv6leaseinlocaltime) {
-            $dhcpv6leaseinlocaltime = $dhcpv6leaseinlocaltime['dhcpv6leaseinlocaltime'];
-            if ($dhcpv6leaseinlocaltime == "yes") {
-                break;
-            }
+    foreach (config_read_array('dhcpdv6') as $dhcpdv6) {
+        if (!empty($dhcpdv6['dhcpv6leaseinlocaltime'])) {
+            /* we want local time, so specify this is actually UTC */
+            return strftime('%Y/%m/%d %H:%M:%S', strtotime("{$dt} UTC"));
         }
     }
 
-    $timezone = $config['system']['timezone'];
-    $ts = strtotime($dt . " GMT");
-    if ($dhcpv6leaseinlocaltime == "yes") {
-        $this_tz = new DateTimeZone($timezone);
-        $dhcp_lt = new DateTime(strftime("%I:%M:%S%p", $ts), $this_tz);
-        $offset = $this_tz->getOffset($dhcp_lt);
-        $ts = $ts + $offset;
-        return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
-    } else {
-        return strftime("%Y/%m/%d %H:%M:%S", $ts);
-    }
+    /* lease time is in UTC, here just pretend it's the correct time */
+    return strftime('%Y/%m/%d %H:%M:%S UTC', strtotime($dt));
 }
 
-function remove_duplicate($array, $field) {
+function remove_duplicate($array, $field)
+{
     foreach ($array as $sub) {
         $cmp[] = $sub[$field];
     }
@@ -72,7 +58,8 @@ function remove_duplicate($array, $field) {
     return $new;
 }
 
-function parse_duid($duid_string) {
+function parse_duid($duid_string)
+{
     $parsed_duid = array();
     for ($i=0; $i < strlen($duid_string); $i++) {
         $s = substr($duid_string, $i, 1);
@@ -97,15 +84,23 @@ $interfaces = legacy_config_get_interfaces(array('virtual' => false));
 $leasesfile = services_dhcpdv6_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $awk = "/usr/bin/awk";
+    $leases_content = array();
 
-    /* this pattern sticks comments into a single array item */
-    $cleanpattern = "'{ gsub(\"^#.*\", \"\");} { gsub(\"^server-duid.*\", \"\");} { gsub(\";$\", \"\"); print;}'";
-    /* We then split the leases file by } */
-    $splitpattern = "'BEGIN { RS=\"}\";} {for (i=1; i<=NF; i++) printf \"%s \", \$i; printf \"}\\n\";}'";
+    $fin = @fopen($leasesfile, "r");
+    $section = array();
+    if ($fin) {
+        while (($line = fgets($fin, 4096)) !== false) {
+            if (strpos($line, "ia-") !== false) {
+                $section = array();
+            } elseif (strpos($line, "}") === 0 && count($section) > 0) {
+                $output = implode($section, "");
+                $leases_content[] = $output;
+            }
+            $section[] = rtrim($line, "\n;");
+        }
+        fclose($fin);
+    }
 
-    /* stuff the leases file in a proper format into a array by line */
-    exec("/bin/cat {$leasesfile} | {$awk} {$cleanpattern} | {$awk} {$splitpattern} | /usr/bin/grep '^ia-.. '", $leases_content);
     $leases_count = count($leases_content);
     exec("/usr/sbin/ndp -an", $rawdata);
     $ndpdata = array();
@@ -418,9 +413,9 @@ if (count($pools) > 0):?>
               <tr>
                   <td><?=$data['name'];?></td>
                   <td><?=$data['mystate'];?></td>
-                  <td><?=adjust_gmt($data['mydate']);?></td>
+                  <td><?=adjust_utc($data['mydate']);?></td>
                   <td><?=$data['peerstate'];?></td>
-                  <td><?=adjust_gmt($data['peerdate']);?></td>
+                  <td><?=adjust_utc($data['peerdate']);?></td>
               </tr>
 
 <?php
@@ -488,8 +483,8 @@ endif;?>
                     <?=!empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";?>
                   </td>
                   <td><?=htmlentities($data['descr']);?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['start']) : "";?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
                   <td><?=$data['online'];?></td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
@@ -542,8 +537,8 @@ endif;?>
                   </td>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$data['duid'];?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['start']) : "";?></td>
-                  <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
+                  <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
                   <td><?=$data['act'];?></td>
                 </tr>
 <?php

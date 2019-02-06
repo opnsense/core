@@ -97,6 +97,8 @@ function filter_core_get_antilockout()
 
     if (!empty($config['interfaces']['lan']['if'])) {
         $lockout_if = 'lan';
+    } elseif (!empty($config['interfaces']['opt1']['if'])) {
+        $lockout_if = 'opt1';
     } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
         $lockout_if = 'wan';
     } else {
@@ -139,9 +141,10 @@ function filter_core_get_antilockout()
 
 /**
  * recursively collect port alias(es) contents
- * @param $aliasname string alias name or null to fetch all aliases
- * @param $aliases aliases already parsed (prevent deadlock)
+ * @param string|null $aliasname alias name, or null to fetch all aliases
+ * @param array $aliases aliases already parsed (prevent deadlock)
  * @return array containing ports
+ * @throws \OPNsense\Base\ModelException
  */
 function filter_core_get_port_alias($aliasname, $aliases=array())
 {
@@ -533,5 +536,4 @@ function filter_core_rules_system($fw, $defaults)
             }
         }
     }
-
 }

@@ -185,10 +185,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
       do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-      if (!empty($pconfig['ldap_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['ldap_host'])) {
+      if (!empty($pconfig['ldap_host']) && !(is_hostname($pconfig['ldap_host']) || is_ipaddr($pconfig['ldap_host']))) {
           $input_errors[] = gettext("The host name contains invalid characters.");
       }
-      if (!empty($pconfig['radius_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['radius_host'])) {
+      if (!empty($pconfig['radius_host']) && !(is_hostname($pconfig['radius_host']) || is_ipaddr($pconfig['radius_host']))) {
           $input_errors[] = gettext("The host name contains invalid characters.");
       }
 
@@ -848,7 +848,7 @@ endif; ?>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                    <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
 <?php if (isset($id)) :
 ?>
                     <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />

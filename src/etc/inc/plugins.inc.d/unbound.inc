@@ -84,29 +84,15 @@ function unbound_optimization()
 {
     $optimization = array();
 
-    /*
-     * Set the number of threads equal to the nearest power of 2 when counting the number of CPUs.
-     * Use 1 to disable threading, if for some reason this sysctl fails.
-     */
-    $numprocs = pow(2, floor(log(intval(get_single_sysctl('kern.smp.cpus')), 2)));
-    if ($numprocs > 0) {
-        $optimization['number_threads'] = "num-threads: {$numprocs}";
-    } else {
-        $optimization['number_threads'] = "num-threads: 1";
-    }
+    $numprocs = intval(get_single_sysctl('kern.smp.cpus'));
+    $numprocs = $numprocs <= 0 ? 1 : $numprocs;
+    $numslabs = pow(2, floor(log($numprocs, 2)) + 1);
 
-    // Slabs to help reduce lock contention.
-    if ($numprocs > 4) {
-        $optimization['msg_cache_slabs'] = "msg-cache-slabs: {$numprocs}";
-        $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: {$numprocs}";
-        $optimization['infra_cache_slabs'] = "infra-cache-slabs: {$numprocs}";
-        $optimization['key_cache_slabs'] = "key-cache-slabs: {$numprocs}";
-    } else {
-        $optimization['msg_cache_slabs'] = "msg-cache-slabs: 4";
-        $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: 4";
-        $optimization['infra_cache_slabs'] = "infra-cache-slabs: 4";
-        $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
-    }
+    $optimization['number_threads'] = "num-threads: {$numprocs}";
+    $optimization['msg_cache_slabs'] = "msg-cache-slabs: {$numslabs}";
+    $optimization['rrset_cache_slabs'] = "rrset-cache-slabs: {$numslabs}";
+    $optimization['infra_cache_slabs'] = "infra-cache-slabs: {$numslabs}";
+    $optimization['key_cache_slabs'] = "key-cache-slabs: {$numslabs}";
 
     return $optimization;
 }
@@ -161,7 +147,6 @@ EOF;
     }
 
     $bindints = '';
-
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = explode(',', $config['unbound']['active_interface']);
         $active_interfaces[] = 'lo0';
@@ -244,7 +229,8 @@ EOF;
     $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
     $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
 
-    $do_ip6 = isset($config['system']['ipv6allow']) && !isset($config['system']['prefer_ipv4']) ? 'yes' : 'no';
+    /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
+    $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
 
     if (isset($config['unbound']['regdhcp'])) {
         $include_dhcpleases = 'include: /var/unbound/dhcpleases.conf';
@@ -453,12 +439,11 @@ function unbound_configure_do($verbose = false, $interface = '')
 
     unbound_generate_config();
 
-    $domain = $config['system']['domain'];
-    if (isset($config['unbound']['regdhcpdomain'])) {
-        $domain = $config['unbound']['regdhcpdomain'];
-    }
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     if (isset($config['unbound']['regdhcp'])) {
+        $domain = $config['system']['domain'];
+        if (isset($config['unbound']['regdhcpdomain'])) {
+            $domain = $config['unbound']['regdhcpdomain'];
+        }
         mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
     }
     mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
@@ -539,7 +524,7 @@ function unbound_add_host_entries()
     }
 
     foreach ($interfaces as $interface) {
-        if ($interface == 'lo0') {
+        if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
         }
 
@@ -694,7 +679,24 @@ function unbound_acls_subnets()
     global $config;
 
     if (!empty($config['unbound']['active_interface'])) {
-        $active_interfaces = array_flip(explode(",", $config['unbound']['active_interface']));
+        $active_interfaces = array_flip(explode(',', $config['unbound']['active_interface']));
+
+        /* in case of OpenVPN interface we need to correct the subnet */
+        foreach (array('server', 'client') as $mode) {
+            foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
+                $ovpn = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
+                if (!array_key_exists($ovpn, $active_interfaces)) {
+                    continue;
+                }
+                $active_interfaces[$ovpn] = [];
+                if (!empty($setting['tunnel_network'])) {
+                    $active_interfaces[$ovpn]['net4'] = explode('/', $setting['tunnel_network'])[1];
+                }
+                if (!empty($setting['tunnel_networkv6'])) {
+                    $active_interfaces[$ovpn]['net6'] = explode('/', $setting['tunnel_networkv6'])[1];
+                }
+            }
+        }
     } else {
         $active_interfaces = get_configured_interface_with_descr();
     }
@@ -702,8 +704,13 @@ function unbound_acls_subnets()
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach (array_keys($active_interfaces) as $ubif) {
+    foreach ($active_interfaces as $ubif => $ubextra) {
         foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
+            if (!empty($ubextra['net4']) && is_subnetv4($subnet)) {
+                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net4'];
+            } elseif (!empty($ubextra['net6']) && is_subnetv6($subnet)) {
+                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net6'];
+            }
             $subnets[] = $subnet;
         }
     }

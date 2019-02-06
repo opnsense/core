@@ -354,7 +354,7 @@ include("head.inc");
                 <tr>
                   <td style="width:22%"></td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="Save" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                     <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_hasync.php'" />
                   </td>
                 </tr>

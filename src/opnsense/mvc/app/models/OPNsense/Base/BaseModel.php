@@ -149,6 +149,7 @@ abstract class BaseModel
      * @param SimpleXMLElement $config_data (current) config data
      * @param BaseField $internal_data output structure using FieldTypes,rootnode is internalData
      * @throws ModelException parse error
+     * @throws \ReflectionException
      */
     private function parseXml(&$xml, &$config_data, &$internal_data)
     {
@@ -223,7 +224,7 @@ abstract class BaseModel
 
                 if ($fieldObject instanceof ArrayField) {
                     // handle Array types, recurring items
-                    if ($config_section_data != null) {
+                    if ($config_section_data != null && !empty((string)$config_section_data)) {
                         foreach ($config_section_data as $conf_section) {
                             // Array items are identified by a UUID, read from attribute or create a new one
                             if (isset($conf_section->attributes()->uuid)) {
@@ -263,6 +264,7 @@ abstract class BaseModel
     /**
      * Construct new model type, using it's own xml template
      * @throws ModelException if the model xml is not found or invalid
+     * @throws \ReflectionException
      */
     public function __construct()
     {
@@ -360,6 +362,7 @@ abstract class BaseModel
      * structured setter for model
      * @param array|$data named array
      * @return array
+     * @throws \Exception
      */
     public function setNodes($data)
     {
@@ -588,6 +591,7 @@ abstract class BaseModel
      * prefixed with an M and . replaced by _ for example : M1_0_1 equals version 1.0.1
      *
      * @return bool status (true-->success, false-->failed)
+     * @throws \ReflectionException
      */
     public function runMigrations()
     {

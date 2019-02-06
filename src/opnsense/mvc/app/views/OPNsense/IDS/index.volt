@@ -182,7 +182,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * @param gridId: grid id to to use
          * @param url: ajax action to call
          * @param state: 0/1/undefined
-         * @param combine: number of keys to combine (seperate with ,)
+         * @param combine: number of keys to combine (separate with ,)
          *                 try to avoid too much items per call (results in too long url's)
          */
         function actionToggleSelected(gridId, url, state, combine) {
@@ -430,7 +430,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                                 alert_enabled.prop('checked', true);
                                             }
                                             $.each(rule_data.action, function(key, value){
-                                                var opt = $('<option/>').attr("value", key).text(value.value)
+                                                var opt = $('<option/>').attr("value", key).text(value.value);
                                                 if (value.selected == 1) {
                                                     opt.attr('selected', 'selected');
                                                 }
@@ -493,7 +493,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
                 );
             }
-        })
+        });
 
 
 

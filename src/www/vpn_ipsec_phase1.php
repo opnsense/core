@@ -201,6 +201,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfieldsn = array(gettext("Pre-Shared Key"));
             break;
         case "hybrid_rsa_server":
+            $reqdfields = explode(' ', 'certref');
+            $reqdfieldsn = array(gettext("Certificate"));
+            break;
         case "xauth_rsa_server":
         case "rsasig":
             $reqdfields = explode(" ", "caref certref");
@@ -491,6 +494,9 @@ include("head.inc");
                     }
                     break;
                 case 'hybrid_rsa_server':
+                    $('.auth_eap_tls').show();
+                    $('.auth_eap_tls :input').prop('disabled', false);
+                    break;
                 case 'xauth_rsa_server':
                 case 'rsasig':
                 case 'rsa_eap-mschapv2':
@@ -1083,7 +1089,7 @@ endif; ?>
                       <?php
 endif; ?>
                       <input name="ikeid" type="hidden" value="<?=$pconfig['ikeid'];?>" />
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                     </td>
                   </tr>
                 </tbody>

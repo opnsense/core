@@ -707,10 +707,10 @@ function interface_gre_configure(&$gre, $grekey = "")
 
     /* Do not change the order here for more see gre(4) NOTES section. */
     if (is_ipaddrv6($gre['remote-addr'])) {
-        $realifip = get_interface_ipv6($gre['if']);
+        $realifip = is_ipaddr($gre['if']) ? $gre['if'] : get_interface_ipv6($gre['if']);
         mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', array($greif, $realifip, $gre['remote-addr']));
     } else {
-        $realifip = get_interface_ip($gre['if']);
+        $realifip = is_ipaddr($gre['if']) ? $gre['if'] : get_interface_ip($gre['if']);
         mwexecf('/sbin/ifconfig %s tunnel %s %s', array($greif, $realifip, $gre['remote-addr']));
     }
     if ((is_ipaddrv6($gre['tunnel-local-addr'])) || (is_ipaddrv6($gre['tunnel-remote-addr']))) {
@@ -1036,7 +1036,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
                         if (isset($ppp['ondemand']) && $ifacecfg === false) {
-                            configd_run("interface reconfigure {$interface}");
+                            configdp_run('interface reconfigure', array($interface));
                             break;
                         }
                         killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
@@ -1170,9 +1170,6 @@ function interface_ppps_configure($interface)
     if (!isset($ifcfg['enable'])) {
         return 0;
     }
-
-    // mpd5 requires a /var/spool/lock directory for PPP modem links.
-    @mkdir("/var/spool/lock", 0777, true);
 
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
     if (!file_exists('/var/etc/mpd.script')) {
@@ -2390,23 +2387,20 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_wireless_configure($realif, $wancfg, $wancfg['wireless']);
     }
 
-    $mac = get_interface_mac($realhwif);
     /*
      * Don't try to reapply the spoofed MAC if it's already applied.
-     * When ifconfig link is used, it cycles the interface down/up, which triggers
-     * the interface config again, which attempts to spoof the MAC again,
-     * which cycles the link again...
+     * When ifconfig link is used, it cycles the interface down/up,
+     * which triggers the interface config again, which attempts to
+     * spoof the MAC again which cycles the link again...
      */
-    if (!empty($wancfg['spoofmac']) && ($wancfg['spoofmac'] != $mac)) {
-        mwexec("/sbin/ifconfig " . escapeshellarg($realhwif) .
-            " link " . escapeshellarg($wancfg['spoofmac']));
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif))) {
+        mwexecf('/sbin/ifconfig %s link %s', array($realhwif, $wancfg['spoofmac']));
 
         /* All vlans need to spoof their parent mac address, too. */
         if (isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 if ($vlan['if'] == $realhwif) {
-                    mwexec("/sbin/ifconfig " . escapeshellarg($vlan['vlanif']) .
-                        " link " . escapeshellarg($wancfg['spoofmac']));
+                    mwexecf('/sbin/ifconfig %s link %s', array($vlan['vlanif'], $wancfg['spoofmac']));
                 }
             }
         }
@@ -2547,8 +2541,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             plugins_configure('dns', $verbose);
             services_dhcpd_configure($verbose);
             /* XXX move these up the call stack */
-            configd_run("dyndns reload {$interface}");
-            configd_run("rfc2136 reload {$interface}");
+            configdp_run('dyndns reload', array($interface));
+            configdp_run('rfc2136 reload', array($interface));
         }
     }
 
@@ -2858,15 +2852,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* write DUID if override was set */
     if (!empty($config['system']['ipv6duid'])) {
-        $fd = fopen('/var/db/dhcp6c_duid', 'wb');
-        if ($fd) {
-            $parts = explode(':', $config['system']['ipv6duid']);
-            /* length is unsigned 16 bit integer, machine-dependent:*/
-            fwrite($fd, pack('S', count($parts)));
-            /* buffer is binary string, according to advertised length: */
-            fwrite($fd, pack('H*', implode('', $parts)));
-            fclose($fd);
-        }
+        dhcp6c_duid_write($config['system']['ipv6duid']);
+    /* clear DUID if it is faulty */
+    } elseif (empty(dhcp6c_duid_read())) {
+        dhcp6c_duid_clear();
     }
 
     if (!is_array($wancfg)) {
@@ -3206,8 +3195,7 @@ function interface_dhcp_configure($interface = 'wan')
         $dhclientconf_hostname = "";
     }
 
-    $dhclientconf = "";
-    $dhclientconf .= <<<EOD
+    $dhclientconf = <<<EOD
 interface "{$wanif}" {
   timeout 60;
   retry 15;
@@ -3215,19 +3203,18 @@ interface "{$wanif}" {
   initial-interval 1;
   {$dhclientconf_hostname}
   script "/usr/local/opnsense/scripts/interfaces/dhclient-script";
+
 EOD;
+
+    if (empty($wancfg['dhcphonourmtu'])) {
+        $dhclientconf .= "  supersede interface-mtu 0;\n";
+    }
 
     if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
-        $dhclientconf .= <<<EOD
-
-  reject {$wancfg['dhcprejectfrom']};
-EOD;
+        $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
     }
-    $dhclientconf .= <<<EOD
 
-}
-
-EOD;
+    $dhclientconf .= "}\n";
 
     // DHCP Config File Advanced
     if ($wancfg['adv_dhcp_config_advanced']) {
@@ -3312,24 +3299,24 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
         }
     }
 
-    $dhclientconf  = "interface \"{$wanif}\" {\n";
-    $dhclientconf .= "\n";
-    $dhclientconf .= "# DHCP Protocol Timing Values\n";
+    $dhclientconf = "interface \"{$wanif}\" {\n";
+    $dhclientconf .= "\t# DHCP Protocol Timing Values\n";
     $dhclientconf .= "{$adv_dhcp_pt_timeout}";
     $dhclientconf .= "{$adv_dhcp_pt_retry}";
     $dhclientconf .= "{$adv_dhcp_pt_select_timeout}";
     $dhclientconf .= "{$adv_dhcp_pt_reboot}";
     $dhclientconf .= "{$adv_dhcp_pt_backoff_cutoff}";
     $dhclientconf .= "{$adv_dhcp_pt_initial_interval}";
-    $dhclientconf .= "\n";
-    $dhclientconf .= "# DHCP Protocol Options\n";
+    $dhclientconf .= "\n\t# DHCP Protocol Options\n";
     $dhclientconf .= "{$hostname}";
     $dhclientconf .= "{$send_options}";
     $dhclientconf .= "{$request_options}";
     $dhclientconf .= "{$required_options}";
     $dhclientconf .= "{$option_modifiers}";
-    $dhclientconf .= "\n";
-    $dhclientconf .= "\tscript \"/usr/local/opnsense/scripts/interfaces/dhclient-script\";\n";
+    $dhclientconf .= "\n\tscript \"/usr/local/opnsense/scripts/interfaces/dhclient-script\";\n";
+    if (empty($wancfg['dhcphonourmtu'])) {
+        $dhclientconf .= "\tsupersede interface-mtu 0;\n";
+    }
     if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
     }
@@ -4535,7 +4522,7 @@ function is_ipaddr_configured($ipaddr, $ignore_if = '')
  */
 function get_carp_interface_status($carpinterface)
 {
-    $carp_query = '';
+    $carp_query = [];
 
     /* XXX: Need to find a better way for this! */
     list ($interface, $vhid) = explode("_vip", $carpinterface);

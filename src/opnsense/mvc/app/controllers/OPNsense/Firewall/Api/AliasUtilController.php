@@ -175,7 +175,7 @@ class AliasUtilController extends ApiControllerBase
                 // update local administration, remove address when found for static types
                 // XXX: addresses from "pfctl -t xxx -T show" don't always match our input, we probably need a
                 //      better address matching at some point in time.
-                $items = explode("\n", $cnfAlias->content);
+                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false) {
                     $address_mask = $address . "/" . (strpos($address, ":") ? '128' : '32');
                 } else {
@@ -222,7 +222,7 @@ class AliasUtilController extends ApiControllerBase
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, add address when not found for static types
-                $items = explode("\n", $cnfAlias->content);
+                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false && $cnfAlias->type == 'network') {
                     // add mask
                     $address .= "/" . (strpos($address, ":") ? '128' : '32');

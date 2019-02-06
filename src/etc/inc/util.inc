@@ -1281,3 +1281,47 @@ function is_install_media()
 
     return true;
 }
+
+function dhcp6c_duid_read()
+{
+    $parts = array();
+    $skip = 2;
+
+    if (file_exists('/var/db/dhcp6c_duid')) {
+        $size = filesize('/var/db/dhcp6c_duid');
+        if ($size > $skip && ($fd = fopen('/var/db/dhcp6c_duid', 'r'))) {
+            $ret = unpack('Slen/H*buf', fread($fd, $size));
+            fclose($fd);
+
+            if (isset($ret['len']) && isset($ret['buf'])) {
+                if ($ret['len'] + $skip == $size && strlen($ret['buf']) == $ret['len'] * 2) {
+                    $parts = str_split($ret['buf'], 2);
+                }
+            }
+        }
+    }
+
+    $duid = strtoupper(implode(':', $parts));
+
+    return $duid;
+}
+
+function dhcp6c_duid_write($duid)
+{
+    $fd = fopen('/var/db/dhcp6c_duid', 'wb');
+    if ($fd) {
+        $parts = explode(':', $duid);
+        /* length is unsigned 16 bit integer, machine-dependent:*/
+        fwrite($fd, pack('S', count($parts)));
+        /* buffer is binary string, according to advertised length: */
+        fwrite($fd, pack('H*', implode('', $parts)));
+        fclose($fd);
+    }
+}
+
+function dhcp6c_duid_clear()
+{
+    @unlink('/var/db/dhcp6c_duid');
+    /* clear the backup so that it will not be restored: */
+    @unlink('/conf/dhcp6c_duid');
+}

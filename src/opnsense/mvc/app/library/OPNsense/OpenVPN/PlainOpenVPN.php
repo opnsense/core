@@ -65,7 +65,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         if (!empty($this->config['client_cn'])) {
             $result[] = $this->config['client_cn'];
         }
-        return implode("_", $result);
+        return preg_replace("/[^a-zA-Z0-9]/", "_", implode("_", $result));
     }
 
     /**
@@ -98,7 +98,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         $conf[] = "persist-tun";
         $conf[] = "persist-key";
         if (strncasecmp($this->config['protocol'], "tcp", 3) === 0) {
-            $conf[] = strtolower("{$this->config['protocol']}-client");
+            $conf[] = "proto " . strtolower("{$this->config['protocol']}-client");
         }
 
         $conf[] = "cipher {$this->config['crypto']}";
@@ -111,21 +111,31 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "reneg-sec {$this->config['reneg-sec']}";
         }
         foreach (explode(",", $this->config['hostname']) as $hostname) {
-            $conf[] = "remote {$hostname} {$this->config['local_port']} {$this->config['protocol']}";
+            $conf[] = "remote {$hostname} {$this->config['local_port']} " . strtolower($this->config['protocol']);
         }
         if (!empty($this->config['random_local_port'])) {
             $conf[] = "lport 0";
         }
 
-        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_subject_name'])
-                && !empty($this->config['validate_server_cn'])) {
-            $conf[] = "verify-x509-name \"{$this->config['server_subject_name']}\" subject";
+        if (!empty($this->config['server_subject']) && !empty($this->config['validate_server_cn'])) {
+            $tmp_subject = "";
+            foreach ($this->config['server_subject'] as $key => $value) {
+                if (!empty($tmp_subject)) {
+                    $tmp_subject .= ", ";
+                }
+                $tmp_subject .= "{$key}={$value}";
+            }
+            $conf[] = "verify-x509-name \"{$tmp_subject}\" subject";
             if (!empty($this->config['server_cert_is_srv'])) {
                 $conf[] = "remote-cert-tls server";
             }
         }
         if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
             $conf[] = "auth-user-pass";
+        }
+
+        if (!empty($this->config['compression'])) {
+            $conf[] = "comp-lzo " . $this->config['compression'];
         }
 
         if (!empty($this->config['plain_config'])) {

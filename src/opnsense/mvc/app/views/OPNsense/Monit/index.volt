@@ -1,30 +1,30 @@
 {#
+ # Copyright (c) 2017-2018 EURO-LOG AG
+ # Copyright (c) 2019 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
-Copyright © 2017-2018 by EURO-LOG AG
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
 <script>
 
    $( document ).ready(function() {
@@ -71,42 +71,11 @@ POSSIBILITY OF SUCH DAMAGE.
          });
       });
 
-      /**
-      * add button 'Import System Notification'
-      * can't do it via base_dialog
-      */
-      $('<button class="btn btn-primary" id="btn_ImportSystemNotification" type="button" style="margin-left: 3px;">' +
-            '<b> {{ lang._('Import System Notification')}} </b>' +
-            '<i id="frm_ImportSystemNotification_progress"></i>' +
-         '</button>').insertAfter('#btn_ApplyGeneralSettings');
-
-      $('#btnImportSystemNotification').unbind('click').click(function(){
-          $('#btnImportSystemNotificationProgress').addClass("fa fa-spinner fa-pulse");
-          ajaxCall("/api/monit/settings/notification", {}, function(data,status) {
-             $("#responseMsg").addClass("hidden");
-             isSubsystemDirty();
-             updateServiceControlUI('monit');
-             if (data.result) {
-               $("#responseMsg").html(data['result']);
-               $("#responseMsg").removeClass("hidden");
-            }
-             $('#btnImportSystemNotificationProgress').removeClass("fa fa-spinner fa-pulse");
-             $('#btnImportSystemNotification').blur();
-             ajaxCall("/api/monit/service/status", {}, function(data,status) {
-                mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
-                    formatTokenizersUI();
-                    $('.selectpicker').selectpicker('refresh');
-                    isSubsystemDirty();
-                    updateServiceControlUI('monit');
-                 });
-             });
-          });
-       });
 
       /**
        * general settings
        */
-      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get/general/"}).done(function(){
+      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/getGeneral/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
          isSubsystemDirty();
@@ -150,7 +119,7 @@ POSSIBILITY OF SUCH DAMAGE.
       $('#btnSaveGeneral').unbind('click').click(function(){
          $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
          var frm_id = 'frm_GeneralSettings';
-         saveFormToEndpoint("/api/monit/settings/set/general/", frm_id, function(){
+         saveFormToEndpoint("/api/monit/settings/set/", frm_id, function(){
             isSubsystemDirty();
             updateServiceControlUI('monit');
          });
@@ -161,29 +130,13 @@ POSSIBILITY OF SUCH DAMAGE.
       /**
        * alert settings
        */
-      function openAlertDialog(uuid) {
-         var editDlg = "DialogEditAlert";
-         var setUrl = "/api/monit/settings/set/alert/";
-         var getUrl = "/api/monit/settings/get/alert/";
-         var urlMap = {};
-         urlMap['frm_' + editDlg] = getUrl + uuid;
-         mapDataToFormUI(urlMap).done(function () {
-            $('.selectpicker').selectpicker('refresh');
-            clearFormValidation('frm_' + editDlg);
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            $('#'+editDlg).on('hidden.bs.modal', function () {
-               parent.history.back();
-            });
-         });
-      };
-
       $("#grid-alerts").UIBootgrid({
-         'search':'/api/monit/settings/search/alert/',
-         'get':'/api/monit/settings/get/alert/',
-         'set':'/api/monit/settings/set/alert/',
-         'add':'/api/monit/settings/set/alert/',
-         'del':'/api/monit/settings/del/alert/',
-         'toggle':'/api/monit/settings/toggle/alert/'
+         'search':'/api/monit/settings/searchAlert/',
+         'get':'/api/monit/settings/getAlert/',
+         'set':'/api/monit/settings/setAlert/',
+         'add':'/api/monit/settings/addAlert/',
+         'del':'/api/monit/settings/delAlert/',
+         'toggle':'/api/monit/settings/toggleAlert/'
       });
 
       /**
@@ -192,72 +145,74 @@ POSSIBILITY OF SUCH DAMAGE.
 
       // show hide fields according to selected service type
       function ShowHideFields(){
-         var servicetype = $('#monit\\.service\\.type').val();
-         $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
-         $('tr[id="row_monit.service.match"]').addClass('hidden');
-         $('tr[id="row_monit.service.path"]').addClass('hidden');
-         $('tr[id="row_monit.service.timeout"]').addClass('hidden');
-         $('tr[id="row_monit.service.address"]').addClass('hidden');
-         $('tr[id="row_monit.service.interface"]').addClass('hidden');
-         $('tr[id="row_monit.service.start"]').removeClass('hidden');
-         $('tr[id="row_monit.service.stop"]').removeClass('hidden');
+         var servicetype = $('#service\\.type').val();
+         $('tr[id="row_service.pidfile"]').addClass('hidden');
+         $('tr[id="row_service.match"]').addClass('hidden');
+         $('tr[id="row_service.path"]').addClass('hidden');
+         $('tr[id="row_service.timeout"]').addClass('hidden');
+         $('tr[id="row_service.address"]').addClass('hidden');
+         $('tr[id="row_service.interface"]').addClass('hidden');
+         $('tr[id="row_service.start"]').removeClass('hidden');
+         $('tr[id="row_service.stop"]').removeClass('hidden');
+         $('tr[id="row_service.depends"]').removeClass('hidden');
          switch (servicetype) {
             case 'process':
-               var pidfile = $('#monit\\.service\\.pidfile').val();
-               var match = $('#monit\\.service\\.match').val();
+               var pidfile = $('#service\\.pidfile').val();
+               var match = $('#service\\.match').val();
                if (pidfile !== '') {
-                  $('tr[id="row_monit.service.pidfile"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.match"]').addClass('hidden');
+                  $('tr[id="row_service.pidfile"]').removeClass('hidden');
+                  $('tr[id="row_service.match"]').addClass('hidden');
                } else if (match !== '') {
-                  $('tr[id="row_monit.service.pidfile"]').addClass('hidden');
-                  $('tr[id="row_monit.service.match"]').removeClass('hidden');
+                  $('tr[id="row_service.pidfile"]').addClass('hidden');
+                  $('tr[id="row_service.match"]').removeClass('hidden');
                } else {
-                  $('tr[id="row_monit.service.pidfile"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.match"]').removeClass('hidden');
+                  $('tr[id="row_service.pidfile"]').removeClass('hidden');
+                  $('tr[id="row_service.match"]').removeClass('hidden');
                }
                break;
             case 'host':
-               $('tr[id="row_monit.service.address"]').removeClass('hidden');
+               $('tr[id="row_service.address"]').removeClass('hidden');
                break;
             case 'network':
-               var address = $('#monit\\.service\\.address').val();
-               var interface = $('#monit\\.service\\.interface').val();
+               var address = $('#service\\.address').val();
+               var interface = $('#service\\.interface').val();
                if (address !== '') {
-                  $('tr[id="row_monit.service.address"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.interface"]').addClass('hidden');
+                  $('tr[id="row_service.address"]').removeClass('hidden');
+                  $('tr[id="row_service.interface"]').addClass('hidden');
                } else if (interface !== '') {
-                  $('tr[id="row_monit.service.address"]').addClass('hidden');
-                  $('tr[id="row_monit.service.interface"]').removeClass('hidden');
+                  $('tr[id="row_service.address"]').addClass('hidden');
+                  $('tr[id="row_service.interface"]').removeClass('hidden');
                } else {
-                  $('tr[id="row_monit.service.address"]').removeClass('hidden');
-                  $('tr[id="row_monit.service.interface"]').removeClass('hidden');
+                  $('tr[id="row_service.address"]').removeClass('hidden');
+                  $('tr[id="row_service.interface"]').removeClass('hidden');
                }
                break;
             case 'system':
-               $('tr[id="row_monit.service.start"]').addClass('hidden');
-               $('tr[id="row_monit.service.stop"]').addClass('hidden');
+               $('tr[id="row_service.start"]').addClass('hidden');
+               $('tr[id="row_service.stop"]').addClass('hidden');
+               $('tr[id="row_service.depends"]').addClass('hidden');
                break;
             default:
-               $('tr[id="row_monit.service.path"]').removeClass('hidden');
-               $('tr[id="row_monit.service.timeout"]').removeClass('hidden');
+               $('tr[id="row_service.path"]').removeClass('hidden');
+               $('tr[id="row_service.timeout"]').removeClass('hidden');
          }
       };
       $('#DialogEditService').on('shown.bs.modal', function() {ShowHideFields();});
-      $('#monit\\.service\\.type').on('changed.bs.select', function(e) {ShowHideFields();});
-      $('#monit\\.service\\.pidfile').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.match').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.path').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.timeout').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.address').on('input', function() {ShowHideFields();});
-      $('#monit\\.service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
+      $('#service\\.type').on('changed.bs.select', function(e) {ShowHideFields();});
+      $('#service\\.pidfile').on('input', function() {ShowHideFields();});
+      $('#service\\.match').on('input', function() {ShowHideFields();});
+      $('#service\\.path').on('input', function() {ShowHideFields();});
+      $('#service\\.timeout').on('input', function() {ShowHideFields();});
+      $('#service\\.address').on('input', function() {ShowHideFields();});
+      $('#service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
 
       $("#grid-services").UIBootgrid({
-         'search':'/api/monit/settings/search/service/',
-         'get':'/api/monit/settings/get/service/',
-         'set':'/api/monit/settings/set/service/',
-         'add':'/api/monit/settings/set/service/',
-         'del':'/api/monit/settings/del/service/',
-         'toggle':'/api/monit/settings/toggle/service/'
+         'search':'/api/monit/settings/searchService/',
+         'get':'/api/monit/settings/getService/',
+         'set':'/api/monit/settings/setService/',
+         'add':'/api/monit/settings/addService/',
+         'del':'/api/monit/settings/delService/',
+         'toggle':'/api/monit/settings/toggleService/'
       });
 
 
@@ -267,37 +222,22 @@ POSSIBILITY OF SUCH DAMAGE.
 
       // show hide execute field
       function ShowHideExecField(){
-         var actiontype = $('#monit\\.test\\.action').val();
-         $('tr[id="row_monit.test.path"]').addClass('hidden');
+         var actiontype = $('#test\\.action').val();
+         $('tr[id="row_test.path"]').addClass('hidden');
          if (actiontype === 'exec') {
-            $('tr[id="row_monit.test.path"]').removeClass('hidden');
+            $('tr[id="row_test.path"]').removeClass('hidden');
          }
       };
       $('#DialogEditTest').on('shown.bs.modal', function() {ShowHideExecField();});
-      $('#monit\\.test\\.action').on('changed.bs.select', function(e) {ShowHideExecField();});
+      $('#test\\.action').on('changed.bs.select', function(e) {ShowHideExecField();});
 
-      function openTestDialog(uuid) {
-         var editDlg = "TestEditAlert";
-         var setUrl = "/api/monit/settings/set/test/";
-         var getUrl = "/api/monit/settings/get/test/";
-         var urlMap = {};
-         urlMap['frm_' + editDlg] = getUrl + uuid;
-         mapDataToFormUI(urlMap).done(function () {
-            $('.selectpicker').selectpicker('refresh');
-            clearFormValidation('frm_' + editDlg);
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            $('#'+editDlg).on('hidden.bs.modal', function () {
-               parent.history.back();
-            });
-         });
-      };
 
       $("#grid-tests").UIBootgrid({
-         'search':'/api/monit/settings/search/test/',
-         'get':'/api/monit/settings/get/test/',
-         'set':'/api/monit/settings/set/test/',
-         'add':'/api/monit/settings/set/test/',
-         'del':'/api/monit/settings/del/test/'
+         'search':'/api/monit/settings/searchTest/',
+         'get':'/api/monit/settings/getTest/',
+         'set':'/api/monit/settings/setTest/',
+         'add':'/api/monit/settings/addTest/',
+         'del':'/api/monit/settings/delTest/'
       });
 
    });
@@ -324,9 +264,6 @@ POSSIBILITY OF SUCH DAMAGE.
                <td>
                   <button class="btn btn-primary" id="btnSaveGeneral" type="button">
                      <b>{{ lang._('Save changes') }}</b><i id="btnSaveGeneralProgress"></i>
-                  </button>
-                  <button class="btn btn-primary" id="btnImportSystemNotification" type="button" style="margin-left: 3px;">
-                     <b>{{ lang._('Import System Notification')}}</b><i id="btnImportSystemNotificationProgress"></i>
                   </button>
                </td>
             </tr>

@@ -345,8 +345,8 @@ $( document ).ready(function() {
               <tr>
                 <td></td>
                 <td>
-                  <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                  <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_groupmanager.php'" />
+                  <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                  <input type="button" class="btn btn-default" value="<?=html_safe(gettext("Cancel"));?>" onclick="window.location.href='/system_groupmanager.php'" />
 <?php
                   if (isset($id)) :?>
                   <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />

@@ -39,7 +39,7 @@ import zipfile
 
 def download_geolite():
     # define geoip download location
-    url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country-CSV.zip'
+    url = 'https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country-CSV.zip'
 
     address_count = 0
     file_count = 0

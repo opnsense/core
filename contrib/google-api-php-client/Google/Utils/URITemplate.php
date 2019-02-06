@@ -99,7 +99,7 @@ class Google_Utils_URITemplate
           $data = $this->replaceVars($data, $parameters, ",", null, true);
           break;
         case "fragment":
-          // Comma separated with fragment prefix. Bare values only.
+          // Comma-separated with fragment prefix. Bare values only.
           $prefix = "#";
           $prefix_on_missing = true;
           $data = $this->replaceVars($data, $parameters, ",", null, true);

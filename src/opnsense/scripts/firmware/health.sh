@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -56,8 +56,6 @@ for PATTERN in ${MTREE_PATTERNS}; do
 done
 
 VERSION=$(opnsense-update -v)
-# XXX only for migration
-VERSION=${VERSION%-*}
 
 set_check()
 {
@@ -66,8 +64,9 @@ set_check()
 	VER=$(opnsense-version -v ${SET})
 
 	echo ">>> Check installed ${SET} version" >> ${PKG_PROGRESS_FILE}
+
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
-		echo "Failed to determine version info."
+		echo "Failed to determine version info." >> ${PKG_PROGRESS_FILE}
 	elif [ "${VER}" != "${VERSION}" ]; then
 		echo "Version ${VER} is incorrect: expected ${VERSION}" >> ${PKG_PROGRESS_FILE}
 	else

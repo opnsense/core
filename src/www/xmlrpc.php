@@ -32,7 +32,7 @@ require_once("xmlrpc.inc");
 
 /**
  * do a basic authentication, uses $_SERVER['HTTP_AUTHORIZATION'] to validate user.
- * @param $http_auth_header http_authorization header content
+ * @param string $http_auth_header content of the Authorization HTTP header
  * @return bool
  */
 function http_basic_auth($http_auth_header)

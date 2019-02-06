@@ -171,7 +171,7 @@ include("head.inc");
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
+                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" onclick="enable_change(true)" />
                       </td>
                     </tr>
                   </table>

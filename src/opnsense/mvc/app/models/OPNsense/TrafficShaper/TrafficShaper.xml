@@ -286,6 +286,7 @@
                 <src_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
                     <default>any</default>
                 </src_port>
                 <destination type="NetworkField">
@@ -301,6 +302,7 @@
                 <dst_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
                     <default>any</default>
                 </dst_port>
                 <direction type="OptionField">

@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once('guiconfig.inc');
 require_once("system.inc");
@@ -577,7 +577,7 @@ if (empty($act)) {
           $('<table class="table table-condensed"/>').append(
             $("<tbody/>").append(
               $("<tr/>").append($("<td/>").append(password_input)),
-              $("<tr/>").append($("<td/>").append(confirm_input)),
+              $("<tr/>").append($("<td/>").append(confirm_input))
             )
           )
         );
@@ -591,7 +591,7 @@ if (empty($act)) {
                 $(".password_field").removeClass("has-warning");
                 $(".password_field").closest('div').removeClass('has-warning');
             }
-        }
+        };
         confirm_input.on('keyup', keyup_pass);
         password_input.on('keyup', keyup_pass);
 
@@ -864,6 +864,7 @@ $( document ).ready(function() {
                     <select name="cert_type">
                         <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? 'selected="selected"' : '';?>> <?=gettext("Client Certificate");?> </option>
                         <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? 'selected="selected"' : '';?>> <?=gettext("Server Certificate");?> </option>
+                        <option value="combined_server_client" <?=$pconfig['cert_type'] == 'combined_server_client' ? 'selected="selected"' : '';?>> <?=gettext("Combined Client/Server Certificate");?> </option>
                         <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? 'selected="selected"' : '';?>> <?=gettext("Certificate Authority");?> </option>
                     </select>
                     <div class="hidden" data-for="help_for_digest_cert_type">
@@ -1211,7 +1212,7 @@ $( document ).ready(function() {
               <tr>
                 <td style="width:22%">&nbsp;</td>
                 <td style="width:78%">
-                  <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                  <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                 </td>
               </tr>
             </table>

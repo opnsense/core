@@ -226,7 +226,7 @@ include("fbegin.inc");
                             <tr>
                                 <td>
                                     <input name="save" type="submit" class="btn btn-primary"
-                                           value="<?= gettext("Save"); ?>"/>
+                                           value="<?= html_safe(gettext('Save')); ?>"/>
                                 </td>
                                 <td>
                                     <?= gettext('Be aware of how much space is consumed by backups before adjusting this value.'); ?>

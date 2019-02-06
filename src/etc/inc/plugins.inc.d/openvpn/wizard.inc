@@ -108,11 +108,12 @@ function step3_submitphpaction()
         return;
     }
 
+    $authcfg = auth_get_authserver($_POST['name']);
     if (empty($_POST['name']) || empty($_POST['ip']) ||empty($_POST['transport']) ||
          empty($_POST['scope']) || empty($_POST['basedn']) || empty($_POST['authscope']) || empty($_POST['nameattr'])) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
-    } elseif (count(($authcfg = auth_get_authserver($_POST['name']))) > 0) {
+    } elseif ($authcfg !== false && count($authcfg) > 0) {
         $input_errors[] = gettext('Please choose a different name because an authentication ' .
             'server with this name already exists.');
         $stepid--;
@@ -173,10 +174,11 @@ function step5_submitphpaction()
         return;
     }
 
+    $authcfg = auth_get_authserver($_POST['name']);
     if (empty($_POST['name']) || empty($_POST['ip']) || empty($_POST['secret'])) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
-    } elseif (count(($authcfg = auth_get_authserver($_POST['name']))) > 0) {
+    } elseif ($authcfg !== false && count($authcfg) > 0) {
         $input_errors[] = gettext('Please choose a different name because an authentication ' .
             'server with this name already exists.');
         $stepid--;

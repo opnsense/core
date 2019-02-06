@@ -453,7 +453,7 @@ function clockUpdate()
 /*** End of Clock ***/
 //-->
   window.onload=clockInit(clockLocalStartTime, clockServerStartTime);clockOnLoad();
-  window.onunload=clockOnUnload()
+  window.onunload=clockOnUnload();
   clockUpdate();
 </script>
 
@@ -495,7 +495,7 @@ function clockUpdate()
         }
         function ntpstatuscallback(transport) {
           // The server returns formatted html code
-          var responseStringNtp = transport.responseText
+          var responseStringNtp = transport.responseText;
           jQuery('#ntpstatus').prop('innerHTML',responseStringNtp);
         }
         // Do the first status check 1 second after the dashboard opens

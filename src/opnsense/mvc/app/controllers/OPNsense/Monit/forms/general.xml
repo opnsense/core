@@ -23,7 +23,7 @@
       <type>select_multiple</type>
       <allownew>true</allownew>
       <style>tokenize</style>
-      <help><![CDATA[Comma separated list of SMTP servers for alert delivery.]]></help>
+      <help><![CDATA[Comma-separated list of SMTP servers for alert delivery.]]></help>
    </field>
    <field>
       <id>monit.general.port</id>

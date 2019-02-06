@@ -30,6 +30,9 @@
       }
     </style>
 
+    <!-- legacy browser functions -->
+    <script src="{{ cache_safe('/ui/js/polyfills.js') }}"></script>
+
     <!-- Favicon -->
     <link href="{{ cache_safe('/ui/themes/%s/build/images/favicon.png' | format(theme_name)) }}" rel="shortcut icon">
 
@@ -120,7 +123,7 @@
                         $("#menu_search_box").typeahead({
                             source: menusearch_items,
                             matcher: function (item) {
-                                var ar = this.query.trim()
+                                var ar = this.query.trim();
                                 if (ar == "") {
                                     return false;
                                 }

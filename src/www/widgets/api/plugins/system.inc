@@ -148,7 +148,7 @@ function system_api_versions()
 
     $result[] = sprintf('%s %s-%s', $g['product_name'], $g['product_version'], $g['product_arch']);
     $result[] = php_uname('s') . ' ' . php_uname('r');
-    $result[] = OPENSSL_VERSION_TEXT;
+    $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
 
     return $result;
 }

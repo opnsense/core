@@ -176,7 +176,7 @@ include("head.inc");
       </section>
 <?php if (!empty($cmd_output)): ?>
       <section class="col-xs-12">
-        <pre><?=$cmd_output;?></pre>
+        <pre><?=htmlspecialchars($cmd_output);?></pre>
       </section>
 <?php endif ?>
     </div>
