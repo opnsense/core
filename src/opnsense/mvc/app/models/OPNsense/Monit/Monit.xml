@@ -221,10 +221,8 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
          </timeout>
-         <address type="TextField">
+         <address type="HostnameField">
             <Required>N</Required>
-            <mask>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-4]|2[0-5][0-9]|[01]?[0-9][0-9]?)$/</mask>
-            <ValidationMessage>Address must be a valid IPv4 address</ValidationMessage>
          </address>
          <interface type="InterfaceField">
             <Required>N</Required>
