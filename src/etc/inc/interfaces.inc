@@ -2406,16 +2406,23 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    /* media */
-    if (!empty($wancfg['media']) || !empty($wancfg['mediaopt'])) {
-        $cmd = "/sbin/ifconfig " . escapeshellarg($realhwif);
-        if (!empty($wancfg['media'])) {
-            $cmd .= " media " . escapeshellarg($wancfg['media']);
-        }
+    /* skip vlans for media setup and only apply when changed */
+    if (!stristr($realhwif, "_vlan") && (!empty($wancfg['media']) || !empty($wancfg['mediaopt']))) {
+        $intf_details = legacy_interface_details($realhwif);
+        $media_changed = stripos($intf_details['media_raw'], $wancfg['media']) == false;
         if (!empty($wancfg['mediaopt'])) {
-            $cmd .= " mediaopt " . escapeshellarg($wancfg['mediaopt']);
+            $media_changed |= stripos($intf_details['media_raw'], $wancfg['mediaopt']) == false;
         }
-        mwexec($cmd);
+        if ($media_changed) {
+            $cmd = "/sbin/ifconfig " . escapeshellarg($realhwif);
+            if (!empty($wancfg['media'])) {
+                $cmd .= " media " . escapeshellarg($wancfg['media']);
+            }
+            if (!empty($wancfg['mediaopt'])) {
+                $cmd .= " mediaopt " . escapeshellarg($wancfg['mediaopt']);
+            }
+            mwexec($cmd);
+        }
     }
     // apply interface hardware settings (tso, lro, ..)
     configure_interface_hardware($realhwif);
