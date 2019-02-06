@@ -117,8 +117,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "lport 0";
         }
 
-        if ($this->config['mode'] !== 'server_user' && !empty($this->config['server_subject'])
-                && !empty($this->config['validate_server_cn'])) {
+        if (!empty($this->config['server_subject']) && !empty($this->config['validate_server_cn'])) {
             $tmp_subject = "";
             foreach ($this->config['server_subject'] as $key => $value) {
                 if (!empty($tmp_subject)) {
