@@ -680,7 +680,7 @@ function system_syslogd_start($verbose = false, $restart = false)
      * the key as a "name" entry in the array...
      */
     $syslogconfs['configd'] = array('facility' => array('configd.py'));
-    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
+    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
     $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
     $syslogconfs['gateways'] = array('facility' => array('dpinger'), 'remote' => 'apinger');
     $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
