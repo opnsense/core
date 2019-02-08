@@ -69,8 +69,8 @@
             <description>OPNsense (HTTPS, Amsterdam, NL)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.ragenetwork.de/opnsense</url>
-            <description>RageNetwork (HTTP, Munich, DE)</description>
+            <url>https://mirror.ragenetwork.de/opnsense</url>
+            <description>RageNetwork (HTTPS, Munich, DE)</description>
         </mirror>
         <mirror>
             <url>http://mirror.upb.edu.co/opnsense</url>
