@@ -51,6 +51,7 @@ class SNatRule extends Rule
         'target' => 'parsePlain, -> ',
         'natport' => 'parsePlain, port ',
         'poolopts' => 'parsePlain',
+        'poolopts_sourcehashkey' => 'parsePlain',
         'staticnatport' => 'parseBool,  static-port ',
         'descr' => 'parseComment'
     );
@@ -108,6 +109,10 @@ class SNatRule extends Rule
                     }
                     $rule[$fieldname] = "$".$rule[$fieldname];
                 }
+            }
+            if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash"){
+                // Make sure this is empty unless source-hash
+                $rule['poolopts_sourcehashkey'] = '';
             }
             if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {
                 $rule['natport'] = '';
