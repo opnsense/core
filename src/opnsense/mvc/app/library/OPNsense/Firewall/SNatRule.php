@@ -111,7 +111,6 @@ class SNatRule extends Rule
                 }
             }
             if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash"){
-                // Make sure this is empty unless source-hash
                 $rule['poolopts_sourcehashkey'] = '';
             }
             if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {

@@ -196,7 +196,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Only Round Robin pool options may be chosen when selecting an alias.");
     }
     /* Verify Source Hash Key if provided */
-    if (!empty($pconfig['poolopts']) && $pconfig['poolopts'] == 'source-hash' && !empty($pconfig['poolopts_sourcehashkey'])){
+    if (!empty($pconfig['poolopts_sourcehashkey'])){
+        if (empty($pconfig['poolopts']) || $pconfig['poolopts'] != 'source-hash') {
+            $input_errors[] = gettext("Source Hash Key is only valid for Source Hash type");
+        }
         if (substr($pconfig['poolopts_sourcehashkey'], 0, 2) != "0x" || !ctype_xdigit(substr($pconfig['poolopts_sourcehashkey'], 2, 32)) ){
             $input_errors[] = gettext("Source Hash Key must be 0x followed by 32 hexadecimal digits");
         }
@@ -356,6 +359,7 @@ include("head.inc");
                     } else {
                       $(this).removeClass("hidden");
                     }
+                    $(this).prop('disabled', false);
                   });
               } else {
                   // hide related controls
@@ -365,6 +369,7 @@ include("head.inc");
                     } else {
                       $(this).addClass("hidden");
                     }
+                    $(this).prop('disabled', true);
                   });
               }
             });
@@ -749,12 +754,14 @@ include("head.inc");
                         </option>
                         </select>
                         <div class="hidden" data-for="help_for_poolopts">
-                        <?=gettext("Only Round Robin types work with Host Aliases. Any type can be used with a Subnet.");?><br />
-                        * <?=gettext("Round Robin: Loops through the translation addresses.");?><br />
-                        * <?=gettext("Random: Selects an address from the translation address pool at random.");?><br />
-                        * <?=gettext("Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source. Optionally provide a Source Hash Key to make it persist when the ruleset is reloaded. Must be 0x followed by 32 hexadecimal digits.");?><br />
-                        * <?=gettext("Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -&gt; x.x.x.50.");?><br />
-                        * <?=gettext("Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.");?><br />
+                          <?=gettext("Only Round Robin types work with Host Aliases. Any type can be used with a Subnet.");?><br />
+                          <ul>
+                            <li> <?=gettext("Round Robin: Loops through the translation addresses.");?></li>
+                            <li> <?=gettext("Random: Selects an address from the translation address pool at random.");?></li>
+                            <li> <?=gettext("Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source. Optionally provide a Source Hash Key to make it persist when the ruleset is reloaded. Must be 0x followed by 32 hexadecimal digits.");?></li>
+                            <li> <?=gettext("Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -&gt; x.x.x.50.");?></li>
+                            <li> <?=gettext("Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.");?></li>
+                          </ul>
                         </div>
                         </td>
                         </tr>
