@@ -148,9 +148,11 @@ class Downloader(object):
                             break
                         else:
                              src.write(data)
-                    self._download_cache[frm_url] = {'handle': src, 'filename': filename}
+                    self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
                 else:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
+            else:
+                self._download_cache[frm_url]['cached'] = True
         else:
             syslog.syslog(syslog.LOG_ERR, 'unsupported download type for %s' % (url))
 
@@ -176,7 +178,8 @@ class Downloader(object):
                     version_response = version_fetch['handle'].read()
                     hash_value = [json.dumps(input_filter), json.dumps(auth),
                                   json.dumps(headers), version_response]
-                    syslog.syslog(syslog.LOG_NOTICE, 'version response for %s : %s' % (check_url, version_response))
+                    if not version_fetch['cached']:
+                        syslog.syslog(syslog.LOG_NOTICE, 'version response for %s : %s' % (check_url, version_response))
                     return hashlib.md5('\n'.join(hash_value)).hexdigest()
         return None
 
@@ -220,7 +223,8 @@ class Downloader(object):
             except IOError:
                 syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                 return None
-            syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)
+            if not fetch_result['cached']:
+                syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)
 
     @staticmethod
     def is_supported(url):
