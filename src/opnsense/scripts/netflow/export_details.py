@@ -69,7 +69,7 @@ if valid_params:
                 column_names = dict()
                 for record in obj.get_data(start_time, end_time):
                     if rownum == 0:
-                        column_names = record.keys()
+                        column_names = list(record.keys())
                         # dump heading
                         print (','.join(column_names))
                     line = list()

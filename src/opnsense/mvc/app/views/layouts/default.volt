@@ -30,11 +30,14 @@
       }
     </style>
 
+    <!-- legacy browser functions -->
+    <script src="{{ cache_safe('/ui/js/polyfills.js') }}"></script>
+
     <!-- Favicon -->
     <link href="{{ cache_safe('/ui/themes/%s/build/images/favicon.png' | format(theme_name)) }}" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-select.css', theme_name)) }}">
+    <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-select-1.13.3.css', theme_name)) }}">
 
     <!-- bootstrap dialog -->
     <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-dialog.css', theme_name)) }}">
@@ -120,7 +123,7 @@
                         $("#menu_search_box").typeahead({
                             source: menusearch_items,
                             matcher: function (item) {
-                                var ar = this.query.trim()
+                                var ar = this.query.trim();
                                 if (ar == "") {
                                     return false;
                                 }
@@ -229,7 +232,9 @@
         <button class="toggle-sidebar" data-toggle="tooltip right" title="{{ lang._('Toggle sidebar') }}" style="display:none;"><i class="fa fa-chevron-left"></i></button>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
+            <li id="menu_messages">
+              <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
+            </li>
             <li>
               <form class="navbar-form" role="search">
                 <div class="input-group">

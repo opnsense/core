@@ -3,6 +3,7 @@
 /*
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -99,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['system']['powerd_normal_mode'])) {
         $pconfig['powerd_normal_mode'] = $config['system']['powerd_normal_mode'];
     }
+    // System Sounds
+    $pconfig['disablebeep'] = isset($config['system']['disablebeep']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -187,6 +190,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dhparamusage'] = $pconfig['dhparamusage'];
         } elseif (isset($config['system']['dhparamusage'])) {
             unset($config['system']['dhparamusage']);
+        }
+
+        // System Sounds
+        if (!empty($pconfig['disablebeep'])) {
+            $config['system']['disablebeep'] = true;
+        } elseif (isset($config['system']['disablebeep'])) {
+            unset($config['system']['disablebeep']);
         }
 
         write_config();
@@ -297,7 +307,7 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Thermal Sensors') ?></strong></td>
-                <td style="witdh:78%"></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_thermal_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?> </td>
@@ -328,20 +338,19 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Periodic Backups') ?></strong></td>
-                <td style="witdh:78%"></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
                 <td>
                   <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
-                    <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext("Disabled"); ?></option>
-<?php
-                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value='0' <?= $pconfig['rrdbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
+<?php for ($x = 1; $x <= 24; $x++): ?>
                     <option value="<?= $x ?>" <?= $pconfig['rrdbackup'] == $x ? 'selected="selected"' : ''; ?>>
                       <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
-<?php
-                      endfor; ?>
+<?php endfor ?>
+                    <option value='-1' <?= $pconfig['rrdbackup'] == -1 ? 'selected="selected"' : '' ?>><?=gettext('Disabled') ?></option>
                   </select>
                   <br />
                   <div class="hidden" data-for="help_for_rrdbackup">
@@ -353,14 +362,13 @@ include("head.inc");
                 <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
                 <td>
                   <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup">
-                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ''; ?>><?=gettext('Disabled'); ?></option>
-<?php
-                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : '' ?>><?= gettext('Power off') ?></option>
+<?php for ($x = 1; $x <= 24; $x++): ?>
                     <option value="<?= $x ?>" <?= $pconfig['dhcpbackup'] == $x ? 'selected="selected"' : '';?>>
                       <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
-<?php
-                    endfor; ?>
+<?php endfor ?>
+                    <option value='-1' <?= $pconfig['dhcpbackup'] == -1 ? "selected='selected'" : '' ?>><?= gettext('Disabled') ?></option>
                   </select>
                   <div class="hidden" data-for="help_for_dhcpbackup">
                     <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot.");?>
@@ -371,14 +379,13 @@ include("head.inc");
                 <td><a id="help_for_netflowbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic NetFlow Backup");?></td>
                 <td>
                   <select name="netflowbackup" class="selectpicker" data-style="btn-default" id="netflowbackup">
-                    <option value='0' <?= $pconfig['netflowbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext('Disabled'); ?></option>
-<?php
-                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value='0' <?= $pconfig['netflowbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
+<?php for ($x = 1; $x <= 24; $x++): ?>
                     <option value="<?= $x ?>" <?= $pconfig['netflowbackup'] == $x ? 'selected="selected"' : '';?>>
                       <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
-<?php
-                    endfor; ?>
+<?php endfor ?>
+                    <option value='-1' <?= $pconfig['netflowbackup'] == -1 ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
                   </select>
                   <div class="hidden" data-for="help_for_netflowbackup">
                     <?=gettext("This will periodically backup the NetFlow data aggregation so it can be restored automatically on the next boot.");?>
@@ -389,14 +396,13 @@ include("head.inc");
                 <td><a id="help_for_captiveportalbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic Captive Portal Backup");?></td>
                 <td>
                   <select name="captiveportalbackup" class="selectpicker" data-style="btn-default" id="captiveportalbackup">
-                    <option value='0' <?= $pconfig['captiveportalbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext('Disabled'); ?></option>
-<?php
-                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value='0' <?= $pconfig['captiveportalbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
+<?php for ($x = 1; $x <= 24; $x++): ?>
                     <option value="<?= $x ?>" <?= $pconfig['captiveportalbackup'] == $x ? 'selected="selected"' : '';?>>
                       <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
-<?php
-                    endfor; ?>
+<?php endfor ?>
+                    <option value='-1' <?= $pconfig['captiveportalbackup'] == -1 ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
                   </select>
                   <div class="hidden" data-for="help_for_captiveportalbackup">
                     <?=gettext("This will periodically backup the captive portal session data so it can be restored automatically on the next boot.");?>
@@ -409,7 +415,7 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Power Savings') ?></strong></td>
-                <td style="witdh:78%"></td>
+                <td style="width:78%"></td>
               </tr>
               <tr>
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
@@ -528,12 +534,30 @@ include("head.inc");
               </tr>
             </table>
           </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+                <tr>
+                    <td style="width:22%"><strong><?= gettext('System Sounds') ?></strong></td>
+                    <td style="width:78%"></td>
+                </tr>
+                <tr>
+                    <td><a id="help_for_disablebeep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
+                    <td>
+                        <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? 'checked="checked"' : '';?>/>
+                        <?=gettext("Disable the startup/shutdown beep"); ?>
+                        <div class="hidden" data-for="help_for_disablebeep">
+                            <?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+          </div>
           <div class="content-box tab-content table-responsive">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"></td>
                 <td style="width:78%">
-                  <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                  <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                 </td>
               </tr>
             </table>

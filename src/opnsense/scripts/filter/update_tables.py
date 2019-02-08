@@ -32,7 +32,7 @@
 import os
 import sys
 import argparse
-import syslog
+import json
 import xml.etree.cElementTree as ET
 import syslog
 import tempfile
@@ -98,7 +98,7 @@ class AliasParser(object):
             yield self._aliases[alias]
 
 if __name__ == '__main__':
-    status = dict()
+    result = {'status': 'ok'}
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
@@ -155,6 +155,17 @@ if __name__ == '__main__':
                                 stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
             else:
                 # replace table contents with collected alias
-                subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
-                                 '/var/db/aliastables/%s.txt' % alias_name],
-                                 stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+                with tempfile.NamedTemporaryFile() as output_stream:
+                    subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
+                                     '/var/db/aliastables/%s.txt' % alias_name],
+                                     stdout=open(os.devnull, 'wb'), stderr=output_stream)
+                    output_stream.seek(0)
+                    error_output = output_stream.read().strip()
+                    if error_output.find('pfctl: ') > -1:
+                        result['status'] = 'error'
+                        if 'messages' not in result:
+                            result['messages'] = list()
+                        if error_output not in result['messages']:
+                            result['messages'].append(error_output.replace('pfctl: ', ''))
+
+    print (json.dumps(result))

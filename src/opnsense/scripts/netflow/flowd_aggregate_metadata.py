@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,16 +28,24 @@
     --------------------------------------------------------------------------------------
     fetch flowd aggregate metadata
 """
-import sys
 import ujson
 import datetime
+import argparse
+from lib import load_config
 from lib.aggregate import AggMetadata
 import lib.aggregates
 
 result = dict()
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', '--config', help='configuration yaml', default=None)
+parser.add_argument('format',  help='output format [text (default)|json]')
+cmd_args = parser.parse_args()
+
+configuration = load_config(cmd_args.config)
+
 # load global metadata
-metadata = AggMetadata()
+metadata = AggMetadata(database_dir=configuration.database_dir)
 result['last_sync'] = metadata.last_sync()
 # fetch aggregators
 result['aggregators'] = dict()
@@ -47,12 +55,13 @@ for agg_class in lib.aggregates.get_aggregators():
         result['aggregators'][agg_class.__name__]['resolutions'].append(resolution)
 
 # output result
-if len(sys.argv) > 1 and 'json' in sys.argv:
+if cmd_args.format.find('json') > -1:
     # json format
     print(ujson.dumps(result))
 else:
     # plain text format
-    print ('Flowd aggregations [last sync %s]' %
+    print (
+        'Flowd aggregations [last sync %s]' %
         datetime.datetime.fromtimestamp(result['last_sync']).strftime('%Y-%m-%d %H:%M:%S')
     )
     print ('\nAggregators:')

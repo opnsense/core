@@ -304,6 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 include("head.inc");
+legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
@@ -462,7 +463,7 @@ $( document ).ready(function() {
                         <input name="<?=$fieldId;?>" type="password" value="<?=$field['value'];?>" />
 <?php
                         elseif ($field['type'] == 'textarea'):?>
-                        <textarea name="<?=$fieldId;?>" type="text" rows="10"><?=$pconfig[$fieldId];?></textarea>
+                        <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>
 <?php
                         endif;?>
                         <div class="hidden" data-for="help_for_<?=$fieldId;?>">
@@ -496,5 +497,5 @@ $( document ).ready(function() {
 include("foot.inc");
 
 if ($do_reboot) {
-    system_reboot();
+    configd_run('system reboot', true);
 }

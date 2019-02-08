@@ -38,13 +38,13 @@ class CaptivePortal extends BaseModel
 {
     /**
      * retrieve zone by number
-     * @param $zoneid zone number
+     * @param string $zoneid zone number
      * @return null|BaseField zone details
      */
-    public function getByZoneID($zoneid)
+    public function getByZoneID(string $zoneid)
     {
         foreach ($this->zones->zone->iterateItems() as $zone) {
-            if ((string)$zoneid === (string)$zone->zoneid) {
+            if ($zoneid === (string)$zone->zoneid) {
                 return $zone;
             }
         }

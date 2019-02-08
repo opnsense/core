@@ -45,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = null;
     }
     $pconfig = array();
-    $pconfig['aclname'] = isset($id) && !empty($a_acls[$id]['aclname']) ? $a_acls[$id]['aclname'] : "";
-    $pconfig['aclaction'] = isset($id) && !empty($a_acls[$id]['aclaction']) ? $a_acls[$id]['aclaction'] : "";
-    $pconfig['description'] = isset($id) && !empty($a_acls[$id]['description']) ? $a_acls[$id]['description'] : "";
+    $pconfig['aclname'] = isset($id) && !empty($a_acls[$id]['aclname']) ? $a_acls[$id]['aclname'] : '';
+    $pconfig['aclaction'] = isset($id) && !empty($a_acls[$id]['aclaction']) ? $a_acls[$id]['aclaction'] : '';
+    $pconfig['description'] = isset($id) && !empty($a_acls[$id]['description']) ? $a_acls[$id]['description'] : '';
     $pconfig['row'] = isset($id) && !empty($a_acls[$id]['row']) ? $a_acls[$id]['row'] : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("You must enter a valid netmask for {$row['acl_network']}/{$row['mask']}.");
             }
         }
+
         // save form data
         if (count($input_errors) == 0) {
             $acl_entry = array();
@@ -108,8 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $a_acls[] = $acl_entry;
             }
-            mark_subsystem_dirty("unbound");
+
             write_config();
+            mark_subsystem_dirty('unbound');
             header(url_safe('Location: /services_unbound_acls.php'));
             exit;
         }
@@ -137,7 +139,7 @@ if (!isset($_GET['act'])) {
     function removeRow() {
         if ( $('#acl_networks_table > tbody > tr').length == 1 ) {
             $('#acl_networks_table > tbody > tr:last > td > input').each(function(){
-              $(this).val("");
+              $(this).val('');
             });
         } else {
             $(this).parent().parent().remove();
@@ -148,7 +150,7 @@ if (!isset($_GET['act'])) {
         // copy last row and reset values
         $('#acl_networks_table > tbody').append('<tr>'+$('#acl_networks_table > tbody > tr:last').html()+'</tr>');
         $('#acl_networks_table > tbody > tr:last > td > input').each(function(){
-          $(this).val("");
+          $(this).val('');
         });
         //  link network / cidr
         var item_cnt = $('#acl_networks_table > tbody > tr').length;
@@ -169,7 +171,7 @@ if (!isset($_GET['act'])) {
       // delete single
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("DNS Resolver");?>",
+        title: "<?= gettext('Unbound') ?>",
         message: "<?=gettext("Do you really want to delete this access list?"); ?>",
         buttons: [{
                   label: "<?= gettext("No");?>",
@@ -193,11 +195,10 @@ if (!isset($_GET['act'])) {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-<?php
-        if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors);
-        if (isset($savemsg)) print_info_box($savemsg);
-        if (is_subsystem_dirty("unbound")) print_info_box_apply(gettext("The configuration for the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-        ?>
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <?php if (is_subsystem_dirty('unbound')): ?>
+        <?php print_info_box_apply(gettext('The Unbound configuration has been changed.') . ' ' . gettext('You must apply the changes in order for them to take effect.')) ?>
+        <?php endif; ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12 __mb">
             <form method="post" name="iform" id="iform">
@@ -226,22 +227,22 @@ if (!isset($_GET['act'])) {
                   <td><a id="help_for_aclaction" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
                   <td>
                     <select name="aclaction" class="selectpicker">
-                      <option value="allow" <?= $pconfig['aclaction'] == "allow" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="allow" <?= $pconfig['aclaction'] == "allow" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Allow");?>
                       </option>
-                      <option value="deny" <?= $pconfig['aclaction'] == "deny" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="deny" <?= $pconfig['aclaction'] == "deny" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Deny");?>
                       </option>
-                      <option value="refuse" <?= $pconfig['aclaction'] == "refuse" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="refuse" <?= $pconfig['aclaction'] == "refuse" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Refuse");?>
                       </option>
-                      <option value="allow snoop" <?= $pconfig['aclaction'] == "allow snoop" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="allow snoop" <?= $pconfig['aclaction'] == "allow snoop" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Allow Snoop");?>
                       </option>
-                      <option value="deny nonlocal" <?= $pconfig['aclaction'] == "deny nonlocal" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="deny nonlocal" <?= $pconfig['aclaction'] == "deny nonlocal" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Deny Non-local");?>
                       </option>
-                      <option value="refuse nonlocal" <?= $pconfig['aclaction'] == "refuse nonlocal" ? "selected=\"selected\"" : ""; ?>>
+                      <option value="refuse nonlocal" <?= $pconfig['aclaction'] == "refuse nonlocal" ? 'selected="selected"' : ''; ?>>
                       <?=gettext("Refuse Non-local");?>
                       </option>
                     </select>
@@ -279,7 +280,7 @@ if (!isset($_GET['act'])) {
                       foreach ($acl_networks as $item_idx => $item):?>
                         <tr>
                           <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><i class="fa fa-minus fa-fw"></i></div>
+                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
                           </td>
                           <td>
                             <input name="acl_networks_acl_network[]" type="text" id="acl_network_<?=$item_idx;?>" value="<?=$item['acl_network'];?>" />
@@ -288,7 +289,7 @@ if (!isset($_GET['act'])) {
                             <select name="acl_networks_mask[]" data-network-id="acl_network_<?=$item_idx;?>" class="ipv4v6net" id="mask<?=$item_idx;?>">
 <?php
                               for ($i = 128; $i > 0; $i--):?>
-                              <option value="<?=$i;?>" <?= $item['mask'] == $i ?  "selected=\"selected\"" : ""?>>
+                              <option value="<?=$i;?>" <?= $item['mask'] == $i ? 'selected="selected"' : ''?>>
                                 <?=$i;?>
                               </option>
 <?php
@@ -305,7 +306,7 @@ if (!isset($_GET['act'])) {
                       <tfoot>
                         <tr>
                           <td colspan="4">
-                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><i class="fa fa-plus fa-fw"></i></div>
+                            <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
                           </td>
                         </tr>
                       </tfoot>
@@ -325,7 +326,7 @@ if (!isset($_GET['act'])) {
                   <td>&nbsp;</td>
                   <td>
                       &nbsp;<br />&nbsp;
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_unbound_acls.php'" />
                   </td>
                 </tr>
@@ -342,7 +343,7 @@ if (!isset($_GET['act'])) {
                     <th><?=gettext("Network"); ?></th>
                   </tr>
                 </thead>
-                <body>
+                <tbody>
 <?php foreach (unbound_acls_subnets() as $subnet): ?>
                   <tr>
                     <td><?= gettext('Internal') ?></td>

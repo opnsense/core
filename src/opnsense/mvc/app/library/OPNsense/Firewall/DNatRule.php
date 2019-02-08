@@ -70,7 +70,7 @@ class DNatRule extends Rule
     /**
      * search interfaces without a gateway other then the one provided
      * @param $interface
-     * @return list of interfaces
+     * @return array list of interfaces
      */
     private function reflectionInterfaces($interface)
     {
@@ -88,6 +88,7 @@ class DNatRule extends Rule
      * preprocess internal rule data to detail level of actual ruleset
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
     private function parseNatRules()
     {
@@ -149,6 +150,7 @@ class DNatRule extends Rule
     /**
      * output rule as string
      * @return string ruleset
+     * @throws \OPNsense\Base\ModelException
      */
     public function __toString()
     {

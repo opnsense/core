@@ -117,7 +117,7 @@
             function show_line(the_id) {
                 $('tr[for=' + the_id + ']').show();
             }
-            value = $("#pac\\.match\\.match_type").val();
+            let value = $("#pac\\.match\\.match_type").val();
             if (!value) {
                 // retry later
                 setTimeout(update_pac_match_view, 100);
@@ -156,18 +156,9 @@
                 case "is_resolvable":
                     show_line("pac\\.match\\.hostname");
                     break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
-                    break;
                 case "dns_domain_levels":
                     show_line("pac\\.match\\.domain_level_from");
                     show_line("pac\\.match\\.domain_level_to");
-                    break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
-                    break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
                     break;
                 case "weekday_range":
                     show_line("pac\\.match\\.weekday_from");
@@ -190,7 +181,7 @@
 
         $('.reload-pac-btn').click(function () {
             $('.reload-pac-btn .fa-refresh').addClass('fa-spin');
-            ajaxCall(url="/api/proxy/service/refreshTemplate", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/service/refreshTemplate", {}, function(data,status) {
                 $('.reload-pac-btn .fa-refresh').removeClass('fa-spin');
             });
         });
@@ -201,7 +192,7 @@
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/service/reconfigure", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 
@@ -222,7 +213,7 @@
          */
         $("#fetchandreconfigureAct").click(function(){
             $("#fetchandreconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/service/fetchacls", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/service/fetchacls", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#fetchandreconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
                 if (status != "success" || data['status'] != 'ok') {
@@ -242,7 +233,7 @@
          */
         $("#downloadAct").click(function(){
             $("#downloadAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/service/downloadacls", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/service/downloadacls", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#downloadAct_progress").removeClass("fa fa-spinner fa-pulse");
                 if (status != "success" || data['status'] != 'ok') {
@@ -261,7 +252,7 @@
          */
         $("#ScheduleAct").click(function() {
             $("#scheduleAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/settings/fetchRBCron", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/settings/fetchRBCron", {}, function(data,status) {
                 $("#scheduleAct_progress").removeClass("fa fa-spinner fa-pulse");
                 if (data.uuid !=undefined) {
                     // redirect to cron page
@@ -276,12 +267,12 @@
                 var frm_id = $(this).closest("form").attr("id");
                 var frm_title = $(this).closest("form").attr("data-title");
                 // save data for General TAB
-                saveFormToEndpoint(url="/api/proxy/settings/set",formid=frm_id,callback_ok=function(){
+                saveFormToEndpoint("/api/proxy/settings/set", frm_id, function(){
                     // on correct save, perform reconfigure. set progress animation when reloading
                     $("#"+frm_id+"_progress").addClass("fa fa-spinner fa-pulse");
 
                     //
-                    ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
+                    ajaxCall("/api/proxy/service/reconfigure", {}, function(data,status){
                         // when done, disable progress animation.
                         $("#"+frm_id+"_progress").removeClass("fa fa-spinner fa-pulse");
 

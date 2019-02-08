@@ -362,8 +362,8 @@ abstract class BaseField
 
     /**
      * Set attribute on Field object
-     * @param $key attribute key
-     * @param $value attribute value
+     * @param string $key attribute key
+     * @param string $value attribute value
      */
     public function setAttributeValue($key, $value)
     {

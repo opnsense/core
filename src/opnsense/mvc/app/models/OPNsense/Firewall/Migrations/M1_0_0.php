@@ -77,7 +77,7 @@ class M1_0_0 extends BaseModelMigration
                     $node->content = implode("\n", $content);
                 } elseif ($alias->address) {
                     // address entries
-                    $node->content = str_replace(" ", "\n", (string)$alias->address);
+                    $node->content = str_replace(" ", "\n", trim((string)$alias->address));
                 }
                 if ($alias->proto) {
                     $node->proto = (string)$alias->proto;

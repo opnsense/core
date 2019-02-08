@@ -221,7 +221,7 @@ EOD;
         }
     } while (!$lanif);
 
-    $done = !$lanif;    /* only if lan was set */
+    $done = false;
     while (!$done) {
         /* optional interfaces */
         $optif = array();
@@ -237,7 +237,7 @@ EOD;
                 printf("\nOptional interface %s description found: %s", $io, $config['interfaces']['opt' . $io]['descr']);
             }
 
-            printf("\nEnter the Optional %s interface name or 'a' for auto-detection\n" .
+            printf("\nEnter the Optional interface %s name or 'a' for auto-detection\n" .
                 "(or nothing if finished): ", $io);
 
             if ($interactive) {

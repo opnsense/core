@@ -103,18 +103,18 @@ function &lookup_crl($refid)
 
 function ca_chain_array(&$cert)
 {
-    if($cert['caref']) {
+    if ($cert['caref']) {
         $chain = array();
         $crt = lookup_ca($cert['caref']);
         $chain[] = $crt;
         while ($crt) {
             $caref = isset($crt['caref']) ? $crt['caref'] : false;
-            if($caref) {
+            if ($caref) {
                 $crt = lookup_ca($caref);
             } else {
                 $crt = false;
             }
-            if($crt) {
+            if ($crt) {
                 $chain[] = $crt;
             }
         }
@@ -196,9 +196,9 @@ function cert_import(& $cert, $crt_str, $key_str)
     $issuer = cert_get_issuer($crt_str, false);
 
     // Find my issuer unless self-signed
-    if($issuer <> $subject) {
+    if ($issuer != $subject) {
         $issuer_crt =& lookup_ca_by_subject($issuer);
-        if($issuer_crt) {
+        if ($issuer_crt) {
             $cert['caref'] = $issuer_crt['refid'];
         }
     }
@@ -211,8 +211,6 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     if (!$ca) {
         return false;
     }
-    // define temp filename to use for openssl.cnf
-    $config_filename = tempnam(sys_get_temp_dir(), 'ssl');
 
     $ca_str_crt = base64_decode($ca['crt']);
     $ca_str_key = base64_decode($ca['prv']);
@@ -223,17 +221,8 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     }
     $ca_serial = ++$ca['serial'];
 
-    $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
     // handle parameters which can only be set via the configuration file
-    $template_dn = "";
-    foreach (array("subjectAltName") as $dnTag) {
-        if (isset($dn[$dnTag])) {
-            $template_dn .= $dnTag . "=" . $dn[$dnTag] . "\n";
-            unset($dn[$dnTag]);
-        }
-    }
-    $template = str_replace("###OPNsense:".$x509_extensions."###", $template_dn, $template);
-    file_put_contents($config_filename, $template);
+    $config_filename = create_temp_openssl_config($dn);
 
     $args = array(
         'config' => $config_filename,
@@ -246,20 +235,20 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 
     // generate a new key pair
     $res_key = openssl_pkey_new($args);
-    if(!$res_key) {
+    if (!$res_key) {
         return false;
     }
 
     // generate a certificate signing request
     $res_csr = openssl_csr_new($dn, $res_key, $args);
-    if(!$res_csr) {
+    if (!$res_csr) {
         return false;
     }
 
     // self sign the certificate
     $res_crt = openssl_csr_sign($res_csr, $ca_res_crt, $ca_res_key, $lifetime,
            $args, $ca_serial);
-    if(!$res_crt) {
+    if (!$res_crt) {
         return false;
     }
 
@@ -317,6 +306,7 @@ function cert_get_subject($str_crt, $decode = true)
     }
 
     ksort($components);
+    $subject = '';
     foreach ($components as $a => $v) {
         if (is_array($v)) {
             ksort($v);
@@ -365,6 +355,7 @@ function cert_get_issuer($str_crt, $decode = true)
         return "unknown";
     }
     ksort($components);
+    $issuer = '';
     foreach ($components as $a => $v) {
         if (is_array($v)) {
             ksort($v);
@@ -674,4 +665,29 @@ function cert_get_cn($crt, $isref = false)
         }
     }
     return "";
+}
+
+/**
+ * Create a temporary config file, to help with calls that require properties that can only be set via the config file.
+ *
+ * @param $dn
+ * @return bool|string The name of the temporary config file.
+ */
+function create_temp_openssl_config(&$dn)
+{
+    // define temp filename to use for openssl.cnf
+    $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+
+    $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
+
+    foreach (['subjectAltName'] as $dnTag) {
+        if (isset($dn[$dnTag])) {
+            $template_dn = $dnTag . ' = ' . $dn[$dnTag];
+            // Overwrite the placeholders for this property
+            $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
+            unset($dn[$dnTag]);
+        }
+    }
+    file_put_contents($configFilename, $template);
+    return $configFilename;
 }

@@ -119,7 +119,7 @@ $main_buttons = array(
                     </td>
                     <td>
 <?php
-                    $iflist = legacy_config_get_interfaces(array('virtual' => false));
+                    $iflist = legacy_config_get_interfaces();
                     foreach (explode(" ", $ifgroupentry['members']) as $id => $memb):?>
                       <?=$id > 0 ? "," : "";?>
                       <?=!empty($iflist[$memb]) ? $iflist[$memb]['descr'] : $memb;?>

@@ -84,7 +84,6 @@ class SystemhealthController extends ApiControllerBase
     {
 
         $rowNumber = 0;
-        $containsValues = false; // used to break foreach on first row with collected data
 
         foreach ($data->database->row as $item => $row) {
             foreach ($row as $rowKey => $rowVal) {

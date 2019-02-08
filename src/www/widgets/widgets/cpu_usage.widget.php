@@ -52,7 +52,7 @@ require_once("system.inc");
       } else if (cpu_widget_cpu_data.length == 1) {
           cpu_widget_cpu_data.push([data['date_time'] * 1000, parseInt(data['cpu']['used'])]);
       }
-      chart_data = [];
+      let chart_data = [];
       cpu_widget_cpu_data.map(function(item){
           chart_data.push(item);
       });

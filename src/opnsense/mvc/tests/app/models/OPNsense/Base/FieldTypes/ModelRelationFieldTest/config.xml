@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<opnsense>
+  <tests>
+    <OPNsense>
+      <TestModel version="0.0.0">
+        <general>
+          <FromEmail>sample@example.com</FromEmail>
+        </general>
+        <arraytypes/>
+        <AllOrNone>
+          <value1/>
+          <value2/>
+          <value3/>
+        </AllOrNone>
+        <SingleSelect>
+          <value1/>
+          <value2/>
+          <value3/>
+        </SingleSelect>
+        <DependConstraint>
+          <value1>0</value1>
+          <value2/>
+        </DependConstraint>
+        <simpleList>
+          <items uuid="5ea2a35c-b02b-485a-912b-d077e639bf9f">
+            <number>1</number>
+          </items>
+          <items uuid="48bea3c9-c563-4885-a593-dea0a6af2e1e">
+            <number>2</number>
+          </items>
+          <items uuid="d1e7eda3-f940-42d9-8dfa-db7b1264b6e1">
+            <number>3</number>
+          </items>
+          <items uuid="4d0e2835-7a19-4a19-8c23-e12383827594">
+            <number>4</number>
+          </items>
+          <items uuid="60e1bc02-6817-4940-bbd3-61d0cf439a8a">
+            <number>5</number>
+          </items>
+          <items uuid="3bf8fc9c-6f36-4821-9944-ed7dfed50ad6">
+            <number>6</number>
+          </items>
+        </simpleList>
+      </TestModel>
+    </OPNsense>
+  </tests>
+</opnsense>

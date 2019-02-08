@@ -212,8 +212,8 @@ include 'head.inc';
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext('Save');?>" />
-                    <input name="test" type="submit" class="btn btn-primary" value="<?=gettext('Test/Update');?>" />
+                    <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                    <input name="test" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Test/Update'));?>" />
                   </td>
                 </tr>
               </tbody>

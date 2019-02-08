@@ -1,37 +1,36 @@
 <?php
 
 /*
-    Copyright (C) 2018 Fabian Franz
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2018 Fabian Franz
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-
 
 /****f* legacy/is_schedule_inuse
  * NAME
@@ -63,11 +62,6 @@ function is_schedule_inuse($schedule)
         return false;
 }
 
-function schedulecmp($a, $b)
-{
-    return strcmp($a['name'], $b['name']);
-}
-
 function schedule_sort()
 {
     global $config;
@@ -76,7 +70,9 @@ function schedule_sort()
         return;
     }
 
-    usort($config['schedules']['schedule'], "schedulecmp");
+    usort($config['schedules']['schedule'], function ($a, $b) {
+        return strcmp($a['name'], $b['name']);
+    });
 }
 
 $dayArray = array (gettext('Mon'),gettext('Tues'),gettext('Wed'),gettext('Thur'),gettext('Fri'),gettext('Sat'),gettext('Sun'));
@@ -230,18 +226,18 @@ function repeatExistingDays(){
   var tempstr, tempstrdaypos, week, daypos, dayposdone = "";
 
   var dayarray = daysSelected.split(",");
-  for (i=0; i<=dayarray.length; i++){
+  for (let i=0; i<=dayarray.length; i++){
     tempstr = dayarray[i];
     tempstrdaypos = tempstr.search("p");
     week = tempstr.substring(1,tempstrdaypos);
     week = parseInt(week);
-    dashpos = tempstr.search("-");
+    const dashpos = tempstr.search("-");
     daypos = tempstr.substring(tempstrdaypos+1, dashpos);
     daypos = parseInt(daypos);
 
-    daydone = dayposdone.search(daypos);
+    const daydone = dayposdone.search(daypos);
     tempstr = 'w' + week + 'p' + daypos;
-    daycell = document.getElementById(tempstr);
+    const daycell = document.getElementById(tempstr);
     if (daydone == "-1"){
       if (daycell.dataset['state'] == "lightcoral")
         daytogglerepeating(week,daypos,true);
@@ -254,11 +250,11 @@ function repeatExistingDays(){
 
 function daytogglerepeating(week,daypos,bExists){
   var tempstr, daycell, dayoriginal = "";
-  for (j=1; j<=53; j++)
+  for (let j=1; j<=53; j++)
   {
     tempstr = 'w' + j + 'p' + daypos;
     daycell = document.getElementById(tempstr);
-    dayoriginalpos =  daysSelected.indexOf(tempstr);
+    const dayoriginalpos =  daysSelected.indexOf(tempstr);
 
     //if bExists set to true, means cell is already select it
     //unselect it and remove original day from daysSelected string
@@ -275,7 +271,7 @@ function daytogglerepeating(week,daypos,bExists){
 
       if (dayoriginalpos != "-1")
       {
-        dayoriginalend = daysSelected.indexOf(',', dayoriginalpos);
+        const dayoriginalend = daysSelected.indexOf(',', dayoriginalpos);
         tempstr = daysSelected.substring(dayoriginalpos, dayoriginalend+1);
         daysSelected = daysSelected.replace(tempstr, "");
 
@@ -288,11 +284,12 @@ function daytoggle(id) {
   var runrepeat, tempstr = "";
   var bFoundValid = false;
 
-  iddashpos = id.search("-");
+  const iddashpos = id.search("-");
   var tempstrdaypos = id.search("p");
   var week = id.substring(1,tempstrdaypos);
   week = parseInt(week);
 
+  let idmod;
   if (iddashpos == "-1")
   {
     idmod = id;
@@ -313,7 +310,7 @@ function daytoggle(id) {
     if (daycell != null){
       if (daycell.dataset['state'] == "red"){  // red
         daycell.dataset['state'] = "white";
-        str = id + ",";
+        let str = id + ",";
         daysSelected = daysSelected.replace(str, "");
       }
       else if (daycell.dataset['state'] == "lightcoral")
@@ -349,8 +346,8 @@ function update_month(){
   var indexNum = document.iform.monthsel.selectedIndex;
   var selected = document.iform.monthsel.options[indexNum].text;
 
-  for (i=0; i<=11; i++){
-    option = document.iform.monthsel.options[i].text;
+  for (let month = 0; month < 12; month++){
+    let option = document.iform.monthsel.options[month].text;
     document.popupMonthLayer = document.getElementById(option);
 
     if(selected == option) {
@@ -449,7 +446,7 @@ function addTimeRange(){
 
   if (daysSelected != ""){
     //get days selected
-    for (i=0; i<tempdayarray.length; i++)
+    for (let i=0; i<tempdayarray.length; i++)
     {
       tempstr = tempdayarray[i];
       if (tempstr != "")
@@ -463,7 +460,7 @@ function addTimeRange(){
           nonrepeatingfound = true;
           daypos = tempstr.substring(tempstrdaypos+1, dashpos);
           daypos = parseInt(daypos);
-          monthpos = tempstr.search("m");
+          let monthpos = tempstr.search("m");
           tempstrdaypos = tempstr.search("d");
           month = tempstr.substring(monthpos+1, tempstrdaypos);
           month = parseInt(month);
@@ -490,7 +487,7 @@ function addTimeRange(){
     var firstprint = false;
     var tempFriendlyMonthArray = monthstr.split(",");
     var tempFriendlyDayArray = daystr.split(",");
-    var currentDay, firstDay, nextDay, currentMonth, nextMonth, firstDay, firstMonth = "";
+    var currentDay, firstDay, nextDay, firstMonth = 0;
     for (var k=0; k<tempFriendlyMonthArray.length; k++){
       tempstr = tempFriendlyMonthArray[k];
       if (tempstr != ""){
@@ -564,7 +561,7 @@ function addTimeRange(){
     tempsortArray.sort();
     //clear tempID
     rtempID = "";
-    for (t=0; t<tempsortArray.length; t++)
+    for (let t=0; t<tempsortArray.length; t++)
     {
       if (tempsortArray[t] != ""){
         if (!isFirstdone){
@@ -578,7 +575,7 @@ function addTimeRange(){
 
 
     //get time specified
-    starttimehour =  document.getElementById("starttimehour").value
+    starttimehour =  document.getElementById("starttimehour").value;
     starttimemin = document.getElementById("starttimemin").value;
     stoptimehour = document.getElementById("stoptimehour").value;
     stoptimemin = document.getElementById("stoptimemin").value;
@@ -590,7 +587,7 @@ function addTimeRange(){
     + stoptimemin;
 
     //get description for time range
-    tempdescr = document.getElementById("timerangedescr").value
+    tempdescr = document.getElementById("timerangedescr").value;
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;
@@ -635,35 +632,35 @@ function addTimeRange(){
 function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimehour, stoptimemin, tempdescr, tempTime, tempID){
 
     //add it to the schedule list
-    d = document;
-    tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
+    let d = document;
+    let tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-    td.innerHTML= `<span>${tempFriendlyTime}</span>`;
+    td.innerHTML= "<span>"+tempFriendlyTime+"</span>";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='text' readonly='readonly' name='starttime${schCounter}' id='starttime${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${starttimehour}:${starttimemin}' />`;
+    td.innerHTML="<input type='text' readonly='readonly' name='starttime"+schCounter+"' id='starttime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+starttimehour+":"+starttimemin+"' />";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='text' readonly='readonly' name='stoptime${schCounter}' id='stoptime${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${stoptimehour}:${stoptimemin}' />`;
+    td.innerHTML="<input type='text' readonly='readonly' name='stoptime"+schCounter+"' id='stoptime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+stoptimehour+":"+stoptimemin+"' />";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='text' readonly='readonly' name='timedescr${schCounter}' id='timedescr${schCounter}' style=' word-wrap:break-word; width:100%; border:0px solid;' value='${tempdescr}' />`;
+    td.innerHTML="<input type='text' readonly='readonly' name='timedescr"+schCounter+"' id='timedescr"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+tempdescr+"' />";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick='editRow("${tempTime}",this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-pencil fa-fw"></span></a>`;
+    td.innerHTML = "<a onclick='editRow(\""+tempTime+"\",this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"fa fa-pencil fa-fw\"></span></a>";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick='removeRow(this); return false;' href='#' class="btn btn-default btn-xs"><span class="fa fa-trash fa-fw"></span></a>`;
+    td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"fa fa-trash fa-fw\"></span></a>";
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.innerHTML=`<input type='hidden' id='schedule${schCounter}' name='schedule${schCounter}' value='${tempID}' />`;
+    td.innerHTML="<input type='hidden' id='schedule"+schCounter+"' name='schedule"+schCounter+"' value='"+tempID+"' />";
     tr.appendChild(td);
     tbody.appendChild(tr);
 
@@ -680,12 +677,12 @@ function clearCalendar(){
   var tempstr, daycell = "";
   //clear days selected
   daysSelected = "";
-  //loop through all 52 weeks
-  for (j=1; j<=53; j++)
+  //loop through all 53 weeks
+  for (let week=1; week<=53; week++)
   {
     //loop through all 7 days
-    for (k=1; k<8; k++){
-      tempstr = 'w' + j + 'p' + k;
+    for (let day = 1; day <= 7; day++){
+      tempstr = 'w' + week + 'p' + day;
       daycell = document.getElementById(tempstr);
       if (daycell != null){
         daycell.dataset['state'] = "white";
@@ -714,7 +711,7 @@ function editRow(incTime, el) {
 
     var starttimehour, descr, days, tempstr, starttimemin, hours, stoptimehour, stoptimemin = "";
 
-    tempArray = incTime.split ("||");
+    let tempArray = incTime.split ("||");
 
     days = tempArray[0];
     hours = tempArray[1];
@@ -737,11 +734,11 @@ function editRow(incTime, el) {
     document.getElementById("timerangedescr").value = descr;
 
     //toggle the appropriate days
-    for (i=0; i<tempdayArray.length; i++)
+    for (let i=0; i<tempdayArray.length; i++)
     {
       if (tempdayArray[i]){
         var tempweekstr = tempdayArray[i];
-        dashpos = tempweekstr.search("-");
+        let dashpos = tempweekstr.search("-");
 
         if (dashpos == "-1")
         {
@@ -865,7 +862,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                               $positioncounter = 1;//7 for Sun, 1 for Mon, 2 for Tues, etc
 ?>
                             <div id="<?=date("F_y",mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?>" style=" position:relative; display:<?= $firstmonth ? "block" : "none";?>">
-                              <table style="border:1; cellspacing:1; cellpadding:1" id="calTable<?=$monthcounter . $yearcounter;?>" class="table table-condensed">
+                              <table id="calTable<?=$monthcounter . $yearcounter;?>" class="table table-condensed table-bordered">
                                 <thead>
                                   <tr><td colspan="7" style="text-align:center"><?= date("F_Y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></td></tr>
                                   <tr>
@@ -932,7 +929,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                       <tr>
                         <td><a id="help_for_time" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time");?></td>
                         <td>
-                          <table style="cellspacing:2" class="tabcont">
+                          <table class="tabcont">
                             <tr>
                               <td><?=gettext("Start Time");?></td>
                               <td><?=gettext("Stop Time");?></td>
@@ -1159,8 +1156,8 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_schedule.php'" />
+                        <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_schedule.php'" />
                         <?php if (isset($id)): ?>
                           <input name="id" type="hidden" value="<?=$id;?>" />
                         <?php endif; ?>

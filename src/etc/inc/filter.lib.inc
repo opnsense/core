@@ -59,8 +59,16 @@ function filter_core_get_initialized_plugin_system()
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
         // setInterfaceMapping()
-        $value['gateway'] = get_interface_gateway($key);
-        $value['gatewayv6'] = get_interface_gateway_v6($key);
+        if (!is_ipaddrv4($value['ipaddr']) || (!empty($value['gateway']) && $value['gateway'] != 'none')) {
+            $value['gateway'] = get_interface_gateway($key);
+        } else {
+            $value['gateway'] = null;
+        }
+        if (!is_ipaddrv6($value['ipaddrv6']) || (!empty($value['gatewayv6']) && $value['gatewayv6'] != 'none')) {
+            $value['gatewayv6'] = get_interface_gateway_v6($key);
+        } else {
+            $value['gatewayv6'] = null;
+        }
         // In some cases we need to know if there currently are addresses configured on an interface, we pass
         // the relevant ifconfig data to our interfacemapping (prevents "could not parse host specification" on load)
         if (!empty($ifdetails[$value['if']])) {
@@ -89,6 +97,8 @@ function filter_core_get_antilockout()
 
     if (!empty($config['interfaces']['lan']['if'])) {
         $lockout_if = 'lan';
+    } elseif (!empty($config['interfaces']['opt1']['if'])) {
+        $lockout_if = 'opt1';
     } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
         $lockout_if = 'wan';
     } else {
@@ -131,9 +141,10 @@ function filter_core_get_antilockout()
 
 /**
  * recursively collect port alias(es) contents
- * @param $aliasname string alias name or null to fetch all aliases
- * @param $aliases aliases already parsed (prevent deadlock)
+ * @param string|null $aliasname alias name, or null to fetch all aliases
+ * @param array $aliases aliases already parsed (prevent deadlock)
  * @return array containing ports
+ * @throws \OPNsense\Base\ModelException
  */
 function filter_core_get_port_alias($aliasname, $aliases=array())
 {
@@ -218,7 +229,7 @@ function filter_core_rules_system($fw, $defaults)
     // Allow only bare essential icmpv6 packets
     $fw->registerFilterRule(1,
       array('ipprotocol'=>'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '129,133,134,135,136',
-            'statetype' => 'keep', 'label' => 'IPv6 requirements (ICMP)', 'from' => 'fe80::/10',
+            'statetype' => 'keep', 'label' => 'IPv6 requirements (ICMP)', 'from' => '(self)',
             'to' => 'fe80::/10,ff02::/16', 'direction' => 'out' ),
       $defaults['pass']
     );
@@ -525,5 +536,4 @@ function filter_core_rules_system($fw, $defaults)
             }
         }
     }
-
 }

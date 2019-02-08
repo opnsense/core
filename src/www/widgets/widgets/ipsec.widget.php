@@ -198,7 +198,7 @@ if (isset($config['ipsec']['phase2'])) {
 else {
 ?>
 <div style="display:block">
-   <table class="table table-striped" style="width:100%; border:0; cellpadding:0; cellspacing:0;">
+   <table class="table table-striped" style="width:100%; border:0;">
     <tr>
       <td>
         <?= gettext('Note: There are no configured IPsec Tunnels') ?>

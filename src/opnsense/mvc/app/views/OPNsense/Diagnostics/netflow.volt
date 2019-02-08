@@ -38,23 +38,23 @@ POSSIBILITY OF SUCH DAMAGE.
         // link save button to API set action
         $("#btn_save_capture").click(function(){
             $("#frm_CaptureSettings_progress").addClass("fa fa-spinner fa-pulse");
-            saveFormToEndpoint(url="/api/diagnostics/netflow/setconfig",formid='frm_CaptureSettings',callback_ok=function(){
-              ajaxCall(url="/api/diagnostics/netflow/reconfigure", sendData={}, callback=function(data,status) {
+            saveFormToEndpoint("/api/diagnostics/netflow/setconfig", 'frm_CaptureSettings', function(){
+              ajaxCall("/api/diagnostics/netflow/reconfigure", {}, function(data,status) {
                   $("#frm_CaptureSettings_progress").removeClass("fa fa-spinner fa-pulse");
               });
             });
         });
 
         $("#act_refresh_cache_stats").click(function(){
-            ajaxGet(url='/api/diagnostics/netflow/cacheStats',sendData={}, callback=function(data, status) {
-                var html = []
+            ajaxGet('/api/diagnostics/netflow/cacheStats', {}, function(data, status) {
+                var html = [];
                 // convert to plain Array
                 var data_arr = $.makeArray(data)[0];
                 // sort by flow
                 Object.keys(data_arr).sort().forEach(function (index) {
-                    value = data_arr[index];
+                    let value = data_arr[index];
                     var fields = ["if", "DstIPaddresses", "SrcIPaddresses", "Pkts"];
-                    tr_str = '<tr>';
+                    let tr_str = '<tr>';
                     tr_str += '<td>'+index+'</td>';
                     for (var i = 0; i < fields.length; i++) {
                         if (value[fields[i]] != null) {

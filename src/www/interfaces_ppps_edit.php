@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Gabriel B. <gnoahb@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Gabriel B. <gnoahb@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
-    // fields containing array data (comma seperated)
+    // fields containing array data (comma-separated)
     $explode_fields = array('mtu', 'mru', 'mrru', 'bandwidth', 'localip', 'gateway', 'localip', 'subnet', 'ports');
     foreach ($explode_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {
@@ -231,11 +231,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $ppp['mru'] = implode(',', $port_data['mru']);
         $ppp['mrru'] = implode(',', $port_data['mrru']);
 
-        // XXX this was already in here, but is probably not the correct place to create this
-        if (!is_dir('/var/spool/lock')) {
-            mwexec('/bin/mkdir -p /var/spool/lock');
-        }
-
         if (isset($id)) {
             $a_ppps[$id] = $ppp;
         }  else {
@@ -243,11 +238,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
+
         $iflist = get_configured_interface_with_descr();
         foreach ($iflist as $pppif => $ifdescr) {
-          if ($config['interfaces'][$pppif]['if'] == $ppp['if'])
-            interface_ppps_configure($pppif);
+            if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
+                interface_ppps_configure($pppif);
+            }
         }
+
         header(url_safe('Location: /interfaces_ppps.php'));
         exit;
     }
@@ -281,7 +279,7 @@ include("head.inc");
                   var responseTextArr = response.split("\n");
                   responseTextArr.sort();
                   $.each(responseTextArr, function(index, value) {
-                    country = value.split(':');
+                    let country = value.split(':');
                     $('#country').append(new Option(country[0], country[1]));
                   });
                 }
@@ -327,7 +325,7 @@ include("head.inc");
         $("#show_advanced").click(function(){
             $(".act_show_advanced").show();
             $("#show_advanced_opt").hide();
-        })
+        });
 
         // ppp -> country change
         $("#country").change(function(){
@@ -359,7 +357,7 @@ include("head.inc");
                 responseTextArr.sort();
                 jQuery.each(responseTextArr, function(index, value) {
                   if (value != '') {
-                    providerplan = value.split(':');
+                    let providerplan = value.split(':');
                     $('#providerplan').append(new Option(
                       providerplan[0] + ' - ' + providerplan[1],
                       providerplan[1]
@@ -520,7 +518,7 @@ include("head.inc");
                           <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
                         </td>
                       </tr>
-                      <tr style="display:none" name="phone_num" id="phone_num">
+                      <tr style="display:none" id="phone_num">
                         <td><a id="help_for_phone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Phone Number"); ?></td>
                         <td>
                           <input name="phone" type="text" id="phone" value="<?=$pconfig['phone'];?>" />
@@ -529,13 +527,13 @@ include("head.inc");
                           </div>
                         </td>
                       </tr>
-                      <tr style="display:none" name="apn_" id="apn_">
+                      <tr style="display:none" id="apn_">
                         <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Access Point Name (APN)"); ?></td>
                         <td>
                           <input name="apn" type="text" id="apn" value="<?=$pconfig['apn'];?>" />
                         </td>
                       </tr>
-                      <tr style="display:none" name="pppoe" id="pppoe">
+                      <tr style="display:none" id="pppoe">
                         <td><a id="help_for_provider" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Service name"); ?></td>
                         <td>
                           <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />&nbsp;&nbsp;
@@ -545,7 +543,7 @@ include("head.inc");
                           </div>
                         </td>
                       </tr>
-                      <tr style="display:none" name="hostuniqopt" id="hostuniqopt">
+                      <tr style="display:none" id="hostuniqopt">
                         <td><a id="help_for_hostuniq" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Host-Uniq"); ?></td>
                         <td>
                           <input name="hostuniq" type="text" id="hostuniq" value="<?=$pconfig['hostuniq'];?>" />
@@ -683,7 +681,7 @@ include("head.inc");
                           <?= gettext("Enable Dial-on-Demand mode"); ?>
                           <div class="hidden" data-for="help_for_ondemand">
                             <?= gettext("This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " .
-                            "The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?> </span>
+                            "The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
                           </div>
                         </td>
                       </tr>
@@ -809,8 +807,8 @@ include("head.inc");
                       <tr>
                         <td style="width:22%">&nbsp;</td>
                         <td style="width:78%">
-                          <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                          <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_ppps.php'" />
+                          <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                          <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_ppps.php'" />
                           <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />
                           <?php if (isset($id)): ?>
                             <input name="id" type="hidden" value="<?=$id;?>" />

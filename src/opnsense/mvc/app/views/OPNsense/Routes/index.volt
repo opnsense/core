@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/routes/routes/reconfigure", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/routes/routes/reconfigure", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 

@@ -243,8 +243,8 @@ include("head.inc");
               <tr>
                 <td>&nbsp;</td>
                 <td>
-                  <input type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                  <input class="btn btn-default" type="button" value="<?=gettext("Cancel");?>" onclick="history.back()" />
+                  <input type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                  <input class="btn btn-default" type="button" value="<?=html_safe(gettext("Cancel"));?>" onclick="history.back()" />
                 </td>
               </tr>
             </table>

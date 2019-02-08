@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -31,7 +31,7 @@
      * prepare for checking update status
      */
     function updateStatusPrepare(rerun) {
-        if ($rerun = false) {
+        if (rerun === false) {
             $('#update_status').hide();
             $('#updatelist').show();
         }
@@ -51,7 +51,7 @@
         $.upgrade_major_version = '';
 
         // request status
-        ajaxGet('/api/core/firmware/status',{},function(data,status){
+        ajaxGet('/api/core/firmware/status', {}, function(data,status){
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
             $('#updatestatus').html(data['status_msg']);
 
@@ -122,19 +122,20 @@
      */
     function upgrade() {
         $('#updatelist').hide();
+        $('#update_status').html('');
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
         $("#audit_all").attr("style","display:none");
-        maj_suffix = '';
+        let maj_suffix = '';
         if ($.upgrade_action == 'maj') {
             maj_suffix = '_maj';
         }
         $("#upgrade" + maj_suffix).attr("style","");
         $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
-            $('#updatelist > tbody, thead').empty();
+        ajaxCall('/api/core/firmware/upgrade', {upgrade:$.upgrade_action}, function() {
+            $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -145,6 +146,7 @@
     function audit($type) {
         $.upgrade_action = 'audit';
         $('#updatelist').hide();
+        $('#update_status').html('');
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
@@ -153,7 +155,7 @@
         $("#audit_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/' + $type, {}, function () {
-            $('#updatelist > tbody, thead').empty();
+            $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -215,7 +217,7 @@
     function action_may_reboot(pkg_act, pkg_name)
     {
         if (pkg_act == 'reinstall' && (pkg_name == 'kernel' || pkg_name == 'base')) {
-            reboot_msg = "{{ lang._('The firewall will reboot directly after this set reinstall.') }}";
+            const reboot_msg = "{{ lang._('The firewall will reboot directly after this set reinstall.') }}";
 
             // reboot required, inform the user.
             BootstrapDialog.show({
@@ -247,13 +249,14 @@
     function action(pkg_act, pkg_name)
     {
         $('#updatelist').hide();
+        $('#update_status').html('');
         $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
 
-        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
-            $('#updatelist > tbody, thead').empty();
+        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name, {}, function() {
+            $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -263,6 +266,7 @@
      */
     function upgrade_ui()
     {
+        let reboot_msg = "";
         if ( $.upgrade_needs_reboot == "1" ) {
             reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if ($.upgrade_action == 'maj') {
@@ -307,7 +311,7 @@
      * handle check/audit/upgrade status
      */
     function trackStatus() {
-        ajaxGet('/api/core/firmware/upgradestatus',{},function(data, status) {
+        ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
             if (data['log'] != undefined) {
                 $('#update_status').html(data['log']);
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
@@ -362,11 +366,25 @@
     /**
      * show package info
      */
-    function packagesInfo(changelog_display) {
+    function packagesInfo(reset) {
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
             var installed = {};
+
+            if (reset === true) {
+                ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
+                    if (data['log'] != undefined && data['log'] != '') {
+                        $('#update_status').html(data['log']);
+                    } else {
+                        $('#update_status').html('{{ lang._('No previous action log found.') }}');
+                    }
+                    $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
+                });
+
+                $('#update_status').show();
+                $('#updatelist').hide();
+            }
 
             var local_count = 0;
             var plugin_count = 0;
@@ -417,9 +435,9 @@
                 if (row['provided'] == "1") {
                     plugin_count += 1;
                 }
-                status_text = '';
-                bold_on = '';
-                bold_off = '';
+                let status_text = '';
+                let bold_on = '';
+                let bold_off = '';
                 if (row['installed'] == "1") {
                     status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
@@ -456,52 +474,50 @@
                 );
             }
 
-            if (changelog_display) {
-                $("#updatelist > tbody").empty();
-                $("#updatelist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
-                "<th>{{ lang._('Date') }}</th><th></th></tr>");
+            $("#changeloglist > tbody").empty();
+            $("#changeloglist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
+            "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
-                installed_version = data['product_version'].replace(/[_-].*/, '');
+            const installed_version = data['product_version'].replace(/[_-].*/, '');
 
-                $.each(data['changelog'], function(index, row) {
-                    changelog_count += 1;
+            $.each(data['changelog'], function(index, row) {
+                changelog_count += 1;
 
-                    status_text = '';
-                    bold_on = '';
-                    bold_off = '';
+                let status_text = '';
+                let bold_on = '';
+                let bold_off = '';
 
-                    if (installed_version == row['version']) {
-                        status_text = ' ({{ lang._('installed') }})';
-                        bold_on = '<b>';
-                        bold_off = '</b>';
-                    }
+                if (installed_version == row['version']) {
+                    status_text = ' ({{ lang._('installed') }})';
+                    bold_on = '<b>';
+                    bold_off = '</b>';
+                }
 
-                    $('#updatelist > tbody').append(
-                        '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
-                        '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
-                        '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
-                        'data-toggle="tooltip" title="{{ lang._('View') }}">' +
-                        '<i class="fa fa-book fa-fw"></i></button></td></tr>'
-                    );
+                $('#changeloglist > tbody').append(
+                    '<tr' + (changelog_count > changelog_max ? ' class="changelog-hidden" style="display: none;" ' : '' ) +
+                    '><td>' + bold_on + row['version'] + status_text + bold_off + '</td><td>' + bold_on + row['date'] + bold_off + '</td>' +
+                    '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
+                    'data-toggle="tooltip" title="{{ lang._('View') }}">' +
+                    '<i class="fa fa-book fa-fw"></i></button></td></tr>'
+                );
+            });
+
+            if (!data['changelog'].length) {
+                $('#changeloglist > tbody').append(
+                    '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
+                );
+            }
+
+            if (changelog_count > changelog_max) {
+                $('#changeloglist > tbody').append(
+                    '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
+                );
+                $("#changelog-act").click(function(event) {
+                    event.preventDefault();
+                    $(".changelog-hidden").attr('style', '');
+                    $(".changelog-full").attr('style', 'display: none;');
+                    $.changelog_keep_full = 1;
                 });
-
-                if (!data['changelog'].length) {
-                    $('#updatelist > tbody').append(
-                        '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
-                    );
-                }
-
-                if (changelog_count > changelog_max) {
-                    $('#updatelist > tbody').append(
-                        '<tr class= "changelog-full"><td colspan=3><a id="changelog-act" href="#">{{ lang._('Click to view full changelog history.') }}</a></td></tr>'
-                    );
-                    $("#changelog-act").click(function(event) {
-                        event.preventDefault();
-                        $(".changelog-hidden").attr('style', '');
-                        $(".changelog-full").attr('style', 'display: none;');
-                        $.changelog_keep_full = 1;
-                    });
-                }
             }
 
             // link buttons to actions
@@ -585,7 +601,7 @@
         // populate package information
         packagesInfo(true);
 
-        ajaxGet('/api/core/firmware/running',{},function(data, status) {
+        ajaxGet('/api/core/firmware/running', {}, function(data, status) {
             // if action is already running reattach now...
             if (data['status'] == 'busy') {
                 upgrade();
@@ -598,8 +614,8 @@
         });
 
         // handle firmware config options
-        ajaxGet('/api/core/firmware/getFirmwareOptions',{},function(firmwareoptions, status) {
-            ajaxGet('/api/core/firmware/getFirmwareConfig',{},function(firmwareconfig, status) {
+        ajaxGet('/api/core/firmware/getFirmwareOptions', {}, function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/getFirmwareConfig', {}, function(firmwareconfig, status) {
                 var other_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
@@ -705,7 +721,7 @@
             } else {
                 confopt.subscription = null;
             }
-            ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt, callback=function(data,status) {
+            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });
@@ -755,16 +771,16 @@
                 <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
             </ul>
             <div class="tab-content content-box">
                 <div id="updates" class="tab-pane fade in active">
-                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace; display: none;"></textarea>
-                    <table class="table table-striped table-condensed table-responsive" id="updatelist">
-                        <thead>
-                        </thead>
+                    <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
+                        <thead></thead>
                         <tbody></tbody>
                     </table>
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
@@ -795,6 +811,12 @@
                         </thead>
                         <tbody>
                         </tbody>
+                    </table>
+                </div>
+                <div id="changelog" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="changeloglist">
+                        <thead></thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div id="settings" class="tab-pane fade in">

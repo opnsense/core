@@ -481,9 +481,9 @@ $( document ).ready(function() {
     });
 
     // import ldap users
-    $("#import_ldap_users").click(function(){
+    $("#import_ldap_users").click(function(event){
       event.preventDefault();
-      url="system_usermanager_import_ldap.php";
+      const url="system_usermanager_import_ldap.php";
       var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
       if (oWin==null || typeof(oWin)=="undefined") {
         alert("<?= html_safe(gettext('Popup blocker detected. Action aborted.')) ?>");
@@ -497,7 +497,7 @@ $( document ).ready(function() {
         $.post(window.location, {act: 'newApiKey', userid: $("#userid").val() }, function(data) {
             if (data['key'] != undefined) {
                 // only generate a key file if there's data
-                output_data = 'key='+data['key'] +'\n' + 'secret='+data['secret'] +'\n';
+                const output_data = 'key='+data['key'] +'\n' + 'secret='+data['secret'] +'\n';
                 // create link, click and send to client
                 $('<a></a>')
                         .attr('id','downloadFile')
@@ -690,7 +690,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
                     <td>
-                      <table class="table" style="width:100%; border:0; cellpadding:0; cellspacing:0">
+                      <table class="table" style="width:100%; border:0;">
                         <thead>
                           <tr>
                             <th><?=gettext("Not Member Of"); ?></th>
@@ -936,7 +936,6 @@ $( document ).ready(function() {
                       <script>
                         $('#otp_qrcode').qrcode('<?= $otp_url ?>');
                       </script>
-                      </div>
                       <div class="hidden" data-for="help_for_otp_code">
                         <?= gettext('Scan this QR code for easy setup with external apps.') ?>
                       </div>
@@ -944,7 +943,6 @@ $( document ).ready(function() {
                   </tr>
 <?php
                         endif;?>
-                  <tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>

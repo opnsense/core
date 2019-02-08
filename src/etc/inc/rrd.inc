@@ -31,7 +31,7 @@ function rrd_create($rrdcreatecmd)
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
     $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
-    if ($rrdcreatereturn <> 0) {
+    if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
         log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
     }
@@ -49,7 +49,6 @@ function rrd_configure($verbose = false)
     }
 
     $rrddbpath = "/var/db/rrd/";
-    $rrdgraphpath = "/usr/local/www/rrd";
 
     $traffic = "-traffic.rrd";
     $packets = "-packets.rrd";
@@ -66,10 +65,8 @@ function rrd_configure($verbose = false)
     $rrdtool = "/usr/local/bin/rrdtool";
     $netstat = "/usr/bin/netstat";
     $awk = "/usr/bin/awk";
-    $tar = "/usr/bin/tar";
     $pfctl = "/sbin/pfctl";
     $sysctl = "/sbin/sysctl";
-    $php = "/usr/local/bin/php";
     $cpustats = "/usr/local/sbin/cpustats";
     $ifconfig = "/sbin/ifconfig";
     $ntpq = "/usr/local/sbin/ntpq";
@@ -91,7 +88,6 @@ function rrd_configure($verbose = false)
     $wirelessvalid = $rrdwirelessinterval * 2;
     $packetsvalid = $rrdpacketsinterval * 2;
     $statesvalid = $rrdstatesinterval*2;
-    $lbpoolvalid = $rrdlbpoolinterval * 2;
     $procvalid = $rrdlbpoolinterval * 2;
     $memvalid = $rrdmeminterval * 2;
     $mbufvalid = $rrdmbufinterval * 2;
@@ -138,7 +134,7 @@ function rrd_configure($verbose = false)
         /* process all real and pseudo interfaces */
         foreach ($ifdescrs as $ifname => $ifdescr) {
             $temp = get_real_interface($ifname);
-            if ($temp <> "") {
+            if ($temp != '') {
                 $realif = $temp;
             }
 
@@ -636,7 +632,6 @@ function rrd_export()
 
     $result = "\t<rrddata>\n";
     $rrd_files = glob("{$rrddbpath}/*.rrd");
-    $xml_files = array();
     foreach ($rrd_files as $rrd_file) {
         $basename = basename($rrd_file);
         $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);

@@ -182,12 +182,12 @@ function legacy_interface_stats($ifs = null)
         return $stats;
     }
 
-    $current_interface = "";
+    $current_interface = '';
     foreach ($out as $line) {
         if (strpos($line, 'Interface') === 0) {
             $current_interface = explode('(', explode(' ', $line)[1])[0];
             $stats[$current_interface] = array();
-        } elseif ($current_interface != "") {
+        } elseif ($current_interface != '') {
             $stat = explode(':', $line);
             $stats[$current_interface][trim($stat[0])] = trim($stat[1]);
         }
@@ -201,6 +201,7 @@ function legacy_interface_stats($ifs = null)
 
 /**
  * detect interface capabilities using ifconfig -m
+ * @param string|null $intf
  * @return array list of interface specifics indexed by physical interface name
  */
 function legacy_interfaces_details($intf = null)
@@ -300,6 +301,7 @@ function legacy_interfaces_details($intf = null)
             if (preg_match("/media: .*? \((.*?)\)/", $line, $matches)) {
                 $result[$current_interface]['media'] = $matches[1];
             }
+            $result[$current_interface]['media_raw'] = substr(trim($line), 7);
         } elseif (preg_match("/status: (.*)$/", $line, $matches)) {
             $result[$current_interface]['status'] = $matches[1];
         } elseif (preg_match("/channel (\S*)/", $line, $matches)) {
@@ -354,10 +356,10 @@ function configure_interface_hardware($ifs)
     global $config;
     $intf_details = legacy_interface_details($ifs);
     /* skip vlans for checksumming  */
-    if (!stristr($ifs, "_vlan") && is_array($intf_details)) {
+    if (!stristr($ifs, "_vlan") && !empty($intf_details)) {
         // get current settings
         $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
-        $csumv6_set = in_array('rxcsum6', $intf_details['options']) || in_array('txcsum6', $intf_details['options']);
+        $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);
         $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
         $lro_set = in_array('lro', $intf_details['options']);
 
@@ -459,7 +461,7 @@ function legacy_serial_devices()
     }
     $serialports = array();
     foreach (glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE) as $device) {
-        $serialports[$device] = array('descr' => "");
+        $serialports[$device] = array('descr' => '');
         $tty = explode('.', explode('cua', $device)[1])[0];
         foreach ($modems as $modem) {
             if (isset($modem['ttyname']) && $modem['ttyname'] == $tty) {

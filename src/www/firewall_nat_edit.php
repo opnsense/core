@@ -374,6 +374,7 @@ $( document ).ready(function() {
 
     // on change event protocol change
     $("#proto").change(function(){
+        let port_disabled = true;
         if ($("#proto").val() == "tcp" ||  $("#proto").val() == "udp" || $("#proto").val() == "tcp/udp") {
             port_disabled = false;
         } else {
@@ -628,7 +629,7 @@ $( document ).ready(function() {
                           <div class="input-group">
                           <!-- updates to "other" option in  src -->
                           <input type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="auto" for="src" >
+                          <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="srcmask"  data-width="auto" for="src" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
@@ -770,9 +771,9 @@ $( document ).ready(function() {
                       <tr>
                         <td>
                           <div class="input-group">
-                          <!-- updates to "other" option in  src -->
+                          <!-- updates to "other" option in dst -->
                           <input type="text" id="dst_address" for="dst" value="<?= !is_specialnet($pconfig['dst']) ? $pconfig['dst'] : "";?>" aria-label="<?=gettext("Destination address");?>"/>
-                          <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net" data-size="5" id="dstmask"  data-width="auto" for="dst" >
+                          <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="dstmask"  data-width="auto" for="dst" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
@@ -1093,8 +1094,8 @@ $( document ).ready(function() {
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat.php'" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                    <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_nat.php'" />
                     <?php if (isset($id)): ?>
                     <input id="entryid" name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>

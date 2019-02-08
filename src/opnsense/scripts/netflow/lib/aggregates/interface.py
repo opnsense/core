@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,13 @@
     --------------------------------------------------------------------------------------
     data aggregator type
 """
-from lib.aggregate import BaseFlowAggregator
+from . import BaseFlowAggregator
+
 
 class FlowInterfaceTotals(BaseFlowAggregator):
     """ collect interface totals
     """
-    target_filename = '/var/netflow/interface_%06d.sqlite'
+    target_filename = 'interface_%06d.sqlite'
     agg_fields = ['if', 'direction']
 
     @classmethod
@@ -40,25 +41,26 @@ class FlowInterfaceTotals(BaseFlowAggregator):
         :return: list of sample resolutions
         """
         # sample in 30 seconds, 5 minutes, 1 hour and 1 day
-        return  [30, 300, 3600, 86400]
+        return [30, 300, 3600, 86400]
 
     @classmethod
     def history_per_resolution(cls):
         """
         :return: dict sample resolution / expire time (seconds)
         """
-        return  {30: cls.seconds_per_day(1),
-                 300: cls.seconds_per_day(7),
-                 3600: cls.seconds_per_day(31),
-                 86400: cls.seconds_per_day(365)
-                 }
+        return {
+            30: cls.seconds_per_day(1),
+            300: cls.seconds_per_day(7),
+            3600: cls.seconds_per_day(31),
+            86400: cls.seconds_per_day(365)
+        }
 
-    def __init__(self, resolution):
+    def __init__(self, resolution, database_dir='/var/netflow'):
         """
         :param resolution: sample resultion (seconds)
         :return: None
         """
-        super(FlowInterfaceTotals, self).__init__(resolution)
+        super(FlowInterfaceTotals, self).__init__(resolution, database_dir)
 
     def add(self, flow):
         """ combine up/down flow into interface and direction

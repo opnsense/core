@@ -34,8 +34,10 @@ namespace OPNsense\OpenVPN;
  */
 abstract class BaseExporter
 {
-
-    var $config = array();
+    /**
+     * @var array export config
+     */
+    protected $config = array();
 
     /**
      * @param array $conf configuration to use
@@ -43,5 +45,27 @@ abstract class BaseExporter
     public function setConfig($conf)
     {
         $this->config = $conf;
+    }
+
+    /**
+     * @param string $crt X.509 certificate
+     * @param string $prv PEM formatted private key
+     * @param string $pass password
+     * @param array|null $cas list of CA-certificates
+     * @return string pkcs12
+     */
+    protected function export_pkcs12($crt, $prv, $pass = '', $cas = null)
+    {
+        $p12 = null;
+        $crt = openssl_x509_read($crt);
+        $prv = openssl_get_privatekey($prv);
+        $args = [];
+        if ($cas !== null) {
+            $args = [
+                'extracerts' => $cas
+            ];
+        }
+        openssl_pkcs12_export($crt, $p12, $prv, $pass, $args);
+        return $p12;
     }
 }

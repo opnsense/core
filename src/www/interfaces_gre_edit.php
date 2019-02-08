@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             write_config();
             $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
-            if ($confif <> "") {
+            if ($confif != '') {
                 interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_gre.php'));
@@ -153,7 +153,7 @@ include("head.inc");
                           $portlist[$cif] = $carpip." (".get_vip_descr($carpip).")";
                       }
                       foreach ($aliaslist as $aliasip => $aliasif) {
-                          $portlist[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                          $portlist[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                       }
 
                       foreach ($portlist as $ifn => $ifinfo):?>
@@ -256,8 +256,8 @@ include("head.inc");
                     <td style="width:22%">&nbsp;</td>
                     <td style="width:78%">
                       <input type="hidden" name="greif" value="<?=$pconfig['greif']; ?>" />
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_gre.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_gre.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

@@ -54,7 +54,7 @@
 class idna_convert
 {
     /**
-     * Holds all relevant mapping tables, loaded from a seperate file on construct
+     * Holds all relevant mapping tables, loaded from a separate file on construct
      * See RFC3454 for details
      *
      * @var array

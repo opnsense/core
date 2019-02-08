@@ -123,7 +123,7 @@ class ExportController extends ApiControllerBase
 
     /**
      * Determine configured settings for selected server
-     * @param $vpnid server handle
+     * @param string $vpnid server handle
      * @return array
      * @throws \OPNsense\Base\ModelException when unable to create model
      */
@@ -151,7 +151,7 @@ class ExportController extends ApiControllerBase
         foreach ($serverModel->iterateItems() as $field => $value) {
             if (!empty((string)$value)) {
                 $result[$field] = (string)$value;
-            } else {
+            } elseif (!empty((string)$server->$field) || !isset($result[$field])) {
                 $result[$field] = (string)$server->$field;
             }
         }
@@ -323,7 +323,7 @@ class ExportController extends ApiControllerBase
                              'tunnel_networkv6', 'reneg-sec', 'local_network', 'local_networkv6',
                              'tunnel_network', 'compression', 'passtos', 'shared_key', 'mode',
                              'dev_mode', 'tls', 'client_mgmt_port') as $field) {
-                    if (!empty($server->$field)) {
+                    if (isset($server->$field) && $server->$field !== "") {
                         $config[$field] = (string)$server->$field;
                     } else {
                         $config[$field] = null;
@@ -331,7 +331,7 @@ class ExportController extends ApiControllerBase
                 }
                 // fetch associated certificate data, add to config
                 $config['server_ca_chain'] = array();
-                $config['server_cn'] = null;
+                $config['server_subject_name'] = null;
                 $config['server_cert_is_srv'] = null;
                 if (!empty($server->certref)) {
                     if (isset(Config::getInstance()->object()->cert)) {
@@ -345,7 +345,9 @@ class ExportController extends ApiControllerBase
                                 // certificate CN
                                 $str_crt = base64_decode((string)$cert->crt);
                                 $inf_crt = openssl_x509_parse($str_crt);
-                                $config['server_cn'] = $inf_crt['subject']['CN'];
+
+                                $config['server_subject_name'] = !empty($inf_crt['name']) ? $inf_crt['name'] : null;
+                                $config['server_subject'] = !empty($inf_crt['subject']) ? $inf_crt['subject'] : null;
                                 // Is server type cert
                                 $config['server_cert_is_srv'] = (
                                     isset($inf_crt['extensions']['extendedKeyUsage']) &&
@@ -367,8 +369,9 @@ class ExportController extends ApiControllerBase
                                 $str_crt = base64_decode((string)$cert->crt);
                                 $inf_crt = openssl_x509_parse($str_crt);
                                 $config['client_cn'] = $inf_crt['subject']['CN'];
-                                $config['client_crt'] = (string)$cert->crt;
-                                $config['client_prv'] = (string)$cert->prv;
+                                $config['client_crt'] = base64_decode((string)$cert->crt);
+                                $config['client_prv'] = base64_decode((string)$cert->prv);
+                                break;
                             }
                         }
                     }
@@ -380,6 +383,11 @@ class ExportController extends ApiControllerBase
                 // overlay (saved) user settings
                 if ($this->request->hasPost('openvpn_export')) {
                     $response = $this->storePresetsAction($vpnid);
+                    // p12 password shouldn't be saved to the config, so we need to copy the content here as
+                    // not defined in either model or configuration data.
+                    if (!empty($this->request->getPost('openvpn_export')['p12_password'])) {
+                        $config['p12_password'] = $this->request->getPost('openvpn_export')['p12_password'];
+                    }
                 }
                 foreach ($this->getModel()->getServer($vpnid)->iterateItems() as $key => $value) {
                     if ($value !== "") {

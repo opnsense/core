@@ -265,7 +265,7 @@ $main_buttons = array(
                 <tbody>
 <?php
                   $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-                  $interfaces['lo0'] = array('descr' => 'Localhost');
+                  $interfaces['lo0'] = array('descr' => 'Loopback');
                   $i = 0;
                   foreach ($a_vip as $vipent):
                     if(!empty($vipent['subnet']) || !empty($vipent['range']) || !empty($vipent['subnet_bits']) || (isset($vipent['range']['from']) && !empty($vipent['range']['from']))): ?>
@@ -276,7 +276,8 @@ $main_buttons = array(
                     <td>
                       <?=($vipent['type'] == "single" || $vipent['type'] == "network") && !empty($vipent['subnet_bits']) ? $vipent['subnet']."/".$vipent['subnet_bits'] : "";?>
                       <?=$vipent['type'] == "range" ? $vipent['range']['from'] . "-" .  $vipent['range']['to'] : "";?>
-                      <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']} )" : "";?>
+                      <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']})" : "";?>
+                      <?=$vipent['mode'] != "carp" && !empty($vipent['vhid']) ? " (vhid {$vipent['vhid']})" : "";?>
                     </td>
                     <td>
                       <?= htmlspecialchars($interfaces[$vipent['interface']]['descr']) ?>

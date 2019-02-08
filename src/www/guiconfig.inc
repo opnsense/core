@@ -268,7 +268,7 @@ function print_service_banner($service)
             ));
             break;
         case 'livecd':
-	    if (!is_install_media()) {
+            if (!is_install_media()) {
                 break;
             }
             print_alert_box(
@@ -348,6 +348,7 @@ function pprint_port($port) {
 
 function gentitle($breadcrumbs, $navlevelsep = ': ')
 {
+    global $gentitle_suffix;
     $output = $breadcrumbs;
 
     if (isset($breadcrumbs[0]['name'])) {
@@ -357,7 +358,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
         }
     }
 
-    return join($navlevelsep, $output);
+    return join($navlevelsep, $output) . "$gentitle_suffix";
 }
 
 function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport)
@@ -536,7 +537,7 @@ function get_menu_messages()
         }
     } else {
         $menu_messages .= sprintf(
-          '<a href="#">%s@%s.%s</a>',
+          '<span class="navbar-text">%s@%s.%s</span>',
           $_SESSION['Username'],
           $config['system']['hostname'],
           $config['system']['domain']

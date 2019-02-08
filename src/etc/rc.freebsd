@@ -71,6 +71,7 @@ rc_enabled()
 rc_filenames="$(${RCORDER} /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null)"
 rc_filenames_defer="
 /etc/rc.d/ipfw
+/usr/local/etc/rc.d/captiveportal
 "
 
 for rc_filename in ${rc_filenames_defer}; do

@@ -43,6 +43,11 @@ class Util
     private static $aliasObject = null;
 
     /**
+     * @var null|array cached alias descriptions
+     */
+    private static $aliasDescriptions = array();
+
+    /**
      * is provided address an ip address.
      * @param string $network address
      * @return boolean
@@ -114,6 +119,36 @@ class Util
     }
 
     /**
+     * return alias descriptions
+     * @param string $name name
+     * @return string
+     */
+    public static function aliasDescription($name)
+    {
+        if (empty(self::$aliasDescriptions)) {
+            // read all aliases at once, and cache descriptions.
+            foreach ((new Alias())->aliasIterator() as $alias) {
+                if (empty(self::$aliasDescriptions[$alias['name']])) {
+                    if (!empty($alias['descr'])) {
+                        self::$aliasDescriptions[$alias['name']] = $alias['descr'];
+                    } elseif (!empty($alias['description'])) {
+                        self::$aliasDescriptions[$alias['name']] = $alias['description'];
+                    } elseif (!empty($alias['content'])) {
+                        $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                        asort($tmp);
+                        self::$aliasDescriptions[$alias['name']] = implode("<br/>", $tmp);
+                    }
+                }
+            }
+        }
+        if (!empty(self::$aliasDescriptions[$name])) {
+            return self::$aliasDescriptions[$name];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Fetch port alias contents, other alias types are handled using tables so there usually no need
      * to know the contents within any of the scripts.
      * @param string $name name
@@ -160,8 +195,9 @@ class Util
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
             if (!getservbyname($port, "tcp") && !getservbyname($port, "udp")
-                && filter_var($port, FILTER_VALIDATE_INT, array(
-                    "options" => array("min_range"=>1, "max_range"=>65535))) === false
+                && (filter_var($port, FILTER_VALIDATE_INT, array(
+                    "options" => array("min_range"=>1, "max_range"=>65535))
+                  ) === false || !is_numeric($port))
             ) {
                 return false;
             }
@@ -179,7 +215,7 @@ class Util
      */
     public static function isDomain($domain)
     {
-        $pattern = '/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i';
+        $pattern = '/^(?:(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])\.)*(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])$/iu';
         if (preg_match($pattern, $domain)) {
             return true;
         }

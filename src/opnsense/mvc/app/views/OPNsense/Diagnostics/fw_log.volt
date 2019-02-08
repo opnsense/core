@@ -27,24 +27,68 @@ POSSIBILITY OF SUCH DAMAGE.
 #}
 
 <script>
+    'use strict';
+
     $( document ).ready(function() {
-        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' }
+        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' };
         var interface_descriptions = {};
-        function fetch_log(){
+        let hostnameMap = {};
+
+        /**
+         * reverse lookup address fields (replace adres part for hostname if found)
+         */
+        function reverse_lookup() {
+            let to_fetch = [];
+             $(".address").each(function(){
+                let address = $(this).data('address');
+                if (!hostnameMap.hasOwnProperty(address) && !to_fetch.includes(address)) {
+                    to_fetch.push(address);
+                }
+            });
+            let update_grid = function() {
+                $(".address").each(function(){
+                    if (hostnameMap.hasOwnProperty($(this).data('address'))) {
+                          $(this).text($(this).text().replace(
+                            $(this).data('address'),
+                            hostnameMap[$(this).data('address')]
+                          ));
+                          $(this).removeClass('address');
+                    }
+                });
+            };
+            if (to_fetch.length > 0) {
+                ajaxGet('/api/diagnostics/dns/reverse_lookup', { 'address': to_fetch }, function(data, status) {
+                    $.each(to_fetch, function(index, address) {
+                        if (!data.hasOwnProperty(address) || data[address] === undefined) {
+                            hostnameMap[address] = address;
+                        } else {
+                            hostnameMap[address] = data[address];
+                        }
+                    });
+                    update_grid();
+                });
+            } else {
+                update_grid();
+            }
+        }
+
+        function fetch_log() {
             var record_spec = [];
             // read heading, contains field specs
-            $("#grid-log > thead > tr > th ").each(function(){
-                record_spec.push({'column-id': $(this).data('column-id'),
-                                  'type': $(this).data('type'),
-                                  'class': $(this).attr('class')
-                                 });
+            $("#grid-log > thead > tr > th ").each(function () {
+                record_spec.push({
+                    'column-id': $(this).data('column-id'),
+                    'type': $(this).data('type'),
+                    'class': $(this).attr('class')
+                });
             });
             // read last digest (record hash) from top data row
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
             // fetch new log lines and add on top of grid-log
-            ajaxGet(url='/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, callback=function(data, status) {
-                if (data != undefined && data.length > 0) {
-                    while ((record=data.pop()) != null) {
+            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, function(data, status) {
+                if (data !== undefined && data.length > 0) {
+                    let record;
+                    while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             log_tr.data('details', record);
@@ -69,7 +113,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                         break;
                                     case 'address':
                                         log_td.text(record[column_name]);
-                                        if (record[column_name+'port'] != undefined) {
+                                        log_td.addClass('address');
+                                        log_td.data('address', record[column_name]);
+                                        if (record[column_name+'port'] !== undefined) {
                                             if (record['version'] == 6) {
                                                 log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
                                             } else {
@@ -128,7 +174,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         var sorted_keys = Object.keys(sender_details).sort();
                         var tbl = $('<table class="table table-condensed table-hover"/>');
                         var tbl_tbody = $("<tbody/>");
-                        for (i=0 ; i < sorted_keys.length; i++) {
+                        for (let i=0 ; i < sorted_keys.length; i++) {
                             if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
                                 var row = $("<tr/>");
                                 var icon = null;
@@ -166,7 +212,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                $(this).unbind('click');
                                $(".act_info_fld_src, .act_info_fld_dst").each(function(){
                                   var target_field = $(this);
-                                  ajaxGet(url='/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, callback=function(data, status) {
+                                  ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
                                       if (data[target_field.text()] != undefined) {
                                           var resolv_output = data[target_field.text()];
                                           if (target_field.text() != resolv_output) {
@@ -185,9 +231,13 @@ POSSIBILITY OF SUCH DAMAGE.
                            }]
                         });
                     });
+                    // reverse lookup when selected
+                    if ($('#dolookup').is(':checked')) {
+                        reverse_lookup();
+                    }
                 }
             });
-        };
+        }
 
         // live filter
         $("#filter").keyup(function(){
@@ -202,14 +252,14 @@ POSSIBILITY OF SUCH DAMAGE.
                         selected_tr.hide();
                     }
                 } catch(e) {
-                    null; // ignore regexp errors
+                    // ignore regexp errors
                 }
             });
         });
 
         // reset log content on limit change, forces a reload
         $("#limit").change(function(){
-            $("#grid-log > tbody").html("<tr/>");
+            $('#grid-log > tbody').html("<tr></tr>");
         });
 
         function poller() {
@@ -220,13 +270,12 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         // fetch interface mappings on load
-        ajaxGet(url='/api/diagnostics/interface/getInterfaceNames', {}, callback=function(data, status) {
+        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
         });
 
         // startup poller
         poller();
-
     });
 </script>
 <style>
@@ -263,6 +312,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     <input id="auto_refresh" type="checkbox" checked="checked">
                     <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
                   </label>
+                  <br/>
+                  <label>
+                      <input id="dolookup" type="checkbox">
+                      <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
+                  </label>
                 </div>
                 <select id="limit" class="selectpicker pull-right" data-width="100" >
                     <option value="25" selected="selected">25</option>
@@ -294,7 +348,7 @@ POSSIBILITY OF SUCH DAMAGE.
                           </tr>
                         </thead>
                         <tbody>
-                          <tr/>
+                        <tr></tr>
                         </tbody>
                     </table>
                     <br/>

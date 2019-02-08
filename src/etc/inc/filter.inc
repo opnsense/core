@@ -146,20 +146,21 @@ function filter_delete_states_for_down_gateways()
 
     if (is_array($GatewaysList)) {
         foreach ($GatewaysList as $gwname => $gateway) {
-          if (empty($gateway['monitor'])) {
-              continue;
-          } elseif (!is_ipaddr($gateway['monitor'])) {
-              continue;
-          } elseif (strstr($gateway['monitor'], "127.0.0.")) {
-              continue;
-          } elseif (empty($a_gateways[$gateway['monitor']])) {
-              continue;
-          }
-          $gwstatus = &$a_gateways[$gateway['monitor']];
-          if (strstr($gwstatus['status'], "down")) {
-              $any_gateway_down = true;
-              break;
-          }
+            /* XXX what does this do exactly? */
+            if (empty($gateway['monitor'])) {
+                continue;
+            } elseif (!is_ipaddr($gateway['monitor'])) {
+                continue;
+            } elseif (strstr($gateway['monitor'], '127.0.0.')) {
+                continue;
+            } elseif (empty($a_gateways[$gateway['name']])) {
+                continue;
+            }
+
+            if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
+                $any_gateway_down = true;
+                break;
+            }
         }
     }
 
@@ -168,7 +169,7 @@ function filter_delete_states_for_down_gateways()
     }
 }
 
-function filter_configure_sync($verbose = false, $flush_states = false)
+function filter_configure_sync($verbose = false, $flush_states = false, $load_aliases = true)
 {
     global $config;
 
@@ -300,7 +301,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         }
     }
 
-    filter_pflog_start();
+    filter_pflog_start($verbose);
 
     if ($verbose) {
         echo 'Configuring firewall.';
@@ -308,6 +309,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     if (isset($config['system']['gw_switch_default'])) {
+        /* XXX gw_switch_group4 and gw_switch_group6 to pass down: */
         fixup_default_gateway();
     }
 
@@ -321,8 +323,8 @@ function filter_configure_sync($verbose = false, $flush_states = false)
     }
 
     $natrules = "\n# NAT Redirects\n";
-    $natrules = "no nat proto carp all\n";
-    $natrules = "no rdr proto carp all\n";
+    $natrules .= "no nat proto carp all\n";
+    $natrules .= "no rdr proto carp all\n";
     $natrules .= $fw->outputNatRules();
 
     if ($verbose) {
@@ -364,7 +366,7 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         $limitrules .= "set ruleset-optimization basic\n";
     }
 
-    if ($config['system']['optimization'] <> "") {
+    if ($config['system']['optimization'] != '') {
         $limitrules .= "set optimization {$config['system']['optimization']}\n";
         if ($config['system']['optimization'] == "conservative") {
             $limitrules .= "set timeout { udp.first 300, udp.single 150, udp.multiple 900 }\n";
@@ -456,12 +458,12 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         /* Brutal ugly hack but required -- PF is stuck, unwedge */
         if (strstr("$rules_error[0]", "busy")) {
             exec('/sbin/pfctl -d; /sbin/pfctl -e; /sbin/pfctl -f /tmp/rules.debug');
-            file_notice('pf_busy', gettext('PF was wedged/busy and has been reset.'), 'pf_busy', '');
+            file_notice(gettext('PF was wedged/busy and has been reset.'));
         } else {
             exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
         }
 
-        file_notice('filter_load', sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line), 'Filter Reload', '');
+        file_notice(sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line));
         unlock($filterlck);
 
         if ($verbose) {
@@ -507,8 +509,10 @@ function filter_configure_sync($verbose = false, $flush_states = false)
         flush();
     }
 
-    configd_run('template reload OPNsense/Filter');
-    configd_run('filter refresh_aliases', true);
+    if ($load_aliases) {
+        configd_run('template reload OPNsense/Filter');
+        configd_run('filter refresh_aliases', true);
+    }
 
     if ($verbose) {
         echo "done.\n";
@@ -597,10 +601,9 @@ function filter_generate_scrubing(&$FilterIflist)
     return $scrubrules;
 }
 
-
 function filter_generate_aliases()
 {
-    $aliases .= "\n# Lockout tables\n";
+    $aliases = "\n# Lockout tables\n";
     $aliases .= "table <sshlockout> persist\n";
     $aliases .= "table <webConfiguratorlockout> persist\n";
 
@@ -619,7 +622,7 @@ function filter_generate_aliases()
                 # a bit of a hack, but prevents the ruleset from not being able to load if these types are in
                 # the configuration.
                 $aliases .= "{$aliased['name']} = \"{ 0 <> 65535 }\"\n";
-                file_notice('filter_load', sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']), 'Filter Reload', '');
+                file_notice(sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']));
                 break;
             case "port":
                 $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name']));
@@ -634,7 +637,6 @@ function filter_generate_aliases()
 
     return $aliases;
 }
-
 
 function filter_rules_legacy(&$FilterIflist)
 {

@@ -24,6 +24,18 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<style>
+    .input-spacing {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    textarea {
+        white-space: nowrap;
+        overflow: auto;
+    }
+</style>
+
 <script>
 
     $( document ).ready(function() {
@@ -38,7 +50,6 @@
                     $("#openvpn_export\\.servers").append(server_opt);
                 });
                 $("#openvpn_export\\.servers").selectpicker('refresh');
-                $("#openvpn_export\\.servers").change();
             }
             ajaxGet('/api/openvpn/export/templates/',  {}, function(data, status){
                 if (status == 'success') {
@@ -53,8 +64,9 @@
                         }
                         $("#openvpn_export\\.template").append(this_opt);
                     });
-                    $("#openvpn_export\\.template").selectpicker('refresh');
+                    $("#openvpn_export\\.servers").change();
                     $("#openvpn_export\\.template").change();
+                    $("#openvpn_export\\.template").selectpicker('refresh');
                 }
             });
         });
@@ -68,7 +80,7 @@
             for (var i=0; i < selected_options.length; ++i) {
                 $("#row_openvpn_export\\."+selected_options[i]).show();
             }
-
+            $("#openvpn_export\\.template").selectpicker('refresh');
         });
 
         /**
@@ -81,7 +93,10 @@
                 // server_opt.data(key, record[key]);
                 var target = $("#openvpn_export\\."+key);
                 if (target.is('select')) {
-                    target.val(record[key]);
+                    if (record[key]) {
+                        target.val(record[key]);
+                        target.selectpicker('refresh');
+                    }
                 } else if (target.is('input')) {
                     if (target.prop("type") == "checkbox") {
                         if (record[key] === "1") {
@@ -119,7 +134,7 @@
                         saveFormToEndpoint("/api/openvpn/export/download/"+vpnid+"/"+caref+"/",'frm_ExportSettings', function(data){
                             if (data.filename !== undefined) {
                                 var link = $('<a></a>')
-                                    .attr('href','data:'+data.filetype+';charset=utf8,' + encodeURIComponent(atob(data.content)))
+                                    .attr('href','data:'+data.filetype+';base64,' + data.content)
                                     .attr('download', data.filename)
                                     .appendTo('body');
 
@@ -132,8 +147,22 @@
                     });
                 }
             });
-
             //
+        });
+
+        $("#row_openvpn_export\\.p12_password > td:eq(1)").append($("<hr class='input-spacing'/>"));
+        $("#row_openvpn_export\\.p12_password > td:eq(1)").append(
+            $("<input type='password' class='form-control password_field' size='50' id='openvpn_export.p12_password_confirm'/>")
+        );
+
+        $(".password_field").on("keyup", function(){
+            if ($("#openvpn_export\\.p12_password").val() != $("#openvpn_export\\.p12_password_confirm").val()) {
+                $(".password_field").addClass("has-warning");
+                $(".password_field").closest('tr').addClass('has-warning');
+            } else {
+                $(".password_field").removeClass("has-warning");
+                $(".password_field").closest('tr').removeClass('has-warning');
+            }
         });
     });
 

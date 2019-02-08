@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     legacy_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
                     $confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
                 }
-                if ($confif <> "") {
+                if ($confif != '') {
                     $config['interfaces'][$confif]['if'] = "{$_POST['if']}_vlan{$_POST['tag']}";
                 }
                 $vlan['vlanif'] = interface_vlan_configure($vlan);
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             write_config();
 
-            if ($confif <> "") {
+            if ($confif != '') {
                 interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_vlan.php'));
@@ -132,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 include("head.inc");
+legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
@@ -225,8 +226,8 @@ include("head.inc");
                     <td style="width:22%">&nbsp;</td>
                     <td style="width:78%">
                       <input type="hidden" name="vlanif" value="<?=$pconfig['vlanif']; ?>" />
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_vlan.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_vlan.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

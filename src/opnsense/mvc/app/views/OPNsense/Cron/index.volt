@@ -1,30 +1,28 @@
 {#
-
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
+ # Copyright (c) 2014-2015 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
 <script>
 
@@ -54,13 +52,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
             // define save action
             $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                saveFormToEndpoint(url=setUrl+uuid,
-                        formid='frm_' + editDlg, callback_ok=function(){
-                            // do reconfigure of cron after save (because we're leaving back to the sender)
-                            ajaxCall(url="/api/cron/service/reconfigure", sendData={}, callback=function(data,status) {
-                                $("#"+editDlg).modal('hide');
-                            });
-                        }, true);
+                saveFormToEndpoint(setUrl+uuid, 'frm_' + editDlg, function(){
+                    // do reconfigure of cron after save (because we're leaving back to the sender)
+                    ajaxCall("/api/cron/service/reconfigure", {}, function(data,status) {
+                        $("#"+editDlg).modal('hide');
+                    });
+                }, true);
             });
 
         }
@@ -79,7 +76,7 @@ POSSIBILITY OF SUCH DAMAGE.
         );
 
         {% if (selected_uuid|default("") != "") %}
-            openDialog(uuid='{{selected_uuid}}');
+            openDialog('{{selected_uuid}}');
         {% endif %}
 
         /*************************************************************************************************************
@@ -92,7 +89,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/cron/service/reconfigure", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/cron/service/reconfigure", {}, function(data,status) {
                 // when done, disable progress animation.
                 $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 

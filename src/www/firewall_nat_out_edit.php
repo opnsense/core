@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($pconfig['source'] == "any" && !empty($pconfig['source_not'])) {
         $input_errors[] = gettext("Negating source address of \"any\" is invalid.");
     }
-    if (!is_specialnet($pconfig['destination']) && is_ipaddroralias($pconfig['destination'])) {
+    if (!is_specialnet($pconfig['destination']) && !is_ipaddroralias($pconfig['destination'])) {
         $input_errors[] = gettext("A valid destination must be specified.");
     }
     if (!empty($pconfig['destination_subnet']) && !is_numericint($pconfig['destination_subnet'])) {
@@ -512,7 +512,7 @@ include("head.inc");
                           <div class="input-group">
                           <!-- updates to "other" option in  source -->
                           <input type="text" for="source" id="src_address" value="<?=$pconfig['source'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          <select name="source_subnet"  data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="auto" for="source" >
+                          <select name="source_subnet"  data-network-id="src_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="srcmask"  data-width="auto" for="source" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['source_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
@@ -599,7 +599,7 @@ include("head.inc");
                           <div class="input-group">
                           <!-- updates to "other" option in  source -->
                           <input type="text" id="dst_address" for="destination" value="<?=$pconfig['destination'];?>" aria-label="<?=gettext("Destination address");?>"/>
-                          <select name="destination_subnet" data-network-id="dst_address" class="selectpicker ipv4v6net" id="dstmask" data-size="5" data-width="auto" for="destination" >
+                          <select name="destination_subnet" data-network-id="dst_address" class="selectpicker ipv4v6net input-group-btn" id="dstmask" data-size="5" data-width="auto" for="destination" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['destination_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
@@ -609,7 +609,7 @@ include("head.inc");
                       </tr>
                     </table>
                     <div class="hidden" data-for="help_for_destination">
-                      <?=gettext("Enter the source network for the outbound NAT mapping.");?>
+                      <?=gettext("Enter the destination network for the outbound NAT mapping.");?>
                     </div>
                   </td>
                 </tr>
@@ -671,7 +671,7 @@ include("head.inc");
                             <div class="input-group">
                               <!-- updates to "other" option in  source -->
                               <input type="text" id="targetip_text" for="targetip" value="<?=$pconfig['targetip'];?>" aria-label="<?=gettext("Translation address");?>"/>
-                              <select name="targetip_subnet" data-network-id="targetip_text" class="selectpicker ipv4v6net" id="targetip_subnet" data-size="5" data-width="auto" for="targetip" >
+                              <select name="targetip_subnet" data-network-id="targetip_text" class="selectpicker ipv4v6net input-group-btn" id="targetip_subnet" data-size="5" data-width="auto" for="targetip" >
                               <?php for ($i = 128; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['targetip_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                               <?php endfor; ?>
@@ -800,7 +800,7 @@ include("head.inc");
                 <tr>
                   <td><?=gettext("Created");?></td>
                   <td>
-                    <?= date(gettext("n/j/y H:i:s"), $a_out[$id]['created']['time']) ?> <?= gettext("by") ?> <strong><?= $a_out[$id]['created']['username'] ?></strong>
+                    <?= date(gettext('n/j/y H:i:s'), $a_out[$id]['created']['time']) ?> (<?= $a_out[$id]['created']['username'] ?>)
                   </td>
                 </tr>
 <?php
@@ -810,7 +810,7 @@ include("head.inc");
                 <tr>
                   <td><?=gettext("Updated");?></td>
                   <td>
-                    <?= date(gettext("n/j/y H:i:s"), $a_out[$id]['updated']['time']) ?> <?= gettext("by") ?> <strong><?= $a_out[$id]['updated']['username'] ?></strong>
+                    <?= date(gettext('n/j/y H:i:s'), $a_out[$id]['updated']['time']) ?> (<?= $a_out[$id]['updated']['username'] ?>)
                   </td>
                 </tr>
 <?php
@@ -820,8 +820,8 @@ include("head.inc");
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat_out.php'" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                    <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_nat_out.php'" />
 <?php
                     if (isset($id)):
 ?>

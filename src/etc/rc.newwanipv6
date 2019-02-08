@@ -113,7 +113,7 @@ if (!empty($grouptmp)) {
     array_walk($grouptmp, 'interface_group_add_member');
 }
 
-if ($configip == 'track6' || count(link_interface_to_track6($interface, true))) {
+if (count(link_interface_to_track6($interface, true))) {
     services_dhcpd_configure(false, 'inet6');
 }
 

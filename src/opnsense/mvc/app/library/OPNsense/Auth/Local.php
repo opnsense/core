@@ -118,7 +118,6 @@ class Local extends Base implements IAuthConnector
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
             if (!empty($configObj->system->webgui->password_policy_duration)) {
-                $duration = $configObj->system->webgui->password_policy_duration;
                 $userObject = $this->getUser($username);
                 if ($userObject != null) {
                     $now = microtime(true);

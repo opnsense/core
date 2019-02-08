@@ -20,14 +20,14 @@
     <page-getserviceproviders>
         <name>AJAX: Get Service Providers</name>
         <patterns>
-            <pattern>license.php</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-getserviceproviders>
     <page-getstats>
         <name>AJAX: Get Stats</name>
         <patterns>
-            <pattern>license.php</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>widgets/api/get.php*</pattern>
         </patterns>
     </page-getstats>
@@ -79,7 +79,8 @@
     <page-diagnostics-haltsystem>
         <name>Diagnostics: Halt system</name>
         <patterns>
-            <pattern>diag_halt.php*</pattern>
+            <pattern>ui/core/halt</pattern>
+            <pattern>api/core/system/halt</pattern>
         </patterns>
     </page-diagnostics-haltsystem>
     <page-diagnostics-limiter-info>
@@ -148,7 +149,8 @@
     <page-diagnostics-rebootsystem>
         <name>Diagnostics: Reboot System</name>
         <patterns>
-            <pattern>reboot.php*</pattern>
+            <pattern>ui/core/reboot</pattern>
+            <pattern>api/core/system/reboot</pattern>
         </patterns>
     </page-diagnostics-rebootsystem>
     <page-diagnostics-resetstate>
@@ -615,12 +617,6 @@
             <pattern>system_advanced_network.php*</pattern>
         </patterns>
     </page-system-advanced-network>
-    <page-system-advanced-notifications>
-        <name>System: Advanced: Notifications</name>
-        <patterns>
-            <pattern>system_advanced_notifications.php*</pattern>
-        </patterns>
-    </page-system-advanced-notifications>
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>
@@ -711,7 +707,7 @@
     <page-system-license>
         <name>System: License</name>
         <patterns>
-            <pattern>license.php*</pattern>
+            <pattern>ui/core/license*</pattern>
         </patterns>
     </page-system-license>
     <page-system-staticroutes>
@@ -779,7 +775,8 @@
     <page-openvpn-client-export>
         <name>VPN: OpenVPN: Client Export Utility</name>
         <patterns>
-            <pattern>vpn_openvpn_export.php*</pattern>
+            <pattern>ui/openvpn/export/*</pattern>
+            <pattern>api/openvpn/export/*</pattern>
         </patterns>
     </page-openvpn-client-export>
     <page-openvpn-client>

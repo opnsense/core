@@ -90,14 +90,46 @@ class AliasUtilController extends ApiControllerBase
      * list alias table
      * @param string $alias name to list
      * @return array alias contents
+     * @throws \Exception
      */
     public function listAction($alias)
     {
         $this->sessionClose();
+
+        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $currentPage = intval($this->request->getPost('current', 'int', 1));
+        $offset = ($currentPage - 1) * $itemsPerPage;
+
         $backend = new Backend();
         $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")));
-        sort($entries);
-        return $entries;
+
+        if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
+            $searchPhrase = $this->request->getPost('searchPhrase');
+            $entries = array_filter($entries, function ($value) use ($searchPhrase) {
+                return strpos($value, $searchPhrase) !== false;
+            });
+        }
+
+        if ($this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            array_key_exists('ip', $this->request->getPost('sort')) &&
+            $this->request->getPost('sort')['ip'] === 'desc'
+        ) {
+            rsort($entries);
+        } else {
+            sort($entries);
+        }
+
+        $formatted = array_map(function ($value) {
+            return ['ip' => $value];
+        }, array_slice($entries, $offset, $itemsPerPage));
+
+        return [
+            'total' => count($entries),
+            'rowCount' => $itemsPerPage,
+            'current' => $currentPage,
+            'rows' => $formatted,
+        ];
     }
 
     /**
@@ -143,7 +175,7 @@ class AliasUtilController extends ApiControllerBase
                 // update local administration, remove address when found for static types
                 // XXX: addresses from "pfctl -t xxx -T show" don't always match our input, we probably need a
                 //      better address matching at some point in time.
-                $items = explode("\n", $cnfAlias->content);
+                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false) {
                     $address_mask = $address . "/" . (strpos($address, ":") ? '128' : '32');
                 } else {
@@ -190,8 +222,8 @@ class AliasUtilController extends ApiControllerBase
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, add address when not found for static types
-                $items = explode("\n", $cnfAlias->content);
-                if (strpos($address, "/") === false) {
+                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+                if (strpos($address, "/") === false && $cnfAlias->type == 'network') {
                     // add mask
                     $address .= "/" . (strpos($address, ":") ? '128' : '32');
                 }
@@ -211,6 +243,28 @@ class AliasUtilController extends ApiControllerBase
             return array("status" => "done");
         } else {
             return array("status" => "failed");
+        }
+    }
+
+    /**
+     * API handler to look up in which rules an IP is used (either explicitly or included in a range).
+     *
+     * @return array Array with indexes 'status' (whether the call succeeded) and 'matches' (which rules match this IP,
+     *               only present if the call was succesful.)
+     * @throws \Exception
+     */
+    public function find_referencesAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('ip')) {
+            $ip = $this->request->getPost('ip');
+            if (preg_match("/[^0-9a-f\:\.\/_]/", $ip)) {
+                return ['status' => 'Not an IP address!'];
+            }
+
+            $backend = new Backend();
+            return json_decode($backend->configdpRun('filter find_table_references', [$ip]), true);
+        } else {
+            return ['status' => 'IP parameter not specified!'];
         }
     }
 }

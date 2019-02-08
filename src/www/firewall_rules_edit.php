@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -330,7 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if (!empty($pconfig['statetimeout']))
           $input_errors[] = gettext("You can only specify the state timeout (advanced option) for TCP protocol.");
     }
-    if ($pconfig['type'] <> "pass") {
+    if ($pconfig['type'] != 'pass') {
       if (!empty($pconfig['max']))
           $input_errors[] = gettext("You can only specify the maximum state entries (advanced option) for Pass type rules.");
       if (!empty($pconfig['max-src-nodes']))
@@ -534,6 +534,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 legacy_html_escape_form_data($pconfig);
+legacy_html_escape_form_data($a_filter);
 
 $priorities = interfaces_vlan_priorities();
 
@@ -595,6 +596,7 @@ include("head.inc");
           } else {
               $("#icmpbox").addClass("hidden");
           }
+          let port_disabled = true;
           // lock src/dst ports on other then tcp/udp
           if ($("#proto").val() == 'tcp' || $("#proto").val() == 'udp' || $("#proto").val() == 'tcp/udp') {
               port_disabled = false;
@@ -906,7 +908,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table style="border:0; cellpadding:0; cellspacing:0">
+                              <table style="border:0;">
                                 <tbody>
                                   <tr>
                                       <td style="width:348px">
@@ -1035,7 +1037,7 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table style="border:0; cellpadding:0; cellspacing:0">
+                            <table style="border:0;">
                               <tbody>
                                 <tr>
                                     <td style="width:348px">
@@ -1371,7 +1373,7 @@ include("head.inc");
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_max-src-conn-rate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max new connections");?> </td>
                       <td>
-                        <table style="border:0; cellspacing:0; cellpadding:0">
+                        <table style="border:0;">
                           <tbody>
                             <tr>
                               <td>
@@ -1501,7 +1503,7 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("Created");?></td>
                       <td>
-                        <?= date(gettext("n/j/y H:i:s"), $a_filter[$id]['created']['time']) ?> <?= gettext("by") ?> <strong><?= $a_filter[$id]['created']['username'] ?></strong>
+                        <?= date(gettext('n/j/y H:i:s'), $a_filter[$id]['created']['time']) ?> (<?= $a_filter[$id]['created']['username'] ?>)
                       </td>
                     </tr>
 <?php
@@ -1510,7 +1512,7 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("Updated");?></td>
                       <td>
-                        <?= date(gettext("n/j/y H:i:s"), $a_filter[$id]['updated']['time']) ?> <?= gettext("by") ?> <strong><?= $a_filter[$id]['updated']['username'] ?></strong>
+                        <?= date(gettext('n/j/y H:i:s'), $a_filter[$id]['updated']['time']) ?> (<?= $a_filter[$id]['updated']['username'] ?>)
                       </td>
                     </tr>
 <?php
@@ -1519,8 +1521,8 @@ include("head.inc");
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_rules.php?if=<?= !empty($pconfig['floating']) ? 'FloatingRules' : $pconfig['interface'] ?>'" />
+                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_rules.php?if=<?= !empty($pconfig['floating']) ? 'FloatingRules' : $pconfig['interface'] ?>'" />
                       </td>
                     </tr>
                   </table>

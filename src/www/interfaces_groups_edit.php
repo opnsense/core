@@ -175,7 +175,7 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifn => $ifdetail):
+                        foreach (legacy_config_get_interfaces() as $ifn => $ifdetail):
                           if (!empty($ifdetail['type']) && $ifdetail['type'] == 'group') {
                               continue;
                           }
@@ -194,8 +194,8 @@ legacy_html_escape_form_data($pconfig);
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_groups.php'" />
+                      <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_groups.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

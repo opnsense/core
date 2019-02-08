@@ -251,7 +251,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
                 <td>
-                  <table class="table" style="width:100%; border:0; cellpadding:0; cellspacing:0">
+                  <table class="table" style="width:100%; border:0;">
                     <thead>
                       <tr>
                         <th><?=gettext("Not Member Of"); ?></th>
@@ -345,8 +345,8 @@ $( document ).ready(function() {
               <tr>
                 <td></td>
                 <td>
-                  <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                  <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_groupmanager.php'" />
+                  <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                  <input type="button" class="btn btn-default" value="<?=html_safe(gettext("Cancel"));?>" onclick="window.location.href='/system_groupmanager.php'" />
 <?php
                   if (isset($id)) :?>
                   <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />

@@ -31,7 +31,9 @@
     <field>
         <id>rule.source</id>
         <label>source</label>
-        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
         <help>source ip or network, examples 10.0.0.0/24, 10.0.0.1</help>
     </field>
     <field>
@@ -49,7 +51,9 @@
     <field>
         <id>rule.destination</id>
         <label>destination</label>
-        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
         <help>destination ip or network, examples 10.0.0.0/24, 10.0.0.1</help>
     </field>
     <field>

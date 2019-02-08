@@ -41,10 +41,10 @@ use \Phalcon\Filter;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static protected $internalServiceClass = '\OPNsense\IDS\IDS';
-    static protected $internalServiceEnabled = 'general.enabled';
-    static protected $internalServiceTemplate = 'OPNsense/IDS';
-    static protected $internalServiceName = 'ids';
+    protected static $internalServiceClass = '\OPNsense\IDS\IDS';
+    protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceTemplate = 'OPNsense/IDS';
+    protected static $internalServiceName = 'ids';
 
     /**
      * Reconfigure IDS
@@ -65,7 +65,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             if ((string)$mdlIDS->general->UpdateCron == "") {
                 $mdlCron = new Cron();
                 // update cron relation (if this doesn't break consistency)
-                $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "0");
+                $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "*", "0");
 
                 if ($mdlCron->performValidation()->count() == 0) {
                     $mdlCron->serializeToConfig();

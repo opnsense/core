@@ -68,6 +68,7 @@ $gateways = return_gateways_array();
               $("#"+tr_id+" > td:eq(4)").html('<span>'+gateway['status_translated']+'</span>');
 
               // set color on status text
+              let status_color;
               switch (gateway['status']) {
                 case 'force_down':
                 case 'down':
@@ -81,7 +82,7 @@ $gateways = return_gateways_array();
                   status_color = 'success';
                   break;
                 default:
-                  status_color = 'default'
+                  status_color = 'default';
                   break;
               }
 
@@ -104,7 +105,7 @@ $gateways = return_gateways_array();
             <option value="yes" <?= !empty($pconfig['gatewaysinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Show') ?></option>
           </select>
           <select id="gatewaysfilter" name="gatewaysfilter[]" multiple="multiple" class="selectpicker_widget">
-<?php foreach ($gateways as $gwname => $unused): ?>
+<?php foreach (array_keys($gateways) as $gwname): ?>
             <option value="<?= html_safe($gwname) ?>" <?= in_array($gwname, $pconfig['gatewaysfilter']) ? 'selected="selected"' : '' ?>><?= html_safe($gwname) ?></option>
 <?php endforeach;?>
           </select>
@@ -124,7 +125,7 @@ $gateways = return_gateways_array();
     <th><?=gettext('Loss')?></th>
     <th><?=gettext('Status')?></th>
   </tr>
-<?php foreach ($gateways as $gwname => $unused):
+<?php foreach (array_keys($gateways) as $gwname):
       $listed = in_array($gwname, $pconfig['gatewaysfilter']);
       $listed = !empty($pconfig['gatewaysinvert']) ? $listed : !$listed;
       if (!$listed) {

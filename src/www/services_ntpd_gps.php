@@ -88,14 +88,14 @@ include("head.inc");
         } else {
             $("#gpsselect").prop('checked', true);
         }
-    })
+    });
     $("#gpsselect").click(function(){
         if ($(this).prop('checked')) {
             $("#gpsprefer").prop('checked', false);
         } else {
             $("#gpsprefer").prop('checked', true);
         }
-    })
+    });
     $("#showgpsinitbox").click(function(event){
         $("#showgpsinitbox").parent().hide();
         $("#showgpsinit").show();
@@ -522,7 +522,7 @@ SureGPS =    #Sure Electronics SKG16B
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                       </td>
                     </tr>
                   </tbody>

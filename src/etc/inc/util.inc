@@ -178,7 +178,7 @@ function is_numericint($arg)
 function gen_subnet($ipaddr, $bits)
 {
     if (!is_ipaddr($ipaddr) || !is_numeric($bits)) {
-        return "";
+        return '';
     }
     return long2ip(ip2long($ipaddr) & gen_subnet_mask_long($bits));
 }
@@ -199,7 +199,7 @@ function gen_subnetv6($ipaddr, $bits)
 /* return the highest (broadcast) address in the subnet given a host address and a subnet bit count */
 function gen_subnet_max($ipaddr, $bits) {
     if (!is_ipaddr($ipaddr) || !is_numeric($bits)) {
-        return "";
+        return '';
     }
 
     return long2ip32(ip2long($ipaddr) | ~gen_subnet_mask_long($bits));
@@ -372,7 +372,7 @@ function ip_range_to_subnet_array($startip, $endip)
 
     // Loop here to reduce subnet size and retest as needed. We need to make sure
     //   that the target subnet is wholly contained between $startip and $endip.
-    for ($cidr; $cidr <= 32; $cidr++) {
+    for (; $cidr <= 32; $cidr++) {
         // Find the network and broadcast addresses for the subnet being tested.
         $targetsub_min = gen_subnet($startip, $cidr);
         $targetsub_max = gen_subnet_max($startip, $cidr);
@@ -477,7 +477,7 @@ function is_linklocal($ipaddr)
 function get_ll_scope($addr)
 {
     if (!is_linklocal($addr) || !strstr($addr, "%")) {
-        return "";
+        return '';
     }
     list ($ll, $scope) = explode("%", $addr);
     return $scope;
@@ -1110,11 +1110,11 @@ function get_sysctl($names)
 function get_single_sysctl($name)
 {
     if (empty($name)) {
-        return "";
+        return '';
     }
     $value = get_sysctl($name);
     if (empty($value) || !isset($value[$name])) {
-        return "";
+        return '';
     }
     return $value[$name];
 }
@@ -1138,7 +1138,7 @@ function set_sysctl($values)
     exec("/sbin/sysctl -i " . implode(" ", $value_list), $output, $success);
 
     /* Retry individually if failed (one or more read-only) */
-    if ($success <> 0 && count($value_list) > 1) {
+    if ($success != 0 && count($value_list) > 1) {
         foreach ($value_list as $value) {
             exec("/sbin/sysctl -i " . $value, $output);
         }
@@ -1280,4 +1280,48 @@ function is_install_media()
     }
 
     return true;
+}
+
+function dhcp6c_duid_read()
+{
+    $parts = array();
+    $skip = 2;
+
+    if (file_exists('/var/db/dhcp6c_duid')) {
+        $size = filesize('/var/db/dhcp6c_duid');
+        if ($size > $skip && ($fd = fopen('/var/db/dhcp6c_duid', 'r'))) {
+            $ret = unpack('Slen/H*buf', fread($fd, $size));
+            fclose($fd);
+
+            if (isset($ret['len']) && isset($ret['buf'])) {
+                if ($ret['len'] + $skip == $size && strlen($ret['buf']) == $ret['len'] * 2) {
+                    $parts = str_split($ret['buf'], 2);
+                }
+            }
+        }
+    }
+
+    $duid = strtoupper(implode(':', $parts));
+
+    return $duid;
+}
+
+function dhcp6c_duid_write($duid)
+{
+    $fd = fopen('/var/db/dhcp6c_duid', 'wb');
+    if ($fd) {
+        $parts = explode(':', $duid);
+        /* length is unsigned 16 bit integer, machine-dependent:*/
+        fwrite($fd, pack('S', count($parts)));
+        /* buffer is binary string, according to advertised length: */
+        fwrite($fd, pack('H*', implode('', $parts)));
+        fclose($fd);
+    }
+}
+
+function dhcp6c_duid_clear()
+{
+    @unlink('/var/db/dhcp6c_duid');
+    /* clear the backup so that it will not be restored: */
+    @unlink('/conf/dhcp6c_duid');
 }

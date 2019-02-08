@@ -411,7 +411,7 @@ include("head.inc");
                     <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br/>
                     <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
                     <div class="hidden" data-for="help_for_dns">
-                      <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
+                      <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                     </div>
                   </td>
                 </tr>
@@ -504,8 +504,8 @@ include("head.inc");
                 <tr>
                   <td></td>
                   <td>
-                    <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
-                    <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_dhcp.php?if=<?= html_safe($if) ?>'" />
+                    <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                    <input type="button" class="formbtn btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/services_dhcp.php?if=<?= html_safe($if) ?>'" />
 <?php
                   if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />

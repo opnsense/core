@@ -277,6 +277,7 @@
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <default>any</default>
+                    <asList>Y</asList>
                 </source>
                 <source_not type="BooleanField">
                     <default>0</default>
@@ -285,12 +286,14 @@
                 <src_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
                     <default>any</default>
                 </src_port>
                 <destination type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <default>any</default>
+                    <asList>Y</asList>
                 </destination>
                 <destination_not type="BooleanField">
                     <default>0</default>
@@ -299,6 +302,7 @@
                 <dst_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
                     <default>any</default>
                 </dst_port>
                 <direction type="OptionField">

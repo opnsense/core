@@ -336,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $server = array();
 
             // delete(rename) old interface so a new TUN or TAP interface can be created.
-            if (isset($id) && $pconfig['dev_mode'] <> $a_server[$id]['dev_mode']) {
+            if (isset($id) && $pconfig['dev_mode'] != $a_server[$id]['dev_mode']) {
                 openvpn_delete('server', $a_server[$id]);
             }
             // 1 on 1 copy of config attributes
@@ -762,7 +762,7 @@ $( document ).ready(function() {
                             if ($group['ipprotocol'] != "inet") {
                                 continue;
                             }
-                            if ($group[0]['vip'] <> "") {
+                            if ($group[0]['vip'] != '') {
                                 $vipif = $group[0]['vip'];
                             } else {
                                 $vipif = $group[0]['int'];
@@ -1077,7 +1077,7 @@ endif; ?>
                     </tr>
                     <tr>
                       <td style="width:22%" id="ipv4_tunnel_network"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
-                      <td witdh="78%">
+                      <td style="width:78%">
                         <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                         <div class="hidden" data-for="help_for_tunnel_network">
                             <?=gettext("This is the IPv4 virtual network used for private " .
@@ -1600,7 +1600,7 @@ endif; ?>
                     <tr>
                       <td style="width:22%">&nbsp;</td>
                       <td style="width:78%">
-                        <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                         <input name="act" type="hidden" value="<?=$act;?>" />
 <?php
                         if (isset($id) && $a_server[$id]) :?>

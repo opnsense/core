@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig['passthrough_networks'] = array();
     }
-    foreach ($ipsec_loglevels as $lkey => $ldescr) {
+    foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
         } else {
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['ipsec']['preferoldsa']);
         }
         if (isset($config['ipsec']) && is_array($config['ipsec'])) {
-            foreach ($ipsec_loglevels as $lkey => $ldescr) {
+            foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
                 if (empty($pconfig["ipsec_{$lkey}"])) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"])) {
                         unset($config['ipsec']["ipsec_{$lkey}"]);
@@ -207,21 +207,16 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <div class="hidden" data-for="help_for_ipsec_debug">
                                       <strong><?=gettext("Start IPsec in debug mode based on sections selected"); ?></strong> <br/>
                         </div>
-<?php                   foreach ($ipsec_loglevels as $lkey => $ldescr) :
-?>
-                        <?=$ldescr?>
+<?php foreach (IPSEC_LOG_SUBSYSTEMS as $lkey => $ldescr): ?>
+                        <?= $ldescr ?>
                         <select name="ipsec_<?=$lkey?>" id="ipsec_<?=$lkey?>">
-<?php                   foreach (array("Silent", "Basic", "Audit", "Control", "Raw", "Highest") as $lidx => $lvalue) :
-                          $lidx -= 1;
-?>
-                          <option value="<?=$lidx?>" <?= (isset($pconfig["ipsec_{$lkey}"]) && $pconfig["ipsec_{$lkey}"] == $lidx) || (!isset($pconfig["ipsec_{$lkey}"]) && $lidx == "0")  ? "selected=\"selected\"" : "";?> ?>
+<?php foreach (IPSEC_LOG_LEVELS as $lidx => $lvalue): ?>
+                          <option value="<?=$lidx?>" <?= (isset($pconfig["ipsec_{$lkey}"]) && $pconfig["ipsec_{$lkey}"] == $lidx) || (!isset($pconfig["ipsec_{$lkey}"]) && $lidx == "0") ? 'selected="selected"' : '' ?>>
                                 <?=$lvalue?>
                           </option>
-<?php
-endforeach; ?>
+<?php endforeach ?>
                         </select>
-<?php
-endforeach; ?>
+<?php endforeach ?>
                         <div class="hidden" data-for="help_for_ipsec_debug">
                         <?=gettext("Launch IPsec in debug mode so that more verbose logs will be generated to aid in troubleshooting."); ?>
                         </div>
@@ -230,7 +225,7 @@ endforeach; ?>
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                       </td>
                     </tr>
                   </table>

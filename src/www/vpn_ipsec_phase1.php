@@ -201,6 +201,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfieldsn = array(gettext("Pre-Shared Key"));
             break;
         case "hybrid_rsa_server":
+            $reqdfields = explode(' ', 'certref');
+            $reqdfieldsn = array(gettext("Certificate"));
+            break;
         case "xauth_rsa_server":
         case "rsasig":
             $reqdfields = explode(" ", "caref certref");
@@ -233,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         (empty($pconfig['iketype']) || $pconfig['iketype'] == "ikev1")) {
         $t = 0;
         foreach ($a_phase1 as $ph1tmp) {
-            if ($p1index <> $t) {
+            if ($p1index != $t) {
                 if (isset($ph1tmp['remote-gateway']) && $ph1tmp['remote-gateway'] == $pconfig['remote-gateway'] && !isset($ph1tmp['disabled'])) {
                     $input_errors[] = sprintf(gettext('The remote gateway "%s" is already used by phase1 "%s".'), $pconfig['remote-gateway'], $ph1tmp['descr']);
                 }
@@ -410,8 +413,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         /* if the remote gateway changed and the interface is not WAN then remove route */
-        if ($pconfig['interface'] <> "wan") {
-            if ($old_ph1ent['remote-gateway'] <> $pconfig['remote-gateway']) {
+        if ($pconfig['interface'] != 'wan') {
+            if ($old_ph1ent['remote-gateway'] != $pconfig['remote-gateway']) {
                 /* XXX does this even apply? only use of system.inc at the top! */
                 system_host_route($old_ph1ent['remote-gateway'], $old_ph1ent['remote-gateway'], true, false);
             }
@@ -491,6 +494,9 @@ include("head.inc");
                     }
                     break;
                 case 'hybrid_rsa_server':
+                    $('.auth_eap_tls').show();
+                    $('.auth_eap_tls :input').prop('disabled', false);
+                    break;
                 case 'xauth_rsa_server':
                 case 'rsasig':
                 case 'rsa_eap-mschapv2':
@@ -555,6 +561,7 @@ include("head.inc");
           <form method="post" name="iform" id="iform">
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
+                <tbody>
                   <tr>
                     <td style="width:22%"><b><?=gettext("General information"); ?></b></td>
                     <td style="width:78%; text-align:right">
@@ -657,7 +664,7 @@ include("head.inc");
 
                       $grouplist = return_gateway_groups_array();
                       foreach ($grouplist as $name => $group) {
-                          if ($group[0]['vip'] <> "") {
+                          if ($group[0]['vip'] != '') {
                               $vipif = $group[0]['vip'];
                           } else {
                               $vipif = $group[0]['int'];
@@ -1082,7 +1089,7 @@ endif; ?>
                       <?php
 endif; ?>
                       <input name="ikeid" type="hidden" value="<?=$pconfig['ikeid'];?>" />
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                     </td>
                   </tr>
                 </tbody>

@@ -630,7 +630,7 @@ class SimplePie_Parse_Date
 	/**
 	 * Parse a superset of W3C-DTF (allows hyphens and colons to be omitted, as
 	 * well as allowing any of upper or lower case "T", horizontal tabs, or
-	 * spaces to be used as the time seperator (including more than one))
+	 * spaces to be used as the time separator (including more than one))
 	 *
 	 * @access protected
 	 * @return int Timestamp

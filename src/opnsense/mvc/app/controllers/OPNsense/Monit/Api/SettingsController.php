@@ -1,8 +1,8 @@
 <?php
 
 /**
- *    Copyright (C) 2017-2018 EURO-LOG AG
- *
+ *    Copyright (C) 2017-2019 EURO-LOG AG
+ *    Copyright (c) 2019 Deciso B.V.
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -30,339 +30,235 @@
 
 namespace OPNsense\Monit\Api;
 
-use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Core\Config;
-use \OPNsense\Monit\Monit;
 use \OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController
  * @package OPNsense\Monit
  */
-class SettingsController extends ApiControllerBase
+class SettingsController extends ApiMutableModelControllerBase
 {
-
-    /**
-     * @var null|object the monit model object
-     */
-    public $mdlMonit = null;
-
-    /**
-     * @var array list with valid model node types
-     */
-    private $nodeTypes = array('general', 'alert', 'service', 'test');
-
-    /**
-     * initialize object properties
-     */
-    public function onConstruct()
-    {
-        $this->mdlMonit = new Monit();
-    }
+    protected static $internalModelName = 'monit';
+    protected static $internalModelClass = 'OPNsense\Monit\Monit';
 
     /**
      * check if changes to the monit settings were made
-     * @return result array
+     * @return array result
      */
     public function dirtyAction()
     {
         $result = array('status' => 'ok');
-        $result['monit']['dirty'] = $this->mdlMonit->configChanged();
+        $result['monit']['dirty'] = $this->getModel()->configChanged();
         return $result;
     }
 
     /**
-     * query monit settings
-     * @param $nodeType
-     * @param $uuid
-     * @return result array
+     * Retrieve alert settings or return defaults
+     * @param $uuid item unique id
+     * @return array monit alert content
+     * @throws \ReflectionException when not bound to model
      */
-    public function getAction($nodeType = null, $uuid = null)
+    public function getAlertAction($uuid = null)
     {
-        $result = array("result" => "failed");
-        if ($this->request->isGet() && $nodeType != null) {
-            $this->validateNodeType($nodeType);
-            if ($nodeType == 'general') {
-                $node = $this->mdlMonit->getNodeByReference($nodeType);
-            } else {
-                if ($uuid != null) {
-                    $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
-                } else {
-                    $node = $this->mdlMonit->$nodeType->Add();
-                }
-            }
-            if ($node != null) {
-                $result['monit'] = array($nodeType => $node->getNodes());
-                $result['result'] = 'ok';
-            }
-        }
-        return $result;
+         return $this->getBase("alert", "alert", $uuid);
     }
 
     /**
-     * set monit properties
-     * @param $nodeType
-     * @param $uuid
-     * @return status array
+     * Update alert with given properties
+     * @param string $uuid internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
-    public function setAction($nodeType = null, $uuid = null)
+    public function setAlertAction($uuid)
     {
-        $result = array("result" => "failed", "validations" => array());
-        if ($this->request->isPost() && $this->request->hasPost("monit") && $nodeType != null) {
-            $this->validateNodeType($nodeType);
-            if ($nodeType == 'general') {
-                $node = $this->mdlMonit->getNodeByReference($nodeType);
-            } else {
-                if ($uuid != null) {
-                    $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
-                } else {
-                    $node = $this->mdlMonit->$nodeType->Add();
-                }
-            }
-            if ($node != null) {
-                $monitInfo = $this->request->getPost("monit");
-
-                // perform plugin specific validations
-                if ($nodeType == 'service') {
-                    switch ($monitInfo[$nodeType]['type']) {
-                        case 'process':
-                            if (empty($monitInfo[$nodeType]['pidfile']) && empty($monitInfo[$nodeType]['match'])) {
-                                $result["validations"]['monit.service.pidfile'] = "Please set at least one of Pidfile or Match.";
-                                $result["validations"]['monit.service.match'] = $result["validations"]['monit.service.pidfile'];
-                            }
-                            break;
-                        case 'host':
-                            if (empty($monitInfo[$nodeType]['address'])) {
-                                $result["validations"]['monit.service.address'] = "Address is mandatory for 'Remote Host' checks.";
-                            }
-                            break;
-                        case 'network':
-                            if (empty($monitInfo[$nodeType]['address']) && empty($monitInfo[$nodeType]['interface'])) {
-                                $result["validations"]['monit.service.address'] = "Please set at least one of Address or Interface.";
-                                $result["validations"]['monit.service.interface'] = $result["validations"]['monit.service.address'];
-                            }
-                            break;
-                        case 'system':
-                            break;
-                        default:
-                            if (empty($monitInfo[$nodeType]['path'])) {
-                                $result["validations"]['monit.service.path'] = "Path is mandatory.";
-                            }
-                    }
-                }
-
-                $node->setNodes($monitInfo[$nodeType]);
-                $valMsgs = $this->mdlMonit->performValidation();
-                foreach ($valMsgs as $field => $msg) {
-                    $fieldnm = str_replace($node->__reference, "monit." . $nodeType, $msg->getField());
-                    $result["validations"][$fieldnm] = $msg->getMessage();
-                }
-                if (empty($result["validations"])) {
-                    unset($result["validations"]);
-                    $result['result'] = 'ok';
-                    $this->mdlMonit->serializeToConfig();
-                    Config::getInstance()->save();
-                    if ($this->mdlMonit->configDirty()) {
-                        $result['status'] = 'ok';
-                    }
-                }
-            }
-        }
-        return $result;
+        return $this->setBase("alert", "alert", $uuid);
     }
 
     /**
-     * delete monit settings
-     * @param $nodeType
-     * @param $uuid
-     * @return status array
+     * Add alert with given properties
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
-    public function delAction($nodeType = null, $uuid = null)
+    public function addAlertAction()
     {
-        $result = array("result" => "failed");
-        if ($nodeType != null) {
-            $this->validateNodeType($nodeType);
-            if ($uuid != null) {
-                $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
-                if ($node != null) {
-                    if ($this->mdlMonit->$nodeType->del($uuid) == true) {
-                        // delete relations
-                        if ($nodeType == 'test') {
-                            $nodeName = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid . '.name');
-                            if ($nodeName != null) {
-                                $nodeName = $nodeName->__toString();
-                                $this->deleteRelations('service', 'tests', $uuid, 'test', $nodeName, $this->mdlMonit);
-                            }
-                        }
-                        $this->mdlMonit->serializeToConfig();
-                        Config::getInstance()->save();
-                        if ($this->mdlMonit->configDirty()) {
-                            $result['status'] = 'ok';
-                        }
-                    }
-                }
-            }
-        }
-        return $result;
+        return $this->addBase("alert", "alert");
     }
 
     /**
-     * toggle monit items (enable/disable)
-     * @param $nodeType
-     * @param $uuid
-     * @return result array
+     * Delete alert by uuid
+     * @param string $uuid internal id
+     * @return array save status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
-    public function toggleAction($nodeType = null, $uuid = null)
+    public function delAlertAction($uuid)
     {
-        $result = array("result" => "failed");
-        if ($this->request->isPost() && $nodeType != null) {
-            if ($uuid != null) {
-                $node = $this->mdlMonit->getNodeByReference($nodeType . '.' . $uuid);
-                if ($node != null) {
-                    if ($node->enabled->__toString() == "1") {
-                        $node->enabled = "0";
-                    } else {
-                        $node->enabled = "1";
-                    }
-                    $this->mdlMonit->serializeToConfig();
-                    Config::getInstance()->save();
-                    if ($this->mdlMonit->configDirty()) {
-                        $result['status'] = 'ok';
-                    }
-                } else {
-                    $result['result'] = "not found";
-                }
-            } else {
-                $result['result'] = "uuid not given";
-            }
-        }
-        return $result;
+        return  $this->delBase("alert", $uuid);
     }
 
     /**
-     * search monit settings
-     * @param $nodeType
-     * @return result array
+     * Search monit alerts
+     * @return array list of found alerts
+     * @throws \ReflectionException when not bound to model
      */
-    public function searchAction($nodeType = null)
+    public function searchAlertAction()
     {
-        $this->sessionClose();
-        if ($this->request->isPost() && $nodeType != null) {
-            $this->validateNodeType($nodeType);
-            $grid = new UIModelGrid($this->mdlMonit->$nodeType);
-            $fields = array();
-            switch ($nodeType) {
-                case 'alert':
-                    $fields = array("enabled", "recipient", "noton", "events", "description");
-                    break;
-                case 'service':
-                    $fields = array("enabled", "name", "type");
-                    break;
-                case 'test':
-                    $fields = array("name", "condition", "action");
-                    break;
-            }
-            return $grid->fetchBindRequest($this->request, $fields);
-        }
+        return $this->searchBase(
+            "alert",
+            array("enabled", "recipient", "noton", "events", "description"),
+            "description"
+        );
     }
 
     /**
-     * import system notification settings
-     * @return result array
+     * Toggle alert defined by uuid (enable/disable)
+     * @param $uuid alert internal id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array save result
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
-    public function notificationAction()
+    public function toggleAlertAction($uuid, $enabled = null)
     {
-        $result = array("result" => "failed");
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-
-            $cfg = Config::getInstance();
-            $cfgObj = $cfg->object();
-            $node = $this->mdlMonit->getNodeByReference('general');
-            $generalSettings = array();
-
-            // inherit SMTP settings from System->Settings->Notifications
-            if (!empty($cfgObj->notifications->smtp->ipaddress)) {
-                $generalSettings['mailserver'] = $cfgObj->notifications->smtp->ipaddress;
-            }
-            if (!empty($cfgObj->notifications->smtp->port)) {
-                $generalSettings['port'] = $cfgObj->notifications->smtp->port;
-            }
-            $generalSettings['username'] = $cfgObj->notifications->smtp->username;
-            $generalSettings['password'] = $cfgObj->notifications->smtp->password;
-            if ((!empty($cfgObj->notifications->smtp->tls) && $cfgObj->notifications->smtp->tls == 1)  ||
-                (!empty($cfgObj->notifications->smtp->ssl) && $cfgObj->notifications->smtp->ssl == 1)) {
-                $generalSettings['ssl'] = 1;
-            } else {
-                $generalSettings['ssl'] = 0;
-            }
-
-            // apply them
-            $node->setNodes($generalSettings);
-            $valMsgs = $this->mdlMonit->performValidation();
-            foreach ($valMsgs as $field => $msg) {
-                $fieldnm = str_replace($node->__reference, "monit.general.", $msg->getField());
-                $result["validations"][$fieldnm] = $msg->getMessage();
-            }
-            if (empty($result["validations"])) {
-                unset($result["validations"]);
-                $this->mdlMonit->serializeToConfig();
-                Config::getInstance()->save();
-                if ($this->mdlMonit->configDirty()) {
-                    $result['status'] = 'ok';
-                    $result['result'] = 'OK';
-                }
-            }
-        }
-        return $result;
+        return $this->toggleBase("alert", $uuid, $enabled);
     }
 
     /**
-     * validate nodeType
-     * @param $nodeType
-     * @throws \Exception
+     * Retrieve service settings or return defaults
+     * @param $uuid item unique id
+     * @return array monit service content
+     * @throws \ReflectionException when not bound to model
      */
-    private function validateNodeType($nodeType = null)
+    public function getServiceAction($uuid = null)
     {
-        if (array_search($nodeType, $this->nodeTypes) === false) {
-            throw new \Exception('unknown nodeType: ' . $nodeType);
-        }
+         return $this->getBase("service", "service", $uuid);
     }
 
     /**
-     * delete relations
-     * @param $nodeType
-     * @param $uuid
-     * @param $relNodeType
-     * @throws \Exception
+     * Update service with given properties
+     * @param string $uuid internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
      */
-    private function deleteRelations(
-        $nodeType = null,
-        $nodeField = null,
-        $relUuid = null,
-        $relNodeType = null,
-        $relNodeName = null
-    ) {
-        $nodes = $this->mdlMonit->$nodeType->getNodes();
-        // get nodes with relations
-        foreach ($nodes as $nodeUuid => $node) {
-            // get relation uuids
-            foreach ($node[$nodeField] as $fieldUuid => $field) {
-                // remove uuid from field
-                if ($fieldUuid == $relUuid) {
-                    $refField = $nodeType . '.' . $nodeUuid . '.' . $nodeField;
-                    $relNode = $this->mdlMonit->getNodeByReference($refField);
-                    $nodeRels = str_replace($relUuid, '', $relNode->__toString());
-                    $nodeRels = str_replace(',,', ',', $nodeRels);
-                    $nodeRels = rtrim($nodeRels, ',');
-                    $nodeRels = ltrim($nodeRels, ',');
-                    $this->mdlMonit->setNodeByReference($refField, $nodeRels);
-                    if ($relNode->isEmptyAndRequired()) {
-                        $nodeName = $this->mdlMonit->getNodeByReference($nodeType . '.' . $nodeUuid . '.name')->__toString();
-                        throw new \Exception("Cannot delete $relNodeType '$relNodeName' from $nodeType '$nodeName'");
-                    }
-                }
-            }
-        }
+    public function setServiceAction($uuid)
+    {
+        return $this->setBase("service", "service", $uuid);
+    }
+
+    /**
+     * Add service with given properties
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function addServiceAction()
+    {
+        return $this->addBase("service", "service");
+    }
+
+    /**
+     * Delete service by uuid
+     * @param string $uuid internal id
+     * @return array save status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function delServiceAction($uuid)
+    {
+        return  $this->delBase("service", $uuid);
+    }
+
+    /**
+     * Search monit services
+     * @return array list of found services
+     * @throws \ReflectionException when not bound to model
+     */
+    public function searchServiceAction()
+    {
+        return $this->searchBase("service", array("enabled", "name", "type"), "name");
+    }
+
+    /**
+     * Toggle service defined by uuid (enable/disable)
+     * @param $uuid service internal id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array save result
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function toggleServiceAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase("service", $uuid, $enabled);
+    }
+
+    /**
+     * Retrieve test settings or return defaults
+     * @param $uuid item unique id
+     * @return array monit test content
+     * @throws \ReflectionException when not bound to model
+     */
+    public function getTestAction($uuid = null)
+    {
+         return $this->getBase("test", "test", $uuid);
+    }
+
+    /**
+     * Update test with given properties
+     * @param string $uuid internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function setTestAction($uuid)
+    {
+        return $this->setBase("test", "test", $uuid);
+    }
+
+    /**
+     * Add test with given properties
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function addTestAction()
+    {
+        return $this->addBase("test", "test");
+    }
+
+    /**
+     * Delete test by uuid
+     * @param string $uuid internal id
+     * @return array save status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function delTestAction($uuid)
+    {
+        return  $this->delBase("test", $uuid);
+    }
+
+    /**
+     * Search monit services
+     * @return array list of found services
+     * @throws \ReflectionException when not bound to model
+     */
+    public function searchTestAction()
+    {
+        return $this->searchBase("test", array("name", "condition", "action"), "name");
+    }
+
+    /**
+     * Retrieve general settings
+     * @return array monit general settings content
+     * @throws \ReflectionException when not bound to model
+     */
+    public function getGeneralAction()
+    {
+         return ['monit' => $this->getModel()->general->getNodes(), 'result' => 'ok'];
     }
 }
