@@ -77,7 +77,7 @@
             <description>Universidad Pontificia Bolivariana (HTTP, Medellin, CO)</description>
         </mirror>
         <mirror>
-            <url>https://www.mirrorservice.org/sites/opnsense.org/</url>
+            <url>https://www.mirrorservice.org/sites/opnsense.org</url>
             <description>University of Kent (HTTPS, Kent, GB)</description>
         </mirror>
         <mirror>
