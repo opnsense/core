@@ -56,8 +56,6 @@ for PATTERN in ${MTREE_PATTERNS}; do
 done
 
 VERSION=$(opnsense-update -v)
-# XXX only for migration
-VERSION=${VERSION%-*}
 
 set_check()
 {
@@ -70,7 +68,7 @@ set_check()
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
 		echo "Failed to determine version info." >> ${PKG_PROGRESS_FILE}
 	elif [ "${VER}" != "${VERSION}" ]; then
-		echo "Version ${VER} is incorrect: expected ${VERSION}" >> ${PKG_PROGRESS_FILE}
+		echo "Version ${VER} is incorrect, expected: ${VERSION}" >> ${PKG_PROGRESS_FILE}
 	else
 		echo "Version ${VER} is correct." >> ${PKG_PROGRESS_FILE}
 	fi
