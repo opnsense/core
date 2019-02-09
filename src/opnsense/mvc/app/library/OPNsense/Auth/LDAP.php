@@ -28,6 +28,8 @@
 
 namespace OPNsense\Auth;
 
+use OPNsense\Core\Config;
+
 /**
  * Class LDAP connector
  * @package OPNsense\Auth
@@ -239,6 +241,41 @@ class LDAP extends Base implements IAuthConnector
         $this->ldapBindURL .= strpos($config['host'], "::") !== false ? "[{$config['host']}]" : $config['host'];
         if (!empty($config['ldap_port'])) {
             $this->ldapBindURL .= ":{$config['ldap_port']}";
+        }
+
+        // setup environment
+        if (!empty($config['ldap_caref']) && stristr($config['ldap_urltype'], "standard") === false) {
+            $this->setUpCaEnv($config['ldap_caref']);
+        } else {
+            putenv('LDAPTLS_REQCERT=never');
+        }
+    }
+
+    /**
+     * setup certificate environment
+     * @param string $caref ca reference
+     */
+    public function setUpCaEnv($caref)
+    {
+        $ca = null;
+        if (isset(Config::getInstance()->object()->ca)) {
+            foreach (Config::getInstance()->object()->ca as $cert) {
+                if (isset($cert->refid) && (string)$caref == $cert->refid) {
+                    $ca = $cert;
+                    break;
+                }
+            }
+        }
+        putenv('LDAPTLS_REQCERT=hard');
+        if (!empty($ca)) {
+            @mkdir("/var/run/certs");
+            @unlink("/var/run/certs/{$ca->refid}.ca");
+            file_put_contents("/var/run/certs/{$ca->refid}.ca", base64_decode((string)$ca->crt));
+            @chmod("/var/run/certs/{$ca->refid}.ca", 0600);
+            putenv("LDAPTLS_CACERTDIR=/var/run/certs");
+            putenv("LDAPTLS_CACERT=/var/run/certs/{$ca->refid}.ca");
+        } else {
+            syslog(LOG_ERR, sprintf('LDAP: Could not lookup CA by reference for host %s.', $caref));
         }
     }
 
