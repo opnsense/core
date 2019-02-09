@@ -74,11 +74,12 @@ foreach ($servers as $server) {
 }
 
 if ($ldap_server !== null) {
-    // setup peer ca
-    ldap_setup_caenv($ldap_server);
-
     // connect to ldap server
     $ldap_auth = new OPNsense\Auth\LDAP($ldap_server['ldap_basedn'], $ldap_server['ldap_protver']);
+    if (!empty($ldap_server['ldap_caref']) && stristr($ldap_server['ldap_urltype'], "standard") === false) {
+        // setup peer ca
+        $ldap_auth->setUpCaEnv($ldap_server['ldap_caref']);
+    }
     $ldap_is_connected = $ldap_auth->connect($ldap_server['ldap_full_url'], $ldap_server['ldap_binddn'], $ldap_server['ldap_bindpw']);
 
     if ($ldap_is_connected) {
