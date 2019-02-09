@@ -69,6 +69,13 @@
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
     </field>
     <field>
+        <id>rule.dscp</id>
+        <label>DSCP</label>
+        <type>select_multiple</type>
+        <advanced>true</advanced>
+        <help>Match against one or multiple DSCP values.</help>
+    </field>
+    <field>
         <id>rule.direction</id>
         <label>Direction</label>
         <type>dropdown</type>
