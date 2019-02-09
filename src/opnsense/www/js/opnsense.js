@@ -30,12 +30,17 @@
  *
  */
 
+// jQuery window object - cached object is faster
+var $window = $(window);
+
+
  /**
   * html decode text into textarea tag and return decoded value.
   *
   * @param value encoded text
   * @return string decoded text
   */
+
 function htmlDecode(value) {
     return $("<textarea/>").html(value).text();
 }
@@ -51,7 +56,7 @@ function htmlDecode(value) {
 function getFormData(parent) {
 
     var data = {};
-    $( "#"+parent+"  input,#"+parent+" select,#"+parent+" textarea" ).each(function( index ) {
+    $("#"+parent+" input,#"+parent+" select,#"+parent+" textarea" ).each(function() {
         if ($(this).prop('id') === undefined || $(this).prop('id') === "") {
             // we need an id.
             return;
@@ -59,16 +64,16 @@ function getFormData(parent) {
         var node = data; // target node
         var sourceNode = $(this); // document node to fetch data from
         var keyparts = sourceNode.prop('id').split('.');
-        $.each(keyparts,function(indx,keypart){
+        $.each(keyparts,function(index, keypart){
             if (!(keypart in node)) {
                 node[keypart] = {};
             }
-            if (indx < keyparts.length - 1 ) {
+            if (index < keyparts.length - 1 ) {
                 node = node[keypart];
             } else {
                 if (sourceNode.is("select")) {
                     var separator = ",";
-                    if (sourceNode.data('separator') != undefined) {
+                    if (sourceNode.data('separator') !== undefined) {
                         // select defined it's own separator
                         separator = sourceNode.data('separator');
                         if (separator.match(/#[0-9]{1,3}/g)) {
@@ -80,12 +85,12 @@ function getFormData(parent) {
                     var tmp_str = "";
                     sourceNode.children().each(function(index){
                         if ($(this).prop("selected")){
-                            if (tmp_str != "") tmp_str = tmp_str + separator;
+                            if (tmp_str !== "") tmp_str = tmp_str + separator;
                             tmp_str = tmp_str + $(this).val();
                         }
                     });
                     node[keypart] = tmp_str;
-                } else if (sourceNode.prop("type") == "checkbox") {
+                } else if (sourceNode.prop("type") === "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
                         node[keypart] = "1";
@@ -120,16 +125,16 @@ function getFormData(parent) {
  */
 function setFormData(parent,data) {
     $( "#"+parent+"  input,#"+parent+" select,#"+parent+" span,#"+parent+" textarea" ).each(function( index ) {
-        if ($(this).prop('id') == undefined || $(this).prop('id') == "") {
+        if ($(this).prop('id') === undefined || $(this).prop('id') === "") {
             // we need an id.
             return;
         }
         var node = data;
         var targetNode = $(this); // document node to fetch data to
         var keyparts = $(this).prop('id').split('.');
-        $.each(keyparts,function(indx,keypart){
+        $.each(keyparts,function(index, keypart){
             if (keypart in node) {
-                if (indx < keyparts.length - 1) {
+                if (index < keyparts.length - 1) {
                     node = node[keypart];
                 } else {
                     // data node found, handle per type
@@ -137,15 +142,15 @@ function setFormData(parent,data) {
                         // handle select boxes
                         targetNode.empty(); // flush
                         $.each(node[keypart],function(indxItem, keyItem){
-                            var opt = $("<option>").val(indxItem).text(keyItem["value"]);
-                            if (keyItem["selected"] != "0") {
+                            var opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
+                            if (+keyItem["selected"] !== 0) {
                                 opt.attr('selected', 'selected');
                             }
                             targetNode.append(opt);
                         });
-                    } else if (targetNode.prop("type") == "checkbox") {
+                    } else if (targetNode.prop("type") === "checkbox") {
                         // checkbox type
-                        targetNode.prop("checked", node[keypart] != 0);
+                        targetNode.prop("checked", +node[keypart] !== 0);
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
                             targetNode.text("");
@@ -172,8 +177,8 @@ function setFormData(parent,data) {
  * @param validationErrors
  */
 function handleFormValidation(parent,validationErrors) {
-    $( "#"+parent).find("*").each(function( index ) {
-        if (validationErrors != undefined && $(this).prop('id') in validationErrors) {
+    $( "#"+parent).find("*").each(function() {
+        if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
             $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
             $("span[id='help_block_" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
@@ -254,16 +259,16 @@ function watchScrollPosition() {
 
     // link on scroll event handler
     if (window.sessionStorage) {
-        $(window).scroll(function(){
-            sessionStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
+        $window.scroll(function(){
+            sessionStorage.setItem('scrollpos', current_location() + "|" + $window.scrollTop());
         });
 
         // move to last known position on page load
-        $( document ).ready(function() {
+        $(document).ready(function() {
             var scrollpos = sessionStorage.getItem('scrollpos');
             if (scrollpos != null) {
-                if (scrollpos.split('|')[0] == current_location()) {
-                    $(window).scrollTop(scrollpos.split('|')[1]);
+                if (scrollpos.split('|')[0] === current_location()) {
+                    $window.scrollTop(scrollpos.split('|')[1]);
                 }
             }
         });
