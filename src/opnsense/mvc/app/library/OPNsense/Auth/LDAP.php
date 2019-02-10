@@ -91,6 +91,10 @@ class LDAP extends Base implements IAuthConnector
      */
     private $ldapScope = 'subtree';
 
+    /**
+     * @var null|string certificate reference (in /var/run/certs/)
+     */
+     private $ldapCAcert = null;
 
     /**
      * @var array list of already known usernames vs distinguished names
@@ -171,6 +175,21 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
+     * log ldap errors, append ldap error output when available
+     * @param string message
+     */
+    private function logLdapError($message)
+    {
+        $error_string = "";
+        if ($this->ldapHandle !== false) {
+            ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
+            syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+        } else {
+            syslog(LOG_ERR, $message);
+        }
+    }
+
+    /**
      * type name in configuration
      * @return string
      */
@@ -246,8 +265,6 @@ class LDAP extends Base implements IAuthConnector
         // setup environment
         if (!empty($config['ldap_caref']) && stristr($config['ldap_urltype'], "standard") === false) {
             $this->setUpCaEnv($config['ldap_caref']);
-        } else {
-            putenv('LDAPTLS_REQCERT=never');
         }
     }
 
@@ -257,23 +274,20 @@ class LDAP extends Base implements IAuthConnector
      */
     public function setUpCaEnv($caref)
     {
-        $ca = null;
+        $this->ldapCAcert = null;
         if (isset(Config::getInstance()->object()->ca)) {
             foreach (Config::getInstance()->object()->ca as $cert) {
                 if (isset($cert->refid) && (string)$caref == $cert->refid) {
-                    $ca = $cert;
+                    $this->ldapCAcert = $cert->refid;
                     break;
                 }
             }
         }
-        putenv('LDAPTLS_REQCERT=hard');
-        if (!empty($ca)) {
+        if (!empty($this->ldapCAcert)) {
             @mkdir("/var/run/certs");
-            @unlink("/var/run/certs/{$ca->refid}.ca");
-            file_put_contents("/var/run/certs/{$ca->refid}.ca", base64_decode((string)$ca->crt));
-            @chmod("/var/run/certs/{$ca->refid}.ca", 0600);
-            putenv("LDAPTLS_CACERTDIR=/var/run/certs");
-            putenv("LDAPTLS_CACERT=/var/run/certs/{$ca->refid}.ca");
+            @unlink("/var/run/certs/{$this->ldapCAcert}.ca");
+            file_put_contents("/var/run/certs/{$this->ldapCAcert}.ca", base64_decode((string)$ca->crt));
+            @chmod("/var/run/certs/{$this->ldapCAcert}.ca", 0644);
         } else {
             syslog(LOG_ERR, sprintf('LDAP: Could not lookup CA by reference for host %s.', $caref));
         }
@@ -307,11 +321,19 @@ class LDAP extends Base implements IAuthConnector
         $this->closeLDAPHandle();
         $this->ldapHandle = @ldap_connect($bind_url);
 
+        if (!empty($this->ldapCAcert)) {
+            putenv('LDAPTLS_REQCERT=hard');
+            ldap_set_option($this->ldapHandle, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
+            ldap_set_option($this->ldapHandle, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
+        } else {
+            putenv('LDAPTLS_REQCERT=never');
+        }
+
         if ($this->useStartTLS) {
             ldap_set_option($this->ldapHandle, LDAP_OPT_PROTOCOL_VERSION, 3);
             if (ldap_start_tls($this->ldapHandle) === false) {
-                $this->ldapHandle = null;
-                syslog(LOG_ERR, 'Could not startTLS on ldap connection (' .  ldap_error($this->ldapHandle).')');
+                $this->logLdapError("Could not startTLS on ldap connection");
+                $this->ldapHandle = false;
             }
         }
 
@@ -324,7 +346,7 @@ class LDAP extends Base implements IAuthConnector
             if ($bindResult) {
                 $retval = true;
             } else {
-                syslog(LOG_ERR, 'LDAP bind error (' .  ldap_error($this->ldapHandle).')');
+                $this->logLdapError("LDAP bind error");
             }
         }
 
