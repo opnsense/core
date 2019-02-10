@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/TrafficShaper</mount>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <description>
         OPNsense traffic shaper
     </description>
