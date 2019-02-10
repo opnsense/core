@@ -278,7 +278,7 @@ class LDAP extends Base implements IAuthConnector
         if (isset(Config::getInstance()->object()->ca)) {
             foreach (Config::getInstance()->object()->ca as $cert) {
                 if (isset($cert->refid) && (string)$caref == $cert->refid) {
-                    $this->ldapCAcert = $cert->refid;
+                    $this->ldapCAcert = $cert;
                     break;
                 }
             }
@@ -286,8 +286,8 @@ class LDAP extends Base implements IAuthConnector
         if (!empty($this->ldapCAcert)) {
             @mkdir("/var/run/certs");
             @unlink("/var/run/certs/{$this->ldapCAcert}.ca");
-            file_put_contents("/var/run/certs/{$this->ldapCAcert}.ca", base64_decode((string)$ca->crt));
-            @chmod("/var/run/certs/{$this->ldapCAcert}.ca", 0644);
+            file_put_contents("/var/run/certs/{$this->ldapCAcert}.ca", base64_decode((string)$this->ldapCAcert->crt));
+            @chmod("/var/run/certs/{$this->ldapCAcert->refid}.ca", 0644);
         } else {
             syslog(LOG_ERR, sprintf('LDAP: Could not lookup CA by reference for host %s.', $caref));
         }
