@@ -154,7 +154,7 @@ include('head.inc');
 <?php elseif (!$ldap_is_connected) :
 ?>
   <p><?=gettext("Could not connect to the LDAP server. Please check your LDAP configuration.");?></p>
-  <input type='button' class="btn btn-default" value='<?=gettext("Close"); ?>' onClick="window.close();">
+  <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Close')) ?>" onClick="window.close();">
 <?php
 else :
 ?>
@@ -163,18 +163,16 @@ else :
     <thead>
       <tr>
         <th colspan="2"><?=gettext("Please select users to import:");?></th>
-        <th><input type='checkbox' id='select_all'></th>
+        <th><input type="checkbox" id="select_all"></th>
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($ldap_users as $username => $userDN) :
-?>
-        <tr><td><?=$username?></td><td><?=$userDN?></td><td> <input type='checkbox' value="<?=$userDN?>" id='user_dn' class='user_option' name='user_dn[]'>  </td></tr>
-      <?php endforeach;
-?>
+<?php foreach ($ldap_users as $username => $userDN): ?>
+        <tr><td><?=$username?></td><td><?=$userDN?></td><td> <input type="checkbox" value="<?=$userDN?>" id="user_dn" class="user_option" name="user_dn[]"></td></tr>
+<?php endforeach ?>
       <tr>
         <td style="text-align:left" colspan="3">
-          <input type='submit' class="btn btn-primary" value='<?=gettext("Save");?>'>
+          <input type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>">
         </td>
       </tr>
     </tbody>
