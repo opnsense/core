@@ -54,17 +54,22 @@ class ComparedToFieldConstraint extends BaseConstraint
         $node = $this->getOption('node');
         $field_name = $this->getOption('field');
         $operator = $this->getOption('operator');
-        if ($node && !empty($operator) && !empty($field_name)) {
+        //var_dump($node);
+        if ($node && !($this->isEmpty($node) || empty($operator) || empty($field_name))) {
             $parent_node = $node->getParentNode();
             $other_node_content = $parent_node->$field_name;
 
-            if (!((!$this->isEmpty($node) && !$this->isEmpty($other_node_content)) && // check if all fields are set
-                is_numeric((string)$node) && is_numeric((string)$other_node_content) && // check if both are numeric
-                $this->is_contraint_fulfilled(
+            // if the other field is not set, or invalid type -> ignore this constraint
+            if ($this->isEmpty($other_node_content) ||
+                !is_numeric((string)$node) && !is_numeric((string)$other_node_content)) {
+                return true;
+            }
+
+            if (!$this->is_contraint_fulfilled(
                     $operator,
                     floatval((string)$node),
                     floatval((string)$other_node_content)
-                ))) {
+                )){
                 $this->appendMessage($validator, $attribute);
             }
         }
