@@ -168,8 +168,7 @@ function restore_config_section_xmlrpc($new_config)
     $vhidVipsInNewConfig = [];
     if (isset($new_config['virtualip']['vip'])) {
         foreach ($new_config['virtualip']['vip'] as $vip) {
-            $vipKey = get_unique_vip_key($vip);
-            $vhidVipsInNewConfig[$vipKey] = $vip;
+            $vhidVipsInNewConfig[get_unique_vip_key($vip)] = $vip;
         }
     }
 
@@ -274,6 +273,6 @@ function get_unique_vip_key($vip)
     if ($vip['mode'] === 'carp') {
         return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}";
     } else {
-        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}_{$vip['subnet']}_{$vip['subnet_bits']}_{$vip['gateway']}";
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}_{$vip['subnet']}_{$vip['subnet_bits']}";
     }
 }

@@ -49,8 +49,8 @@ function get_vip_config_section(): array
     if (!isset($config['virtualip']['vip'])) {
         return [];
     }
-    $temp = [];
-    $temp['vip'] = [];
+    $temp = array();
+    $temp['vip'] = array();
     foreach($config['virtualip']['vip'] as $section) {
         if (!empty($section['vhid'])) {
             if (isset($section['advskew']) && $section['advskew'] !== '') {
