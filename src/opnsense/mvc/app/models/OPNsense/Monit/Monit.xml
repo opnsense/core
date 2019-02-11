@@ -186,6 +186,12 @@
             <Required>Y</Required>
             <mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
+            <Constraints>
+               <check001>
+                  <ValidationMessage>Service name must be unique.</ValidationMessage>
+                  <type>UniqueConstraint</type>
+               </check001>
+            </Constraints>
          </name>
          <type type="OptionField">
             <Required>Y</Required>
@@ -221,10 +227,8 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
          </timeout>
-         <address type="TextField">
+         <address type="HostnameField">
             <Required>N</Required>
-            <mask>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-4]|2[0-5][0-9]|[01]?[0-9][0-9]?)$/</mask>
-            <ValidationMessage>Address must be a valid IPv4 address</ValidationMessage>
          </address>
          <interface type="InterfaceField">
             <Required>N</Required>
@@ -300,6 +304,7 @@
                <ProgramStatus>Program Status</ProgramStatus>
                <NetworkInterface>Network Interface</NetworkInterface>
                <NetworkPing>Network Ping</NetworkPing>
+               <Connection>Connection</Connection>
                <Custom>Custom</Custom>
             </OptionValues>
          </type>
