@@ -524,7 +524,7 @@ EOD;
              *    yep, failover peer is defined.
              *    does it match up to a defined vip?
              */
-            $failover_primary=false;
+            $failover_primary = false;
             if (!empty($config['virtualip']['vip'])) {
                 foreach ($config['virtualip']['vip'] as $vipent) {
                     if ($vipent['interface'] == $dhcpif) {
@@ -532,7 +532,7 @@ EOD;
                         if (ip_in_subnet($dhcpifconf['failover_peerip'], "{$carp_nw}/{$vipent['subnet_bits']}")) {
                             /* this is the interface! */
                             if (is_numeric($vipent['advskew']) && (intval($vipent['advskew']) < 20)) {
-                                $failover_primary=true;
+                                $failover_primary = true;
                             }
                             break;
                         }
