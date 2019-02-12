@@ -684,7 +684,8 @@ flow-timeouts:
 stream:
   memcap: 32mb
   checksum-validation: yes      # reject wrong csums
-  inline: auto                  # auto will use inline mode in IPS mode, yes or no set it statically
+  inline: {% if OPNsense.IDS.general.ips|default("0") == "1" %}true{% else %}auto{% endif %}
+
   reassembly:
     memcap: 128mb
     depth: 1mb                  # reassemble 1mb into a stream
