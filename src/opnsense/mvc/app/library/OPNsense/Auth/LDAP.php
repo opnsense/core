@@ -264,7 +264,7 @@ class LDAP extends Base implements IAuthConnector
 
         // setup environment
         if (!empty($config['ldap_caref']) && stristr($config['ldap_urltype'], "standard") === false) {
-            $this->setUpCaEnv($config['ldap_caref']);
+            $this->setupCaEnv($config['ldap_caref']);
         }
     }
 
@@ -272,7 +272,7 @@ class LDAP extends Base implements IAuthConnector
      * setup certificate environment
      * @param string $caref ca reference
      */
-    public function setUpCaEnv($caref)
+    public function setupCaEnv($caref)
     {
         $this->ldapCAcert = null;
         if (isset(Config::getInstance()->object()->ca)) {
