@@ -121,7 +121,7 @@
 /usr/local/etc/rc.syshook.d/carp/20-openvpn
 /usr/local/etc/rc.syshook.d/early/05-update
 /usr/local/etc/rc.syshook.d/early/10-configd
-/usr/local/etc/rc.syshook.d/early/15-php
+/usr/local/etc/rc.syshook.d/early/15-templates
 /usr/local/etc/rc.syshook.d/early/20-backup
 /usr/local/etc/rc.syshook.d/start/10-newwanip
 /usr/local/etc/rc.syshook.d/start/20-freebsd

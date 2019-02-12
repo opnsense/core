@@ -165,13 +165,25 @@ function restore_config_section_xmlrpc($new_config)
         }
     }
 
+    $vhidVipsInNewConfig = [];
+    if (isset($new_config['virtualip']['vip'])) {
+        foreach ($new_config['virtualip']['vip'] as $vip) {
+            $vhidVipsInNewConfig[get_unique_vip_key($vip)] = $vip;
+        }
+    }
+
     $vipbackup = array();
     $oldvips = array();
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
-            if ($vip['mode'] == "carp") {
-                // rc.filter_synchronize only sends carp vips, keep the rest like it was
-                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = $vip ;
+            if (!empty($vip['vhid'])) {
+                // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
+                $vipKey = get_unique_vip_key($vip);
+                $oldvips[$vipKey] = $vip;
+                // Remove entries that are present locally, but are not present in the new config.
+                if (!array_key_exists($vipKey, $vhidVipsInNewConfig)) {
+                    unset($config['virtualip']['vip'][$vipindex]);
+                }
             } else {
                 $vipbackup[] = $vip;
             }
@@ -182,7 +194,7 @@ function restore_config_section_xmlrpc($new_config)
     merge_config_attributes($new_config, $config);
 
     if (count($vipbackup) > 0) {
-        // if $new_config contained VIPS and the old config contained non carp vips, prepend original vips
+        // if $new_config contained VIPs and the old config contained VIPs with no VHID, prepend original VIPs
         foreach ($vipbackup as $vip) {
             array_unshift($config['virtualip']['vip'], $vip);
         }
@@ -200,18 +212,19 @@ function restore_config_section_xmlrpc($new_config)
         $anyproxyarp = false;
         if (isset($config['virtualip']['vip'])) {
           foreach ($config['virtualip']['vip'] as $vip) {
-              if ($vip['mode'] == "carp" && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
+              $vipKey = get_unique_vip_key($vip);
+              if (!empty($vip['vhid']) && isset($oldvips[$vipKey])) {
                   $is_changed = false;
                   foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
-                      if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"][$chk_key] != $vip[$chk_key]) {
+                      if ($oldvips[$vipKey][$chk_key] != $vip[$chk_key]) {
                           $is_changed = true;
                           break;
                       }
                   }
                   if (!$is_changed) {
-                      unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
+                      unset($oldvips[$vipKey]);
                       if (does_vip_exist($vip)) {
-                          continue; // Skip reconfiguring this vips since nothing has changed.
+                          continue; // Skip reconfiguring this VIP since nothing has changed.
                       }
                   }
               }
@@ -231,7 +244,7 @@ function restore_config_section_xmlrpc($new_config)
           }
         }
 
-        // remove old (carp) virtual ip's
+        // remove old (carp/ipalias-with-vhid) virtual ip's
         foreach ($oldvips as $oldvip) {
             interface_vip_bring_down($oldvip);
         }
@@ -253,4 +266,13 @@ function restore_config_section_xmlrpc($new_config)
     unset($old_config);
 
     return true;
+}
+
+function get_unique_vip_key($vip)
+{
+    if ($vip['mode'] === 'carp') {
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}";
+    } else {
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}_{$vip['subnet']}_{$vip['subnet_bits']}";
+    }
 }

@@ -28,6 +28,8 @@
 
 namespace OPNsense\Auth;
 
+use OPNsense\Core\Config;
+
 /**
  * Class LDAP connector
  * @package OPNsense\Auth
@@ -89,6 +91,10 @@ class LDAP extends Base implements IAuthConnector
      */
     private $ldapScope = 'subtree';
 
+    /**
+     * @var null|string certificate reference (in /var/run/certs/)
+     */
+     private $ldapCAcert = null;
 
     /**
      * @var array list of already known usernames vs distinguished names
@@ -169,6 +175,21 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
+     * log ldap errors, append ldap error output when available
+     * @param string message
+     */
+    private function logLdapError($message)
+    {
+        $error_string = "";
+        if ($this->ldapHandle !== false) {
+            ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
+            syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+        } else {
+            syslog(LOG_ERR, $message);
+        }
+    }
+
+    /**
      * type name in configuration
      * @return string
      */
@@ -240,6 +261,35 @@ class LDAP extends Base implements IAuthConnector
         if (!empty($config['ldap_port'])) {
             $this->ldapBindURL .= ":{$config['ldap_port']}";
         }
+
+        // setup environment
+        if (!empty($config['ldap_caref']) && stristr($config['ldap_urltype'], "standard") === false) {
+            $this->setupCaEnv($config['ldap_caref']);
+        }
+    }
+
+    /**
+     * setup certificate environment
+     * @param string $caref ca reference
+     */
+    public function setupCaEnv($caref)
+    {
+        $this->ldapCAcert = null;
+        if (isset(Config::getInstance()->object()->ca)) {
+            foreach (Config::getInstance()->object()->ca as $cert) {
+                if (isset($cert->refid) && (string)$caref == $cert->refid) {
+                    $this->ldapCAcert = (string)$cert->refid;
+                    @mkdir("/var/run/certs");
+                    @unlink("/var/run/certs/{$this->ldapCAcert}.ca");
+                    file_put_contents("/var/run/certs/{$this->ldapCAcert}.ca", base64_decode((string)$cert->crt));
+                    @chmod("/var/run/certs/{$this->ldapCAcert}.ca", 0644);
+                    break;
+                }
+            }
+        }
+        if (empty($this->ldapCAcert)) {
+            syslog(LOG_ERR, sprintf('LDAP: Could not lookup CA by reference for host %s.', $caref));
+        }
     }
 
     /**
@@ -268,13 +318,22 @@ class LDAP extends Base implements IAuthConnector
         );
 
         $this->closeLDAPHandle();
+
+        // Note: All TLS options must be set before ldap_connect is called
+        if (!empty($this->ldapCAcert)) {
+            ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
+            ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
+            ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
+        } else {
+            ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
+        }
         $this->ldapHandle = @ldap_connect($bind_url);
 
         if ($this->useStartTLS) {
             ldap_set_option($this->ldapHandle, LDAP_OPT_PROTOCOL_VERSION, 3);
             if (ldap_start_tls($this->ldapHandle) === false) {
-                $this->ldapHandle = null;
-                syslog(LOG_ERR, 'Could not startTLS on ldap connection (' .  ldap_error($this->ldapHandle).')');
+                $this->logLdapError("Could not startTLS on ldap connection");
+                $this->ldapHandle = false;
             }
         }
 
@@ -287,7 +346,7 @@ class LDAP extends Base implements IAuthConnector
             if ($bindResult) {
                 $retval = true;
             } else {
-                syslog(LOG_ERR, 'LDAP bind error (' .  ldap_error($this->ldapHandle).')');
+                $this->logLdapError("LDAP bind error");
             }
         }
 

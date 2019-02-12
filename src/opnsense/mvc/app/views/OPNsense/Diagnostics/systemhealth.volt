@@ -716,8 +716,7 @@
                                 lang._('Timestamp') }}
                             </label>
                             <label class="btn btn-xs btn-default">
-                                <input type="radio" id="time1" name="toggle_time" value="1"/> {{ lang._('Full Date &
-                                Time') }}
+                                <input type="radio" id="time1" name="toggle_time" value="1"/> {{ lang._('Full Date & Time') }}
                             </label>
                         </div>
                     </form>

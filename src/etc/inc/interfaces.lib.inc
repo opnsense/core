@@ -301,6 +301,7 @@ function legacy_interfaces_details($intf = null)
             if (preg_match("/media: .*? \((.*?)\)/", $line, $matches)) {
                 $result[$current_interface]['media'] = $matches[1];
             }
+            $result[$current_interface]['media_raw'] = substr(trim($line), 7);
         } elseif (preg_match("/status: (.*)$/", $line, $matches)) {
             $result[$current_interface]['status'] = $matches[1];
         } elseif (preg_match("/channel (\S*)/", $line, $matches)) {

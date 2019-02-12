@@ -50,9 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($authcfg['type'] == 'local') {
             // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
             $authName = 'Local Database';
-        } elseif ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-            // temporary fix, ldap handler doesn't do this init yet.
-            ldap_setup_caenv($authcfg);
         }
 
         $authFactory = new OPNsense\Auth\AuthenticationFactory;

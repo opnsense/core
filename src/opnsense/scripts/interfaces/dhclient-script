@@ -19,7 +19,6 @@
 #
 #
 
-ARP=/usr/sbin/arp
 HOSTNAME=/bin/hostname
 IFCONFIG='/sbin/ifconfig -n'
 
@@ -247,12 +246,14 @@ add_new_routes() {
 
 add_new_resolv_conf() {
 	$LOGGER "Creating resolv.conf"
+
 	if [ -f "/var/etc/nameserver_$interface" ]; then
 		# Remove old entries
 		for nameserver in `cat /var/etc/nameserver_$interface`; do
 			route delete $nameserver >/dev/null 2>&1
 		done
 	fi
+
 	if [ -n "$new_domain_name_servers" ]; then
 		rm -f /var/etc/nameserver_$interface
 		ALLOWOVERRIDE=$(grep -c dnsallowoverride /conf/config.xml)
@@ -369,9 +370,9 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_alias
 		changes="yes"
 	fi
-	if is_default_interface; then
+	#if is_default_interface; then
 		add_new_resolv_conf
-	fi
+	#fi
 	if [ "$changes" = "yes" ] ; then
 		/usr/local/etc/rc.newwanip $interface
 	fi
@@ -383,9 +384,6 @@ EXPIRE|FAIL)
 	if [ -n "$old_ip_address" ]; then
 		delete_old_address
 		delete_old_routes
-	fi
-	if [ -x $ARP ]; then
-		$ARP -d -a -i $interface
 	fi
 	# XXX Why add alias we just deleted above?
 	add_new_alias

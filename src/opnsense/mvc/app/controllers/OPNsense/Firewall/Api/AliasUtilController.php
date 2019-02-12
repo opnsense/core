@@ -168,6 +168,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function deleteAction($alias)
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             $address = $this->request->getPost("address");
             $cnfAlias = $this->getAlias($alias);
@@ -175,7 +176,7 @@ class AliasUtilController extends ApiControllerBase
                 // update local administration, remove address when found for static types
                 // XXX: addresses from "pfctl -t xxx -T show" don't always match our input, we probably need a
                 //      better address matching at some point in time.
-                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+                $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false) {
                     $address_mask = $address . "/" . (strpos($address, ":") ? '128' : '32');
                 } else {
@@ -198,7 +199,6 @@ class AliasUtilController extends ApiControllerBase
                 }
             }
 
-            $this->sessionClose();
             $backend = new Backend();
             $backend->configdpRun("filter delete table", array($alias, $address));
             return array("status" => "done");
@@ -214,6 +214,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function addAction($alias)
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             $address = $this->request->getPost("address");
             if (preg_match("/[^0-9a-f\:\.\/_]/", $address)) {
@@ -222,7 +223,7 @@ class AliasUtilController extends ApiControllerBase
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, add address when not found for static types
-                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+                $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false && $cnfAlias->type == 'network') {
                     // add mask
                     $address .= "/" . (strpos($address, ":") ? '128' : '32');
@@ -236,11 +237,14 @@ class AliasUtilController extends ApiControllerBase
                     (new Backend())->configdRun('template reload OPNsense/Filter');
                 }
             }
-
-            $this->sessionClose();
-            $backend = new Backend();
-            $backend->configdpRun("filter add table", array($alias, $address));
-            return array("status" => "done");
+            if ($cnfAlias !== null) {
+                // only allow additions to known aliases
+                $backend = new Backend();
+                $backend->configdpRun("filter add table", array($alias, $address));
+                return array("status" => "done");
+            } else {
+                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
+            }
         } else {
             return array("status" => "failed");
         }
@@ -255,6 +259,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function find_referencesAction()
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost('ip')) {
             $ip = $this->request->getPost('ip');
             if (preg_match("/[^0-9a-f\:\.\/_]/", $ip)) {
