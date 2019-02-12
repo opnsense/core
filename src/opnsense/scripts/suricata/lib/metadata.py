@@ -50,6 +50,7 @@ class Metadata(object):
                     if xml_data.find(search_tag) > -1:
                         xml_data = xml_data.replace(search_tag, replace_tags[tag])
                 rule_xml = xml.etree.ElementTree.fromstring(xml_data)
+                rule_xml.attrib['metadata_source'] = os.path.basename(filename)
                 yield rule_xml
             except xml.etree.ElementTree.ParseError:
                 # unparseable metadata
@@ -87,6 +88,8 @@ class Metadata(object):
                     if rule_xml.find('headers') is not None:
                         for header in rule_xml.find('headers'):
                             http_headers[header.tag] = header.text.strip()
+
+                    required_files = list()
                     for rule_filename in rule_xml.find('files'):
                         if 'documentation_url' in rule_filename.attrib:
                             documentation_url = rule_filename.attrib['documentation_url']
@@ -94,7 +97,7 @@ class Metadata(object):
                             documentation_url = rule_xml.attrib['documentation_url']
                         else:
                             documentation_url = ""
-                        metadata_record = dict()
+                        metadata_record = {'required': False, 'metadata_source': rule_xml.attrib['metadata_source']}
                         metadata_record['documentation_url'] = documentation_url
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()
@@ -124,5 +127,14 @@ class Metadata(object):
                             metadata_record['description'] = '%s%s' % (description_prefix,
                                                                        rule_filename.text)
                         if metadata_record['filename'] not in target_filenames:
-                            yield metadata_record
+                            if 'required' in rule_filename.attrib \
+                                    and rule_filename.attrib['required'].lower().strip() == 'true':
+                                # collect required rules/files, flush when this metadata package is parsed
+                                metadata_record['required'] = True
+                                required_files.append(metadata_record)
+                            else:
+                                yield metadata_record
                         target_filenames.append(metadata_record['filename'])
+                    # flush required files last, so we can skip required when there's nothing else in the set selected
+                    for metadata_record in required_files:
+                        yield metadata_record

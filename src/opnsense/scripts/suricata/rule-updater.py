@@ -51,6 +51,7 @@ if __name__ == '__main__':
     # load list of configured rules from generated config
     enabled_rulefiles = dict()
     rule_properties = dict()
+    metadata_sources = dict()
     updater_conf = '/usr/local/etc/suricata/rule-updater.config'
     if os.path.exists(updater_conf):
         cnf = ConfigParser()
@@ -72,9 +73,15 @@ if __name__ == '__main__':
     md = metadata.Metadata()
     dl = downloader.Downloader(target_dir=rule_source_directory)
     for rule in md.list_rules(rule_properties):
+        if rule['metadata_source'] not in metadata_sources:
+            metadata_sources[rule['metadata_source']] = 0
         if 'url' in rule['source']:
             download_proto = str(rule['source']['url']).split(':')[0].lower()
             if dl.is_supported(url=rule['source']['url']):
+                if rule['required'] and metadata_sources[rule['metadata_source']] > 0:
+                    # Required files are always sorted last in list_rules(), add required when there's at least one
+                    # file selected from the metadata package.
+                    enabled_rulefiles[rule['filename']] = {'filter': ''}
                 if rule['filename'] not in enabled_rulefiles:
                     full_path = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
                     if os.path.isfile(full_path):
@@ -93,6 +100,8 @@ if __name__ == '__main__':
                         dl.download(url=rule['url'], url_filename=rule['url_filename'],
                                     filename=rule['filename'], input_filter=input_filter, auth=auth,
                                     headers=rule['http_headers'], version=remote_hash)
+                        # count number of downloaded files/rules from this metadata package
+                        metadata_sources[rule['metadata_source']] += 1
                     else:
                         syslog.syslog(syslog.LOG_INFO, 'download skipped %s, same version' % rule['filename'])
 
