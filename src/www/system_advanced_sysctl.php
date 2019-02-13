@@ -70,6 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         mark_subsystem_dirty('sysctl');
         header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
+    } else if ($act == 'reset') {
+        // reset tunables to factory defaults (when available)
+        if (file_exists('/usr/local/etc/config.xml.sample')) {
+            $factory_config = load_config_from_file('/usr/local/etc/config.xml.sample');
+            if (!empty($factory_config['sysctl']) && !empty($factory_config['sysctl']['item'])){
+                $a_tunable = $factory_config['sysctl']['item'];
+                mark_subsystem_dirty('sysctl');
+                write_config();
+            }
+        }
+        header(url_safe('Location: /system_advanced_sysctl.php'));
     } else if (!empty($pconfig['apply'])) {
         system_sysctl_configure();
         system_login_configure();
@@ -99,6 +110,7 @@ legacy_html_escape_form_data($a_tunable);
 
 if ($act != 'edit') {
     $main_buttons = array(
+        array('href' => '#set_defaults', 'label' => gettext('Default')),
         array('href' => 'system_advanced_sysctl.php?act=edit', 'label' => gettext('Add')),
     );
 }
@@ -131,6 +143,30 @@ $( document ).ready(function() {
             }]
     });
   });
+
+  if ($("a[href='#set_defaults']").length > 0) {
+      // set defaults button visible, change style and hook event
+      $("a[href='#set_defaults']").removeClass('btn-primary').addClass('btn-danger');
+      $("a[href='#set_defaults']").click(function(event){
+          event.preventDefault();
+          BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            title: "<?= gettext("Tunable");?>",
+            message: "<?=gettext("Are you sure you want to reset all tunables back to factory defaults?");?>",
+            buttons: [{
+                      label: "<?=gettext("No");?>",
+                      action: function(dialogRef) {
+                          dialogRef.close();
+                      }}, {
+                      label: "<?=gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#action").val("reset");
+                        $("#iform").submit()
+                    }
+                  }]
+          });
+      });
+  }
 });
 </script>
 
