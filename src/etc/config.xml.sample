@@ -203,6 +203,18 @@
       <tunable>security.bsd.see_other_uids</tunable>
       <value>default</value>
     </item>
+    <item>
+      <descr><![CDATA[Enable/disable sending of ICMP redirects in response to IP packets for which a better,
+        and for the sender directly reachable, route and next hop is known.]]>
+      </descr>
+      <tunable>net.inet.ip.redirect</tunable>
+      <value>0</value>
+    </item>
+    <item>
+      <descr><![CDATA[Enable/disable dropping of ICMP Redirect packets]]></descr>
+      <tunable>net.inet.icmp.drop_redirect</tunable>
+      <value>1</value>
+    </item>
   </sysctl>
   <system>
     <optimization>normal</optimization>
