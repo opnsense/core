@@ -1004,6 +1004,18 @@ function openvpn_restart($mode, $settings)
 
     @unlink("/var/etc/openvpn/{$mode_id}.sock");
 
+     // has it shut down? Check the validity of the pid
+    if(isvalidpid("/var/run/openvpn_{$mode_id}.pid")) {
+        //Still running - force it down and wait a second or two
+        killbypid("/var/run/openvpn_{$mode_id}.pid", 'KILL', false); 
+        sleep(2);
+    }
+    // Remove any stray pid file.
+    if(file_exists("/var/run/openvpn_{$mode_id}.pid"))
+    {
+        @unlink("/var/run/openvpn_{$mode_id}.pid");
+    }
+ 
     /* start the new process */
     $fpath = "/var/etc/openvpn/{$mode_id}.conf";
     openvpn_clear_route($mode, $settings);
