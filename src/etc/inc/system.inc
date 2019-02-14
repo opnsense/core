@@ -774,7 +774,7 @@ EOD;
         killbypid('/var/run/syslog.pid', 'HUP');
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
-        mwexecf_bg("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
+        mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
     }
 
     if ($verbose) {
