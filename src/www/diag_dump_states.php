@@ -114,9 +114,9 @@ include("head.inc");
                       <input type="text" name="filter" value="<?=!empty($_POST['filter']) ? htmlspecialchars($_POST['filter']) : "";?>"/>
                     </td>
                     <td>
-                      <input type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+                      <input type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Filter')) ?>" />
                       <?php if (!empty($_POST['filter']) && (is_ipaddr($_POST['filter']) || is_subnet($_POST['filter']))): ?>
-                      <input type="submit" class="btn btn-primary" name="killfilter" value="<?=gettext("Kill");?>" />
+                      <input type="submit" class="btn btn-primary" name="killfilter" value="<?= html_safe(gettext('Kill')) ?>" />
                       <?php endif; ?>
                     </td>
                   </tr>

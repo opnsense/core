@@ -371,7 +371,7 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <input name="download" type="submit" class="btn btn-primary" value="<?=gettext("Download configuration"); ?>" />
+                    <input name="download" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Download configuration')) ?>" />
                   </td>
                 </tr>
                 <tr>
@@ -416,7 +416,7 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <input name="restore" type="submit" class="btn btn-primary" id="restore" value="<?=gettext("Restore configuration"); ?>" />
+                    <input name="restore" type="submit" class="btn btn-primary" id="restore" value="<?= html_safe(gettext('Restore configuration')) ?>" />
                   </td>
                 </tr>
                 <tr>

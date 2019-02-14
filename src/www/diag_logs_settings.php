@@ -430,7 +430,7 @@ $(document).ready(function() {
                   <tr>
                     <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>
                     <td>
-                      <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?=gettext("Reset Log Files"); ?>"/>
+                      <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?= html_safe(gettext('Reset Log Files')) ?>"/>
                       <div class="hidden" data-for="help_for_resetlogs">
                         <?= gettext("Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
                       </div>
