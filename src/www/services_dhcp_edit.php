@@ -466,7 +466,7 @@ include("head.inc");
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
                   <td>
                     <div id="showddnsbox">
-                      <input type="button" onclick="show_ddns_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
+                      <input type="button" onclick="show_ddns_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Dynamic DNS");?>
                     </div>
                     <div id="showddns" style="display:none">
                       <input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? "checked=\"checked\"" : ""; ?> />
@@ -481,7 +481,7 @@ include("head.inc");
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
                   <td>
                     <div id="showntpbox">
-                      <input type="button" onclick="show_ntp_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show NTP configuration");?>
+                      <input type="button" onclick="show_ntp_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show NTP configuration");?>
                     </div>
                     <div id="showntp" style="display:none">
                       <input name="ntp1" type="text" id="ntp1" size="20" value="<?=$pconfig['ntp1'];?>" /><br />
@@ -493,7 +493,7 @@ include("head.inc");
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TFTP server");?></td>
                   <td>
                     <div id="showtftpbox">
-                      <input type="button" onclick="show_tftp_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show TFTP configuration");?>
+                      <input type="button" onclick="show_tftp_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show TFTP configuration");?>
                     </div>
                     <div id="showtftp" style="display:none">
                       <input name="tftp" type="text" id="tftp" size="50" value="<?=$pconfig['tftp'];?>" /><br />
