@@ -110,7 +110,7 @@ class SNatRule extends Rule
                     $rule[$fieldname] = "$".$rule[$fieldname];
                 }
             }
-            if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash"){
+            if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash") {
                 $rule['poolopts_sourcehashkey'] = '';
             }
             if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {

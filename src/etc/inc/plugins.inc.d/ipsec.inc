@@ -673,7 +673,8 @@ function ipsec_configure_spd()
                         } else {
                             log_error(sprintf(
                                 "spdadd: unable to match remote network on %s or %s [skipped]",
-                                $peerid_spec, $ph1ent['remote-gateway']
+                                $peerid_spec,
+                                $ph1ent['remote-gateway']
                             ));
                             continue;
                         }

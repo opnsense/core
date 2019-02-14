@@ -94,7 +94,7 @@ class LDAP extends Base implements IAuthConnector
     /**
      * @var null|string certificate reference (in /var/run/certs/)
      */
-     private $ldapCAcert = null;
+    private $ldapCAcert = null;
 
     /**
      * @var array list of already known usernames vs distinguished names
@@ -321,11 +321,11 @@ class LDAP extends Base implements IAuthConnector
 
         // Note: All TLS options must be set before ldap_connect is called
         if (!empty($this->ldapCAcert)) {
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
+            ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
         } else {
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
+            ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
         }
         $this->ldapHandle = @ldap_connect($bind_url);
 
