@@ -2729,7 +2729,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
 
     $rd6brgw = "{$rd6prefix}{$wancfg['gateway-6rd']}";
 
-    $stfiface = "{$wanif}_stf";
+    $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
@@ -2825,7 +2825,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     }
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
-    $stfiface = "{$wanif}_stf";
+    $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
     }
@@ -3656,7 +3656,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
                 switch (isset($cfg['ipaddrv6']) ? $cfg['ipaddrv6'] : '') {
                     case '6rd':
                     case '6to4':
-                        $wanif = "{$cfg['if']}_stf";
+                        $wanif = "{$interface}_stf";
                         break;
                     case 'pppoe':
                     case 'ppp':
