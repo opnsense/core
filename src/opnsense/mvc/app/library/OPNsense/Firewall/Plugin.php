@@ -80,7 +80,7 @@ class Plugin
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
-                $realif = "{$intf['if']}_stf";
+                $realif = "{$key}_stf";
                 // create new interface
                 $this->interfaceMapping[$realif] = array();
                 $this->interfaceMapping[$realif]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
