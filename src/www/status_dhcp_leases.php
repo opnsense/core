@@ -457,19 +457,17 @@ $gentitle_suffix = " ($leases_count)";
 <?php
         if (!empty($_GET['all'])): ?>
         <input type="hidden" name="all" value="0" />
-        <input type="submit" class="btn btn-default" value="<?=gettext("Show active and static leases only"); ?>" />
+        <input type="submit" class="btn btn-default" value="<?= html_safe(gettext('Show active and static leases only')) ?>" />
 <?php
         else: ?>
         <input type="hidden" name="all" value="1" />
-        <input type="submit" class="btn btn-default" value="<?=gettext("Show all configured leases"); ?>" />
+        <input type="submit" class="btn btn-default" value="<?= html_safe(gettext('Show all configured leases')) ?>" />
 <?php
         endif; ?>
         </form>
-<?php
-        if ($leases == 0): ?>
-        <p><strong><?=gettext("No leases file found. Is the DHCP server active"); ?>?</strong></p>
-<?php
-        endif; ?>
+<?php if ($leases == 0): ?>
+        <p><?=gettext("No leases file found. Is the DHCP server active?") ?></p>
+<?php endif ?>
       </section>
     </div>
   </div>
