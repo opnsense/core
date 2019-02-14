@@ -599,7 +599,7 @@ include("head.inc");
                       <tr>
                         <td style="width:22%">&nbsp;</td>
                         <td style="width:78%">
-                          <input type="button" id="show_advanced" value="<?=gettext("Show advanced options"); ?>" class="btn btn-default btn-xs"/>
+                          <input type="button" id="show_advanced" value="<?= html_safe(gettext('Show advanced options')) ?>" class="btn btn-default btn-xs"/>
                         </td>
                       </tr>
                     </tbody>

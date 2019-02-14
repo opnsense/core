@@ -496,7 +496,7 @@ SureGPS =    #Sure Electronics SKG16B
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('GPS Initialization') ?></td>
                       <td>
                         <div >
-                          <input class="btn btn-xs btn-default" type="button" id="showgpsinitbox" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show GPS Initialization commands");?>
+                          <input class="btn btn-xs btn-default" type="button" id="showgpsinitbox" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show GPS Initialization commands");?>
                         </div>
                         <div id="showgpsinit" style="display:none">
                           <textarea name="initcmd" class="formpre" id="gpsinitcmd" cols="65" rows="7"><?=base64_decode($pconfig['initcmd']);?></textarea><br />
