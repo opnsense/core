@@ -30,7 +30,7 @@ POSSIBILITY OF SUCH DAMAGE.
     'use strict';
 
     $( document ).ready(function() {
-        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange' };
+        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange', 'nat': 'fa-exchange' };
         var interface_descriptions = {};
         let hostnameMap = {};
 
@@ -138,7 +138,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 log_tr.addClass('fw_pass');
                             } else if (record['action'] == 'block') {
                                 log_tr.addClass('fw_block');
-                            } else if (record['action'] == 'rdr') {
+                            } else if (record['action'] == 'rdr' || record['action'] == 'nat') {
                                 log_tr.addClass('fw_nat');
                             }
                             $("#grid-log > tbody > tr:first").before(log_tr);
