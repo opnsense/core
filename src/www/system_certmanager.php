@@ -1260,7 +1260,7 @@ $( document ).ready(function() {
               <tr>
                 <td>&nbsp;</td>
                 <td>
-                  <input id="submit" name="update" type="submit" class="btn btn-primary" value="<?=gettext("Update");?>" />
+                  <input id="submit" name="update" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Update')) ?>" />
                 </td>
               </tr>
             </table>
