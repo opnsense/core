@@ -623,7 +623,7 @@ $( document ).ready(function() {
                 <tr class="advanced visible">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
-                    <input type="button" id="btn_advanced" value="Advanced" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
+                    <input type="button" id="btn_advanced" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
