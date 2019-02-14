@@ -1003,11 +1003,12 @@ function openvpn_restart($mode, $settings)
     }
 
     @unlink("/var/etc/openvpn/{$mode_id}.sock");
+    @unlink("/var/run/openvpn_{$mode_id}.pid");
 
     /* start the new process */
     $fpath = "/var/etc/openvpn/{$mode_id}.conf";
     openvpn_clear_route($mode, $settings);
-    mwexec_bg("/usr/local/sbin/openvpn --config " . escapeshellarg($fpath));
+    mwexecf('/usr/local/sbin/openvpn --config %s', $fpath);
 
     if (!file_exists("/var/run/booting")) {
         configd_run("filter reload");
