@@ -1003,6 +1003,7 @@ function openvpn_restart($mode, $settings)
     }
 
     @unlink("/var/etc/openvpn/{$mode_id}.sock");
+    @unlink("/var/run/openvpn_{$mode_id}.pid");
 
     /* start the new process */
     $fpath = "/var/etc/openvpn/{$mode_id}.conf";
