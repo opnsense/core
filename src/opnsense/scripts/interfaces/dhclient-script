@@ -19,6 +19,7 @@
 #
 #
 
+ARP=/usr/sbin/arp
 HOSTNAME=/bin/hostname
 IFCONFIG='/sbin/ifconfig -n'
 
@@ -384,6 +385,9 @@ EXPIRE|FAIL)
 	if [ -n "$old_ip_address" ]; then
 		delete_old_address
 		delete_old_routes
+	fi
+	if [ -x $ARP ]; then
+		$ARP -d -a -i $interface
 	fi
 	# XXX Why add alias we just deleted above?
 	add_new_alias
