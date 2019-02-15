@@ -313,7 +313,7 @@ function legacy_config_get_interfaces($filters = array())
             }
         }
 
-        if ($iface_match) {
+        if ($iface_match && !empty($iface)) {
             $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
             $iface['ipaddrv6'] = !empty($iface['ipaddrv6']) ? $iface['ipaddrv6'] : null;
             $iface['ipaddr'] = !empty($iface['ipaddr']) ? $iface['ipaddr'] : null;
