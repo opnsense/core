@@ -349,7 +349,7 @@ BOUND|RENEW|REBIND|REBOOT)
 		delete_old_states
 	fi
 	if [ -n "$old_ip_address" ]; then
-		if [ "$old_ip_address" != "$alias_ip_address" ]; then
+		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
 			changes="yes"
 		fi
@@ -367,7 +367,7 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_routes
 		changes="yes"
 	fi
-	if [ "$new_ip_address" != "$alias_ip_address" ]; then
+	if [ -n "$alias_ip_address" -a "$new_ip_address" != "$alias_ip_address" ]; then
 		add_new_alias
 		changes="yes"
 	fi
