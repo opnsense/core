@@ -76,7 +76,6 @@ if __name__ == '__main__':
         if rule['metadata_source'] not in metadata_sources:
             metadata_sources[rule['metadata_source']] = 0
         if 'url' in rule['source']:
-            download_proto = str(rule['source']['url']).split(':')[0].lower()
             if dl.is_supported(url=rule['source']['url']):
                 if rule['required'] and metadata_sources[rule['metadata_source']] > 0:
                     # Required files are always sorted last in list_rules(), add required when there's at least one
