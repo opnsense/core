@@ -68,6 +68,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     }
 
     chdir('/usr/local/www');
+    @mkdir('/var/lib/php/sessions', 0750, true);
 
     /* defaults */
     $portarg = '80';
