@@ -206,6 +206,7 @@ display_errors=on
 log_errors=on
 error_log=/tmp/PHP_errors.log
 date.timezone="Etc/UTC"
+session.save_path=/var/lib/php/sessions
 
 EOF;
 
