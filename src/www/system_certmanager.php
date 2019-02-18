@@ -1363,9 +1363,14 @@ $( document ).ready(function() {
 <?php
                 endif; ?>
 
+<?php
+                if (isset($cert['crt'])) :?>
                   <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
                     <i class="fa fa-info-circle fa-fw"></i>
                   </a>
+<?php
+                endif; ?>
+
 
                   <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">
                       <i class="fa fa-download fa-fw"></i>
