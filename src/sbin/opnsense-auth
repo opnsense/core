@@ -2,7 +2,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2016-2019 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -32,10 +32,11 @@
 require_once("config.inc");
 require_once("auth.inc");
 
+
 // parse received auth data (key=value combinations separated by "\0")
 //  user=<name>
 //  password=<password>
-//  service=<pam service> (to be implemented)
+//  service=<pam service>
 
 $fp = fopen('php://stdin', 'r');
 $auth_data = array();
@@ -59,24 +60,21 @@ $is_authenticated = false;
 $exit_status = -1;
 
 if (!empty($auth_data['user']) && isset($auth_data['password'])) {
-    $authservers = !empty($config['system']['webgui']['authmode']) ?
-        explode(',', $config['system']['webgui']['authmode']) : array('Local Database');
-
-    foreach ($authservers as $authserver) {
-        if (authenticate_user($auth_data['user'], $auth_data['password'], auth_get_authserver($authserver))) {
-            $is_authenticated = true;
-            break;
-        }
-    }
-
+    $authFactory = new \OPNsense\Auth\AuthenticationFactory();
+    $is_authenticated = $authFactory->authenticate($auth_data['service'], $auth_data['user'], $auth_data['password']);
     if ($is_authenticated) {
-        syslog(LOG_NOTICE, "user '".$auth_data['user']."' authenticated successfully\n");
+        syslog(LOG_NOTICE, sprintf(
+            "user %s authenticated successfully for %s\n", $auth_data['user'], $auth_data['service']
+        ));
         $exit_status = 0;
     } else {
         if (getUserEntry($auth_data['user']) === false) {
+            // signal user unknown, so PAM may consider other options
             $exit_status = 2;
         }
-        syslog(LOG_WARNING, "user '".$auth_data['user']."' could not authenticate.\n");
+        syslog(LOG_WARNING, sprintf(
+            "user %s could not authenticate for %s.\n", $auth_data['user'], $auth_data['service']
+        ));
     }
 }
 

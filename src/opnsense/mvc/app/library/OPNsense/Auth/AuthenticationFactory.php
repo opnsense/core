@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2019 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -137,6 +137,49 @@ class AuthenticationFactory
         }
 
         return null;
+    }
+
+    /**
+     * get Service object
+     * @param $service_name string service name to use, defined in Services directory
+     * @return IService|null service object or null if not found
+     */
+    public function getService($service_name)
+    {
+        foreach (glob(__DIR__."/Services/*.php") as $filename) {
+            $srv_found = basename($filename, '.php');
+            if (strtolower($srv_found) == strtolower($service_name)) {
+                $reflClass = new \ReflectionClass("OPNsense\\Auth\\Services\\{$srv_found}");
+                if ($reflClass->implementsInterface('OPNsense\\Auth\\IService')) {
+                    return $reflClass->newInstance();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Authenticate user for requested service
+     * @param $service_name string service name to use, defined in Services directory
+     * @param $username string username
+     * @param $password string password
+     * @return boolean
+     */
+    public function authenticate($service_name, $username, $password)
+    {
+        $service = $this->getService($service_name);
+        if ($service !== null) {
+            foreach ($service->supportedAuthenticators() as $authname) {
+                $authenticator = $this->get($authname);
+                if ($authenticator !== null) {
+                    $isAuthenticated = $authenticator->authenticate($username, $password);
+                    if ($isAuthenticated) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
