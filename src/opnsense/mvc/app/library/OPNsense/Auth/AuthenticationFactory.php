@@ -172,8 +172,7 @@ class AuthenticationFactory
             foreach ($service->supportedAuthenticators() as $authname) {
                 $authenticator = $this->get($authname);
                 if ($authenticator !== null) {
-                    $isAuthenticated = $authenticator->authenticate($username, $password);
-                    if ($isAuthenticated) {
+                    if ($authenticator->authenticate($username, $password)) {
                         return true;
                     }
                 }
