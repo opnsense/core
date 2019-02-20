@@ -377,7 +377,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         $authmodes = explode(",", $pconfig['user_source']);
                         $auth_servers = auth_get_authserver_list();
 foreach ($auth_servers as $auth_key => $auth_server) : ?>
-  <option value="<?=htmlspecialchars($auth_key)?>" <?=in_array($auth_key, $authmodes) ? 'selected="selected"' : ''?>><?=$auth_server['name']?></option>
+  <option value="<?=htmlspecialchars($auth_key)?>" <?=in_array($auth_key, $authmodes) ? 'selected="selected"' : ''?>><?=htmlspecialchars($auth_server['name'])?></option>
 <?php                                           endforeach; ?>
                       </select>
                     </td>
