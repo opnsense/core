@@ -1,7 +1,7 @@
 @charset "UTF-8";
 .widgetdiv .content-box-head {
   background: #E8E8E8 !important;
-  color: #3C3C3B !important;
+  color: #000000 !important;
   padding-bottom: 1px !important;
   padding-top: 1px !important;
   padding-right: 1px !important;
@@ -9,12 +9,12 @@
   min-height: 25px !important;
 }
 .widgetdiv .content-box-head .btn-group .btn {
-  color: #3C3C3B !important;
+  color: #000000 !important;
   background: #E8E8E8 !important;
   border: 0px;
 }
 .widgetdiv .content-box-head .btn-group .btn .glyphicon {
-  color: #3C3C3B !important;
+  color: #000000 !important;
 }
 .widgetdiv .content-box-head .list-inline li > h3 {
   padding-top: 4px;
@@ -1179,7 +1179,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.428571429;
-  color: #3C3C3B;
+  color: #000000;
   background-color: #fff;
 }
 
@@ -1216,7 +1216,7 @@ img {
 
 .img-responsive {
   display: block;
-  width: 100% \9;
+  width: 100% \9 ;
   max-width: 100%;
   height: auto;
 }
@@ -1235,7 +1235,7 @@ img {
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   display: inline-block;
-  width: 100% \9;
+  width: 100% \9 ;
   max-width: 100%;
   height: auto;
 }
@@ -2872,7 +2872,7 @@ input[type=search] {
 input[type=radio],
 input[type=checkbox] {
   margin: 4px 0 0;
-  margin-top: 1px \9;
+  margin-top: 1px \9 ;
   line-height: normal;
 }
 
@@ -3079,7 +3079,7 @@ input[type=time],
 input[type=datetime-local],
 input[type=month] {
   line-height: 34px;
-  line-height: 1.428571429 \0;
+  line-height: 1.428571429 \0 ;
 }
 input[type=date].input-sm, .input-group-sm > input[type=date].form-control,
 .input-group-sm > input[type=date].input-group-addon,
@@ -3148,7 +3148,7 @@ input[type=month].input-lg,
 .checkbox-inline input[type=checkbox] {
   position: absolute;
   margin-left: -20px;
-  margin-top: 4px \9;
+  margin-top: 4px \9 ;
 }
 
 .radio + .radio,
@@ -3385,7 +3385,7 @@ select[multiple].input-lg,
   display: block;
   margin-top: 5px;
   margin-bottom: 10px;
-  color: #7c7c7a;
+  color: #404040;
 }
 
 @media (min-width: 768px) {
@@ -4705,8 +4705,8 @@ tbody.collapse.in {
 }
 
 .navbar-default {
-  background-color: #3C3C3B;
-  border-color: #2b2b2b;
+  background-color: #000000;
+  border-color: black;
 }
 .navbar-default .navbar-brand {
   color: #F7F7F7;
@@ -4727,7 +4727,7 @@ tbody.collapse.in {
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   color: #555;
-  background-color: #2b2b2b;
+  background-color: black;
 }
 .navbar-default .navbar-nav > .disabled > a, .navbar-default .navbar-nav > .disabled > a:hover, .navbar-default .navbar-nav > .disabled > a:focus {
   color: #ccc;
@@ -4744,10 +4744,10 @@ tbody.collapse.in {
 }
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
-  border-color: #2b2b2b;
+  border-color: black;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
-  background-color: #2b2b2b;
+  background-color: black;
   color: #555;
 }
 @media (max-width: 767px) {
@@ -4760,7 +4760,7 @@ tbody.collapse.in {
   }
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #555;
-    background-color: #2b2b2b;
+    background-color: black;
   }
   .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a, .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
     color: #ccc;
@@ -5187,7 +5187,7 @@ a.badge:hover, a.badge:focus {
 .thumbnail > img,
 .thumbnail a > img {
   display: block;
-  width: 100% \9;
+  width: 100% \9 ;
   max-width: 100%;
   height: auto;
   margin-left: auto;
@@ -5195,7 +5195,7 @@ a.badge:hover, a.badge:focus {
 }
 .thumbnail .caption {
   padding: 9px;
-  color: #3C3C3B;
+  color: #000000;
 }
 
 a.thumbnail:hover,
@@ -5449,7 +5449,7 @@ a.thumbnail.active {
 }
 
 a.list-group-item {
-  color: #3C3C3B;
+  color: #000000;
   border-radius: 0;
 }
 a.list-group-item .list-group-item-heading {
@@ -6403,7 +6403,7 @@ button.close {
 .carousel-inner > .item > img,
 .carousel-inner > .item > a > img {
   display: block;
-  width: 100% \9;
+  width: 100% \9 ;
   max-width: 100%;
   height: auto;
   line-height: 1;
@@ -6528,7 +6528,7 @@ button.close {
   border: 1px solid #fff;
   border-radius: 10px;
   cursor: pointer;
-  background-color: #000 \9;
+  background-color: #000 \9 ;
   background-color: rgba(0, 0, 0, 0);
 }
 .carousel-indicators .active {
@@ -6900,7 +6900,7 @@ body {
 }
 
 .page-head {
-  background: #3C3C3B;
+  background: #000000;
   top: 0;
   left: 0;
   position: fixed;
@@ -7050,7 +7050,7 @@ body {
   margin: 100px auto 15px auto;
 }
 .login-modal-head {
-  background: #3C3C3B;
+  background: #000000;
   height: 75px;
   padding: 0 20px;
 }
@@ -7105,6 +7105,7 @@ body {
 main.page-content.col-lg-12 {
   padding-left: 90px;
 }
+
 #navigation.col-sidebar-left {
   width: 70px;
   background-color: transparent !important;
@@ -7130,15 +7131,14 @@ main.page-content.col-lg-12 {
   border-bottom: 2px solid #lightergrey;
   border-right: 1px solid #D9D9D9;
 }
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
   font-size: 20px;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.__iconspacer {
-  width:50px;
-  height:30px;
-  padding:0px;
+  width: 50px;
+  height: 30px;
+  padding: 0px;
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing > a.list-group-item {
   padding-left: 10px !important;
@@ -7154,22 +7154,24 @@ main.page-content.col-lg-12 {
   position: absolute !important;
   left: 166px !important;
 }
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item {background-color: #fff !important;}
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {background-color: #fff !important;}
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item ,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item,
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > a.list-group-item, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
+  background-color: #fff !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 14px !important;
+}
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item {
+  padding-left: 10px !important;
+  font-size: 14px !important;
+}
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsed > a.list-group-item {
   padding-left: 10px !important;
   font-size: 14px !important;
 }
-
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > a.list-group-item, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse > div.collapse > a.list-group-item {
   padding: 3px 8px !important;
 }
-
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in {
   width: 168px;
   font-size: 14px;
@@ -7182,7 +7184,6 @@ main.page-content.col-lg-12 {
   -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
   box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
 }
-
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapse.in {
   width: 168px;
   font-size: 14px;
@@ -7195,9 +7196,8 @@ main.page-content.col-lg-12 {
   -moz-box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
   box-shadow: 2px 2px 1px 0px rgba(234, 234, 234, 0.5);
 }
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing,
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
-  display:none;
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapsing, #navigation.col-sidebar-left > div > nav > #mainmenu > div > div.collapse.in > div.collapsing {
+  display: none;
 }
 
 button.toggle-sidebar {
@@ -7209,6 +7209,7 @@ button.toggle-sidebar {
   float: left;
   outline: none;
 }
+
 /* COLLAPSE SIDEBAR END*/
 #navigation.collapse.in {
   display: block !important;
@@ -7285,7 +7286,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   background: #F7F7F7;
 }
 .nav-tabs.nav-justified > li > a {
-  color: #3C3C3B;
+  color: #000000;
   font-family: "SourceSansProSemibold";
 }
 @media (min-width: 768px) {
