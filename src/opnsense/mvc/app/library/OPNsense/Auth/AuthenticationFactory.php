@@ -146,9 +146,11 @@ class AuthenticationFactory
      */
     public function getService($service_name)
     {
+        // cleanse service name
+        $srv_name = str_replace('-', '_', strtolower($service_name));
         foreach (glob(__DIR__."/Services/*.php") as $filename) {
             $srv_found = basename($filename, '.php');
-            if (strtolower($srv_found) == strtolower($service_name)) {
+            if (strtolower($srv_found) == $srv_name) {
                 $reflClass = new \ReflectionClass("OPNsense\\Auth\\Services\\{$srv_found}");
                 if ($reflClass->implementsInterface('OPNsense\\Auth\\IService')) {
                     return $reflClass->newInstance();
