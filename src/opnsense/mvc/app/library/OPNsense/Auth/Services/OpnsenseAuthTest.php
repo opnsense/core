@@ -35,6 +35,6 @@ use OPNsense\Auth\IService;
  * opnsense test service
  * @package OPNsense\Auth
  */
-class OPNsense_Auth_Test extends System
+class OPNsenseAuthTest extends System
 {
 }

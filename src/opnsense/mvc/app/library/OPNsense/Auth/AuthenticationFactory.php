@@ -147,7 +147,7 @@ class AuthenticationFactory
     public function getService($service_name)
     {
         // cleanse service name
-        $srv_name = str_replace('-', '_', strtolower($service_name));
+        $srv_name = strtolower(str_replace(array('-', '_'), '', $service_name));
         foreach (glob(__DIR__."/Services/*.php") as $filename) {
             $srv_found = basename($filename, '.php');
             if (strtolower($srv_found) == $srv_name) {
