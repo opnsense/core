@@ -52,7 +52,7 @@ class TestConfigMethods(unittest.TestCase):
         """ test correct config type
         :return:
         """
-        self.assertEquals(type(self.conf.get()), collections.OrderedDict)
+        self.assertEqual(type(self.conf.get()), collections.OrderedDict)
 
     def test_interface(self):
         """ test existence of interface
@@ -93,8 +93,8 @@ class TestTemplateMethods(unittest.TestCase):
         """ test sample template
         :return:
         """
-        generated_filenames = self.tmpl.generate('OPNsense.Sample')
-        self.assertEquals(len(generated_filenames), 3, 'number of output files not 3')
+        generated_filenames = self.tmpl.generate('OPNsense/Sample')
+        self.assertEqual(len(generated_filenames), 4, 'number of output files not 4')
 
     def test_all(self):
         """ Test if all expected templates are created, can only find test for static defined cases.
@@ -109,11 +109,14 @@ class TestTemplateMethods(unittest.TestCase):
             for filenm in files:
                 if filenm == '+TARGETS':
                     filename = '%s/%s' % (root, filenm)
-                    for line in open(filename).read().split('\n'):
-                        line = line.strip()
-                        if len(line) > 1 and line[0] != '#' and line.find('[') == -1:
-                            expected_filename = ('%s%s' % (self.output_path, line.split(':')[-1])).replace('//', '/')
-                            self.expected_filenames[expected_filename] = {'src': filename}
+                    with open(filename) as fhandle:
+                        for line in fhandle.read().split('\n'):
+                            line = line.strip()
+                            if len(line) > 1 and line[0] != '#' and line.find('[') == -1:
+                                expected_filename = (
+                                    '%s%s' % (self.output_path, line.split(':')[-1])
+                                ).replace('//', '/')
+                                self.expected_filenames[expected_filename] = {'src': filename}
 
         for filename in self.tmpl.generate('*'):
             self.generated_filenames.append(filename.replace('//', '/'))

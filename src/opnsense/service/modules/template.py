@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import traceback
 import copy
 import codecs
 import jinja2
-import addons.template_helpers
+from .addons import template_helpers
 
 __author__ = 'Ad Schellevis'
 
@@ -59,7 +59,6 @@ class Template(object):
         self._template_dir = os.path.dirname(os.path.abspath(__file__)) + '/../templates/'
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
-
         # register additional filters
         self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
         self._j2_env.filters['encode_idna'] = self._encode_idna
@@ -68,7 +67,7 @@ class Template(object):
     def _encode_idna(x):
         """ encode string to idna, preserve leading dots
         """
-        return ''.join(map(lambda x:'.', range(len(x) - len(x.lstrip('.'))))) + x.lstrip('.').encode('idna')
+        return b''.join([b''.join([b'.' for x in range(len(x) - len(x.lstrip('.')))]), x.lstrip('.').encode('idna')])
 
     def list_module(self, module_name):
         """ list single module content
@@ -84,20 +83,21 @@ class Template(object):
 
         for target_source in target_sources:
             if os.path.exists(target_source):
-                for line in open(target_source, 'r').read().split('\n'):
-                    parts = line.split(':')
-                    if len(parts) > 1 and parts[0].strip()[0] != '#':
-                        source_file = parts[0].strip()
-                        target_name = parts[1].strip()
-                        if target_name in result['+TARGETS'].values():
-                            syslog.syslog(syslog.LOG_NOTICE, "template overlay %s with %s" % (
-                                target_name, os.path.basename(target_source)
-                            ))
-                        result['+TARGETS'][source_file] = target_name
-                        if len(parts) == 2:
-                            result['+CLEANUP_TARGETS'][source_file] = target_name
-                        elif parts[2].strip() != "":
-                            result['+CLEANUP_TARGETS'][source_file] = parts[2].strip()
+                with open(target_source, 'r') as fhandle:
+                    for line in fhandle.read().split('\n'):
+                        parts = line.split(':')
+                        if len(parts) > 1 and parts[0].strip()[0] != '#':
+                            source_file = parts[0].strip()
+                            target_name = parts[1].strip()
+                            if target_name in list(result['+TARGETS'].values()):
+                                syslog.syslog(syslog.LOG_NOTICE, "template overlay %s with %s" % (
+                                    target_name, os.path.basename(target_source)
+                                ))
+                            result['+TARGETS'][source_file] = target_name
+                            if len(parts) == 2:
+                                result['+CLEANUP_TARGETS'][source_file] = target_name
+                            elif parts[2].strip() != "":
+                                result['+CLEANUP_TARGETS'][source_file] = parts[2].strip()
         return result
 
     def list_modules(self):
@@ -155,9 +155,9 @@ class Template(object):
                     config_ptr = config_ptr[xmlNodeName]
                 elif xmlNodeName == '%':
                     if type(config_ptr) in (collections.OrderedDict, dict):
-                        target_keys = config_ptr.keys()
+                        target_keys = list(config_ptr)
                     else:
-                        target_keys = map(lambda x: str(x), range(len(config_ptr)))
+                        target_keys = [str(x) for x in range(len(config_ptr))]
                 else:
                     # config pointer is reused when the match is exact, so we need to reset it here
                     # if the tag was not found.
@@ -217,15 +217,15 @@ class Template(object):
         """
         result = []
         module_data = self.list_module(module_name)
-        for src_template in module_data['+TARGETS'].keys():
+        for src_template in list(module_data['+TARGETS']):
             target = module_data['+TARGETS'][src_template]
 
             target_filename_tags = self.__find_string_tags(target)
             target_filters = self.__find_filters(target_filename_tags)
             result_filenames = {target: {}}
-            for target_filter in target_filters.keys():
-                for key in target_filters[target_filter].keys():
-                    for filename in result_filenames.keys():
+            for target_filter in list(target_filters):
+                for key in list(target_filters[target_filter]):
+                    for filename in list(result_filenames):
                         if target_filters[target_filter][key] is not None \
                                 and filename.find('[%s]' % target_filter) > -1:
                             new_filename = filename.replace('[%s]' % target_filter, target_filters[target_filter][key])
@@ -240,14 +240,14 @@ class Template(object):
             except jinja2.exceptions.TemplateSyntaxError as templExc:
                 raise Exception("%s %s %s" % (module_name, template_filename, templExc))
 
-            for filename in result_filenames.keys():
+            for filename in list(result_filenames):
                 if not (filename.find('[') != -1 and filename.find(']') != -1):
                     # copy config data
                     cnf_data = copy.deepcopy(self._config)
                     cnf_data['TARGET_FILTERS'] = result_filenames[filename]
 
                     # link template helpers
-                    self._j2_env.globals['helpers'] = addons.template_helpers.Helpers(cnf_data)
+                    self._j2_env.globals['helpers'] = template_helpers.Helpers(cnf_data)
 
                     # make sure we're only rendering output once
                     if filename not in result:
@@ -271,7 +271,7 @@ class Template(object):
                         # It looks like Jinja sometimes isn't consistent on placing this last end-of-line in.
                         if len(content) > 1 and content[-1] != '\n':
                             src_file = '%s%s' % (self._template_dir, template_filename)
-                            src_file_handle = open(src_file, 'r')
+                            src_file_handle = open(src_file, 'rb')
                             src_file_handle.seek(-1, os.SEEK_END)
                             last_bytes_template = src_file_handle.read()
                             src_file_handle.close()
@@ -342,7 +342,7 @@ class Template(object):
         for template_name in self.iter_modules(module_name):
             syslog.syslog(syslog.LOG_NOTICE, "cleanup template container %s" % template_name)
             module_data = self.list_module(module_name)
-            for src_template in module_data['+CLEANUP_TARGETS'].keys():
+            for src_template in list(module_data['+CLEANUP_TARGETS']):
                 target = module_data['+CLEANUP_TARGETS'][src_template]
                 for filename in glob.glob(target):
                     os.remove(filename)

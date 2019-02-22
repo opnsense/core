@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
     function: make standard config parser case sensitive
 """
 
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 
 class CSConfigParser(ConfigParser):

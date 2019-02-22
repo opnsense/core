@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -59,10 +59,10 @@ def exec_config_cmd(exec_command):
         return None
 
     try:
-        sock.send(exec_command)
+        sock.send(exec_command.encode())
         data = []
         while True:
-            line = sock.recv(65536)
+            line = sock.recv(65536).decode()
             if line:
                 data.append(line)
             else:
@@ -82,7 +82,7 @@ socket.setdefaulttimeout(120)
 
 # validate parameters
 if len(sys.argv) <= 1:
-    print ('usage : %s [-m] <command>'%sys.argv[0])
+    print('usage : %s [-m] <command>'%sys.argv[0])
     sys.exit(0)
 
 # check if configd socket exists
@@ -95,7 +95,7 @@ while not os.path.exists(configd_socket_name):
     i += 1
 
 if not os.path.exists(configd_socket_name):
-    print ('configd socket missing (@%s)'%configd_socket_name)
+    print('configd socket missing (@%s)'%configd_socket_name)
     sys.exit(-1)
 
 if sys.argv[1] == '-m':

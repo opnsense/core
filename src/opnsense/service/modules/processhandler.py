@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2014 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2014-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,13 +34,13 @@ import socket
 import traceback
 import syslog
 import threading
-import ConfigParser
+import configparser
 import glob
 import time
 import uuid
 import shlex
 import tempfile
-import ph_inline_actions
+from . import ph_inline_actions
 from modules import singleton
 
 __author__ = 'Ad Schellevis'
@@ -126,7 +126,7 @@ class Handler(object):
                 return
             except Exception:
                 # something went wrong... send traceback to syslog, restart listener (wait for a short time)
-                print (traceback.format_exc())
+                print(traceback.format_exc())
                 syslog.syslog(syslog.LOG_ERR, 'Handler died on %s' % traceback.format_exc())
                 time.sleep(1)
 
@@ -163,12 +163,12 @@ class HandlerClient(threading.Thread):
         # noinspection PyBroadException
         try:
             # receive command, maximum data length is 4k... longer messages will be truncated
-            data = self.connection.recv(4096)
+            data = self.connection.recv(4096).decode()
             # map command to action
             data_parts = shlex.split(data)
             if len(data_parts) == 0 or len(data_parts[0]) == 0:
                 # no data found
-                self.connection.sendall('no data\n')
+                self.connection.sendall(('no data\n').encode())
             else:
                 exec_command = data_parts[0]
                 if exec_command[0] == "&":
@@ -187,7 +187,7 @@ class HandlerClient(threading.Thread):
                 # when running in background, return this message uuid and detach socket
                 if exec_in_background:
                     result = self.message_uuid
-                    self.connection.sendall('%s\n%c%c%c' % (result, chr(0), chr(0), chr(0)))
+                    self.connection.sendall(('%s\n%c%c%c' % (result, chr(0), chr(0), chr(0))).encode())
                     self.connection.shutdown(socket.SHUT_RDWR)
                     self.connection.close()
 
@@ -200,22 +200,22 @@ class HandlerClient(threading.Thread):
 
                 if not exec_in_background:
                     # send response back to client( including trailing enter )
-                    self.connection.sendall('%s\n' % result)
+                    self.connection.sendall(('%s\n' % result).encode())
                 else:
                     # log response
                     syslog.syslog(syslog.LOG_INFO, "message %s [%s.%s] returned %s " % (self.message_uuid,
                                                                                         exec_command,
                                                                                         exec_action,
-                                                                                        unicode(result)[:100]))
+                                                                                        result[:100]))
 
             # send end of stream characters
             if not exec_in_background:
-                self.connection.sendall("%c%c%c" % (chr(0), chr(0), chr(0)))
+                self.connection.sendall(("%c%c%c" % (chr(0), chr(0), chr(0))).encode())
         except SystemExit:
             # ignore system exit related errors
             pass
         except Exception:
-            print (traceback.format_exc())
+            print(traceback.format_exc())
             syslog.syslog(
                 syslog.LOG_ERR,
                 'unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (result,
@@ -268,7 +268,7 @@ class ActionHandler(object):
                 self.action_map[topic_name] = {}
 
             # traverse config directory and open all filenames starting with actions_
-            cnf = ConfigParser.RawConfigParser()
+            cnf = configparser.RawConfigParser()
             cnf.read(config_filename)
             for section in cnf.sections():
                 # map configuration data on object
@@ -370,10 +370,10 @@ class ActionHandler(object):
         :return: None
         """
         action_obj = self.find_action(command, action, parameters)
-        print ('---------------------------------------------------------------------')
-        print ('execute %s.%s with parameters : %s ' % (command, action, parameters))
-        print ('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
-        print ('---------------------------------------------------------------------')
+        print('---------------------------------------------------------------------')
+        print('execute %s.%s with parameters : %s ' % (command, action, parameters))
+        print('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
+        print('---------------------------------------------------------------------')
 
 
 class Action(object):
@@ -488,7 +488,7 @@ class Action(object):
                                               '[%s] Script action stderr returned "%s"' %
                                               (message_uuid, script_error_output.strip()[:255])
                                               )
-                            return script_output
+                            return script_output.decode()
                 except Exception as script_exception:
                     syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed with %s at %s' % (message_uuid,
                                                                                                script_exception,
