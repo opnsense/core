@@ -210,10 +210,10 @@ function formatTokenizersUI() {
             } else {
                 var number_of_items = 10;
             }
-            var allownew = $(this).data("allownew");
             sender.tokenize2({
-                'tokensAllowCustom': allownew,
+                'tokensAllowCustom': $(this).data("allownew"),
                 'placeholder': hint,
+                'sortable': $(this).data('sortable') == true,
                 'dropdownMaxItems': number_of_items
             });
             sender.parent().find('ul.tokens-container').css("width", width);
