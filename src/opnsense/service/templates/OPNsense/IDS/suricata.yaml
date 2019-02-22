@@ -98,7 +98,7 @@ outputs:
                    ## Error, Warning, Notice, Info, Debug
       types:
         - alert:
-{% if helpers.exists('OPNsense.IDS.general.LogPayload') and OPNsense.IDS.general.LogPayload|default('0') == '1' %}
+{% if not helpers.empty('OPNsense.IDS.general.LogPayload') %}
              payload: yes
              payload-buffer-size: 100kb
              payload-printable: yes
@@ -239,7 +239,7 @@ outputs:
 
   # a line based alerts log similar to fast.log into syslog
   - syslog:
-      enabled: {% if helpers.exists('OPNsense.IDS.general.syslog') and OPNsense.IDS.general.syslog|default('0') == '0' %}no{% else %}yes{% endif %}
+      enabled: {% if helpers.empty('OPNsense.IDS.general.syslog') %}no{% else %}yes{% endif %}
 
       # reported identity to syslog. If ommited the program name (usually
       # suricata) will be used.
@@ -327,7 +327,7 @@ netmap:
   - interface: default
     threads: auto
     copy-mode: ips
-    disable-promisc: {% if helpers.exists('OPNsense.IDS.general.promisc') and OPNsense.IDS.general.promisc|default('0') == '0' %}yes{% else %}no{% endif %} #  promiscuous mode
+    disable-promisc: {% if helpers.empty('OPNsense.IDS.general.promisc') %}yes{% else %}no{% endif %} #  promiscuous mode
     checksum-checks: auto
 
   {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
@@ -758,7 +758,7 @@ logging:
 
 pcap:
   - interface: default
-    promisc: {% if helpers.exists('OPNsense.IDS.general.promisc') and OPNsense.IDS.general.promisc|default('0') == '1' %}yes{% else %}no{% endif %} #  promiscuous mode
+    promisc: {% if not helpers.empty('OPNsense.IDS.general.promisc') %}yes{% else %}no{% endif %} #  promiscuous mode
 
 pcap-file:
   # Possible values are:
