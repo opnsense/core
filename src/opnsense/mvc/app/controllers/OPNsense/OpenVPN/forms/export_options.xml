@@ -46,6 +46,16 @@
         <help>Verify the server certificate name when the client connects</help>
     </field>
     <field>
+        <id>openvpn_export.auth_nocache</id>
+        <label>Disable password save</label>
+        <type>checkbox</type>
+        <style>export_option</style>
+        <help>
+          Sets auth-nocache in the exported configuration when password authentication is used.
+          This prevents OpenVPN from caching passwords in memory.
+        </help>
+    </field>
+    <field>
         <id>openvpn_export.plain_config</id>
         <label>Custom config</label>
         <style>export_option</style>

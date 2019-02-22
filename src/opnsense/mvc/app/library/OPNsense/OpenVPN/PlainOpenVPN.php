@@ -48,7 +48,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function supportedOptions()
     {
-        return array("plain_config", "random_local_port");
+        return array("plain_config", "random_local_port", "auth_nocache");
     }
 
     /**
@@ -132,6 +132,9 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         }
         if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
             $conf[] = "auth-user-pass";
+            if (!empty($this->config['auth_nocache'])) {
+                $conf[] = "auth-nocache";
+            }
         }
 
         if (!empty($this->config['compression'])) {
