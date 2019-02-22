@@ -69,6 +69,21 @@ class Helpers(object):
         else:
             return False
 
+    def empty(self, tag):
+        """ check if either the node does not exist or is empty
+        :param tag: tag in dot notation (section.item)
+        :return: boolean
+        """
+        node = self.getNodeByTag(tag)
+        if node is None:
+            return True
+        elif len(node) == 0:
+            return True
+        elif hasattr(node, 'strip') and node.strip() in ('', '0'):
+            return True
+        else:
+            return False
+
     def toList(self, tag, sortBy=None, sortAs=None):
         """ if an item should be a list of items (repeating tag), use this method to make sure that we always return
             a list. The configuration doesn't know if a non repeating item is supposed to be a list of items, this makes
