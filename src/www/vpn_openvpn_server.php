@@ -900,6 +900,9 @@ endif; ?>
                             if (cert_in_use($cert['refid'])) {
                                 $inuse = " *In Use";
                             }
+                            if (!isset($cert['prv'])) {
+                                continue;
+                            }
                             if (is_cert_revoked($cert)) {
                                 $revoked = " *Revoked";
                             }

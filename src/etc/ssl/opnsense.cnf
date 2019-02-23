@@ -292,3 +292,14 @@ extendedKeyUsage       = clientAuth,serverAuth,1.3.6.1.5.5.8.2.2
 keyUsage               = nonRepudiation, digitalSignature, keyEncipherment
 
 ###OPNsense:subjectAltName###
+
+[ sign_csr ]
+
+nsComment              = "OPNsense Generated Certificate"
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer:always
+
+###OPNsense:subjectAltName###
+###OPNsense:keyUsage###
+###OPNsense:extendedKeyUsage###
+###OPNsense:basicConstraints###
