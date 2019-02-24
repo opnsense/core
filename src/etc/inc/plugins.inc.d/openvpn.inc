@@ -565,6 +565,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     // OpenVPN defaults to SHA1, so use it when unset to maintain compatibility.
     $digest = !empty($settings['digest']) ? $settings['digest'] : "SHA1";
 
+    /* XXX does not support IPv6: missing 'inet6' */
     $interface = get_failover_interface($settings['interface']);
     $ipaddr = $settings['ipaddr'];
 
@@ -1685,6 +1686,7 @@ function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
             if (file_exists($fpath)) {
                 $current_device = file_get_contents($fpath);
                 $current_device = trim($current_device, " \t\n");
+                /* XXX does not support IPv6: missing 'inet6' */
                 $new_device = get_failover_interface($ovpn_settings['interface']);
                 if (isset($config['interfaces'][$interface])) {
                     $this_device = $config['interfaces'][$interface]['if'];

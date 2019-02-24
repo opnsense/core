@@ -307,15 +307,11 @@ function ipsec_get_phase1_src(&$ph1ent)
             return '%any';
         } elseif (!is_ipaddr($ph1ent['interface'])) {
             if (strpos($ph1ent['interface'], '_vip') !== false) {
-                // if this is a vip, set the interface to $ph1ent['interface']
+                // if this is a vip, use literal interface
                 $if = $ph1ent['interface'];
             } else {
                 // not a vip, check failover interface
-                if ($ph1ent['protocol'] == "inet6") {
-                    $if = get_failover_interface($ph1ent['interface'], "inet6");
-                } else {
-                    $if = get_failover_interface($ph1ent['interface']);
-                }
+                $if = get_failover_interface($ph1ent['interface'], $ph1ent['protocol'] == 'inet6' ? 'inet6' : 'all');
             }
         } else {
             // interface is an ip address, return
