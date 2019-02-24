@@ -380,9 +380,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 <fieldset>
                 <input type="radio" id="fw_tcpudp" value="1" name="tcpupd" checked="checked"> tcp/udp</input>
                 </br>
-                <input type="radio" id="fw_tcp" value="2" name="tcp"> tcp</input>
+                <input type="radio" id="fw_tcp" value="2" name="tcpupd"> tcp</input>
                 </br>
-                <input type="radio" id="fw_udp" value="3" name="upd"> udp</input>
+                <input type="radio" id="fw_udp" value="3" name="tcpupd"> udp</input>
                 </br>
                 </fieldset>
                 </div>
