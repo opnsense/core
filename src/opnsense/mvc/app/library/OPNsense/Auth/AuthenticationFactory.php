@@ -171,11 +171,12 @@ class AuthenticationFactory
     {
         $service = $this->getService($service_name);
         if ($service !== null) {
+            $service->setUserName($username);
             foreach ($service->supportedAuthenticators() as $authname) {
                 $authenticator = $this->get($authname);
                 if ($authenticator !== null) {
-                    if ($authenticator->authenticate($username, $password)) {
-                        return true;
+                    if ($authenticator->authenticate($service->getUserName(), $password)) {
+                        return $service->checkConstraints();
                     }
                 }
             }

@@ -40,4 +40,25 @@ interface IService
      * @return array list of configured authenticators (defined in system->authserver)
      */
      public function supportedAuthenticators();
+
+     /**
+      * set the username for this service, in some scenarios this might be prefixed with some addtional
+      * logic to determine which authenticators are actually supported.
+      * (in case one pam service has multiple real services assigned)
+      * @param $username string
+      */
+     public function setUserName($username);
+
+     /**
+      * return the username for authentication.
+      * @return string username
+      */
+     public function getUserName();
+
+     /**
+      * When authenticated, validate if this user is actually allowed to access the service, there might be
+      * other constraints, such as required gropu memberships.
+      * @return boolean is authenticated
+      */
+     public function checkConstraints();
 }

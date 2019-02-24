@@ -38,6 +38,11 @@ use OPNsense\Auth\IService;
 class System implements IService
 {
     /**
+     * @var string username for the current request
+     */
+    private $username;
+
+    /**
      * {@inheritdoc}
      */
     public function supportedAuthenticators()
@@ -53,4 +58,27 @@ class System implements IService
         return $result;
      }
 
+     /**
+      * {@inheritdoc}
+      */
+     public function setUserName($username)
+     {
+        $this->username = $username;
+     }
+
+     /**
+      * {@inheritdoc}
+      */
+     public function getUserName()
+     {
+        return $this->username;
+     }
+
+     /**
+      * {@inheritdoc}
+      */
+     public function checkConstraints()
+     {
+          return true;
+     }
 }
