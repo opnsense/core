@@ -241,7 +241,7 @@ POSSIBILITY OF SUCH DAMAGE.
         
         // live filter
         $('#filter').keyup(function() {
-            var usr_str_block = usr_str_nat = usr_str_pass = usr_str_rdr = usr_str_tcp = usr_str_udp = usr_str_tcpudp = search_str = 'undef';
+            var usr_str_block = usr_str_nat = usr_str_pass = usr_str_rdr = usr_str_tcp = usr_str_udp = usr_str_tcpudp = usr_str_icmp = search_str = 'undef';
             if (($('#pass_fw').is(':checked')) || ($('#block_fw').is(':checked')) || ($('#nat_fw').is(':checked')) || ($('#fw_udp').is(':checked')) || ($('#fw_tcp').is(':checked'))  || ($('#fw_icmp').is(':checked'))) {
                 if ($('#pass_fw').is(':checked')) {
                     var usr_str_pass = 'pass';
