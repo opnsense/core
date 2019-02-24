@@ -242,7 +242,7 @@ POSSIBILITY OF SUCH DAMAGE.
         // live filter
         $('#filter').keyup(function() {
             var usr_str_block = usr_str_nat = usr_str_pass = usr_str_rdr = usr_str_tcp = usr_str_udp = usr_str_tcpudp = search_str = 'undef';
-            if (($('#pass_fw').is(':checked')) || ($('#block_fw').is(':checked')) || ($('#nat_fw').is(':checked')) || ($('#fw_udp').is(':checked')) || ($('#fw_tcp').is(':checked'))) {
+            if (($('#pass_fw').is(':checked')) || ($('#block_fw').is(':checked')) || ($('#nat_fw').is(':checked')) || ($('#fw_udp').is(':checked')) || ($('#fw_tcp').is(':checked'))  || ($('#fw_icmp').is(':checked'))) {
                 if ($('#pass_fw').is(':checked')) {
                     var usr_str_pass = 'pass';
                 } if ($('#block_fw').is(':checked')) {
@@ -254,6 +254,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     var usr_str_tcp = 'tcp';
                 } if ($('#fw_udp').is(':checked')) {
                     var usr_str_udp = 'udp';
+                } if ($('#fw_icmp').is(':checked')) {
+                    var usr_str_icmp = 'icmp';
                 } if ($('#fw_tcpudp').is(':checked')) {
                     var usr_str_tcpudp = '';
                 }
@@ -270,6 +272,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             selected_tr.show();
                         } else if (visible_text.match(usr_str_tcpudp)) {
                             selected_tr.show();
+                        } else if (visible_text.match(usr_str_icmp)) {
+                            selected_tr.show();
                         } else {
                             selected_tr.hide();
                         }
@@ -280,6 +284,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             selected_tr.show();
                         } else if (visible_text.match(usr_str_tcpudp)) {
                             selected_tr.show();
+                        } else if (visible_text.match(usr_str_icmp)) {
+                            selected_tr.show();
                         } else {
                             selected_tr.hide();
                         }
@@ -289,6 +295,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         } else if (visible_text.match(usr_str_udp)) {
                             selected_tr.show();
                         } else if (visible_text.match(usr_str_tcpudp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_icmp)) {
                             selected_tr.show();
                         } else {
                             selected_tr.hide();
@@ -353,9 +361,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="checkbox-inline col-xs-2">
                   <input type="text" id="filter" class="form-control" placeholder="filter">
                 </div>
-                <div class="checkbox-inline pull-right col-xs-3">
+                <div class="checkbox-inline pull-right col-xs-5">
                 <div>
-                <select id="Interface" class="selectpicker pull-right" data-width="100" >
+                <select id="Interface" class="selectpicker pull-right" data-width="80" >
                     <option value="25" selected="selected">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
@@ -378,11 +386,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 </div>
                 <div class="checkbox-inline pull-right col-xs-2">
                 <fieldset>
-                <input type="radio" id="fw_tcpudp" value="1" name="tcpupd" checked="checked"> tcp/udp</input>
+                <input type="radio" id="fw_tcpudp" value="1" name="tcpupd" checked="checked"> tcp/udp/icmp</input>
                 </br>
                 <input type="radio" id="fw_tcp" value="2" name="tcpupd"> tcp</input>
                 </br>
                 <input type="radio" id="fw_udp" value="3" name="tcpupd"> udp</input>
+                </br>
+                <input type="radio" id="fw_icmp" value="4" name="tcpupd"> icmp</input>
                 </br>
                 </fieldset>
                 </div>
