@@ -238,16 +238,61 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
             });
         }
-
+        
         // live filter
-        $("#filter").keyup(function(){
-            var search_str = $(this).val().toLowerCase();
+        $('#filter').keyup(function() {
+            var usr_str_block = usr_str_nat = usr_str_pass = usr_str_rdr = usr_str_tcp = usr_str_udp = usr_str_tcpudp = search_str = 'undef';
+            if (($('#pass_fw').is(':checked')) || ($('#block_fw').is(':checked')) || ($('#nat_fw').is(':checked')) || ($('#fw_udp').is(':checked')) || ($('#fw_tcp').is(':checked'))) {
+                if ($('#pass_fw').is(':checked')) {
+                    var usr_str_pass = 'pass';
+                } if ($('#block_fw').is(':checked')) {
+                    var usr_str_block = 'block';
+                } if ($('#nat_fw').is(':checked')) {
+                    var usr_str_nat = 'nat';
+                    var usr_str_rdr = 'rdr';
+                } if ($('#fw_tcp').is(':checked')) {
+                    var usr_str_tcp = 'tcp';
+                } if ($('#fw_udp').is(':checked')) {
+                    var usr_str_udp = 'udp';
+                } if ($('#fw_tcpudp').is(':checked')) {
+                    var usr_str_tcpudp = '';
+                }
+                var search_str = $(this).val().toLowerCase();
+            }
             $("#grid-log > tbody > tr").each(function(){
-                var selected_tr = $(this);
-                var visible_text = $(this).text().toLowerCase();
+            var selected_tr = $(this);
+            var visible_text = $(this).text().toLowerCase();
                 try {
-                    if (visible_text.match(search_str)) {
-                        selected_tr.show();
+                    if ((visible_text.match(usr_str_pass)) && (visible_text.match(search_str))) {
+                        if (visible_text.match(usr_str_tcp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_udp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_tcpudp)) {
+                            selected_tr.show();
+                        } else {
+                            selected_tr.hide();
+                        }
+                    } else if ((visible_text.match(usr_str_block))  && (visible_text.match(search_str))) {
+                        if (visible_text.match(usr_str_tcp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_udp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_tcpudp)) {
+                            selected_tr.show();
+                        } else {
+                            selected_tr.hide();
+                        }
+                    } else if (((visible_text.match(usr_str_nat)) || (visible_text.match(usr_str_rdr)))  && (visible_text.match(search_str))) {
+                        if (visible_text.match(usr_str_tcp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_udp)) {
+                            selected_tr.show();
+                        } else if (visible_text.match(usr_str_tcpudp)) {
+                            selected_tr.show();
+                        } else {
+                            selected_tr.hide();
+                        }
                     } else {
                         selected_tr.hide();
                     }
@@ -303,11 +348,24 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="content-box">
     <div class="content-box-main">
         <div class="table-responsive">
-            <div  class="col-xs-12">
-                <div class="checkbox-inline  col-xs-3">
+            <div class="col-xs-12">
+              <div class="panel-body">
+                <div class="checkbox-inline col-xs-2">
                   <input type="text" id="filter" class="form-control" placeholder="filter">
                 </div>
-                <div class="checkbox-inline pull-right">
+                <div class="checkbox-inline pull-right col-xs-3">
+                <div>
+                <select id="Interface" class="selectpicker pull-right" data-width="100" >
+                    <option value="25" selected="selected">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="2500">2500</option>
+                    <option value="5000">5000</option>
+                </select>
+                </div>
                   <label>
                     <input id="auto_refresh" type="checkbox" checked="checked">
                     <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
@@ -318,17 +376,34 @@ POSSIBILITY OF SUCH DAMAGE.
                       <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
                   </label>
                 </div>
-                <select id="limit" class="selectpicker pull-right" data-width="100" >
-                    <option value="25" selected="selected">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="250">250</option>
-                    <option value="500">500</option>
-                    <option value="1000">1000</option>
-                    <option value="2500">2500</option>
-                    <option value="5000">5000</option>
-                </select>
-            </div>
+                <div class="checkbox-inline pull-right col-xs-2">
+                <fieldset>
+                <input type="radio" id="fw_tcpudp" value="1" name="tcpupd" checked="checked"> tcp/udp</input>
+                </br>
+                <input type="radio" id="fw_tcp" value="2" name="tcp"> tcp</input>
+                </br>
+                <input type="radio" id="fw_udp" value="3" name="upd"> udp</input>
+                </br>
+                </fieldset>
+                </div>
+                <div class="checkbox-inline pull-right col-xs-2">
+                  <label>
+                    <input id="block_fw" class="user_filter" type="checkbox" checked="checked">
+                    <span class="fa fa-ban"></span> {{ lang._('Show blocked') }}
+                  </label>
+                  <br/>
+                  <label>
+                    <input id="pass_fw" class="user_filter" type="checkbox" checked="checked">
+                    <span class="fa fa-play"></span> {{ lang._('Show pass') }}
+                  </label>
+                  <br/>
+                  <label>
+                    <input id="nat_fw" class="user_filter" type="checkbox" checked="checked">
+                    <span class="fa fa-exchange"></span> {{ lang._('Show nat/rdr') }}
+                  </label>
+                </div>
+                </div>
+              </div>
             <div  class="col-xs-12">
                 <hr/>
                 <div class="table-responsive">
