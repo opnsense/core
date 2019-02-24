@@ -132,6 +132,12 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON2}-requests \
 			py${CORE_PYTHON2}-sqlite3 \
 			py${CORE_PYTHON2}-ujson \
+			py${CORE_PYTHON3}-Jinja2 \
+			py${CORE_PYTHON3}-dnspython \
+			py${CORE_PYTHON3}-netaddr \
+			py${CORE_PYTHON3}-requests \
+			py${CORE_PYTHON3}-sqlite3 \
+			py${CORE_PYTHON3}-ujson \
 			radvd${CORE_RADVD} \
 			rate \
 			rrdtool \
