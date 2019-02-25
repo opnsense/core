@@ -275,7 +275,7 @@ class Template(object):
                             src_file_handle.seek(-1, os.SEEK_END)
                             last_bytes_template = src_file_handle.read()
                             src_file_handle.close()
-                            if last_bytes_template in ('\n', '\r'):
+                            if last_bytes_template in (b'\n', b'\r'):
                                 f_out.write('\n')
                         f_out.close()
                         # copy root permissions, without exec
