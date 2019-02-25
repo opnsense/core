@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -47,6 +47,12 @@ function webgui_configure_do($verbose = false, $interface = '')
         $interfaces[] = 'lo0';
     }
 
+    @mkdir('/var/lib/php/sessions', 0750, true);
+    /* do not trust PHP with mkdir permission on existing directory */
+    @chmod('/var/lib/php/sessions', 0750);
+    @chown('/var/lib/php/sessions', 'root');
+    @chgrp('/var/lib/php/sessions', 'wheel');
+
     if (!empty($interface) && !in_array($interface, $interfaces)) {
         return;
     }
@@ -68,9 +74,6 @@ function webgui_configure_do($verbose = false, $interface = '')
     }
 
     chdir('/usr/local/www');
-    @mkdir('/var/lib/php/sessions', 0750, true);
-    @chown('/var/lib/php/sessions', 'root');
-    @chgrp('/var/lib/php/sessions', 'wheel');
 
     /* defaults */
     $portarg = '80';
