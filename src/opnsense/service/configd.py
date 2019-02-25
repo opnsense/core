@@ -45,10 +45,7 @@ from modules.daemonize import Daemonize
 import cProfile
 
 # find program path
-if len(__file__.split('/')[:-1]) > 0:
-    program_path = '/'.join(__file__.split('/')[:-1])
-else:
-    program_path = os.getcwd()
+program_path = os.path.dirname(os.path.abspath(__file__))
 
 # set working directory to program_path
 sys.path.append(program_path)
