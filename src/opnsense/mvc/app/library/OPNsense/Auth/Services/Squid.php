@@ -28,6 +28,7 @@
 
 namespace OPNsense\Auth\Services;
 
+use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 use OPNsense\Auth\IService;
 
@@ -79,7 +80,7 @@ class Squid implements IService
       */
      public function checkConstraints()
      {
-          // TODO: need to refactor userHasPrivilege() to OPNsense/Core/ACL usage
-          return false;
+          // XXX: replace with group membership in 19.7
+          return (new ACL())->hasPrivilege($this->getUserName(), 'user-proxy-auth');
      }
 }

@@ -269,6 +269,49 @@ class ACL
     }
 
     /**
+     * test if a user has a certain privilege set.
+     * (transition method, should be replaced by group membership)
+     * @param string $username user name
+     * @param string $priv privilege name
+     * @return bool
+     */
+    public function hasPrivilege($username, $priv)
+    {
+        $uid = null;
+        $privs = array();
+        $groups = array();
+        $config = Config::getInstance()->object();
+        if ($config->system->count() > 0) {
+            foreach ($config->system->children() as $key => $node) {
+                if ($key == 'user' && (string)$node->name == $username) {
+                    foreach ($node->priv as $priv) {
+                        $privs[] = (string)$priv;
+                    }
+                    $uid = (string)$node->uid;
+                }
+            }
+            foreach ($config->system->children() as $key => $groupNode) {
+                if ($key == 'group') {
+                    $group_privs = array();
+                    $userInGrp = false;
+                    foreach ($groupNode->children() as $itemKey => $node) {
+                        if ($node->getName() == "member" && (string)$node == $uid) {
+                            $userInGrp = true;
+                        } elseif ($node->getName() == "priv") {
+                            $group_privs[] = (string)$node;
+                        }
+                    }
+                    if ($userInGrp) {
+                        $privs = array_merge($privs, $group_privs);
+                    }
+                }
+            }
+        }
+
+        return in_array($priv, $privs);
+    }
+
+    /**
      * get user preferred landing page
      * @param string $username user name
      * @return bool|null|string|string[]
