@@ -110,7 +110,7 @@ function parse_csr($csr_str)
                                 $ret['basicConstraints'] = array();
                                 $ret['basicConstraints']['CA'] = $column['extnValue']['cA'];
                                 if (isset($column['extnValue']['pathLenConstraint'])) { 
-                                    $ret['basicConstraints']['pathlen'] = (int)($column['extnValue']['pathLenConstraint']->value);
+                                    $ret['basicConstraints']['pathlen'] = (int)($column['extnValue']['pathLenConstraint']->toString());
                                 }
 
                                 break;
