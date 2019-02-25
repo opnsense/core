@@ -493,7 +493,7 @@ function openvpn_add_dhcpopts(&$settings, &$conf)
     }
 }
 
-function openvpn_add_custom(& $settings, & $conf)
+function openvpn_add_custom(&$settings, &$conf)
 {
     if (!empty($settings['custom_options'])) {
         $options = explode(';', $settings['custom_options']);
@@ -513,8 +513,6 @@ function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
     openvpn_create_dirs();
     $data = str_replace("\r", "", base64_decode($data));
     file_put_contents($fpath, str_replace("\n\n", "\n", $data));
-    //chown($fpath, 'nobody');
-    //chgrp($fpath, 'nobody');
     @chmod($fpath, 0600);
 
     $conf .= "{$directive} {$fpath} {$opt}\n";
@@ -562,23 +560,26 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $proto = "{$proto}-{$mode}";
     }
     $cipher = $settings['crypto'];
-    // OpenVPN defaults to SHA1, so use it when unset to maintain compatibility.
-    $digest = !empty($settings['digest']) ? $settings['digest'] : "SHA1";
 
-    /* XXX does not support IPv6: missing 'inet6' */
+    /* defaults to SHA1, so use it when unset to maintain compatibility */
+    $digest = !empty($settings['digest']) ? $settings['digest'] : 'SHA1';
+
+    /* the function is used incorrectly, but works as it only checks the link connectivity */
     $interface = get_failover_interface($settings['interface']);
-    $ipaddr = $settings['ipaddr'];
 
-    // If a specific ip address (VIP) is requested, use it.
-    // Otherwise, if a specific interface is requested, use it
-    // If "any" interface was selected, local directive will be ommited.
-    if (is_ipaddr($ipaddr)) {
-        $iface_ip=$ipaddr;
-    } elseif (!empty($interface) && $interface != "any") {
-        if (stristr($settings['protocol'], "6") !== false) {
-            $iface_ip = get_interface_ipv6($interface);
+    /*
+     * If a specific IP address (VIP) is requested, use it.
+     * Otherwise, if a specific interface is requested, use
+     * it unless "any" interface was selected, then the local
+     * directive will be ommited.
+     */
+    if (is_ipaddr($settings['ipaddr'])) {
+        $iface_ip = $settings['ipaddr'];
+    } elseif ($settings['interface'] != 'any') {
+        if (stristr($settings['protocol'], '6') !== false) {
+            $iface_ip = get_interface_ipv6($settings['interface']);
         } else {
-            $iface_ip = get_interface_ip($interface);
+            $iface_ip = get_interface_ip($settings['interface']);
         }
     }
 
@@ -598,8 +599,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     $conf .= "dev-node /dev/{$devnode}\n";
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
-    $conf .= "#user nobody\n";
-    $conf .= "#group nobody\n";
     $conf .= "script-security 3\n";
     $conf .= "daemon\n";
     $conf .= "keepalive 10 60\n";
@@ -967,8 +966,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     unset($conf);
     $fpath = "/var/etc/openvpn/{$mode_id}.interface";
     file_put_contents($fpath, $interface);
-    //chown($fpath, 'nobody');
-    //chgrp($fpath, 'nobody');
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
     @chmod("/var/etc/openvpn/{$mode_id}.interface", 0600);
     @chmod("/var/etc/openvpn/{$mode_id}.key", 0600);
@@ -1271,7 +1268,7 @@ function openvpn_get_active_servers($type = 'multipoint')
 
     $servers = array();
     if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as & $settings) {
+        foreach ($config['openvpn']['openvpn-server'] as &$settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
             }
@@ -1373,8 +1370,9 @@ function openvpn_get_active_clients()
     global $config;
 
     $clients = array();
+
     if (isset($config['openvpn']['openvpn-client']) && is_array($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as & $settings) {
+        foreach ($config['openvpn']['openvpn-client'] as &$settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
             }
@@ -1393,10 +1391,11 @@ function openvpn_get_active_clients()
             $client['vpnid'] = $settings['vpnid'];
             $client['mgmt'] = "client{$client['vpnid']}";
             $socket = "unix:///var/etc/openvpn/{$client['mgmt']}.sock";
-            $client['status']="down";
+            $client['status'] = 'down';
             $clients[] = openvpn_get_client_status($client, $socket);
         }
     }
+
     return $clients;
 }
 
@@ -1425,12 +1424,12 @@ function openvpn_get_client_status($client, $socket)
             if (count($list) > 1) {
                 $client['connect_time'] = date('Y-m-d H:i:s', $list[0]);
             }
-            if (strstr($line, "CONNECTED")) {
-                $client['status']="up";
+            if (strstr($line, 'CONNECTED')) {
+                $client['status'] = 'up';
                 $client['virtual_addr'] = $list[3];
                 $client['remote_host'] = $list[4];
-            } elseif (strstr($line, "CONNECTING")) {
-                $client['status']="connecting";
+            } elseif (strstr($line, 'CONNECTING')) {
+                $client['status'] = 'connecting';
             } elseif (strstr($line, "ASSIGN_IP")) {
                 $client['status'] = "waiting";
                 $client['virtual_addr'] = $list[3];
@@ -1686,9 +1685,10 @@ function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
             if (file_exists($fpath)) {
                 $current_device = file_get_contents($fpath);
                 $current_device = trim($current_device, " \t\n");
-                /* XXX does not support IPv6: missing 'inet6' */
+                /* the function is used incorrectly, but works as it only checks the link connectivity */
                 $new_device = get_failover_interface($ovpn_settings['interface']);
                 if (isset($config['interfaces'][$interface])) {
+                    /* this is tied to IPv4, but as stated above it only checks the link connectivity */
                     $this_device = $config['interfaces'][$interface]['if'];
                     if (($current_device == $new_device) && ($current_device != $this_device)) {
                         $resync_needed = false;
