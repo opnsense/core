@@ -214,7 +214,7 @@ $cert_types = array('usr_cert', 'server_cert', 'combined_server_client', 'v3_ca'
 $key_usages = array(
     'digitalSignature' => gettext('digitalSignature'),
     'nonRepudiation'   => gettext('nonRepudiation'),
-    'keyEncipherment'  => gettext('keyEncpiherment'),
+    'keyEncipherment'  => gettext('keyEncipherment'),
     'dataEncipherment' => gettext('dataEncipherment'),
     'keyAgreement'     => gettext('keyAgreement'),
     'keyCertSign'      => gettext('keyCertSign'),
@@ -656,7 +656,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     $dn['extendedKeyUsage'] = $resstr;
                 }
-                if (isset($pconfig['basic_constraints_is_ca_sign_csr']) && $pconfig['basic_constraints_is_ca_sign_csr'] === 'true') {
+                if ($pconfig['basic_constraints_is_ca_sign_csr'] === 'true') {
                     $dn['basicConstraints'] = 'CA:' . ((isset($pconfig['basic_constraints_is_ca_sign_csr']) && $pconfig['basic_constraints_is_ca_sign_csr'] === 'true') ? 'TRUE' : 'false');
                     if (isset($pconfig['basic_constraints_path_len_sign_csr']) && $pconfig['basic_constraints_path_len_sign_csr'] != '') {
                         $dn['basicConstraints'] .= ', pathlen:' . ((int) $pconfig['basic_constraints_path_len_sign_csr']);
@@ -959,11 +959,11 @@ if (empty($act)) {
                                 });
                         }
                         if ('basicConstraints' in data) {
-                                $('#basic_constraints_enabled_sign_csr').prop('checked', true);
                                 $('#basic_constraints_is_ca_sign_csr').prop('checked', data.basicConstraints.CA);
                                 $('#basic_constraints_path_len_sign_csr').val(('pathlen' in data.basicConstraints) ? data.basicConstraints.pathlen : '');
                         } else {
-                                $('#basic_constraints_enabled_sign_csr').prop('checked', false);
+                                $('#basic_constraints_is_ca_sign_csr').prop('checked', false);
+                                $('#basic_constraints_path_len_sign_csr').val('');
                         }
                         basic_constraints_enabled_sign_csr_refresh();
 
@@ -1342,18 +1342,16 @@ $( document ).ready(function() {
                     <td style="width:78%">
                       <script type="text/javascript">
                       function basic_constraints_enabled_sign_csr_refresh() {
-                          basic_constraints_enabled = $('#basic_constraints_enabled_sign_csr').prop('checked');
-                          $('#basic_constraints_is_ca_sign_csr').prop('disabled', !basic_constraints_enabled)
+                          basic_constraints_enabled = $('#basic_constraints_is_ca_sign_csr').prop('checked');
                           $('#basic_constraints_path_len_sign_csr').prop('disabled', !basic_constraints_enabled)
                       }
                       </script>
-                      <input type="checkbox" name="basic_constraints_enabled_sign_csr"  id="basic_constraints_enabled_sign_csr"  value="true" onchange="basic_constraints_enabled_sign_csr_refresh();" /> <?= gettext('basicConstraints enabled'); ?><br />
-                      <input type="checkbox" name="basic_constraints_is_ca_sign_csr"    id="basic_constraints_is_ca_sign_csr"    value="true" /> <?= gettext('is CA'); ?><br />
+                      <input type="checkbox" name="basic_constraints_is_ca_sign_csr"    id="basic_constraints_is_ca_sign_csr" onchange="basic_constraints_enabled_sign_csr_refresh();" value="true" /> <?= gettext('is CA'); ?><br />
                       <?= gettext('Path Len'); ?>: <input type="text"     name="basic_constraints_path_len_sign_csr" id="basic_constraints_path_len_sign_csr" size="5" value="<?=$pconfig['basic_constraints_sign_csr'];?>"/>
                     </td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('keyUsage');?></td>
+                    <td style="width:22%"><a id="help_for_key_usage_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('keyUsage');?></td>
                     <td style="width:78%">
                       <select name="key_usage_sign_csr[]" title="Select keyUsages..." multiple="multiple" id="key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
@@ -1364,10 +1362,17 @@ $( document ).ready(function() {
 <?php
                       endforeach; ?>
                       </select>
+                      <div class="hidden" data-for="help_for_key_usage_sign_csr">
+                        Practical examples:
+                        <ul>
+                          <li>Client</li>
+                          <li>Server</li>
+                        </ul>
+                      </div>
                     </td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('extendedKeyUsage');?></td>
+                    <td style="width:22%"><a id="help_for_extended_key_usage_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('extendedKeyUsage');?></td>
                     <td style="width:78%">
                       <select name="extended_key_usage_sign_csr[]" title="Select extendedKeyUsages..." multiple="multiple" id="extended_key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
@@ -1378,6 +1383,13 @@ $( document ).ready(function() {
 <?php
                       endforeach; ?>
                       </select>
+                    <div class="hidden" data-for="help_for_extended_key_usage_sign_csr">
+                      Available options:
+                      <ul>
+                        <li>SERVER_AUTH: foo</li>
+                        <li>CLIENT_AUTH: bar</li>
+                      </ul>
+                    </div>
                     </td>
                   </tr>
                 </tbody>
