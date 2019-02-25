@@ -56,7 +56,6 @@
 /usr/local/etc/inc/xmlrpc/service.inc
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/netflow.conf.example
-/usr/local/etc/pam.d/squid
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20170721
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20150402
@@ -851,6 +850,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/snmp.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.acl.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.conf
+/usr/local/opnsense/service/templates/OPNsense/Proxy/squid.pam
 /usr/local/opnsense/service/templates/OPNsense/Proxy/squid.user.local_auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/wpad.dat
 /usr/local/opnsense/service/templates/OPNsense/Sample/+TARGETS
