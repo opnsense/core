@@ -56,6 +56,7 @@
 /usr/local/etc/inc/xmlrpc/service.inc
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/netflow.conf.example
+/usr/local/etc/pam.d/squid
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20170721
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20150402
@@ -409,6 +410,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LocalTOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/OpnsenseAuthTest.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/Squid.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/Sshd.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/System.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/TOTP.php
