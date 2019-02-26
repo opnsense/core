@@ -432,7 +432,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Close') }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Cancel') }}</button>
                 <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save') }}
                     <i id="btn_formDialogAlias_save_progress" class=""></i></button>
             </div>
