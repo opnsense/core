@@ -263,7 +263,7 @@
             <tr>
                <td>
                   <button class="btn btn-primary" id="btnSaveGeneral" type="button">
-                     <b>{{ lang._('Save changes') }}</b><i id="btnSaveGeneralProgress"></i>
+                     <b>{{ lang._('Save') }}</b> <i id="btnSaveGeneralProgress"></i>
                   </button>
                </td>
             </tr>
