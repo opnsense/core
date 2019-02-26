@@ -82,6 +82,7 @@ class CountryField extends BaseField
                     }
                 }
             }
+            natcasesort(self::$internalOptionList);
         }
     }
 

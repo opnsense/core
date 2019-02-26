@@ -145,6 +145,10 @@ class ModelRelationField extends BaseField
                 }
                 unset($modelObj);
             }
+            if (!$this->internalIsSorted) {
+                natcasesort(self::$internalOptionList[$this->internalCacheKey]);
+            }
+
         }
     }
 
