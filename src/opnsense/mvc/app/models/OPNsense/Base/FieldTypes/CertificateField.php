@@ -104,6 +104,7 @@ class CertificateField extends BaseField
             foreach ($configObj->{$this->certificateType} as $cert) {
                 self::$internalOptionList[$this->certificateType][(string)$cert->refid] = (string)$cert->descr;
             }
+            natcasesort(self::$internalOptionList[$this->certificateType]);
         }
     }
 

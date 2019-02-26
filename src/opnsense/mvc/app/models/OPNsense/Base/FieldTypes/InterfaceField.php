@@ -190,6 +190,7 @@ class InterfaceField extends BaseField
                         !empty($value->descr) ? (string)$value->descr : strtoupper($key);
                 }
             }
+            natcasesort(self::$internalOptionList[$this->internalCacheKey]);
         }
     }
 
