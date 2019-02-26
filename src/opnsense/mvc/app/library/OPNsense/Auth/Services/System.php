@@ -56,29 +56,29 @@ class System implements IService
             $result[] = 'Local Database';
         }
         return $result;
-     }
+    }
 
      /**
       * {@inheritdoc}
       */
-     public function setUserName($username)
-     {
+    public function setUserName($username)
+    {
         $this->username = $username;
-     }
+    }
 
      /**
       * {@inheritdoc}
       */
-     public function getUserName()
-     {
+    public function getUserName()
+    {
         return $this->username;
-     }
+    }
 
      /**
       * {@inheritdoc}
       */
-     public function checkConstraints()
-     {
-          return true;
-     }
+    public function checkConstraints()
+    {
+         return true;
+    }
 }

@@ -57,30 +57,30 @@ class Squid implements IService
             $result[] = 'Local Database';
         }
         return $result;
-     }
+    }
 
      /**
       * {@inheritdoc}
       */
-     public function setUserName($username)
-     {
+    public function setUserName($username)
+    {
         $this->username = $username;
-     }
+    }
 
      /**
       * {@inheritdoc}
       */
-     public function getUserName()
-     {
+    public function getUserName()
+    {
         return $this->username;
-     }
+    }
 
      /**
       * {@inheritdoc}
       */
-     public function checkConstraints()
-     {
-          // XXX: replace with group membership in 19.7
-          return (new ACL())->hasPrivilege($this->getUserName(), 'user-proxy-auth');
-     }
+    public function checkConstraints()
+    {
+         // XXX: replace with group membership in 19.7
+         return (new ACL())->hasPrivilege($this->getUserName(), 'user-proxy-auth');
+    }
 }
