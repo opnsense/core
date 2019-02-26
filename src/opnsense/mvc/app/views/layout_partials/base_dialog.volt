@@ -123,9 +123,11 @@ label           :   dialog label
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Close') }}</button>
                 {% if hasSaveBtn|default('true') == 'true' %}
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Cancel') }}</button>
                 <button type="button" class="btn btn-primary" id="btn_{{base_dialog_id}}_save">{{ lang._('Save') }} <i id="btn_{{base_dialog_id}}_save_progress" class=""></i></button>
+                {% else %}
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Close') }}</button>
                 {% endif %}
             </div>
         </div>
