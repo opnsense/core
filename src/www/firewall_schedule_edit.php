@@ -587,7 +587,7 @@ function addTimeRange(){
     + stoptimemin;
 
     //get description for time range
-    tempdescr = document.getElementById("timerangedescr").value;
+    tempdescr = escape(document.getElementById("timerangedescr").value);
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;
@@ -715,7 +715,7 @@ function editRow(incTime, el) {
 
     days = tempArray[0];
     hours = tempArray[1];
-    descr = tempArray[2];
+    descr = escape(tempArray[2]);
 
     var tempdayArray = days.split(",");
     var temphourArray = hours.split("-");
