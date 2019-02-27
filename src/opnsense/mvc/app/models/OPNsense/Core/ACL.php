@@ -272,10 +272,10 @@ class ACL
      * test if a user has a certain privilege set.
      * (transition method, should be replaced by group membership)
      * @param string $username user name
-     * @param string $priv privilege name
+     * @param string $reqpriv privilege name
      * @return bool
      */
-    public function hasPrivilege($username, $priv)
+    public function hasPrivilege($username, $reqpriv)
     {
         $uid = null;
         $privs = array();
@@ -307,8 +307,7 @@ class ACL
                 }
             }
         }
-
-        return in_array($priv, $privs);
+        return in_array($reqpriv, $privs);
     }
 
     /**
