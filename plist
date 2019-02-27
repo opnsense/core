@@ -119,7 +119,6 @@
 /usr/local/etc/rc.syshook.d/backup/20-netflow
 /usr/local/etc/rc.syshook.d/backup/20-rrd
 /usr/local/etc/rc.syshook.d/carp/20-openvpn
-/usr/local/etc/rc.syshook.d/early/01-usbconfig_reset
 /usr/local/etc/rc.syshook.d/early/05-update
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
@@ -410,9 +409,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LocalTOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/OpnsenseAuthTest.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/Squid.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/Sshd.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/System.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/TOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Voucher.php
