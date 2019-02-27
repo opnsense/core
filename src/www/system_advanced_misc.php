@@ -100,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['system']['powerd_normal_mode'])) {
         $pconfig['powerd_normal_mode'] = $config['system']['powerd_normal_mode'];
     }
+    // System Sounds
     $pconfig['disablebeep'] = isset($config['system']['disablebeep']);
-    $pconfig['usbconfig_reset'] = isset($config['system']['usbconfig_reset']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -197,11 +197,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disablebeep'] = true;
         } elseif (isset($config['system']['disablebeep'])) {
             unset($config['system']['disablebeep']);
-        }
-        if (!empty($pconfig['usbconfig_reset'])) {
-            $config['system']['usbconfig_reset'] = true;
-        } elseif (isset($config['system']['usbconfig_reset'])) {
-            unset($config['system']['usbconfig_reset']);
         }
 
         write_config();
@@ -552,24 +547,6 @@ include("head.inc");
                         <?=gettext("Disable the startup/shutdown beep"); ?>
                         <div class="hidden" data-for="help_for_disablebeep">
                             <?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-                <tr>
-                    <td style="width:22%"><strong><?= gettext('Advanced') ?></strong></td>
-                    <td style="width:78%"></td>
-                </tr>
-                <tr>
-                    <td><a id="help_for_usbconfig_reset" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reset usb on boot"); ?></td>
-                    <td>
-                        <input name="usbconfig_reset" type="checkbox" id="usbconfig_reset" value="yes" <?=!empty($pconfig['usbconfig_reset']) ? 'checked="checked"' : '';?>/>
-                        <?=gettext("This forces the USB stack to reenumerate the bus on boot."); ?>
-                        <div class="hidden" data-for="help_for_usbconfig_reset">
-                            <?=gettext("Some usb connected devices (like 3g/4g modems) have issues with initial probe, this forces a reset after initial device detection."); ?>
                         </div>
                     </td>
                 </tr>
