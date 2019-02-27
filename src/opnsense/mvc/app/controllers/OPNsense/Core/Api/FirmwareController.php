@@ -723,10 +723,12 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
-        /* allows us to select UI features based on product state */
-        list ($response['product_name'], $response['product_version']) =
-            explode(' ', trim(shell_exec('opnsense-version -nv')));
+        $version = explode(' ', trim(shell_exec('opnsense-version -nv')));
+        foreach (array('product_name' => 0, 'product_version' => 1) as $result => $index) {
+            $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
+        }
 
+        /* allows us to select UI features based on product state */
         $devel = explode('-', $response['product_name']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
 
