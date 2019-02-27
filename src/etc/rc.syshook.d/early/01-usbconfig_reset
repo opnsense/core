@@ -4,9 +4,6 @@ USB_RESET_ON="<usbconfig_reset>1</usbconfig_reset>"
 
 if [ -f /conf/config.xml ]; then
     if [ "$(grep -c "${USB_RESET_ON}" /conf/config.xml)" != "0" ]; then
-        # XXX: suboptiomal, it seems impossible to detect if usb probe during boot is actually finished.
-        sleep 10
         /usr/sbin/usbconfig reset >/dev/null 2>&1
-        exit 0
     fi
 fi
