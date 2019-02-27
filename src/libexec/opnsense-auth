@@ -1,0 +1,84 @@
+#!/usr/local/bin/php
+<?php
+
+/**
+ *    Copyright (C) 2016 Deciso B.V.
+ *
+ *    All rights reserved.
+ *
+ *    Redistribution and use in source and binary forms, with or without
+ *    modification, are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *
+ *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *    POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+require_once("config.inc");
+require_once("auth.inc");
+
+// parse received auth data (key=value combinations separated by "\0")
+//  user=<name>
+//  password=<password>
+//  service=<pam service> (to be implemented)
+
+$fp = fopen('php://stdin', 'r');
+$auth_data = array();
+$line = '';
+
+while (($char = fgetc($fp)) !== false) {
+    if ($char !== "\0") {
+        $line .= $char;
+    } elseif (strlen($line)) {
+        $parts = explode('=', $line, 2);
+        if (count($parts) == 2) {
+            $auth_data[$parts[0]] = $parts[1];
+        }
+        $line = '';
+    } else {
+        break;
+    }
+}
+
+$is_authenticated = false;
+$exit_status = -1;
+
+if (!empty($auth_data['user']) && isset($auth_data['password'])) {
+    $authservers = !empty($config['system']['webgui']['authmode']) ?
+        explode(',', $config['system']['webgui']['authmode']) : array('Local Database');
+
+    foreach ($authservers as $authserver) {
+        if (authenticate_user($auth_data['user'], $auth_data['password'], auth_get_authserver($authserver))) {
+            $is_authenticated = true;
+            break;
+        }
+    }
+
+    if ($is_authenticated) {
+        syslog(LOG_NOTICE, "user '".$auth_data['user']."' authenticated successfully\n");
+        $exit_status = 0;
+    } else {
+        if (getUserEntry($auth_data['user']) === false) {
+            $exit_status = 2;
+        }
+        syslog(LOG_WARNING, "user '".$auth_data['user']."' could not authenticate.\n");
+    }
+}
+
+closelog();
+exit($exit_status);
