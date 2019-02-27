@@ -48,11 +48,12 @@ class System implements IService
     public static function aliases()
     {
         return [
-            'sshd',
-            'sudo',
             'login',
+            'opnsenseauthtest', /* XXX unused in >= 19.7 */
+            'opnsenselogin',
+            'sshd',
             'su',
-            'opnsenseauthtest'
+            'sudo',
         ];
     }
 
