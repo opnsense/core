@@ -76,7 +76,7 @@ function legacy_html_escape_form_data(&$settings)
             if (is_array($dataValue)) {
                 legacy_html_escape_form_data($dataValue);
             } else {
-                $settings[$dataKey] = htmlspecialchars($dataValue, ENT_QUOTES);
+                $settings[$dataKey] = htmlspecialchars($dataValue, ENT_QUOTES | ENT_HTML401);
             }
         }
     }
