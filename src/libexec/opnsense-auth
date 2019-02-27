@@ -63,18 +63,12 @@ if (!empty($auth_data['user']) && isset($auth_data['password'])) {
     $authFactory = new \OPNsense\Auth\AuthenticationFactory();
     $is_authenticated = $authFactory->authenticate($auth_data['service'], $auth_data['user'], $auth_data['password']);
     if ($is_authenticated) {
-        syslog(LOG_NOTICE, sprintf(
-            "user %s authenticated successfully for %s\n", $auth_data['user'], $auth_data['service']
-        ));
         $exit_status = 0;
     } else {
         if (getUserEntry($auth_data['user']) === false) {
             // signal user unknown, so PAM may consider other options
             $exit_status = 2;
         }
-        syslog(LOG_WARNING, sprintf(
-            "user %s could not authenticate for %s.\n", $auth_data['user'], $auth_data['service']
-        ));
     }
 }
 

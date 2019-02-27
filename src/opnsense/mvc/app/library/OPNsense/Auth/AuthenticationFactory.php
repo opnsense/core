@@ -146,15 +146,26 @@ class AuthenticationFactory
      */
     public function getService($service_name)
     {
+        $aliases = array();
         // cleanse service name
         $srv_name = strtolower(str_replace(array('-', '_'), '', $service_name));
         foreach (glob(__DIR__."/Services/*.php") as $filename) {
             $srv_found = basename($filename, '.php');
-            if (strtolower($srv_found) == $srv_name) {
-                $reflClass = new \ReflectionClass("OPNsense\\Auth\\Services\\{$srv_found}");
-                if ($reflClass->implementsInterface('OPNsense\\Auth\\IService')) {
+            $reflClass = new \ReflectionClass("OPNsense\\Auth\\Services\\{$srv_found}");
+            if ($reflClass->implementsInterface('OPNsense\\Auth\\IService')) {
+                // stash aliases
+                foreach ($reflClass->getMethod('aliases')->invoke(null) as $alias) {
+                    $aliases[$alias] = $reflClass;
+                }
+                if (strtolower($srv_found) == $srv_name) {
                     return $reflClass->newInstance();
                 }
+            }
+        }
+        // class not found, test if one of the classes found aliases our requested service
+        foreach ($aliases as $alias => $reflClass) {
+            if (strtolower($alias) == $srv_name) {
+                return $reflClass->newInstance();
             }
         }
         return null;
@@ -176,11 +187,35 @@ class AuthenticationFactory
                 $authenticator = $this->get($authname);
                 if ($authenticator !== null) {
                     if ($authenticator->authenticate($service->getUserName(), $password)) {
-                        return $service->checkConstraints();
+                        if ($service->checkConstraints()) {
+                            syslog(LOG_NOTICE, sprintf(
+                                "user %s authenticated successfully for %s [using %s + %s]\n",
+                                $username, $service_name, get_class($service), get_class($authenticator)
+                            ));
+                            return true;
+                        } else {
+                            // since checkConstraints() is defined on the service, who doesn't know about the
+                            // authentication method. We can safely asume we cannot authenticate.
+                            syslog(LOG_WARNING, sprintf(
+                              "user %s could not authenticate for %s, failed constraints on %s authenticated via %s",
+                              $username, $service_name, get_class($service), get_class($authenticator)
+                            ));
+                            return false;
+                        }
+                    } else {
+                        syslog(LOG_DEBUG, sprintf(
+                          "user %s failed authentication for %s on %s via %s",
+                          $username, $service_name, get_class($service), get_class($authenticator)
+                        ));
                     }
                 }
             }
         }
+        syslog(LOG_WARNING, sprintf(
+            "user %s could not authenticate for %s. [using %s + %s]\n", $username, $service_name,
+            !empty($service) ? get_class($service) : '-',
+            !empty($authenticator) ? get_class($authenticator) : '-'
+        ));
         return false;
     }
 

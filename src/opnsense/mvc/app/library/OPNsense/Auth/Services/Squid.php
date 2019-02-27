@@ -46,6 +46,14 @@ class Squid implements IService
     /**
      * {@inheritdoc}
      */
+    public static function aliases()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function supportedAuthenticators()
     {
         $result = array();

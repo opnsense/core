@@ -36,6 +36,18 @@ namespace OPNsense\Auth;
 interface IService
 {
     /**
+     * return aliases for this service
+     * pam supports "includes" to adapt generic templates, since we align to pam services it's practical to have a
+     * similar method to extend defaults.
+     *
+     * An alias serves as a fallback, if there's a class defined handling the specific service it should take
+     * precedence over the alias (handled by our authentication factory).
+     *
+     * @return  array of strings
+     */
+    public static function aliases();
+
+    /**
      * return all configured / supported configurators for this service
      * @return array list of configured authenticators (defined in system->authserver)
      */

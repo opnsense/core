@@ -45,6 +45,20 @@ class System implements IService
     /**
      * {@inheritdoc}
      */
+    public static function aliases()
+    {
+        return [
+            'sshd',
+            'sudo',
+            'login',
+            'su',
+            'opnsenseauthtest'
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function supportedAuthenticators()
     {
         $result = array();
