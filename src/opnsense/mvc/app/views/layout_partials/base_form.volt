@@ -69,15 +69,6 @@ data_title      :   data-title to set on form
         </tr>
 {% endif %}
         {% for field in fields|default({})%}
-            {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
-            {% set advanced=false %}
-            {% set help=false %}
-            {% set hint=false %}
-            {% set style=false %}
-            {% set maxheight=false %}
-            {% set width=false %}
-            {% set allownew=false %}
-            {% set readonly=false %}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
 
