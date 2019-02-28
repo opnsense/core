@@ -24,7 +24,6 @@
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
-/usr/local/etc/inc/plugins.inc.d/ipsec/auth-user.php
 /usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
@@ -800,6 +799,7 @@
 /usr/local/opnsense/service/modules/template.py
 /usr/local/opnsense/service/run_unittests.py
 /usr/local/opnsense/service/templates/OPNsense/Auth/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Auth/ipsec.pam
 /usr/local/opnsense/service/templates/OPNsense/Auth/motd
 /usr/local/opnsense/service/templates/OPNsense/Auth/sshd.pam
 /usr/local/opnsense/service/templates/OPNsense/Auth/sudoers
