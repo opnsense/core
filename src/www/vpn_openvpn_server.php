@@ -334,9 +334,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             foreach ($config['cert'] as $cert) {
                 if ($cert['refid'] == $pconfig['certref']) {
                     if (cert_get_purpose($cert['crt'])['server'] == 'No') {
-                          $input_errors[] = gettext(
+                        $input_errors[] = gettext(
                             sprintf("certificate %s is not intended for server use", $cert['descr'])
-                          );
+                        );
                     }
                 }
             }
