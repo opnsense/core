@@ -283,12 +283,22 @@ function print_service_banner($service)
 
 function get_std_save_message($raw = false)
 {
+    global $config;
+
     if ($raw == true) {
         return 'The changes have been applied successfully.';
     }
 
     /* we need this wrapped in gettext at least once */
-    return gettext('The changes have been applied successfully.');
+    if (!empty($config['hasync']['synchronizetoip'])) {
+        return sprintf(
+            gettext("The changes have been applied successfully, ".
+                    "remember to update your backup server in %sSystem: High availablity: status%s"),
+            '<a href="status_habackup.php">', '</a>'
+        );
+    } else {
+        return gettext('The changes have been applied successfully.');
+    }
 }
 
 function get_specialnets($only_enabled=false)

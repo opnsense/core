@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(array("status" => "done"));
                 break;
             case 'exec_sync':
-                configd_run('filter sync load');
+                configd_run('filter sync restart');
                 echo json_encode(array("status" => "done"));
                 break;
         }
