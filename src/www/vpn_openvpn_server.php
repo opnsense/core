@@ -329,6 +329,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
         }
 
+        // When server certificate is set, check type.
+        if (!empty($pconfig['certref'])) {
+            foreach ($config['cert'] as $cert) {
+                if ($cert['refid'] == $pconfig['certref']) {
+                    if (cert_get_purpose($cert['crt'])['server'] == 'No') {
+                        $input_errors[] = gettext(
+                            sprintf("certificate %s is not intended for server use", $cert['descr'])
+                        );
+                    }
+                }
+            }
+        }
+
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
         if (count($input_errors) == 0) {
@@ -888,6 +901,9 @@ endif; ?>
                             $caname = "";
                             $inuse = "";
                             $revoked = "";
+                            if (!isset($cert['prv'])) {
+                                continue;
+                            }
                             if (isset($cert['caref'])) {
                                 $ca = lookup_ca($cert['caref']);
                                 if (!empty($ca)) {
