@@ -311,6 +311,20 @@ class ACL
     }
 
     /**
+     * check if user has group membership
+     * @param string $username user name
+     * @param string $groupname group name
+     * @return bool|null|string|string[]
+     */
+    public function inGroup($username, $groupname)
+    {
+        if (!empty($this->userDatabase[$username])) {
+            return in_array($groupname, $this->userDatabase[$username]['groups']);
+        }
+        return false;
+    }
+
+    /**
      * get user preferred landing page
      * @param string $username user name
      * @return bool|null|string|string[]
