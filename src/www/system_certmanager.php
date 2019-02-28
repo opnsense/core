@@ -1342,7 +1342,7 @@ $( document ).ready(function() {
                       endforeach; ?>
                       </select>
                       <div class="hidden" data-for="help_for_key_usage_sign_csr">
-                        Practical examples, the same one as :
+                        Practical examples, the same one as new certificate creation page:
                         <ul>
                           <li><strong><?= gettext('Client Certificate'); ?></strong>: <?= $key_usages['nonRepudiation']; ?>, <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment']; ?></li>
                           <li><strong><?= gettext('Server Certificate'); ?></strong>: <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment']; ?></li>
@@ -1365,7 +1365,7 @@ $( document ).ready(function() {
                       endforeach; ?>
                       </select>
                     <div class="hidden" data-for="help_for_extended_key_usage_sign_csr">
-                      Practical examples, the same one as :
+                      Practical examples, the same one as new certificate creation page:
                       <ul>
                         <li><strong><?= gettext('Client Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.2']; ?></li>
                         <li><strong><?= gettext('Server Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.1'] ?>, <?= $extended_key_usages['1.3.6.1.5.5.8.2.2']; ?></li>
