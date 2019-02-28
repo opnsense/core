@@ -79,10 +79,8 @@ def fetch_rules_descriptions():
                 if line.startswith('@'):
                     line_id = line.split()[0][1:]
                     if line.find(' label ') > -1:
-                        result[line_id] = {'label': ''.join(line.split(' label ')[-1:]).strip()[1:-1]}
-                    else:
-                        # XXX happens on rdr (ID is not unique) or when no label is found
-                        result[line_id] = {'label': 'XXX'}
+                        result[line_id] = ''.join(line.split(' label ')[-1:]).strip()[1:-1]
+
     return result
 
 
@@ -130,7 +128,11 @@ if __name__ == '__main__':
 
             rule.update(metadata)
             if 'rulenr' in rule and rule['rulenr'] in running_conf_descr:
-                rule['label'] = running_conf_descr[rule['rulenr']]['label']
+                if rule['action'] in ['pass', 'block']:
+                    rule['label'] = running_conf_descr[rule['rulenr']]
+            elif rule['action'] not in ['pass', 'block']:
+                rule['label'] = "%s rule" % rule['action']
+
             result.append(rule)
 
             # handle exit criteria, row limit or last digest
