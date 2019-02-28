@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($_POST['apply'])) {
         // apply changes
         ipsec_configure_do();
-        $savemsg = get_std_save_message();
+        $savemsg = get_std_save_message(true);
         clear_subsystem_dirty('ipsec');
         header(url_safe('Location: /vpn_ipsec_mobile.php?savemsg=%s', array($savemsg)));
         exit;
