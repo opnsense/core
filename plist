@@ -41,7 +41,6 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
-/usr/local/etc/inc/plugins.inc.d/squid/auth-user.php
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints
