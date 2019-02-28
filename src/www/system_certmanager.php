@@ -224,37 +224,16 @@ $key_usages = array(
 // Note that keys include '.' and have difficulty in HTML class and jQuery
 // replace . to _ when copy to HTML class
 $extended_key_usages = array(
-    // copied from sop/x509 and transformed https://github.com/sop/x509/blob/6991805a587b01281b4646e7d17c7222dc1d7e6d/lib/X509/Certificate/Extension/ExtendedKeyUsageExtension.php
-    // mostly list is list of what sop/x509 supports, so cannnot change, but human-readable texts are TODO
-    '1.3.6.1.5.5.7.3.1'  => gettext('SERVER_AUTH'),
-    '1.3.6.1.5.5.7.3.2'  => gettext('CLIENT_AUTH'),
-    '1.3.6.1.5.5.7.3.3'  => gettext('CODE_SIGNING'),
-    '1.3.6.1.5.5.7.3.4'  => gettext('EMAIL_PROTECTION'),
-    '1.3.6.1.5.5.7.3.5'  => gettext('IPSEC_END_SYSTEM'),
-    '1.3.6.1.5.5.7.3.6'  => gettext('IPSEC_TUNNEL'),
-    '1.3.6.1.5.5.7.3.7'  => gettext('IPSEC_USER'),
-    '1.3.6.1.5.5.7.3.8'  => gettext('TIME_STAMPING'),
-    '1.3.6.1.5.5.7.3.9'  => gettext('OCSP_SIGNING'),
-    '1.3.6.1.5.5.7.3.10' => gettext('DVCS'),
-    '1.3.6.1.5.5.7.3.11' => gettext('SBGP_CERT_AA_SERVER_AUTH'),
-    '1.3.6.1.5.5.7.3.12' => gettext('SCVP_RESPONDER'),
-    '1.3.6.1.5.5.7.3.13' => gettext('EAP_OVER_PPP'),
-    '1.3.6.1.5.5.7.3.14' => gettext('EAP_OVER_LAN'),
-    '1.3.6.1.5.5.7.3.15' => gettext('SCVP_SERVER'),
-    '1.3.6.1.5.5.7.3.16' => gettext('SCVP_CLIENT'),
-    '1.3.6.1.5.5.7.3.17' => gettext('IPSEC_IKE'),
-    '1.3.6.1.5.5.7.3.18' => gettext('CAPWAP_AC'),
-    '1.3.6.1.5.5.7.3.19' => gettext('CAPWAP_WTP'),
-    '1.3.6.1.5.5.7.3.20' => gettext('SIP_DOMAIN'),
-    '1.3.6.1.5.5.7.3.21' => gettext('SECURE_SHELL_CLIENT'),
-    '1.3.6.1.5.5.7.3.22' => gettext('SECURE_SHELL_SERVER'),
-    '1.3.6.1.5.5.7.3.23' => gettext('SEND_ROUTER'),
-    '1.3.6.1.5.5.7.3.24' => gettext('SEND_PROXY'),
-    '1.3.6.1.5.5.7.3.25' => gettext('SEND_OWNER'),
-    '1.3.6.1.5.5.7.3.26' => gettext('SEND_PROXIED_OWNER'),
-    '1.3.6.1.5.5.7.3.27' => gettext('CMC_CA'),
-    '1.3.6.1.5.5.7.3.28' => gettext('CMC_RA'),
-    '1.3.6.1.5.5.7.3.29' => gettext('CMC_ARCHIVE'),
+    // There are known in phpseclib https://github.com/phpseclib/phpseclib/blob/master/phpseclib/File/X509.php
+    '1.3.6.1.5.5.7.3.1'  => gettext('serverAuth'),
+    '1.3.6.1.5.5.7.3.2'  => gettext('clientAuth'),
+    '1.3.6.1.5.5.7.3.3'  => gettext('codeSigning'),
+    '1.3.6.1.5.5.7.3.4'  => gettext('emailProtection'),
+    '1.3.6.1.5.5.7.3.8'  => gettext('timeStamping'),
+    '1.3.6.1.5.5.7.3.9'  => gettext('OCSPSigning'),
+
+    // added to support default options
+    '1.3.6.1.5.5.8.2.2'  => gettext('iKEIntermediate'),
 );
 
 // config reference pointers
@@ -1288,7 +1267,7 @@ $( document ).ready(function() {
                     <textarea name="csr" id="csr" cols="65" rows="7"><?=$pconfig['csr'];?></textarea><br/>
                     <a href="#" class="csr_info_for_sign_csr btn btn-secondary"><?=gettext("Show Detail");?></a><br/>
                     <div class="hidden" data-for="help_for_csr_sign_csr">
-                      <?=gettext("Paste the CSR file here. (TODO: good English explanations. x509 extensions that OPNsense knows is automatically copied when clicking Next button and modifiable, and others are ignored)");?>
+                      <?=gettext("Paste the CSR file here.");?>
                     </div>
                   </td>
                 </tr>
@@ -1304,7 +1283,7 @@ $( document ).ready(function() {
               <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
-                    <th colspan="2"><?=gettext("Confirm and modify option (TODO: better English Message)");?></th>
+                    <th colspan="2"><?=gettext("Subject of the certificate");?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1363,10 +1342,12 @@ $( document ).ready(function() {
                       endforeach; ?>
                       </select>
                       <div class="hidden" data-for="help_for_key_usage_sign_csr">
-                        Practical examples:
+                        Practical examples, the same one as :
                         <ul>
-                          <li>Client</li>
-                          <li>Server</li>
+                          <li><strong><?= gettext('Client Certificate'); ?></strong>: <?= $key_usages['nonRepudiation']; ?>, <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment']; ?></li>
+                          <li><strong><?= gettext('Server Certificate'); ?></strong>: <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment']; ?></li>
+                          <li><strong><?= gettext('Combined Client/Server Certificate'); ?></strong>: <?= $key_usages['nonRepudiation']; ?>, <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment'];?></li>
+                          <li><strong><?= gettext('Certificate Authority'); ?></strong>: <i><?= gettext('None. Just add CA option in basicConstraits.'); ?></i></li>
                         </ul>
                       </div>
                     </td>
@@ -1384,10 +1365,12 @@ $( document ).ready(function() {
                       endforeach; ?>
                       </select>
                     <div class="hidden" data-for="help_for_extended_key_usage_sign_csr">
-                      Available options:
+                      Practical examples, the same one as :
                       <ul>
-                        <li>SERVER_AUTH: foo</li>
-                        <li>CLIENT_AUTH: bar</li>
+                        <li><strong><?= gettext('Client Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.2']; ?></li>
+                        <li><strong><?= gettext('Server Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.1'] ?>, <?= $extended_key_usages['1.3.6.1.5.5.8.2.2']; ?></li>
+                        <li><strong><?= gettext('Combined Client/Server Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.2']; ?>, <?= $extended_key_usages['1.3.6.1.5.5.7.3.1'] ?>, <?= $extended_key_usages['1.3.6.1.5.5.8.2.2']; ?></li>
+                        <li><strong><?= gettext('Certificate Authority'); ?></strong>: <i><?= gettext('None. Just add CA option in basicConstraits.'); ?></i></li>
                       </ul>
                     </div>
                     </td>
