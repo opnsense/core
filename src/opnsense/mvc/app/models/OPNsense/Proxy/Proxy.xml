@@ -206,10 +206,14 @@
                 <user type="TextField">
                     <default>username</default>
                     <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\._\-]){1,32}$/u</mask>
+                    <ValidationMessage>Username can be up to 32 signs long. Alphanumeric characters and also dot, dash and underscore allowed.</ValidationMessage>
                 </user>
                 <password type="TextField">
                     <default>password</default>
                     <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\._\-]){1,32}$/u</mask>
+                    <ValidationMessage>Password can be up to 32 signs long. Alphanumeric characters and also dot, dash and underscore allowed.</ValidationMessage>
                 </password>
                 <port type="PortField">
                     <Required>N</Required>
