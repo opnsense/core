@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.2</version>
+    <version>1.0.1</version>
     <description>
         OPNsense IDS
     </description>
@@ -98,6 +98,12 @@
                 <default>0</default>
                 <Required>Y</Required>
             </ips>
+            <NetmapThreads type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>9</MaximumValue>
+                <ValidationMessage>Enter a valid number of threads</ValidationMessage>
+            </NetmapThreads>
             <promisc type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>

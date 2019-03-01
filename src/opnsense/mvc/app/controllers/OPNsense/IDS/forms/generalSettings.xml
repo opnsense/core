@@ -12,6 +12,15 @@
         <help><![CDATA[Enable protection mode (block traffic).<br />Before enabling, please disable all hardware offloading first <a href="/system_advanced_network.php">in advanced network</a>.]]></help>
     </field>
     <field>
+        <id>ids.general.NetmapThreads</id>
+        <label>Number of IPS threads</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help><![CDATA[With this option, you can set the max number of threads will be started with
+        IPS enabled. If not set, will be set to automatic. Be careful to not
+        use a higher number than the available CPU cores. <a href="/index.php">Check here</a>.]]></help>
+    </field>
+    <field>
         <id>ids.general.promisc</id>
         <label>Promiscuous mode</label>
         <type>checkbox</type>
