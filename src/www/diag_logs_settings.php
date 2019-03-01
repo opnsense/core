@@ -447,6 +447,13 @@ $(document).ready(function() {
                     <td style="width:78%"></td>
                   </tr>
                   <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Enable Remote Logging');?></td>
+                    <td>
+                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : ''; ?> onclick="enable_change(false)" />
+                      <?=gettext('Send log messages to remote syslog server');?>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><a id="help_for_sourceip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source Address"); ?></td>
                     <td>
                       <select name="sourceip" class="form-control">
@@ -475,13 +482,6 @@ $(document).ready(function() {
                       <div class="hidden" data-for="help_for_ipproto">
                         <?= gettext("This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried."); ?>
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable Remote Logging");?></td>
-                    <td>
-                      <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
-                      <?=gettext("Send log messages to remote syslog server");?>
                     </td>
                   </tr>
                   <tr>
