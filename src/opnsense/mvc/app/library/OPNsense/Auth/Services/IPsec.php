@@ -88,16 +88,16 @@ class IPsec implements IService
     public function checkConstraints()
     {
           $configObj = Config::getInstance()->object();
-          if (empty((string)$configObj->ipsec->client->enable)) {
-              // IPsec mobile extension is disabled.
-              return false;
-          } elseif (!empty((string)$configObj->ipsec->client->local_group)) {
-              // Enforce group constraint when set
-              $local_group = (string)$configObj->ipsec->client->local_group;
-              return (new ACL())->inGroup($this->getUserName(), $local_group);
-          } else {
-              // no constraints
-              return true;
-          }
+        if (empty((string)$configObj->ipsec->client->enable)) {
+            // IPsec mobile extension is disabled.
+            return false;
+        } elseif (!empty((string)$configObj->ipsec->client->local_group)) {
+            // Enforce group constraint when set
+            $local_group = (string)$configObj->ipsec->client->local_group;
+            return (new ACL())->inGroup($this->getUserName(), $local_group);
+        } else {
+            // no constraints
+            return true;
+        }
     }
 }

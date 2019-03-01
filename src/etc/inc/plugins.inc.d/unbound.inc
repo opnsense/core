@@ -628,7 +628,7 @@ function unbound_add_host_entries()
                             $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$alias['host']}{$alias['domain']}\"\n";
                             $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
                         }
-                         break;
+                        break;
                     case 'MX':
                         $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
                         break;

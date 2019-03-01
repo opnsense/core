@@ -190,29 +190,40 @@ class AuthenticationFactory
                         if ($service->checkConstraints()) {
                             syslog(LOG_NOTICE, sprintf(
                                 "user %s authenticated successfully for %s [using %s + %s]\n",
-                                $username, $service_name, get_class($service), get_class($authenticator)
+                                $username,
+                                $service_name,
+                                get_class($service),
+                                get_class($authenticator)
                             ));
                             return true;
                         } else {
                             // since checkConstraints() is defined on the service, who doesn't know about the
                             // authentication method. We can safely asume we cannot authenticate.
                             syslog(LOG_WARNING, sprintf(
-                              "user %s could not authenticate for %s, failed constraints on %s authenticated via %s",
-                              $username, $service_name, get_class($service), get_class($authenticator)
+                                "user %s could not authenticate for %s, failed constraints on %s authenticated via %s",
+                                $username,
+                                $service_name,
+                                get_class($service),
+                                get_class($authenticator)
                             ));
                             return false;
                         }
                     } else {
                         syslog(LOG_DEBUG, sprintf(
-                          "user %s failed authentication for %s on %s via %s",
-                          $username, $service_name, get_class($service), get_class($authenticator)
+                            "user %s failed authentication for %s on %s via %s",
+                            $username,
+                            $service_name,
+                            get_class($service),
+                            get_class($authenticator)
                         ));
                     }
                 }
             }
         }
         syslog(LOG_WARNING, sprintf(
-            "user %s could not authenticate for %s. [using %s + %s]\n", $username, $service_name,
+            "user %s could not authenticate for %s. [using %s + %s]\n",
+            $username,
+            $service_name,
             !empty($service) ? get_class($service) : '-',
             !empty($authenticator) ? get_class($authenticator) : '-'
         ));
