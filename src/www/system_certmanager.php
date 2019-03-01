@@ -212,6 +212,7 @@ $cert_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 $cert_types = array('usr_cert', 'server_cert', 'combined_server_client', 'v3_ca');
 $key_usages = array(
+    // defined in RFC 5280 section 4.2.1.3
     'digitalSignature' => gettext('digitalSignature'),
     'nonRepudiation'   => gettext('nonRepudiation'),
     'keyEncipherment'  => gettext('keyEncipherment'),
@@ -220,11 +221,10 @@ $key_usages = array(
     'keyCertSign'      => gettext('keyCertSign'),
     'cRLSign'          => gettext('cRLSign'),
     'encipherOnly'     => gettext('encipherOnly'),
+    'decipherOnly'     => gettext('decipherOnly'),
 );
-// Note that keys include '.' and have difficulty in HTML class and jQuery
-// replace . to _ when copy to HTML class
 $extended_key_usages = array(
-    // There are known in phpseclib https://github.com/phpseclib/phpseclib/blob/master/phpseclib/File/X509.php
+    // defined in RFC 5280 section 4.2.1.12
     '1.3.6.1.5.5.7.3.1'  => gettext('serverAuth'),
     '1.3.6.1.5.5.7.3.2'  => gettext('clientAuth'),
     '1.3.6.1.5.5.7.3.3'  => gettext('codeSigning'),
