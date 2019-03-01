@@ -39,7 +39,6 @@ function filter_tos_values()
         'lowdelay' => gettext('lowdelay'),
         'critical' => gettext('critical'),
         'inetcontrol' => gettext('inetcontrol'),
-        'lowdelay' => gettext('lowdelay'),
         'netcontrol' => gettext('netcontrol'),
         'throughput' => gettext('throughput'),
         'reliability' => gettext('reliability'),

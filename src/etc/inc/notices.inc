@@ -56,8 +56,6 @@ function get_notices()
 
 function close_notice($id)
 {
-    $ids = array();
-
     if (file_exists('/tmp/notices')) {
         if ($id == 'all') {
             @unlink('/tmp/notices');

@@ -30,7 +30,7 @@ function rrd_create($rrdcreatecmd)
 {
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
-    $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
+    exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
     if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
         log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
@@ -119,7 +119,6 @@ function rrd_configure($verbose = false)
         $rrdupdatesh .= "do\n";
         $rrdupdatesh .= "";
 
-        $i = 0;
         $ifdescrs = get_configured_interface_with_descr();
         /* IPsec counters */
         $ifdescrs['ipsec'] = "IPsec";
@@ -296,7 +295,6 @@ function rrd_configure($verbose = false)
                 $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cellular N:\"\$GSTATS\"";
             }
         }
-        $i++;
 
         /* System only statistics */
         $ifname = "system";
