@@ -77,8 +77,8 @@ class Monit extends BaseModel
                         // test node validations
                         switch ($node->getInternalXMLTagName()) {
                             case 'type':
-                                if ($node->isFieldChanged() && 
-                                    $this->isTestServiceRelated($parentNode->getAttribute('uuid'))) {
+                                $testUuid = $parentNode->getAttribute('uuid');
+                                if ($node->isFieldChanged() && $this->isTestServiceRelated($testUuid)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Cannot change the type. Test is linked to a service."),
                                         $key
@@ -203,17 +203,15 @@ class Monit extends BaseModel
 
     /**
      * determine if services have links to this test node
-     * @param uuid of the test node 
+     * @param uuid of the test node
      * @return bool
      */
     public function isTestServiceRelated($testUUID = null)
     {
         $serviceNodes = $this->service->getNodes();
-        foreach ($serviceNodes as $serviceNode) {
-            if (is_array($serviceNode['tests']) && 
-                array_key_exists($testUUID, $serviceNode['tests']) &&
-                $serviceNode['tests'][$testUUID]['selected'] == 1) {
-                    return true;
+        foreach ($this->service->iterateItems() as $serviceNode) {
+            if (in_array($testUUID, explode(',', (string)$serviceNode->tests))) {
+                return true;
             }
         }
         return false;
