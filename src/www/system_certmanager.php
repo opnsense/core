@@ -1317,7 +1317,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('basicConstraints');?></td>
+                    <td style="width:22%"><a id="help_for_basic_extensions_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('basicConstraints');?></td>
                     <td style="width:78%">
                       <script type="text/javascript">
                       function basic_constraints_enabled_sign_csr_refresh() {
@@ -1326,7 +1326,10 @@ $( document ).ready(function() {
                       }
                       </script>
                       <input type="checkbox" name="basic_constraints_is_ca_sign_csr"    id="basic_constraints_is_ca_sign_csr" onchange="basic_constraints_enabled_sign_csr_refresh();" value="true" /> <?= gettext('is CA'); ?><br />
-                      <?= gettext('Path Len'); ?>: <input type="text"     name="basic_constraints_path_len_sign_csr" id="basic_constraints_path_len_sign_csr" size="5" value="<?=$pconfig['basic_constraints_sign_csr'];?>"/>
+                      <?= gettext('Maximum Path Length'); ?>: <input type="text"     name="basic_constraints_path_len_sign_csr" id="basic_constraints_path_len_sign_csr" size="5" value="<?=$pconfig['basic_constraints_sign_csr'];?>"/>
+                      <div class="hidden" data-for="help_for_basic_extensions_sign_csr">
+                        <strong><?= gettext('Maximum Path Length'); ?></strong>: <?= gettext('gives the maximum number of non-self-issued intermediate certificates that may follow this certificate in a valid certification path.'); ?>
+                      </div>
                     </td>
                   </tr>
                   <tr>
