@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -589,8 +589,20 @@ function unbound_add_host_entries()
 
     if (isset($config['unbound']['hosts'])) {
         foreach ($config['unbound']['hosts'] as $host) {
-            if ($host['host'] != '') {
-                $host['host'] = $host['host'].".";
+            $aliases = array(array(
+                'domain' => $host['domain'],
+                'descr' => $host['descr'],
+                'host' => $host['host'],
+            ));
+
+            if (!empty($host['aliases']['item'])) {
+                foreach ($host['aliases']['item'] as $alias) {
+                    $aliases[] = array(
+                        'domain' => !empty($alias['domain']) ? $alias['domain'] : $aliases[0]['domain'],
+                        'descr' => !empty($alias['descr']) ? $alias['descr'] : $aliases[0]['descr'],
+                        'host' => !empty($alias['host']) ? $alias['host'] : $aliases[0]['host'],
+                    );
+                }
             }
 
             /* Backwards compatibility for records created before introducing RR types. */
@@ -598,25 +610,33 @@ function unbound_add_host_entries()
                 $host['rr'] = (is_ipaddrv6($host['ip'])) ? 'AAAA' : 'A';
             }
 
-            switch ($host['rr']) {
-                case 'A':
-                case 'AAAA':
-                    /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
-                    if (trim($host['host']) == '*.') {
-                        $unbound_entries .= "local-zone: \"{$host['domain']}\" redirect\n";
-                        $unbound_entries .= "local-data: \"{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
-                    } else {
-                        $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
-                        $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
-                    }
-                    break;
-                case 'MX':
-                    $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
-                    break;
-            }
+            foreach ($aliases as $alias) {
+                if ($alias['host'] != '') {
+                    $alias['host'] .= '.';
+                }
 
-            if (!empty($host['descr']) && isset($config['unbound']['txtsupport'])) {
-                $unbound_entries .= "local-data: '{$host['host']}{$host['domain']} TXT \"".addslashes($host['descr'])."\"'\n";
+                echo "hello doing {$alias['host']}\n";
+
+                switch ($host['rr']) {
+                    case 'A':
+                    case 'AAAA':
+                        /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
+                        if ($alias['host'] == '*.') {
+                            $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
+                            $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                        } else {
+                            $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$alias['host']}{$alias['domain']}\"\n";
+                            $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                        }
+                         break;
+                    case 'MX':
+                        $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
+                        break;
+                }
+
+                if (!empty($alias['descr']) && isset($config['unbound']['txtsupport'])) {
+                    $unbound_entries .= "local-data: '{$alias['host']}{$alias['domain']} TXT \"".addslashes($alias['descr'])."\"'\n";
+                }
             }
         }
     }
