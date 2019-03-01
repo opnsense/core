@@ -455,9 +455,11 @@ $(document).ready(function() {
                   <select name="ssl-certref" class="selectpicker" data-style="btn-default">
 <?php
                   foreach ($a_cert as $cert) :?>
+<?php             if (isset($cert['prv'])) :?>
                     <option value="<?=$cert['refid'];?>" <?=$pconfig['ssl-certref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
                       <?=$cert['descr'];?>
                     </option>
+<?php             endif; ?>
 <?php
                   endforeach;?>
                   </select>
