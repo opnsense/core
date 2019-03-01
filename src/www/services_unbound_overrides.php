@@ -34,7 +34,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $a_hosts = &config_read_array('unbound', 'hosts');
-config_read_array('unbound', 'domainoverrides');
+$a_domains = &config_read_array('unbound', 'domainoverrides');
 
 /* Backwards compatibility for records created before introducing RR types. */
 foreach ($a_hosts as $i => $hostent) {
@@ -60,9 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
-        $a_domainOverrides = &config_read_array('unbound', 'domainoverrides');
-        if (isset($pconfig['id']) && !empty($a_domainOverrides[$pconfig['id']])) {
-            unset($a_domainOverrides[$pconfig['id']]);
+        if (isset($pconfig['id']) && !empty($a_domains[$pconfig['id']])) {
+            unset($a_domains[$pconfig['id']]);
             write_config();
             mark_subsystem_dirty('unbound');
             exit;
@@ -71,10 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $service_hook = 'unbound';
-legacy_html_escape_form_data($a_hosts);
-include_once("head.inc");
-?>
 
+legacy_html_escape_form_data($a_hosts);
+legacy_html_escape_form_data($a_domains);
+
+include_once("head.inc");
+
+?>
 <body>
 
   <script>
@@ -138,28 +140,23 @@ include_once("head.inc");
         <form method="post" name="iform" id="iform">
           <section class="col-xs-12">
             <div class="content-box">
-              <div class="content-box-main col-xs-12">
                 <div class="table-responsive">
                   <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="6"><?=gettext("Host Overrides");?></th>
-                      </tr>
-                      <tr>
-                        <th><?=gettext("Host");?></th>
-                        <th><?=gettext("Domain");?></th>
-                        <th><?=gettext("Type");?></th>
-                        <th><?=gettext("Value");?></th>
-                        <th><?=gettext("Description");?></th>
-                        <th class="text-nowrap">
-                          <a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
-                        </th>
-                      </tr>
-                    </thead>
                     <tbody>
-<?php
-                      $i = 0;
-                      foreach ($a_hosts as $hostent): ?>
+                      <tr>
+                        <td colspan="6"><strong><?= gettext('Host Overrides') ?></strong></td>
+                      </tr>
+                      <tr>
+                        <td><strong><?= gettext('Host') ?></strong></td>
+                        <td><strong><?= gettext('Domain') ?></strong></td>
+                        <td><strong><?= gettext('Type') ?></strong></td>
+                        <td><strong><?= gettext('Value') ?></strong></td>
+                        <td><strong><?= gettext('Description') ?></strong></td>
+                        <td class="text-nowrap">
+                          <a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                        </td>
+                      </tr>
+<?php foreach ($a_hosts as $i => $hostent): ?>
                       <tr>
                         <td><?=strtolower($hostent['host']);?></td>
                         <td><?=strtolower($hostent['domain']);?></td>
@@ -186,11 +183,21 @@ include_once("head.inc");
                           <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                         </td>
                       </tr>
-<?php
-                        $i++;
-                      endforeach; ?>
-                    </tbody>
-                    <tfoot>
+<?php if (isset($hostent['aliases']['item'])): ?>
+<?php foreach ($hostent['aliases']['item'] as $alias): ?>
+                      <tr>
+                        <td><?= strtolower(!empty($alias['host']) ? $alias['host'] : $hostent['host']) ?></td>
+                        <td><?= strtolower(!empty($alias['domain']) ? $alias['domain'] : $hostent['domain']) ?></td>
+                        <td><?=strtoupper($hostent['rr']);?></td>
+                        <td><?= gettext('Alias for');?> <?=$hostent['host'] ? htmlspecialchars($hostent['host'] . '.' . $hostent['domain']) : htmlspecialchars($hostent['domain']);?></td>
+                        <td><?= !empty($alias['descr']) ? $alias['descr'] : $hostent['descr'] ?></td>
+                        <td class="text-nowrap">
+                          <a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
+                        </td>
+                      </tr>
+<?php endforeach ?>
+<?php endif ?>
+<?php endforeach ?>
                       <tr>
                         <td colspan="6">
                           <?=gettext("Entries in this section override individual results from the forwarders.");?>
@@ -198,59 +205,46 @@ include_once("head.inc");
                           <?=gettext("Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.");?>
                         </td>
                       </tr>
-                    </tfoot>
+                    </tbody>
                   </table>
                 </div>
-              </div>
             </div>
           </section>
          <section class="col-xs-12">
             <div class="content-box">
-              <div class="content-box-main col-xs-12">
                 <div class="table-responsive">
                   <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="4">
-                          <?=gettext("Domain Overrides");?>
-                        </th>
-                      </tr>
-                      <tr>
-                        <th><?=gettext("Domain");?></th>
-                        <th><?=gettext("IP");?></th>
-                        <th><?=gettext("Description");?></th>
-                        <th class="text-nowrap">
-                          <a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
-                        </th>
-                      </tr>
-                    </thead>
                     <tbody>
-<?php
-                    $i = 0;
-                    foreach ($config['unbound']['domainoverrides'] as $doment): ?>
                       <tr>
-                        <td><?=strtolower(htmlspecialchars($doment['domain']));?></td>
-                        <td><?=htmlspecialchars($doment['ip']);?></td>
-                        <td><?=htmlspecialchars($doment['descr']);?></td>
+                        <td colspan="4"><strong><?= gettext('Domain Overrides') ?></strong></td>
+                      </tr>
+                      <tr>
+                        <td><strong><?= gettext('Domain') ?></strong></td>
+                        <td><strong><?= gettext('IP') ?></strong></td>
+                        <td><strong><?= gettext('Description') ?></strong></td>
+                        <td class="text-nowrap">
+                          <a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                        </td>
+                      </tr>
+<?php foreach ($a_domains as $i => $doment): ?>
+                      <tr>
+                        <td><?= strtolower($doment['domain']) ?></td>
+                        <td><?= $doment['ip'] ?></td>
+                        <td><?= $doment['descr'] ?></td>
                         <td class="text-nowrap">
                           <a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                           <a href="#" data-id="<?=$i;?>" class="act_delete_override btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                         </td>
                       </tr>
-<?php
-                      $i++;
-                    endforeach; ?>
-                    </tbody>
-                    <tfoot>
+<?php endforeach  ?>
                       <tr>
                         <td colspan="4">
-                          <?=gettext("Entries in this area override an entire domain by specifying an"." authoritative DNS server to be queried for that domain.");?>
+                          <?= gettext('Entries in this area override an entire domain by specifying an authoritative DNS server to be queried for that domain.') ?>
                         </td>
                       </tr>
-                    </tfoot>
+                    </tbody>
                   </table>
                 </div>
-              </div>
             </div>
           </section>
         </form>
