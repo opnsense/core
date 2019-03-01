@@ -38,6 +38,7 @@ class M1_0_8 extends BaseModelMigration
         foreach ($model->getNodeByReference('test')->__items as $test) {
             $test->type = $model->getTestType($test->condition->getNodeData());
         }
+        // validation will fail with existing links to services
         $model->serializeToConfig(false, true);
         Config::getInstance()->save();
     }
