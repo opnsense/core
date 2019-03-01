@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Copyright (C) 2016 EURO-LOG AG
+ *  Copyright (C) 2016-2019 EURO-LOG AG
  *  Copyright (c) 2019 Deciso B.V.
  *  All rights reserved.
  *
@@ -39,9 +39,9 @@ use OPNsense\Base\BaseModel;
 class Monit extends BaseModel
 {
     /**
-     *
+     * array with service types and their possible test types
      */
-    private $testSyntax = [
+    private $serviceTestMapping = [
         'process'    => ['Existence', 'ProcessResource', 'ProcessDiskIO',
                          'UID', 'GID', 'PID', 'PPID', 'Uptime', 'Connection', 'Custom'],
         'file'       => ['Existence', 'FileChecksum', 'Timestamp', 'FileSize',
@@ -56,6 +56,96 @@ class Monit extends BaseModel
         'network'    => ['NetworkInterface', 'Custom']
     ];
 
+    /**
+     * array with condition patterns for test types
+     */
+    private $conditionPatterns = [
+        'Existence' => [
+            'exist', 'not exist'
+        ],
+        'SystemResource' => [
+            'loadavg (1min)', 'loadavg (5min)', 'loadavg (15min)', 'cpu usage',
+            'cpu user usage', 'cpu system usage', 'cpu wait usage', 'memory usage',
+            'swap usage'
+        ],
+        'ProcessResource' => [
+            'cpu', 'total cpu', 'threads', 'children', 'memory usage',
+            'total memory usage'
+        ],
+        'ProcessDiskIO' => [
+            'disk read rate', 'disk write rate'
+        ],
+        'FileChecksum' => [
+            'failed md5 checksum', 'changed md5 checksum', 'failed checksum expect'
+        ],
+        'Timestamp' => [
+            'access time', 'modification time', 'change time', 'timestamp',
+            'changed access time', 'changed modification time', 'changed change time',
+            'changed timestamp'
+        ],
+        'FileSize' => [
+            'size', 'changed size'
+        ],
+        'FileContent' => [
+            'content =', 'content !='
+        ],
+        'FilesystemMountFlags' => [
+            'changed fsflags'
+        ],
+        'SpaceUsage' => [
+            'space', 'space free'
+        ],
+        'InodeUsage' => [
+            'inodes',
+            'inodes free'
+        ],
+        'DiskIO' => [
+            'read rate',
+            'write rate',
+            'service time'
+        ],
+        'Permisssion' => [
+            'failed permission',
+            'changed permission'
+        ],
+        'UID' => [
+            'failed uid'
+        ],
+        'GID' => [
+            'failed uid'
+        ],
+        'PID' => [
+            'changed pid'
+        ],
+        'PPID' => [
+            'changed ppid'
+        ],
+        'Uptime' => [
+            'uptime'
+        ],
+        'ProgramStatus' => [
+            'status',
+            'changed status'
+        ],
+        'NetworkInterface' => [
+            'failed link',
+            'changed link capacity',
+            'saturation',
+            'upload',
+            'download'
+        ],
+        'NetworkPing' => [
+            'failed ping',
+            'failed ping4',
+            'failed ping6'
+        ],
+        'Connection' => [
+            'failed host',
+            'failed port',
+            'failed unixsocket'
+        ],
+        'Custom' => []
+    ];
 
     /**
      * validate full model using all fields and data in a single (1 deep) array
@@ -77,12 +167,30 @@ class Monit extends BaseModel
                         // test node validations
                         switch ($node->getInternalXMLTagName()) {
                             case 'type':
+                                // only 'Custom' is allowed if test is linked to a service
                                 $testUuid = $parentNode->getAttribute('uuid');
-                                if ($node->isFieldChanged() && $this->isTestServiceRelated($testUuid)) {
+                                if (strcmp((string)$node, 'Custom') != 0 &&
+                                    $node->isFieldChanged() &&
+                                    $this->isTestServiceRelated($testUuid)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Cannot change the type. Test is linked to a service."),
                                         $key
                                     ));
+                                }
+                                break;
+                            case 'condition':
+                                // only 'Custom' or the same test type (from condition) allowed if test is linked to a service
+                                $type = $this->getTestType((string)$node);
+                                if (strcmp($type, 'Custom') != 0 &&
+                                    strcmp((string)$parentNode->type, $type) != 0 &&
+                                    $this->isTestServiceRelated($parentNode->getAttribute('uuid'))) {
+                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                        gettext("Condition would change the type of the test but it is linked to a service."),
+                                        $key
+                                    ));
+                                } else {
+                                    // set the test tytpe according to the condition
+                                    $parentNode->type = $type;
                                 }
                                 break;
                         }
@@ -91,12 +199,12 @@ class Monit extends BaseModel
                         // service node validations
                         switch ($node->getInternalXMLTagName()) {
                             case 'tests':
-                                // test dependencies defined in $this->testSyntax
+                                // test dependencies defined in $this->serviceTestMapping
                                 foreach (explode(',', (string)$parentNode->tests) as $testUUID) {
                                     $test = $this->getNodeByReference('test.' . $testUUID);
                                     if ($test != null) {
-                                        if (!empty($this->testSyntax[(string)$parentNode->type])) {
-                                            $options = $this->testSyntax[(string)$parentNode->type];
+                                        if (!empty($this->serviceTestMapping[(string)$parentNode->type])) {
+                                            $options = $this->serviceTestMapping[(string)$parentNode->type];
                                             if (!in_array((string)$test->type, $options)) {
                                                 $validationMsg = sprintf(
                                                     gettext("Test %s with type %s not allowed for this service type"),
@@ -182,7 +290,6 @@ class Monit extends BaseModel
         return parent::serializeToConfig($validateFullModel, $disable_validation);
     }
 
-
     /**
      * get configuration state
      * @return bool
@@ -215,5 +322,41 @@ class Monit extends BaseModel
             }
         }
         return false;
+    }
+
+    /**
+     * get test type from condition string
+     * @param condition string
+     * @return string
+     */
+    public function getTestType($condition)
+    {
+        $condition = preg_replace('/\s\s+/', ' ', $condition);
+        $keyLength = 0;
+        $foundOperand = '';
+        $foundTestType = 'Custom';
+
+        foreach ($this->conditionPatterns as $testType => $operandList) {
+            // find the operand for this condition using the longest match
+            foreach ($operandList as $operand) {
+                $operandLength = strlen($operand);
+                if (!strncmp($condition, $operand, $operandLength) &&
+                    $operandLength > $keyLength) {
+                    $keyLength = $operandLength;
+                    $foundOperand = $operand;
+                    $foundTestType = $testType;
+                }
+            }
+        }
+
+        // 'memory usage' can be ambiguous but 'percent' unit makes it clear
+        if (strcmp('memory usage', $foundOperand) == 0) {
+            if (preg_match('/^.*\spercent|%\s*$/', $condition)) {
+                $foundTestType = 'SystemResource';
+            } else {
+                $foundTestType = 'ProcessResource';
+            }
+        }
+        return $foundTestType;
     }
 }
