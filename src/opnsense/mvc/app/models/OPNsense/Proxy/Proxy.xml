@@ -199,6 +199,18 @@
                         </check001>
                     </Constraints>
                 </host>
+                <enableauth type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enableauth>
+                <user type="TextField">
+                    <default>username</default>
+                    <Required>Y</Required>
+                </user>
+                <password type="TextField">
+                    <default>password</default>
+                    <Required>Y</Required>
+                </password>
                 <port type="PortField">
                     <Required>N</Required>
                     <Constraints>
