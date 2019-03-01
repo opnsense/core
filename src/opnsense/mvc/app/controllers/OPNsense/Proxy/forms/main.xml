@@ -219,6 +219,18 @@
                 <help>Parent proxy port.</help>
             </field>
             <field>
+                <id>proxy.general.parentproxy.user</id>
+                <label>Username</label>
+                <type>text</type>
+                <help>Set a username if parent proxy requires authentication.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.password</id>
+                <label>Password</label>
+                <type>password</type>
+                <help>Set a password if parent proxy requires authentication.</help>
+            </field>
+            <field>
                 <id>proxy.general.parentproxy.localdomains</id>
                 <label>Local Domains</label>
                 <type>select_multiple</type>
