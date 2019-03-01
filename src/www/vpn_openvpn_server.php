@@ -901,6 +901,9 @@ endif; ?>
                             $caname = "";
                             $inuse = "";
                             $revoked = "";
+                            if (!isset($cert['prv'])) {
+                                continue;
+                            }
                             if (isset($cert['caref'])) {
                                 $ca = lookup_ca($cert['caref']);
                                 if (!empty($ca)) {
