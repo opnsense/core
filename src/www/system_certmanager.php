@@ -29,7 +29,7 @@
 
 require_once('guiconfig.inc');
 require_once("system.inc");
-require_once('phpseclib/vendor/autoload.php');
+//require_once('phpseclib/vendor/autoload.php');
 
 function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
 {
@@ -206,7 +206,7 @@ $cert_methods = array(
     "import" => gettext("Import an existing Certificate"),
     "internal" => gettext("Create an internal Certificate"),
     "external" => gettext("Create a Certificate Signing Request"),
-    "sign_cert_csr" => gettext("Sign a Certificate Signing Request"),
+//    "sign_cert_csr" => gettext("Sign a Certificate Signing Request"),
 );
 $cert_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
