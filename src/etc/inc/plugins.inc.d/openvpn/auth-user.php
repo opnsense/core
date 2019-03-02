@@ -83,6 +83,7 @@ function parse_auth_properties($props, $a_server)
             // we could also just use $props['ipHostNumber'] directly since it is already in the CIDR annotation
             // but validating it / enforcing it might be a good idea in case
             $result['tunnel_network'] = $cidrAnnotationParts['ip'] . '/' . $cidrAnnotationParts['cidrmask'];
+            syslog(LOG_INFO, "mapped tunnel_network using ldap:" . $result['tunnel_network']);
         }
     }
 
