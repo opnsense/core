@@ -69,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,local_group
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching,
+            ldap_ip_mapping";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -118,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
-            ,cso_login_matching";
+            ,cso_login_matching,ldap_ip_mapping";
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);
             if (!isset($pconfig[$fieldname])) {
@@ -361,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
-                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
+                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching,ldap_ip_mapping";
 
             foreach (explode(",", $copy_fields) as $fieldname) {
                 $fieldname = trim($fieldname);
@@ -1611,6 +1612,17 @@ endif; ?>
                             <?=gettext("Use username instead of common name to match client specfic override."); ?><br />
                           </span>
                         </div>
+                      </td>
+                    </tr>
+                    <tr id="chkboxLdapIpMapping">
+                      <td style="width:22%"><a id="help_for_ldap_ip_mapping" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Map IP/Netmask from LDAP fields"); ?></td>
+                      <td>
+                          <input name="ldap_ip_mapping" type="checkbox" value="yes" <?=!empty($pconfig['ldap_ip_mapping']) ? "checked=\"checked\"" : "" ;?> />
+                          <div class="hidden" data-for="help_for_ldap_ip_mapping">
+                      <span>
+                        <?=gettext("Use LDAP fields ipHostNumber and ipNetmaskNumber to assign the client and ip/netmask. Optionally, ipHostNumber can be in CIDR annotation, not using ipNetmaskNumber at all"); ?><br />
+                      </span>
+                          </div>
                       </td>
                     </tr>
                     <tr>
