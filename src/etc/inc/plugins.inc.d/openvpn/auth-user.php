@@ -73,10 +73,12 @@ function parse_auth_properties($props, $a_server)
          */
         $cidrRegexp = '/^(?P<ip>([0-9]{1,3}\.){3}[0-9]{1,3})\/(?P<cidrmask>[0-9]|[1-2][0-9]|3[0-2])$/';
         $cidrAnnotationParts = [];
-        if (!empty($props['ipHostNumber']) && !empty($props['ipNetmaskNumber'])) {
-            $cidrmask = 32-log((ip2long($props['ipNetmaskNumber']) ^ ip2long('255.255.255.255'))+1, 2);
-            $result['tunnel_network'] = $props['ipHostNumber\''] . "/" . $cidrmask;
-        } else if (!empty($props['ipHostNumber'] && preg_match($cidrRegexp, $props['ipHostNumber'], $cidrAnnotationParts) === 1)) {
+        // you might wonder why iphostnumber is all lowercase even though the field is camel case ipHostNumber
+        // but this seems how we get the fields
+        if (!empty($props['iphostnumber']) && !empty($props['ipnetmasknumber'])) {
+            $cidrmask = 32-log((ip2long($props['ipnetmasknumber']) ^ ip2long('255.255.255.255'))+1, 2);
+            $result['tunnel_network'] = $props['iphostnumber'] . "/" . $cidrmask;
+        } else if (!empty($props['iphostnumber'] && preg_match($cidrRegexp, $props['iphostnumber'], $cidrAnnotationParts) === 1)) {
             // in this case ipHostNumber is in CIDR annotation
             // we could also just use $props['ipHostNumber'] directly since it is already in the CIDR annotation
             // but validating it / enforcing it might be a good idea in case
