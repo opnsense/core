@@ -66,10 +66,21 @@ function parse_auth_properties($props)
         $result['local_network'] = implode(",", $props['Framed-Route']);
     }
 
-    // LDAP attributes, @see https://tools.ietf.org/html/draft-howard-rfc2307bis-02
+    /* LDAP attributes, @see https://tools.ietf.org/html/draft-howard-rfc2307bis-02
+     * We support 2 different options:
+     *  - either ipHostNumber and ipNetmaskNumber exists ( ipHost + ipNetwork objectClass )
+     *  - or ipNetmaskNumber is in CIDR annoation ( only ipHost objectClass
+     */
+    $cidrRegexp = '/^(?P<ip>([0-9]{1,3}\.){3}[0-9]{1,3})\/(?P<cidrmask>[0-9]|[1-2][0-9]|3[0-2])$/';
+    $cidrAnnotationParts = [];
     if (!empty($props['ipHostNumber']) && !empty($props['ipNetmaskNumber'])) {
         $cidrmask = 32-log((ip2long($props['ipNetmaskNumber']) ^ ip2long('255.255.255.255'))+1, 2);
         $result['tunnel_network'] = $props['ipHostNumber\''] . "/" . $cidrmask;
+    } else if (!empty($props['ipHostNumber'] && preg_match($cidrRegexp, $props['ipHostNumber'], $cidrAnnotationParts) === 1)) {
+        // in this case ipHostNumber is in CIDR annotation
+        // we could also just use $props['ipHostNumber'] directly since it is already in the CIDR annotation
+        // but validating it / enforcing it might be a good idea in case
+        $result['tunnel_network'] = $cidrAnnotationParts['ip'] . '/' . $cidrAnnotationParts['cidrmask'];
     }
 
     return $result;
