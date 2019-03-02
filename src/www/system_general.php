@@ -365,9 +365,9 @@ include("head.inc");
                   <input name="navigation" class="navigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
                   <?=gettext("Sidebar"); ?>
                   <br />
-                  <div class="hidden" data-for="help_for_navigation_menu">
+                  <div class="hidden" data-for="help_for_navigation">
                     <?=sprintf(
-                      gettext('Choose between standard/default navigation or sidebar/collapsed navigation'));?>
+                      gettext('Set default navigation menu'));?>
                   </div>
                 </td>
             </tr>
