@@ -57,6 +57,7 @@ function get_openvpn_server($serverid)
 function parse_auth_properties($props)
 {
     $result = array();
+    // FreeRadius attributes
     if (!empty($props['Framed-IP-Address']) && !empty($props['Framed-IP-Netmask'])) {
         $cidrmask = 32-log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255'))+1, 2);
         $result['tunnel_network'] = $props['Framed-IP-Address'] . "/" . $cidrmask;
@@ -64,6 +65,13 @@ function parse_auth_properties($props)
     if (!empty($props['Framed-Route']) && is_array($props['Framed-Route'])) {
         $result['local_network'] = implode(",", $props['Framed-Route']);
     }
+
+    // LDAP attributes, @see https://tools.ietf.org/html/draft-howard-rfc2307bis-02
+    if (!empty($props['ipHostNumber']) && !empty($props['ipNetmaskNumber'])) {
+        $cidrmask = 32-log((ip2long($props['ipNetmaskNumber']) ^ ip2long('255.255.255.255'))+1, 2);
+        $result['tunnel_network'] = $props['ipHostNumber\''] . "/" . $cidrmask;
+    }
+
     return $result;
 }
 
