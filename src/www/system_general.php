@@ -17,7 +17,7 @@
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THEo
  * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
  * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -362,7 +362,7 @@ include("head.inc");
                   <input name="navigation" class="navigation" id="navigation_standard" type="radio" value="standard" <?= $pconfig['navigation'] == "standard" ? 'checked="checked"' : '' ?>/>
                   <?=gettext("Standard"); ?>
                   &nbsp;&nbsp;&nbsp;
-                  <input name="navigation" class="nnavigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
+                  <input name="navigation" class="navigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
                   <?=gettext("Sidebar"); ?>
                   <br />
                   <div class="hidden" data-for="help_for_navigation_menu">
