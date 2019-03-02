@@ -57,15 +57,14 @@ function get_openvpn_server($serverid)
 function parse_auth_properties($props, $a_server)
 {
     $result = array();
-    // FreeRadius attributes first
-    // only use LDAP based ip/netmask configuration if no Radius-Based properties have been set
-    // since those should have higher priority due to the semantic priority Radius would have
-    // in such a scenario
+    // 1. FreeRadius attributes should be picked first
+    // 2. Only use LDAP based ip/netmask configuration if no Radius based properties have been set
+    //    since those should have higher priority due to the semantic priority Radius would have in such a scenario
     if (!empty($props['Framed-IP-Address']) && !empty($props['Framed-IP-Netmask'])) {
         $cidrmask = 32-log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255'))+1, 2);
         $result['tunnel_network'] = $props['Framed-IP-Address'] . "/" . $cidrmask;
     } else if ($a_server != null && isset($a_server['ldap_ip_mapping'])){
-        // only map ldap field based ip if user activated it by ldap_ip_mapping
+        // only map ldap field based ip if the user activated it by ldap_ip_mapping
 
         /* LDAP attributes, @see https://tools.ietf.org/html/draft-howard-rfc2307bis-02
          * We support 2 different options:
