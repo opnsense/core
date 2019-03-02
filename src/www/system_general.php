@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'];
+    $pconfig['navigation'] = $config['system']['navigation'];
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
 
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
@@ -133,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['language'] = $pconfig['language'];
         $config['system']['timezone'] = $pconfig['timezone'];
         $config['theme'] =  $pconfig['theme'];
+        $config['system']['navigation'] =  $pconfig['system']['navigation'];
 
         if (!empty($pconfig['prefer_ipv4'])) {
             $config['system']['prefer_ipv4'] = true;
@@ -144,6 +146,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dnsallowoverride'] = true;
         } elseif (isset($config['system']['dnsallowoverride'])) {
             unset($config['system']['dnsallowoverride']);
+        }
+        
+        if ($pconfig['navigation'] == "standard") {
+            $config['system']['navigation'] = 'standard';
+        } elseif ($pconfig['navigation'] == "sidebar") {
+            $config['system']['navigation'] = 'sidebar';
         }
 
         if ($pconfig['dnslocalhost'] == 'yes') {
@@ -347,6 +355,21 @@ include("head.inc");
                   <?= gettext('This will change the look and feel of the GUI.') ?>
                 </div>
               </td>
+            </tr>
+            <tr>
+              <td><a id="help_for_navigation" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Navigation"); ?></td>
+                <td>
+                  <input name="navigation" class="navigation" id="navigation_standard" type="radio" value="standard" <?= $pconfig['navigation'] == "standard" ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Standard"); ?>
+                  &nbsp;&nbsp;&nbsp;
+                  <input name="navigation" class="nnavigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Sidebar"); ?>
+                  <br />
+                  <div class="hidden" data-for="help_for_navigation_menu">
+                    <?=sprintf(
+                      gettext('Choose between standard/default navigation or sidebar/collapsed navigation'));?>
+                  </div>
+                </td>
             </tr>
           </table>
         </div>
