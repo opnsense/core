@@ -148,7 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['dnsallowoverride']);
         }
         
-        if ($pconfig['navigation'] == "standard") {
+        if (!empty($config['system']['navigation'])) {
+            $config['system']['navigation'] = 'standard';
+        } elseif ($pconfig['navigation'] == "standard") {
             $config['system']['navigation'] = 'standard';
         } elseif ($pconfig['navigation'] == "sidebar") {
             $config['system']['navigation'] = 'sidebar';
@@ -361,13 +363,11 @@ include("head.inc");
                 <td>
                   <input name="navigation" class="navigation" id="navigation_standard" type="radio" value="standard" <?= $pconfig['navigation'] == "standard" ? 'checked="checked"' : '' ?>/>
                   <?=gettext("Standard"); ?>
-                  &nbsp;&nbsp;&nbsp;
-                  <input name="navigation" class="nnavigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
+                  <input name="navigation" class="navigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
                   <?=gettext("Sidebar"); ?>
                   <br />
-                  <div class="hidden" data-for="help_for_navigation_menu">
-                    <?=sprintf(
-                      gettext('Choose between standard/default navigation or sidebar/collapsed navigation'));?>
+                  <div class="hidden" data-for="help_for_navigation">
+                    <?=gettext('Set default navigation menu')?>
                   </div>
                 </td>
             </tr>
