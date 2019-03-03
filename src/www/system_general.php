@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['dnsallowoverride']);
         }
         
-        if (!empty($config['system']['navigation'])) {
+        if (empty($config['navigation'])) {
             $config['system']['navigation'] = 'standard';
         } elseif ($pconfig['navigation'] == "standard") {
             $config['system']['navigation'] = 'standard';
@@ -361,10 +361,10 @@ include("head.inc");
             <tr>
               <td><a id="help_for_navigation" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Navigation"); ?></td>
                 <td>
-                  <input name="navigation" class="navigation" id="navigation_standard" type="radio" value="standard" <?= $pconfig['navigation'] == "standard" ? 'checked="checked"' : '' ?>/>
-                  <?=gettext("Standard"); ?>
-                  <input name="navigation" class="navigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
-                  <?=gettext("Sidebar"); ?>
+                  <span style="margin-right:10px"><input name="navigation" class="navigation" id="navigation_standard" type="radio" value="standard" <?= $pconfig['navigation'] == "standard" ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Standard"); ?></span>
+                  <span><input name="navigation" class="navigation" id="navigation_sidebar" type="radio" value="sidebar" <?= $pconfig['navigation'] == "sidebar" ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Sidebar"); ?></span>
                   <br />
                   <div class="hidden" data-for="help_for_navigation">
                     <?=gettext('Set default navigation menu')?>
