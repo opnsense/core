@@ -1282,17 +1282,17 @@ include("head.inc");
                                   <td>
                                     <select name="set-prio">
                                         <option value=""<?=(!isset($pconfig['set-prio']) || $pconfig['set-prio'] === '' ? ' selected="selected"' : '');?>><?=htmlspecialchars(gettext('Keep current priority'));?></option>
-<? foreach ($priorities as $prio => $priority): ?>
+<?php foreach ($priorities as $prio => $priority): ?>
                                         <option value="<?=$prio;?>"<?=(isset($pconfig['set-prio']) && $pconfig['set-prio'] !== '' && $pconfig['set-prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
-<? endforeach ?>
+<?php endforeach ?>
                                     </select>
                                   </td>
                                   <td>
                                     <select name="set-prio-low">
                                         <option value=""<?=(!isset($pconfig['set-prio-low']) || $pconfig['set-prio-low'] === '' ? ' selected="selected"' : '');?>><?=htmlspecialchars(gettext('Use main priority'));?></option>
-<? foreach ($priorities as $prio => $priority): ?>
+<?php foreach ($priorities as $prio => $priority): ?>
                                         <option value="<?=$prio;?>"<?=(isset($pconfig['set-prio-low']) && $pconfig['set-prio-low'] !== '' && $pconfig['set-prio-low'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
-<? endforeach ?>
+<?php endforeach ?>
                                     </select>
                                   </td>
                               </tr>
@@ -1307,9 +1307,9 @@ include("head.inc");
                       <td>
                         <select name="prio">
                             <option value=""<?=(!isset($pconfig['prio']) || $pconfig['prio'] === '' ? ' selected="selected"' : '');?>><?=htmlspecialchars(gettext('Any priority'));?></option>
-<? foreach ($priorities as $prio => $priority): ?>
+<?php foreach ($priorities as $prio => $priority): ?>
                             <option value="<?=$prio;?>"<?=(isset($pconfig['prio']) && $pconfig['prio'] !== '' && $pconfig['prio'] == $prio ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
-<? endforeach ?>
+<?php endforeach ?>
                         </select>
                         <div class="hidden" data-for="help_for_prio">
                           <?=gettext('Match on the priority of packets.');?>
