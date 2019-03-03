@@ -416,12 +416,15 @@ class Action(object):
         """
         # send-out syslog message
         if self.message is not None:
-            log_message = '[%s] ' % message_uuid
+            log_param = list()
+            # make sure message items match input
             if self.message.count('%s') > 0 and parameters is not None and len(parameters) > 0:
-                log_message = log_message + self.message % tuple(parameters[0:self.message.count('%s')])
-            else:
-                log_message = log_message + self.message.replace("%s", "")
-            syslog.syslog(syslog.LOG_NOTICE, log_message)
+                log_param = parameters[0:self.message.count('%s')]
+            if len(log_param) < self.message.count('%s'):
+                for i in range(self.message.count('%s') - len(log_param)):
+                    log_param.append('')
+
+            syslog.syslog(syslog.LOG_NOTICE, '[%s] %s' % (message_uuid, self.message % tuple(log_param)))
 
         # validate input
         if self.type is None:
