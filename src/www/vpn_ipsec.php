@@ -503,7 +503,7 @@ $( document ).ready(function() {
                                 </td>
                                 <td class="hidden-xs">
                                   <?=$p2_protos[$ph2ent['protocol']];?>
-                                  <?=isset($ph2ent['mode']) ? array_search($ph2ent['mode'], array("IPv4 tunnel" => "tunnel", "IPv6 tunnel" => "tunnel6", "transport" => "transport")) : ""; ?>
+                                  <?=isset($ph2ent['mode']) ? array_search($ph2ent['mode'], array("IPv4 tunnel" => "tunnel", "IPv6 tunnel" => "tunnel6", "transport" => "transport", "Route-based" => "route-based")) : ""; ?>
                                 </td>
 <?php
                                 if (($ph2ent['mode'] == "tunnel") || ($ph2ent['mode'] == "tunnel6")) :?>
@@ -513,6 +513,10 @@ $( document ).ready(function() {
                                 <td>
                                   <?=ipsec_idinfo_to_text($ph2ent['remoteid']); ?>
                                 </td>
+<?php
+                                elseif ($ph2ent['mode'] == "route-based"):?>
+                                <td><?=$ph2ent['tunnel_local'];?></td>
+                                <td><?=$ph2ent['tunnel_remote'];?></td>
 <?php
                                 else :?>
                                 <td>&nbsp;</td>

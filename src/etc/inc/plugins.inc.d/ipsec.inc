@@ -165,10 +165,18 @@ function ipsec_interfaces()
                 $oic['descr'] = 'IPsec';
                 $oic['type'] = 'none';
                 $oic['virtual'] = true;
-                $oic['networks'] = array();
                 $interfaces['enc0'] = $oic;
                 break;
             }
+        }
+        // automatically register VTI's in the interfaces list
+        foreach (ipsec_get_configured_vtis() as $intf => $details) {
+            $interfaces[$intf] = [
+                'enable' => true,
+                'descr' => $details['descr'],
+                'if' => $intf,
+                'type' => 'none',
+            ];
         }
     }
 
@@ -306,17 +314,7 @@ function ipsec_get_phase1_src(&$ph1ent)
         if ($ph1ent['interface'] == 'any') {
             return '%any';
         } elseif (!is_ipaddr($ph1ent['interface'])) {
-            if (strpos($ph1ent['interface'], '_vip') !== false) {
-                // if this is a vip, set the interface to $ph1ent['interface']
-                $if = $ph1ent['interface'];
-            } else {
-                // not a vip, check failover interface
-                if ($ph1ent['protocol'] == "inet6") {
-                    $if = get_failover_interface($ph1ent['interface'], "inet6");
-                } else {
-                    $if = get_failover_interface($ph1ent['interface']);
-                }
-            }
+            $if = $ph1ent['interface'];
         } else {
             // interface is an ip address, return
             return $ph1ent['interface'];
@@ -720,6 +718,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
             return;
         }
     }
+    // configure VTI if needed
+    ipsec_configure_vti();
 
     /* get the automatic ping_hosts.sh ready */
     @unlink('/var/db/ipsecpinghosts');
@@ -1122,6 +1122,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     continue;
                 }
                 $aggressive = $ph1ent['mode'] == "aggressive" ? "yes" : "no";
+                $installpolicy = empty($ph1ent['noinstallpolicy']) ? "yes" : "no";
 
                 $ep = ipsec_get_phase1_src($ph1ent);
                 if (empty($ep)) {
@@ -1144,6 +1145,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $conn_auto = $ph1ent['auto'];
                 } elseif (isset($ph1ent['mobile'])) {
                     $conn_auto = 'add';
+                } elseif (!empty($config['ipsec']['auto_routes_disable'])) {
+                    $conn_auto = 'start';
                 } else {
                     $conn_auto = 'route';
                 }
@@ -1309,6 +1312,14 @@ function ipsec_configure_do($verbose = false, $interface = '')
                                 $tmpsubnet = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
                                 $rightsubnet_spec[] = $tmpsubnet;
                             }
+                        } elseif ($ph2ent['mode'] == 'route-based') {
+                            if (is_ipaddrv6($ph2ent['tunnel_local'])) {
+                                $leftsubnet_spec[] = '::/0';
+                                $rightsubnet_spec[] = '::/0';
+                            } else {
+                                $leftsubnet_spec[] = '0.0.0.0/0';
+                                $rightsubnet_spec[] = '0.0.0.0/0';
+                            }
                         } else {
                             $tunneltype = "type = transport";
                             if ((($ph1ent['authentication_method'] == "xauth_psk_server") ||
@@ -1421,7 +1432,7 @@ conn con<<connectionId>>
   {$reauth}
   {$rekey}
   {$forceencaps}
-  installpolicy = yes
+  installpolicy = {$installpolicy}
   {$tunneltype}
   {$dpdline}
   left = {$left_spec}
@@ -1453,9 +1464,11 @@ EOD;
                     for ($idx = 0; $idx < count($leftsubnet_spec); ++$idx) {
                         if (count($leftsubnet_spec) == 1) {
                             $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
+                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 );
                         } else {
                             // suffix connection with sequence number
                             $tmpconf = str_replace('<<connectionId>>', sprintf('%s-%03d', $ph1ent['ikeid'], $idx), $connEntry);
+                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx );
                         }
                         $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n";
                         $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
@@ -1479,6 +1492,7 @@ EOD;
                             // name from the first configured tunnel ($idx == 0):
                             $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
                             $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
+                            $tmpconf[] = sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx );
                             if (!empty($rightsubnet_spec[$idx])) {
                                 $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
                             }
@@ -1497,6 +1511,7 @@ EOD;
                         }
                     } else {
                         $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
+                        $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 );
                         if (!empty($rightsubnet_spec)) {
                             $tmpconf .= "\trightsubnet = " . join(',', array_unique($rightsubnet_spec)) . "\n";
                         }
@@ -1574,4 +1589,136 @@ function generate_strongswan_conf(array $tree, $level = 0): string
         }
     }
     return $output;
+}
+
+function ipsec_get_configured_vtis()
+{
+    global $config;
+    $configured_intf = array();
+    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
+    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
+    foreach ($a_phase1 as $ph1ent) {
+        if (empty($ph1ent['disabled'])) {
+            $phase2items = array();
+            foreach ($a_phase2 as $ph2ent) {
+                if ($ph2ent['mode'] == 'route-based' &&
+                        empty($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid']) {
+                    $phase2items[] = $ph2ent;
+                }
+            }
+            foreach ($phase2items as $idx => $phase2) {
+                if ((!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
+                    // isolated tunnels
+                    $reqid = (int)$ph1ent['ikeid'] * 1000 + $idx;
+                    $descr = empty($phase2['descr']) ? $ph1ent['descr'] : $phase2['descr'];
+                } else {
+                    $reqid = (int)$ph1ent['ikeid'] * 1000;
+                    $descr = $ph1ent['descr'];
+                }
+                $intfnm = sprintf("ipsec%s", $reqid);
+                if (empty($tunnels[$intfnm])) {
+                    $configured_intf[$intfnm] = array("reqid" => $reqid);
+                    $configured_intf[$intfnm]['local'] = ipsec_get_phase1_src($ph1ent);
+                    $configured_intf[$intfnm]['remote'] = $ph1ent['remote-gateway'];
+                    $configured_intf[$intfnm]['descr'] = $descr;
+                    $configured_intf[$intfnm]['networks'] = array();
+                }
+                $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
+                $configured_intf[$intfnm]['networks'][] = [
+                    'inet' => $inet,
+                    'tunnel_local' => $phase2['tunnel_local'],
+                    'mask' => $inet == 'inet6' ? '128' : '32',
+                    'tunnel_remote' => $phase2['tunnel_remote']
+                ];
+            }
+        }
+    }
+
+    return $configured_intf;
+}
+
+/**
+ * Configure required Virtual Terminal Interfaces (synchronizes configuration with local interfaces named ipsec%)
+ */
+function ipsec_configure_vti()
+{
+    // query planned and configured interfaces
+    $configured_intf = ipsec_get_configured_vtis();
+    $current_interfaces = array();
+    foreach (legacy_interfaces_details() as $intf => $intf_details) {
+        if (strpos($intf, 'ipsec') === 0) {
+            $current_interfaces[$intf] = $intf_details;
+        }
+    }
+
+    // drop changed or not existing interfaces and tunnel endpoints
+    foreach ($current_interfaces as $intf => $intf_details) {
+        if (empty($configured_intf[$intf])
+            || $configured_intf[$intf]['local'] != $intf_details['tunnel']['src_addr']
+            || $configured_intf[$intf]['remote'] != $intf_details['tunnel']['dest_addr']
+        ) {
+            log_error(sprintf("destroy interface %s", $intf));
+            legacy_interface_destroy($intf);
+            unset($current_interfaces[$intf]);
+        } else {
+            foreach (array('ipv4', 'ipv6') as $proto) {
+                foreach ($intf_details[$proto] as $addr) {
+                    if (!empty($addr['endpoint'])) {
+                        $isfound = false;
+                        foreach ($configured_intf[$intf]['networks'] as $network) {
+                            if ($network['tunnel_local'] == $addr['ipaddr']
+                                    && $network['tunnel_remote']  == $addr['endpoint']) {
+                                $isfound = true;
+                                break;
+                            }
+                        }
+                        if (!$isfound) {
+                          log_error(sprintf(
+                              "remove tunnel %s %s from interface %s", $addr['ipaddr'], $addr['endpoint'], $intf
+                          ));
+                          mwexecf('/sbin/ifconfig %s %s %s delete', array(
+                            $intf, $proto == 'ipv6' ? 'inet6' : 'inet',  $addr['ipaddr'], $addr['endpoint']
+                          ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // configure new interfaces and tunnels
+    foreach ($configured_intf as $intf => $intf_details) {
+        // create required interfaces
+        $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
+        if (empty($current_interfaces[$intf])) {
+            if (mwexecf('/sbin/ifconfig %s create reqid %s', array($intf, $intf_details['reqid'])) == 0) {
+                mwexecf('/sbin/ifconfig %s %s tunnel %s %s up',
+                        array($intf, $inet, $intf_details['local'], $intf_details['remote'])
+                );
+            }
+        }
+        // create new tunnel endpoints
+        foreach ($intf_details['networks'] as $endpoint) {
+            if (!empty($current_interfaces[$intf])) {
+                $already_configured = $current_interfaces[$intf][$endpoint['inet'] == 'inet6' ? 'ipv6' : 'ipv4'];
+            } else {
+                $already_configured = array();
+            }
+            $isfound = false;
+            foreach ($already_configured as $addr) {
+                if (!empty($addr['endpoint'])) {
+                    if ($endpoint['tunnel_local'] == $addr['ipaddr']
+                            && $endpoint['tunnel_remote']  == $addr['endpoint']) {
+                        $isfound = true;
+                    }
+                }
+            }
+            if (!$isfound) {
+                mwexecf('/sbin/ifconfig %s %s %s %s', array(
+                    $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask']),
+                    $endpoint['tunnel_remote']
+                ));
+            }
+        }
+    }
 }
