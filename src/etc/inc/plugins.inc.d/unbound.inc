@@ -615,8 +615,6 @@ function unbound_add_host_entries()
                     $alias['host'] .= '.';
                 }
 
-                echo "hello doing {$alias['host']}\n";
-
                 switch ($host['rr']) {
                     case 'A':
                     case 'AAAA':
