@@ -1142,6 +1142,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $conn_auto = $ph1ent['auto'];
                 } elseif (isset($ph1ent['mobile'])) {
                     $conn_auto = 'add';
+                } elseif (!empty($config['ipsec']['auto_routes_disable'])) {
+                    $conn_auto = 'start';
                 } else {
                     $conn_auto = 'route';
                 }
