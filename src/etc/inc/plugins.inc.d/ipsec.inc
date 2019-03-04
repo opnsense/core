@@ -1119,6 +1119,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     continue;
                 }
                 $aggressive = $ph1ent['mode'] == "aggressive" ? "yes" : "no";
+                $installpolicy = empty($ph1ent['noinstallpolicy']) ? "yes" : "no";
 
                 $ep = ipsec_get_phase1_src($ph1ent);
                 if (empty($ep)) {
@@ -1418,7 +1419,7 @@ conn con<<connectionId>>
   {$reauth}
   {$rekey}
   {$forceencaps}
-  installpolicy = yes
+  installpolicy = {$installpolicy}
   {$tunneltype}
   {$dpdline}
   left = {$left_spec}
