@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ikeid'] = $config['ipsec']['phase1'][$p1index]['ikeid'];
         }
         $pconfig['disabled'] = isset($config['ipsec']['phase1'][$p1index]['disabled']);
+        $pconfig['installpolicy'] = empty($config['ipsec']['phase1'][$p1index]['noinstallpolicy']); // XXX: reversed
 
         foreach (array('authservers', 'dhgroup', 'hash-algorithm') as $fieldname) {
             if (!empty($config['ipsec']['phase1'][$p1index][$fieldname])) {
@@ -364,7 +365,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        $ph1ent['disabled'] = !empty($pconfig['disabled']) ? true : false;
+        $ph1ent['disabled'] = !empty($pconfig['disabled']);
+        $ph1ent['noinstallpolicy'] = empty($pconfig['installpolicy']); // XXX: reversed
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
         if (!empty($pconfig['mobile'])) {
             $ph1ent['mobile'] = true;
@@ -995,6 +997,16 @@ endforeach; ?>
                   </tr>
                   <tr>
                     <td colspan="2"><b><?=gettext("Advanced Options"); ?></b></td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_installpolicy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Install policy");?></td>
+                    <td>
+                      <input name="installpolicy" type="checkbox" id="rekey_enable" value="yes" <?= !empty($pconfig['installpolicy']) ? "checked=\"checked\"" : ""; ?> />
+                      <div class="hidden" data-for="help_for_installpolicy">
+                        <?=gettext("Decides whether IPsec policies are installed in the kernel by the charon daemon for a given connection. ".
+                                   "When using route-based mode (VTI) this needs to be disabled."); ?>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_rekey_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disable Rekey");?></td>
