@@ -934,7 +934,7 @@ include("head.inc");
                   <tr class="advanced_opt_src visible">
                     <td><?=gettext("Source"); ?></td>
                     <td>
-                      <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="showadvancedboxsrc" />
+                      <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Advanced')) ?>" id="showadvancedboxsrc" />
                       <div class="hidden" data-for="help_for_source">
                         <?=gettext("Show source address and port range"); ?>
                       </div>
@@ -1245,7 +1245,7 @@ include("head.inc");
                   <tr>
                     <td><?=gettext("Advanced Options");?></td>
                     <td>
-                      <input id="toggleAdvanced" type="button" class="btn btn-default" value="<?=gettext("Show/Hide"); ?>" />
+                      <input id="toggleAdvanced" type="button" class="btn btn-default" value="<?= html_safe(gettext('Show/Hide')) ?>" />
                     </td>
                   </tr>
                   <tr class="opt_advanced hidden">

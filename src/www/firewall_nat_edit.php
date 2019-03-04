@@ -569,12 +569,11 @@ $( document ).ready(function() {
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php                foreach (get_protocols() as $proto):
-?>
-              <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
-                          <?=$proto;?>
+<?php foreach (get_protocols() as $proto): ?>
+                        <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
+                          <?= $proto ?>
                         </option>
-<?php                endforeach; ?>
+<?php endforeach ?>
               </select>
                     </div>
                     <div class="hidden" data-for="help_for_proto">
@@ -586,7 +585,7 @@ $( document ).ready(function() {
                 <tr class="advanced_opt_src visible">
                   <td><?=gettext("Source"); ?></td>
                   <td>
-                    <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="showadvancedboxsrc" />
+                    <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Advanced')) ?>" id="showadvancedboxsrc" />
                     <div class="hidden" data-for="help_for_source">
                       <?=gettext("Show source address and port range"); ?>
                     </div>

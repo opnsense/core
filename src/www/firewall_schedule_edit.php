@@ -991,8 +991,8 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                       <tr>
                         <td>&nbsp;</td>
                         <td>
-                          <input type="button" value="<?=gettext("Add Time");?>"  class="btn btn-default"  onclick="javascript:processEntries();" />&nbsp;&nbsp;&nbsp;
-                          <input type="button" value="<?=gettext("Clear Selection");?>" class="btn btn-default" onclick="javascript:clearCalendar(); clearTime(); clearDescr();" />
+                          <input type="button" value="<?= html_safe(gettext('Add Time')) ?>" class="btn btn-default" onclick="javascript:processEntries();" />&nbsp;&nbsp;&nbsp;
+                          <input type="button" value="<?= html_safe(gettext('Clear Selection')) ?>" class="btn btn-default" onclick="javascript:clearCalendar(); clearTime(); clearDescr();" />
                         </td>
                       </tr>
                       <tr>
