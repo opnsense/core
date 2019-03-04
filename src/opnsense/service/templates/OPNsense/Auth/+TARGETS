@@ -1,4 +1,4 @@
-ipsec:/etc/pam.d/ipsec
+ipsec.pam:/etc/pam.d/ipsec
 motd:/etc/motd
 sshd.pam:/etc/pam.d/sshd
 sudoers:/usr/local/etc/sudoers.d/opnsense
