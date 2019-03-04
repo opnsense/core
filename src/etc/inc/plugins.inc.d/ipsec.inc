@@ -1309,6 +1309,14 @@ function ipsec_configure_do($verbose = false, $interface = '')
                                 $tmpsubnet = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
                                 $rightsubnet_spec[] = $tmpsubnet;
                             }
+                        } elseif ($ph2ent['mode'] == 'route-based') {
+                            if (is_ipaddrv6($ph2ent['tunnel_local'])) {
+                                $leftsubnet_spec[] = '::/0';
+                                $rightsubnet_spec[] = '::/0';
+                            } else {
+                                $leftsubnet_spec[] = '0.0.0.0/0';
+                                $rightsubnet_spec[] = '0.0.0.0/0';
+                            }
                         } else {
                             $tunneltype = "type = transport";
                             if ((($ph1ent['authentication_method'] == "xauth_psk_server") ||
