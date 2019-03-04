@@ -54,6 +54,7 @@
 /usr/local/etc/inc/xmlrpc/service.inc
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/netflow.conf.example
+/usr/local/etc/pam.d/ipsec
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20170721
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20150402
