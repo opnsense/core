@@ -269,6 +269,51 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     return true;
 }
 
+function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
+{
+    $ca = &lookup_ca($caref);
+    if (!$ca) {
+        return false;
+    }
+
+    $ca_str_crt = base64_decode($ca['crt']);
+    $ca_str_key = base64_decode($ca['prv']);
+    $ca_res_crt = openssl_x509_read($ca_str_crt);
+    $ca_res_key = openssl_pkey_get_private(array(0 => $ca_str_key, 1 => ""));
+    if (!$ca_res_key) {
+        return false;
+    }
+    $ca_serial = ++$ca['serial'];
+
+    // handle parameters which can only be set via the configuration file
+    $config_filename = create_temp_openssl_config($dn);
+
+    $args = array(
+        'config' => $config_filename,
+        'digest_alg' => $digest_alg,
+        'x509_extensions' => 'sign_csr',
+    );
+
+    $res_crt = openssl_csr_sign($csr, $ca_res_crt, $ca_res_key, $lifetime, $args, $ca_serial);
+    if ($res_crt === false) {
+        return false;
+    }
+
+    // export our certificate data
+    if (!openssl_x509_export($res_crt, $str_crt)) {
+        return false;
+    }
+
+    // return our certificate information
+    $cert['caref'] = $caref;
+    $cert['crt'] = base64_encode($str_crt);
+
+    // remove tempfile (template)
+    unlink($config_filename);
+
+    return true;
+}
+
 function csr_get_subject($str_crt, $decode = true)
 {
     if ($decode) {
@@ -680,12 +725,11 @@ function create_temp_openssl_config(&$dn)
 
     $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
 
-    foreach (['subjectAltName'] as $dnTag) {
+    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $dnTag) {
         if (isset($dn[$dnTag])) {
-            $template_dn = $dnTag . ' = ' . $dn[$dnTag];
+            $template_dn = $dnTag . ' = ' . str_replace(array("\r", "\n"), '',$dn[$dnTag]);
             // Overwrite the placeholders for this property
             $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
-            unset($dn[$dnTag]);
         }
     }
     file_put_contents($configFilename, $template);
