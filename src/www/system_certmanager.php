@@ -366,6 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo $result_stderr;
       }
       exit;
+
     } elseif ($act == 'csr_info_json') {
       header("Content-Type: application/json;charset=UTF-8");
 
@@ -390,6 +391,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
 
       echo json_encode($parsed_result);
+      exit;
+
+    } elseif ($act == 'privatekey_info') {
+      //  Browser without <a download=""> (like IE11) support
+      if (!isset($_GET['private_key'])) {
+        http_response_code(400);
+        header('Content-Type: text/plain;charset=UTF-8');
+        echo gettext('Invalid request');
+        exit;
+      }
+
+      header('Content-Type: text/plain;charset=UTF-8');
+      header('Content-Disposition:attachment; filename="privatekey.pem"');
+      echo $_GET['private_key'];
+      exit;
+
+    } elseif ($act == 'generate_private_key') {
+      if (!isset($_GET['keylen']) || !isset($_GET['digest_alg'])) {
+        http_response_code(400);
+        header('Content-Type: text/plain;charset=UTF-8');
+        echo gettext('Invalid request');
+        exit;
+      }
+
+      header('Content-Type: text/plain;charset=UTF-8');
+      $args = array(
+          'private_key_type' => OPENSSL_KEYTYPE_RSA,
+          'private_key_bits' => (int) $_GET['keylen'],
+          'digest_alg'       => $_GET['digest_alg'],
+          'encrypt_key'      => false,
+      );
+
+      openssl_pkey_export(openssl_pkey_new($args), $str_key);
+      echo $str_key;
       exit;
     }
 
@@ -695,12 +730,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $pconfig['lifetime'],
                         $dn,
                         $pconfig['digest_alg'],
-                        $pconfig['cert_type']
+                        $pconfig['cert_type'],
+                        $pconfig['private_key_location'] === 'local' ? $pconfig['secret_key_for_cert'] : null
                     )) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
+                    }
+                    if ($pconfig['private_key_location'] === 'local') {
+                        unset($cert['prv']);
                     }
                 } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
                     if (!sign_cert_csr($cert, $pconfig['caref_sign_csr'], $pconfig['csr'], (int) $pconfig['lifetime_sign_csr'],
@@ -1070,6 +1109,23 @@ if (empty($act)) {
                 $("#internal").removeClass("hidden");
                 $("#altNameTr").detach().appendTo("#internal > tbody:first");
                 $("#submit").removeClass("hidden");
+                if ($('#private_key_location').val() == 'local') {
+                    $('#digest_alg_tmp_for_local').val($('#digest_alg').val());
+                    $('#keylen_tmp_for_local').val($('select[name="keylen"]').val());
+                    $('#download_secret_key_area').removeClass('hidden');
+                    $('select[name="keylen"]').prop('readonly', true);
+                    $('#keylen_tmp_for_local').prop('disabled', false);
+                    $('#digest_alg').prop('readonly', true);
+                    $('#digest_alg_tmp_for_local').prop('disabled', false);
+                    refresh_download_secret_key_link();
+                } else {
+                    $('#digest_alg').val($('#digest_alg_tmp_for_local').val());
+                    $('#download_secret_key_area').addClass('hidden');
+                    $('select[name="keylen"]').prop('readonly', false);
+                    $('#keylen_tmp_for_local').prop('disabled', true);
+                    $('#digest-alg').prop('readonly', false);
+                    $('#digest_alg_tmp_for_local').prop('disabled', true);
+                }
             } else if ($(this).val() == "external") {
                 $("#external").removeClass("hidden");
                 $("#altNameTr").detach().appendTo("#external > tbody:first");
@@ -1087,6 +1143,51 @@ if (empty($act)) {
         $("#certmethod").change();
     }
   });
+
+  function refresh_download_secret_key_link() {
+      if (navigator.userAgent.indexOf('MSIE ') !== -1 || navigator.userAgent.indexOf('Trident') !== -1) {
+          // IE11 support; they do not have <a download="">
+          $('#download_secret_key').attr('href', '/system_certmanager.php?act=privatekey_info&private_key=' + encodeURI($('#secret_key_for_cert').val()));
+      } else {
+          $('#download_secret_key').attr('href', URL.createObjectURL(new Blob([$('#secret_key_for_cert').val()])));
+      }
+  }
+
+  function refresh_private_location_toggle() {
+      if ($('#private_key_location').val() == 'local') {
+          $('#keylen_tmp_for_local').val($('select[name="keylen"]').val());
+          $('select[name="keylen"]').prop('disabled', true);
+          $('#digest_alg_tmp_for_local').val($('#digest_alg').val());
+          $('#digest_alg').prop('disabled', true);
+          $('#digest_alg_tmp_for_local').prop('disabled', false);
+          if ($('#secret_key_for_cert').val() == "") {
+              $.ajax({
+                  url:"system_certmanager.php",
+                  type: 'get',
+                  data: {'act' : 'generate_private_key', 'keylen' : $('select[name="keylen"]').val(), 'digest_alg': $('#digest_alg').val()},
+                  success: function(data){
+                      $('#secret_key_for_cert').val(data);
+                      refresh_download_secret_key_link();
+                      $('#download_secret_key_area').removeClass('hidden');
+                  }
+              });
+          } else {
+              refresh_download_secret_key_link();
+              $('#download_secret_key_area').removeClass('hidden');
+          }
+
+      } else {
+          $('select[name="keylen"]').val($('#keylen_tmp_for_local').val());
+          $('select[name="keylen"]').prop('disabled', false);
+          $('#keylen_tmp_for_local').prop('disabled', true);
+
+          $('#digest_alg').val($('#digest_alg_tmp_for_local').val());
+          $('#digest_alg').prop('disabled', false);
+          $('#digest_alg_tmp_for_local').prop('disabled', true);
+
+          $('#download_secret_key_area').addClass('hidden');
+      }
+  }
   </script>
 
 <?php include("fbegin.inc"); ?>
@@ -1472,6 +1573,22 @@ $( document ).ready(function() {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                 <td>
                   <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Private key location");?></td>
+                <td>
+                  <select name="private_key_location" onchange="refresh_private_location_toggle();" id="private_key_location">
+                    <option value="firewall" <?= $pconfig['private_key_location'] === 'firewall' ? 'selected="selected"' : ''; ?>><?= gettext('Save on this firewall'); ?></option>
+                    <option value="local"    <?= $pconfig['private_key_location'] === 'local'    ? 'selected="selected"' : ''; ?>><?= gettext('Download now and do not save'); ?></option>
+                  </select><br />
+                  <div class="hidden" id="download_secret_key_area">
+                    <a href="#" id="download_secret_key" class="btn btn-primary" download="privatekey.pem"><?= gettext('Download Private Key'); ?></a><br />
+                    <input type="hidden" id="secret_key_for_cert" name="secret_key_for_cert" value="<?= $pconfig['secret_key_for_cert']; ?>" />
+                    <?= gettext('Note: on this option, after clicking &quot;Save&quot;, you can not download this private key anymore.'); ?>
+                  </div>
+                  <input type="hidden" id="keylen_tmp_for_local" name="keylen" disabled="true" value="<?= $pconfig['keylen']; ?>"/>
+                  <input type="hidden" id="digest_alg_tmp_for_local" name="digest_alg" disabled="true" value="<?= $pconfig['digest_alg']; ?>"/>
                 </td>
               </tr>
               <tr>

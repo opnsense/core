@@ -205,7 +205,7 @@ function cert_import(& $cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256', $x509_extensions = 'usr_cert')
+function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256', $x509_extensions = 'usr_cert', $private_key = null)
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -234,7 +234,8 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     );
 
     // generate a new key pair
-    $res_key = openssl_pkey_new($args);
+    $res_key = $private_key === null ? openssl_pkey_new($args)
+                                     : $private_key;
     if (!$res_key) {
         return false;
     }
