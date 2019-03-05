@@ -393,9 +393,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       echo json_encode($parsed_result);
       exit;
 
-    } elseif ($act == 'privatekey_info') {
+    } elseif ($act == 'download_pem_file') {
       //  Browser without <a download=""> (like IE11) support
-      if (!isset($_GET['private_key'])) {
+      if (!isset($_GET['content']) || !isset($_GET['filename']) || !ctype_lower($_GET['filename'])) {
         http_response_code(400);
         header('Content-Type: text/plain;charset=UTF-8');
         echo gettext('Invalid request');
@@ -403,8 +403,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
 
       header('Content-Type: text/plain;charset=UTF-8');
-      header('Content-Disposition:attachment; filename="privatekey.pem"');
-      echo $_GET['private_key'];
+      header('Content-Disposition:attachment; filename="' . $_GET['filename'] . '.pem"');
+      echo $_GET['content'];
       exit;
 
     } elseif ($act == 'generate_private_key') {
@@ -730,8 +730,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $pconfig['lifetime'],
                         $dn,
                         $pconfig['digest_alg'],
-                        $pconfig['cert_type'],
-                        $pconfig['private_key_location'] === 'local' ? $pconfig['secret_key_for_cert'] : null
+                        $pconfig['cert_type']
                     )) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
@@ -739,6 +738,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                     if ($pconfig['private_key_location'] === 'local') {
+                        $act = 'download_private_key';
+                        $private_key = base64_decode($cert['prv']);
                         unset($cert['prv']);
                     }
                 } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
@@ -787,12 +788,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (count($input_errors) == 0) {
                 write_config();
-                if (isset($userid)) {
-                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
-                } else {
-                    header(url_safe('Location: /system_certmanager.php'));
+                if ($act !== 'download_private_key') {
+                    if (isset($userid)) {
+                        header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
+                    } else {
+                        header(url_safe('Location: /system_certmanager.php'));
+                    }
+                    exit;
                 }
-                exit;
             }
 
         }
@@ -1109,23 +1112,6 @@ if (empty($act)) {
                 $("#internal").removeClass("hidden");
                 $("#altNameTr").detach().appendTo("#internal > tbody:first");
                 $("#submit").removeClass("hidden");
-                if ($('#private_key_location').val() == 'local') {
-                    $('#digest_alg_tmp_for_local').val($('#digest_alg').val());
-                    $('#keylen_tmp_for_local').val($('select[name="keylen"]').val());
-                    $('#download_secret_key_area').removeClass('hidden');
-                    $('select[name="keylen"]').prop('readonly', true);
-                    $('#keylen_tmp_for_local').prop('disabled', false);
-                    $('#digest_alg').prop('readonly', true);
-                    $('#digest_alg_tmp_for_local').prop('disabled', false);
-                    refresh_download_secret_key_link();
-                } else {
-                    $('#digest_alg').val($('#digest_alg_tmp_for_local').val());
-                    $('#download_secret_key_area').addClass('hidden');
-                    $('select[name="keylen"]').prop('readonly', false);
-                    $('#keylen_tmp_for_local').prop('disabled', true);
-                    $('#digest-alg').prop('readonly', false);
-                    $('#digest_alg_tmp_for_local').prop('disabled', true);
-                }
             } else if ($(this).val() == "external") {
                 $("#external").removeClass("hidden");
                 $("#altNameTr").detach().appendTo("#external > tbody:first");
@@ -1144,53 +1130,40 @@ if (empty($act)) {
     }
   });
 
-  function refresh_download_secret_key_link() {
+  function refresh_download_link(jquery_key, content, filename) {
       if (navigator.userAgent.indexOf('MSIE ') !== -1 || navigator.userAgent.indexOf('Trident') !== -1) {
           // IE11 support; they do not have <a download="">
-          $('#download_secret_key').attr('href', '/system_certmanager.php?act=privatekey_info&private_key=' + encodeURI($('#secret_key_for_cert').val()));
+          $(jquery_key).attr('href', '/system_certmanager.php?act=download_pem_file&content=' + encodeURIComponent(content) + '&filename=' + encodeURIComponent(filename));
       } else {
-          $('#download_secret_key').attr('href', URL.createObjectURL(new Blob([$('#secret_key_for_cert').val()])));
-      }
-  }
-
-  function refresh_private_location_toggle() {
-      if ($('#private_key_location').val() == 'local') {
-          $('#keylen_tmp_for_local').val($('select[name="keylen"]').val());
-          $('select[name="keylen"]').prop('disabled', true);
-          $('#digest_alg_tmp_for_local').val($('#digest_alg').val());
-          $('#digest_alg').prop('disabled', true);
-          $('#digest_alg_tmp_for_local').prop('disabled', false);
-          if ($('#secret_key_for_cert').val() == "") {
-              $.ajax({
-                  url:"system_certmanager.php",
-                  type: 'get',
-                  data: {'act' : 'generate_private_key', 'keylen' : $('select[name="keylen"]').val(), 'digest_alg': $('#digest_alg').val()},
-                  success: function(data){
-                      $('#secret_key_for_cert').val(data);
-                      refresh_download_secret_key_link();
-                      $('#download_secret_key_area').removeClass('hidden');
-                  }
-              });
-          } else {
-              refresh_download_secret_key_link();
-              $('#download_secret_key_area').removeClass('hidden');
-          }
-
-      } else {
-          $('select[name="keylen"]').val($('#keylen_tmp_for_local').val());
-          $('select[name="keylen"]').prop('disabled', false);
-          $('#keylen_tmp_for_local').prop('disabled', true);
-
-          $('#digest_alg').val($('#digest_alg_tmp_for_local').val());
-          $('#digest_alg').prop('disabled', false);
-          $('#digest_alg_tmp_for_local').prop('disabled', true);
-
-          $('#download_secret_key_area').addClass('hidden');
+          $(jquery_key).attr('href', URL.createObjectURL(new Blob([content])));
+          $(jquery_key).attr('download', filename + '.pem');
       }
   }
   </script>
 
 <?php include("fbegin.inc"); ?>
+<?php
+          if ($act == "download_private_key") {
+?>
+<section class="page-content-main">
+  <div class="container-fluid">
+    <h2><?= gettext('Certificate has been issued.'); ?></h2>
+    <h3><?= gettext('Private key'); ?></h3>
+    <?= gettext('Private key is not saved and no longer downloadable after closing this window.'); ?><br/>
+    <textarea id="secret_key_for_cert" cols="65" rows="7"><?= html_safe($private_key); ?></textarea><br/>
+    <a href="#" id="download_private_key_link" class="btn btn-primary"><?= gettext('Download Private Key'); ?></a>
+    <script>refresh_download_link('#download_private_key_link', $('#secret_key_for_cert').val(), 'privatekey');</script>
+    <h3><?= gettext('Certificate'); ?></h3>
+    <?= gettext('You can download, revise, or add to CRL later.'); ?><br/>
+    <textarea id="cert_just_created" cols="65" rows="7"><?= html_safe(base64_decode($cert['crt'])); ?></textarea><br/>
+    <a href="#" id="download_cert_link" class="btn btn-primary"><?= gettext('Download Certificate'); ?></a>
+    <script>refresh_download_link('#download_cert_link', $('#cert_just_created').val(), 'certificate');</script>
+    <h3><?= gettext('Once downloaded:'); ?></h3>
+    <a href="/system_certmanager.php" class="btn btn-primary"><?= gettext('Go back'); ?></a>
+  </div>
+</section>
+<?php include("foot.inc");exit(); ?>
+<?php } ?>
 <script>
 $( document ).ready(function() {
 //<![CDATA[
@@ -1578,17 +1551,11 @@ $( document ).ready(function() {
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Private key location");?></td>
                 <td>
-                  <select name="private_key_location" onchange="refresh_private_location_toggle();" id="private_key_location">
+                <!-- TODO: add hint later -->
+                  <select name="private_key_location" id="private_key_location">
                     <option value="firewall" <?= $pconfig['private_key_location'] === 'firewall' ? 'selected="selected"' : ''; ?>><?= gettext('Save on this firewall'); ?></option>
-                    <option value="local"    <?= $pconfig['private_key_location'] === 'local'    ? 'selected="selected"' : ''; ?>><?= gettext('Download now and do not save'); ?></option>
-                  </select><br />
-                  <div class="hidden" id="download_secret_key_area">
-                    <a href="#" id="download_secret_key" class="btn btn-primary" download="privatekey.pem"><?= gettext('Download Private Key'); ?></a><br />
-                    <input type="hidden" id="secret_key_for_cert" name="secret_key_for_cert" value="<?= $pconfig['secret_key_for_cert']; ?>" />
-                    <?= gettext('Note: on this option, after clicking &quot;Save&quot;, you can not download this private key anymore.'); ?>
-                  </div>
-                  <input type="hidden" id="keylen_tmp_for_local" name="keylen" disabled="true" value="<?= $pconfig['keylen']; ?>"/>
-                  <input type="hidden" id="digest_alg_tmp_for_local" name="digest_alg" disabled="true" value="<?= $pconfig['digest_alg']; ?>"/>
+                    <option value="local"    <?= $pconfig['private_key_location'] === 'local'    ? 'selected="selected"' : ''; ?>><?= gettext('Download and do not save'); ?></option>
+                  </select>
                 </td>
               </tr>
               <tr>
