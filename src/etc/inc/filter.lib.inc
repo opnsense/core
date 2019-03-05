@@ -510,7 +510,7 @@ function filter_core_rules_system($fw, $defaults)
     // This behaviour can be disabled, so settings can be customized using manual firewall rules.
     if (empty($config['system']['pf_disable_force_gw'])) {
         foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
-            if (!isset($ifcfg['virtual']) && $ifcfg['if'] != 'lo0') {
+            if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $intf_has_v4 = false;
                 $intf_has_v6 = false;
                 foreach (legacy_getall_interface_addresses($ifcfg['if']) as $addr) {
