@@ -28,8 +28,8 @@
  */
 
 require_once('guiconfig.inc');
-require_once("system.inc");
-//require_once('phpseclib/vendor/autoload.php');
+require_once('system.inc');
+require_once('phpseclib/File/X509.php');
 
 function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
 {
