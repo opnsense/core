@@ -306,13 +306,7 @@ function ipsec_get_phase1_src(&$ph1ent)
         if ($ph1ent['interface'] == 'any') {
             return '%any';
         } elseif (!is_ipaddr($ph1ent['interface'])) {
-            if (strpos($ph1ent['interface'], '_vip') !== false) {
-                // if this is a vip, use literal interface
-                $if = $ph1ent['interface'];
-            } else {
-                // not a vip, check failover interface
-                $if = get_failover_interface($ph1ent['interface'], $ph1ent['protocol'] == 'inet6' ? 'inet6' : 'all');
-            }
+            $if = $ph1ent['interface'];
         } else {
             // interface is an ip address, return
             return $ph1ent['interface'];
