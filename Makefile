@@ -119,6 +119,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
 			php${CORE_PHP}-phalcon \
+			php${CORE_PHP}-phpseclib \
 			php${CORE_PHP}-session \
 			php${CORE_PHP}-simplexml \
 			php${CORE_PHP}-sockets \
