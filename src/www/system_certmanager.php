@@ -366,7 +366,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo $result_stderr;
       }
       exit;
-
     } elseif ($act == 'csr_info_json') {
       header("Content-Type: application/json;charset=UTF-8");
 
@@ -1549,13 +1548,16 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Private key location");?></td>
+                <td><a id="help_for_private_key_location" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key location");?></td>
                 <td>
-                <!-- TODO: add hint later -->
                   <select name="private_key_location" id="private_key_location">
                     <option value="firewall" <?= $pconfig['private_key_location'] === 'firewall' ? 'selected="selected"' : ''; ?>><?= gettext('Save on this firewall'); ?></option>
                     <option value="local"    <?= $pconfig['private_key_location'] === 'local'    ? 'selected="selected"' : ''; ?>><?= gettext('Download and do not save'); ?></option>
                   </select>
+                  <div class="hidden" data-for="help_for_private_key_location">
+                    <strong><?= gettext('Save on this firewall'); ?></strong>: <?= gettext("Normally choose this."); ?><br/>
+                    <strong><?= gettext('Download and do not save'); ?></strong>: <?= gettext("If the certificate is for use by a device other than this firewall, and you can download private key soon after Saving, choose this. By this option you can download the private key, which is not saved onto this firewall."); ?><br/>
+                  </div>
                 </td>
               </tr>
               <tr>
