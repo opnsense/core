@@ -1702,21 +1702,23 @@ function ipsec_configure_vti()
         foreach ($intf_details['networks'] as $endpoint) {
             if (!empty($current_interfaces[$intf])) {
                 $already_configured = $current_interfaces[$intf][$endpoint['inet'] == 'inet6' ? 'ipv6' : 'ipv4'];
-                $isfound = false;
-                foreach ($already_configured as $addr) {
-                    if (!empty($addr['endpoint'])) {
-                        if ($endpoint['tunnel_local'] == $addr['ipaddr']
-                                && $endpoint['tunnel_remote']  == $addr['endpoint']) {
-                            $isfound = true;
-                        }
+            } else {
+                $already_configured = array();
+            }
+            $isfound = false;
+            foreach ($already_configured as $addr) {
+                if (!empty($addr['endpoint'])) {
+                    if ($endpoint['tunnel_local'] == $addr['ipaddr']
+                            && $endpoint['tunnel_remote']  == $addr['endpoint']) {
+                        $isfound = true;
                     }
                 }
-                if (!$isfound) {
-                    mwexecf('/sbin/ifconfig %s %s %s %s', array(
-                        $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask']),
-                        $endpoint['tunnel_remote']
-                    ));
-                }
+            }
+            if (!$isfound) {
+                mwexecf('/sbin/ifconfig %s %s %s %s', array(
+                    $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask']),
+                    $endpoint['tunnel_remote']
+                ));
             }
         }
     }
