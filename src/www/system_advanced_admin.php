@@ -720,10 +720,13 @@ $(document).ready(function() {
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Console driver') ?></td>
+                <td><a id="help_for_usevirtualterminal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Console driver') ?></td>
                 <td>
                   <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
                   <?= gettext('Use the virtual terminal driver (vt)') ?>
+                  <div class="hidden" data-for="help_for_usevirtualterminal">
+                    <?=gettext('When unchecked, the older sc driver will be used instead.') ?>
+                  </div>
                 </td>
               </tr>
               <tr>
