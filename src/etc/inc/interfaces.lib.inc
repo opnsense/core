@@ -265,25 +265,27 @@ function legacy_interfaces_details($intf = null)
                 }
             }
             if (isset($mask)) {
-                $result[$current_interface]["ipv4"][] = array("ipaddr" => $line_parts[1], "subnetbits" => $mask);
+                $tmp = array("ipaddr" => $line_parts[1], "subnetbits" => $mask);
+                if ($line_parts[2] == '-->') {
+                    $tmp['endpoint'] = $line_parts[3];
+                }
+                $result[$current_interface]["ipv4"][] = $tmp;
             }
         } elseif (strpos($line, "\tinet6 ") !== false) {
             // IPv6 information
             $addr = strtok($line_parts[1], '%');
-            $is_tunnel = false;
-            unset($mask);
+            $tmp = array('ipaddr' => $addr, 'link-local' => strpos($addr, 'fe80:') === 0, 'tunnel' => false);
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
-                    $mask = intval($line_parts[$i + 1]);
+                    $tmp['subnetbits'] = intval($line_parts[$i + 1]);
                 }
                 if ($line_parts[$i] == '-->') {
-                    $is_tunnel = true;
+                    $tmp['tunnel'] = true;
+                    $tmp['endpoint'] = $line_parts[$i+1];
                 }
             }
-            if (isset($mask)) {
-                $is_link_local = strpos($addr, 'fe80:') === 0;
-                $result[$current_interface]["ipv6"][] = array('ipaddr' => $addr, 'subnetbits' => $mask,
-                                                              'link-local' => $is_link_local, 'tunnel' => $is_tunnel);
+            if (isset($tmp['subnetbits'])) {
+                $result[$current_interface]["ipv6"][] = $tmp;
                 // sort link local to bottom, leave rest of sorting as-is (primary address on top)
                 usort($result[$current_interface]["ipv6"], function($a, $b) {
                     return $a['link-local'] - $b['link-local'];
