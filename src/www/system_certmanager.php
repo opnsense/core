@@ -1115,12 +1115,12 @@ if (empty($act)) {
   });
 
   function refresh_download_link(jquery_key, content, filename) {
-      if (navigator.userAgent.indexOf('MSIE ') !== -1 || navigator.userAgent.indexOf('Trident') !== -1) {
-          // IE11 support; they do not have <a download="">
-          $(jquery_key).attr('href', '/system_certmanager.php?act=download_pem_file&content=' + encodeURIComponent(content) + '&filename=' + encodeURIComponent(filename));
-      } else {
+      if (document.createElement('a').download !== undefined) { // check <a download=""> support
           $(jquery_key).attr('href', URL.createObjectURL(new Blob([content])));
           $(jquery_key).attr('download', filename + '.pem');
+      } else {
+          // IE11 support; they do not have <a download="">
+          $(jquery_key).attr('href', '/system_certmanager.php?act=download_pem_file&content=' + encodeURIComponent(content) + '&filename=' + encodeURIComponent(filename));
       }
   }
   </script>
