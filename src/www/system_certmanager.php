@@ -405,26 +405,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       header('Content-Disposition:attachment; filename="' . $_GET['filename'] . '.pem"');
       echo $_GET['content'];
       exit;
-
-    } elseif ($act == 'generate_private_key') {
-      if (!isset($_GET['keylen']) || !isset($_GET['digest_alg'])) {
-        http_response_code(400);
-        header('Content-Type: text/plain;charset=UTF-8');
-        echo gettext('Invalid request');
-        exit;
-      }
-
-      header('Content-Type: text/plain;charset=UTF-8');
-      $args = array(
-          'private_key_type' => OPENSSL_KEYTYPE_RSA,
-          'private_key_bits' => (int) $_GET['keylen'],
-          'digest_alg'       => $_GET['digest_alg'],
-          'encrypt_key'      => false,
-      );
-
-      openssl_pkey_export(openssl_pkey_new($args), $str_key);
-      echo $str_key;
-      exit;
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
