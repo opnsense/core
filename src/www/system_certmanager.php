@@ -396,20 +396,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
       echo json_encode($parsed_result);
       exit;
-
-    } elseif ($act == 'download_pem_file') {
-      //  Browser without <a download=""> (like IE11) support
-      if (!isset($_GET['content']) || !isset($_GET['filename']) || !ctype_lower($_GET['filename'])) {
-        http_response_code(400);
-        header('Content-Type: text/plain;charset=UTF-8');
-        echo gettext('Invalid request');
-        exit;
-      }
-
-      header('Content-Type: text/plain;charset=UTF-8');
-      header('Content-Disposition:attachment; filename="' . $_GET['filename'] . '.pem"');
-      echo $_GET['content'];
-      exit;
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -1119,8 +1105,8 @@ if (empty($act)) {
           $(jquery_key).attr('href', URL.createObjectURL(new Blob([content])));
           $(jquery_key).attr('download', filename + '.pem');
       } else {
-          // IE11 support; they do not have <a download="">
-          $(jquery_key).attr('href', '/system_certmanager.php?act=download_pem_file&content=' + encodeURIComponent(content) + '&filename=' + encodeURIComponent(filename));
+          // <a download=""> is not supported, so remove the link
+          $(jquery_key).remove();
       }
   }
   </script>
