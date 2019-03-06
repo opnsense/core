@@ -167,10 +167,8 @@ class Monit extends BaseModel
                         // test node validations
                         switch ($node->getInternalXMLTagName()) {
                             case 'type':
-                                // only 'Custom' is allowed if test is linked to a service
                                 $testUuid = $parentNode->getAttribute('uuid');
-                                if (strcmp((string)$node, 'Custom') != 0 &&
-                                    $node->isFieldChanged() &&
+                                if ($node->isFieldChanged() &&
                                     $this->isTestServiceRelated($testUuid)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Cannot change the type. Test is linked to a service."),
@@ -179,7 +177,8 @@ class Monit extends BaseModel
                                 }
                                 break;
                             case 'condition':
-                                // only 'Custom' or the same test type (from condition) allowed if test is linked to a service
+                                // only 'Custom' or the same test type (see $conditionPatterns)
+                                // are allowed if test is linked to a service
                                 $type = $this->getTestType((string)$node);
                                 if (strcmp($type, 'Custom') != 0 &&
                                     strcmp((string)$parentNode->type, $type) != 0 &&
