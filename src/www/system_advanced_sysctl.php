@@ -81,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         header(url_safe('Location: /system_advanced_sysctl.php'));
+        exit;
     } else if (!empty($pconfig['apply'])) {
         system_sysctl_configure();
         system_login_configure();
