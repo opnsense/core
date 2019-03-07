@@ -529,6 +529,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_7.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_8.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
