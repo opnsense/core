@@ -67,17 +67,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     del:'/api/trafficshaper/settings/delRule/',
                     toggle:'/api/trafficshaper/settings/toggleRule/',
                     options: {
-                        converters: {
-                            notprefixable: {
-                                to: function (value) {
-                                    if (value.not) {
-                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
-                                    } else {
-                                        return value.val;
-                                    }
-                                }
-                            }
-                        },
                         responseHandler: function (response) {
                             // concatenate fields for not.
                             if ('rows' in response) {

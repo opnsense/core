@@ -58,17 +58,6 @@
                     'add':'/api/proxy/settings/addPACMatch/',
                     'del':'/api/proxy/settings/delPACMatch/',
                     'options': {
-                        converters: {
-                            notprefixable: {
-                                to: function (value) {
-                                    if (value.not) {
-                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
-                                    } else {
-                                        return value.val;
-                                    }
-                                }
-                            }
-                        },
                         responseHandler: function (response) {
                             // concatenate fields for not.
                             if ('rows' in response) {
