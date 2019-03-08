@@ -707,6 +707,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
+                    if ($pconfig['private_key_location'] === 'local') {
+                        $act = 'download_private_key';
+                        $private_key = base64_decode($cert['prv']);
+                        unset($cert['prv']);
+                    }
                 } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
                     if (!sign_cert_csr($cert, $pconfig['caref_sign_csr'], $pconfig['csr'], (int) $pconfig['lifetime_sign_csr'],
                                        $pconfig['digest_alg_sign_csr'], $dn)) {
@@ -753,12 +758,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (count($input_errors) == 0) {
                 write_config();
-                if (isset($userid)) {
-                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
-                } else {
-                    header(url_safe('Location: /system_certmanager.php'));
+                if ($act !== 'download_private_key') {
+                    if (isset($userid)) {
+                        header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
+                    } else {
+                        header(url_safe('Location: /system_certmanager.php'));
+                    }
+                    exit;
                 }
-                exit;
             }
 
         }
@@ -1092,9 +1099,41 @@ if (empty($act)) {
         $("#certmethod").change();
     }
   });
+
+  function refresh_download_link(jquery_key, content, filename) {
+      if (document.createElement('a').download !== undefined) { // check <a download=""> support
+          $(jquery_key).attr('href', URL.createObjectURL(new Blob([content])));
+          $(jquery_key).attr('download', filename + '.pem');
+      } else {
+          // <a download=""> is not supported, so remove the link
+          $(jquery_key).remove();
+      }
+  }
   </script>
 
 <?php include("fbegin.inc"); ?>
+<?php
+          if ($act == "download_private_key") {
+?>
+<section class="page-content-main">
+  <div class="container-fluid">
+    <h2><?= gettext('Certificate has been issued.'); ?></h2>
+    <h3><?= gettext('Private key'); ?></h3>
+    <?= gettext('Private key is not saved and no longer downloadable after closing this window.'); ?><br/>
+    <textarea id="secret_key_for_cert" cols="65" rows="7"><?= html_safe($private_key); ?></textarea><br/>
+    <a href="#" id="download_private_key_link" class="btn btn-primary"><?= gettext('Download Private Key'); ?></a>
+    <script>refresh_download_link('#download_private_key_link', $('#secret_key_for_cert').val(), 'privatekey');</script>
+    <h3><?= gettext('Certificate'); ?></h3>
+    <?= gettext('You can download, revise, or add to CRL later.'); ?><br/>
+    <textarea id="cert_just_created" cols="65" rows="7"><?= html_safe(base64_decode($cert['crt'])); ?></textarea><br/>
+    <a href="#" id="download_cert_link" class="btn btn-primary"><?= gettext('Download Certificate'); ?></a>
+    <script>refresh_download_link('#download_cert_link', $('#cert_just_created').val(), 'certificate');</script>
+    <h3><?= gettext('Once downloaded:'); ?></h3>
+    <a href="/system_certmanager.php" class="btn btn-primary"><?= gettext('Go back'); ?></a>
+  </div>
+</section>
+<?php include("foot.inc");exit(); ?>
+<?php } ?>
 <script>
 $( document ).ready(function() {
 //<![CDATA[
@@ -1477,6 +1516,19 @@ $( document ).ready(function() {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                 <td>
                   <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_private_key_location" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key location");?></td>
+                <td>
+                  <select name="private_key_location" id="private_key_location">
+                    <option value="firewall" <?= $pconfig['private_key_location'] === 'firewall' ? 'selected="selected"' : ''; ?>><?= gettext('Save on this firewall'); ?></option>
+                    <option value="local"    <?= $pconfig['private_key_location'] === 'local'    ? 'selected="selected"' : ''; ?>><?= gettext('Download and do not save'); ?></option>
+                  </select>
+                  <div class="hidden" data-for="help_for_private_key_location">
+                    <strong><?= gettext('Save on this firewall'); ?></strong>: <?= gettext("Normally choose this."); ?><br/>
+                    <strong><?= gettext('Download and do not save'); ?></strong>: <?= gettext("If the certificate is for use by a device other than this firewall, and you can download private key soon after Saving, choose this. By this option you can download the private key, which is not saved onto this firewall."); ?><br/>
+                  </div>
                 </td>
               </tr>
               <tr>
