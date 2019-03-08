@@ -707,6 +707,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
+                    if ($pconfig['private_key_location'] === 'local') {
+                        // unset private key before safe
+                        $act = 'download_private_key';
+                        $pconfig['private_key'] = base64_decode($cert['prv']);
+                        unset($cert['prv']);
+                    }
                 } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
                     if (!sign_cert_csr($cert, $pconfig['caref_sign_csr'], $pconfig['csr'], (int) $pconfig['lifetime_sign_csr'],
                                        $pconfig['digest_alg_sign_csr'], $dn)) {
@@ -753,12 +759,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (count($input_errors) == 0) {
                 write_config();
-                if (isset($userid)) {
-                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
-                } else {
-                    header(url_safe('Location: /system_certmanager.php'));
+                if ($act !== 'download_private_key') {
+                    if (isset($userid)) {
+                        header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d', array($userid)));
+                    } else {
+                        header(url_safe('Location: /system_certmanager.php'));
+                    }
+                    exit;
                 }
-                exit;
             }
 
         }
@@ -1091,7 +1099,32 @@ if (empty($act)) {
 
         $("#certmethod").change();
     }
+
+
+    if (document.createElement('a').download !== undefined) {
+        $(".text_download_btn").click(function(event){
+            event.preventDefault();
+            if ($(this).attr('for')) {
+                let target = $("#"+$(this).attr('for'));
+                var link = $('<a></a>')
+                    .attr('href', URL.createObjectURL(new Blob([target.val()])))
+                    .attr('download', target.data('filename'))
+                    .appendTo('body');
+
+                link.ready(function() {
+                    link.get(0).click();
+                    link.empty();
+                });
+
+            }
+        });
+    } else {
+        $(".text_download_btn").remove();
+    }
+
+
   });
+
   </script>
 
 <?php include("fbegin.inc"); ?>
@@ -1155,6 +1188,7 @@ $( document ).ready(function() {
       <section class="col-xs-12">
         <div class="content-box tab-content table-responsive">
 
+        <!--- New --->
 <?php
         if ($act == "new") :?>
           <form method="post" name="iform" id="iform" >
@@ -1480,6 +1514,19 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_private_key_location" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key location");?></td>
+                <td>
+                  <select name="private_key_location" id="private_key_location">
+                    <option value="firewall" <?= $pconfig['private_key_location'] === 'firewall' ? 'selected="selected"' : ''; ?>><?= gettext('Save on this firewall'); ?></option>
+                    <option value="local"    <?= $pconfig['private_key_location'] === 'local'    ? 'selected="selected"' : ''; ?>><?= gettext('Download and do not save'); ?></option>
+                  </select>
+                  <div class="hidden" data-for="help_for_private_key_location">
+                    <strong><?= gettext('Save on this firewall'); ?></strong>: <?= gettext("Normally choose this."); ?><br/>
+                    <strong><?= gettext('Download and do not save'); ?></strong>: <?= gettext("If the certificate is for use by a device other than this firewall, and you can download private key soon after Saving, choose this. By this option you can download the private key, which is not saved onto this firewall."); ?><br/>
+                  </div>
+                </td>
+              </tr>
+              <tr>
                 <th colspan="2"><?=gettext("Distinguished name");?> </th>
               </tr>
               <tr>
@@ -1789,6 +1836,7 @@ $( document ).ready(function() {
               </tr>
             </table>
           </form>
+          <!--- CSR --->
 <?php
           elseif ($act == "csr") :
 ?>
@@ -1837,6 +1885,44 @@ $( document ).ready(function() {
               </tr>
             </table>
           </form>
+          <!--- Download Private key -->
+<?php
+          elseif ($act == "download_private_key"):?>
+
+          <table class="table table-striped opnsense_standard_table_form">
+            <thead>
+              <tr>
+                <th colspan="2"><?= gettext('Certificate has been issued.'); ?></th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td><?= gettext('Private key'); ?></td>
+                  <td>
+                    <textarea id="secret_key_for_cert" cols="65" rows="7" data-filename="privatekey.pem"><?= $pconfig['private_key']; ?></textarea>
+                    <small><?= gettext('The private key is not saved and no longer downloadable after closing this window.'); ?><br/></small>
+                    <a href="#" for="secret_key_for_cert" id="download_private_key_link" class="btn btn-primary text_download_btn">
+                      <?= gettext('Download Private Key'); ?>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><?= gettext('Certificate'); ?></td>
+                  <td>
+                    <textarea id="cert_just_created" cols="65" rows="7" data-filename="certificate.pem"><?= html_safe(base64_decode($cert['crt'])); ?></textarea>
+                    <small><?= gettext('You can download, revise, or add to CRL later.'); ?><br/></small>
+                    <a href="#" for="cert_just_created" id="download_cert_link" class="btn btn-primary text_download_btn"><?= gettext('Download Certificate'); ?></a>
+                  </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                      <a href="/system_certmanager.php" class="btn btn-primary"><?= gettext('Go back'); ?></a>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+
 <?php
           else :?>
           <form method="post" name="iform" id="iform">
