@@ -64,13 +64,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     "commands": function (column, row) {
                         return  "<button type=\"button\" class=\"btn btn-xs btn-default command-disconnect\" data-row-id=\"" + row.sessionid + "\"><span class=\"fa fa-trash-o\"></span></button>";
                     }
-                },
-                converters: {
-                    // convert datetime type fields from unix timestamp to readable format
-                    datetime: {
-                        from: function (value) { return moment(parseInt(value)*1000); },
-                        to: function (value) { return value.format("lll"); }
-                    }
                 }
             };
             $("#grid-clients").bootgrid('destroy');

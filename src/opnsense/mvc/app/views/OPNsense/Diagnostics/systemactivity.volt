@@ -29,7 +29,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script>
     'use strict';
-    const modifiers = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
 
     $( document ).ready(function() {
         /**
@@ -40,30 +39,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajax: false,
                 selection: true,
                 multiSelect: true,
-                converters: {
-                    memsize: {
-                        from: function (value) {
-                            let ret = parseInt(value);
-                            let modifier = value.slice(-1);
-
-                            for (let exponent = modifiers.length - 1; exponent >= 0; exponent--) {
-                                if (modifier === modifiers[exponent]) {
-                                    ret *= Math.pow(1024, exponent);
-                                    break;
-                                }
-                            }
-                            return ret;
-                        },
-                        to: function (value) {
-                            for (let exponent = modifiers.length - 1; exponent >= 0; exponent--) {
-                                if (value >= (5 * Math.pow(1024, exponent))) {
-                                    return parseInt(value / Math.pow(1024, exponent)) + modifiers[exponent];
-                                }
-                            }
-                            return parseInt(value) + '';
-                        }
-                    }
-                }
             };
             $("#grid-top").bootgrid('destroy');
             ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
