@@ -1,4 +1,4 @@
-/*! 
+/*!
  * jQuery Bootgrid v1.3.4 - 03/08/2019
  * Copyright © 2014-2015 Rafael J. Staib; Copyright © 2018-2019 Deciso B.V. (http://www.jquery-bootgrid.com)
  * Licensed under the MIT license. See LICENSE.txt for more details.
@@ -127,7 +127,7 @@ function loadColumns()
                 sortable: !(data.sortable === false), // default: true
                 visible: !(data.visible === false), // default: true
                 visibleInSelection: !(data.visibleInSelection === false), // default: true
-                width: ($.isNumeric(data.width)) ? data.width + "px" : 
+                width: ($.isNumeric(data.width)) ? data.width + "px" :
                     (typeof(data.width) === "string") ? data.width : null
             };
         that.columns.push(column);
@@ -390,7 +390,7 @@ function renderColumnSelection(actions)
                         .on("click" + namespace, selector, function (e)
                         {
                             e.stopPropagation();
-    
+
                             var $this = $(this),
                                 checkbox = $this.find(checkboxSelector);
                             if (!checkbox.prop("disabled"))
@@ -399,7 +399,7 @@ function renderColumnSelection(actions)
                                 var enable = that.columns.where(isVisible).length > 1;
                                 $this.parents(itemsSelector).find(selector + ":has(" + checkboxSelector + ":checked)")
                                     ._bgEnableAria(enable).find(checkboxSelector)._bgEnableField(enable);
-    
+
                                 that.element.find("tbody").empty(); // Fixes an column visualization bug
                                 renderTableHeader.call(that);
                                 loadData.call(that);
@@ -1869,8 +1869,8 @@ $.fn.extend({
 
     _bgBusyAria: function(busy)
     {
-        return (busy == null || busy) ? 
-            this._bgAria("busy", "true") : 
+        return (busy == null || busy) ?
+            this._bgAria("busy", "true") :
             this._bgAria("busy", "false");
     },
 
@@ -1881,29 +1881,29 @@ $.fn.extend({
 
     _bgEnableAria: function (enable)
     {
-        return (enable == null || enable) ? 
-            this.removeClass("disabled")._bgAria("disabled", "false") : 
+        return (enable == null || enable) ?
+            this.removeClass("disabled")._bgAria("disabled", "false") :
             this.addClass("disabled")._bgAria("disabled", "true");
     },
 
     _bgEnableField: function (enable)
     {
-        return (enable == null || enable) ? 
-            this.removeAttr("disabled") : 
+        return (enable == null || enable) ?
+            this.removeAttr("disabled") :
             this.attr("disabled", "disable");
     },
 
     _bgShowAria: function (show)
     {
-        return (show == null || show) ? 
+        return (show == null || show) ?
             this.show()._bgAria("hidden", "false") :
             this.hide()._bgAria("hidden", "true");
     },
 
     _bgSelectAria: function (select)
     {
-        return (select == null || select) ? 
-            this.addClass("active")._bgAria("selected", "true") : 
+        return (select == null || select) ?
+            this.addClass("active")._bgAria("selected", "true") :
             this.removeClass("active")._bgAria("selected", "false");
     },
 
@@ -1993,8 +1993,8 @@ if (!Array.prototype.page)
     {
         var skip = (page - 1) * size,
             end = skip + size;
-        return (this.length > skip) ? 
-            (this.length > end) ? this.slice(skip, end) : 
+        return (this.length > skip) ?
+            (this.length > end) ? this.slice(skip, end) :
                 this.slice(skip) : [];
     };
 }
