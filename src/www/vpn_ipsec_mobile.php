@@ -39,7 +39,7 @@ config_read_array('ipsec', 'phase1');
 // define formfields
 $form_fields = "user_source,local_group,pool_address,pool_netbits,net_list
 ,save_passwd,dns_domain,dns_split,dns_server1,dns_server2,dns_server3
-,dns_server4,wins_server1,wins_server2,pfs_group,login_banner";
+,dns_server4,wins_server1,wins_server2,pfs_group,login_banner,ipsec_conf_append,ipsec_secrets_append";
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // pass savemessage
@@ -92,6 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['user_source'] = implode(",", $pconfig['user_source']);
         }
 
+        if (!empty($pconfig['ipsec_conf_append'])) {
+            $pconfig['ipsec_conf_append'] = str_replace("\r\n", "\n", $pconfig['ipsec_conf_append']);
+        }
+
+        if (!empty($pconfig['ipsec_secrets_append'])) {
+            $pconfig['ipsec_secrets_append'] = str_replace("\r\n", "\n", $pconfig['ipsec_secrets_append']);
+        }
+
         /* input validation */
         $reqdfields = explode(" ", "user_source");
         $reqdfieldsn =  array(gettext("User Authentication Source"));
@@ -139,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $client = array();
             $copy_fields = "user_source,local_group,pool_address,pool_netbits,dns_domain,dns_server1
             ,dns_server2,dns_server3,dns_server4,wins_server1,wins_server2
-            ,dns_split,pfs_group,login_banner";
+            ,dns_split,pfs_group,login_banner,ipsec_conf_append,ipsec_secrets_append";
             foreach (explode(",", $copy_fields) as $fieldname) {
                             $fieldname = trim($fieldname);
                 if (!empty($pconfig[$fieldname])) {
@@ -196,6 +204,7 @@ $( document ).ready(function() {
   wins_server_change();
   pfs_group_change();
   login_banner_change();
+  expert_tunnel_config_change();
 });
 
 function pool_change() {
@@ -296,6 +305,21 @@ function login_banner_change() {
   }
 }
 
+function expert_tunnel_config_change() {
+
+  if (document.iform.expert_tunnel_config_enable.checked) {
+    document.iform.ipsec_conf_append.disabled = 0;
+    document.iform.ipsec_secrets_append.disabled = 0;
+    $("#expert_tunnel_config_enable_inputs").addClass('show');
+    $("#expert_tunnel_config_enable_inputs").removeClass('hidden');
+  } else {
+    document.iform.ipsec_conf_append.disabled = 1;
+    document.iform.ipsec_secrets_append.disabled = 1;
+    $("#expert_tunnel_config_enable_inputs").addClass('hidden');
+    $("#expert_tunnel_config_enable_inputs").removeClass('show');
+  }
+}
+
 //]]>
 </script>
 
@@ -337,7 +361,7 @@ function print_legacy_box($msg, $name, $value)
 EOFnp;
 }
 
-if (!empty($pconfig['enable']) && !$ph1found) {
+if (!empty($pconfig['enable']) && !$ph1found && empty($config['ipsec']['client']['ipsec_conf_append'])) {
     print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), "create", gettext("Create Phase1"));
 }
 if (isset($input_errors) && count($input_errors) > 0) {
@@ -546,6 +570,21 @@ endforeach;
                         <textarea name="login_banner" cols="65" rows="7" id="login_banner" class="formpre"><?=$pconfig['login_banner'];?></textarea>
                         <div class="hidden" data-for="help_for_login_banner_enable">
                             <?=gettext("Provide a login banner to clients"); ?><br />
+                        </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_expert_tunnel_config" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expert Tunnel Config"); ?></td>
+                    <td>
+                        <input name="expert_tunnel_config_enable" type="checkbox" id="expert_tunnel_config_enable" value="yes" <?= !empty($pconfig['ipsec_conf_append']) ? "checked=\"checked\"" : "";?> onclick="expert_tunnel_config_change()" />
+                        <div id="expert_tunnel_config_enable_inputs">
+                            <?=gettext("Append to ipsec.conf"); ?>:
+                            <textarea name="ipsec_conf_append" cols="80" rows="20" id="ipsec_conf_append" class="formpre" style="max-width: 100%"><?=$pconfig['ipsec_conf_append'];?></textarea>
+                            <?=gettext("Append to ipsec.secrets"); ?>:
+                            <textarea name="ipsec_secrets_append" cols="80" rows="5" id="ipsec_secrets_append" class="formpre" style="max-width: 100%"><?=$pconfig['ipsec_secrets_append'];?></textarea>
+                        </div>
+                        <div class="hidden" data-for="help_for_expert_tunnel_config">
+                            <?=gettext("Use for complex configurations instead of configuring IPsec Phase 1 and Phase 2 in the WebUI. Please see StrongSwan ipsec.conf manual for help. From here you are on your own."); ?><br />
                         </div>
                     </td>
                   </tr>

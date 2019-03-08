@@ -958,42 +958,23 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 $strongswanTree['charon']['plugins']['attr']['28679'] = $a_client['pfs_group'];
             }
 
-            $disable_xauth = false;
+            $radius_enabled = false;
             foreach ($a_phase1 as $ph1ent) {
                 if (!isset($ph1ent['disabled']) && isset($ph1ent['mobile'])) {
                     if ($ph1ent['authentication_method'] == "eap-radius") {
-                        $disable_xauth = true; // disable Xauth when radius is used.
-                        $strongswanTree['charon']['plugins']['eap-radius'] = [];
-                        $strongswanTree['charon']['plugins']['eap-radius']['servers'] = [];
-                        $radius_server_num = 1;
-                        $radius_accounting_enabled = false;
-                        foreach (auth_get_authserver_list() as $auth_server) {
-                            if (in_array($auth_server['name'], explode(',', $ph1ent['authservers']))) {
-                                $server = [
-                                    'address' => $auth_server['host'],
-                                    'secret' => '"' . $auth_server['radius_secret'] . '"',
-                                    'auth_port' => $auth_server['radius_auth_port'],
-                                ];
-
-                                if (!empty($auth_server['radius_acct_port'])) {
-                                    $server['acct_port'] = $auth_server['radius_acct_port'];
-                                }
-                                $strongswanTree['charon']['plugins']['eap-radius']['servers']['server' . $radius_server_num] = $server;
-
-                                if (!empty($auth_server['radius_acct_port'])) {
-                                    $radius_accounting_enabled = true;
-                                }
-                                $radius_server_num += 1;
-                            }
-                        }
-                        if ($radius_accounting_enabled) {
-                            $strongswanTree['charon']['plugins']['eap-radius']['accounting'] = 'yes';
-                        }
+                        configure_eap_radius_plugin($ph1ent['authservers'], $strongswanTree);
+                        $radius_enabled = true;
                         break; // there can only be one mobile phase1, exit loop
                     }
                 }
             }
-            if (isset($a_client['enable']) && !$disable_xauth) {
+
+            if (!$radius_enabled && !empty($a_client['ipsec_conf_append'])) {
+                configure_eap_radius_plugin($a_client['user_source'], $strongswanTree);
+                $radius_enabled = true;
+            }
+
+            if (isset($a_client['enable']) && !$radius_enabled) {
                 $strongswanTree['charon']['plugins']['xauth-pam'] = [
                     'pam_service' => 'ipsec',
                     'session' => 'no',
@@ -1094,6 +1075,10 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 $pskconf .= "{$ident} : {$identType} 0s".base64_encode($key['pre-shared-key'])."\n";
             }
             unset($key);
+        }
+
+        if (!empty($a_client['ipsec_secrets_append'])) {
+            $pskconf .= "\n" . $a_client['ipsec_secrets_append'] . "\n";
         }
 
         @file_put_contents("/usr/local/etc/ipsec.secrets", $pskconf);
@@ -1550,6 +1535,11 @@ EOD;
             }
         }
     }
+
+    if (!empty($a_client['ipsec_conf_append'])) {
+        $ipsecconf .= "\n" . $a_client['ipsec_conf_append'] . "\n";
+    }
+
     // dump file, replace tabs for 2 spaces
     @file_put_contents("/usr/local/etc/ipsec.conf", str_replace("\t", '  ', $ipsecconf));
     unset($ipsecconf);
@@ -1570,6 +1560,41 @@ EOD;
 
     if ($verbose) {
         echo "done.\n";
+    }
+}
+
+function configure_eap_radius_plugin($authservers, &$strongswanTree) {
+    $strongswanTree['charon']['plugins']['eap-radius'] = [];
+    $strongswanTree['charon']['plugins']['eap-radius']['servers'] = [];
+    $radius_server_num = 1;
+    $radius_accounting_enabled = false;
+    foreach (auth_get_authserver_list() as $auth_server) {
+        if ($auth_server['type'] !== 'radius') continue;
+
+        if (in_array($auth_server['name'], explode(',', $authservers))) {
+            $server = [
+                'address' => $auth_server['host'],
+                'secret' => '"' . $auth_server['radius_secret'] . '"',
+                'auth_port' => $auth_server['radius_auth_port'],
+            ];
+
+            if (!empty($auth_server['radius_acct_port'])) {
+                $server['acct_port'] = $auth_server['radius_acct_port'];
+            }
+            $strongswanTree['charon']['plugins']['eap-radius']['servers']['server' . $radius_server_num] = $server;
+
+            if (!empty($auth_server['radius_acct_port'])) {
+                $radius_accounting_enabled = true;
+            }
+            $radius_server_num += 1;
+        }
+    }
+
+    if ($radius_server_num > 1) {
+        if ($radius_accounting_enabled) {
+            $strongswanTree['charon']['plugins']['eap-radius']['accounting'] = 'yes';
+        }
+        $strongswanTree['charon']['plugins']['eap-radius']['class_group'] = 'yes';
     }
 }
 
