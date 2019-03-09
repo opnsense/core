@@ -151,8 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* input validation */
-    $reqdfields = explode(" ", "interface protocol source source_subnet destination destination_subnet");
-    $reqdfieldsn = array(gettext("Interface"),gettext("Protocol"),gettext("Source"),gettext("Source bit count"),gettext("Destination"),gettext("Destination bit count"));
+    $reqdfields = explode(" ", "interface protocol source destination");
+    $reqdfieldsn = array(gettext("Interface"),gettext("Protocol"),gettext("Source"),gettext("Destination"));
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
