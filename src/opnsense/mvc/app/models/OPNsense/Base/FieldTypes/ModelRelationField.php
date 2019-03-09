@@ -211,7 +211,7 @@ class ModelRelationField extends BaseField
 
             $datanodes = explode(',', $this->internalValue);
             if ($this->internalIsSorted) {
-                $optKeys = $datanodes + array_keys(self::$internalOptionList[$this->internalCacheKey]);
+                $optKeys = array_keys(self::$internalOptionList[$this->internalCacheKey]) + $datanodes;
             } else {
                 $optKeys = array_keys(self::$internalOptionList[$this->internalCacheKey]);
             }
