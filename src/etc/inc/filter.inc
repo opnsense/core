@@ -37,7 +37,7 @@ function fix_rule_label($descr)
 {
     $descr = str_replace('"', '', $descr);
     if (strlen($descr) > 63) {
-        return substr($descr, 0, 60) . "...";
+        return mb_strcut($descr, 0, 60) . "...";
     } else {
         return $descr;
     }
