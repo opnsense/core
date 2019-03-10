@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,8 @@ if __name__ == '__main__':
         subprocess.call(['/usr/bin/top','-aHSn','999999'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         is_header = True
-        for line in output_stream.read().strip().split('\n'):
+        lines = output_stream.read().decode().strip().split('\n')
+        for line in lines:
             # end of header, start of top detection
             if line.find('USERNAME') > -1 and line.find('COMMAND') > -1:
                 is_header = False
