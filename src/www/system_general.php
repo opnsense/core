@@ -280,8 +280,6 @@ include("head.inc");
                 <input name="hostname" type="text" size="40" value="<?=$pconfig['hostname'];?>" />
                 <div class="hidden" data-for="help_for_hostname">
                   <?=gettext("Name of the firewall host, without domain part"); ?>
-                  <br />
-                  <?=gettext("e.g."); ?> <em><?=gettext("firewall");?></em>
                 </div>
               </td>
             </tr>
