@@ -49,7 +49,6 @@ class System implements IService
     {
         return [
             'login',
-            'opnsenseauthtest', /* XXX unused in >= 19.7 */
             'opnsenselogin',
             'sshd',
             'su',
