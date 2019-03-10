@@ -281,7 +281,7 @@ include("head.inc");
                 <div class="hidden" data-for="help_for_hostname">
                   <?=gettext("Name of the firewall host, without domain part"); ?>
                   <br />
-                  <?=gettext("e.g."); ?> <em><?=gettext("firewall");?></em>
+                  <?=gettext("e.g."); ?> <em>firewall</em>
                 </div>
               </td>
             </tr>
