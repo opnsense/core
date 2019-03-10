@@ -95,7 +95,10 @@ elif args.stats:
                     ptr[key] = value.strip()
                 elif key not in ptr:
                     ptr[key] = dict()
+                elif type(ptr[key]) != dict:
+                    ptr[key] = {'__value__': ptr[key]}
                 ptr = ptr[key]
+
 elif args.list_local_zones:
     output = list()
     for line in unbound_control_reader('list_local_zones'):
