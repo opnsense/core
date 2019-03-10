@@ -92,11 +92,13 @@ elif args.stats:
             while len(keys) > 0 :
                 key = keys.pop(0)
                 if len(keys) == 0:
-                    if key not in ptr:
-                        ptr[key] = value.strip()
+                    ptr[key] = value.strip()
                 elif key not in ptr:
                     ptr[key] = dict()
+                elif type(ptr[key]) != dict:
+                    ptr[key] = {'__value__': ptr[key]}
                 ptr = ptr[key]
+
 elif args.list_local_zones:
     output = list()
     for line in unbound_control_reader('list_local_zones'):
