@@ -1555,7 +1555,6 @@
 /usr/local/sbin/3gstats.php
 /usr/local/sbin/beep.sh
 /usr/local/sbin/configctl
-/usr/local/sbin/opnsense-auth
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
 /usr/local/sbin/opnsense-shell
