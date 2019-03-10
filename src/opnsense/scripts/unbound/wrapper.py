@@ -92,7 +92,8 @@ elif args.stats:
             while len(keys) > 0 :
                 key = keys.pop(0)
                 if len(keys) == 0:
-                    ptr[key] = value.strip()
+                    if key not in ptr:
+                        ptr[key] = value.strip()
                 elif key not in ptr:
                     ptr[key] = dict()
                 ptr = ptr[key]
