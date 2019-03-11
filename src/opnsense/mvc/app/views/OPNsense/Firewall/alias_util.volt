@@ -81,7 +81,7 @@
             BootstrapDialog.show({
                 type: BootstrapDialog.TYPE_DEFAULT,
                 title: '{{ lang._("Find references") }}',
-                message: '<p>{{ lang._("Enter an IP address to show in which aliases it's used.") }}</p>' +
+                message: '<p>{{ lang._("Enter an IP address to show in which aliases it is used.") }}</p>' +
                          '<div class="input-group" style="display: block;">' +
                              '<input id="ip" type="text" class="form-control"/>' +
                              '<span class="input-group-btn">' +
