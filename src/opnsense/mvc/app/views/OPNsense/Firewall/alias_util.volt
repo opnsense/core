@@ -182,7 +182,7 @@
                     </div>
                   </div>
                   <div class="col-xs-4">
-                      <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
+                      <button style="margin-left:3px" class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
                         {{ lang._('Update bogons') }}
                       </button>
                       <button class="btn btn-default pull-right" id="find_references" title="{{ lang._('Look up which aliases match a certain IP address') }}">
