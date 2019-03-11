@@ -378,13 +378,12 @@ $( document ).ready(function() {
                               $online = gettext('Online');
                               $gateway_label_class = 'success';
                           }
-                      } elseif (isset($gateway['monitor_disable'])) {
+                      } elseif (!isset($gateway['disabled']) && isset($gateway['monitor_disable'])) {
                           $online = gettext('Online');
                           $gateway_label_class = 'success';
                       }
   ?>
                         <div class="label label-<?= $gateway_label_class ?>">
-                          <i class="fa fa-globe"></i>
                           <?=$online;?>
                         </div>
                       </td>
