@@ -31,6 +31,12 @@
                                     std_bootgrid_reload('alias_content')
                                 });
                         });
+                        // header labels
+                        $("span.fa-long-arrow-right").attr('title', "{{lang._('in')}}").tooltip();
+                        $("span.fa-long-arrow-left").attr('title', "{{lang._('out')}}").tooltip();
+                        $("span.fa-times").attr('title', "{{lang._('block')}}").tooltip();
+                        $("span.fa-play").attr('title', "{{lang._('pass')}}").tooltip();
+
                     });
                 });
                 $('#tablename').change();
@@ -157,6 +163,7 @@
     .btn.pull-right {
         margin-left: 3px;
     }
+
 </style>
 
 <section class="page-content-main">
@@ -201,6 +208,38 @@
                             <thead>
                                 <tr>
                                     <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
+                                    <th data-column-id="in_block_p" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="in_block_b" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
+                                    <th data-column-id="in_pass_p" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="in_pass_b" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
+                                    <th data-column-id="out_block_p" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="out_block_b" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
+                                    <th data-column-id="out_pass_p" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="out_pass_b" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
                                     <th data-column-id="commands" data-formatter="commands"></th>
                                 </tr>
                             </thead>
