@@ -626,7 +626,8 @@ function filter_generate_aliases()
                 $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                 break;
             default:
-                $aliases .= "table <{$aliased['name']}> persist\n";
+                $tblopt = (!empty($aliased['counters']) ? 'counters' : '') . " persist ";
+                $aliases .= "table <{$aliased['name']}> {$tblopt} \n";
                 $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                 break;
         }

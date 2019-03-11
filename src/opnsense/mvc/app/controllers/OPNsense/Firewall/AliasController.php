@@ -40,7 +40,6 @@ class AliasController extends IndexController
     public function indexAction($selected = null)
     {
         // include dialog form definitions
-        $this->view->formDialogAlias = $this->getForm("dialogEditAlias");
         $this->view->selected_alias = $selected;
         $this->view->pick('OPNsense/Firewall/alias');
     }

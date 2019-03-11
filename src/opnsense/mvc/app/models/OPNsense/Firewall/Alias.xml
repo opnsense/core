@@ -40,6 +40,9 @@
                         <IPv6>IPv6</IPv6>
                     </OptionValues>
                 </proto>
+                <counters type="BooleanField">
+                    <default>0</default>
+                </counters>
                 <updatefreq type="NumericField">
                     <ValidationMessage>Days and hours should be numeric values or left empty</ValidationMessage>
                 </updatefreq>
