@@ -1012,6 +1012,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         $strongswan = generate_strongswan_conf($strongswanTree);
+        $strongswan .= "\ninclude strongswan.opnsense.d/*.conf\n";
         @file_put_contents("/usr/local/etc/strongswan.conf", $strongswan);
         unset($strongswan);
 
@@ -1105,6 +1106,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             unset($key);
         }
 
+        $pskconf .= "\ninclude ipsec.secrets.opnsense.d/*.secrets\n";
         @file_put_contents("/usr/local/etc/ipsec.secrets", $pskconf);
         chmod("/usr/local/etc/ipsec.secrets", 0600);
         unset($pskconf);
@@ -1573,6 +1575,7 @@ EOD;
             }
         }
     }
+    $ipsecconf .= "\ninclude ipsec.opnsense.d/*.conf\n";
     // dump file, replace tabs for 2 spaces
     @file_put_contents("/usr/local/etc/ipsec.conf", str_replace("\t", '  ', $ipsecconf));
     unset($ipsecconf);
