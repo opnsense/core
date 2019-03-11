@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2010 Ermal Luçi
@@ -257,17 +257,27 @@ function return_gateways_status()
     $status = array();
 
     foreach ($gateways_arr as $gwitem) {
+        if (isset($gwitem['disabled'])) {
+            continue;
+        }
+
+        $gwstatus = isset($gwitem['monitor_disable']) ? 'none' : 'down';
+
+        if (isset($gwitem['force_down'])) {
+            $gwstatus = 'force_down';
+        }
+
         $status[$gwitem['name']] = array(
-            'status' => isset($gwitem['monitor_disable']) ? 'none' : 'down',
             'name' => $gwitem['name'],
-            'delay' => '0.0 ms',
+            'status' => $gwstatus,
             'stddev' => '0.0 ms',
+            'delay' => '0.0 ms',
             'loss' => '0.0 %',
         );
     }
 
     foreach (running_dpinger_processes() as $gwname => $proc) {
-        if (!isset($gateways_arr[$gwname])) {
+        if (!isset($status[$gwname])) {
             continue;
         }
 
@@ -295,21 +305,17 @@ function return_gateways_status()
 
         $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
         $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
-        $r['status'] = 'none';
+        $r['status'] = $status[$gwname]['status'];
 
-        $gw = $gateways_arr[$gwname];
-
-        if (isset($gw['force_down'])) {
-            $r['status'] = 'force_down';
-        } else {
+        if ($r['status'] != 'force_down') {
             $settings = return_dpinger_defaults();
 
             $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
 
             /* Replace default values by user-defined */
             foreach ($keys as $key) {
-                if (isset($gw[$key]) && is_numeric($gw[$key])) {
-                    $settings[$key] = $gw[$key];
+                if (isset($gateways_arr[$gwname][$key]) && is_numeric($gateways_arr[$gwname][$key])) {
+                    $settings[$key] = $gateways_arr[$gwname][$key];
                 }
             }
 
@@ -321,6 +327,8 @@ function return_gateways_status()
                 $r['status'] = 'delay';
             } elseif ($r['loss'] > $settings['losslow']) {
                 $r['status'] = 'loss';
+            } else {
+                $r['status'] = 'none';
             }
         }
 

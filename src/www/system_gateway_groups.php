@@ -190,7 +190,6 @@ $( document ).ready(function() {
                               }
 ?>
                                 <div class="label label-<?= $gateway_label_class ?>" style="margin-right:4px">
-                                  <i class="fa fa-globe"></i>
                                   <?=$gateway['name'];?>, <?=$online;?>
                                 </div>
 <?php
