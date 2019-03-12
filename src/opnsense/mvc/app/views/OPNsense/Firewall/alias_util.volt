@@ -86,8 +86,8 @@
         $('#find_references').on('click', function (event) {
             BootstrapDialog.show({
                 type: BootstrapDialog.TYPE_DEFAULT,
-                title: '{{ lang._("Find references") }}',
-                message: '<p>{{ lang._("Enter an IP address to show in which aliases it is used.") }}</p>' +
+                title: '{{ lang._('Find references') }}',
+                message: '<p>{{ lang._('Enter an IP address to show in which aliases it is used.') }}</p>' +
                          '<div class="input-group" style="display: block;">' +
                              '<input id="ip" type="text" class="form-control"/>' +
                              '<span class="input-group-btn">' +
@@ -96,7 +96,7 @@
                          '</div>' +
                          '<div id="ip-results" style="margin-top: 15px;"></div>',
                 buttons: [{
-                    label: '{{ lang._("Close") }}',
+                    label: '{{ lang._('Close') }}',
                     cssClass: 'btn-primary',
                     action: function(dialogRef) {
                         dialogRef.close();
@@ -111,12 +111,12 @@
                             if (status !== 'success' || data['status'] !== 'ok') {
                                 $('#ip-results').html(
                                     '<div class="alert alert-warning">' +
-                                    '{{ lang._("Error while fetching matching aliases:") }}' + ' ' + data['status'] +
+                                    '{{ lang._('Error while fetching matching aliases:') }}' + ' ' + data['status'] +
                                     '</div>');
                             } else if (data.matches === null || data.matches.length === 0) {
                                 $('#ip-results').html(
                                     '<div class="alert alert-info">' +
-                                    '{{ lang._("No matches for this IP.") }}' +
+                                    '{{ lang._('No matches for this IP.') }}' +
                                     '</div>');
                             } else {
                                 $('#ip-results').html('<div id="ip-results-list" class="list-group"></div>');
