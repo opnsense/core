@@ -892,6 +892,7 @@ function interfaces_configure($verbose = false)
     $delayed_list = array();
     $bridge_list = array();
     $track6_list = array();
+    $standard_list = array();
 
     foreach (get_configured_interface_with_descr() as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
@@ -902,7 +903,7 @@ function interfaces_configure($verbose = false)
         } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'track6') {
             $track6_list[$if] = $ifname;
         } else {
-            interface_configure($verbose, $if);
+            $standard_list[$if] = $ifname;
         }
     }
 
@@ -931,6 +932,10 @@ function interfaces_configure($verbose = false)
     interfaces_bridge_configure(2);
 
     foreach ($bridge_list as $if => $ifname) {
+        interface_configure($verbose, $if);
+    }
+
+    foreach ($standard_list as $if => $ifname) {
         interface_configure($verbose, $if);
     }
 
