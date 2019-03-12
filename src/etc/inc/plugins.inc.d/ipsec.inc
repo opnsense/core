@@ -1003,7 +1003,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         $strongswan = generate_strongswan_conf($strongswanTree);
-        $strongswan .= "\ninclude ipsec.opnsense.d/*.conf\n";
+        $strongswan .= "\ninclude strongswan.opnsense.d/*.conf\n";
         @file_put_contents("/usr/local/etc/strongswan.conf", $strongswan);
         unset($strongswan);
 
@@ -1552,7 +1552,7 @@ EOD;
             }
         }
     }
-    $ipsecconf .= "\ninclude strongswan.opnsense.d/*.conf\n";
+    $ipsecconf .= "\ninclude ipsec.opnsense.d/*.conf\n";
     // dump file, replace tabs for 2 spaces
     @file_put_contents("/usr/local/etc/ipsec.conf", str_replace("\t", '  ', $ipsecconf));
     unset($ipsecconf);
