@@ -33,15 +33,6 @@
 
 require_once('filter.lib.inc');
 
-function fix_rule_label($descr)
-{
-    $descr = str_replace('"', '', $descr);
-    if (strlen($descr) > 63) {
-        return substr($descr, 0, 60) . "...";
-    } else {
-        return $descr;
-    }
-}
 
 function is_bogonsv6_used()
 {
@@ -186,7 +177,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         foreach ($config['filter']['rule'] as $rule) {
             // calculate a hash for this area so we can track this rule, we should replace this
             // with uuid's on the rules like the new style models do eventually.
-            $rule['md5'] = md5(json_encode($rule));
+            $rule_hash = OPNsense\Firewall\Util::calcRuleHash($rule);
+            $rule['label'] = $rule_hash;
             $sched = '';
             $descr = '';
 
@@ -197,7 +189,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
                 $descr = ": {$rule['descr']}";
             }
 
-            $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}") ;
+            $rule['descr'] = "{$sched}{$descr}" ;
             if (isset($rule['floating'])) {
                 $prio = 200000;
             } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
@@ -211,11 +203,11 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
                     if ($sched['name'] == $rule['sched']) {
                         if (!filter_get_time_based_rule_status($sched)) {
                             if (!isset($config['system']['schedule_states'])) {
-                                $sched_kill_states[] = $rule['label'];
+                                $sched_kill_states[] = $rule['md5'];
                             }
                             /* disable rule, suffix label to mark end of schedule */
                             $rule['disabled'] = true;
-                            $rule['label'] = "[FIN]".$rule['label'];
+                            $rule['descr'] = "[FIN]".$rule['descr'];
                         }
                         break;
                     }
