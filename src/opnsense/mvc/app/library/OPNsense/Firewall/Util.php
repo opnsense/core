@@ -220,4 +220,24 @@ class Util
         }
         return false;
     }
+
+    /**
+     * calculate rule hash value
+     * @param array rule
+     * @return string
+     */
+    public static function calcRuleHash($rule)
+    {
+        // remove irrelavant fields
+        foreach (array('updated', 'created', 'descr') as $key) {
+            unset($rule[$key]);
+        }
+        ksort($rule);
+        foreach ($rule as &$value) {
+            if (is_array($value)) {
+                ksort($value);
+            }
+        }
+        return md5(json_encode($rule));
+    }
 }
