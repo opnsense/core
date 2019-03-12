@@ -53,6 +53,8 @@
 /usr/local/etc/inc/xmlrpc/legacy.inc
 /usr/local/etc/inc/xmlrpc/service.inc
 /usr/local/etc/inc/xmlrpc/test.inc
+/usr/local/etc/ipsec.opnsense.d/README
+/usr/local/etc/ipsec.secrets.opnsense.d/README
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20170721
@@ -131,6 +133,7 @@
 /usr/local/etc/rc.syshook.d/stop/90-backup
 /usr/local/etc/rc.syshook.d/stop/99-config
 /usr/local/etc/ssl/opnsense.cnf
+/usr/local/etc/strongswan.opnsense.d/README
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
