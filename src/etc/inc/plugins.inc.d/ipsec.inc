@@ -947,7 +947,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             }
 
             if (!empty($a_client['login_banner'])) {
-                $strongswanTree['charon']['plugins']['attr']['28672'] = $a_client['login_banner'];
+                $strongswanTree['charon']['plugins']['attr']['28672'] = sprintf("\"%s\"", $a_client['login_banner']);
             }
 
             if (isset($a_client['save_passwd'])) {
