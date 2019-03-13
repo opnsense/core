@@ -936,12 +936,16 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if (!empty($a_client['dns_domain'])) {
                 $strongswanTree['charon']['plugins']['attr']['# Search domain and default domain'] = '';
                 $strongswanTree['charon']['plugins']['attr']['28674'] = $a_client['dns_domain'];
-
-                if (empty($a_client['dns_split'])) {
-                    $strongswanTree['charon']['plugins']['attr']['28675'] = $a_client['dns_domain'];
+            }
+            # 28675 --> UNITY_SPLITDNS_NAME
+            # 25 --> INTERNAL_DNS_DOMAIN
+            foreach (array("28675", "25") as $attr) {
+                if (!empty($a_client['dns_split'])) {
+                    $strongswanTree['charon']['plugins']['attr'][$attr] = $a_client['dns_split'];
+                } elseif (!empty($a_client['dns_domain'])) {
+                    $strongswanTree['charon']['plugins']['attr'][$attr] = $a_client['dns_domain'];
                 }
             }
-
             if (!empty($a_client['dns_split'])) {
                 $strongswanTree['charon']['plugins']['attr']['28675'] = $a_client['dns_split'];
             }
