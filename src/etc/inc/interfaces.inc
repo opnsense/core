@@ -3437,14 +3437,15 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
     }
 
     // search direct
-    foreach ($config['interfaces'] as $if => $ifname) {
+    $all_interfaces = legacy_config_get_interfaces();
+    foreach ($all_interfaces as $if => $ifname) {
         if ($if == $interface || $ifname['if'] == $interface) {
             return $if;
         }
     }
 
     // search related
-    foreach ($config['interfaces'] as $if => $ifname) {
+    foreach ($all_interfaces as $if => $ifname) {
         if (get_real_interface($if) == $interface) {
             return $if;
         }
