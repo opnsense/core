@@ -33,6 +33,39 @@ if (!isset($logsplit)) {
     $logsplit = 3;
 }
 
+function format_unixtime($unixtime_before_point, $unixtime_after_point) {
+    global $config;
+
+    $datetime_instance = new Datetime('@' . $unixtime_before_point);
+
+    switch ($config['system']['language']) {
+        case 'ja_JP':
+        case 'zh_CN':
+            return $datetime_instance->format('Y/m/d H:i:s') . $unixtime_after_point;
+
+        default:
+            return $datetime_instance->format('D, d M Y H:i:s') . $unixtime_after_point . $datetime_instance->format(' O');
+    }
+}
+
+function format_date_time($date_time) {
+    global $log_datetime_format;
+    if (isset($log_datetime_format) && $log_datetime_format === 'unix') {
+        if (strpos($date_time, '.') !== FALSE) {
+            $unixtime_before_point = substr($date_time, 0, strpos($date_time, '.'));
+            $unixtime_after_point  = substr($date_time, strpos($date_time, '.'));
+        } else {
+            $unixtime_before_point = $date_time;
+            $unixtime_after_point  = '';
+        }
+
+        return format_unixtime($unixtime_before_point, $unixtime_after_point);
+    }
+
+    // Unknown datetime format
+    return $date_time;
+}
+
 function print_dump($logarr, $lineCharLimit)
 {
     global $config, $logsplit;
@@ -54,7 +87,7 @@ function print_dump($logarr, $lineCharLimit)
             continue;
         }
         echo "<tr>\n";
-        $entry_date_time = html_safe(join(' ', array_slice($logent, 0, $logsplit)));
+        $entry_date_time = html_safe(format_date_time(join(' ', array_slice($logent, 0, $logsplit))));
         $entry_text = '';
         $hostname = $logent[$logsplit];
         if ($hostname != $config['system']['hostname']) {
