@@ -107,6 +107,8 @@
                     } else {
                         target.val(record[key]);
                     }
+                } else if (target.is('textarea')) {
+                    target.val(record[key]);
                 }
             });
 
