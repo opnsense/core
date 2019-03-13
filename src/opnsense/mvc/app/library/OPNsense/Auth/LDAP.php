@@ -383,12 +383,18 @@ class LDAP extends Base implements IAuthConnector
                     // fetch distinguished name and most likely username (try the search field first)
                     foreach (array($userNameAttribute, "name") as $ldapAttr) {
                         if (isset($searchResults[$i][$ldapAttr]) && $searchResults[$i][$ldapAttr]['count'] > 0) {
-                            $result[] = array(
+                            $user = array(
                                 'name' => $searchResults[$i][$ldapAttr][0],
-                                'fullname' => !empty($searchResults[$i]['name'][0]) ?
-                                    $searchResults[$i]['name'][0] : "",
                                 'dn' => $searchResults[$i]['dn']
                             );
+                            if (!empty($searchResults[$i]['name'][0])) {
+                                $user['fullname'] = $searchResults[$i]['name'][0];
+                            } elseif (!empty($searchResults[$i]['cn'][0])) {
+                                $user['fullname'] = $searchResults[$i]['cn'][0];
+                            } else {
+                                $user['fullname'] = '';
+                            }
+                            $result[] = $user ;
                             break;
                         }
                     }
