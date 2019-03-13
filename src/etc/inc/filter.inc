@@ -203,7 +203,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
                     if ($sched['name'] == $rule['sched']) {
                         if (!filter_get_time_based_rule_status($sched)) {
                             if (!isset($config['system']['schedule_states'])) {
-                                $sched_kill_states[] = $rule['md5'];
+                                $sched_kill_states[] = $rule['label'];
                             }
                             /* disable rule, suffix label to mark end of schedule */
                             $rule['disabled'] = true;
