@@ -658,6 +658,7 @@
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
 /usr/local/opnsense/scripts/filter/read_log.py
+/usr/local/opnsense/scripts/filter/rule_stats.py
 /usr/local/opnsense/scripts/filter/update_bogons.sh
 /usr/local/opnsense/scripts/filter/update_tables.py
 /usr/local/opnsense/scripts/firmware/changelog.sh
