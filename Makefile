@@ -114,7 +114,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-hash \
 			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
-			php${CORE_PHP}-mcrypt \
 			php${CORE_PHP}-openssl \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
