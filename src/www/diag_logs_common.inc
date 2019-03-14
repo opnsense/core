@@ -60,7 +60,7 @@ function print_dump($logarr, $lineCharLimit)
         if ($hostname != $config['system']['hostname']) {
             $entry_text = html_safe($hostname) . ' ';
         }
-        $entry_text .= html_safe(join(' ', array_slice($logent, $logsplit + 1)));
+        $entry_text .= html_safe(join(' ', array_slice($logent, $logsplit)));
         echo "<td class=\"text-nowrap\">{$entry_date_time}</td>\n";
         echo "<td>{$entry_text}</td>\n";
         echo "</tr>\n";
