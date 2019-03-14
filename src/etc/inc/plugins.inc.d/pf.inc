@@ -151,14 +151,16 @@ function pf_firewall($fw)
                         array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
-                            'label' => "pass traffic between statically routed subnets"),
+                            'descr' => "pass traffic between statically routed subnets",
+                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'),
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
                         10,
                         array('interface' => $friendly, 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
-                            'label' => "pass traffic between statically routed subnets"),
+                            'descr' => "pass traffic between statically routed subnets",
+                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'),
                         $defaults['pass']
                     );
                 }

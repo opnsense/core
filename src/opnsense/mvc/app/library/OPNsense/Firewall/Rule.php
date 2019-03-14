@@ -337,4 +337,31 @@ abstract class Rule
             return false;
         }
     }
+
+    /**
+     * return label
+     * @return string
+     */
+    public function getLabel()
+    {
+        return !empty($this->rule['label']) ? $this->rule['label'] : "";
+    }
+
+    /**
+     * return #ref
+     * @return string
+     */
+    public function getRef()
+    {
+        return !empty($this->rule['#ref']) ? $this->rule['#ref'] : "";
+    }
+
+    /**
+     * return description
+     * @return string
+     */
+    public function getDescr()
+    {
+        return !empty($this->rule['descr']) ? $this->rule['descr'] : "";
+    }
 }
