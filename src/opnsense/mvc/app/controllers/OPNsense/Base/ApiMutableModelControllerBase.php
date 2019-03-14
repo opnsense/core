@@ -283,11 +283,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Model add wrapper, adds a new item to an array field using a specified post variable
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
+     * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function addBase($post_field, $path)
+    public function addBase($post_field, $path, $overlay=null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
@@ -298,6 +299,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
             $node = $tmp->Add();
             $node->setNodes($this->request->getPost($post_field));
+            if (is_array($overlay)) {
+                $node->setNodes($overlay);
+            }
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
@@ -350,11 +354,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
      * @param string $uuid node key
+     * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function setBase($post_field, $path, $uuid)
+    public function setBase($post_field, $path, $uuid, $overlay=null)
     {
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
             $mdl = $this->getModel();
@@ -362,6 +367,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
                 if ($node != null) {
                     $node->setNodes($this->request->getPost($post_field));
+                    if (is_array($overlay)) {
+                        $node->setNodes($overlay);
+                    }
                     $result = $this->validate($node, $post_field);
                     if (empty($result['validations'])) {
                         // save config if validated correctly
