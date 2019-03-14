@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_user['priv'] = sort_user_privs($a_user['priv']);
             local_user_set($a_user);
             $retval = write_config();
-            $savemsg = get_std_save_message();
+            $savemsg = get_std_save_message(true);
 
             header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array($userid, $savemsg)));
             exit;

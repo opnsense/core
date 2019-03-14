@@ -391,9 +391,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig['chkNewCert'])) {
                 header(url_safe('Location: /system_certmanager.php?act=new&userid=%d', array(isset($id) ? $id : count($a_user) - 1)));
             } elseif (isset($pconfig['save_close'])) {
-                header(url_safe('Location: /system_usermanager.php?savemsg=%s', array(get_std_save_message())));
+                header(url_safe('Location: /system_usermanager.php?savemsg=%s', array(get_std_save_message(true))));
             } else {
-                header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array(isset($id) ? $id : count($a_user) - 1, get_std_save_message())));
+                header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array(isset($id) ? $id : count($a_user) - 1, get_std_save_message(true))));
             }
             exit;
         }
