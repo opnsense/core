@@ -1340,7 +1340,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                                 $rightsubnet_spec[] = $right_spec;
                             }
                         }
-                        if (isset($a_client['pfs_group'])) {
+                        if (isset($ph2ent['mobile']) && isset($a_client['pfs_group'])) {
                             $ph2ent['pfsgroup'] = $a_client['pfs_group'];
                         }
                         if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'esp') {
