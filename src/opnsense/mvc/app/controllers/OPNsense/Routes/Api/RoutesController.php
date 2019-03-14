@@ -124,20 +124,17 @@ class RoutesController extends ApiMutableModelControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $uuid != null) {
-            $mdlRoute = new Route();
-            $node = $mdlRoute->getNodeByReference('route.' . $uuid);
+            $node = $this->getModel()->getNodeByReference('route.' . $uuid);
             if ($node != null) {
                 if ($disabled == '0' || $disabled == '1') {
                     $node->disabled = (string)$disabled;
-                } elseif ($node->disabled->__toString() == '1') {
+                } elseif ((string)$node->disabled == '1') {
                     $node->disabled = '0';
                 } else {
                     $node->disabled = '1';
                 }
                 $result['result'] = (string)$node->disabled == '1' ? 'Disabled' : 'Enabled';
-                // if item has toggled, serialize to config and save
-                $mdlRoute->serializeToConfig();
-                Config::getInstance()->save();
+                $this->save();
             }
         }
         return $result;
