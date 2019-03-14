@@ -158,6 +158,21 @@ include("head.inc");
         $("#search_selected").click(function(){
             $("#search").keyup();
         });
+
+        // Warn user about future removal.
+        $("input[value='user-config-readonly']").change(function(){
+            if ($(this).is(':checked')) {
+              BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: "<?= gettext("Privileges");?>",
+                message: "<?=gettext("Please be aware that this option does not cover all areas of the system and will be removed in a future release.");?>",
+                buttons: [{ label: "<?= gettext("Ok");?>", action: function(dialogRef) {
+                              dialogRef.close();
+                          }
+                }]
+              });
+            }
+        });
     });
 </script>
 
