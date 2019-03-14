@@ -422,8 +422,8 @@ include("head.inc");
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
-<?php                 elseif (is_specialnet($natent['destination']['address'])):?>
-                        <?=htmlspecialchars(get_specialnets()[$natent['destination']['address']]); ?>
+<?php                 elseif (is_specialnet($natent['destination']['network'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['destination']['network']]); ?>
 <?php                 else: ?>
                         <?=isset($natent['destination']['any']) ? "*" : htmlspecialchars($natent['destination']['address']);?>
 <?php                 endif; ?>
