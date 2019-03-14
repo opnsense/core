@@ -286,7 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['destination'] == "any") {
             $natent['destination']['any'] = true;
         } elseif (is_alias($pconfig['destination']) || is_specialnet($pconfig['destination'])){
-            $natent['destination']['address'] = trim($pconfig['destination']) ;
+            $natent['destination']['network'] = trim($pconfig['destination']) ;
         } else {
             if (is_ipaddrv6($pconfig['destination'])) {
                 $natent['destination']['address'] = gen_subnetv6(trim($pconfig['destination']), $pconfig['destination_subnet']) . "/" . $pconfig['destination_subnet'];
