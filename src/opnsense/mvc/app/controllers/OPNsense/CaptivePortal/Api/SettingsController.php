@@ -28,52 +28,16 @@
  */
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Config;
-use \OPNsense\CaptivePortal\CaptivePortal;
-use \OPNsense\Base\UIModelGrid;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 
 /**
  * Class SettingsController Handles settings related API actions for Captive Portal
  * @package OPNsense\TrafficShaper
  */
-class SettingsController extends ApiControllerBase
+class SettingsController extends ApiMutableModelControllerBase
 {
-    /**
-     * validate and save model after update or insertion.
-     * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
-     * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $mdl model reference
-     * @param $node reference node, to use as relative offset
-     * @param $reference reference for validation output, used to rename the validation output keys
-     * @return array result / validation output
-     */
-    private function save($mdl, $node = null, $reference = null)
-    {
-        $result = array("result"=>"failed","validations" => array());
-        // perform validation
-        $valMsgs = $mdl->performValidation();
-        foreach ($valMsgs as $field => $msg) {
-            // replace absolute path to attribute for relative one at uuid.
-            if ($node != null) {
-                $fieldnm = str_replace($node->__reference, $reference, $msg->getField());
-                $result["validations"][$fieldnm] = $msg->getMessage();
-            } else {
-                $result["validations"][$msg->getField()] = $msg->getMessage();
-            }
-        }
-
-        // serialize model to config and save when there are no validation errors
-        if (count($result['validations']) == 0) {
-            // save config if validated correctly
-            $mdl->serializeToConfig();
-
-            Config::getInstance()->save();
-            $result = array("result" => "saved");
-        }
-
-        return $result;
-    }
+    protected static $internalModelName = 'zone';
+    protected static $internalModelClass = '\OPNsense\CaptivePortal\CaptivePortal';
 
     /**
      * retrieve zone settings or return defaults
@@ -82,19 +46,7 @@ class SettingsController extends ApiControllerBase
      */
     public function getZoneAction($uuid = null)
     {
-        $mdlCP = new CaptivePortal();
-        if ($uuid != null) {
-            $node = $mdlCP->getNodeByReference('zones.zone.'.$uuid);
-            if ($node != null) {
-                // return node
-                return array("zone" => $node->getNodes());
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlCP->zones->zone->add();
-            return array("zone" => $node->getNodes());
-        }
-        return array();
+        return $this->getBase("zone", "zones.zone", $uuid);
     }
 
     /**
@@ -104,17 +56,7 @@ class SettingsController extends ApiControllerBase
      */
     public function setZoneAction($uuid)
     {
-        if ($this->request->isPost() && $this->request->hasPost("zone")) {
-            $mdlCP = new CaptivePortal();
-            if ($uuid != null) {
-                $node = $mdlCP->getNodeByReference('zones.zone.'.$uuid);
-                if ($node != null) {
-                    $node->setNodes($this->request->getPost("zone"));
-                    return $this->save($mdlCP, $node, "zone");
-                }
-            }
-        }
-        return array("result"=>"failed");
+        return $this->setBase("zone", "zones.zone", $uuid);
     }
 
     /**
@@ -123,14 +65,7 @@ class SettingsController extends ApiControllerBase
      */
     public function addZoneAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("zone")) {
-            $mdlCP = new CaptivePortal();
-            $node = $mdlCP->zones->zone->Add();
-            $node->setNodes($this->request->getPost("zone"));
-            return $this->save($mdlCP, $node, "zone");
-        }
-        return $result;
+        return $this->addBase("zone", "zones.zone");
     }
 
     /**
@@ -140,21 +75,7 @@ class SettingsController extends ApiControllerBase
      */
     public function delZoneAction($uuid)
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost()) {
-            $mdlCP = new CaptivePortal();
-            if ($uuid != null) {
-                if ($mdlCP->zones->zone->del($uuid)) {
-                    // if item is removed, serialize to config and save
-                    $mdlCP->serializeToConfig();
-                    Config::getInstance()->save();
-                    $result['result'] = 'deleted';
-                } else {
-                    $result['result'] = 'not found';
-                }
-            }
-        }
-        return $result;
+        return  $this->delBase("zones.zone", $uuid);
     }
 
     /**
@@ -165,28 +86,7 @@ class SettingsController extends ApiControllerBase
      */
     public function toggleZoneAction($uuid, $enabled = null)
     {
-
-        $result = array("result" => "failed");
-        if ($this->request->isPost()) {
-            $mdlCP = new CaptivePortal();
-            if ($uuid != null) {
-                $node = $mdlCP->getNodeByReference('zones.zone.' . $uuid);
-                if ($node != null) {
-                    if ($enabled == "0" || $enabled == "1") {
-                        $node->enabled = (string)$enabled;
-                    } elseif ((string)$node->enabled == "1") {
-                        $node->enabled = "0";
-                    } else {
-                        $node->enabled = "1";
-                    }
-                    $result['result'] = $node->enabled;
-                    // if item has toggled, serialize to config and save
-                    $mdlCP->serializeToConfig();
-                    Config::getInstance()->save();
-                }
-            }
-        }
-        return $result;
+        return $this->toggleBase("zones.zone", $uuid, $enabled);
     }
 
     /**
@@ -195,11 +95,8 @@ class SettingsController extends ApiControllerBase
      */
     public function searchZonesAction()
     {
-        $this->sessionClose();
-        $mdlCP = new CaptivePortal();
-        $grid = new UIModelGrid($mdlCP->zones->zone);
-        return $grid->fetchBindRequest(
-            $this->request,
+        return $this->searchBase(
+            "zones.zone",
             array("enabled", "description", "zoneid"),
             "description"
         );
