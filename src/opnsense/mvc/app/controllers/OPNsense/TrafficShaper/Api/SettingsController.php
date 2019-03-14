@@ -105,15 +105,10 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addPipeAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("pipe")) {
-            $mdlShaper = new TrafficShaper();
-            $node = $mdlShaper->addPipe();
-            $node->setNodes($this->request->getPost("pipe"));
-            $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->validateSave($mdlShaper, $node, "pipe");
-        }
-        return $result;
+        return $this->addBase("pipe", "pipes.pipe", [
+            "origin" => "TrafficShaper",
+            "number" => (new TrafficShaper())->newPipeNumber()
+        ]);
     }
 
     /**
@@ -201,17 +196,11 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addQueueAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("queue")) {
-            $mdlShaper = new TrafficShaper();
-            $node = $mdlShaper->addQueue();
-            $node->setNodes($this->request->getPost("queue"));
-            $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->validateSave($mdlShaper, $node, "queue");
-        }
-        return $result;
+        return $this->addBase("queue", "queues.queue", [
+            "origin" => "TrafficShaper",
+            "number" => (new TrafficShaper())->newQueueNumber()
+        ]);
     }
-
     /**
      * Delete queue by uuid
      * @param string $uuid internal id
@@ -261,7 +250,11 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getRuleAction($uuid = null)
     {
-        return $this->getBase("rule", "rules.rule", $uuid);
+        $result = $this->getBase("rule", "rules.rule", $uuid);
+        if ($uuid === null) {
+            $result["rule"]["sequence"] = (string)((new TrafficShaper())->getMaxRuleSequence() + 1);
+        }
+        return $result;
     }
 
     /**
@@ -284,15 +277,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addRuleAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("rule")) {
-            $mdlShaper = new TrafficShaper();
-            $node = $mdlShaper->rules->rule->add();
-            $node->setNodes($this->request->getPost("rule"));
-            $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->validateSave($mdlShaper, $node, "rule");
-        }
-        return $result;
+        return $this->addBase('rule', 'rules.rule', [ "origin" => "TrafficShaper"]);
     }
     /**
      * Delete rule by uuid
