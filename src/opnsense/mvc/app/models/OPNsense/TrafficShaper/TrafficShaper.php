@@ -62,67 +62,35 @@ class TrafficShaper extends BaseModel
     }
 
     /**
-     * Add new pipe to shaper, generate new number if none is given.
+     * Generate a new pipe number
      * The first 10000 id's are automatically reserved for internal usage.
      * @param null $pipenr new pipe number
      * @return ArrayField
      */
-    public function addPipe($pipenr = null)
+    public function newPipeNumber()
     {
         $allpipes = array();
-        foreach ($this->pipes->pipe->iterateItems() as $uuid => $pipe) {
-            if ($pipenr != null && $pipenr == $pipe->number->__toString()) {
-                // pipe found, return
-                return $pipe;
-            } elseif ($pipenr == null) {
-                // collect pipe numbers to find first possible item
-                $allpipes[] = $pipe->number->__toString();
-            }
+        foreach ($this->pipes->pipe->iterateItems() as $pipe) {
+            $allpipes[] = (string)$pipe->number;
         }
         sort($allpipes);
-
-        if ($pipenr == null) {
-            // generate new pipe number
-            $newId = $this->generateNewId(10000, $allpipes);
-        } else {
-            $newId = $pipenr;
-        }
-
-        $pipe = $this->pipes->pipe->add();
-        $pipe->number = $newId;
-        return $pipe;
+        return $this->generateNewId(10000, $allpipes);
     }
 
     /**
-     * Add new queue to shaper, generate new number if none is given.
+     * Generate a new queue number
      * The first 10000 id's are automatically reserved for internal usage.
      * @param null $queuenr new queue number
      * @return ArrayField
      */
-    public function addQueue($queuenr = null)
+    public function newQueueNumber()
     {
         $allqueues = array();
-        foreach ($this->queues->queue->iterateItems() as $uuid => $queue) {
-            if ($queuenr != null && $queuenr == $queue->number->__toString()) {
-                // queue found, return
-                return $queue;
-            } elseif ($queuenr == null) {
-                // collect pipe numbers to find first possible item
-                $allqueues[] = $queue->number->__toString();
-            }
+        foreach ($this->queues->queue->iterateItems() as $queue) {
+            $allqueues[] = (string)$queue->number;
         }
         sort($allqueues);
-
-        if ($queuenr == null) {
-            // generate new queue number
-            $newId = $this->generateNewId(10000, $allqueues);
-        } else {
-            $newId = $queuenr;
-        }
-
-        $queue = $this->queues->queue->add();
-        $queue->number = $newId;
-        return $queue;
+        return $this->generateNewId(10000, $allqueues);
     }
 
     /**
