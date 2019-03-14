@@ -42,39 +42,6 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\TrafficShaper\TrafficShaper';
 
     /**
-     * validate and save model after update or insertion.
-     * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
-     * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $mdlShaper
-     * @param $node reference node, to use as relative offset
-     * @param $reference reference for validation output, used to rename the validation output keys
-     * @return array result / validation output
-     */
-    private function validateSave($mdlShaper, $node = null, $reference = null)
-    {
-        $result = array("result"=>"failed","validations" => array());
-        // perform validation
-        $valMsgs = $mdlShaper->performValidation();
-        foreach ($valMsgs as $field => $msg) {
-            // replace absolute path to attribute for relative one at uuid.
-            if ($node != null) {
-                $fieldnm = str_replace($node->__reference, $reference, $msg->getField());
-                $result["validations"][$fieldnm] = $msg->getMessage();
-            } else {
-                $result["validations"][$msg->getField()] = $msg->getMessage();
-            }
-        }
-        // serialize model to config and save when there are no validation errors
-        if (count($result['validations']) == 0) {
-            // save config if validated correctly
-            $mdlShaper->serializeToConfig();
-            Config::getInstance()->save();
-            $result = array("result" => "saved");
-        }
-        return $result;
-    }
-
-    /**
      * Retrieve pipe settings or return defaults
      * @param $uuid item unique id
      * @return array traffic shaper pipe content
