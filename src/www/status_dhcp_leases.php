@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* We then split the leases file by } */
     $splitpattern = "'BEGIN { RS=\"}\";} {for (i=1; i<=NF; i++) printf \"%s \", \$i; printf \"}\\n\";}'";
 
-    /* stuff the leases file in a proper format into a array by line */
+    /* stuff the leases file in a proper format into an array by line */
     exec("/bin/cat {$leasesfile} | {$awk} {$cleanpattern} | {$awk} {$splitpattern}", $leases_content);
     $leases_count = count($leases_content);
     exec("/usr/sbin/arp -an", $rawdata);

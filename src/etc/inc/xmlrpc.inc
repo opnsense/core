@@ -38,7 +38,7 @@ class XMLRPCServer
 
     /**
      * load publishable function from inc/xmlrpc/*.inc
-     * every usable module should include a function to return it's own registrable functions, using
+     * every usable module should include a function to return its own registrable functions, using
      * the following patten:
      *      xmlrpc_publishable_{filename without .inc}
      *
