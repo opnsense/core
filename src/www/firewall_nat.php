@@ -303,7 +303,7 @@ $( document ).ready(function() {
                       <th style="width:2%"><input type="checkbox" id="selectAll"></th>
                       <th style="width:2%">&nbsp;</th>
                       <th style="width:2%">&nbsp;</th>
-                      <th><?=gettext("If");?></th>
+                      <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Proto");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Address");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Ports");?></th>
