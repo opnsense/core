@@ -30,7 +30,10 @@ POSSIBILITY OF SUCH DAMAGE.
     'use strict';
 
     $( document ).ready(function() {
-        var field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right', 'out': 'fa-arrow-left', 'rdr': 'fa-exchange', 'nat': 'fa-exchange' };
+        var field_type_icons = {
+          'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right',
+          'out': 'fa-arrow-left', 'rdr': 'fa-exchange', 'nat': 'fa-exchange'
+        };
         var interface_descriptions = {};
         let hostnameMap = {};
 
@@ -181,11 +184,21 @@ POSSIBILITY OF SUCH DAMAGE.
                                 if (map_icon.indexOf(sorted_keys[i]) !== -1) {
                                     if (field_type_icons[sender_details[sorted_keys[i]]] !== undefined) {
                                         icon = $("<i/>");
-                                        icon.addClass("fa").addClass(field_type_icons[sender_details[sorted_keys[i]]]);
+                                        icon.addClass("fa fa-fw").addClass(field_type_icons[sender_details[sorted_keys[i]]]);
                                     }
                                 }
                                 row.append($("<td/>").text(sorted_keys[i]));
-                                if (icon === null) {
+                                if (sorted_keys[i] == 'rid') {
+                                  // rid field, links to rule origin
+                                  var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
+                                  var rid = sender_details[sorted_keys[i]];
+
+                                  var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
+                                  rid_link.text(rid);
+                                  rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
+                                  rid_td.append(rid_link);
+                                  row.append(rid_td);
+                                } else if (icon === null) {
                                   row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).text(
                                     sender_details[sorted_keys[i]]
                                   ));

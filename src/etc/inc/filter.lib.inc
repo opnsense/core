@@ -206,11 +206,12 @@ function filter_core_rules_system($fw, $defaults)
     // block All IPv6 except loopback traffic
     $fw->registerFilterRule(1,
       array('interface' => 'loopback', 'ipprotocol'=>'inet6', 'disabled' => isset($config['system']['ipv6allow']),
-          'label' => 'Pass all loopback IPv6'),
+          'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_firewall.php#ipv6allow'),
       $defaults['pass']
     );
     $fw->registerFilterRule(1,
-      array('ipprotocol'=>'inet6','label' => 'Block all IPv6', 'disabled' => isset($config['system']['ipv6allow'])),
+      array('ipprotocol'=>'inet6','descr' => 'Block all IPv6', 'disabled' => isset($config['system']['ipv6allow']),
+            '#ref' => 'system_advanced_firewall.php#ipv6allow'),
       $defaults['block']
     );
 
@@ -319,16 +320,19 @@ function filter_core_rules_system($fw, $defaults)
         if (isset($config['system']['ipv6allow']) && in_array($intfinfo['ipaddrv6'], array("slaac","dhcp6"))) {
             $fw->registerFilterRule(1,
               array('protocol' => 'udp', 'from' => 'fe80::/10', 'from_port' => 546, 'to' => 'fe80::/10',
-                    'interface' => $intf, 'to_port' => 546, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
+                    'interface' => $intf, 'to_port' => 546, 'descr' =>'allow dhcpv6 client in ' . $intfinfo['descr'],
+                    '#ref' => 'system_advanced_firewall.php#ipv6allow'),
               $defaults['pass']
             );
             $fw->registerFilterRule(1,
               array('protocol' => 'udp', 'from_port' => 547,'to_port' => 546, 'direction' => 'in',
-                    'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
+                    'interface' => $intf, 'descr' =>'allow dhcpv6 client in ' . $intfinfo['descr'],
+                    '#ref' => 'system_advanced_firewall.php#ipv6allow'),
               $defaults['pass']
             );
             $dhcpv6_opts = array(
-                'label' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
+                'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
+                '#ref' => 'system_advanced_firewall.php#ipv6allow',
                 'direction' => 'out',
                 'interface' => $intf,
                 'protocol' => 'udp',
@@ -484,7 +488,8 @@ function filter_core_rules_system($fw, $defaults)
                 'protocol' => 'tcp',
                 'to' => '(self)',
                 'to_port' => implode(' ', $lockoutprts),
-                'label' =>'anti-lockout rule'
+                'descr' => 'anti-lockout rule',
+                '#ref' => 'system_advanced_firewall.php#schedule_states'
             ),
             $defaults['pass']
         );
