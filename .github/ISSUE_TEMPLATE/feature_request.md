@@ -18,7 +18,7 @@ Before you add a new report, we ask you kindly to acknowledge the following:
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
 **Describe the solution you'd like**
-A clear and concise description of what you want to happen. 
+A clear and concise description of what you want to happen.
 (e.g. I would like an input field in the `/ui/firewall/alias` which would add .... to ....)
 
 **Describe alternatives you've considered**
