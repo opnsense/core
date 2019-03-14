@@ -249,7 +249,7 @@ include("head.inc");
 
             title_td.append(container);
             let animate_width = title_td.width() - container.position().left+ title_td.find('i:eq(0)').position().left;
-            $('html, body').animate({scrollTop: option.offset().top}, 500,  function() {
+            $('html, body').animate({scrollTop: option.position().top}, 500,  function() {
                 container.append(arrow);
                 container.animate({width: animate_width}, 800);
             });
