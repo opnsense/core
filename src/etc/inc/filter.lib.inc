@@ -489,7 +489,7 @@ function filter_core_rules_system($fw, $defaults)
                 'to' => '(self)',
                 'to_port' => implode(' ', $lockoutprts),
                 'descr' => 'anti-lockout rule',
-                '#ref' => 'system_advanced_firewall.php#schedule_states'
+                '#ref' => 'system_advanced_firewall.php#noantilockout'
             ),
             $defaults['pass']
         );
