@@ -217,8 +217,11 @@ class LDAP extends Base implements IAuthConnector
         $this->ldapVersion = $ldapVersion;
         $this->baseSearchDN = $baseSearchDN;
         // setup ldap general search list, list gets updated by requested data
-        $this->addSearchAttribute("dn");
+        // Note that the "dn" is always returned irrespective of which attributes types are requested
+        $this->addSearchAttribute("displayName");
+        $this->addSearchAttribute("cn");
         $this->addSearchAttribute("name");
+        $this->addSearchAttribute("mail");
     }
 
     /**
@@ -387,12 +390,19 @@ class LDAP extends Base implements IAuthConnector
                                 'name' => $searchResults[$i][$ldapAttr][0],
                                 'dn' => $searchResults[$i]['dn']
                             );
-                            if (!empty($searchResults[$i]['name'][0])) {
-                                $user['fullname'] = $searchResults[$i]['name'][0];
+                            if (!empty($searchResults[$i]['displayName'][0])) {
+                                $user['fullname'] = $searchResults[$i]['displayName'][0];
                             } elseif (!empty($searchResults[$i]['cn'][0])) {
                                 $user['fullname'] = $searchResults[$i]['cn'][0];
+                            } elseif (!empty($searchResults[$i]['name'][0])) {
+                                $user['fullname'] = $searchResults[$i]['name'][0];
                             } else {
                                 $user['fullname'] = '';
+                            }
+                            if (!empty($searchResults[$i]['mail'][0])) {
+                                $user['email'] = $searchResults[$i]['mail'][0];
+                            } else {
+                                $user['email'] = '';
                             }
                             $result[] = $user ;
                             break;
