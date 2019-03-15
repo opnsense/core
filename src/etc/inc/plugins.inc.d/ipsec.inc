@@ -229,7 +229,8 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                       "quick" => false,
                                       "type" => "pass",
                                       "statetype" => "keep",
-                                      "label" => "IPsec: " . (!empty($ph1ent['descr']) ? $ph1ent['descr'] : $rgip)
+                                      "#ref" => "vpn_ipsec_settings.php#disablevpnrules",
+                                      "descr" => "IPsec: " . (!empty($ph1ent['descr']) ? $ph1ent['descr'] : $rgip)
                                     );
 
                     // find gateway
