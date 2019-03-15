@@ -50,10 +50,21 @@ if __name__ == '__main__':
                     if lbl.count('"') >= 2:
                         rule_md5 = lbl.split('"')[1]
                         if len(rule_md5) == 32 and set(rule_md5).issubset(hex_digits):
-                            results[rule_md5] = stats
+                            if rule_md5 in results:
+                                # aggregate raw pf rules (a single rule in out ruleset could be expanded)
+                                for key in stats:
+                                    if key in results[rule_md5]:
+                                        if key == 'pf_rules':
+                                            results[rule_md5][key] += 1
+                                        else:
+                                            results[rule_md5][key] += stats[key]
+                                    else:
+                                        results[rule_md5][key] = stats[key]
+                            else:
+                                results[rule_md5] = stats
                 # reset for next rule
                 prev_line = line
-                stats = dict()
+                stats = {'pf_rules': 1}
             elif line[0] == '['  and line.find('Evaluations') > 0:
                 parts = line.strip('[ ]').replace(':', ' ').split()
                 for i in range(0, len(parts)-1, 2):
