@@ -626,7 +626,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_fullname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Full name");?></td>
                     <td>
-                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
+                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" ? "readonly=\"readonly\"" : "";?> />
                       <div class="hidden" data-for="help_for_fullname">
                         <?=gettext("User's full name, for your own information only");?>
                       </div>
