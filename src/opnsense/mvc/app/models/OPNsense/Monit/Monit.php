@@ -168,7 +168,8 @@ class Monit extends BaseModel
                         switch ($node->getInternalXMLTagName()) {
                             case 'type':
                                 $testUuid = $parentNode->getAttribute('uuid');
-                                if ($node->isFieldChanged() &&
+                                if (strcmp((string)$node, 'Custom') != 0 &&
+                                    $node->isFieldChanged() &&
                                     $this->isTestServiceRelated($testUuid)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Cannot change the type. Test is linked to a service."),
