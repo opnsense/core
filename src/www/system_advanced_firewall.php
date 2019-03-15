@@ -237,24 +237,7 @@ include("head.inc");
 ?>
 <script>
     $( document ).ready(function() {
-        if (window.location.hash != "") {
-            let option_id = window.location.hash.substr(1);
-            let option = $("[name='" + option_id +"']");
-            let arrow = $("<i/>").addClass("fa fa-arrow-right pull-right");
-            let container = $("<div/>");
-            let title_td = option.closest('tr').find('td:eq(0)');
-            container.css('width', '0%');
-            container.css('display', 'inline-block');
-            container.css('white-space', 'nowrap');
-
-            title_td.append(container);
-            let animate_width = title_td.width() - container.position().left+ title_td.find('i:eq(0)').position().left;
-            $('html, body').animate({scrollTop: option.position().top}, 500,  function() {
-                container.append(arrow);
-                container.animate({width: animate_width}, 800);
-            });
-
-        }
+        window_highlight_table_option();
     });
 </script>
 <body>

@@ -42,7 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // search auto-generated rules
         foreach ($fw->iterateFilterRules() as $rule) {
             if (!empty($rule->getRef()) && $rid == $rule->getLabel()) {
-                header(url_safe('Location: /%s#%s', explode("#", $rule->getRef())));
+                if (strpos($rule->getRef(), '?if=') !== false) {
+                    $parts = parse_url($rule->getRef());
+                    if (!empty($parts['fragment'])) {
+                        parse_str($parts['query'], $query);
+                        $params = [$parts['path'], $query['if'], $parts['fragment']];
+                        header(url_safe('Location: /%s?if=%s#%s', $params));
+                    }
+                } else {
+                    header(url_safe('Location: /%s#%s', explode("#", $rule->getRef())));
+                }
                 exit;
             }
         }

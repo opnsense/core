@@ -1756,7 +1756,7 @@ include("head.inc");
           }
       });
       $("#rfc3118_isp").change();
-
+      window_highlight_table_option();
   });
 </script>
 
