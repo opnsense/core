@@ -31,9 +31,9 @@ try {
         $response['errorTitle'] = $e->getTitle();
     } else {
         $response['errorTitle'] = gettext("An API exception occured");
+        error_log($e);
     }
     header('HTTP', true, 500);
     header("Content-Type: application/json;charset=utf-8");
     echo json_encode($response, JSON_UNESCAPED_SLASHES);
-    error_log($e);
 }

@@ -67,19 +67,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getRemoteBlacklistAction($uuid = null)
     {
-        $mdlProxy = $this->getModel();
-        if ($uuid != null) {
-            $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
-            if ($node != null) {
-                // return node
-                return array("blacklist" => $node->getNodes());
-            }
-        } else {
-            // generate new node, but don't save to disc
-            $node = $mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->add();
-            return array("blacklist" => $node->getNodes());
-        }
-        return array();
+        return $this->getBase("blacklist", "forward.acl.remoteACLs.blacklists.blacklist", $uuid);
     }
 
     /**
@@ -90,32 +78,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setRemoteBlacklistAction($uuid)
     {
-        if ($this->request->isPost() && $this->request->hasPost("blacklist")) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
-                if ($node != null) {
-                    $result = array("result" => "failed", "validations" => array());
-                    $blacklistInfo = $this->request->getPost("blacklist");
-
-                    $node->setNodes($blacklistInfo);
-                    $valMsgs = $mdlProxy->performValidation();
-                    foreach ($valMsgs as $field => $msg) {
-                        $fieldnm = str_replace($node->__reference, "blacklist", $msg->getField());
-                        $result["validations"][$fieldnm] = $msg->getMessage();
-                    }
-
-                    if (count($result['validations']) == 0) {
-                        // save config if validated correctly
-                        $mdlProxy->serializeToConfig();
-                        Config::getInstance()->save();
-                        $result = array("result" => "saved");
-                    }
-                    return $result;
-                }
-            }
-        }
-        return array("result" => "failed");
+        return $this->setBase('blacklist', 'forward.acl.remoteACLs.blacklists.blacklist', $uuid);
     }
 
     /**
@@ -124,28 +87,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addRemoteBlacklistAction()
     {
-        $result = array("result" => "failed");
-        if ($this->request->isPost() && $this->request->hasPost("blacklist")) {
-            $result = array("result" => "failed", "validations" => array());
-            $mdlProxy = $this->getModel();
-            $node = $mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->Add();
-            $node->setNodes($this->request->getPost("blacklist"));
-            $valMsgs = $mdlProxy->performValidation();
-
-            foreach ($valMsgs as $field => $msg) {
-                $fieldnm = str_replace($node->__reference, "blacklist", $msg->getField());
-                $result["validations"][$fieldnm] = $msg->getMessage();
-            }
-
-            if (count($result['validations']) == 0) {
-                // save config if validated correctly
-                $mdlProxy->serializeToConfig();
-                Config::getInstance()->save();
-                $result = array("result" => "saved");
-            }
-            return $result;
-        }
-        return $result;
+        return $this->addBase('blacklist', 'forward.acl.remoteACLs.blacklists.blacklist');
     }
 
     /**
@@ -155,23 +97,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function delRemoteBlacklistAction($uuid)
     {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                if ($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->del($uuid)) {
-                    // if item is removed, serialize to config and save
-                    $mdlProxy->serializeToConfig();
-                    Config::getInstance()->save();
-                    $result['result'] = 'deleted';
-                } else {
-                    $result['result'] = 'not found';
-                }
-            }
-        }
-        return $result;
+        return $this->delBase('forward.acl.remoteACLs.blacklists.blacklist', $uuid);
     }
 
     /**
@@ -181,28 +107,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function toggleRemoteBlacklistAction($uuid)
     {
-
-        $result = array("result" => "failed");
-
-        if ($this->request->isPost()) {
-            $mdlProxy = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
-                if ($node != null) {
-                    if ($node->enabled->__toString() == "1") {
-                        $result['result'] = "Disabled";
-                        $node->enabled = "0";
-                    } else {
-                        $result['result'] = "Enabled";
-                        $node->enabled = "1";
-                    }
-                    // if item has toggled, serialize to config and save
-                    $mdlProxy->serializeToConfig();
-                    Config::getInstance()->save();
-                }
-            }
-        }
-        return $result;
+        return $this->toggleBase('forward.acl.remoteACLs.blacklists.blacklist', $uuid);
     }
 
     /**

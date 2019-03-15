@@ -157,7 +157,7 @@ if [ "$pkg_running" == "" ]; then
 
               MODE=
 
-              for i in $(cat $tmp_pkg_output_file | cut -d '(' -f1); do
+              for i in $(cat $tmp_pkg_output_file | tr '[' '(' | cut -d '(' -f1); do
                 case ${MODE} in
                 DOWNGRADED:)
                   if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then

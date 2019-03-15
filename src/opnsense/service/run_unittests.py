@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.6
 """
     Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
     All rights reserved.

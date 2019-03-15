@@ -685,32 +685,6 @@ function local_group_del($group)
     mwexecf('/usr/sbin/pw groupdel %s', $group['name']);
 }
 
-function ldap_setup_caenv($authcfg)
-{
-    unset($caref);
-
-    if (empty($authcfg['ldap_caref']) || !strstr($authcfg['ldap_urltype'], "SSL")) {
-        putenv('LDAPTLS_REQCERT=never');
-        return;
-    }
-
-    $caref = lookup_ca($authcfg['ldap_caref']);
-    if (!$caref) {
-        log_error(sprintf('LDAP: Could not lookup CA by reference for host %s.', $authcfg['ldap_caref']));
-        /* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
-        putenv('LDAPTLS_REQCERT=hard');
-        return;
-    }
-
-    @mkdir("/var/run/certs");
-    @unlink("/var/run/certs/{$caref['refid']}.ca");
-    file_put_contents("/var/run/certs/{$caref['refid']}.ca", base64_decode($caref['crt']));
-    @chmod("/var/run/certs/{$caref['refid']}.ca", 0600);
-    putenv('LDAPTLS_REQCERT=hard');
-    /* XXX: Probably even the hashed link should be created for this? */
-    putenv("LDAPTLS_CACERTDIR=/var/run/certs");
-    putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
-}
 
 /**
  * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication
@@ -789,9 +763,6 @@ function get_authenticator($authcfg = NULL)
         if ($authcfg['type'] == 'local') {
             // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
             $authName = 'Local Database';
-        } elseif ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-            // temporary fix, ldap handler doesn't do this init yet.
-            ldap_setup_caenv($authcfg);
         }
     }
 

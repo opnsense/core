@@ -26,7 +26,7 @@ configd_load_rc_config()
 	required_files=""
 	command_args="${required_args}"
 	command=/usr/local/opnsense/service/configd.py
-	command_interpreter=/usr/local/bin/python2.7
+	command_interpreter=/usr/local/bin/python3.6
 }
 
 #

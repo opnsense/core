@@ -66,23 +66,39 @@ def update_rule(target, metadata_target, ruleparts, spec):
     # full spec
     metadata_target['__spec__'] = spec
 
-def fetch_rules_descriptions():
+def fetch_rule_details():
     """ Fetch rule descriptions from the current running config if available
         :return : rule details per line number
     """
     result = dict()
     if os.path.isfile('/tmp/rules.debug'):
+        # parse running config, fetch all md5 hashed labels
+        rule_map = dict()
+        hex_digits = set("0123456789abcdef")
+        with open('/tmp/rules.debug') as f_in:
+            for line in f_in:
+                if line.find(' label ') > -1:
+                    lbl = line.split(' label ')[-1]
+                    if lbl.count('"') >= 2:
+                        rule_md5 = lbl.split('"')[1]
+                        if len(rule_md5) == 32 and set(rule_md5).issubset(hex_digits):
+                            rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
+
+        # use pfctl to create a list per rule number with the details found
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-vvPnf', '/tmp/rules.debug'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            subprocess.call(['/sbin/pfctl', '-vvPnf', '/tmp/rules.debug'],
+                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
             for line in output_stream.read().strip().split('\n'):
                 if line.startswith('@'):
                     line_id = line.split()[0][1:]
                     if line.find(' label ') > -1:
-                        result[line_id] = {'label': ''.join(line.split(' label ')[-1:]).strip()[1:-1]}
-                    else:
-                        # XXX happens on rdr (ID is not unique) or when no label is found
-                        result[line_id] = {'label': 'XXX'}
+                        rid = ''.join(line.split(' label ')[-1:]).strip()[1:-1]
+                        if rid in rule_map:
+                            result[line_id] = {'rid': rid, 'label': rule_map[rid]}
+                        else:
+                            result[line_id] = {'rid': None, 'label': rid}
+
     return result
 
 
@@ -93,7 +109,7 @@ if __name__ == '__main__':
     parameters['limit'] = int(parameters['limit'])
 
     # parse current running config
-    running_conf_descr = fetch_rules_descriptions()
+    running_conf_descr = fetch_rule_details()
 
     result = list()
     for record in reverse_log_reader(fetch_clog(filter_log)):
@@ -130,7 +146,12 @@ if __name__ == '__main__':
 
             rule.update(metadata)
             if 'rulenr' in rule and rule['rulenr'] in running_conf_descr:
-                rule['label'] = running_conf_descr[rule['rulenr']]['label']
+                if rule['action'] in ['pass', 'block']:
+                    rule['label'] = running_conf_descr[rule['rulenr']]['label']
+                    rule['rid'] = running_conf_descr[rule['rulenr']]['rid']
+            elif rule['action'] not in ['pass', 'block']:
+                rule['label'] = "%s rule" % rule['action']
+
             result.append(rule)
 
             # handle exit criteria, row limit or last digest

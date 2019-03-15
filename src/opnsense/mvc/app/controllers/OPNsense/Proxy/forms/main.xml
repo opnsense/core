@@ -204,7 +204,7 @@
                 <id>proxy.general.parentproxy.enabled</id>
                 <label>Enable Parent Proxy</label>
                 <type>checkbox</type>
-                <help>Enable parent proxy feature</help>
+                <help>Enable parent proxy feature.</help>
             </field>
             <field>
                 <id>proxy.general.parentproxy.host</id>
@@ -217,6 +217,24 @@
                 <label>Port</label>
                 <type>text</type>
                 <help>Parent proxy port.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.enableauth</id>
+                <label>Enable Authentication</label>
+                <type>checkbox</type>
+                <help>Enable authentication against the parent proxy.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.user</id>
+                <label>Username</label>
+                <type>text</type>
+                <help>Set a username if parent proxy requires authentication.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.password</id>
+                <label>Password</label>
+                <type>password</type>
+                <help>Set a password if parent proxy requires authentication.</help>
             </field>
             <field>
                 <id>proxy.general.parentproxy.localdomains</id>

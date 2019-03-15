@@ -443,9 +443,8 @@ $( document ).ready(function() {
                     <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
                   </td>
                 </tr>
-<?php
-                if (isset($hostent['aliases']['item'])):
-                  foreach ($hostent['aliases']['item'] as $alias): ?>
+<?php if (isset($hostent['aliases']['item'])): ?>
+<?php foreach ($hostent['aliases']['item'] as $alias): ?>
                 <tr>
                   <td><?=htmlspecialchars(strtolower($alias['host']));?></td>
                   <td><?=htmlspecialchars(strtolower($alias['domain']));?></td>
@@ -455,10 +454,8 @@ $( document ).ready(function() {
                     <a href="services_dnsmasq_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                   </td>
                 </tr>
-<?php
-                  endforeach;
-                endif; ?>
-
+<?php endforeach ?>
+<?php endif ?>
 <?php endforeach ?>
                 <tr>
                   <td colspan="5">

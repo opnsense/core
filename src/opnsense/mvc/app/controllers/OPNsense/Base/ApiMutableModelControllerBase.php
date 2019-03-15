@@ -31,6 +31,8 @@
 namespace OPNsense\Base;
 
 use \OPNsense\Core\Config;
+use OPNsense\Core\ACL;
+use \OPNsense\Base\UserException;
 
 /**
  * Class ApiMutableModelControllerBase, inherit this class to implement
@@ -178,9 +180,16 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function save()
     {
-        $this->getModel()->serializeToConfig();
-        Config::getInstance()->save();
-        return array("result"=>"saved");
+        if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+            $this->getModel()->serializeToConfig();
+            Config::getInstance()->save();
+            return array("result"=>"saved");
+        } else {
+            // XXX remove user-config-readonly in some future release
+            throw new UserException(
+              sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName())
+            );
+        }
     }
 
     /**
@@ -274,11 +283,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Model add wrapper, adds a new item to an array field using a specified post variable
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
+     * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function addBase($post_field, $path)
+    public function addBase($post_field, $path, $overlay=null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
@@ -289,12 +299,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
             $node = $tmp->Add();
             $node->setNodes($this->request->getPost($post_field));
+            if (is_array($overlay)) {
+                $node->setNodes($overlay);
+            }
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
                 // save config if validated correctly
-                $mdl->serializeToConfig();
-                Config::getInstance()->save();
+                $this->save();
                 $result = array(
                     "result" => "saved",
                     "uuid" => $node->getAttribute('uuid')
@@ -327,8 +339,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $tmp = $tmp->{$step};
                 }
                 if ($tmp->del($uuid)) {
-                    $mdl->serializeToConfig();
-                    Config::getInstance()->save();
+                    $this->save();
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
@@ -343,11 +354,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
      * @param string $uuid node key
+     * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function setBase($post_field, $path, $uuid)
+    public function setBase($post_field, $path, $uuid, $overlay=null)
     {
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
             $mdl = $this->getModel();
@@ -355,11 +367,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
                 if ($node != null) {
                     $node->setNodes($this->request->getPost($post_field));
+                    if (is_array($overlay)) {
+                        $node->setNodes($overlay);
+                    }
                     $result = $this->validate($node, $post_field);
                     if (empty($result['validations'])) {
                         // save config if validated correctly
-                        $mdl->serializeToConfig();
-                        Config::getInstance()->save();
+                        $this->save();
                         $result = array("result" => "saved");
                     } else {
                         $result["result"] = "failed";
@@ -405,8 +419,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     }
                     // if item has toggled, serialize to config and save
                     if ($result['changed']) {
-                        $mdl->serializeToConfig();
-                        Config::getInstance()->save();
+                        $this->save();
                     }
                 }
             }

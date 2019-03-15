@@ -14,7 +14,7 @@ ngctl shutdown ${IF}:
 if [ "${AF}" = "inet" ]; then
 	if [ -f /tmp/${IF}up ] && [ -f /conf/${IF}.log ]; then
 		seconds=$((`date -j +%s` - `/usr/bin/stat -f %m /tmp/${IF}up`))
-		/usr/local/sbin/ppp-log-uptime.sh $seconds ${IF} &
+		/usr/local/opnsense/scripts/interfaces/ppp-log-uptime.sh $seconds ${IF} &
 	fi
 
 	if [ -s "/tmp/${IF}_defaultgw" ]; then

@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2013 Dagorlad
-    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2013 Dagorlad
+ * Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("rrd.inc");
@@ -340,7 +340,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Statistics logging') ?></td>
                     <td>
                       <div>
-                        <input class="btn btn-default btn-xs" id="showstatisticsbox" type="button" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
+                        <input class="btn btn-default btn-xs" id="showstatisticsbox" type="button" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show statistics logging options");?>
                       </div>
                       <div id="showstatistics" style="display:none">
                       <?= gettext("These options will create persistent daily log files in /var/log/ntp.") ?>
@@ -360,7 +360,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Access restrictions') ?></td>
                     <td>
                       <div>
-                      <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show access restriction options");?>
+                      <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show access restriction options");?>
                       </div>
                       <div id="showrestrict" style="display:none">
                       <?=gettext("these options control access to NTP from the WAN."); ?>
@@ -389,7 +389,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Leap seconds') ?></td>
                     <td>
                       <div>
-                        <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Leap second configuration");?>
+                        <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Leap second configuration");?>
                       </div>
                       <div id="showleapsec" style="display:none">
                         <?=gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
@@ -406,7 +406,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                     <td>
                       <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                        <input type="button" class="btn btn-default btn-xs" id="show_advanced_ntpd" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                        <input type="button" class="btn btn-default btn-xs" id="show_advanced_ntpd" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show advanced option");?>
                       </div>
                       <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
                         <strong><?=gettext("Advanced");?><br /></strong>

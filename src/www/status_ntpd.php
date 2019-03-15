@@ -250,14 +250,14 @@ include("head.inc");
                 <tr>
 <?php if (isset($gps_lat)): ?>
                   <td><?= sprintf("%.5f", $gps_lat); ?> (<?= sprintf("%d", $gps_lat_deg); ?>&deg; <?= sprintf("%.5f", $gps_lat_min*60); ?><?= $gps_lat_dir ?>)</td>
-<? else: ?>
+<?php else: ?>
                   <td><?= gettext('N/A') ?></td>
-<? endif ?>
+<?php endif ?>
 <?php if (isset($gps_lon)): ?>
                   <td><?= sprintf("%.5f", $gps_lon); ?> (<?= sprintf("%d", $gps_lon_deg); ?>&deg; <?= sprintf("%.5f", $gps_lon_min*60); ?><?= $gps_lon_dir ?>)</td>
-<? else: ?>
+<?php else: ?>
                   <td><?= gettext('N/A') ?></td>
-<? endif ?>
+<?php endif ?>
                   <?php if (isset($gps_alt)) { echo '<td>' . $gps_alt . ' ' . $gps_alt_unit . '</td>';}?>
                   <td>
 <?php
@@ -271,7 +271,7 @@ include("head.inc");
                 <tr>
                   <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
                 </tr>
-<? endif ?>
+<?php endif ?>
               </tbody>
             </table>
 <?php

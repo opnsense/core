@@ -80,7 +80,7 @@ class Plugin
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
-                $realif = "{$intf['if']}_stf";
+                $realif = "{$key}_stf";
                 // create new interface
                 $this->interfaceMapping[$realif] = array();
                 $this->interfaceMapping[$realif]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
@@ -242,6 +242,11 @@ class Plugin
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
         }
+        if (empty($conf['label']) && !empty($conf['#ref'])) {
+            // generated rule, has an anchor but no label if it's trackable
+            $rule_hash = Util::calcRuleHash($conf);
+            $conf['label'] = $rule_hash;
+        }
         $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = array();
@@ -325,6 +330,18 @@ class Plugin
             }
         }
         return $output;
+    }
+
+    /**
+     * iterate through registered rules
+     * @return Iterator
+     */
+    public function iterateFilterRules() {
+        foreach ($this->filterRules as $prio => $ruleset) {
+            foreach ($ruleset as $rule) {
+                 yield $rule;
+            }
+        }
     }
 
     /**

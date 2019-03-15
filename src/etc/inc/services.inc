@@ -524,7 +524,7 @@ EOD;
              *    yep, failover peer is defined.
              *    does it match up to a defined vip?
              */
-            $skew = 110;
+            $failover_primary = false;
             if (!empty($config['virtualip']['vip'])) {
                 foreach ($config['virtualip']['vip'] as $vipent) {
                     if ($vipent['interface'] == $dhcpif) {
@@ -532,9 +532,9 @@ EOD;
                         if (ip_in_subnet($dhcpifconf['failover_peerip'], "{$carp_nw}/{$vipent['subnet_bits']}")) {
                             /* this is the interface! */
                             if (is_numeric($vipent['advskew']) && (intval($vipent['advskew']) < 20)) {
-                                $skew = 0;
-                                break;
+                                $failover_primary = true;
                             }
+                            break;
                         }
                     }
                 }
@@ -542,16 +542,16 @@ EOD;
                 log_error('Warning! DHCP Failover setup and no CARP virtual IPs defined!');
             }
             $dhcpdconf_pri = "";
-            if ($skew > 10) {
-                $type = "secondary";
-                $my_port = "520";
-                $peer_port = "519";
-            } else {
+            if ($failover_primary) {
                 $my_port = "519";
                 $peer_port = "520";
                 $type = "primary";
                 $dhcpdconf_pri  = "split 128;\n";
                 $dhcpdconf_pri .= "  mclt 600;\n";
+            } else {
+                $type = "secondary";
+                $my_port = "520";
+                $peer_port = "519";
             }
 
             if (is_ipaddrv4($intip)) {
@@ -776,6 +776,11 @@ EOPP;
             // tftp-server-name
             if (!empty($poolconf['tftp']) && (empty($dhcpifconf['tftp']) || $poolconf['tftp'] != $dhcpifconf['tftp'])) {
                 $dhcpdconf .= "    option tftp-server-name \"{$poolconf['tftp']}\";\n";
+
+                // bootfile-name
+                if (!empty($poolconf['bootfilename']) && (empty($dhcpifconf['bootfilename']) || $poolconf['bootfilename'] != $dhcpifconf['bootfilename'])) {
+                    $dhcpdconf .= "    option bootfile-name \"{$poolconf['bootfilename']}\";\n";
+                }
             }
 
             // ldap-server
@@ -844,6 +849,11 @@ EOD;
         // tftp-server-name
         if (!empty($dhcpifconf['tftp'])) {
             $dhcpdconf .= "  option tftp-server-name \"{$dhcpifconf['tftp']}\";\n";
+
+            // bootfile-name
+            if (!empty($dhcpifconf['bootfilename'])) {
+                $dhcpdconf .= "  option bootfile-name \"{$dhcpifconf['bootfilename']}\";\n";
+            }
         }
 
         // add pac url if it applies
@@ -981,6 +991,11 @@ EOD;
                 // tftp-server-name
                 if (!empty($sm['tftp']) && ($sm['tftp'] != $dhcpifconf['tftp'])) {
                     $dhcpdconf .= "  option tftp-server-name \"{$sm['tftp']}\";\n";
+
+                    // bootfile-name
+                    if (!empty($sm['bootfilename']) && ($sm['bootfilename'] != $dhcpifconf['bootfilename'])) {
+                        $dhcpdconf .= "  option bootfile-name \"{$sm['bootfilename']}\";\n";
+                    }
                 }
 
                 $dhcpdconf .= "}\n";

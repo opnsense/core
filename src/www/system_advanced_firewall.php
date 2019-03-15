@@ -235,7 +235,28 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 ?>
+<script>
+    $( document ).ready(function() {
+        if (window.location.hash != "") {
+            let option_id = window.location.hash.substr(1);
+            let option = $("[name='" + option_id +"']");
+            let arrow = $("<i/>").addClass("fa fa-arrow-right pull-right");
+            let container = $("<div/>");
+            let title_td = option.closest('tr').find('td:eq(0)');
+            container.css('width', '0%');
+            container.css('display', 'inline-block');
+            container.css('white-space', 'nowrap');
 
+            title_td.append(container);
+            let animate_width = title_td.width() - container.position().left+ title_td.find('i:eq(0)').position().left;
+            $('html, body').animate({scrollTop: option.position().top}, 500,  function() {
+                container.append(arrow);
+                container.animate({width: animate_width}, 800);
+            });
+
+        }
+    });
+</script>
 <body>
 <?php include("fbegin.inc"); ?>
   <!-- row -->
@@ -424,7 +445,7 @@ include("head.inc");
                   <div class="hidden" data-for="help_pf_disable_force_gw">
                     <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
                                 'will normally use the specified gateway for that interface. ' .
-                                'When this option is set, the default routing rules apply (automatic rules will be disabled).') ?>
+                                'When this option is set the route will be selected by the system routing table instead.') ?>
                   </div>
                 </td>
               </tr>

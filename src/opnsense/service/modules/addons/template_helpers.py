@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,21 @@ class Helpers(object):
         :return: boolean
         """
         if self.getNodeByTag(tag):
+            return True
+        else:
+            return False
+
+    def empty(self, tag):
+        """ check if either the node does not exist or is empty
+        :param tag: tag in dot notation (section.item)
+        :return: boolean
+        """
+        node = self.getNodeByTag(tag)
+        if node is None:
+            return True
+        elif len(node) == 0:
+            return True
+        elif hasattr(node, 'strip') and node.strip() in ('', '0'):
             return True
         else:
             return False

@@ -48,7 +48,7 @@ class ViscosityVisz extends PlainOpenVPN
      */
     public function supportedOptions()
     {
-        return array("plain_config", "p12_password", "random_local_port");
+        return array("plain_config", "p12_password", "random_local_port", "auth_nocache");
     }
 
     /**

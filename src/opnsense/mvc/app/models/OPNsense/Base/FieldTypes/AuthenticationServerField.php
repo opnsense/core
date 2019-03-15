@@ -101,6 +101,7 @@ class AuthenticationServerField extends BaseField
                     self::$internalOptionList[$this->internalCacheKey][$key] = $key;
                 }
             }
+            natcasesort(self::$internalOptionList[$this->internalCacheKey]);
         }
     }
 

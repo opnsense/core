@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018 David Harrigan
+ * Copyright (C) 2019 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,14 +26,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Backup;
+require_once("guiconfig.inc");
+require_once("filter.inc");
+require_once("system.inc");
 
-use OPNsense\Base\BaseModel;
+$a_filter = &config_read_array('filter', 'rule');
 
-/**
- * Class SCP Backup Settings
- * @package Backup
- */
-class ScpSettings extends BaseModel
-{
+$fw = filter_core_get_initialized_plugin_system();
+filter_core_bootstrap($fw);
+plugins_firewall($fw);
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (!empty($_GET['rid'])) {
+        $rid = $_GET['rid'];
+        // search auto-generated rules
+        foreach ($fw->iterateFilterRules() as $rule) {
+            if (!empty($rule->getRef()) && $rid == $rule->getLabel()) {
+                header(url_safe('Location: /%s#%s', explode("#", $rule->getRef())));
+                exit;
+            }
+        }
+        // search user defined rules
+        foreach ($a_filter as $idx => $rule) {
+            $rule_hash = OPNsense\Firewall\Util::calcRuleHash($rule);
+            if ($rule_hash === $rid) {
+                $intf = !empty($rule['floating']) ? 'FloatingRules' : $rule['interface'];
+                header(url_safe('Location: /firewall_rules_edit.php?if=%s&id=%s', array($intf, $idx)));
+                exit;
+            }
+        }
+        // not found, XXX: figure out where to redirect to
+    }
 }

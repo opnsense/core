@@ -46,6 +46,8 @@ function gateway_api()
                     $gatewayItem['status_translated'] = gettext('Online');
                     break;
                 case 'force_down':
+                    $gatewayItem['status_translated'] = gettext('Offline (forced)');
+                    break;
                 case 'down':
                     $gatewayItem['status_translated'] = gettext('Offline');
                     break;

@@ -695,7 +695,7 @@ endif; ?>
                   <td>
                     <ul class="list-inline">
                     <li><input name="ldapauthcontainers" type="text" id="ldapauthcontainers" size="40" value="<?=$pconfig['ldap_authcn'];?>"/></li>
-                    <li><input type="button" id="act_select" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
+                    <li><input type="button" id="act_select" class="btn btn-default" value="<?= html_safe(gettext('Select')) ?>" /></li>
                     </ul>
                     <br/>
                     <div class="hidden" data-for="help_for_ldapauthcontainers">

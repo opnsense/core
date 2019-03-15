@@ -101,11 +101,12 @@ class AliasUtilController extends ApiControllerBase
         $offset = ($currentPage - 1) * $itemsPerPage;
 
         $backend = new Backend();
-        $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")));
+        $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")), true);
+        $entry_keys = array_keys($entries);
 
         if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
             $searchPhrase = $this->request->getPost('searchPhrase');
-            $entries = array_filter($entries, function ($value) use ($searchPhrase) {
+            $entry_keys = array_filter($entry_keys, function ($value) use ($searchPhrase) {
                 return strpos($value, $searchPhrase) !== false;
             });
         }
@@ -115,17 +116,21 @@ class AliasUtilController extends ApiControllerBase
             array_key_exists('ip', $this->request->getPost('sort')) &&
             $this->request->getPost('sort')['ip'] === 'desc'
         ) {
-            rsort($entries);
+            rsort($entry_keys);
         } else {
-            sort($entries);
+            sort($entry_keys);
         }
 
-        $formatted = array_map(function ($value) {
-            return ['ip' => $value];
-        }, array_slice($entries, $offset, $itemsPerPage));
+        $formatted = array_map(function ($value) use (&$entries) {
+            $item = ['ip' => $value];
+            foreach ($entries[$value] as $ekey => $evalue) {
+                $item[$ekey] = $evalue;
+            }
+            return $item;
+        }, array_slice($entry_keys, $offset, $itemsPerPage));
 
         return [
-            'total' => count($entries),
+            'total' => count($entry_keys),
             'rowCount' => $itemsPerPage,
             'current' => $currentPage,
             'rows' => $formatted,
@@ -168,6 +173,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function deleteAction($alias)
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             $address = $this->request->getPost("address");
             $cnfAlias = $this->getAlias($alias);
@@ -175,7 +181,7 @@ class AliasUtilController extends ApiControllerBase
                 // update local administration, remove address when found for static types
                 // XXX: addresses from "pfctl -t xxx -T show" don't always match our input, we probably need a
                 //      better address matching at some point in time.
-                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+                $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false) {
                     $address_mask = $address . "/" . (strpos($address, ":") ? '128' : '32');
                 } else {
@@ -198,7 +204,6 @@ class AliasUtilController extends ApiControllerBase
                 }
             }
 
-            $this->sessionClose();
             $backend = new Backend();
             $backend->configdpRun("filter delete table", array($alias, $address));
             return array("status" => "done");
@@ -214,6 +219,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function addAction($alias)
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             $address = $this->request->getPost("address");
             if (preg_match("/[^0-9a-f\:\.\/_]/", $address)) {
@@ -222,7 +228,7 @@ class AliasUtilController extends ApiControllerBase
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, add address when not found for static types
-                $items = !empty($cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+                $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false && $cnfAlias->type == 'network') {
                     // add mask
                     $address .= "/" . (strpos($address, ":") ? '128' : '32');
@@ -236,11 +242,14 @@ class AliasUtilController extends ApiControllerBase
                     (new Backend())->configdRun('template reload OPNsense/Filter');
                 }
             }
-
-            $this->sessionClose();
-            $backend = new Backend();
-            $backend->configdpRun("filter add table", array($alias, $address));
-            return array("status" => "done");
+            if ($cnfAlias !== null) {
+                // only allow additions to known aliases
+                $backend = new Backend();
+                $backend->configdpRun("filter add table", array($alias, $address));
+                return array("status" => "done");
+            } else {
+                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
+            }
         } else {
             return array("status" => "failed");
         }
@@ -255,6 +264,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function find_referencesAction()
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost('ip')) {
             $ip = $this->request->getPost('ip');
             if (preg_match("/[^0-9a-f\:\.\/_]/", $ip)) {

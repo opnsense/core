@@ -42,27 +42,22 @@ require_once("XMLRPC_Client.inc") ;
  * fetch carp vips from config with modified advskew for the backup host to use
  * @return array
  */
-function get_vip_config_section()
+function get_vip_config_section(): array
 {
     global $config;
 
     if (!isset($config['virtualip']['vip'])) {
-        return;
+        return [];
     }
     $temp = array();
     $temp['vip'] = array();
     foreach($config['virtualip']['vip'] as $section) {
-        if ($section['mode'] != "carp") {
-            continue;
-        }
-        if (isset($section['advskew']) && $section['advskew'] != '') {
-            $advskew = intval($section['advskew'])+100;
-            if ($advskew > 254) {
-                $advskew = 254;
+        if (!empty($section['vhid'])) {
+            if (isset($section['advskew']) && $section['advskew'] !== '') {
+                $section['advskew'] = min(intval($section['advskew']) + 100, 254);
             }
-            $section['advskew'] = $advskew;
+            $temp['vip'][] = $section;
         }
-        $temp['vip'][] = $section;
     }
     return $temp;
 }
@@ -174,7 +169,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     foreach ($sections as $section) {
         switch ($section) {
             case 'virtualip':
-                // only carp type VIP's may be transfered to the backup host
+                // Sync only eligible VIPs to the backup host
                 $transport_data[$section] = get_vip_config_section();
                 break;
             default:

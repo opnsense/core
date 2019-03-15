@@ -33,15 +33,6 @@
 
 require_once('filter.lib.inc');
 
-function fix_rule_label($descr)
-{
-    $descr = str_replace('"', '', $descr);
-    if (strlen($descr) > 63) {
-        return substr($descr, 0, 60) . "...";
-    } else {
-        return $descr;
-    }
-}
 
 function is_bogonsv6_used()
 {
@@ -132,9 +123,6 @@ function filter_configure()
      */
     if (!file_exists("/var/run/booting")) {
         configd_run('filter reload');
-        if (!empty($config['hasync']['synchronizetoip'])) {
-            configd_run('filter sync restart');
-        }
     }
 }
 
@@ -189,7 +177,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         foreach ($config['filter']['rule'] as $rule) {
             // calculate a hash for this area so we can track this rule, we should replace this
             // with uuid's on the rules like the new style models do eventually.
-            $rule['md5'] = md5(json_encode($rule));
+            $rule_hash = OPNsense\Firewall\Util::calcRuleHash($rule);
+            $rule['label'] = $rule_hash;
             $sched = '';
             $descr = '';
 
@@ -200,7 +189,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
                 $descr = ": {$rule['descr']}";
             }
 
-            $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}") ;
+            $rule['descr'] = "{$sched}{$descr}" ;
             if (isset($rule['floating'])) {
                 $prio = 200000;
             } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
@@ -218,7 +207,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
                             }
                             /* disable rule, suffix label to mark end of schedule */
                             $rule['disabled'] = true;
-                            $rule['label'] = "[FIN]".$rule['label'];
+                            $rule['descr'] = "[FIN]".$rule['descr'];
                         }
                         break;
                     }
@@ -629,7 +618,8 @@ function filter_generate_aliases()
                 $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                 break;
             default:
-                $aliases .= "table <{$aliased['name']}> persist\n";
+                $tblopt = (!empty($aliased['counters']) ? 'counters' : '') . " persist ";
+                $aliases .= "table <{$aliased['name']}> {$tblopt} \n";
                 $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                 break;
         }

@@ -1,6 +1,6 @@
 {# Macro import #}
 {% from 'OPNsense/Macros/interface.macro' import physical_interface %}
-{% if helpers.exists('OPNsense.IDS.general') and OPNsense.IDS.general.enabled|default("0") == "1" %}
+{% if not helpers.empty('OPNsense.IDS.general.enabled') %}
 suricata_var_script="/usr/local/opnsense/scripts/suricata/setup.sh"
 suricata_enable="YES"
 {% if OPNsense.IDS.general.ips|default("0") == "1" %}

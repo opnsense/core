@@ -1,8 +1,4 @@
 #!/bin/sh
 
-# services need their configuration
-echo -n "Configuring additional services: "
-configctl template reload \*
-
 # start up the configured services
 /usr/local/etc/rc.freebsd start

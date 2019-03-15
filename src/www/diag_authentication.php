@@ -50,9 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($authcfg['type'] == 'local') {
             // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
             $authName = 'Local Database';
-        } elseif ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-            // temporary fix, ldap handler doesn't do this init yet.
-            ldap_setup_caenv($authcfg);
         }
 
         $authFactory = new OPNsense\Auth\AuthenticationFactory;
@@ -120,7 +117,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td style="width:22%">&nbsp;</td>
-                  <td style="width:78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
+                  <td style="width:78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Test')) ?>" /></td>
                 </tr>
               </tbody>
             </table>

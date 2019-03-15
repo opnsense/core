@@ -287,6 +287,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = gettext("The time period needs to be a numeric value.");
         } elseif ($pconfig['time_period'] < 1) {
             $input_errors[] = gettext("The time period needs to be positive.");
+        } elseif ($pconfig['time_period'] < (2.1*$pconfig['interval'])) {
+            $input_errors[] = gettext("The time period needs at least 2.1 times that of the probe interval.");
         }
     }
 
@@ -621,7 +623,7 @@ $( document ).ready(function() {
                 <tr class="advanced visible">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
-                    <input type="button" id="btn_advanced" value="Advanced" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
+                    <input type="button" id="btn_advanced" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
@@ -735,9 +737,9 @@ $( document ).ready(function() {
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
-                           onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateways.php';?>'" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>" />
+                    <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Cancel')) ?>"
+                           onclick="window.location.href = '/system_gateways.php';" />
 <?php
                     if (isset($id)) :?>
                     <input name="id" type="hidden" value="<?=$id;?>" />

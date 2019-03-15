@@ -161,6 +161,11 @@
                     $("#alias\\.proto").selectpicker('hide');
                     break;
             }
+            if ($(this).val() === 'port') {
+                $("#row_alias\\.counters").hide();
+            } else {
+                $("#row_alias\\.counters").show();
+            }
         });
 
         /**
@@ -297,13 +302,13 @@
                                     <td>
                                         <div class="control-label" id="control_label_alias.enabled">
                                             <a id="help_for_alias.enabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-                                            <b>enabled</b>
+                                            <b>{{lang._('enabled')}}</b>
                                         </div>
                                     </td>
                                     <td>
                                         <input type="checkbox" id="alias.enabled">
                                         <div class="hidden" data-for="help_for_alias.enabled">
-                                            <small>enable this alias</small>
+                                            <small>{{lang._('enable this alias')}}</small>
                                         </div>
                                     </td>
                                     <td>
@@ -394,8 +399,8 @@
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
                                             <thead>
                                             <tr>
-                                                <th>region</th>
-                                                <th>countries</th>
+                                                <th>{{lang._('region')}}</th>
+                                                <th>{{lang._('countries')}}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -407,6 +412,23 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.counters">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.counters">
+                                            <a id="help_for_alias.counters" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Statistics')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="alias.counters">
+                                        <div class="hidden" data-for="help_for_alias.counters">
+                                            <small>{{lang._('Maintain a set of counters for each table entry')}}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.enabled"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.description">
@@ -432,8 +454,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Close') }}</button>
-                <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save changes') }}
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Cancel') }}</button>
+                <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save') }}
                     <i id="btn_formDialogAlias_save_progress" class=""></i></button>
             </div>
         </div>

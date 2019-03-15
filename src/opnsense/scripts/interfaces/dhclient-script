@@ -247,12 +247,14 @@ add_new_routes() {
 
 add_new_resolv_conf() {
 	$LOGGER "Creating resolv.conf"
+
 	if [ -f "/var/etc/nameserver_$interface" ]; then
 		# Remove old entries
 		for nameserver in `cat /var/etc/nameserver_$interface`; do
 			route delete $nameserver >/dev/null 2>&1
 		done
 	fi
+
 	if [ -n "$new_domain_name_servers" ]; then
 		rm -f /var/etc/nameserver_$interface
 		ALLOWOVERRIDE=$(grep -c dnsallowoverride /conf/config.xml)
@@ -347,7 +349,7 @@ BOUND|RENEW|REBIND|REBOOT)
 		delete_old_states
 	fi
 	if [ -n "$old_ip_address" ]; then
-		if [ "$old_ip_address" != "$alias_ip_address" ]; then
+		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
 			changes="yes"
 		fi
@@ -365,13 +367,13 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_routes
 		changes="yes"
 	fi
-	if [ "$new_ip_address" != "$alias_ip_address" ]; then
+	if [ -n "$alias_ip_address" -a "$new_ip_address" != "$alias_ip_address" ]; then
 		add_new_alias
 		changes="yes"
 	fi
-	if is_default_interface; then
+	#if is_default_interface; then
 		add_new_resolv_conf
-	fi
+	#fi
 	if [ "$changes" = "yes" ] ; then
 		/usr/local/etc/rc.newwanip $interface
 	fi

@@ -39,7 +39,6 @@ function filter_tos_values()
         'lowdelay' => gettext('lowdelay'),
         'critical' => gettext('critical'),
         'inetcontrol' => gettext('inetcontrol'),
-        'lowdelay' => gettext('lowdelay'),
         'netcontrol' => gettext('netcontrol'),
         'throughput' => gettext('throughput'),
         'reliability' => gettext('reliability'),
@@ -423,7 +422,7 @@ include("head.inc");
                     <td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source port"); ?></td>
                     <td>
                       <div>
-                          <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="show_srcport_adv" />
+                        <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Advanced')) ?>" id="show_srcport_adv" />
                       </div>
                       <div id="show_srcport" style="display:none;">
                       <table class="table table-condensed">

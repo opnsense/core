@@ -351,7 +351,12 @@ class Config extends Singleton
         }
 
         if (!is_resource($this->config_file_handle)) {
-            $this->config_file_handle = fopen($this->config_file, "r+");
+            if (is_writable($this->config_file)) {
+                $this->config_file_handle = fopen($this->config_file, "r+");
+            } else {
+                // open in read-only mode
+                $this->config_file_handle = fopen($this->config_file, "r");
+            }
         }
 
         $this->simplexml = $this->loadFromStream($this->config_file_handle);

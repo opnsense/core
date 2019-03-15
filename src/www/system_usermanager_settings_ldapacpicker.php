@@ -33,15 +33,8 @@ require_once("auth.inc");
 $result = array();
 
 if (isset($_POST['basedn']) && isset($_POST['host'])) {
-    if (isset($_POST['cert'])) {
-        $authcfg = array();
-        $authcfg['ldap_caref'] = $_POST['cert'];
-        $authcfg['ldap_urltype'] = 'SSL';
-        ldap_setup_caenv($authcfg);
-    }
-
     $ldap_authcn = isset($_POST['authcn']) ? explode(";", $_POST['authcn']) : array();
-    if (isset($_POST['urltype']) && strstr($_POST['urltype'], "Standard")) {
+    if (isset($_POST['urltype']) && (strstr($_POST['urltype'], "Standard") || strstr($_POST['urltype'], "StartTLS"))) {
         $ldap_full_url = "ldap://";
     } else {
         $ldap_full_url = "ldaps://";
@@ -52,6 +45,9 @@ if (isset($_POST['basedn']) && isset($_POST['host'])) {
     }
 
     $ldap_auth = new OPNsense\Auth\LDAP($_POST['basedn'], isset($_POST['proto']) ? $_POST['proto'] : 3);
+    if (isset($_POST['cert'])) {
+        $ldap_auth->setupCaEnv($_POST['cert']);
+    }
     $ldap_is_connected = $ldap_auth->connect($ldap_full_url
                                             , !empty($_POST['binddn']) ? $_POST['binddn'] : null
     , !empty($_POST['bindpw']) ? $_POST['bindpw'] : null

@@ -79,6 +79,7 @@ class AuthGroupField extends BaseField
                 foreach ($cnf->system->group as $group) {
                     self::$internalOptionList[(string)$group->gid] = (string)$group->name;
                 }
+                natcasesort(self::$internalOptionList);
             }
         }
     }
@@ -104,7 +105,6 @@ class AuthGroupField extends BaseField
             }
             $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
-
         return $result;
     }
 

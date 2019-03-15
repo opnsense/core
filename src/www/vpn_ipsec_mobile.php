@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($_POST['apply'])) {
         // apply changes
         ipsec_configure_do();
-        $savemsg = get_std_save_message();
+        $savemsg = get_std_save_message(true);
         clear_subsystem_dirty('ipsec');
         header(url_safe('Location: /vpn_ipsec_mobile.php?savemsg=%s', array($savemsg)));
         exit;
@@ -377,7 +377,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         $authmodes = explode(",", $pconfig['user_source']);
                         $auth_servers = auth_get_authserver_list();
 foreach ($auth_servers as $auth_key => $auth_server) : ?>
-  <option value="<?=htmlspecialchars($auth_key)?>" <?=in_array($auth_key, $authmodes) ? 'selected="selected"' : ''?>><?=$auth_server['name']?></option>
+  <option value="<?=htmlspecialchars($auth_key)?>" <?=in_array($auth_key, $authmodes) ? 'selected="selected"' : ''?>><?=htmlspecialchars($auth_server['name'])?></option>
 <?php                                           endforeach; ?>
                       </select>
                     </td>

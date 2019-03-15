@@ -1,8 +1,8 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 # -*- coding: utf-8 -*-
 
 """
-    Copyright (c) 2014-2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2014-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,10 +45,7 @@ from modules.daemonize import Daemonize
 import cProfile
 
 # find program path
-if len(__file__.split('/')[:-1]) > 0:
-    program_path = '/'.join(__file__.split('/')[:-1])
-else:
-    program_path = os.getcwd()
+program_path = os.path.dirname(os.path.abspath(__file__))
 
 # set working directory to program_path
 sys.path.append(program_path)

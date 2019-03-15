@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
     Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
@@ -40,7 +40,7 @@ def unbound_control_reader(action):
                         stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         for line in output_stream:
-            yield line
+            yield line.decode()
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -95,7 +95,10 @@ elif args.stats:
                     ptr[key] = value.strip()
                 elif key not in ptr:
                     ptr[key] = dict()
+                elif type(ptr[key]) != dict:
+                    ptr[key] = {'__value__': ptr[key]}
                 ptr = ptr[key]
+
 elif args.list_local_zones:
     output = list()
     for line in unbound_control_reader('list_local_zones'):
