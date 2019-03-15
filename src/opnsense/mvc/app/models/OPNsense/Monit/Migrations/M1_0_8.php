@@ -35,7 +35,7 @@ class M1_0_8 extends BaseModelMigration
 {
     public function post($model)
     {
-        foreach ($model->getNodeByReference('test')->__items as $test) {
+        foreach ($model->test->iterateItems() as $test) {
             $test->type = $model->getTestType($test->condition->getNodeData());
         }
         // validation will fail because we want to change the type of tests linked to services
