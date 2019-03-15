@@ -285,7 +285,7 @@
                 <id>proxy.forward.sslurlonly</id>
                 <label>Log SNI information only</label>
                 <type>checkbox</type>
-                <help>Do not decode and/or filter SSL content, only log requested domains and IP addresses. Some old servers may not provide SNI, so their addresses will not be indicated. This option requires "Enable SSL inspection" checked</help>
+                <help>Do not decode and/or filter SSL content, only log requested domains and IP addresses. Some old servers may not provide SNI, so their addresses will not be indicated.</help>
             </field>
             <field>
                 <id>proxy.forward.sslbumpport</id>
