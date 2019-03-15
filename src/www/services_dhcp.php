@@ -613,6 +613,8 @@ include("head.inc");
               }]
       });
     });
+
+    window_highlight_table_option();
   });
 </script>
 

@@ -126,6 +126,7 @@ include("head.inc");
  <script>
     $( document ).ready(function() {
         formatTokenizersUI();
+        window_highlight_table_option();
     });
 </script>
 
