@@ -1926,6 +1926,8 @@ function is_radvd_enabled()
 
 function service_control_start($name, $extras)
 {
+    $filter = array();
+
     if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
@@ -1997,6 +1999,8 @@ function service_control_stop($name, $extras)
 
 function service_control_restart($name, $extras)
 {
+    $filter = array();
+
     if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
