@@ -77,6 +77,21 @@
 
         {% if (selected_uuid|default("") != "") %}
             openDialog('{{selected_uuid}}');
+        {% else %}
+            // When not redirecting to caller and settings aren't persistent, signal the user after save
+            $("#DialogEdit").on("show.bs.modal", function () {
+                // wait some time before linking the save button, missing handle
+                setTimeout(function(){
+                    $("#btn_DialogEdit_save").click(function(){
+                        $("#cronChangeMessage").slideDown(1000, function(){
+                            setTimeout(function(){
+                                $("#cronChangeMessage").slideUp(2000);
+                            }, 2000);
+                        });
+                    });
+                }, 500);
+            });
+        //
         {% endif %}
 
         /*************************************************************************************************************
@@ -145,6 +160,9 @@
         </table>
     </div>
     <div class="col-md-12">
+        <div id="cronChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
         <hr/>
         <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
 	<br/><br/>
