@@ -336,7 +336,8 @@ class Plugin
      * iterate through registered rules
      * @return Iterator
      */
-    public function iterateFilterRules() {
+    public function iterateFilterRules()
+    {
         foreach ($this->filterRules as $prio => $ruleset) {
             foreach ($ruleset as $rule) {
                  yield $rule;

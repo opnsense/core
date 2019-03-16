@@ -1472,11 +1472,11 @@ EOD;
                     for ($idx = 0; $idx < count($leftsubnet_spec); ++$idx) {
                         if (count($leftsubnet_spec) == 1) {
                             $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 );
+                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
                         } else {
                             // suffix connection with sequence number
                             $tmpconf = str_replace('<<connectionId>>', sprintf('%s-%03d', $ph1ent['ikeid'], $idx), $connEntry);
-                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx );
+                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
                         }
                         $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n";
                         $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
@@ -1500,7 +1500,7 @@ EOD;
                             // name from the first configured tunnel ($idx == 0):
                             $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
                             $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
-                            $tmpconf[] = sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx );
+                            $tmpconf[] = sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
                             if (!empty($rightsubnet_spec[$idx])) {
                                 $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
                             }
@@ -1519,7 +1519,7 @@ EOD;
                         }
                     } else {
                         $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                        $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 );
+                        $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
                         if (!empty($rightsubnet_spec)) {
                             $tmpconf .= "\trightsubnet = " . join(',', array_unique($rightsubnet_spec)) . "\n";
                         }
@@ -1682,12 +1682,15 @@ function ipsec_configure_vti()
                             }
                         }
                         if (!$isfound) {
-                          log_error(sprintf(
-                              "remove tunnel %s %s from interface %s", $addr['ipaddr'], $addr['endpoint'], $intf
-                          ));
-                          mwexecf('/sbin/ifconfig %s %s %s delete', array(
+                            log_error(sprintf(
+                                "remove tunnel %s %s from interface %s",
+                                $addr['ipaddr'],
+                                $addr['endpoint'],
+                                $intf
+                            ));
+                            mwexecf('/sbin/ifconfig %s %s %s delete', array(
                             $intf, $proto == 'ipv6' ? 'inet6' : 'inet',  $addr['ipaddr'], $addr['endpoint']
-                          ));
+                            ));
                         }
                     }
                 }
@@ -1701,8 +1704,9 @@ function ipsec_configure_vti()
         $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
         if (empty($current_interfaces[$intf])) {
             if (mwexecf('/sbin/ifconfig %s create reqid %s', array($intf, $intf_details['reqid'])) == 0) {
-                mwexecf('/sbin/ifconfig %s %s tunnel %s %s up',
-                        array($intf, $inet, $intf_details['local'], $intf_details['remote'])
+                mwexecf(
+                    '/sbin/ifconfig %s %s tunnel %s %s up',
+                    array($intf, $inet, $intf_details['local'], $intf_details['remote'])
                 );
             }
         }
