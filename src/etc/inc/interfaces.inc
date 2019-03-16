@@ -4580,10 +4580,6 @@ function interfaces_addresses($interfaces)
     }
 
     foreach ($interfaces as $interface) {
-        if ($interface == 'lo0') {
-            $realifs[] = 'lo0';
-        }
-
         if (isset($config['interfaces'][$interface])) {
             foreach (array('all', 'inet6') as $family) {
                 $realif = get_real_interface($interface, $family);
@@ -4591,6 +4587,9 @@ function interfaces_addresses($interfaces)
                     $realifs[] = $realif;
                 }
             }
+        } else {
+            /* take interfaces as is */
+            $realifs[] = $interface;
         }
     }
 
@@ -4599,6 +4598,7 @@ function interfaces_addresses($interfaces)
     }
 
     $intf_details = legacy_interfaces_details();
+    $realifs = array_unique($realifs);
 
     foreach ($realifs as $realif) {
         foreach (array('ipv4', 'ipv6') as $proto) {
