@@ -1284,7 +1284,7 @@ $( document ).ready(function() {
 <?php
             $i = 0;
             foreach ($a_cert as $cert) :
-                $name = htmlspecialchars($cert['descr']);
+                $name = $cert['descr'];
                 $purpose = null;
 
                 if (!empty($cert['crt'])) {
