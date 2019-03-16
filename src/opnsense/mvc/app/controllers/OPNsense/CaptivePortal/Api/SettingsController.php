@@ -44,10 +44,10 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid item unique id
      * @return array
      */
-     public function getZoneAction($uuid = null)
-     {
-         return $this->getBase("zone", "zones.zone", $uuid);
-     }
+    public function getZoneAction($uuid = null)
+    {
+        return $this->getBase("zone", "zones.zone", $uuid);
+    }
 
     /**
      * update zone with given properties

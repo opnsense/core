@@ -187,7 +187,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         } else {
             // XXX remove user-config-readonly in some future release
             throw new UserException(
-              sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName())
+                sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName())
             );
         }
     }
@@ -288,7 +288,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function addBase($post_field, $path, $overlay=null)
+    public function addBase($post_field, $path, $overlay = null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
@@ -359,7 +359,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function setBase($post_field, $path, $uuid, $overlay=null)
+    public function setBase($post_field, $path, $uuid, $overlay = null)
     {
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
             $mdl = $this->getModel();

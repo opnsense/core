@@ -404,7 +404,7 @@ class LDAP extends Base implements IAuthConnector
                             } else {
                                 $user['email'] = '';
                             }
-                            $result[] = $user ;
+                            $result[] = $user;
                             break;
                         }
                     }
