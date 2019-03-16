@@ -4588,6 +4588,7 @@ function interfaces_addresses($interfaces)
     }
 
     $intf_details = legacy_interfaces_details();
+    $realifs = array_unique($realifs);
 
     foreach ($realifs as $realif) {
         foreach (array('ipv4', 'ipv6') as $proto) {
