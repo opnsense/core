@@ -30,8 +30,9 @@
 namespace OPNsense\Firewall\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\Core\Backend;
 use \OPNsense\Base\UserException;
+use \OPNsense\Core\Backend;
+use \OPNsense\Core\Config;
 
 /**
  * @package OPNsense\Firewall
@@ -136,6 +137,7 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function delItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
         if ($node != null) {
             $uses = $this->getModel()->whereUsed((string)$node->name);
