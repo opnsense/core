@@ -104,7 +104,7 @@ if [ "$pkg_running" == "" ]; then
           connection="ok"
           timer=0
         # XXX two space typo here in pkg:
-        elif grep -q 'At least one of the  certificates has been revoked' $tmp_pkg_update_file; then
+        elif grep -q 'At least one of the [ ]*certificates has been revoked' $tmp_pkg_update_file; then
           # fingerprint mismatch
           repository="revoked"
           connection="ok"
