@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,8 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 DO_BOOT=
+DO_PASSWORD=
+DO_ZFS=
 
 bootstrap_and_exit()
 {
@@ -69,10 +71,13 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-while getopts bz OPT; do
+while getopts bpz OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
+		;;
+	p)
+		DO_PASSWORD="-p"
 		;;
 	z)
 		DO_ZFS="-z"
@@ -275,7 +280,24 @@ while : ; do
 		continue
 	fi
 
-	if [ -f "${MNT}/conf/config.xml" ]; then
+	if [ -n "${DO_PASSWORD}" ]; then
+		if [ -f "${MNT}/usr/local/sbin/opnsense-shell" ]; then
+			mount -t devfs devfs ${MNT}/dev
+			chroot ${MNT} /bin/sh /etc/rc.d/ldconfig start
+			chroot ${MNT} /usr/local/sbin/opnsense-shell password -x 0
+			umount ${MNT}/dev
+
+			echo "The password was reset successfully."
+
+			break
+		else
+			echo "The installed version does not yet support recovery."
+
+			if [ -n "${DO_DEV}" ]; then
+				bootstrap_and_exit 1
+			fi
+		fi
+	elif [ -f "${MNT}/conf/config.xml" ]; then
 		rm -rf /conf/*
 
 		for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
