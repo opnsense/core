@@ -1,19 +1,19 @@
 <form>
     <field>
         <id>queue.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable this queue and its related rules</help>
     </field>
     <field>
         <id>queue.pipe</id>
-        <label>pipe</label>
+        <label>Pipe</label>
         <type>dropdown</type>
         <help>connected pipe for this queue</help>
     </field>
     <field>
         <id>queue.weight</id>
-        <label>weight</label>
+        <label>Weight</label>
         <type>text</type>
         <help>Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 is high)</help>
     </field>
@@ -29,7 +29,7 @@
     </field>
     <field>
         <id>queue.buckets</id>
-        <label>buckets</label>
+        <label>Buckets</label>
         <type>text</type>
         <help>Specifies the size of the hash table used for storing the various dynamic queues configured with the mask setting</help>
         <advanced>true</advanced>
@@ -69,7 +69,7 @@
     </field>
     <field>
         <id>queue.description</id>
-        <label>description</label>
+        <label>Description</label>
         <type>text</type>
         <help>Description to identify this pipe.</help>
     </field>
