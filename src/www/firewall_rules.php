@@ -336,6 +336,7 @@ $( document ).ready(function() {
             $(this).addClass('active');
             $(this).data('mode', 'stats');
       }
+      $(this).blur();
   });
 
 });
@@ -403,8 +404,9 @@ $( document ).ready(function() {
                       <th class="view-stats"><?=gettext("Packets");?></th>
                       <th class="view-stats"><?=gettext("Bytes");?></th>
                       <th class="view-stats"><?=gettext("States");?></th>
-                      <th><?=gettext("Description");?>
-                          <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
+                      <th class="text-nowrap">
+                        <?=gettext("Description");?>
+                        <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </th>
                       <th class="button-th"></th>
                   </tr>
