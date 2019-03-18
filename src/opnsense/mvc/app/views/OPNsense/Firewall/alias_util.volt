@@ -14,7 +14,7 @@
                     let grid = $('#alias_content').UIBootgrid({
                         search: '/api/firewall/alias_util/list/' + $(this).val(),
                         options: {
-                            rowCount: 20,
+                            rowCount: [20, 50, 100, 200, -1],
                             formatters: {
                                 commands: function (column, row) {
                                     return '<button type="button" class="btn btn-xs btn-default delete-ip" data-row-id="' + row.ip + '"><span class="fa fa-trash-o"></span></button>';
@@ -204,7 +204,7 @@
             <section class="col-xs-12">
                 <div class="content-box">
                     <div class="table-responsive">
-                        <table class="table table-striped" id="alias_content">
+                        <table class="table table-striped" id="alias_content" data-store-selection="true">
                             <thead>
                                 <tr>
                                     <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
