@@ -4573,7 +4573,7 @@ function interfaces_addresses($interfaces)
         if (isset($config['interfaces'][$interface])) {
             foreach (array('all', 'inet6') as $family) {
                 $realif = get_real_interface($interface, $family);
-                if (!empty($realif) && !in_array($realif, $realifs)) {
+                if (!empty($realif)) {
                     $realifs[] = $realif;
                 }
             }
