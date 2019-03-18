@@ -78,7 +78,7 @@ class InterfaceField extends BaseField
     /**
      * @var bool allow dynamic interfaces
      */
-     private $internalAllowDynamic = false;
+    private $internalAllowDynamic = false;
 
     /**
      *  collect parents for lagg interfaces
