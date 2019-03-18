@@ -359,7 +359,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogEditAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
