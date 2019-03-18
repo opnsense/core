@@ -104,12 +104,12 @@ $.fn.UIBootgrid = function (params) {
      * construct new bootgrid
      */
     this.construct = function() {
-        // set defaults our defaults
+        // set defaults
         var gridopt = {
             ajax: true,
             selection: true,
             multiSelect: true,
-            rowCount:[7,14,20,-1],
+            rowCount:[7,14,20,50,100,-1],
             url: params['search'],
             formatters: {
                 "commands": function (column, row) {
@@ -145,6 +145,21 @@ $.fn.UIBootgrid = function (params) {
             $.each(params['options'],  function(key, value) {
                 gridopt[key] = value;
             });
+        }
+
+        if ($(this_grid).data('store-selection') === true && window.localStorage) {
+            // fetch last selected rowcount, sort on top so it will be the current active selection
+            var grid_id = window.location.pathname + '#' + this_grid.attr('id');
+            var count = parseInt(window.localStorage.getItem(grid_id+"_items")) ;
+            if (count !== null) {
+                if (Array.isArray(gridopt.rowCount)) {
+                    var index = gridopt.rowCount.indexOf(count);
+                    if (index > -1) {
+                        gridopt.rowCount.splice(index, 1);
+                        gridopt.rowCount.unshift(count);
+                    }
+                }
+            }
         }
 
         // construct a new grid
@@ -329,7 +344,57 @@ $.fn.UIBootgrid = function (params) {
         });
     }
 
-    //
+    /**
+     * load previous selections
+     */
+    this.load_selection = function() {
+        if ($(this_grid).data('store-selection') === true && window.localStorage) {
+            var grid_id = window.location.pathname + '#' + this_grid.attr('id');
+            try {
+                var settings = JSON.parse(window.localStorage.getItem(grid_id));
+                if (settings != null) {
+                    $.each(settings, function(field, value){
+                        $('#'+ this_grid.attr('id')).find('[data-column-id="' +field+ '"]').data('visible', value);
+                    });
+                }
+            } catch (e) {
+                null;
+            }
+        }
+    }
+
+    /**
+     * store selections when data-store-selection=true
+     */
+    this.store_selection = function() {
+        if ($(this_grid).data('store-selection') === true && window.localStorage) {
+            var grid_id = window.location.pathname + '#' + this_grid.attr('id');
+            // hook event handler to catch changing column selections
+            $("#"+this_grid.attr('id')+"-header .dropdown-item-checkbox").unbind('click').click(function () {
+                var settings = {};
+                try {
+                    settings = JSON.parse(window.localStorage.getItem(grid_id));
+                    if (settings == null) {
+                        settings = {};
+                    }
+                } catch (e) {
+                    settings = {};
+                }
+                if ($(this).attr('name') !== undefined) {
+                    settings[$(this).attr('name')] = $(this).is(':checked');
+                }
+                window.localStorage.setItem(grid_id, JSON.stringify(settings));
+            });
+            // hook event handler to catch changing row counters
+            $("#"+this_grid.attr('id')+"-header .dropdown-item-button").unbind('click').click(function () {
+                window.localStorage.setItem(grid_id+"_items", $(this).data('action'));
+            });
+        }
+    }
+
+    /**
+     * init bootgrids
+     */
     return this.each((function(){
         // since we start using simple class selectors for our commands, we need to make sure "add" and
         // "delete selected" actions are properly marked
@@ -337,6 +402,8 @@ $.fn.UIBootgrid = function (params) {
         $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected');
 
         if (params != undefined && params['search'] != undefined) {
+            // load previous selections when enabled
+            this_grid.load_selection();
             // create new bootgrid component and link source
             var grid = this_grid.construct();
 
@@ -360,6 +427,8 @@ $.fn.UIBootgrid = function (params) {
                         console.log("not all requirements met to link " + k);
                     }
                 });
+                // store selections when enabled
+                this_grid.store_selection();
             });
             return grid;
         }
