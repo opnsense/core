@@ -302,13 +302,13 @@
                                     <td>
                                         <div class="control-label" id="control_label_alias.enabled">
                                             <a id="help_for_alias.enabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-                                            <b>{{lang._('enabled')}}</b>
+                                            <b>{{lang._('Enabled')}}</b>
                                         </div>
                                     </td>
                                     <td>
                                         <input type="checkbox" id="alias.enabled">
                                         <div class="hidden" data-for="help_for_alias.enabled">
-                                            <small>{{lang._('enable this alias')}}</small>
+                                            <small>{{lang._('Enable this alias')}}</small>
                                         </div>
                                     </td>
                                     <td>
@@ -399,8 +399,8 @@
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
                                             <thead>
                                             <tr>
-                                                <th>{{lang._('region')}}</th>
-                                                <th>{{lang._('countries')}}</th>
+                                                <th>{{lang._('Region')}}</th>
+                                                <th>{{lang._('Countries')}}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
