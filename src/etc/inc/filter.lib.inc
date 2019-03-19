@@ -553,7 +553,7 @@ function filter_core_rules_system($fw, $defaults)
                             'allowopts' => true,
                             'quick' => false,
                             '#ref' => 'system_advanced_firewall.php#pf_disable_force_gw',
-                            'descr' => "let out anything from firewall host itself"),
+                            'descr' => "let out anything from firewall host itself (force gw)"),
                           $defaults['pass']
                         );
                     }
