@@ -531,6 +531,27 @@ class Config extends Singleton
     }
 
     /**
+     * remove old backups
+     */
+    private function cleanupBackups()
+    {
+        if ($this->statusIsValid && isset($this->simplexml->system->backupcount)
+                && intval($this->simplexml->system->backupcount) >= 0) {
+            $revisions = intval($this->simplexml->system->backupcount);
+        } else {
+            $revisions = 60;
+        }
+
+        $cnt = 1;
+        foreach ($this->getBackups() as $filename) {
+            if ($cnt > $revisions ) {
+                @unlink($filename);
+            }
+            ++$cnt ;
+        }
+    }
+
+    /**
      * save config to filesystem
      * @param array|null $revision revision tag (associative array)
      * @param bool $backup do not backup current config
@@ -562,6 +583,9 @@ class Config extends Singleton
                 throw new ConfigException("Unable to lock config");
             }
         }
+
+        /* cleanup backups */
+        $this->cleanupBackups();
     }
 
     /**

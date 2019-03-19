@@ -164,9 +164,6 @@ function write_config($desc = '', $backup = true)
         configd_run('filter sync load');
     }
 
-    /* cleanup backups */
-    cleanup_backups();
-
     /* on succesfull save, serialize config back to global */
     $config = $cnf->toArray(listtags());
 
@@ -216,31 +213,6 @@ function restore_security_checks()
 function security_checks_disabled()
 {
     return file_exists('/tmp/disable_security_checks');
-}
-
-/**
- * remove old backups
- */
-function cleanup_backups()
-{
-    global $config;
-
-    if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
-        $revisions = intval($config['system']['backupcount']);
-    } else {
-        /* XXX this value used to be left out of the config */
-        $revisions = 60;
-    }
-
-    $cnf = OPNsense\Core\Config::getInstance();
-
-    $cnt=1;
-    foreach ($cnf->getBackups() as $filename) {
-        if ($cnt > $revisions ) {
-            @unlink($filename);
-        }
-        ++$cnt ;
-    }
 }
 
 function &config_read_array()
