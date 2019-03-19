@@ -56,9 +56,9 @@ function http_basic_auth($http_auth_header)
 /**
  *   Simple XML-RPC server using IXR_Library
  */
-if (!isset($_SERVER['HTTP_AUTHORIZATION']) ||               // check for a auth header
+if (!isset($_SERVER['HTTP_AUTHORIZATION']) ||               // check for an auth header
     !http_basic_auth($_SERVER['HTTP_AUTHORIZATION']) ||     // user authentication failure (basic auth)
-    $_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']      // do not accept request from servers own address
+    $_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']      // do not accept request from server's own address
 ) {
     // Authentication failure, bail out.
     $xml = <<<EOD

@@ -595,7 +595,7 @@ abstract class BaseField
 
 
     /**
-     * Add this node and it's children to the supplied simplexml node pointer.
+     * Add this node and its children to the supplied simplexml node pointer.
      * @param \SimpleXMLElement $node target node
      */
     public function addToXMLNode($node)

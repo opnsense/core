@@ -606,7 +606,7 @@ function interface_lagg_configure(&$lagg)
         $laggif = legacy_interface_create('lagg');
     }
 
-    // determine mtu value to use, either the provided one for the lagg or smallest of it's children
+    // determine mtu value to use, either the provided one for the lagg or smallest of its children
     $mtu = null;
     if (!empty($lagg['mtu'])) {
         // mtu provided for lagg
@@ -1009,7 +1009,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($vip['interface'] == $interface && $vip['mode'] != 'carp') {
                 /**
-                 * only disable non carp aliases, net.inet.carp.ifdown_demotion_factor should do it's work
+                 * only disable non carp aliases, net.inet.carp.ifdown_demotion_factor should do its work
                  * when a carp interface goes down
                  */
                 interface_vip_bring_down($vip);
@@ -2494,7 +2494,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    // in case this interface has vlan's configured, make sure none of them has an mtu set higher than it's parent
+    // in case this interface has vlan's configured, make sure none of them has an mtu set higher than its parent
     if (!empty($config['vlans']['vlan'])) {
         $intf_stats = legacy_interface_stats();
         foreach ($config['vlans']['vlan'] as $vlan) {

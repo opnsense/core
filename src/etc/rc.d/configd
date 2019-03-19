@@ -39,7 +39,7 @@ configd_prestart()
 #
 configd_poststart()
 {
-	# give the daemon some time to initilize it's configuration
+	# give the daemon some time to initialize its configuration
 	sleep 1
 }
 

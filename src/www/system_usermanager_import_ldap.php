@@ -39,7 +39,7 @@ function add_local_user($username, $userdn, $userfullname)
           // link local user to remote server by updating user_dn
           $user['user_dn'] = $userdn;
           // trash user password when linking to ldap, avoid accidental login
-          // using fall-back local password. User could still reset it's
+          // using fall-back local password. User could still reset its
           // local password, but only by choice.
           local_user_set_password($user);
           local_user_set($user);
