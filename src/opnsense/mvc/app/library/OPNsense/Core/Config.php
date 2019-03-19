@@ -531,6 +531,40 @@ class Config extends Singleton
     }
 
     /**
+     * remove old backups
+     */
+    public function cleanupBackups()
+    {
+        /* XXX this value used to be left out of the config */
+        $revisions = 60;
+
+        try {
+            $obj = $this->object();
+
+            if (isset($obj->system->backupcount)) {
+                $backupcount = $obj->system->backupcount;
+
+                if (is_numeric($backupcount)) {
+                    $backupcount = intval($backupcount);
+
+                    if ($backupcount >= 0) {
+                        $revisions = $backupcount;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+        }
+
+        $cnt = 1;
+        foreach ($this->getBackups() as $filename) {
+            if ($cnt > $revisions ) {
+                @unlink($filename);
+            }
+            ++$cnt ;
+        }
+    }
+
+    /**
      * save config to filesystem
      * @param array|null $revision revision tag (associative array)
      * @param bool $backup do not backup current config
@@ -562,6 +596,9 @@ class Config extends Singleton
                 throw new ConfigException("Unable to lock config");
             }
         }
+
+        /* cleanup backups */
+        $this->cleanupBackups();
     }
 
     /**
