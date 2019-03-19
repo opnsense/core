@@ -382,7 +382,7 @@ class MenuItem
     }
 
     /**
-     * set url and all it's parents selected
+     * set url and all its parents selected
      * @param string $url target url
      */
     public function toggleSelected($url)
