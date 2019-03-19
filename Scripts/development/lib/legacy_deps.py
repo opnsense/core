@@ -44,7 +44,7 @@ class DependancyCrawler(object):
         self.root = root
 
     def get_dependency_by_src(self, src_filename):
-        """ dependencies are stored by a single name, this method maps a filename back to it's name
+        """ dependencies are stored by a single name, this method maps a filename back to its name
                 usually the basename of the file.
         :param src_filename:
         :return:

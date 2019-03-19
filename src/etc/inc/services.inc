@@ -1546,7 +1546,7 @@ function services_dhcrelay_configure($verbose = false)
         }
 
         if (!isset($destif)) {
-            /* Create a array from the existing route table */
+            /* Create an array from the existing route table */
             exec("/usr/bin/netstat -rnWf inet", $route_str);
             array_shift($route_str);
             array_shift($route_str);
@@ -1671,7 +1671,7 @@ function services_dhcrelay6_configure($verbose = false)
         }
 
         if (!isset($destif)) {
-            /* Create a array from the existing route table */
+            /* Create an array from the existing route table */
             exec("/usr/bin/netstat -rnWf inet6", $route_str);
             array_shift($route_str);
             array_shift($route_str);

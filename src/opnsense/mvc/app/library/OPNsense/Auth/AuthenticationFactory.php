@@ -84,7 +84,7 @@ class AuthenticationFactory
     }
 
     /**
-     * request list of configured servers, the factory needs to be aware of it's options and settings to
+     * request list of configured servers, the factory needs to be aware of its options and settings to
      * be able to instantiate useful connectors.
      * @return array list of configured servers
      */

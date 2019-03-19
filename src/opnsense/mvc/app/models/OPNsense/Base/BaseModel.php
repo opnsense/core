@@ -262,7 +262,7 @@ abstract class BaseModel
     }
 
     /**
-     * Construct new model type, using it's own xml template
+     * Construct new model type, using its own xml template
      * @throws ModelException if the model xml is not found or invalid
      * @throws \ReflectionException
      */

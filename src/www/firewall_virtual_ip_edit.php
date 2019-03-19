@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $vipent['noexpand'] = true;
         }
 
-        // virtual ip UI keeps track of it's changes in a separate file
+        // virtual ip UI keeps track of its changes in a separate file
         // (which is only use on apply in firewall_virtual_ip)
         // add or change this administration here.
         // Not the nicest thing to do, but we keep it for now.
