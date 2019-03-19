@@ -32,6 +32,117 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
+/***********************************************************************************************************
+ * format functions for this page
+ ***********************************************************************************************************/
+function firewall_rule_item_proto($filterent)
+{
+    // construct line ipprotocol
+    if (isset($filterent['ipprotocol'])) {
+        switch($filterent['ipprotocol']) {
+            case "inet":
+                $record_ipprotocol = "IPv4 ";
+                break;
+            case "inet6":
+                $record_ipprotocol = "IPv6 ";
+                break;
+            case "inet46":
+                $record_ipprotocol = "IPv4+6 ";
+                break;
+        }
+    } else {
+        $record_ipprotocol = "IPv4 ";
+    }
+    $icmptypes = array(
+      "" => gettext("any"),
+      "echoreq" => gettext("Echo Request"),
+      "echorep" => gettext("Echo Reply"),
+      "unreach" => gettext("Destination Unreachable"),
+      "squench" => gettext("Source Quench (Deprecated)"),
+      "redir" => gettext("Redirect"),
+      "althost" => gettext("Alternate Host Address (Deprecated)"),
+      "routeradv" => gettext("Router Advertisement"),
+      "routersol" => gettext("Router Solicitation"),
+      "timex" => gettext("Time Exceeded"),
+      "paramprob" => gettext("Parameter Problem"),
+      "timereq" => gettext("Timestamp"),
+      "timerep" => gettext("Timestamp Reply"),
+      "inforeq" => gettext("Information Request (Deprecated)"),
+      "inforep" => gettext("Information Reply (Deprecated)"),
+      "maskreq" => gettext("Address Mask Request (Deprecated)"),
+      "maskrep" => gettext("Address Mask Reply (Deprecated)")
+    );
+    if (isset($filterent['protocol']) && $filterent['protocol'] == "icmp" && !empty($filterent['icmptype'])) {
+        $result = $record_ipprotocol;
+        $result .= sprintf(
+          "<span data-toggle=\"tooltip\" title=\"ICMP type: %s \"> %s </span>",
+          html_safe($icmptypes[$filterent['icmptype']]),
+          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
+        );
+        return $result;
+    } else {
+        return $record_ipprotocol . (isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*");
+    }
+}
+
+
+function firewall_rule_item_icons($filterent)
+{
+    $result = "";
+    if (!empty($filterent['direction']) && $filterent['direction'] == "in") {
+        $result .= sprintf(
+            "<i class=\"fa fa-long-arrow-right text-info\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+            gettext("in")
+        );
+    } elseif (!empty($filterent['direction']) && $filterent['direction'] == "out") {
+        $result .= sprintf(
+            "<i class=\"fa fa-long-arrow-left\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+            gettext("out")
+        );
+    }
+    if (!empty($filterent['floating'])) {
+        if (isset($filterent['quick']) && $filterent['quick'] === 'yes') {
+            $result .= sprintf(
+                "<i class=\"fa fa-flash text-warning\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+                gettext('first match')
+            );
+        } else {
+          $result .= sprintf(
+              "<i class=\"fa fa-flash text-muted\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+              gettext('last match')
+          );
+        }
+    }
+    if (isset($filterent['log'])) {
+          $result .= sprintf(
+              "<i class=\"fa fa-info-circle %s\"></i>",
+              !empty($filterent['disabled']) ? 'text-muted' : 'text-info'
+          );
+    }
+
+    return $result;
+}
+
+function firewall_rule_item_action($filterent)
+{
+    if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
+        return "fa fa-times text-danger";
+    } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
+        return "fa fa-times text-muted";
+    }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
+        return "fa fa-times-circle text-danger";
+    }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
+        return "fa fa-times-circle text-muted";
+    } elseif (empty($filterent['disabled'])) {
+        return "fa fa-play text-success";
+    } else {
+        return "fa fa-play text-muted";
+    }
+}
+/***********************************************************************************************************
+ *
+ ***********************************************************************************************************/
+
 $a_filter = &config_read_array('filter', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -530,100 +641,20 @@ $( document ).ready(function() {
                   // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
                   $rule_hash = OPNsense\Firewall\Util::calcRuleHash($filterent);
                   $interface_has_rules = true;
-
-                  // select icon
-                  if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
-                      $iconfn = "fa fa-times text-danger";
-                  } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
-                      $iconfn = "fa fa-times text-muted";
-                  }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
-                      $iconfn = "fa fa-times-circle text-danger";
-                  }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
-                      $iconfn = "fa fa-times-circle text-muted";
-                  } elseif (empty($filterent['disabled'])) {
-                      $iconfn = "fa fa-play text-success";
-                  } else {
-                      $iconfn = "fa fa-play text-muted";
-                  }
-
-                  // construct line ipprotocol
-                  if (isset($filterent['ipprotocol'])) {
-                      switch($filterent['ipprotocol']) {
-                          case "inet":
-                              $record_ipprotocol = "IPv4 ";
-                              break;
-                          case "inet6":
-                              $record_ipprotocol = "IPv6 ";
-                              break;
-                          case "inet46":
-                              $record_ipprotocol = "IPv4+6 ";
-                              break;
-                      }
-                  } else {
-                      $record_ipprotocol = "IPv4 ";
-                  }
-
-
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>"><span class="<?=$iconfn;?>"></span></a>
-<?php
-                      if (!empty($filterent['direction']) && $filterent['direction'] == "in"):?>
-                        <i class="fa fa-long-arrow-right text-info" data-toggle="tooltip" title="<?=gettext("in");?>"></i>
-<?php
-                      elseif (!empty($filterent['direction']) && $filterent['direction'] == "out"):?>
-                        <i class="fa fa-long-arrow-left" data-toggle="tooltip" title="<?=gettext("out");?>"></i>
-<?php                 endif;?>
-<?php                 if ($selected_if != 'FloatingRules'):
-                        ; // interfaces are always quick
-                      elseif (isset($filterent['quick']) && $filterent['quick'] === 'yes'): ?>
-                        <i class="fa fa-flash text-warning" data-toggle="tooltip" title="<?= gettext('first match') ?>"></i>
-<?php                 else: ?>
-                        <i class="fa fa-flash text-muted" data-toggle="tooltip" title="<?= gettext('last match') ?>"></i>
-<?php                 endif; ?>
-<?php                 if (isset($filterent['log'])):?>
-                      <i class="fa fa-info-circle <?=!empty($filterent['disabled']) ? 'text-muted' : 'text-info' ?>"></i>
-<?php                 endif; ?>
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
+                        <span class="<?=firewall_rule_item_action($filterent);?>"></span>
+                      </a>
+                      <?=firewall_rule_item_icons($filterent);?>
                     </td>
-
                     <td class="view-info">
-                        <?=$record_ipprotocol;?>
-<?php
-                        $icmptypes = array(
-                          "" => gettext("any"),
-                          "echoreq" => gettext("Echo Request"),
-                          "echorep" => gettext("Echo Reply"),
-                          "unreach" => gettext("Destination Unreachable"),
-                          "squench" => gettext("Source Quench (Deprecated)"),
-                          "redir" => gettext("Redirect"),
-                          "althost" => gettext("Alternate Host Address (Deprecated)"),
-                          "routeradv" => gettext("Router Advertisement"),
-                          "routersol" => gettext("Router Solicitation"),
-                          "timex" => gettext("Time Exceeded"),
-                          "paramprob" => gettext("Parameter Problem"),
-                          "timereq" => gettext("Timestamp"),
-                          "timerep" => gettext("Timestamp Reply"),
-                          "inforeq" => gettext("Information Request (Deprecated)"),
-                          "inforep" => gettext("Information Reply (Deprecated)"),
-                          "maskreq" => gettext("Address Mask Request (Deprecated)"),
-                          "maskrep" => gettext("Address Mask Reply (Deprecated)")
-                        );
-                        if (isset($filterent['protocol']) && $filterent['protocol'] == "icmp" && !empty($filterent['icmptype'])):
-?>
-                        <span data-toggle="tooltip" title="ICMP type: <?=$icmptypes[$filterent['icmptype']];?> ">
-                            <?= isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*";?>
-                        </span>
-<?php
-                        else:?>
-                        <?= isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*";?>
-<?php
-                        endif;?>
+                        <?=firewall_rule_item_proto($filterent);?>
                     </td>
-
                     <td class="view-info">
 <?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
                         <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip"  data-html="true">
