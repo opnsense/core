@@ -242,8 +242,8 @@ class Plugin
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
         }
-        if (empty($conf['label']) && !empty($conf['#ref'])) {
-            // generated rule, has an anchor but no label if it's trackable
+        if (empty($conf['label'])) {
+            // generated rule, has no label
             $rule_hash = Util::calcRuleHash($conf);
             $conf['label'] = $rule_hash;
         }
