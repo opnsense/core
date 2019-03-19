@@ -1035,7 +1035,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         $pskconf = "";
-
+        $is_route_base = false;
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
                 continue;
@@ -1321,6 +1321,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                                 $rightsubnet_spec[] = $tmpsubnet;
                             }
                         } elseif ($ph2ent['mode'] == 'route-based') {
+                            $is_route_base = true;
                             if (is_ipaddrv6($ph2ent['tunnel_local'])) {
                                 $leftsubnet_spec[] = '::/0';
                                 $rightsubnet_spec[] = '::/0';
@@ -1472,11 +1473,15 @@ EOD;
                     for ($idx = 0; $idx < count($leftsubnet_spec); ++$idx) {
                         if (count($leftsubnet_spec) == 1) {
                             $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
+                            if ($is_route_base) {
+                                $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
+                            }
                         } else {
                             // suffix connection with sequence number
                             $tmpconf = str_replace('<<connectionId>>', sprintf('%s-%03d', $ph1ent['ikeid'], $idx), $connEntry);
-                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
+                            if ($is_route_base) {
+                                $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
+                            }
                         }
                         $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n";
                         $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
@@ -1500,7 +1505,9 @@ EOD;
                             // name from the first configured tunnel ($idx == 0):
                             $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
                             $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
-                            $tmpconf[] = sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
+                            if ($is_route_base) {
+                                $tmpconf[] = sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
+                            }
                             if (!empty($rightsubnet_spec[$idx])) {
                                 $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
                             }
@@ -1519,7 +1526,9 @@ EOD;
                         }
                     } else {
                         $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                        $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
+                        if ($is_route_base) {
+                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
+                        }
                         if (!empty($rightsubnet_spec)) {
                             $tmpconf .= "\trightsubnet = " . join(',', array_unique($rightsubnet_spec)) . "\n";
                         }
