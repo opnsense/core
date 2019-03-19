@@ -746,7 +746,7 @@ function return_gateway_groups_array()
                 }
 
                 /* we should have the 1st available tier now, exit stage left */
-                if (count($gateway_groups_array[$group['name']]) > 0) {
+                if (!empty($gateway_groups_array[$group['name']])) {
                     break;
                 } else {
                     log_error("GATEWAYS: Group {$group['name']} did not have any gateways up on tier {$tieridx}!");
