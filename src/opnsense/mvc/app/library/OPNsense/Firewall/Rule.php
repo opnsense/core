@@ -364,4 +364,28 @@ abstract class Rule
     {
         return !empty($this->rule['descr']) ? $this->rule['descr'] : "";
     }
+
+    /**
+     * return interface
+     */
+    public function getInterface()
+    {
+        return !empty($this->rule['interface']) ? $this->rule['interface'] : "";
+    }
+
+    /**
+     * is rule enabled
+     */
+    public function isEnabled()
+    {
+        return empty($this->rule['disabled']);
+    }
+
+    /**
+     * return raw rule
+     */
+    public function getRawRule()
+    {
+        return $this->rule;
+    }
 }
