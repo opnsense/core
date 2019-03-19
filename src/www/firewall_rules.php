@@ -247,7 +247,6 @@ $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
 );
 
-$lockout_spec = filter_core_get_antilockout();
 legacy_html_escape_form_data($a_filter);
 $all_rule_stats = json_decode(configd_run("filter rule stats"), true);
 ?>
@@ -450,6 +449,20 @@ $( document ).ready(function() {
       $(this).blur();
   });
 
+  // expand internal auto generated rules
+  if ($("tr.internal-rule").length > 0) {
+      $("#expand-internal-rules").show();
+      $("#internal-rule-count").text($("tr.internal-rule").length);
+  }
+
+  $("#expand-internal").click(function(event){
+      event.preventDefault();
+      $(".internal-rule").toggle();
+      $("#rules").removeClass("table-striped");
+      $("#rules").addClass("table-striped");
+  });
+
+
 });
 </script>
 <style>
@@ -523,110 +536,70 @@ $( document ).ready(function() {
                   </tr>
                 </thead>
                 <tbody>
-<?php
-                // Show floating block IPv6 rule if IPv6 is globally disabled in system settings
-                if (!isset($config['system']['ipv6allow']) &&
-                        ($selected_if == 'FloatingRules')):
-?>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td><span class="fa fa-times text-danger"></span></td>
-                    <td class="view-info">IPv6 *</td>
-                    <td class="view-info">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">&nbsp;</td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td><?=gettext("Block all IPv6 traffic");?></td>
-                    <td>
-                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
-                    </td>
+                  <tr id="expand-internal-rules" style="display: none;">
+                      <td>&nbsp;</td>
+                      <td>
+                          <button class="btn btn-default btn-xs" id="expand-internal">
+                            <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
+                            <span class="badge">
+                              <span id="internal-rule-count"><span>
+                            </span>
+                          </button>
+                      </td>
+                      <td class="view-info" colspan="2"> </td>
+                      <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
+                      <td class="view-stats"></td>
+                      <td><?=gettext("Automatically generated");?> </td>
+                      <td> </td>
                   </tr>
 <?php
-                endif; ?>
-<?php foreach ($lockout_spec as $lockout_intf => $lockout_prts): ?>
-<?php if ($selected_if == $lockout_intf): ?>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td><span class="fa fa-play text-success"></span></td>
-                    <td class="view-info">*</td>
-                    <td class="view-info">*</td>
-                    <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm"><?= html_safe(sprintf(gettext('%s address'), convert_friendly_interface_to_friendly_descr($lockout_intf))) ?></td>
-                    <td class="hidden-xs hidden-sm"><?= html_safe(implode(', ', $lockout_prts)) ?></td>
-                    <td class="hidden-xs hidden-sm">*</td>
-                    <td class="hidden-xs hidden-sm">&nbsp;</td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td><?=gettext("Anti-Lockout Rule");?></td>
-                    <td>
-                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
-                    </td>
-                  </tr>
-<?php endif ?>
-<?php endforeach ?>
+                $fw = filter_core_get_initialized_plugin_system();
+                filter_core_bootstrap($fw);
+                plugins_firewall($fw);
+                foreach ($fw->iterateFilterRules() as $rule):
+                    if ($rule->getInterface() == $selected_if && $rule->isEnabled()):
+                        $filterent = $rule->getRawRule();
+                        $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
+                    <tr class="internal-rule" style="display: none;">
+                      <td>&nbsp;</td>
+                      <td>
+                          <span class="<?=firewall_rule_item_action($filterent);?>"></span><?=firewall_rule_item_icons($filterent);?>
+                      </td>
+                      <td class="view-info">
+                          <?=firewall_rule_item_proto($filterent);?>
+                      </td>
+                      <td class="view-info">
+                          <?=!empty($filterent['from']) ? $filterent['from'] : "*";?>
+                      </td>
+                      <td class="view-info hidden-xs hidden-sm">
+                          <?=!empty($filterent['from_port']) ? $filterent['from_port'] : "*";?>
+                      </td>
+                      <td class="view-info hidden-xs hidden-sm">
+                          <?=!empty($filterent['to']) ? $filterent['to'] : "*";?>
+                      </td>
+                      <td class="view-info hidden-xs hidden-sm">
+                          <?=!empty($filterent['to_port']) ? $filterent['to_port'] : "*";?>
+                      </td>
+                      <td class="view-info hidden-xs hidden-sm">
+                        <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
+                      </td>
+                      <td class="view-info hidden-xs hidden-sm">&nbsp;</td>
+                      <td class="view-stats"><?=!empty($rule_stats) ? $rule_stats['evaluations'] : "";?></td>
+                      <td class="view-stats"><?=!empty($rule_stats) ? $rule_stats['packets'] : "";?></td>
+                      <td class="view-stats"><?=!empty($rule_stats) ? format_bytes($rule_stats['bytes']) : "";?></td>
+                      <td class="view-stats"><?=!empty($rule_stats) ? $rule_stats['states'] : "";?></td>
+                      <td><?=$rule->getDescr();?></td>
+                      <td>
 <?php
-                if (isset($config['interfaces'][$selected_if]['blockpriv'])): ?>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <i class="fa fa-times text-danger"></i>
-<?php if (!isset($config['syslog']['nologprivatenets'])): ?>
-                      <i class="fa fa-info-circle text-info"></i>
-<?php endif ?>
-                    </td>
-                    <td class="view-info">*</td>
-                    <td class="view-info"><?=gettext("RFC 1918 networks");?></td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">&nbsp;</td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td ><?=gettext("Block private networks");?></td>
-                    <td class="nowrap">
-                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
-                    </td>
-                  </tr>
+                        if (!empty($rule->getRef())):?>
+                          <a href="firewall_rule_lookup.php?rid=<?=html_safe($rule->getLabel());?>" class="btn btn-default btn-xs"><i class="fa fa-fw fa-search"></i></a>
 <?php
-              endif;
-              if (isset($config['interfaces'][$selected_if]['blockbogons'])): ?>
-                  <tr id="frrfc1918">
-                    <td>&nbsp;</td>
-                    <td>
-                      <i class="fa fa-times text-danger"></i>
-<?php if (!isset($config['syslog']['nologbogons'])): ?>
-                      <i class="fa fa-info-circle text-info"></i>
-<?php endif ?>
-                    </td>
-                    <td class="view-info">*</td>
-                    <td class="view-info"><?=gettext("Reserved/not assigned by IANA");?></td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">*</td>
-                    <td class="view-info hidden-xs hidden-sm">&nbsp;</td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td class="view-stats"></td>
-                    <td><?=gettext("Block bogon networks");?></td>
-                    <td>
-                      <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
-                    </td>
-                  </tr>
+                        endif;?>
+                      </td>
+                    </tr>
 <?php
-                endif; ?>
+                    endif;
+                endforeach;?>
 <?php
                 $interface_has_rules = false;
                 foreach ($a_filter as $i => $filterent):
