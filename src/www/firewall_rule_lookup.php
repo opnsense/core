@@ -67,3 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // not found, XXX: figure out where to redirect to
     }
 }
+?>
+<script>
+    // close when not found
+    window.close();
+</script>
