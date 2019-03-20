@@ -75,7 +75,6 @@
                 }
         );
 
-
         {% if (selected_uuid|default("") != "") %}
             openDialog('{{selected_uuid}}');
         {% endif %}
