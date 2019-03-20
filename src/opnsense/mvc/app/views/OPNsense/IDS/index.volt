@@ -725,7 +725,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </tr>
                   </table>
                   <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
-                    <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
+                    <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="rulesetChangeMessage" data-editDialog="DialogRuleset">
                         <thead>
                         <tr>
                             <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
@@ -758,11 +758,13 @@ POSSIBILITY OF SUCH DAMAGE.
           </tbody>
       </table>
       <div class="col-md-12">
+          <div id="rulesetChangeMessage" class="alert alert-info" style="display: none" role="alert">
+              {{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }}
+          </div>
           <hr/>
           <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b> <i id="updateSettings_progress" class=""></i></button>
           <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b> <i id="updateRulesAct_progress" class=""></i></button>
-          <br/>
-          <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>
+          <br/><br/>
       </div>
     </div>
     <div id="rules" class="tab-pane fade in">
@@ -783,7 +785,7 @@ POSSIBILITY OF SUCH DAMAGE.
         </div>
 
         <!-- tab page "installed rules" -->
-        <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+        <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="ruleChangeMessage" data-editDialog="DialogRule">
             <thead>
             <tr>
                 <th data-column-id="sid" data-type="numeric" data-visible="true" data-identifier="true" data-width="6em">{{ lang._('sid') }}</th>
@@ -807,6 +809,9 @@ POSSIBILITY OF SUCH DAMAGE.
             </tfoot>
         </table>
         <div class="col-md-12">
+            <div id="ruleChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them with the button below') }}
+            </div>
             <hr/>
             <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Apply') }}</b> <i class="act_update_progress"></i></button>
             <br/>
@@ -815,7 +820,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="userrules" class="tab-pane fade in">
         <!-- tab page "userrules" -->
-        <table id="grid-userrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUserDefined">
+        <table id="grid-userrules" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="userdefineChangeMessage" data-editDialog="DialogUserDefined">
             <thead>
                 <tr>
                     <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
@@ -838,6 +843,9 @@ POSSIBILITY OF SUCH DAMAGE.
             </tfoot>
         </table>
         <div class="col-md-12">
+            <div id="userdefineChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them with the button below') }}
+            </div>
             <hr/>
             <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Apply') }}</b> <i class="act_update_progress"></i></button>
             <br/>
