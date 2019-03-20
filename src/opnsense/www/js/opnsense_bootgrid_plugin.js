@@ -206,14 +206,28 @@ $.fn.UIBootgrid = function (params) {
             $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
             //
             $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                saveFormToEndpoint(params['add'],
-                    'frm_' + editDlg, function(){
+                saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
                         $("#"+editDlg).modal('hide');
                         std_bootgrid_reload(this_grid.attr('id'));
+                        this_grid.showSaveAlert(event);
                     }, true);
             });
         } else {
             console.log("[grid] action get or data-editDialog missing")
+        }
+    }
+
+    /**
+     * animate alert when saved
+     */
+    this.showSaveAlert = function(event) {
+        var editAlert = this_grid.attr('data-editAlert');
+        if (editAlert !== undefined) {
+            $("#"+editAlert).slideDown(1000, function(){
+                setTimeout(function(){
+                    $("#"+editAlert).slideUp(2000);
+                }, 2000);
+            });
         }
     }
 
@@ -237,10 +251,10 @@ $.fn.UIBootgrid = function (params) {
                 $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                 // define save action
                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                    saveFormToEndpoint(params['set']+uuid,
-                        'frm_' + editDlg, function(){
+                    saveFormToEndpoint(params['set']+uuid, 'frm_' + editDlg, function(){
                             $("#"+editDlg).modal('hide');
                             std_bootgrid_reload(this_grid.attr('id'));
+                            this_grid.showSaveAlert(event);
                         }, true);
                 });
                 $('#'+editDlg).trigger('opnsense_bootgrid_mapped', ['edit']);
@@ -304,10 +318,10 @@ $.fn.UIBootgrid = function (params) {
                 $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                 // define save action
                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                    saveFormToEndpoint(params['add'],
-                        'frm_' + editDlg, function(){
+                    saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
                             $("#"+editDlg).modal('hide');
                             std_bootgrid_reload(this_grid.attr('id'));
+                            this_grid.showSaveAlert(event);
                         }, true);
                 });
                 $('#'+editDlg).trigger('opnsense_bootgrid_mapped', ['copy']);
