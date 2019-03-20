@@ -89,19 +89,6 @@
                 }
         );
 
-        // when  closing DialogEditBlacklist, point the user to the download buttons
-        $("#DialogEditBlacklist").on("show.bs.modal", function () {
-            // wait some time before linking the save button, missing handle
-            setTimeout(function(){
-                $("#btn_DialogEditBlacklist_save").click(function(){
-                    $("#remoteACLchangeMessage").slideDown(1000, function(){
-                        setTimeout(function(){
-                            $("#remoteACLchangeMessage").slideUp(2000);
-                        }, 2000);
-                    });
-                });
-            }, 500);
-        });
         function update_pac_match_view(event) {
             function show_line(the_id) {
                 $('tr[for=' + the_id + ']').show();
@@ -422,7 +409,7 @@
                     <div id="remoteACLchangeMessage" class="alert alert-info" style="display: none" role="alert">
                         {{ lang._('After changing categories, please remember to download the ACL again to apply your new settings') }}
                     </div>
-                    <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist">
+                    <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist" data-editAlert="remoteACLchangeMessage">
                         <thead>
                         <tr>
                             <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
