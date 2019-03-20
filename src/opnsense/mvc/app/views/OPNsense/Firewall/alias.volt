@@ -234,7 +234,7 @@
         <div class="row">
             <section class="col-xs-12">
                 <div class="content-box">
-                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-store-selection="true">
+                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage" data-store-selection="true">
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -259,6 +259,9 @@
                         </tfoot>
                     </table>
                     <div class="col-md-12">
+                        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+                        </div>
                         <hr/>
                         <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
                         <br/><br/>
