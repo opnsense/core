@@ -135,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dhgroup'] = array('14');
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
+        $pconfig['installpolicy'] = true;
         $pconfig['authservers'] = array();
 
         /* mobile client */
