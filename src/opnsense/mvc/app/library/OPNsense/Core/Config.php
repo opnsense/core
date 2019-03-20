@@ -533,26 +533,13 @@ class Config extends Singleton
     /**
      * remove old backups
      */
-    public function cleanupBackups()
+    private function cleanupBackups()
     {
-        /* XXX this value used to be left out of the config */
-        $revisions = 60;
-
-        try {
-            $obj = $this->object();
-
-            if (isset($obj->system->backupcount)) {
-                $backupcount = $obj->system->backupcount;
-
-                if (is_numeric($backupcount)) {
-                    $backupcount = intval($backupcount);
-
-                    if ($backupcount >= 0) {
-                        $revisions = $backupcount;
-                    }
-                }
-            }
-        } catch (\Exception $e) {
+        if ($this->statusIsValid && isset($this->simplexml->system->backupcount)
+                && intval($this->simplexml->system->backupcount) >= 0) {
+            $revisions = intval($this->simplexml->system->backupcount);
+        } else {
+            $revisions = 60;
         }
 
         $cnt = 1;
