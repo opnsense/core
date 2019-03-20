@@ -75,23 +75,9 @@
                 }
         );
 
+
         {% if (selected_uuid|default("") != "") %}
             openDialog('{{selected_uuid}}');
-        {% else %}
-            // When not redirecting to caller and settings aren't persistent, signal the user after save
-            $("#DialogEdit").on("show.bs.modal", function () {
-                // wait some time before linking the save button, missing handle
-                setTimeout(function(){
-                    $("#btn_DialogEdit_save").click(function(){
-                        $("#cronChangeMessage").slideDown(1000, function(){
-                            setTimeout(function(){
-                                $("#cronChangeMessage").slideUp(2000);
-                            }, 2000);
-                        });
-                    });
-                }, 500);
-            });
-        //
         {% endif %}
 
         /*************************************************************************************************************
@@ -130,7 +116,8 @@
 <div class="tab-content content-box">
     <div id="jobs" class="tab-pane fade in active">
         <!-- tab page "cron items" -->
-        <table id="grid-jobs" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+        <table id="grid-jobs" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit"
+                 {% if (selected_uuid|default("") == "") %} data-editAlert="cronChangeMessage" {% endif %} >
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
