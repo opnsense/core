@@ -4569,7 +4569,7 @@ function make_ipv6_64_address($prefix, $suffix)
     return implode(':', $prefix_array);
 }
 
-function interfaces_addresses($interfaces)
+function interfaces_addresses($interfaces, $as_subnet = false)
 {
     global $config;
 
@@ -4614,7 +4614,15 @@ function interfaces_addresses($interfaces)
                 if (!empty($address['link-local'])) {
                     $scope = "%{$realif}";
                 }
-                $result["{$address['ipaddr']}{$scope}"] = array(
+                $suffix = '';
+                if ($as_subnet) {
+                    if (empty($address['subnetbits'])) {
+                        continue;
+                    }
+                    $suffix = "/{$address['subnetbits']}";
+                    $scope = '';
+                }
+                $result["{$address['ipaddr']}{$scope}{$suffix}"] = array(
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
                     'scope' => !empty($scope),
                     'name' => $realif,
