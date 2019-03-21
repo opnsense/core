@@ -707,6 +707,7 @@
                   </OptionValues>
               </match_type>
               <proxies type="ModelRelationField">
+                  <Sorted>Y</Sorted>
                   <Model>
                       <queues>
                           <source>OPNsense.Proxy.Proxy</source>
