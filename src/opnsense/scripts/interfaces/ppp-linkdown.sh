@@ -7,8 +7,6 @@ GW=
 
 DEFAULTGW=$(route -n get -${AF} default | grep gateway: | awk '{print $2}')
 
-/usr/local/etc/rc.kill_states ${IF} ${IP}
-
 ngctl shutdown ${IF}:
 
 if [ "${AF}" = "inet" ]; then
