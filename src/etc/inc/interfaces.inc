@@ -2330,7 +2330,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         /* remove all IPv4 and IPv6 addresses */
-        $tmpifaces = legacy_getall_interface_addresses($realif);
+        $tmpifaces = interfaces_addresses($realif, true);
         foreach ($tmpifaces as $tmpiface) {
             if (is_ipaddrv6($tmpiface) || is_subnetv6($tmpiface)) {
                 if (!is_linklocal($tmpiface)) {
