@@ -4599,16 +4599,17 @@ function interfaces_addresses($interfaces, $as_subnet = false)
                 if (!empty($address['tunnel']) || empty($address['ipaddr'])) {
                     continue;
                 }
+                $scope = '';
+                if (!empty($address['link-local'])) {
+                    $scope = "%{$realif}";
+                }
                 $suffix = '';
                 if ($as_subnet) {
                     if (empty($address['subnetbits'])) {
                         continue;
                     }
                     $suffix = "/{$address['subnetbits']}";
-                }
-                $scope = '';
-                if (!empty($address['link-local'])) {
-                    $scope = "%{$realif}";
+                    $scope = '';
                 }
                 $result["{$address['ipaddr']}{$scope}{$suffix}"] = array(
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
