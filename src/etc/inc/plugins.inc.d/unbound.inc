@@ -722,15 +722,13 @@ function unbound_acls_subnets()
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $ubextra) {
-        foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
-            if (!empty($ubextra['net4']) && is_subnetv4($subnet)) {
-                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net4'];
-            } elseif (!empty($ubextra['net6']) && is_subnetv6($subnet)) {
-                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net6'];
-            }
-            $subnets[] = $subnet;
+    foreach (interfaces_addresses(array_keys($active_interfaces), true) as $subnet => $info) {
+        if (!empty($active_interfaces[$info['name']]['net4']) && is_subnetv4($subnet)) {
+            $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net4'];
+        } elseif (!empty($active_interfaces[$info['name']]['net6']) && is_subnetv6($subnet)) {
+            $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net6'];
         }
+        $subnets[] = $subnet;
     }
 
     return $subnets;
