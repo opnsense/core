@@ -544,10 +544,10 @@ class Config extends Singleton
 
         $cnt = 1;
         foreach ($this->getBackups() as $filename) {
-            if ($cnt > $revisions ) {
+            if ($cnt > $revisions) {
                 @unlink($filename);
             }
-            ++$cnt ;
+            ++$cnt;
         }
     }
 
