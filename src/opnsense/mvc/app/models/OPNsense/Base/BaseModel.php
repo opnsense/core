@@ -422,7 +422,7 @@ abstract class BaseModel
     {
         $result = array();
         $valMsgs = $this->performValidation();
-        foreach ($valMsgs as $field => $msg) {
+        foreach ($valMsgs as $msg) {
             // replace absolute path to attribute for relative one at uuid.
             if ($sourceref != null) {
                 $fieldnm = str_replace($sourceref, $targetref, $msg->getField());
