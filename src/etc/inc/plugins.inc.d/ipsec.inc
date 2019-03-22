@@ -1147,6 +1147,10 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $right_spec = "%any";
                 } else {
                     $right_spec = $ph1ent['remote-gateway'];
+
+                    if ($ph1ent['rightallowany']) {
+                        $right_any = 'rightallowany = yes';
+                    }
                 }
 
                 if (!empty($ph1ent['auto'])) {
@@ -1446,6 +1450,7 @@ conn con<<connectionId>>
   {$dpdline}
   left = {$left_spec}
   right = {$right_spec}
+  {$right_any}
   leftid = {$myid_data}
   {$ikelifeline}
 
