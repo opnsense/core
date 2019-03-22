@@ -219,4 +219,89 @@ class AliasController extends ApiMutableModelControllerBase
             return array("status" => "failed");
         }
     }
+
+    /**
+     * variant on model.getNodes() returning actual field values
+     * @param $parent_node BaseField node to reverse
+     */
+    private function getRawNodes($parent_node)
+    {
+        $result = array();
+        foreach ($parent_node->iterateItems() as $key => $node) {
+            if ($node->isContainer()) {
+                $result[$key] = $this->getRawNodes($node);
+            } else {
+                $result[$key] = (string)$node;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * export configured aliases
+     */
+    public function exportAction()
+    {
+        if ($this->request->isGet()) {
+            // return raw, unescaped since this content is intended for direct download
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setContent(json_encode($this->getRawNodes($this->getModel())));
+        } else {
+            throw new UserException("Unsupported request type");
+        }
+    }
+
+    /**
+     * import delivered aliases in post variable "data", validate all only commit when fully valid.
+     */
+    public function importAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $result = array("existing" => 0, "new" => 0, "status" => "failed");
+            $data = $this->request->getPost("data");
+            if (is_array($data) && !empty($data['aliases'])
+                    && !empty($data['aliases']['alias']) && is_array($data['aliases']['alias'])) {
+                Config::getInstance()->lock();
+                // save into model
+                $uuid_mapping = array();
+                foreach ($data['aliases']['alias'] as $uuid => $content) {
+                    if (is_array($content) && !empty($content['name'])) {
+                        $node = $this->getModel()->getByName($content['name']);
+                        if ($node == null) {
+                            $node = $this->getModel()->aliases->alias->Add();
+                            $result['new'] += 1;
+                        } else {
+                            $result['existing'] += 1;
+                        }
+                        foreach ($content as $prop => $value) {
+                            $node->$prop = $value;
+                        }
+                        $uuid_mapping[$node->getAttribute('uuid')] = $uuid;
+                    }
+                }
+                // perform validation, record details
+                foreach ($this->getModel()->performValidation() as $msg) {
+                    if (empty($result['validations'])) {
+                        $result['validations'] = array();
+                    }
+                    $parts = explode('.', $msg->getField());
+                    $uuid = $parts[count($parts)-2];
+                    $fieldname = $parts[count($parts)-1];
+                    $result['validations'][$uuid_mapping[$uuid] . "." . $fieldname] = $msg->getMessage();
+                }
+                // only persist changes
+                if (empty($result['validations'])) {
+                    $result['status'] = "ok";
+                    $this->save();
+                } else {
+                    $result['status'] = "failed";
+                    Config::getInstance()->unlock();
+                }
+            }
+        } else {
+            throw new UserException("Unsupported request type");
+        }
+        return $result;
+    }
 }
