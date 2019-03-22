@@ -182,4 +182,14 @@ class Alias extends BaseModel
             }
         }
     }
+
+    public function getByName($name)
+    {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
+            if ((string)$alias->name == $name)  {
+                return $alias;
+            }
+        }
+        return null;
+    }
 }
