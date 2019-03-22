@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['interface'] = "wan";
     $pconfig['iketype'] = "ikev2";
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
-    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal
+    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
     ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
@@ -383,6 +383,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (isset($pconfig['tunnel_isolation'])) {
             $ph1ent['tunnel_isolation'] = true;
+        }
+
+        if (isset($pconfig['rightallowany'])) {
+            $ph1ent['rightallowany'] = true;
         }
 
         if (isset($pconfig['dpd_enable'])) {
@@ -692,20 +696,27 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <?php if (empty($pconfig['mobile'])) :
-?>
-
+<?php if (empty($pconfig['mobile'])): ?>
                   <tr>
                     <td><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote gateway"); ?></td>
                     <td>
                       <input name="remote-gateway" type="text" class="formfld unknown" id="remotegw" size="28" value="<?=$pconfig['remote-gateway'];?>" />
                       <div class="hidden" data-for="help_for_remotegw">
-                        <?=gettext("Enter the public IP address or host name of the remote gateway"); ?>
+                        <?= gettext('Enter the public IP address or host name of the remote gateway.') ?>
                       </div>
                     </td>
                   </tr>
-<?php            endif;
-?>
+                  <tr>
+                    <td><a id="help_for_rightallowany" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dynamic gateway') ?></td>
+                    <td>
+                      <input name="rightallowany" type="checkbox" id="rightallowany" value="yes" <?= !empty($pconfig['rightallowany']) ? 'checked="checked"' : '' ?>/>
+                      <?= gettext('Allow any remote gateway to connect') ?>
+                      <div class="hidden" data-for="help_for_rightallowany">
+                        <?= gettext('Recommended for dynamic IP addresses that can be resolved by DynDNS at IPsec startup or update time.') ?>
+                      </div>
+                    </td>
+                  </tr>
+<?php endif ?>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
