@@ -531,7 +531,7 @@
               </url>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
           </proxy>
           <match type="ArrayField">
@@ -547,7 +547,7 @@
               </name>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <negate type="BooleanField">
                   <default>0</default>
@@ -670,7 +670,7 @@
               </enabled>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <matches type="ModelRelationField">
                   <Model>
