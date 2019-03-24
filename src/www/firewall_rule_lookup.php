@@ -64,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 exit;
             }
         }
-        // not found, XXX: figure out where to redirect to
     }
 }
 ?>
