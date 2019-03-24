@@ -111,9 +111,6 @@ class Nextcloud extends Base implements IBackupProvider
     public function setConfiguration($conf)
     {
         $nextcloud = new NextcloudSettings();
-        if (array_key_exists('url', $conf) && !empty($conf['url'])) {
-            $conf['url'] = rtrim(trim($conf['url']), '/');
-        }
         $this->setModelProperties($nextcloud, $conf);
         $validation_messages = $this->validateModel($nextcloud);
         if (empty($validation_messages)) {
