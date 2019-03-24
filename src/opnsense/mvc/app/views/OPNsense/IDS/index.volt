@@ -127,7 +127,6 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         function addAlertQryFilters(request) {
             var selected_logfile =$('#alert-logfile').find("option:selected").val();
-            var selected_max_entries =$('#alert-logfile-max').find("option:selected").val();
             var search_phrase = $("#inputSearchAlerts").val();
 
             // add loading overlay
@@ -139,7 +138,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
             if ( selected_logfile != "") {
                 request['fileid'] = selected_logfile;
-                request['rowCount'] = selected_max_entries;
                 request['searchPhrase'] = search_phrase;
             }
             return request;
@@ -326,7 +324,12 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                 );
             } else if (e.target.id == 'alert_tab') {
-                updateAlertLogs();
+                var search = "<div class=\"search form-group\">\n"
+                + "                        <div class=\"input-group\">\n"
+                + "                            <input class=\"search-field form-control\" placeholder=\"{{ lang._('Search') }}\" type=\"text\" id=\"inputSearchAlerts\">\n"
+                + "                        </div>\n"
+                + "                    </div>";
+
                 /**
                  * grid query alerts
                  */
@@ -337,8 +340,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             options:{
                                 multiSelect:false,
                                 selection:false,
+                                rowCount:[7,50,100,250,500,1000,-1],
                                 templates : {
-                                    header: ""
+                                    header: "<div id=\"{" + "{ctx.id}" + "}\" class=\"{" + "{css.header}" + "}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><select id=\"alert-logfile\" class=\"selectpicker\" data-width=\"200px\"></select><span id=\"actDeleteLog\" class=\"btn btn-lg fa fa-trash\" style=\"cursor: pointer;\" title=\"{{ lang._('Delete Alert Log') }}\"></span><p class=\"{" + "{css.actions}" + "}\"></p>" + search + "</div></div></div>"
                                 },
                                 requestHandler:addAlertQryFilters,
                                 formatters:{
@@ -368,6 +372,44 @@ POSSIBILITY OF SUCH DAMAGE.
                             grid_td.html($(this).html());
                             grid_td.tooltip({title: $(this).text()});
                             $(this).html(grid_td);
+                        }
+                    });
+                });
+                // alert log processing
+                grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
+                    updateAlertLogs();
+
+                    // delete selected alert log
+                    $("#actDeleteLog").click(function(){
+                        var selected_log = $("#alert-logfile > option:selected");
+                        BootstrapDialog.show({
+                            type:BootstrapDialog.TYPE_DANGER,
+                            title: '{{ lang._('Remove log file ') }} ' + selected_log.html(),
+                            message: '{{ lang._('Removing this file will cleanup disk space, but cannot be undone.') }}',
+                            buttons: [{
+                                icon: 'fa fa-trash-o',
+                                label: '{{ lang._('Yes') }}',
+                                cssClass: 'btn-primary',
+                                action: function(dlg){
+                                    ajaxCall("/api/ids/service/dropAlertLog/", {filename: selected_log.data('filename')}, function(data,status){
+                                        updateAlertLogs();
+                                    });
+                                    dlg.close();
+                                }
+                            }, {
+                                label: '{{ lang._('Close') }}',
+                                action: function(dlg){
+                                    dlg.close();
+                                }
+                            }]
+                        });
+                    });
+                });
+                // search alerts processing
+                grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
+                    $("#inputSearchAlerts").keypress(function (e) {
+                        if (e.which == 13) {
+                            $('#grid-alerts').bootgrid('reload');
                         }
                     });
                 });
@@ -603,18 +645,6 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         });
 
-        /**
-         * link query alerts button.
-         */
-        $("#actQueryAlerts").click(function(){
-            $('#grid-alerts').bootgrid('reload');
-        });
-        $("#inputSearchAlerts").keypress(function (e) {
-            if (e.which == 13) {
-                $("#actQueryAlerts").click();
-            }
-        });
-
         $("#grid-rule-files-search").keydown(function (e) {
             var searchString = $(this).val();
             $("#grid-rule-files > tbody > tr").each(function(){
@@ -646,33 +676,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
-        });
-
-        // delete selected alert log
-        $("#actDeleteLog").click(function(){
-            var selected_log = $("#alert-logfile > option:selected");
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_DANGER,
-                title: '{{ lang._('Remove log file ') }} ' + selected_log.html(),
-                message: '{{ lang._('Removing this file will cleanup disk space, but cannot be undone.') }}',
-                buttons: [{
-                    icon: 'fa fa-trash-o',
-                    label: '{{ lang._('Yes') }}',
-                    cssClass: 'btn-primary',
-                    action: function(dlg){
-                        ajaxCall("/api/ids/service/dropAlertLog/", {filename: selected_log.data('filename')}, function(data,status){
-                            updateAlertLogs();
-                        });
-                        dlg.close();
-                    }
-                }, {
-                    label: '{{ lang._('Close') }}',
-                    action: function(dlg){
-                        dlg.close();
-                    }
-                }]
-            });
-
         });
 
     });
@@ -854,29 +857,6 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="alerts" class="tab-pane fade in">
         <!-- tab page "alerts" -->
-        <div class="bootgrid-header container-fluid">
-            <div class="row">
-                <div class="col-sm-12 actionBar">
-                    <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
-                    <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
-                    <select id="alert-logfile-max" class="selectpicker" data-width="80px">
-                        <option value="7">7</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="250">250</option>
-                        <option value="500">500</option>
-                        <option value="1000">1000</option>
-                        <option value="-1">{{ lang._('All') }}</option>
-                    </select>
-                    <div class="search form-group">
-                        <div class="input-group">
-                            <input class="search-field form-control" placeholder="{{ lang._('Search') }}" type="text" id="inputSearchAlerts">
-                            <span id="actQueryAlerts" class="icon input-group-addon fa fa-refresh" title="{{ lang._('Query') }}" style="cursor: pointer;"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <table id="grid-alerts" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
               <tr>
