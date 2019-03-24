@@ -512,7 +512,7 @@ $( document ).ready(function() {
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive" >
-                <table class="table table-striped table-hover" id="rules">
+                <table class="table table-striped table-condensed table-hover" id="rules">
                   <thead>
                     <tr>
                       <th><input type="checkbox" id="selectAll"></th>
