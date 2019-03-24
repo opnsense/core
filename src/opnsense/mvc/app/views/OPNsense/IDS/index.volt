@@ -785,7 +785,7 @@ POSSIBILITY OF SUCH DAMAGE.
         </div>
 
         <!-- tab page "installed rules" -->
-        <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="ruleChangeMessage" data-editDialog="DialogRule">
+        <table id="grid-installedrules" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="ruleChangeMessage" data-editDialog="DialogRule">
             <thead>
             <tr>
                 <th data-column-id="sid" data-type="numeric" data-visible="true" data-identifier="true" data-width="6em">{{ lang._('sid') }}</th>
@@ -820,7 +820,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="userrules" class="tab-pane fade in">
         <!-- tab page "userrules" -->
-        <table id="grid-userrules" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="userdefineChangeMessage" data-editDialog="DialogUserDefined">
+        <table id="grid-userrules" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="userdefineChangeMessage" data-editDialog="DialogUserDefined">
             <thead>
                 <tr>
                     <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
@@ -877,7 +877,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 </div>
             </div>
         </div>
-        <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive">
+        <table id="grid-alerts" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
               <tr>
                   <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
