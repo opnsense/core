@@ -110,6 +110,7 @@ $.fn.UIBootgrid = function (params) {
             multiSelect: true,
             rowCount:[7,14,20,50,100,-1],
             url: params['search'],
+            useRequestHandlerOnGet: false,
             formatters: {
                 "commands": function (column, row) {
                     return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
@@ -144,6 +145,12 @@ $.fn.UIBootgrid = function (params) {
             $.each(params['options'],  function(key, value) {
                 gridopt[key] = value;
             });
+        }
+
+        if (gridopt.useRequestHandlerOnGet) {
+            this_grid.requestHandler = gridopt.requestHandler;
+        } else {
+            this_grid.requestHandler = null;
         }
 
         if ($(this_grid).data('store-selection') === true && window.localStorage) {
@@ -188,8 +195,13 @@ $.fn.UIBootgrid = function (params) {
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
             let urlMap = {};
+            let server_params = undefined;
             urlMap['frm_' + editDlg] = params['get'];
-            mapDataToFormUI(urlMap).done(function(){
+            if (this_grid.requestHandler !== null) {
+                // our requestHandler returns a JSON object, convert it back first
+                server_params = this_grid.requestHandler({});
+            }
+            mapDataToFormUI(urlMap, server_params).done(function(){
                 // update selectors
                 formatTokenizersUI();
                 $('.selectpicker').selectpicker('refresh');
