@@ -32,7 +32,7 @@
  * reload bootgrid, return to current selected page
  */
 function std_bootgrid_reload(gridId) {
-    var currentpage = $("#"+gridId).bootgrid("getCurrentPage");
+    let currentpage = $("#" + gridId).bootgrid("getCurrentPage");
     $("#"+gridId).bootgrid("reload");
     // absolutely not perfect, bootgrid.reload doesn't seem to support when().done()
     setTimeout(function(){
@@ -61,13 +61,13 @@ function std_bootgrid_reload(gridId) {
  * @constructor
  */
 $.fn.UIBootgrid = function (params) {
-    var this_grid = this;
+    let this_grid = this;
 
     /**
      *  register commands
      */
     this.getCommands = function() {
-        var result = {
+        return {
             "command-add": {
                 method: this_grid.command_add,
                 requires: ['get', 'set']
@@ -97,15 +97,14 @@ $.fn.UIBootgrid = function (params) {
                 requires: ['del']
             }
         };
-        return result;
-    }
+    };
 
     /**
      * construct new bootgrid
      */
     this.construct = function() {
         // set defaults
-        var gridopt = {
+        let gridopt = {
             ajax: true,
             selection: true,
             multiSelect: true,
@@ -124,14 +123,14 @@ $.fn.UIBootgrid = function (params) {
                         "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
                 },
                 "rowtoggle": function (column, row) {
-                    if (parseInt(row[column.id], 2) == 1) {
+                    if (parseInt(row[column.id], 2) === 1) {
                         return "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
                     } else {
                         return "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                     }
                 },
                 "boolean": function (column, row) {
-                    if (parseInt(row[column.id], 2) == 1) {
+                    if (parseInt(row[column.id], 2) === 1) {
                         return "<span class=\"fa fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
                     } else {
                         return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
@@ -141,7 +140,7 @@ $.fn.UIBootgrid = function (params) {
         };
 
         // merge additional options (if any)
-        if (params['options'] != undefined) {
+        if (params['options'] !== undefined) {
             $.each(params['options'],  function(key, value) {
                 gridopt[key] = value;
             });
@@ -149,11 +148,11 @@ $.fn.UIBootgrid = function (params) {
 
         if ($(this_grid).data('store-selection') === true && window.localStorage) {
             // fetch last selected rowcount, sort on top so it will be the current active selection
-            var grid_id = window.location.pathname + '#' + this_grid.attr('id');
-            var count = parseInt(window.localStorage.getItem(grid_id+"_items")) ;
+            let grid_id = window.location.pathname + '#' + this_grid.attr('id');
+            let count = parseInt(window.localStorage.getItem(grid_id+"_items")) ;
             if (count !== null) {
                 if (Array.isArray(gridopt.rowCount)) {
-                    var index = gridopt.rowCount.indexOf(count);
+                    let index = gridopt.rowCount.indexOf(count);
                     if (index > -1) {
                         gridopt.rowCount.splice(index, 1);
                         gridopt.rowCount.unshift(count);
@@ -163,17 +162,16 @@ $.fn.UIBootgrid = function (params) {
         }
 
         // construct a new grid
-        var grid = this_grid.bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function (e)
-        {
+        return this_grid.bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function (e) {
             // scale footer on resize
             $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
             // invert colors if needed (check if there is a disabled field instead of an enabled field
-            var inverted = $(this).find("thead th[data-column-id=disabled]").length > 0;
+            let inverted = $(this).find("thead th[data-column-id=disabled]").length > 0;
             $(this).find('tr[data-row-id]').each(function(index, entry){
                 ['[class*="command-toggle"]', '[class*="command-boolean"]'].forEach(function (selector) {
-                    var selected_element = $(entry).find(selector).first();
+                    let selected_element = $(entry).find(selector).first();
                     if (selected_element.length > 0) {
-                        if ((selected_element.data("value") == "0") != inverted ) {
+                        if ((selected_element.data("value") == "0") !== inverted ) {
                             $(entry).addClass("text-muted");
                         }
                     }
@@ -181,17 +179,15 @@ $.fn.UIBootgrid = function (params) {
             });
 
         });
-
-        return grid;
-    }
+    };
 
     /**
      * add event
      */
     this.command_add = function(event) {
-        var editDlg = this_grid.attr('data-editDialog');
+        let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            var urlMap = {};
+            let urlMap = {};
             urlMap['frm_' + editDlg] = params['get'];
             mapDataToFormUI(urlMap).done(function(){
                 // update selectors
@@ -215,13 +211,13 @@ $.fn.UIBootgrid = function (params) {
         } else {
             console.log("[grid] action get or data-editDialog missing")
         }
-    }
+    };
 
     /**
      * animate alert when saved
      */
     this.showSaveAlert = function(event) {
-        var editAlert = this_grid.attr('data-editAlert');
+        let editAlert = this_grid.attr('data-editAlert');
         if (editAlert !== undefined) {
             $("#"+editAlert).slideDown(1000, function(){
                 setTimeout(function(){
@@ -229,16 +225,16 @@ $.fn.UIBootgrid = function (params) {
                 }, 2000);
             });
         }
-    }
+    };
 
     /**
      * edit event
      */
     this.command_edit = function(event) {
-        var editDlg = this_grid.attr('data-editDialog');
+        let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            var uuid = $(this).data("row-id");
-            var urlMap = {};
+            let uuid = $(this).data("row-id");
+            let urlMap = {};
             urlMap['frm_' + editDlg] = params['get'] + uuid;
             mapDataToFormUI(urlMap).done(function () {
                 // update selectors
@@ -262,13 +258,13 @@ $.fn.UIBootgrid = function (params) {
         } else {
             console.log("[grid] action get or data-editDialog missing")
         }
-    }
+    };
 
     /**
      * delete event
      */
     this.command_delete = function(event) {
-        var uuid=$(this).data("row-id");
+        let uuid=$(this).data("row-id");
         // XXX must be replaced, cannot translate
         stdDialogRemoveItem('Remove selected item?',function() {
             ajaxCall(params['del'] + uuid, {},function(data,status){
@@ -276,7 +272,7 @@ $.fn.UIBootgrid = function (params) {
                 std_bootgrid_reload(this_grid.attr('id'));
             });
         });
-    }
+    };
 
     /**
      * delete selected event
@@ -284,9 +280,9 @@ $.fn.UIBootgrid = function (params) {
     this.command_delete_selected = function(event) {
         // XXX must be replaced, cannot translate
         stdDialogRemoveItem("Remove selected items?",function(){
-            var rows =$("#"+this_grid.attr('id')).bootgrid('getSelectedRows');
-            if (rows != undefined){
-                var deferreds = [];
+            const rows = $("#" + this_grid.attr('id')).bootgrid('getSelectedRows');
+            if (rows !== undefined){
+                const deferreds = [];
                 $.each(rows, function(key,uuid){
                     deferreds.push(ajaxCall(params['del'] + uuid, {},null));
                 });
@@ -296,16 +292,16 @@ $.fn.UIBootgrid = function (params) {
                 });
             }
         });
-    }
+    };
 
     /**
      * copy event
      */
     this.command_copy = function(event) {
-        var editDlg = this_grid.attr('data-editDialog');
+        const editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            var uuid = $(this).data("row-id");
-            var urlMap = {};
+            const uuid = $(this).data("row-id");
+            const urlMap = {};
             urlMap['frm_' + editDlg] = params['get'] + uuid;
             mapDataToFormUI(urlMap).done(function () {
                 // update selectors
@@ -329,63 +325,62 @@ $.fn.UIBootgrid = function (params) {
         } else {
             console.log("[grid] action get or data-editDialog missing")
         }
-    }
+    };
 
     /**
      * info event
      */
     this.command_info = function(event) {
-        var uuid=$(this).data("row-id");
+        const uuid = $(this).data("row-id");
         ajaxGet(params['info'] + uuid, {}, function(data, status) {
-            if(status == 'success') {
-                var title = data['title'] || "Information";
-                var message = data['message'] || "A Message";
-                var close = data['close'] || "Close";
+            if(status === 'success') {
+                const title = data['title'] || "Information";
+                const message = data['message'] || "A Message";
+                const close = data['close'] || "Close";
                 stdDialogInform(title, message, close, undefined, "info");
             }
         });
-    }
+    };
 
     /**
      * toggle event
      */
     this.command_toggle = function(event) {
-        var uuid=$(this).data("row-id");
+        const uuid = $(this).data("row-id");
         $(this).addClass("fa-spinner fa-pulse");
         ajaxCall(params['toggle'] + uuid, {},function(data,status){
             // reload grid after delete
             std_bootgrid_reload(this_grid.attr('id'));
         });
-    }
+    };
 
     /**
      * load previous selections
      */
     this.load_selection = function() {
         if ($(this_grid).data('store-selection') === true && window.localStorage) {
-            var grid_id = window.location.pathname + '#' + this_grid.attr('id');
+            const grid_id = window.location.pathname + '#' + this_grid.attr('id');
             try {
-                var settings = JSON.parse(window.localStorage.getItem(grid_id));
+                const settings = JSON.parse(window.localStorage.getItem(grid_id));
                 if (settings != null) {
                     $.each(settings, function(field, value){
                         $('#'+ this_grid.attr('id')).find('[data-column-id="' +field+ '"]').data('visible', value);
                     });
                 }
             } catch (e) {
-                null;
             }
         }
-    }
+    };
 
     /**
      * store selections when data-store-selection=true
      */
     this.store_selection = function() {
         if ($(this_grid).data('store-selection') === true && window.localStorage) {
-            var grid_id = window.location.pathname + '#' + this_grid.attr('id');
+            const grid_id = window.location.pathname + '#' + this_grid.attr('id');
             // hook event handler to catch changing column selections
             $("#"+this_grid.attr('id')+"-header .dropdown-item-checkbox").unbind('click').click(function () {
-                var settings = {};
+                let settings = {};
                 try {
                     settings = JSON.parse(window.localStorage.getItem(grid_id));
                     if (settings == null) {
@@ -404,7 +399,7 @@ $.fn.UIBootgrid = function (params) {
                 window.localStorage.setItem(grid_id+"_items", $(this).data('action'));
             });
         }
-    }
+    };
 
     /**
      * init bootgrids
@@ -415,22 +410,22 @@ $.fn.UIBootgrid = function (params) {
         $(this).find("*[data-action=add]").addClass('command-add');
         $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected');
 
-        if (params != undefined && params['search'] != undefined) {
+        if (params !== undefined && params['search'] !== undefined) {
             // load previous selections when enabled
             this_grid.load_selection();
             // create new bootgrid component and link source
-            var grid = this_grid.construct();
+            const grid = this_grid.construct();
 
             // edit dialog id to use ( see base_dialog.volt template for details)
-            var editDlg = $(this).attr('data-editDialog');
+            const editDlg = $(this).attr('data-editDialog');
 
             // link edit and delete event buttons
             grid.on("loaded.rs.jquery.bootgrid", function(){
                 // hook all events
-                var commands = this_grid.getCommands();
+                const commands = this_grid.getCommands();
                 Object.keys(commands).map(function (k) {
-                    var has_option = true;
-                    for (var i=0; i < commands[k]['requires'].length; i++) {
+                    let has_option = true;
+                    for (let i=0; i < commands[k]['requires'].length; i++) {
                         if (!(commands[k]['requires'][i] in params)) {
                             has_option = false;
                         }
