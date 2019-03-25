@@ -617,6 +617,7 @@ function ipsec_convert_to_modp($index): string
         28 => 'ecp256bp',
         29 => 'ecp384bp',
         30 => 'ecp512bp',
+        31 => 'curve25519',
     ];
 
     if (!array_key_exists($index, $map)) {
