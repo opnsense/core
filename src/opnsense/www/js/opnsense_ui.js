@@ -100,9 +100,10 @@ function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
 /**
  * standard data mapper to map json request data to forms on this page
  * @param data_get_map named array containing form names and source url's to get data from {'frm_example':"/api/example/settings/get"};
+ * @param server_params parameters to send to server
  * @return promise object, resolves when all are loaded
  */
-function mapDataToFormUI(data_get_map) {
+function mapDataToFormUI(data_get_map, server_params) {
     const dfObj = new $.Deferred();
 
     // calculate number of items for deferred object to resolve
@@ -112,9 +113,13 @@ function mapDataToFormUI(data_get_map) {
         data_map_count += 1;
     });
 
+    if (server_params === undefined) {
+        server_params = {};
+    }
+
     const collected_data = {};
     $.each(data_get_map, function(data_index, data_url) {
-        ajaxGet(data_url,{}, function(data, status) {
+        ajaxGet(data_url,server_params , function(data, status) {
             if (status === "success") {
                 $("form").each(function() {
                     if ( $(this).attr('id') && $(this).attr('id').split('-')[0] === data_index) {
