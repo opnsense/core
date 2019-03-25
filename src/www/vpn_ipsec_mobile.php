@@ -524,6 +524,7 @@ endfor; ?>
                             28 => '28 (Brainpool EC 256 bits)',
                             29 => '29 (Brainpool EC 384 bits)',
                             30 => '30 (Brainpool EC 512 bits)',
+                            31 => '31 (Elliptic Curve 25519)',
                         );
                         foreach ($p2_dhgroups as $keygroup => $keygroupname): ?>
                           <option value="<?=$keygroup;
