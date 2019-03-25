@@ -30,7 +30,6 @@
 
 namespace OPNsense\Base;
 
-use \OPNsense\Base\UserException;
 use \OPNsense\Core\ACL;
 use \OPNsense\Core\Config;
 
@@ -122,6 +121,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array result / validation output
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     protected function validateAndSave($node = null, $prefix = null)
     {
@@ -177,6 +177,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array result / validation output
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws \OPNsense\Base\UserException when denied write access
      */
     protected function save()
     {
@@ -208,6 +209,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array status / validation errors
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function setAction()
     {
@@ -234,10 +236,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $path path to search, relative to this model
      * @param array $fields fieldnames to fetch in result
      * @param string|null $defaultSort default sort field name
+     * @param null|function $filter_funct additional filter callable
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields, $defaultSort = null)
+    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null)
     {
         $this->sessionClose();
         $element = $this->getModel();
@@ -248,7 +251,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         return $grid->fetchBindRequest(
             $this->request,
             $fields,
-            $defaultSort
+            $defaultSort,
+            $filter_funct
         );
     }
 
@@ -287,6 +291,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function addBase($post_field, $path, $overlay = null)
     {
@@ -325,6 +330,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function delBase($path, $uuid)
     {
@@ -358,6 +364,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function setBase($post_field, $path, $uuid, $overlay = null)
     {
@@ -393,6 +400,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function toggleBase($path, $uuid, $enabled = null)
     {
