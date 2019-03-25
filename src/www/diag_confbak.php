@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($confvers as $filename => $revision) {
             if (isset($revision['time']) && $revision['time'] == $_POST['time']) {
                 if (!$readonly && config_restore($filename) == 0) {
-                    $savemsg = sprintf(gettext('Successfully reverted to timestamp %s with description "%s".'), date(gettext("n/j/y H:i:s"), $_POST['id']), $revision['description']);
+                    $savemsg = sprintf(gettext('Successfully reverted to timestamp %s with description "%s".'), date(gettext("n/j/y H:i:s"), $revision['time']), $revision['description']);
                 } else {
                     $savemsg = gettext("Unable to revert to the selected configuration.");
                 }
