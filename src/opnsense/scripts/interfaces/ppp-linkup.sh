@@ -2,8 +2,7 @@
 
 export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
-if [ "${2}" == "inet" ]; then
-
+if [ "${2}" = "inet" ]; then
 	OLD_ROUTER=`cat /tmp/${1}_router`
 	if [ -n "${OLD_ROUTER}" ]; then
 		echo "Removing states to old router ${OLD_ROUTER}" | logger -t ppp-linkup
@@ -31,12 +30,10 @@ if [ "${2}" == "inet" ]; then
 			route delete "${DNS2}" ${4}
 			route add "${DNS2}" ${4}
 		fi
-		/usr/local/opnsense/service/configd_ctl.py dns reload
-		sleep 1
 	fi
-	/usr/local/opnsense/service/configd_ctl.py interface newip ${1}
 
-elif [ "${2}" == "inet6" ]; then
+	/usr/local/opnsense/service/configd_ctl.py interface newip ${1}
+elif [ "${2}" = "inet6" ]; then
 	# let the configuration system know that the ipv6 has changed.
 	echo ${4} |cut -d% -f1 > /tmp/${1}_routerv6
 	echo ${3} |cut -d% -f1 > /tmp/${1}_ipv6
@@ -57,9 +54,8 @@ elif [ "${2}" == "inet6" ]; then
 			route delete -inet6 "${DNS2}" ${4}
 			route add -inet6 "${DNS2}" ${4}
 		fi
-		/usr/local/opnsense/service/configd_ctl.py dns reload
-		sleep 1
 	fi
+
 	/usr/local/opnsense/service/configd_ctl.py interface newipv6 ${1}
 fi
 
