@@ -32,7 +32,7 @@ if [ "${2}" = "inet" ]; then
 		fi
 	fi
 
-	/usr/local/opnsense/service/configd_ctl.py interface newip ${1}
+	daemon -f /usr/local/opnsense/service/configd_ctl.py interface newip ${1}
 elif [ "${2}" = "inet6" ]; then
 	# let the configuration system know that the ipv6 has changed.
 	echo ${4} |cut -d% -f1 > /tmp/${1}_routerv6
@@ -56,7 +56,7 @@ elif [ "${2}" = "inet6" ]; then
 		fi
 	fi
 
-	/usr/local/opnsense/service/configd_ctl.py interface newipv6 ${1}
+	daemon -f /usr/local/opnsense/service/configd_ctl.py interface newipv6 ${1}
 fi
 
 exit 0
