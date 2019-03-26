@@ -54,6 +54,6 @@ elif [ "${AF}" = "inet6" ]; then
 	rm -f /tmp/${IF}_routerv6 /tmp/${IF}upv6 /tmp/${IF}_ipv6
 fi
 
-/usr/local/opnsense/service/configd_ctl.py dns reload
+daemon -f /usr/local/opnsense/service/configd_ctl.py dns reload
 
 exit 0
