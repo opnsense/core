@@ -30,7 +30,31 @@
 
 import collections
 import netaddr
-import operator
+
+
+class SortKeyHelper:
+    """ generate item key for sort function
+    """
+    def __init__(self, fields):
+        """ initialize SortKeyHelper
+
+        :param fields: field names
+        """
+        self._fields = fields
+
+    def get_key(self, record):
+        """ initialize SortKeyHelper
+
+        :param fields: dictionary item
+        :return: list of keys for this record
+        """
+        result = list()
+        for field in self._fields:
+            if field in record:
+                result.append(record[field])
+            else:
+                result.append('')
+        return result
 
 
 # noinspection PyPep8Naming
@@ -139,7 +163,7 @@ class Helpers(object):
     @staticmethod
     def sortDictList(lst, *operators):
         if type(lst) == list:
-            lst.sort(key=operator.itemgetter(*operators))
+            lst.sort(key=SortKeyHelper(operators).get_key)
         elif type(lst) in (collections.OrderedDict, dict):
             return [lst]
         return lst
