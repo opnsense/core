@@ -30,7 +30,6 @@
 
 namespace OPNsense\Base;
 
-use \OPNsense\Base\UserException;
 use \OPNsense\Core\ACL;
 use \OPNsense\Core\Config;
 
@@ -122,6 +121,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array result / validation output
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     protected function validateAndSave($node = null, $prefix = null)
     {
@@ -177,6 +177,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array result / validation output
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws \OPNsense\Base\UserException when denied write access
      */
     protected function save()
     {
@@ -208,6 +209,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array status / validation errors
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function setAction()
     {
@@ -289,6 +291,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function addBase($post_field, $path, $overlay = null)
     {
@@ -327,6 +330,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function delBase($path, $uuid)
     {
@@ -360,6 +364,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function setBase($post_field, $path, $uuid, $overlay = null)
     {
@@ -395,6 +400,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function toggleBase($path, $uuid, $enabled = null)
     {
