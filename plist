@@ -677,6 +677,7 @@
 /usr/local/opnsense/scripts/interfaces/list_interfaces.php
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
+/usr/local/opnsense/scripts/interfaces/mpd.script
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
@@ -1554,7 +1555,6 @@
 /usr/local/sbin/3gstats.php
 /usr/local/sbin/beep.sh
 /usr/local/sbin/configctl
-/usr/local/sbin/mpd.script
 /usr/local/sbin/opnsense-auth
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer

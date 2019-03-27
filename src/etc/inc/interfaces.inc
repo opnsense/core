@@ -1172,9 +1172,7 @@ function interface_ppps_configure($interface)
     }
 
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
-    if (!file_exists('/var/etc/mpd.script')) {
-        symlink('/usr/local/sbin/mpd.script', '/var/etc/mpd.script');
-    }
+    @copy('/usr/local/opnsense/scripts/interfaces/mpd.script', '/var/etc/mpd.script');
 
     if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
