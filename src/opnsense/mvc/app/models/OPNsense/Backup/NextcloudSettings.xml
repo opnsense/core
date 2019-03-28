@@ -9,6 +9,8 @@
         </enabled>
         <url type="TextField">
             <Required>N</Required>
+            <mask>/^https?:\/\/.*[^\/]$/</mask>
+            <ValidationMessage>The url must be valid without a trailing slash. For example: https://nextcloud.example.com or https://example.com/nextcloud</ValidationMessage>
             <Constraints>
                 <check001>
                     <ValidationMessage>An URL for the Nextcloud server must be set.</ValidationMessage>
