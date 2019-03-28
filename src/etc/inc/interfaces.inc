@@ -1460,13 +1460,9 @@ EOD;
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
-        if (!file_exists("/conf/{$ifcfg['if']}.log")) {
-            file_put_contents("/conf/{$ifcfg['if']}.log", '');
-        }
+        @touch("/conf/{$ifcfg['if']}.log");
     } else {
-        if (file_exists("/conf/{$ifcfg['if']}.log")) {
-            @unlink("/conf/{$ifcfg['if']}.log");
-        }
+        @unlink("/conf/{$ifcfg['if']}.log");
     }
 
     /* clean up old lock files */
