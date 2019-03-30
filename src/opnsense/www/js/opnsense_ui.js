@@ -41,7 +41,7 @@
         decimals = 0;
      }
      const kb = 1024;
-     const ndx = Math.floor(Math.log(bytes) / Math.log(kb));
+     const ndx = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(kb));
      const fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
      return (bytes / Math.pow(kb, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
  }
