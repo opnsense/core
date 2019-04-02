@@ -5,8 +5,34 @@
 
 table {
   background-color: $table-bg;
-  color: #444;
+
+  // Table cell sizing
+  //
+  // Reset default table behavior
+
+  col[class*="col-"] {
+    position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
+    display: table-column;
+    float: none;
+  }
+
+  td,
+  th {
+    &[class*="col-"] {
+      position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
+      display: table-cell;
+      float: none;
+    }
+  }
 }
+
+caption {
+  padding-top: $table-cell-padding;
+  padding-bottom: $table-cell-padding;
+  color: $text-muted;
+  text-align: left;
+}
+
 th {
   text-align: left;
 }
@@ -35,7 +61,7 @@ th {
   // Bottom align for column headings
   > thead > tr > th {
     vertical-align: bottom;
-    border-bottom: 1px solid $table-border-color;
+    border-bottom: 2px solid $table-border-color;
   }
   // Remove top border from thead by default
   > caption + thead,
@@ -45,8 +71,6 @@ th {
       > th,
       > td {
         border-top: 0;
-        font-family: 'SourceSansProSemibold';
-        font-weight: normal;
       }
     }
   }
@@ -108,11 +132,8 @@ th {
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
 
 .table-striped {
-  > tbody > tr:nth-child(odd) {
-    > td,
-    > th {
-      background-color: $table-bg-accent;
-    }
+  > tbody > tr:nth-of-type(odd) {
+    background-color: $table-bg-accent;
   }
 }
 
@@ -123,31 +144,7 @@ th {
 
 .table-hover {
   > tbody > tr:hover {
-    > td,
-    > th {
-      background-color: $table-bg-hover;
-    }
-  }
-}
-
-
-// Table cell sizing
-//
-// Reset default table behavior
-
-table col[class*="col-"] {
-  position: static; // Prevent border hiding in Firefox and IE9/10 (see https://github.com/twbs/bootstrap/issues/11623)
-  float: none;
-  display: table-column;
-}
-table {
-  td,
-  th {
-    &[class*="col-"] {
-      position: static; // Prevent border hiding in Firefox and IE9/10 (see https://github.com/twbs/bootstrap/issues/11623)
-      float: none;
-      display: table-cell;
-    }
+    background-color: $table-bg-hover;
   }
 }
 
@@ -172,14 +169,15 @@ table {
 // will display normally.
 
 .table-responsive {
+  min-height: .01%; // Workaround for IE9 bug (see https://github.com/twbs/bootstrap/issues/14837)
+  overflow-x: auto;
+
   @media screen and (max-width: $screen-xs-max) {
     width: 100%;
-    margin-bottom: ($line-height-computed * 0.75);
+    margin-bottom: ($line-height-computed * .75);
     overflow-y: hidden;
-    overflow-x: auto;
     -ms-overflow-style: -ms-autohiding-scrollbar;
-/*     border: 1px solid $table-border-color; */
-    -webkit-overflow-scrolling: touch;
+    border: 1px solid $table-border-color;
 
     // Tighten up spacing
     > .table {

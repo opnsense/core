@@ -15,7 +15,7 @@ h1, h2, h3, h4, h5, h6,
 
   small,
   .small {
-    font-weight: normal;
+    font-weight: 400;
     line-height: 1;
     color: $headings-small-color;
   }
@@ -80,15 +80,10 @@ small,
   font-size: floor((100% * $font-size-small / $font-size-base));
 }
 
-// Undo browser default styling
-cite {
-  font-style: normal;
-}
-
 mark,
 .mark {
-  background-color: $state-warning-bg;
   padding: .2em;
+  background-color: $state-warning-bg;
 }
 
 // Alignment
@@ -163,21 +158,26 @@ ol {
 
 // List options
 
-// Unstyled keeps list items block level, just removes default browser padding and list-style
-.list-unstyled {
+// [converter] extracted from `.list-unstyled` for libsass compatibility
+@mixin list-unstyled {
   padding-left: 0;
   list-style: none;
 }
+// [converter] extracted as `@mixin list-unstyled` for libsass compatibility
+.list-unstyled {
+  @include list-unstyled;
+}
+
 
 // Inline turns list items into inline-block
 .list-inline {
-  @extend .list-unstyled;
+  @include list-unstyled;
   margin-left: -5px;
 
   > li {
-    float:left;
-    padding-left: 5px;
+    display: inline-block;
     padding-right: 5px;
+    padding-left: 5px;
   }
 }
 
@@ -191,7 +191,7 @@ dd {
   line-height: $line-height-base;
 }
 dt {
-  font-weight: bold;
+  font-weight: 700;
 }
 dd {
   margin-left: 0; // Undo browser default
@@ -204,16 +204,16 @@ dd {
 
 .dl-horizontal {
   dd {
-    @include clearfix(); // Clear the floated `dt` if an empty `dd` is present
+    @include clearfix; // Clear the floated `dt` if an empty `dd` is present
   }
 
-  @media (min-width: $grid-float-breakpoint) {
+  @media (min-width: $dl-horizontal-breakpoint) {
     dt {
       float: left;
       width: ($dl-horizontal-offset - 20);
       clear: left;
       text-align: right;
-      @include text-overflow();
+      @include text-overflow;
     }
     dd {
       margin-left: $dl-horizontal-offset;
@@ -226,15 +226,15 @@ dd {
 // -------------------------
 
 // Abbreviations and acronyms
-abbr[title],
 // Add data-* attribute to help out our tooltip plugin, per https://github.com/twbs/bootstrap/issues/5257
+abbr[title],
 abbr[data-original-title] {
   cursor: help;
-  border-bottom: 1px dotted $abbr-border-color;
 }
+
 .initialism {
   font-size: 90%;
-  text-transform: uppercase;
+  @extend .text-uppercase;
 }
 
 // Blockquotes
@@ -263,7 +263,7 @@ blockquote {
     color: $blockquote-small-color;
 
     &:before {
-      content: '\2014 \00A0'; // em dash, nbsp
+      content: "\2014 \00A0"; // em dash, nbsp
     }
   }
 }
@@ -275,25 +275,19 @@ blockquote {
 blockquote.pull-right {
   padding-right: 15px;
   padding-left: 0;
+  text-align: right;
   border-right: 5px solid $blockquote-border-color;
   border-left: 0;
-  text-align: right;
 
   // Account for citation
   footer,
   small,
   .small {
-    &:before { content: ''; }
+    &:before { content: ""; }
     &:after {
-      content: '\00A0 \2014'; // nbsp, em dash
+      content: "\00A0 \2014"; // nbsp, em dash
     }
   }
-}
-
-// Quotes
-blockquote:before,
-blockquote:after {
-  content: "";
 }
 
 // Addresses
