@@ -33,7 +33,7 @@ label {
   display: inline-block;
   max-width: 100%; // Force IE8 to wrap long content (see https://github.com/twbs/bootstrap/issues/13141)
   margin-bottom: 5px;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 
@@ -113,24 +113,24 @@ output {
 // Shared size and type resets for form controls. Apply `.form-control` to any
 // of the following form controls:
 //
-// select
-// textarea
-// input[type="text"]
-// input[type="password"]
-// input[type="datetime"]
-// input[type="datetime-local"]
-// input[type="date"]
-// input[type="month"]
-// input[type="time"]
-// input[type="week"]
-// input[type="number"]
-// input[type="email"]
-// input[type="url"]
-// input[type="search"]
-// input[type="tel"]
-// input[type="color"]
-
-.form-control {
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"]
+/* .form-control */
+{
   display: block;
   width: 100%;
   height: $input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
@@ -142,7 +142,9 @@ output {
   background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
   border: 1px solid $input-border;
   border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
-  @include box-shadow(inset 0 1px 1px rgba(0, 0, 0, .075));
+  text-overflow: ellipsis;
+  max-width:348px;
+  //@include box-shadow(inset 0 1px 1px rgba(0, 0, 0, .075));
   @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
 
   // Customize the `:focus` state to imitate native WebKit styles.
@@ -159,9 +161,9 @@ output {
 
   // Disabled and read-only inputs
   //
-  // HTML5 says that controls under a fieldset > legend:first-child won't be
+  // HTML5 says that controls under a fieldset > legend:first-child wont be
   // disabled if the fieldset is disabled. Due to implementation difficulty, we
-  // don't honor that edge case; we style them as disabled anyway.
+  // dont honor that edge case; we style them as disabled anyway.
   &[disabled],
   &[readonly],
   fieldset[disabled] & {
@@ -178,7 +180,7 @@ output {
 }
 
 // Reset height for `textarea`s
-textarea.form-control {
+textarea{
   height: auto;
 }
 
@@ -379,7 +381,7 @@ textarea.form-control {
   // Enable absolute positioning
   position: relative;
 
-  // Ensure icons don't overlap text
+  // Ensure icons dont overlap text
   .form-control {
     padding-right: ($input-height-base * 1.25);
   }
@@ -578,7 +580,7 @@ textarea.form-control {
 
   // Validation states
   //
-  // Reposition the icon because it's now within a grid column and columns have
+    // Reposition the icon because its now within a grid column and columns have
   // `position: relative;` on them. Also accounts for the grid gutter padding.
   .has-feedback .form-control-feedback {
     right: floor(($grid-gutter-width / 2));

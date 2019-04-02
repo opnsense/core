@@ -175,7 +175,8 @@ ol {
   margin-left: -5px;
 
   > li {
-    display: inline-block;
+    //display: inline-block;
+    float:left;
     padding-right: 5px;
     padding-left: 5px;
   }
