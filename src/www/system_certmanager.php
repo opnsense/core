@@ -2025,43 +2025,32 @@ $( document ).ready(function() {
 <?php
                 endif; ?>
 
-<?php
-                if (isset($cert['crt'])) :?>
+<?php if (isset($cert['crt'])): ?>
                   <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
                     <i class="fa fa-info-circle fa-fw"></i>
                   </a>
-<?php
-                endif; ?>
-
-
+<?php endif ?>
                   <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">
                       <i class="fa fa-download fa-fw"></i>
                   </a>
-
-<?php if (isset($cert['prv'])) :?>
+<?php if (isset($cert['prv'])): ?>
                   <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user key");?>">
                     <i class="fa fa-download fa-fw"></i>
                   </a>
-
                   <a data-id="<?=$i;?>"  class="btn btn-default btn-xs p12btn" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
                       <i class="fa fa-download fa-fw"></i>
                   </a>
-<?php
-                endif; ?>
-<?php
-                  if (!cert_in_use($cert['refid'])) :?>
-
+<?php endif ?>
+<?php if (!cert_in_use($cert['refid'])): ?>
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete cert"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                     <i class="fa fa-trash fa-fw"></i>
                   </a>
-<?php
-                  endif;
-                  if (isset($cert['csr'])) :?>
+<?php endif ?>
+<?php if (isset($cert['csr'])): ?>
                   <a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("update csr");?>">
                     <i class="fa fa-pencil fa-fw"></i>
                   </a>
-<?php
-                  endif; ?>
+<?php endif ?>
                 </td>
               </tr>
 <?php
