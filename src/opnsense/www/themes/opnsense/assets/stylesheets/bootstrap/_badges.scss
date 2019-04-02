@@ -10,11 +10,11 @@
   padding: 3px 7px;
   font-size: $font-size-small;
   font-weight: $badge-font-weight;
-  color: $badge-color;
   line-height: $badge-line-height;
-  vertical-align: baseline;
-  white-space: nowrap;
+  color: $badge-color;
   text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
   background-color: $badge-bg;
   border-radius: $badge-border-radius;
 
@@ -28,7 +28,9 @@
     position: relative;
     top: -1px;
   }
-  .btn-xs & {
+
+  .btn-xs &,
+  .btn-group-xs > .btn & {
     top: 0;
     padding: 1px 5px;
   }
@@ -36,11 +38,20 @@
   // [converter] extracted a& to a.badge
 
   // Account for badges in navs
-  a.list-group-item.active > &,
+  .list-group-item.active > &,
   .nav-pills > .active > a > & {
     color: $badge-active-color;
     background-color: $badge-active-bg;
   }
+
+  .list-group-item > & {
+    float: right;
+  }
+
+  .list-group-item > & + & {
+    margin-right: 5px;
+  }
+
   .nav-pills > li > a > & {
     margin-left: 3px;
   }
