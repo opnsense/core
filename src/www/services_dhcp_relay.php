@@ -87,13 +87,12 @@ $iflist = get_configured_interface_with_descr();
  */
 $dhcpd_enabled = false;
 if (is_array($config['dhcpd'])) {
-    foreach($config['dhcpd'] as $dhcp) {
-        if (isset($dhcp['enable'])) {
+    foreach($config['dhcpd'] as $intf => $dhcp) {
+        if (isset($dhcp['enable']) && !empty($config['interfaces'][$intf]['enable'])) {
             $dhcpd_enabled = true;
         }
     }
 }
-
 $service_hook = 'dhcrelay';
 include("head.inc");
 ?>
