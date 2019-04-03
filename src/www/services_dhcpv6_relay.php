@@ -85,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
  */
 $dhcpd_enabled = false;
 if (is_array($config['dhcpdv6'])) {
-    foreach($config['dhcpdv6'] as $dhcp) {
-        if (isset($dhcp['enable'])) {
+    foreach($config['dhcpdv6'] as $intf => $dhcp) {
+        if (isset($dhcp['enable']) && !empty($config['interfaces'][$intf]['enable'])) {
             $dhcpd_enabled = true;
         }
     }
