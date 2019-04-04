@@ -334,23 +334,19 @@ function initFormHelpUI() {
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 1);
             }
-            $("a.showhelp").each(function(){
-                $("*[data-for='" + $(this).attr('id') + "']").addClass("show").removeClass("hidden");
-            });
+            $('[data-for*="help_for"]').addClass("show").removeClass("hidden");
         } else {
-            $("a.showhelp").each(function(){
-                $("*[data-for='" + $(this).attr('id') + "']").addClass("hidden").removeClass("show");
-            });
+            $('[data-for*="help_for"]').addClass("hidden").removeClass("show");
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 0);
             }
         }
         event.preventDefault();
     });
-    if (window.sessionStorage && sessionStorage.getItem('all_help_preset') === 1) {
+
+    if (window.sessionStorage && sessionStorage.getItem('all_help_preset') === "1") {
         // show all help messages when preset was stored
-        elements.toggleClass("fa-toggle-on fa-toggle-off");
-        elements.toggleClass("text-success text-danger");
+        elements.toggleClass("fa-toggle-on fa-toggle-off").toggleClass("text-success text-danger");
         $('[data-for*="help_for"]').addClass("show").removeClass("hidden");
     }
 }
