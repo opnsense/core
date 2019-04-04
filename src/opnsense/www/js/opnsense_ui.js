@@ -328,17 +328,19 @@ function initFormHelpUI() {
     // handle all help messages show/hide
     let elements = $('[id*="show_all_help"]');
     elements.click(function(event) {
-        elements.toggleClass("fa-toggle-on fa-toggle-off");
-        elements.toggleClass("text-success text-danger");
-        if (elements.hasClass("fa-toggle-on")) {
+        $(this).toggleClass("fa-toggle-on fa-toggle-off");
+        $(this).toggleClass("text-success text-danger");
+        if ($(this).hasClass("fa-toggle-on")) {
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 1);
             }
-            elements.addClass("show");
-            elements.removeClass("hidden");
+            $("a.showhelp").each(function(){
+                $("*[data-for='" + $(this).attr('id') + "']").addClass("show").removeClass("hidden");
+            });
         } else {
-            elements.addClass("hidden");
-            elements.removeClass("show");
+            $("a.showhelp").each(function(){
+                $("*[data-for='" + $(this).attr('id') + "']").addClass("hidden").removeClass("show");
+            });
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 0);
             }
