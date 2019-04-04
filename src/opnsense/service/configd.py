@@ -39,6 +39,7 @@ import signal
 import time
 import socket
 import subprocess
+import syslog
 import modules.processhandler
 import modules.csconfigparser
 from modules.daemonize import Daemonize
@@ -122,6 +123,7 @@ this_config = get_config()
 validate_config(this_config)
 if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
     print('run %s in console mode' % sys.argv[0])
+    syslog.openlog("configd.py")
     if 'profile' in sys.argv[1:]:
         # profile configd
         # for graphical output use gprof2dot:
