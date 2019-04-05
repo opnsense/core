@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,8 @@ class Metadata(object):
         """
         for filename in sorted(glob.glob('%s*.xml' % self._rules_dir), reverse=True):
             try:
-                xml_data = open(filename).read()
-                for tag in replace_tags.keys():
+                xml_data = open(filename, 'r').read()
+                for tag in replace_tags:
                     search_tag = '%%%%%s%%%%' % tag
                     if xml_data.find(search_tag) > -1:
                         xml_data = xml_data.replace(search_tag, replace_tags[tag])

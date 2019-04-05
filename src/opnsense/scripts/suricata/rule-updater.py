@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ import os
 import sys
 import syslog
 import fcntl
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from lib import metadata
 from lib import downloader
 from lib import rule_source_directory
@@ -105,7 +105,7 @@ if __name__ == '__main__':
                         syslog.syslog(syslog.LOG_INFO, 'download skipped %s, same version' % rule['filename'])
 
     # cleanup: match all installed rulesets against the configured ones and remove uninstalled rules
-    md_filenames = map(lambda x:x['filename'], md.list_rules(rule_properties))
+    md_filenames = [x['filename'] for x in md.list_rules(rule_properties)]
     for filename in enabled_rulefiles:
         full_path = ('%s/%s' % (rule_source_directory, filename)).replace('//', '/')
         if filename not in md_filenames and os.path.isfile(full_path):

@@ -80,7 +80,7 @@ class Downloader(object):
             :param src: handle to temp file
             :param source_filename: original source filename
             :param filename: filename to extract
-            :return: text
+            :return: string
         """
         src.seek(0)
         unpack_type=None
@@ -112,9 +112,9 @@ class Downloader(object):
                             rule_content.append(zf.open(item).read())
                         elif filename is None and item.file_size > 0 and item.filename.lower().endswith('.rules'):
                             rule_content.append(zf.open(item).read())
-            return '\n'.join(rule_content)
+            return '\n'.join([x.decode() for x in rule_content])
         else:
-            return src.read()
+            return src.read().decode()
 
     def fetch(self, url, auth=None, headers=None):
         """ Fetch file from remote location and save to temp, return filehandle pointed to start of temp file.
@@ -178,12 +178,12 @@ class Downloader(object):
             if self.is_supported(check_url):
                 version_fetch = self.fetch(url=check_url, auth=auth, headers=headers)
                 if version_fetch:
-                    version_response = version_fetch['handle'].read()
+                    version_response = version_fetch['handle'].read().decode()
                     hash_value = [json.dumps(input_filter), json.dumps(auth),
                                   json.dumps(headers), version_response]
                     if not version_fetch['cached']:
                         syslog.syslog(syslog.LOG_NOTICE, 'version response for %s : %s' % (check_url, version_response))
-                    return hashlib.md5('\n'.join(hash_value)).hexdigest()
+                    return hashlib.md5(('\n'.join(hash_value)).encode()).hexdigest()
         return None
 
     def installed_file_hash(self, filename):
