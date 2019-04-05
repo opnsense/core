@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
 
 import os
 import mmap
-import StringIO
+from io import StringIO
 import struct
 
 
@@ -86,6 +86,6 @@ def fetch_clog(input_log):
         # unpack clog information struct
         clog_footer = struct.unpack('iiii', mm[-16:])  # cf_magic, cf_wrap, cf_next, cf_max, cf_lock
         # concat log file into new output stream, start at current wrap position
-        output_stream = StringIO.StringIO(mm[clog_footer[1]:-20] + mm[:clog_footer[1]])
+        output_stream = StringIO(mm[clog_footer[1]:-20].decode() + mm[:clog_footer[1]].decode())
         output_stream.seek(0)
         return output_stream
