@@ -696,41 +696,42 @@ function unbound_acls_subnets()
 {
     global $config;
 
+    $any = true;
+
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = array_flip(explode(',', $config['unbound']['active_interface']));
-
-        /* in case of OpenVPN interface we need to correct the subnet */
-        foreach (array('server', 'client') as $mode) {
-            foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
-                $ovpn = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
-                if (!array_key_exists($ovpn, $active_interfaces)) {
-                    continue;
-                }
-                $active_interfaces[$ovpn] = [];
-                if (!empty($setting['tunnel_network'])) {
-                    $active_interfaces[$ovpn]['net4'] = explode('/', $setting['tunnel_network'])[1];
-                }
-                if (!empty($setting['tunnel_networkv6'])) {
-                    $active_interfaces[$ovpn]['net6'] = explode('/', $setting['tunnel_networkv6'])[1];
-                }
-            }
-        }
+        $any = false;
     } else {
         $active_interfaces = get_configured_interface_with_descr();
+    }
+
+    /* in case of OpenVPN interface we need to correct the subnet */
+    foreach (array('server', 'client') as $mode) {
+        foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
+            $ovpn = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
+            if (!$any && !array_key_exists($ovpn, $active_interfaces)) {
+                continue;
+            }
+            $active_interfaces[$ovpn] = [];
+            if (!empty($setting['tunnel_network'])) {
+                $active_interfaces[$ovpn]['net4'] = explode('/', $setting['tunnel_network'])[1];
+            }
+            if (!empty($setting['tunnel_networkv6'])) {
+                $active_interfaces[$ovpn]['net6'] = explode('/', $setting['tunnel_networkv6'])[1];
+            }
+        }
     }
 
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $ubextra) {
-        foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
-            if (!empty($ubextra['net4']) && is_subnetv4($subnet)) {
-                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net4'];
-            } elseif (!empty($ubextra['net6']) && is_subnetv6($subnet)) {
-                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net6'];
-            }
-            $subnets[] = $subnet;
+    foreach (interfaces_addresses(array_keys($active_interfaces), true) as $subnet => $info) {
+        if (!empty($active_interfaces[$info['name']]['net4']) && is_subnetv4($subnet)) {
+            $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net4'];
+        } elseif (!empty($active_interfaces[$info['name']]['net6']) && is_subnetv6($subnet)) {
+            $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net6'];
         }
+        $subnets[] = $subnet;
     }
 
     return $subnets;
