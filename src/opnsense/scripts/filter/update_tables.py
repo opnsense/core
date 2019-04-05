@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,13 @@ import os
 import sys
 import argparse
 import json
+import urllib3
 import xml.etree.cElementTree as ET
 import syslog
 import tempfile
 import subprocess
 from lib.alias import Alias
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class AliasParser(object):
@@ -53,7 +55,7 @@ class AliasParser(object):
         """
         self._aliases = dict()
         alias_parameters = dict()
-        alias_parameters['known_aliases'] = map(lambda x: x.text, self._source_tree.iterfind('table/name'))
+        alias_parameters['known_aliases'] = [x.text for x in self._source_tree.iterfind('table/name')]
 
         # parse general alias settings
         conf_general = self._source_tree.find('general')
@@ -141,7 +143,7 @@ if __name__ == '__main__':
             subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'show'],
                             stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
-            for line in output_stream.read().strip().split('\n'):
+            for line in output_stream.read().decode().strip().split('\n'):
                 line = line.strip()
                 if line:
                     alias_pf_content.append(line)
@@ -160,7 +162,7 @@ if __name__ == '__main__':
                                      '/var/db/aliastables/%s.txt' % alias_name],
                                      stdout=open(os.devnull, 'wb'), stderr=output_stream)
                     output_stream.seek(0)
-                    error_output = output_stream.read().strip()
+                    error_output = output_stream.read().decode().strip()
                     if error_output.find('pfctl: ') > -1:
                         result['status'] = 'error'
                         if 'messages' not in result:

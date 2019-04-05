@@ -1,5 +1,4 @@
-#!/usr/local/bin/python2.7
-
+#!/usr/local/bin/python3.6
 """
     Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
@@ -65,7 +64,7 @@ if __name__ == '__main__':
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/sbin/pfctl', '-s', 'state'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
-        data = output_stream.read().strip()
+        data = output_stream.read().decode().strip()
         if data.count('\n') > 2:
             for line in data.split('\n'):
                 parts = line.split()

@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,12 +44,12 @@ if __name__ == '__main__':
                             stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
             if sys.argv[2].strip() == 'ALL':
-                if len(output_stream.read().strip().split('\n')) > 0:
+                if len(output_stream.read().decode().strip().split('\n')) > 0:
                     # delete all entries from a pf table
                     subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'flush'],
                                     stdout=output_stream, stderr=open(os.devnull, 'wb'))
             else:
-                for line in output_stream.read().strip().split('\n'):
+                for line in output_stream.read().decode().strip().split('\n'):
                     if line.strip() == sys.argv[2].strip():
                         result = []
                         subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'delete', line.strip()],

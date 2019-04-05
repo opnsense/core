@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         with tempfile.NamedTemporaryFile() as output_stream:
             subprocess.call(['/sbin/pfctl', '-vvs'+stattype], stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
-            result[stattype] = output_stream.read().strip()
+            result[stattype] = output_stream.read().decode().strip()
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
