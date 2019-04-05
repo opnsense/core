@@ -24,7 +24,7 @@
             function getURLparams()
             {
                 var vars = [], hash;
-                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                var hashes = location.search.substring(1).split('&');
                 for(var i = 0; i < hashes.length; i++)
                 {
                     hash = hashes[i].split('=');
@@ -32,6 +32,34 @@
                     vars[hash[0]] = hash[1];
                 }
                 return vars;
+            }
+            
+            function performLogin(username, pass) {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/captiveportal/access/logon/" + zoneid + "/",
+                    dataType:"json",
+                    data:{ user: username, password: pass}
+                }).done(function(data) {
+                    // redirect on successful login
+                    if (data['clientState'] == 'AUTHORIZED') {
+                        if (getURLparams()['redirurl'] != undefined) {
+                            window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
+                        } else {
+                            // no target, reload page
+                            window.location.reload();
+                        }
+                    } else {
+                        $("#inputUsername").val("");
+                        $("#inputPassword").val("");
+                        $("#errorMSGtext").html("authentication failed");
+                        $("#alertMSG").removeClass("hidden");
+                        $("#login_password").removeClass('hidden');
+                    }
+                }).fail(function(){
+                    $("#errorMSGtext").html("unable to connect to authentication server");
+                    $("#alertMSG").removeClass("hidden");
+                });
             }
 
             $( document ).ready(function() {
@@ -43,30 +71,7 @@
                     // hide alerts
                     $("#alertMSG").addClass("hidden");
                     // try to login
-                    $.ajax({
-                        type: "POST",
-                        url: "/api/captiveportal/access/logon/" + zoneid + "/",
-                        dataType:"json",
-                        data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
-                    }).done(function(data) {
-                        // redirect on successful login
-                        if (data['clientState'] == 'AUTHORIZED') {
-                            if (getURLparams()['redirurl'] != undefined) {
-                                window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
-                            } else {
-                                // no target, reload page
-                                window.location.reload();
-                            }
-                        } else {
-                            $("#inputUsername").val("");
-                            $("#inputPassword").val("");
-                            $("#errorMSGtext").html("authentication failed");
-                            $("#alertMSG").removeClass("hidden");
-                        }
-                    }).fail(function(){
-                        $("#errorMSGtext").html("unable to connect to authentication server");
-                        $("#alertMSG").removeClass("hidden");
-                    });
+                    performLogin($("#inputUsername").val(), $("#inputPassword").val())
                 });
 
                 /**
@@ -145,7 +150,13 @@
                     } else if (data['authType'] == 'none') {
                         $("#login_none").removeClass('hidden');
                     } else {
-                        $("#login_password").removeClass('hidden');
+                        // try auto login first using url parameters (for vouchers)
+                        let urlPars = getURLparams();
+                        if ('user' in urlPars && 'password' in urlPars) {
+                            performLogin(urlPars.user, urlPars.password);
+                        } else {
+                            $("#login_password").removeClass('hidden');
+                        }
                     }
                  }).fail(function(){
                      $("#errorMSGtext").html("unable to connect to authentication server");
