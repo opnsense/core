@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         subprocess.call(['/sbin/pfctl', '-sT'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         tables = list()
-        for line in output_stream.read().strip().split('\n'):
+        for line in output_stream.read().decode().strip().split('\n'):
             tables.append(line.strip())
         # only try to remove alias if it exists
         if len(sys.argv) > 1 and sys.argv[1] in tables:

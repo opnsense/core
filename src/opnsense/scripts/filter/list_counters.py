@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.6
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,8 @@ if __name__ == '__main__':
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/sbin/pfctl', '-vvsI'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
-        data = output_stream.read().strip()
         intf = None
-        for line in data.split('\n'):
+        for line in output_stream.read().decode().strip().split('\n'):
             if line.find('[') == -1  and line[0] not in (' ', '\t'):
                 intf = line.strip()
                 result[intf] = {'inbytespass': 0, 'outbytespass': 0, 'inpktspass': 0, 'outpktspass': 0,
@@ -76,6 +75,6 @@ if __name__ == '__main__':
         print(ujson.dumps(result))
     else:
         # output plain
-        print ('------------------------- COUNTERS -------------------------')
+        print('------------------------- COUNTERS -------------------------')
         for intf in result:
-            print ('[%s] %s' % (intf, unicode(result[intf])))
+            print('[%s] %s' % (intf, result[intf]))

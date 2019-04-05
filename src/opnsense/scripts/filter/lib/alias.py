@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,13 +28,13 @@
 """
 import os
 import re
-import md5
 import time
 import requests
 import ipaddress
 import dns.resolver
 import syslog
-import geoip
+from hashlib import md5
+from . import geoip
 
 class Alias(object):
     def __init__(self, elem, known_aliases=[], ttl=-1, ssl_no_verify=False, timeout=120):
@@ -93,7 +93,7 @@ class Alias(object):
         if address.find('/') > -1:
             # provided address could be a network
             try:
-                ipaddress.ip_network(unicode(address), strict=False)
+                ipaddress.ip_network(str(address), strict=False)
                 yield address
                 return
             except (ipaddress.AddressValueError, ValueError):
@@ -101,7 +101,7 @@ class Alias(object):
         else:
             # check if address is an ipv4/6 address or range
             try:
-                tmp = unicode(address).split('-')
+                tmp = str(address).split('-')
                 addr1 = ipaddress.ip_address(tmp[0])
                 if len(tmp) > 1:
                     # address range (from-to)
@@ -140,7 +140,7 @@ class Alias(object):
             if req.status_code == 200:
                 # only handle content if response is correct
                 req.raw.decode_content = True
-                lines = req.raw.read().splitlines()
+                lines = req.raw.read().decode().splitlines()
                 if len(lines) > 100:
                     # when larger alias lists are downloaded, make sure we log before handling.
                     syslog.syslog(syslog.LOG_ERR, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
@@ -191,7 +191,7 @@ class Alias(object):
         tmp = ','.join(sorted(list(self.items())))
         if self._proto:
             tmp = '%s[%s]' % (tmp, self._proto)
-        return md5.new(tmp).hexdigest()
+        return md5(tmp.encode()).hexdigest()
 
     def changed(self):
         """ is the alias changed (cached result, if changed within this objects lifetime)
