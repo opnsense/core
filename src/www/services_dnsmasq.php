@@ -72,7 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['custom_options'])) {
             $args = '';
             foreach (preg_split('/\s+/', str_replace("\r\n", "\n", $pconfig['custom_options'])) as $c) {
-                $args .= escapeshellarg("--{$c}") . " ";
+                if (!empty($c)) {
+                    $args .= escapeshellarg("--{$c}") . " ";
+                }
             }
             exec("/usr/local/sbin/dnsmasq --test $args", $output, $rc);
             if ($rc != 0) {
