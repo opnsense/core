@@ -182,10 +182,12 @@ function dnsmasq_configure_do($verbose = false)
 
     if (!empty($config['dnsmasq']['custom_options'])) {
         foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
-            $args .= " " . escapeshellarg("--{$c}");
-            $p = explode('=', $c);
-            if (array_key_exists($p[0], $standard_args)) {
-                unset($standard_args[$p[0]]);
+            if (!empty($c)) {
+                $args .= " " . escapeshellarg("--{$c}");
+                $p = explode('=', $c);
+                if (array_key_exists($p[0], $standard_args)) {
+                    unset($standard_args[$p[0]]);
+                }
             }
         }
     }
