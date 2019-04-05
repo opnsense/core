@@ -64,7 +64,10 @@ class Downloader(object):
         output = list()
         for line in in_data.split('\n'):
             if len(line) > 10:
-                if line[0:5] == 'alert':
+                flowbits_noalert = line.replace(' ', '').find('flowbits:noalert;') > -1
+                if flowbits_noalert:
+                    pass
+                elif line[0:5] == 'alert':
                     line = 'drop %s' % line[5:]
                 elif line[0:6] == '#alert':
                     line = '#drop %s' % line[6:]
