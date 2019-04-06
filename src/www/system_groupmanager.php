@@ -385,8 +385,8 @@ $( document ).ready(function() {
                     <span class="fa fa-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
                     <?=$group['name']; ?>
                   </td>
-                  <td><?= count($group['member']) ?></td>
-                  <td ><?=$group['description'];?></td>
+                  <td><?=!empty($group['member']) ? count($group['member']) : 0; ?></td>
+                  <td><?=$group['description'];?></td>
                   <td class="text-nowrap">
                     <a href="system_groupmanager.php?act=edit&groupid=<?=$i?>"
                        class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
