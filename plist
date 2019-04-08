@@ -1532,6 +1532,7 @@
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_panels.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_progress-bar.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_reset-filter.scss
+/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_reset-text.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_resize.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_size.scss
