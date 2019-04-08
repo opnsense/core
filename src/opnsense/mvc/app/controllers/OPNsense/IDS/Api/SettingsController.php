@@ -134,7 +134,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
                 }
 
-                $result['rowCount'] = count($result['rows']);
+                $result['rowCount'] = empty($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
                 $result['parameters'] = $data['parameters'];
                 $result['current'] = (int)$currentPage;
@@ -166,7 +166,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $data = null;
         }
 
-        if ($data != null && array_key_exists("rows", $data) && count($data['rows'])>0) {
+        if ($data != null && array_key_exists("rows", $data) && !empty($data['rows'])) {
             $row = $data['rows'][0];
             // set current enable status (default + registered offset)
             $row['enabled_default'] = $row['enabled'];
@@ -341,7 +341,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
                 }
                 $validations = $this->getModel()->validate();
-                if (count($validations)) {
+                if (!empty($validations)) {
                     $result['validations'] = $validations;
                 } else {
                     $result = $this->save();
@@ -365,8 +365,8 @@ class SettingsController extends ApiMutableModelControllerBase
         usort($result['rows'], function ($item1, $item2) {
             return strcmp(strtolower($item1['description']), strtolower($item2['description']));
         });
-        $result['rowCount'] = count($result['rows']);
-        $result['total'] = count($result['rows']);
+        $result['rowCount'] = empty($result['rows']) ? 0 :  count($result['rows']);
+        $result['total'] = empty($result['rows']) ? 0 : count($result['rows']);
         $result['current'] = 1;
         return $result;
     }
@@ -416,7 +416,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $node->setNodes($_POST);
 
                 $validations = $mdlIDS->validate($node->__reference . ".", "");
-                if (count($validations)) {
+                if (!empty($validations)) {
                     $result['validations'] = $validations;
                 } else {
                     $result = $this->save();
@@ -485,7 +485,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $update_count = 0;
             foreach (explode(",", $sids) as $sid) {
                 $ruleinfo = $this->getRuleInfoAction($sid);
-                if (count($ruleinfo) > 0) {
+                if (!empty($ruleinfo)) {
                     if ($enabled == null) {
                         // toggle state
                         if ($ruleinfo['enabled'] == 1) {
@@ -538,7 +538,7 @@ class SettingsController extends ApiMutableModelControllerBase
             }
             $ruleinfo = $this->getRuleInfoAction($sid);
             $newAction = $this->request->getPost("action", "striptags", null);
-            if (count($ruleinfo) > 0) {
+            if (!empty($ruleinfo)) {
                 $mdlIDS = $this->getModel();
                 if ($ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
                     $ruleinfo['action_default'] == $newAction
@@ -550,7 +550,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
 
                 $validations = $mdlIDS->validate();
-                if (count($validations)) {
+                if (!empty($validations)) {
                     $result['validations'] = $validations;
                 } else {
                     return $this->save();
