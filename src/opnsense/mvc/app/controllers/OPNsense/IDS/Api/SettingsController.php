@@ -1,31 +1,31 @@
 <?php
-/**
- *    Copyright (C) 2015-2017 Deciso B.V.
+
+/*
+ * Copyright (C) 2015-2017 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\IDS\Api;
 
 use \Phalcon\Filter;
@@ -134,7 +134,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
                 }
 
-                $result['rowCount'] = count($result['rows']);
+                $result['rowCount'] = empty($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
                 $result['parameters'] = $data['parameters'];
                 $result['current'] = (int)$currentPage;
@@ -166,7 +166,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $data = null;
         }
 
-        if ($data != null && array_key_exists("rows", $data) && count($data['rows'])>0) {
+        if ($data != null && array_key_exists("rows", $data) && !empty($data['rows'])) {
             $row = $data['rows'][0];
             // set current enable status (default + registered offset)
             $row['enabled_default'] = $row['enabled'];
@@ -341,7 +341,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
                 }
                 $validations = $this->getModel()->validate();
-                if (count($validations)) {
+                if (!empty($validations)) {
                     $result['validations'] = $validations;
                 } else {
                     $result = $this->save();
@@ -365,8 +365,8 @@ class SettingsController extends ApiMutableModelControllerBase
         usort($result['rows'], function ($item1, $item2) {
             return strcmp(strtolower($item1['description']), strtolower($item2['description']));
         });
-        $result['rowCount'] = count($result['rows']);
-        $result['total'] = count($result['rows']);
+        $result['rowCount'] = empty($result['rows']) ? 0 :  count($result['rows']);
+        $result['total'] = empty($result['rows']) ? 0 : count($result['rows']);
         $result['current'] = 1;
         return $result;
     }
@@ -416,7 +416,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $node->setNodes($_POST);
 
                 $validations = $mdlIDS->validate($node->__reference . ".", "");
-                if (count($validations)) {
+                if (!empty($validations)) {
                     $result['validations'] = $validations;
                 } else {
                     $result = $this->save();
@@ -485,7 +485,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $update_count = 0;
             foreach (explode(",", $sids) as $sid) {
                 $ruleinfo = $this->getRuleInfoAction($sid);
-                if (count($ruleinfo) > 0) {
+                if (!empty($ruleinfo)) {
                     if ($enabled == null) {
                         // toggle state
                         if ($ruleinfo['enabled'] == 1) {
@@ -538,7 +538,7 @@ class SettingsController extends ApiMutableModelControllerBase
             }
             $ruleinfo = $this->getRuleInfoAction($sid);
             $newAction = $this->request->getPost("action", "striptags", null);
-            if (count($ruleinfo) > 0) {
+            if (!empty($ruleinfo)) {
                 $mdlIDS = $this->getModel();
                 if ($ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
                     $ruleinfo['action_default'] == $newAction
@@ -550,7 +550,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
 
                 $validations = $mdlIDS->validate();
-                if (count($validations)) {
+                if (!empty($validations)) {
                     $result['validations'] = $validations;
                 } else {
                     return $this->save();
