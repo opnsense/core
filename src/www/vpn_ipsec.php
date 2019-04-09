@@ -385,16 +385,6 @@ $( document ).ready(function() {
                             foreach ($aliaslist as $aliasip => $aliasif) {
                                 $iflabels[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                             }
-
-                            $grouplist = return_gateway_groups_array();
-                            foreach ($grouplist as $name => $group) {
-                                if ($group[0]['vip'] != '') {
-                                    $vipif = $group[0]['vip'];
-                                } else {
-                                    $vipif = $group[0]['int'];
-                                }
-                                $iflabels[$name] = "GW Group {$name}";
-                            }
                             $if = $iflabels[$ph1ent['interface']];
                         } else {
                             $if = "WAN";
