@@ -100,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['descr'] = $a_schedules[$configId]['descr'];
     $pconfig['timerange'] = isset($a_schedules[$configId]['timerange']) ? $a_schedules[$configId]['timerange'] : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (isset($_POST['id']) && isset($a_schedules[$_POST['id']])) {
         $id = $_POST['id'];
     }
