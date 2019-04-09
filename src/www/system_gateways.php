@@ -100,9 +100,10 @@ function delete_gateway_item($id, $a_gateways)
             mwexec("/sbin/route delete -inet6 " . escapeshellarg($a_gateways[$id]['monitor']));
         }
     }
-
-    if ($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway'] == $a_gateways[$id]['name']) {
-        unset($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway']);
+    if (!empty($config['interfaces'][$a_gateways[$id]['friendlyiface']])) {
+        if ($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway'] == $a_gateways[$id]['name']) {
+            unset($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway']);
+        }
     }
     unset($config['gateways']['gateway_item'][$a_gateways[$id]['attribute']]);
 }
