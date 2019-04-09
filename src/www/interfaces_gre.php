@@ -42,6 +42,7 @@ function gre_inuse($gre_intf) {
 $a_gres = &config_read_array('gres', 'gre') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($a_gres[$_POST['id']])) {
         $id = $_POST['id'];
     }

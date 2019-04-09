@@ -53,6 +53,7 @@ function lagg_inuse($lagg_intf)
 $a_laggs = &config_read_array('laggs', 'lagg');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($a_laggs[$_POST['id']])) {
         $id = $_POST['id'];
     }
