@@ -113,7 +113,7 @@ function step3_submitphpaction()
          empty($_POST['scope']) || empty($_POST['basedn']) || empty($_POST['authscope']) || empty($_POST['nameattr'])) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
-    } elseif ($authcfg !== false && count($authcfg) > 0) {
+    } elseif ($authcfg !== false && !empty($authcfg)) {
         $input_errors[] = gettext('Please choose a different name because an authentication ' .
             'server with this name already exists.');
         $stepid--;
@@ -178,7 +178,7 @@ function step5_submitphpaction()
     if (empty($_POST['name']) || empty($_POST['ip']) || empty($_POST['secret'])) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
-    } elseif ($authcfg !== false && count($authcfg) > 0) {
+    } elseif ($authcfg !== false && !empty($authcfg)) {
         $input_errors[] = gettext('Please choose a different name because an authentication ' .
             'server with this name already exists.');
         $stepid--;
@@ -195,7 +195,7 @@ function step6_stepbeforeformdisplay()
 {
     global $stepid, $config;
 
-    if (count($config['ca']) < 1) {
+    if (!empty($config['ca'])) {
         $stepid++;
     }
 }
@@ -254,7 +254,7 @@ function step8_stepbeforeformdisplay()
 {
     global $stepid, $config;
 
-    if (count($config['cert']) < 1 || (count($config['cert']) == 1 &&
+    if (empty($config['cert']) || (count($config['cert']) == 1 &&
         stristr($config['cert'][0]['descr'], "webconf"))) {
         $stepid++;
     }
