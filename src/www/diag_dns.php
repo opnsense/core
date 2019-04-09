@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 $resolved = array();
 $dns_speeds = array();
 if (!empty($_REQUEST['host'])) {
+    $input_errors = array();
     $host = trim($_REQUEST['host'], " \t\n\r\0\x0B[];\"'");
     $host_esc = escapeshellarg($host);
 
