@@ -3978,7 +3978,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
 
 function get_interface_ip($interface = 'wan')
 {
-    $realif = get_failover_interface($interface);
+    $realif = get_real_interface($interface);
     if ($realif) {
         return find_interface_ip($realif);
     }
@@ -3994,7 +3994,7 @@ function get_interface_ipv6($interface = 'wan')
 {
     global $config;
 
-    $realif = get_failover_interface($interface, 'inet6');
+    $realif = get_real_interface($interface, 'inet6');
     if ($realif) {
         return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
             find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
@@ -4151,30 +4151,6 @@ function interfaces_staticarp_configure($if)
             }
         }
     }
-}
-
-function get_failover_interface($interface, $family = 'all')
-{
-    global $config;
-
-    /* shortcut for known interfaces */
-    if (isset($config['interfaces'][$interface])) {
-        return get_real_interface($interface, $family);
-    }
-
-    /* compare against gateway groups */
-    $a_groups = return_gateway_groups_array();
-    if (isset($a_groups[$interface])) {
-        /* we found a gateway group, fetch the interface or vip */
-        if ($a_groups[$interface][0]['vip'] != '') {
-            return $a_groups[$interface][0]['vip'];
-        } else {
-            return $a_groups[$interface][0]['int'];
-        }
-    }
-
-    /* fall through to get real interface the hard way */
-    return get_real_interface($interface, $family);
 }
 
 //returns interface information
