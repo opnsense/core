@@ -668,18 +668,6 @@ include("head.inc");
                       foreach ($aliaslist as $aliasip => $aliasif) {
                           $interfaces[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                       }
-
-                      $grouplist = return_gateway_groups_array();
-                      foreach ($grouplist as $name => $group) {
-                          if ($group[0]['vip'] != '') {
-                              $vipif = $group[0]['vip'];
-                          } else {
-                              $vipif = $group[0]['int'];
-                          }
-                          $interfaces[$name] = "GW Group {$name}";
-                      }
-
-
                       foreach ($interfaces as $iface => $ifacename) :
 ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : "" ?> >
