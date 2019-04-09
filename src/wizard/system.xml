@@ -152,7 +152,7 @@ if (!empty($_POST['primarydnsserver']) && !is_ipaddr($_POST['primarydnsserver'])
 if (!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserver'])) {
     $input_errors[] = gettext('Second DNS server is invalid.');
 }
-if (count($input_errors)) {
+if (!empty($input_errors)) {
     $stepid--;
 } else {
     if (isset($config['unbound']['forwarding'])) {
@@ -190,7 +190,7 @@ foreach (explode(' ', $_POST['timeserverhostname']) as $ts) {
         $input_errors[] = gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces.");
     }
 }
-if (count($input_errors)) {
+if (!empty($input_errors)) {
     $stepid--;
 }
     ]]></stepsubmitphpaction>
@@ -457,7 +457,7 @@ if (!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddres
 if (!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
     $input_errors[] = gettext('Invalid PPTP Remopte IP address.');
 }
-if (count($input_errors)) {
+if (!empty($input_errors)) {
     $stepid--;
 } else {
     $type = $_POST['selectedtype'];
@@ -542,7 +542,7 @@ if (!empty(trim($_POST['lanipaddress']))) {
         $input_errors[] = gettext('Invalid LAN IP address.');
     }
 
-    if (count($input_errors)) {
+    if (!empty($input_errors)) {
         $stepid--;
     } else {
         $ft = explode(".", $_POST['lanipaddress']);
@@ -588,7 +588,7 @@ if (!empty($_POST['rootpassword']) || !empty($_POST['rootpasswordconfirmation'])
         $input_errors[] = gettext('The passwords do not match.');
     }
 }
-if (count($input_errors)) {
+if (!empty($input_errors)) {
     $stepid--;
 }
     ]]></stepsubmitphpaction>
