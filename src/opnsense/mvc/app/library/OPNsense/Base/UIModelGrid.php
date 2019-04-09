@@ -72,7 +72,13 @@ class UIModelGrid
 
         $searchPhrase = $request->get('searchPhrase', 'string', '');
         return $this->fetch(
-            $fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase, $filter_funct
+            $fields,
+            $itemsPerPage,
+            $currentPage,
+            $sortBy,
+            $sortDescending,
+            $searchPhrase,
+            $filter_funct
         );
     }
 
