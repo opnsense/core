@@ -42,6 +42,7 @@ function gif_inuse($gif_intf) {
 $a_gifs = &config_read_array('gifs', 'gif') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($a_gifs[$_POST['id']])) {
         $id = $_POST['id'];
     }
