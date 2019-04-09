@@ -165,18 +165,20 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
         }
     }
 
-    for ($i = 0; $i < count($reqdfields); $i++) {
-        $fields = explode(',', $reqdfields[$i]);
-        $found = false;
+    if (!empty($reqdfields)) {
+        for ($i = 0; $i < count($reqdfields); $i++) {
+            $fields = explode(',', $reqdfields[$i]);
+            $found = false;
 
-        foreach ($fields as $field) {
-            if (!empty($postdata[$field])) {
-                $found = true;
+            foreach ($fields as $field) {
+                if (!empty($postdata[$field])) {
+                    $found = true;
+                }
             }
-        }
 
-        if (!$found) {
-            $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
+            if (!$found) {
+                $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
+            }
         }
     }
 }
