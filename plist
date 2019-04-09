@@ -444,6 +444,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.tgb
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Routing/Gateways.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
