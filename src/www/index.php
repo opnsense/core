@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     usort($widgetCollection, function ($item1, $item2) {
       return strcmp(strtolower($item1['sortKey']), strtolower($item2['sortKey']));
     });
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['origin']) && $_POST['origin'] == 'dashboard') {
     if (!empty($_POST['sequence'])) {
         $config['widgets']['sequence'] = $_POST['sequence'];
     } elseif (isset($config['widgets']['sequence'])) {
@@ -322,6 +322,7 @@ include("fbegin.inc");?>
 
 <section class="page-content-main">
   <form method="post" id="iform">
+    <input type="hidden" value="dasboard" name="origin" id="origin" />
     <input type="hidden" value="" name="sequence" id="sequence" />
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
   </form>
