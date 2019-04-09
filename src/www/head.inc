@@ -45,7 +45,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
-    <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -78,7 +78,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     </style>
 
     <!-- Favicon -->
-    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
+    <link rel="shortcut icon" href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>">
 
     <!-- legacy browser functions -->
     <script src="<?= cache_safe("/ui/js/polyfills.js") ?>"></script>
@@ -90,7 +90,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="<?= cache_safe("/ui/css/font-awesome.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/css/font-awesome.min.css") ?>">
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
