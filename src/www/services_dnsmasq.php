@@ -259,7 +259,7 @@ $( document ).ready(function() {
                   <td>
                     <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
-                      <option value="<?= html_safe($iface) ?>" <?=in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
+                      <option value="<?= html_safe($iface) ?>" <?=!empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : "" ?>>
                         <?= html_safe($ifacename) ?>
                       </option>
 <?php endforeach ?>
