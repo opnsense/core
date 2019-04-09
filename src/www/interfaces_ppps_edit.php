@@ -557,7 +557,7 @@ include("head.inc");
                   <table class="table table-striped" id="interface_details" style="display:none">
                     <tbody>
 <?php
-                      for ($intf_idx=0; $intf_idx <= max(count($serialports), count($portlist)) ; ++$intf_idx):?>
+                      for ($intf_idx=0; $intf_idx <= count($portlist) ; ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
                         <td style="width:22%"><a id="help_for_localip_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local IP");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
@@ -758,7 +758,7 @@ include("head.inc");
                   <table class="table table-striped act_show_advanced" style="display:none">
                     <tbody>
 <?php
-                      for ($intf_idx=0; $intf_idx <= max(count($serialports), count($portlist)) ; ++$intf_idx):?>
+                      for ($intf_idx=0; $intf_idx <= count($portlist); ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
                         <td style="width:22%"> <a id="help_for_link_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Link Parameters");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
