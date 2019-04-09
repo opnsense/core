@@ -44,6 +44,7 @@ function bridge_inuse($bridge_if) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($a_bridges[$_POST['id']])) {
         $id = $_POST['id'];
     }
