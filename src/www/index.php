@@ -322,7 +322,7 @@ include("fbegin.inc");?>
 
 <section class="page-content-main">
   <form method="post" id="iform">
-    <input type="hidden" value="dasboard" name="origin" id="origin" />
+    <input type="hidden" value="dashboard" name="origin" id="origin" />
     <input type="hidden" value="" name="sequence" id="sequence" />
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
   </form>
