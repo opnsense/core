@@ -879,7 +879,7 @@ function system_firmware_configure($verbose = false)
 
         file_put_contents($ca_cert_pem, $ca);
         copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
-        unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
+        @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
         copy($ca_cert_pem, '/etc/ssl/cert.pem');
     }
 
