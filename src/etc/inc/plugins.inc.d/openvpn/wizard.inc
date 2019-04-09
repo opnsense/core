@@ -486,7 +486,7 @@ function step10_submitphpaction()
         $input_errors[] = gettext("You must specify a 'Tunnel network'.");
     }
 
-    if (!empty($input_errors) && count($input_errors)) {
+    if (!empty($input_errors)) {
         $stepid = $stepid - 1;
     }
 }
