@@ -770,18 +770,6 @@ $( document ).ready(function() {
                         foreach ($aliaslist as $aliasip => $aliasif) {
                             $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                         }
-                                                    $grouplist = return_gateway_groups_array();
-                        foreach ($grouplist as $name => $group) {
-                            if ($group['ipprotocol'] != "inet") {
-                                continue;
-                            }
-                            if ($group[0]['vip'] != '') {
-                                $vipif = $group[0]['vip'];
-                            } else {
-                                $vipif = $group[0]['int'];
-                            }
-                            $interfaces[$name] = "GW Group {$name}";
-                        }
                         $interfaces['lo0'] = "Localhost";
                         $interfaces['any'] = "any";
                         foreach ($interfaces as $iface => $ifacename) :
