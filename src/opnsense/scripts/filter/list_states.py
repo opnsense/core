@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3.6
+
 """
     Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
