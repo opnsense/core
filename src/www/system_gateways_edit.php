@@ -31,12 +31,8 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$a_gateways = return_gateways_array(true, false, true);
-$a_gateways_arr = array();
-foreach ($a_gateways as $gw) {
-    $a_gateways_arr[] = $gw;
-}
-$a_gateways = $a_gateways_arr;
+$gateways = (new \OPNsense\Routing\Gateways())->setIfconfig(legacy_interfaces_details());
+$a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
 $dpinger_default = return_dpinger_defaults();
 
 // form processing
@@ -274,6 +270,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if (!empty($pconfig['priority']) && !is_numeric($pconfig['priority'])) {
+        $input_errors[] = gettext("Priority needs to be a numeric value.");
+    }
+
     if (!empty($pconfig['alert_interval'])) {
         if (!is_numeric($pconfig['alert_interval'])) {
             $input_errors[] = gettext("The alert interval needs to be a numeric value.");
@@ -311,17 +311,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $reloadif = "";
         $gateway = array();
 
-        if (empty($pconfig['interface'])) {
-            $gateway['interface'] = $pconfig['friendlyiface'];
-        } else {
-            $gateway['interface'] = $pconfig['interface'];
-        }
+        $gateway['interface'] = $pconfig['interface'];
         if (is_ipaddr($pconfig['gateway'])) {
             $gateway['gateway'] = $pconfig['gateway'];
         } else {
             $gateway['gateway'] = "dynamic";
         }
         $gateway['name'] = $pconfig['name'];
+        $gateway['priority'] = $pconfig['priority'];
         $gateway['weight'] = $pconfig['weight'];
         $gateway['ipprotocol'] = $pconfig['ipprotocol'];
         $gateway['interval'] = $pconfig['interval'];
@@ -347,20 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on") {
-            $i = 0;
-            /* remove the default gateway bits for all gateways with the same address family */
-            foreach ($a_gateway_item as $gw) {
-                if ($gateway['ipprotocol'] == $gw['ipprotocol']) {
-                    unset($config['gateways']['gateway_item'][$i]['defaultgw']);
-                    if ($gw['interface'] != $pconfig['interface'] && $gw['defaultgw']) {
-                        $reloadif = $gw['interface'];
-                    }
-                }
-                $i++;
-            }
-            $gateway['defaultgw'] = true;
-        }
+        $gateway['defaultgw'] = ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on");
 
         foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -407,10 +391,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo implode("\n\n", $input_errors);
             exit;
         }
-
-        if (!empty($pconfig['interface'])) {
-            $pconfig['friendlyiface'] = $pconfig['interface'];
-        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // retrieve form data
@@ -433,7 +413,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'dynamic',
         'fargw',
         'force_down',
-        'friendlyiface',
         'gateway',
         'interface',
         'interval',
@@ -449,6 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'alert_interval',
         'time_period',
         'loss_interval',
+        'priority'
     );
     foreach ($copy_fields as $fieldname) {
         if (isset($configId) && isset($a_gateways[$configId][$fieldname])) {
@@ -504,7 +484,6 @@ $( document ).ready(function() {
               <input type='hidden' name='attribute' id='attribute' value="<?=$pconfig['attribute'];?>"/>
 <?php
             endif;?>
-              <input type='hidden' name='friendlyiface' id='friendlyiface' value="<?=$pconfig['friendlyiface'];?>"/>
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td style="width:22%"><?=gettext("Edit gateway");?></td>
@@ -540,7 +519,7 @@ $( document ).ready(function() {
                     <select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
                     foreach (legacy_config_get_interfaces(array('virtual' => false)) as $iface => $ifcfg):?>
-                      <option value="<?=$iface;?>" <?=$iface == $pconfig['friendlyiface'] ? "selected='selected'" : "";?>>
+                      <option value="<?=$iface;?>" <?=$iface == $pconfig['interface'] ? "selected='selected'" : "";?>>
                         <?= $ifcfg['descr'] ?>
                       </option>
 <?php
@@ -620,6 +599,29 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+
+
+                <tr>
+                  <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                  <td>
+                    <select id="priority" name="priority" class="selectpicker"  data-live-search="true" data-size="5">
+<?php
+                    for ($prio=1; $prio < 255; ++$prio):?>
+                        <option value="<?=$prio;?>" <?=$pconfig['priority'] == $prio ? "selected=selected" : "";?> >
+                            <?=$prio;?>
+                        </option>
+<?php
+                    endfor;?>
+                    </select>
+                    <div class="hidden" data-for="help_for_priority">
+                      <?= gettext('Influences sort order when selecting a (default) gateway, higher means more important.') ?>
+                    </div>
+                  </td>
+                </tr>
+
+
+
+
                 <tr class="advanced visible">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
