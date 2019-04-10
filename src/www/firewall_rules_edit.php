@@ -286,8 +286,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid destination bit count must be specified.");
         }
     }
+
     if (is_ipaddr($pconfig['src']) && is_ipaddr($pconfig['dst']) && !validate_address_family($pconfig['src'], $pconfig['dst'])) {
-        $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
+        if ((is_ipaddrv4($pconfig['src']) && is_ipaddrv6($pconfig['dst'])) || (is_ipaddrv6($pconfig['src']) && is_ipaddrv4($pconfig['dst']))) {
+            $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
+        }
     }
     foreach (array('src', 'dst') as $fam) {
         if (is_ipaddr($pconfig[$fam])) {
