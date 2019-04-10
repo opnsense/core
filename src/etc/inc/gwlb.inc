@@ -613,6 +613,17 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     return $gateways_arr;
 }
 
+function return_down_gateways()
+{
+    $result = array();
+    foreach (return_gateways_status() as $gwname => $stat) {
+        if (strpos($stat['status'], 'down') !== false) {
+            $result[] = $gwname;
+        }
+    }
+    return $result ;
+}
+
 function fixup_default_gateway()
 {
     $gateways_status = return_gateways_status();
@@ -891,67 +902,6 @@ function get_interface_gateway_v6($wanif, &$dynamic = false)
     }
 
     return $gw;
-}
-
-/*
- * Check an IP address against a gateway IP
- * or name to verify its address family
- */
-function validate_address_family($ipaddr, $gwname)
-{
-    $v4ip = false;
-    $v6ip = false;
-    $v4gw = false;
-    $v6gw = false;
-
-    if (is_ipaddrv4($ipaddr)) {
-        $v4ip = true;
-    }
-    if (is_ipaddrv6($ipaddr)) {
-        $v6ip = true;
-    }
-    if (is_ipaddrv4($gwname)) {
-        $v4gw = true;
-    }
-    if (is_ipaddrv6($gwname)) {
-        $v6gw = true;
-    }
-
-    if ($v4ip && $v4gw) {
-        return true;
-    }
-    if ($v6ip && $v6gw) {
-        return true;
-    }
-
-    /* still no match, carry on, lookup gateways */
-    if (is_ipaddrv4(lookup_gateway_ip_by_name($gwname))) {
-        $v4gw = true;
-    }
-    if (is_ipaddrv6(lookup_gateway_ip_by_name($gwname))) {
-        $v6gw = true;
-    }
-
-    $gw_array = return_gateways_array();
-    if (is_array($gw_array[$gwname])) {
-        switch ($gw_array[$gwname]['ipprotocol']) {
-            case "inet":
-                $v4gw = true;
-                break;
-            case "inet6":
-                $v6gw = true;
-                break;
-        }
-    }
-
-    if ($v4ip && $v4gw) {
-        return true;
-    }
-    if ($v6ip && $v6gw) {
-        return true;
-    }
-
-    return false;
 }
 
 function running_dpinger_processes()
