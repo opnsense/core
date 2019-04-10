@@ -100,24 +100,19 @@ function delete_gateway_item($id, $a_gateways)
             mwexec("/sbin/route delete -inet6 " . escapeshellarg($a_gateways[$id]['monitor']));
         }
     }
-    if (!empty($config['interfaces'][$a_gateways[$id]['friendlyiface']])) {
-        if ($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway'] == $a_gateways[$id]['name']) {
-            unset($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway']);
+    if (!empty($config['interfaces'][$a_gateways[$id]['interface']])) {
+        if ($config['interfaces'][$a_gateways[$id]['interface']]['gateway'] == $a_gateways[$id]['name']) {
+            unset($config['interfaces'][$a_gateways[$id]['interface']]['gateway']);
         }
     }
     unset($config['gateways']['gateway_item'][$a_gateways[$id]['attribute']]);
 }
 
-// fetch gateways and let's pretend the order is safe to use...
-$a_gateways = return_gateways_array(true, false, true);
-$a_gateways_arr = array();
-foreach ($a_gateways as $gname => $gw) {
-    /* not sure why this is rewrapped, so retain the key for status here instead */
-    $gw['gname'] = $gname;
-    $a_gateways_arr[] = $gw;
-}
-$a_gateways = $a_gateways_arr;
-
+// fetch gateway list including active default for IPv4/IPv6
+$gateways = (new \OPNsense\Routing\Gateways())->setIfconfig(legacy_interfaces_details());
+$default_gwv4 = $gateways->getDefaultGW(return_down_gateways(), "inet");
+$default_gwv6 = $gateways->getDefaultGW(return_down_gateways(), "inet6");
+$a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
 $gateways_status = return_gateways_status();
 
 // form processing
@@ -337,10 +332,11 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <?=$gateway['name'];?>
-                        <?=isset($gateway['defaultgw']) ? "<strong>(default)</strong>" : "";?>
+                        <?=!empty($default_gwv4) && $gateway['name'] == $default_gwv4['name'] ? "<strong>(default)</strong>" : "";?>
+                        <?=!empty($default_gwv6) && $gateway['name'] == $default_gwv6['name'] ? "<strong>(default)</strong>" : "";?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
-                        <?=convert_friendly_interface_to_friendly_descr($gateway['friendlyiface']);?>
+                        <?=convert_friendly_interface_to_friendly_descr($gateway['interface']);?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=$gateway['gateway'];?>
@@ -349,20 +345,20 @@ $( document ).ready(function() {
                         <?=$gateway['monitor'];?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['delay'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['delay'] : gettext("Pending") ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['stddev'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['stddev'] : gettext("Pending") ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['loss'] : gettext("Pending") ?>
                       </td>
                       <td>
   <?php
                       $online = gettext('Pending');
                       $gateway_label_class = 'default';
-                      if ($gateways_status[$gateway['gname']]) {
-                          $status = $gateways_status[$gateway['gname']];
+                      if ($gateways_status[$gateway['name']]) {
+                          $status = $gateways_status[$gateway['name']];
                           if (stristr($status['status'], 'force_down')) {
                               $online = gettext('Offline (forced)');
                               $gateway_label_class = 'danger';
