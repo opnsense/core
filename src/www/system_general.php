@@ -33,6 +33,8 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
+$a_gateways = (new \OPNsense\Routing\Gateways())->setIfconfig(legacy_interfaces_details())->gatewaysIndexedByName();
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
@@ -87,10 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       } elseif (!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] != 'none') {
             // A real gateway has been selected.
             if (is_ipaddr($pconfig[$dnsname])) {
-                if ((is_ipaddrv4($pconfig[$dnsname])) && (validate_address_family($pconfig[$dnsname], $pconfig[$dnsgwname]) === false )) {
+                if (is_ipaddrv4($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet') {
                     $input_errors[] = gettext("You can not specify IPv6 gateway '{$pconfig[$dnsgwname]}' for IPv4 DNS server '{$pconfig[$dnsname]}'");
                 }
-                if ((is_ipaddrv6($pconfig[$dnsname])) && (validate_address_family($pconfig[$dnsname], $pconfig[$dnsgwname]) === false )) {
+                if (is_ipaddrv6($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet6') {
                     $input_errors[] = gettext("You can not specify IPv4 gateway '{$pconfig[$dnsgwname]}' for IPv6 DNS server '{$pconfig[$dnsname]}'");
                 }
             } else {
@@ -243,6 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
@@ -390,18 +393,9 @@ include("head.inc");
                             <?=gettext("none");?>
                           </option>
 <?php
-                          foreach(return_gateways_array() as $gwname => $gwitem):
-                            if ($pconfig[$dnsgw] != 'none') {
-                              if (is_ipaddrv4(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv6($gwitem['gateway'])) {
-                                continue;
-                              }
-                              if (is_ipaddrv6(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv4($gwitem['gateway'])) {
-                                continue;
-                              }
-                            }?>
-
+                          foreach($a_gateways as $gwname => $gwitem):?>
                             <option value="<?=$gwname;?>" <?=$pconfig[$dnsgw] == $gwname ? 'selected="selected"' : '' ?>>
-                              <?=$gwname;?> - <?=$gwitem['friendlyiface'];?> - <?=$gwitem['gateway'];?>
+                              <?=$gwname;?> - <?=$gwitem['interface'];?> - <?=$gwitem['gateway'];?>
                             </option>
 <?php
                              endforeach;?>
