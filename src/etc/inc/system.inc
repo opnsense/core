@@ -873,7 +873,7 @@ function system_firmware_configure($verbose = false)
         $ca = file_get_contents($ca_root_nss);
         foreach (config_read_array('ca') as $entry) {
             if (!empty($entry['crt'])) {
-                $ca .= "\n# {$entry['descr']}\n" . base64_decode($entry['crt']);
+                $ca .= "\n# {$entry['descr']}\n" . str_replace("\r", '', base64_decode($entry['crt']));
             }
         }
 
