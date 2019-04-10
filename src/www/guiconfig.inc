@@ -158,10 +158,6 @@ $wlan_modes = array(
 
 function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_errors)
 {
-    if (empty($reqdfields)) {
-        return;
-    }
-
     /* check for bad control characters */
     foreach ($postdata as $pn => $pd) {
         if (is_string($pd) && preg_match("/[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]/", $pd)) {
