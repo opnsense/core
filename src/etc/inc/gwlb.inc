@@ -624,66 +624,6 @@ function return_down_gateways()
     return $result ;
 }
 
-function fixup_default_gateway()
-{
-    $gateways_status = return_gateways_status();
-    $gateways_arr = return_gateways_array();
-
-    foreach (array("inet", "inet6") as $ipprotocol) {
-        $dfltgwname = null;
-        $dfltgwip = null;
-        $count = 0;
-
-        foreach ($gateways_arr as $gwname => $gwsttng) {
-            if (isset($gwsttng['disabled'])) {
-                /* does not apply */
-                continue;
-            }
-            if ($gwsttng['ipprotocol'] !== $ipprotocol) {
-                /* wrong address family */
-                continue;
-            }
-            if (strpos($gateways_status[$gwname]['status'], 'down') !== false) {
-                /* cannot use down gateway */
-                continue;
-            }
-
-            $gwip = '';
-
-            if ($gateways_arr[$gwname]['gateway'] == "dynamic") {
-                if ($ipprotocol == 'inet') {
-                    $gwip = get_interface_gateway($gateways_arr[$gwname]['friendlyiface']);
-                } else {
-                    $gwip = get_interface_gateway_v6($gateways_arr[$gwname]['friendlyiface']);
-                }
-            } else {
-                $gwip = $gateways_arr[$gwname]['gateway'];
-            }
-
-            if (!is_ipaddr($gwip)) {
-                log_error("Cannot switch gateway $gwname with undefined address");
-                continue;
-            }
-
-            /* can use this gateway */
-            $dfltgwname = $gwname;
-            $dfltgwip = $gwip;
-            $count += 1;
-
-            if (isset($gwsttng['defaultgw'])) {
-                /* if we found the default to be working use it right away */
-                break;
-            }
-        }
-
-        if (empty($dfltgwname)) {
-            log_error("Cannot switch while $count $ipprotocol gateways are up");
-            continue;
-        }
-
-        system_default_route($dfltgwip, $ipprotocol, $gateways_arr[$dfltgwname]['friendlyiface'], isset($gateways_arr[$dfltgwname]['fargw']));
-    }
-}
 
 /*
  * Return an array with all gateway groups with name as key
