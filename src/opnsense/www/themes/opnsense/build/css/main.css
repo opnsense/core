@@ -7480,6 +7480,11 @@ td.visible-lg {
     display: none !important;
   }
 }
+@media (max-width: 768px), (max-height: 669px) {
+  .toggle-sidebar {
+    display: none !important;
+  }
+}
 @media (min-width: 992px) and (max-width: 1199px) {
   .hidden-md {
     display: none !important;
