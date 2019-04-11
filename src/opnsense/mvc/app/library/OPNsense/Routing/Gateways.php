@@ -109,14 +109,15 @@ class Gateways
     /**
      * generate new sort key for a gateway
      * @param string|int $prio priority
+     * @param bool $is_default is default wan gateway
      * @return string key
      */
-    private function newKey($prio)
+    private function newKey($prio, $is_default=false)
     {
         if (empty($this->cached_gateways)) {
             $this->gatewaySeq = 1;
         }
-        return sprintf("%05d%010d", $prio, $this->gatewaySeq++);
+        return sprintf("%01d%04d%010d", $is_default, $prio, $this->gatewaySeq++);
     }
 
     /**
@@ -149,7 +150,8 @@ class Gateways
                               if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
                                   $gw_arr['monitor'] = $gw_arr['gateway'];
                               }
-                              $this->cached_gateways[$this->newKey($gw_arr['priority'])] = $gw_arr;
+                              $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
+                              $this->cached_gateways[$gwkey] = $gw_arr;
                           } else {
                               // dynamic gateways might have settings, temporary store
                               if (empty($dynamic_gw[(string)$gateway->interface])) {
@@ -197,7 +199,8 @@ class Gateways
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
-                        $this->cached_gateways[$this->newKey($gw_arr['priority'])] = $thisconf;
+                        $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
+                        $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (!empty($this->ifconfig[$thisconf["if"]]["tunnel"]["dest_addr"])) {
                         // tunnel devices with a known endpoint
                         $thisconf['gateway'] = $this->ifconfig[$thisconf["if"]]["tunnel"]["dest_addr"];
@@ -206,11 +209,13 @@ class Gateways
                             if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                                 $thisconf['monitor'] = $thisconf['gateway'];
                             }
-                            $this->cached_gateways[$this->newKey($gw_arr['priority'])] = $thisconf;
+                            $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
+                            $this->cached_gateways[$gwkey] = $thisconf;
                         }
                     } elseif (self::convertType($ipproto, $ifcfg) != null) {
                         // other predefined types, only bound by interface (e.g. openvpn)
-                        $this->cached_gateways[$this->newKey($gw_arr['priority'])] = $thisconf;
+                        $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
+                        $this->cached_gateways[$gwkey] = $thisconf;
                     }
                 }
             }
@@ -239,13 +244,13 @@ class Gateways
 
     /**
      * determine default gateway, exclude gateways in skip list
+     * since getGateways() is correcly ordered, we just need to find the first active, not down gateway
      * @param array|null $skip list of gateways to ignore
      * @param string $ipproto inet/inet6 type
      * @return string type name
      */
     public function getDefaultGW($skip=null, $ipproto='inet')
     {
-        $othergw = null;
         foreach ($this->getGateways() as $gateway) {
             if ($gateway['ipprotocol'] == $ipproto) {
                 if (is_array($skip) && in_array($gateway['name'], $skip)) {
@@ -253,16 +258,11 @@ class Gateways
                 } elseif (!empty($gateway['disabled'])) {
                     continue;
                 }
-                if (!empty($gateway['gateway'])) {
-                    if (!empty($gateway['defaultgw'])) {
-                        return $gateway;
-                    } elseif ($othergw == null) {
-                        $othergw = $gateway;
-                    }
-                }
+                return $gateway;
             }
         }
-        return $othergw;
+        // not found
+        return null;
     }
 
     /**
