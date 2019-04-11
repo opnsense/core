@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$gateways = (new \OPNsense\Routing\Gateways())->setIfconfig(legacy_interfaces_details());
+$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 $a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
 $dpinger_default = return_dpinger_defaults();
 
