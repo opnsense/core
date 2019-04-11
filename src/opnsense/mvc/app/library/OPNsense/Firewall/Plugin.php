@@ -36,6 +36,7 @@ use \OPNsense\Core\Config;
  */
 class Plugin
 {
+    private $gateways = null;
     private $anchors = array();
     private $filterRules = array();
     private $natRules = array();
@@ -96,21 +97,28 @@ class Plugin
 
     /**
      * set defined gateways (route-to)
-     * @param array $gateways named array
+     * @param  \OPNsense\Routing\Gateways $gateways object
      */
-    public function setGateways($gateways)
+    public function setGateways(\OPNsense\Routing\Gateways $gateways)
     {
-        if (is_array($gateways)) {
-            foreach ($gateways as $key => $gw) {
-                if (Util::isIpAddress($gw['gateway']) && !empty($gw['interface'])) {
-                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )",
-                                                        "interface" => $gw['interface'],
-                                                        "gateway" => $gw['gateway'],
-                                                        "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
-                                                        "type" => "gateway");
-                }
+        $this->gateways = $gateways;
+        foreach ($gateways->gatewaysIndexedByName(false, true) as $key => $gw) {
+            if (Util::isIpAddress($gw['gateway']) && !empty($gw['if'])) {
+                $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['if']} {$gw['gateway']} )",
+                                                    "interface" => $gw['if'],
+                                                    "gateway" => $gw['gateway'],
+                                                    "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
+                                                    "type" => "gateway");
             }
         }
+    }
+
+    /**
+     * @return \OPNsense\Routing\Gateways gateway object
+     */
+    public function getGateways(): ?\OPNsense\Routing\Gateways
+    {
+        return $this->gateways;
     }
 
     /**

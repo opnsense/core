@@ -79,7 +79,7 @@ function filter_core_get_initialized_plugin_system()
     }
     // init interfaces and gateways
     $fw->setInterfaceMapping($cnfint);
-    $fw->setGateways(return_gateways_array(false, true));
+    $fw->setGateways(new \OPNsense\Routing\Gateways(legacy_interfaces_details()));
     $fw->setGatewayGroups(return_gateway_groups_array());
     return $fw;
 }
