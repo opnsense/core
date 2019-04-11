@@ -606,7 +606,7 @@ $( document ).ready(function() {
                   <td>
                     <select id="priority" name="priority" class="selectpicker"  data-live-search="true" data-size="5">
 <?php
-                    for ($prio=1; $prio < 255; ++$prio):?>
+                    for ($prio=255; $prio >= 1; --$prio):?>
                         <option value="<?=$prio;?>" <?=$pconfig['priority'] == $prio ? "selected=selected" : "";?> >
                             <?=$prio;?>
                         </option>
@@ -614,7 +614,7 @@ $( document ).ready(function() {
                     endfor;?>
                     </select>
                     <div class="hidden" data-for="help_for_priority">
-                      <?= gettext('Influences sort order when selecting a (default) gateway, higher means more important.') ?>
+                      <?= gettext('Influences sort order when selecting a (default) gateway, lower means more important.') ?>
                     </div>
                   </td>
                 </tr>

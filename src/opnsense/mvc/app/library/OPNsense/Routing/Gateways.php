@@ -117,7 +117,10 @@ class Gateways
         if (empty($this->cached_gateways)) {
             $this->gatewaySeq = 1;
         }
-        return sprintf("%01d%04d%010d", $is_default, $prio, $this->gatewaySeq++);
+        if ($prio > 255) {
+            $prio = 255;
+        }
+        return sprintf("%01d%04d%010d", $is_default, 256 - $prio, $this->gatewaySeq++);
     }
 
     /**
@@ -132,6 +135,26 @@ class Gateways
             $dynamic_gw = array();
             $gatewaySeq = 1;
             $i=0; // sequence used in legacy edit form (item in the list)
+
+            // add loopback, lowest priority
+            $this->cached_gateways[$this->newKey(255)] = [
+                'name' => 'Null4',
+                'if' => 'lo0',
+                'interface' => 'loopback',
+                'ipprotocol' => 'inet',
+                'gateway' => '127.0.0.1',
+                'priority' => 255,
+                'is_loopback' => true
+            ];
+            $this->cached_gateways[$this->newKey(255)] = [
+                'name' => 'Null6',
+                'if' => 'lo0',
+                'interface' => 'loopback',
+                'ipprotocol' => 'inet6',
+                'gateway' => '::1',
+                'priority' => 255,
+                'is_loopback' => true
+            ];
             // iterate configured gateways
             if (!empty($this->configHandle->gateways)) {
                   foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
@@ -142,7 +165,7 @@ class Gateways
                           }
                           if (empty($gw_arr['priority'])) {
                               // default priority
-                              $gw_arr['priority'] = 1;
+                              $gw_arr['priority'] = 255;
                           }
                           $gw_arr["if"] = $definedIntf[$gw_arr["interface"]]['if'];
                           $gw_arr["attribute"] = $i++;
@@ -171,7 +194,7 @@ class Gateways
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
                     $thisconf = [
-                        "priority" => 1,
+                        "priority" => 255,
                         "interface" => $ifname,
                         "weight" => 1,
                         "ipprotocol" => $ipproto,
@@ -219,23 +242,6 @@ class Gateways
                     }
                 }
             }
-            // add loopback
-            $this->cached_gateways[$this->newKey(0)] = [
-                'name' => 'Null4',
-                'if' => 'lo0',
-                'interface' => 'loopback',
-                'ipprotocol' => 'inet',
-                'gateway' => '127.0.0.1',
-                'is_loopback' => true
-            ];
-            $this->cached_gateways[$this->newKey(0)] = [
-                'name' => 'Null6',
-                'if' => 'lo0',
-                'interface' => 'loopback',
-                'ipprotocol' => 'inet6',
-                'gateway' => '::1',
-                'is_loopback' => true
-            ];
             // sort by priority
             krsort($this->cached_gateways);
         }
