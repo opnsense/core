@@ -298,8 +298,18 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     }
 
     if (isset($config['system']['gw_switch_default'])) {
-        /* XXX gw_switch_group4 and gw_switch_group6 to pass down: */
-        fixup_default_gateway();
+        // When gateway switching is enabled, we might consider a different default gateway.
+        // although this isn't really the right spot for the feature (it's a monitoring/routing decision),
+        // we keep it here for now (historical reasons).
+        $down_gateways = return_down_gateways();
+        foreach (array("inet", "inet6") as $ipprotocol) {
+            $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
+            if ($default_gw !== null) {
+                system_default_route(
+                    $default_gw['gateway'], $ipprotocol, $default_gw['if'], isset($default_gw['fargw'])
+                );
+            }
+        }
     }
 
     $aliases = filter_generate_aliases();
