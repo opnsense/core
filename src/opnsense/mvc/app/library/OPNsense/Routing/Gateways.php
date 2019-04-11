@@ -44,19 +44,14 @@ class Gateways
 
     /**
      * Construct new gateways object
+     * @param array $ifconfig containing serialized ifconfig data
      */
-    public function __construct()
+    public function __construct(array $ifconfig)
     {
         $this->configHandle = Config::getInstance()->object();
-    }
-
-    /**
-     * @param array $payload containing serialized ifconfig data
-     */
-    public function setIfconfig($payload)
-    {
-        $this->ifconfig = $payload;
-        return $this;
+        if ($ifconfig !== null) {
+            $this->ifconfig = $ifconfig;
+        }
     }
 
     /**
