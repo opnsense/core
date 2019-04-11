@@ -397,6 +397,7 @@
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel" aria-hidden="true">
+    <div class="modal-backdrop fade in"></div>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
