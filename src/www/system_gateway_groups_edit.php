@@ -32,7 +32,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
-$a_gateways = return_gateways_array();
+$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && isset($a_gateway_groups[$_GET['id']])) {

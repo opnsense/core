@@ -35,7 +35,7 @@ require_once("rrd.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 $gateways_status = return_gateways_status();
-$a_gateways = return_gateways_array();
+$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {
