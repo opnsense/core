@@ -435,7 +435,6 @@ include("head.inc");
                   <?=gettext("Allow default gateway switching"); ?>
                   <div class="hidden" data-for="help_for_gw_switch_default">
                     <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
-                    <?= gettext('When using default gateway switching use any available gateway or select a specific gateway group below.') ?>
                   </div>
                 </td>
               </tr>
