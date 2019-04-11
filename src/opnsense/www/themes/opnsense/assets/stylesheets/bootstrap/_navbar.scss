@@ -163,7 +163,7 @@
   height: $navbar-height;
   padding: $navbar-padding-vertical $navbar-padding-horizontal;
   font-size: $font-size-large;
-  //line-height: $line-height-computed;
+  line-height: $line-height-computed;
 
   &:hover,
   &:focus {
@@ -190,7 +190,7 @@
 
 .navbar-toggle {
   position: relative;
-  float: left;
+  float: right;
   padding: 9px 10px;
   margin-right: $navbar-padding-horizontal;
   @include navbar-vertical-align(34px);
@@ -282,7 +282,7 @@
 // our navbars.
 
 .navbar-form {
-  padding: 10px;
+  padding: 10px $navbar-padding-horizontal;
   margin-right: -$navbar-padding-horizontal;
   margin-left: -$navbar-padding-horizontal;
   border-top: 1px solid transparent;

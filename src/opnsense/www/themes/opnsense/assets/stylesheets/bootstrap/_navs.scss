@@ -122,6 +122,9 @@
     > a {
       border-radius: $nav-pills-border-radius;
     }
+    + li {
+      margin-left: 2px;
+    }
 
     // Active state
     &.active > a {
@@ -161,7 +164,7 @@
     float: none;
     > a {
       margin-bottom: 5px;
-      text-align: left;
+      text-align: center;
     }
   }
 
