@@ -33,10 +33,10 @@ function gateway_api()
 {
     $result = array();
     $gateways_status = return_gateways_status();
-    foreach (return_gateways_array() as $gname => $gw) {
+    foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName() as $gname => $gw) {
         $gatewayItem = array('name' => $gname);
+        $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : "~";
         if (!empty($gateways_status[$gname])) {
-            $gatewayItem['address'] = lookup_gateway_ip_by_name($gname);
             $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
             $gatewayItem['loss'] = $gateways_status[$gname]['loss'];
             $gatewayItem['delay'] = $gateways_status[$gname]['delay'];
@@ -62,7 +62,6 @@ function gateway_api()
                     break;
             }
         } else {
-            $gatewayItem['address'] = '~';
             $gatewayItem['status'] = '~';
             $gatewayItem['status_translated'] =  gettext('Unknown');
             $gatewayItem['loss'] = '~';
