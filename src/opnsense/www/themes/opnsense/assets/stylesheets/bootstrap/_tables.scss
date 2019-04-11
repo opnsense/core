@@ -5,7 +5,6 @@
 
 table {
   background-color: $table-bg;
-  color: #444;
 
   // Table cell sizing
   //
@@ -62,7 +61,7 @@ th {
   // Bottom align for column headings
   > thead > tr > th {
     vertical-align: bottom;
-    border-bottom: 1px solid $table-border-color;
+    border-bottom: 2px solid $table-border-color;
   }
   // Remove top border from thead by default
   > caption + thead,
@@ -72,8 +71,6 @@ th {
       > th,
       > td {
         border-top: 0;
-        font-family: 'SourceSansProSemibold';
-        font-weight: normal;
       }
     }
   }
@@ -180,7 +177,7 @@ th {
     margin-bottom: ($line-height-computed * .75);
     overflow-y: hidden;
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    //border: 1px solid $table-border-color;
+    border: 1px solid $table-border-color;
 
     // Tighten up spacing
     > .table {

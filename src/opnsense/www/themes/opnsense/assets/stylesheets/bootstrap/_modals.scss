@@ -44,7 +44,7 @@
 .modal-dialog {
   position: relative;
   width: auto;
-  margin: 52px+10px 10px 10px 10px;
+  margin: 10px;
 }
 
 // Actual modal
@@ -135,7 +135,7 @@
   // Automatically set modal's width for larger viewports
   .modal-dialog {
     width: $modal-md;
-    margin: 52px+30px auto 30px auto;
+    margin: 30px auto;
   }
   .modal-content {
     @include box-shadow(0 5px 15px rgba(0, 0, 0, .5));
