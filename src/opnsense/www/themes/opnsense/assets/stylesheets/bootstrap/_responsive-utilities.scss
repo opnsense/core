@@ -14,24 +14,19 @@
 // For more information, see the following:
 //
 // Issue: https://github.com/twbs/bootstrap/issues/10497
-// Docs: https://getbootstrap.com/docs/3.4/getting-started/#support-ie10-width
-// Source: https://timkadlec.com/2013/01/windows-phone-8-and-device-width/
-// Source: https://timkadlec.com/2012/10/ie10-snap-mode-and-responsive-design/
+// Docs: http://getbootstrap.com/getting-started/#support-ie10-width
+// Source: http://timkadlec.com/2013/01/windows-phone-8-and-device-width/
+// Source: http://timkadlec.com/2012/10/ie10-snap-mode-and-responsive-design/
 
-@at-root {
-  @-ms-viewport {
-    width: device-width;
-  }
+@-ms-viewport {
+  width: device-width;
 }
 
 
 // Visibility utilities
 // Note: Deprecated .visible-xs, .visible-sm, .visible-md, and .visible-lg as of v3.2.0
 
-@include responsive-invisibility('.visible-xs');
-@include responsive-invisibility('.visible-sm');
-@include responsive-invisibility('.visible-md');
-@include responsive-invisibility('.visible-lg');
+@include responsive-invisibility('.visible-xs, .visible-sm, .visible-md, .visible-lg');
 
 .visible-xs-block,
 .visible-xs-inline,
@@ -130,6 +125,12 @@
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
   @include responsive-invisibility('.hidden-sm');
+}
+
+@media (max-width: 768px), (max-height: 669px) {
+  .toggle-sidebar {
+    display: none !important;
+  }
 }
 
 @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {

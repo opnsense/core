@@ -5,5 +5,3 @@
 @function twbs-image-path($path) {
   @return image-path($path);
 }
-
-$bootstrap-sass-asset-helper: true;

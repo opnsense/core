@@ -10,7 +10,6 @@
 .fade {
   opacity: 0;
   @include transition(opacity .15s linear);
-
   &.in {
     opacity: 1;
   }
@@ -32,7 +31,5 @@ tbody.collapse.in { display: table-row-group; }
   position: relative;
   height: 0;
   overflow: hidden;
-  @include transition-property(height, visibility);
-  @include transition-duration(.35s);
-  @include transition-timing-function(ease);
+  @include transition(height .35s ease);
 }
