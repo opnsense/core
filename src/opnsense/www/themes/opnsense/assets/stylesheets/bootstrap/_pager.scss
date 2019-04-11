@@ -6,9 +6,9 @@
 .pager {
   padding-left: 0;
   margin: $line-height-computed 0;
-  text-align: center;
   list-style: none;
-  @include clearfix;
+  text-align: center;
+  @include clearfix();
   li {
     display: inline;
     > a,
@@ -47,8 +47,9 @@
     > a:focus,
     > span {
       color: $pager-disabled-color;
-      cursor: $cursor-disabled;
       background-color: $pager-bg;
+      cursor: not-allowed;
     }
   }
+
 }

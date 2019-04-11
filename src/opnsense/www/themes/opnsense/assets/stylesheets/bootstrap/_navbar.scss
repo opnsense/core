@@ -15,7 +15,7 @@
   border: 1px solid transparent;
 
   // Prevent floats from breaking the navbar
-  @include clearfix;
+  @include clearfix();
 
   @media (min-width: $grid-float-breakpoint) {
     border-radius: $navbar-border-radius;
@@ -29,7 +29,7 @@
 // styling of responsive aspects.
 
 .navbar-header {
-  @include clearfix;
+  @include clearfix();
 
   @media (min-width: $grid-float-breakpoint) {
     float: left;
@@ -48,12 +48,12 @@
 // content for the user's viewport.
 
 .navbar-collapse {
-  padding-right: $navbar-padding-horizontal;
-  padding-left: $navbar-padding-horizontal;
   overflow-x: visible;
+  padding-right: $navbar-padding-horizontal;
+  padding-left:  $navbar-padding-horizontal;
   border-top: 1px solid transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-  @include clearfix;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+  @include clearfix();
   -webkit-overflow-scrolling: touch;
 
   &.in {
@@ -81,8 +81,8 @@
     .navbar-fixed-top &,
     .navbar-static-top &,
     .navbar-fixed-bottom & {
-      padding-right: 0;
       padding-left: 0;
+      padding-right: 0;
     }
   }
 }
@@ -92,31 +92,10 @@
   .navbar-collapse {
     max-height: $navbar-collapse-max-height;
 
-    @media (max-device-width: $screen-xs-min) and (orientation: landscape) {
+    @media (max-width: $screen-xs-min) and (orientation: landscape) {
       max-height: 200px;
     }
   }
-
-  // Fix the top/bottom navbars when screen real estate supports it
-  position: fixed;
-  right: 0;
-  left: 0;
-  z-index: $zindex-navbar-fixed;
-
-  // Undo the rounded corners
-  @media (min-width: $grid-float-breakpoint) {
-    border-radius: 0;
-  }
-}
-
-.navbar-fixed-top {
-  top: 0;
-  border-width: 0 0 1px;
-}
-.navbar-fixed-bottom {
-  bottom: 0;
-  margin-bottom: 0; // override .navbar defaults
-  border-width: 1px 0 0;
 }
 
 
@@ -129,11 +108,11 @@
   > .navbar-header,
   > .navbar-collapse {
     margin-right: -$navbar-padding-horizontal;
-    margin-left: -$navbar-padding-horizontal;
+    margin-left:  -$navbar-padding-horizontal;
 
     @media (min-width: $grid-float-breakpoint) {
       margin-right: 0;
-      margin-left: 0;
+      margin-left:  0;
     }
   }
 }
@@ -155,23 +134,42 @@
   }
 }
 
+// Fix the top/bottom navbars when screen real estate supports it
+.navbar-fixed-top,
+.navbar-fixed-bottom {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: $zindex-navbar-fixed;
+  @include translate3d(0, 0, 0);
+
+  // Undo the rounded corners
+  @media (min-width: $grid-float-breakpoint) {
+    border-radius: 0;
+  }
+}
+.navbar-fixed-top {
+  top: 0;
+  border-width: 0 0 1px;
+}
+.navbar-fixed-bottom {
+  bottom: 0;
+  margin-bottom: 0; // override .navbar defaults
+  border-width: 1px 0 0;
+}
+
 
 // Brand/project name
 
 .navbar-brand {
   float: left;
-  height: $navbar-height;
   padding: $navbar-padding-vertical $navbar-padding-horizontal;
   font-size: $font-size-large;
-  line-height: $line-height-computed;
+  height: $navbar-height;
 
   &:hover,
   &:focus {
     text-decoration: none;
-  }
-
-  > img {
-    display: block;
   }
 
   @media (min-width: $grid-float-breakpoint) {
@@ -190,9 +188,9 @@
 
 .navbar-toggle {
   position: relative;
-  float: right;
-  padding: 9px 10px;
+  float: left;
   margin-right: $navbar-padding-horizontal;
+  padding: 9px 10px;
   @include navbar-vertical-align(34px);
   background-color: transparent;
   background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
@@ -231,7 +229,7 @@
   margin: ($navbar-padding-vertical / 2) (-$navbar-padding-horizontal);
 
   > li > a {
-    padding-top: 10px;
+    padding-top:    10px;
     padding-bottom: 10px;
     line-height: $line-height-computed;
   }
@@ -268,10 +266,30 @@
     > li {
       float: left;
       > a {
-        padding-top: $navbar-padding-vertical;
+        padding-top:    $navbar-padding-vertical;
         padding-bottom: $navbar-padding-vertical;
       }
     }
+
+    &.navbar-right:last-child {
+      margin-right: -$navbar-padding-horizontal;
+    }
+  }
+}
+
+
+// Component alignment
+//
+// Repurpose the pull utilities as their own navbar utilities to avoid specificity
+// issues with parents and chaining. Only do this when the navbar is uncollapsed
+// though so that navbar contents properly stack and align in mobile.
+
+@media (min-width: $grid-float-breakpoint) {
+  .navbar-left {
+    float: left !important;
+  }
+  .navbar-right {
+    float: right !important;
   }
 }
 
@@ -282,24 +300,20 @@
 // our navbars.
 
 .navbar-form {
-  padding: 10px $navbar-padding-horizontal;
-  margin-right: -$navbar-padding-horizontal;
   margin-left: -$navbar-padding-horizontal;
+  margin-right: -$navbar-padding-horizontal;
+  padding: 10px 0px;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  $shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+  $shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1);
   @include box-shadow($shadow);
 
   // Mixin behavior for optimum display
-  @include form-inline;
+  @extend .form-inline;
 
   .form-group {
     @media (max-width: $grid-float-breakpoint-max) {
       margin-bottom: 5px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
     }
   }
 
@@ -309,12 +323,17 @@
   // Undo 100% width for pull classes
   @media (min-width: $grid-float-breakpoint) {
     width: auto;
+    border: 0;
+    margin-left: 0;
+    margin-right: 0;
     padding-top: 0;
     padding-bottom: 0;
-    margin-right: 0;
-    margin-left: 0;
-    border: 0;
     @include box-shadow(none);
+
+    // Outdent the form if last child to line up with content down the page
+    &.navbar-right:last-child {
+      margin-right: -$navbar-padding-horizontal;
+    }
   }
 }
 
@@ -328,8 +347,6 @@
 }
 // Menu position and menu caret support for dropups via extra dropup class
 .navbar-fixed-bottom .navbar-nav > li > .dropdown-menu {
-  margin-bottom: 0;
-  @include border-top-radius($navbar-border-radius);
   @include border-bottom-radius(0);
 }
 
@@ -359,34 +376,15 @@
 
   @media (min-width: $grid-float-breakpoint) {
     float: left;
-    margin-right: $navbar-padding-horizontal;
     margin-left: $navbar-padding-horizontal;
-  }
-}
+    margin-right: $navbar-padding-horizontal;
 
-
-// Component alignment
-//
-// Repurpose the pull utilities as their own navbar utilities to avoid specificity
-// issues with parents and chaining. Only do this when the navbar is uncollapsed
-// though so that navbar contents properly stack and align in mobile.
-//
-// Declared after the navbar components to ensure more specificity on the margins.
-
-@media (min-width: $grid-float-breakpoint) {
-  .navbar-left {
-    float: left !important;
-  }
-  .navbar-right {
-    float: right !important;
-  margin-right: -$navbar-padding-horizontal;
-
-    ~ .navbar-right {
+    // Outdent the form if last child to line up with content down the page
+    &.navbar-right:last-child {
       margin-right: 0;
     }
   }
 }
-
 
 // Alternate navbars
 // --------------------------------------------------
@@ -435,15 +433,33 @@
         background-color: $navbar-default-link-disabled-bg;
       }
     }
+  }
 
-    // Dropdown menu items
+  .navbar-toggle {
+    border-color: $navbar-default-toggle-border-color;
+    &:hover,
+    &:focus {
+      background-color: $navbar-default-toggle-hover-bg;
+    }
+    .icon-bar {
+      background-color: $navbar-default-toggle-icon-bar-bg;
+    }
+  }
+
+  .navbar-collapse,
+  .navbar-form {
+    border-color: $navbar-default-border;
+  }
+
+  // Dropdown menu items
+  .navbar-nav {
     // Remove background color from open dropdown
     > .open > a {
       &,
       &:hover,
       &:focus {
-        color: $navbar-default-link-active-color;
         background-color: $navbar-default-link-active-bg;
+        color: $navbar-default-link-active-color;
       }
     }
 
@@ -476,22 +492,6 @@
         }
       }
     }
-  }
-
-  .navbar-toggle {
-    border-color: $navbar-default-toggle-border-color;
-    &:hover,
-    &:focus {
-      background-color: $navbar-default-toggle-hover-bg;
-    }
-    .icon-bar {
-      background-color: $navbar-default-toggle-icon-bar-bg;
-    }
-  }
-
-  .navbar-collapse,
-  .navbar-form {
-    border-color: $navbar-default-border;
   }
 
 
@@ -567,14 +567,33 @@
         background-color: $navbar-inverse-link-disabled-bg;
       }
     }
+  }
 
-    // Dropdowns
+  // Darken the responsive nav toggle
+  .navbar-toggle {
+    border-color: $navbar-inverse-toggle-border-color;
+    &:hover,
+    &:focus {
+      background-color: $navbar-inverse-toggle-hover-bg;
+    }
+    .icon-bar {
+      background-color: $navbar-inverse-toggle-icon-bar-bg;
+    }
+  }
+
+  .navbar-collapse,
+  .navbar-form {
+    border-color: darken($navbar-inverse-bg, 7%);
+  }
+
+  // Dropdowns
+  .navbar-nav {
     > .open > a {
       &,
       &:hover,
       &:focus {
-        color: $navbar-inverse-link-active-color;
         background-color: $navbar-inverse-link-active-bg;
+        color: $navbar-inverse-link-active-color;
       }
     }
 
@@ -613,23 +632,6 @@
         }
       }
     }
-  }
-
-  // Darken the responsive nav toggle
-  .navbar-toggle {
-    border-color: $navbar-inverse-toggle-border-color;
-    &:hover,
-    &:focus {
-      background-color: $navbar-inverse-toggle-hover-bg;
-    }
-    .icon-bar {
-      background-color: $navbar-inverse-toggle-icon-bar-bg;
-    }
-  }
-
-  .navbar-collapse,
-  .navbar-form {
-    border-color: darken($navbar-inverse-bg, 7%);
   }
 
   .navbar-link {

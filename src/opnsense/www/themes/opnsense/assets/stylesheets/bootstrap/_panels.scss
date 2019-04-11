@@ -9,13 +9,13 @@
   background-color: $panel-bg;
   border: 1px solid transparent;
   border-radius: $panel-border-radius;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, .05));
+  @include box-shadow(0 1px 1px rgba(0,0,0,.05));
 }
 
 // Panel contents
 .panel-body {
   padding: $panel-body-padding;
-  @include clearfix;
+  @include clearfix();
 }
 
 // Optional heading
@@ -36,11 +36,7 @@
   font-size: ceil(($font-size-base * 1.125));
   color: inherit;
 
-  > a,
-  > small,
-  > .small,
-  > small > a,
-  > .small > a {
+  > a {
     color: inherit;
   }
 }
@@ -60,8 +56,7 @@
 // any kind of custom content between the two.
 
 .panel {
-  > .list-group,
-  > .panel-collapse > .list-group {
+  > .list-group {
     margin-bottom: 0;
 
     .list-group-item {
@@ -76,18 +71,12 @@
         @include border-top-radius(($panel-border-radius - 1));
       }
     }
-
     // Add border bottom radius for last one
     &:last-child {
       .list-group-item:last-child {
         border-bottom: 0;
         @include border-bottom-radius(($panel-border-radius - 1));
       }
-    }
-  }
-  > .panel-heading + .panel-collapse > .list-group {
-    .list-group-item:first-child {
-      @include border-top-radius(0);
     }
   }
 }
@@ -111,11 +100,6 @@
   > .table-responsive > .table,
   > .panel-collapse > .table {
     margin-bottom: 0;
-
-    caption {
-      padding-right: $panel-body-padding;
-      padding-left: $panel-body-padding;
-    }
   }
   // Add border top radius for first one
   > .table:first-child,
@@ -125,9 +109,6 @@
     > thead:first-child,
     > tbody:first-child {
       > tr:first-child {
-        border-top-left-radius: ($panel-border-radius - 1);
-        border-top-right-radius: ($panel-border-radius - 1);
-
         td:first-child,
         th:first-child {
           border-top-left-radius: ($panel-border-radius - 1);
@@ -147,9 +128,6 @@
     > tbody:last-child,
     > tfoot:last-child {
       > tr:last-child {
-        border-bottom-right-radius: ($panel-border-radius - 1);
-        border-bottom-left-radius: ($panel-border-radius - 1);
-
         td:first-child,
         th:first-child {
           border-bottom-left-radius: ($panel-border-radius - 1);
@@ -162,9 +140,7 @@
     }
   }
   > .panel-body + .table,
-  > .panel-body + .table-responsive,
-  > .table + .panel-body,
-  > .table-responsive + .panel-body {
+  > .panel-body + .table-responsive {
     border-top: 1px solid $table-border-color;
   }
   > .table > tbody:first-child > tr:first-child th,
@@ -208,13 +184,13 @@
     }
   }
   > .table-responsive {
-    margin-bottom: 0;
     border: 0;
+    margin-bottom: 0;
   }
 }
 
 
-// Collapsible panels (aka, accordion)
+// Collapsable panels (aka, accordion)
 //
 // Wrap a series of panels in `.panel-group` to turn them into an accordion with
 // the help of our collapse JavaScript plugin.
@@ -226,7 +202,6 @@
   .panel {
     margin-bottom: 0;
     border-radius: $panel-border-radius;
-
     + .panel {
       margin-top: 5px;
     }
@@ -234,13 +209,10 @@
 
   .panel-heading {
     border-bottom: 0;
-
-    + .panel-collapse > .panel-body,
-    + .panel-collapse > .list-group {
+    + .panel-collapse > .panel-body {
       border-top: 1px solid $panel-inner-border;
     }
   }
-
   .panel-footer {
     border-top: 0;
     + .panel-collapse .panel-body {

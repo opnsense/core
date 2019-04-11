@@ -5,8 +5,7 @@
   #{$parent} {
     color: $color;
   }
-  a#{$parent}:hover,
-  a#{$parent}:focus {
+  a#{$parent}:hover {
     color: darken($color, 10%);
   }
 }
