@@ -57,6 +57,7 @@ label           :   dialog label
 {% endfor %}
 
 <div class="modal fade" id="{{base_dialog_id}}" tabindex="-1" role="dialog" aria-labelledby="{{base_dialog_id}}Label" aria-hidden="true">
+    <div class="modal-backdrop fade in"></div>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
