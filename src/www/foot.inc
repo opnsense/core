@@ -18,6 +18,7 @@
       });
     ?>
     <div class="modal fade" id="modal_widgets" tabindex="-1" role="dialog" aria-labelledby="modal_widgets_label" aria-hidden="true">
+      <div class="modal-backdrop fade in"></div>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
