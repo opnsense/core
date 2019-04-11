@@ -1223,7 +1223,7 @@ include("head.inc");
                         <select name='gateway' class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                         <option value="" ><?=gettext("default");?></option>
 <?php
-                        foreach(return_gateways_array(true, true, true) as $gwname => $gw):
+                        foreach((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true, true, true) as $gwname => $gw):
 ?>
                           <option value="<?=$gwname;?>" <?=$gwname == $pconfig['gateway'] ? " selected=\"selected\"" : "";?>>
                             <?=$gw['name'];?>
