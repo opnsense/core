@@ -240,18 +240,18 @@ body{
 }
 
 .brand-logo{
-    display: none !important;
+    display: none;
 
     @media (min-width: $screen-sm-min) {
-        display: inline-block !important;
+        display: inline-block;
     }
 }
 
 .brand-icon{
-    display: inline-block !important;
+    display: inline-block;
 
     @media (min-width: $screen-sm-min) {
-        display: none !important;
+        display: none;
     }
 }
 
