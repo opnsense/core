@@ -1465,7 +1465,6 @@
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.svg
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.woff
-/usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/_bootstrap-compass.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/_bootstrap-mincer.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/_bootstrap-sprockets.scss
@@ -1562,7 +1561,6 @@
 /usr/local/opnsense/www/themes/opnsense/build/fonts/bootstrap/glyphicons-halflings-regular.svg
 /usr/local/opnsense/www/themes/opnsense/build/fonts/bootstrap/glyphicons-halflings-regular.ttf
 /usr/local/opnsense/www/themes/opnsense/build/fonts/bootstrap/glyphicons-halflings-regular.woff
-/usr/local/opnsense/www/themes/opnsense/build/fonts/bootstrap/glyphicons-halflings-regular.woff2
 /usr/local/opnsense/www/themes/opnsense/build/images/caret.png
 /usr/local/opnsense/www/themes/opnsense/build/images/default-logo.svg
 /usr/local/opnsense/www/themes/opnsense/build/images/favicon.png
