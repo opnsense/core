@@ -310,4 +310,23 @@ class Gateways
         return false;
     }
 
+    /**
+     * @param string $name gateway name
+     * @return string|null gateway address
+     */
+    public function getAddress($name)
+    {
+        foreach ($this->getGateways() as $gateway) {
+            if ($gateway['name'] == $name && !empty($gateway['gateway'])){
+                $result = $gateway['gateway'];
+                if (strtolower(substr($gateway['gateway'], 0, 5)) == "fe80:") {
+                    // link local, suffix interface
+                    $result .= "%{$gw['if']}";
+                }
+                return $result;
+            }
+        }
+        return null;
+    }
+
 }
