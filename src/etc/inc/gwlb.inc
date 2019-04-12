@@ -244,10 +244,9 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
 
 function return_gateways_status()
 {
-    $gateways_arr = return_gateways_array();
     $status = array();
 
-    foreach ($gateways_arr as $gwitem) {
+    foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
         if (isset($gwitem['disabled'])) {
             continue;
         }
@@ -261,9 +260,9 @@ function return_gateways_status()
         $status[$gwitem['name']] = array(
             'name' => $gwitem['name'],
             'status' => $gwstatus,
-            'stddev' => '0.0 ms',
-            'delay' => '0.0 ms',
-            'loss' => '0.0 %',
+            'stddev' => '~',
+            'delay' => '~',
+            'loss' => '~',
         );
     }
 
