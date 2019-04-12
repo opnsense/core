@@ -185,13 +185,14 @@ function system_resolvconf_generate($verbose = false)
     chmod('/etc/resolv.conf', 0644);
 
     /* setup static routes for DNS servers. */
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         /* setup static routes for dns servers */
         $dnsgw = "dns{$dnscounter}gw";
         if (isset($syscfg[$dnsgw])) {
             $gwname = $syscfg[$dnsgw];
             if (($gwname != '') && ($gwname != 'none')) {
-                $gatewayip = lookup_gateway_ip_by_name($gwname);
+                $gatewayip = $gateways->getAddress($gwname);
                 if (is_ipaddrv4($gatewayip)) {
                     /* dns server array starts at 0 */
                     $dnscountermo = $dnscounter - 1;
