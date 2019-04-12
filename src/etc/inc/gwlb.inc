@@ -63,26 +63,17 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
     @mkdir('/var/db/rrd', 0775);
     @chown('/var/db/rrd', 'nobody');
 
-    $gateways_arr_all = return_gateways_array(true);
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $monitor_ips = array();
 
     $dpinger_default = return_dpinger_defaults();
-    foreach ($gateways_arr_all as $name => $gateway) {
+    foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
-        }
-
-        if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
-            if (is_ipaddr($gateway['gateway'])) {
-                $gateway['monitor'] = $gateway['gateway'];
-            } else {
-                /* No chance to get an ip to monitor skip target. */
-                continue;
-            }
-        }
-
-        /* if the monitor address is already used before, skip */
-        if (in_array($gateway['monitor'], $monitor_ips)) {
+        } elseif (empty($gateway['monitor'])) {
+            continue;
+        } elseif (in_array($gateway['monitor'], $monitor_ips)) {
+            /* if the monitor address is already used before, skip */
             continue;
         }
 
@@ -96,7 +87,7 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
          * $gateway['ipprotocol'] is the better option.
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-            $gwifip = find_interface_ip($gateway['interface']);
+            $gwifip = find_interface_ip($gateway['if']);
             if (!is_ipaddrv4($gwifip)) {
                 continue; //Skip this target
             }
@@ -125,10 +116,10 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
             if (is_linklocal($gateway['monitor'])) {
                 /* link local monitor needs a link local address for the "src" part */
-                $gwifip = find_interface_ipv6_ll($gateway['interface']);
+                $gwifip = find_interface_ipv6_ll($gateway['if']);
             } else {
                 /* monitor is a routable address, so use a routable address for the "src" part */
-                $gwifip = find_interface_ipv6($gateway['interface']);
+                $gwifip = find_interface_ipv6($gateway['if']);
             }
 
             if (!is_ipaddrv6($gwifip)) {
@@ -141,13 +132,13 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
              * then the ICMP6 response would not find its way back home.
              */
             if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-                $gateway['monitor'] .= "%{$gateway['interface']}";
+                $gateway['monitor'] .= "%{$gateway['if']}";
             }
             if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-                $gateway['gateway'] .= "%{$gateway['interface']}";
+                $gateway['gateway'] .= "%{$gateway['if']}";
             }
             if (is_linklocal($gwifip) && strpos($gwifip, '%') === false) {
-                $gwifip .= "%{$gateway['interface']}";
+                $gwifip .= "%{$gateway['if']}";
             }
 
             /* flush the monitor unconditionally */
