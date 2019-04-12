@@ -345,13 +345,13 @@ $( document ).ready(function() {
                         <?=$gateway['monitor'];?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['delay'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['delay'] : "~" ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['stddev'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['stddev'] : "~" ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['loss'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['loss'] : "~" ?>
                       </td>
                       <td>
   <?php
