@@ -357,4 +357,24 @@ class Gateways
         return null;
     }
 
+    /**
+     * @param string $interface interface name
+     * @param string $ipproto inet/inet6
+     * @return string|null gateway address
+     */
+    public function getInterfaceGateway($interface, $ipproto="inet")
+    {
+        foreach ($this->getGateways() as $gateway) {
+            if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
+                continue;
+            } elseif (!empty($gateway['is_loopback']) || empty($gateway['gateway'])) {
+                continue;
+            }
+
+            if (!empty($gateway['interface']) && $gateway['interface'] == $interface){
+                return $gateway['gateway'];
+            }
+        }
+        return null;
+    }
 }
