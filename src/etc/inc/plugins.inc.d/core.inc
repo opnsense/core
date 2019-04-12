@@ -83,7 +83,7 @@ function core_services()
     }
 
     if (is_dpinger_enabled()) {
-        $gateways_arr_all = return_gateways_array(true);
+        $gateways_arr_all = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true);
 
         foreach ($gateways_arr_all as $name => $gateway) {
             if (isset($gateway['monitor_disable'])) {
