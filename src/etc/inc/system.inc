@@ -559,8 +559,8 @@ function system_staticroutes_configure($interface = '')
 {
     $static_routes = get_staticroutes(false, true);
     if (count($static_routes)) {
-        $gateways_arr = return_gateways_array(false, true);
-
+        $ifdetails = legacy_interfaces_details();
+        $gateways_arr = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
         foreach ($static_routes as $rtent) {
             if (empty($gateways_arr[$rtent['gateway']])) {
                 log_error(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']));
@@ -575,7 +575,7 @@ function system_staticroutes_configure($interface = '')
                 log_error(sprintf('Cannot add static route to: %s', $rtent['network']));
                 continue;
             }
-            $interfacegw = $gateway['interface'];
+            $interfacegw = $gateway['if'];
             $gatewayip = $gateway['gateway'];
             $fargw = isset($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
             $blackhole = '';
