@@ -624,7 +624,7 @@ function return_gateway_groups_array()
     global $config;
 
     $gateways_status = return_gateways_status();
-    $gateways_arr = return_gateways_array();
+    $gateways_arr = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
     $gateway_groups_array = array();
 
     if (isset($config['gateways']['gateway_group'])) {
