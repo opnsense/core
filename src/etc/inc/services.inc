@@ -1493,6 +1493,7 @@ function services_dhcrelay_configure($verbose = false)
     }
 
     $iflist = get_configured_interface_with_descr();
+    $a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
@@ -1527,7 +1528,6 @@ function services_dhcrelay_configure($verbose = false)
         if (!isset($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $a_gateways = return_gateways_array(true);
                     $destif = $a_gateways[$rtent['gateway']]['interface'];
                     break;
                 }
@@ -1613,6 +1613,7 @@ function services_dhcrelay6_configure($verbose = false)
     }
 
     $iflist = get_configured_interface_with_descr();
+    $a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif))  {
@@ -1651,7 +1652,6 @@ function services_dhcrelay6_configure($verbose = false)
             if (isset($config['staticroutes']['route'])) {
                 foreach ($config['staticroutes']['route'] as $rtent) {
                     if (ip_in_subnet($srvip, $rtent['network'])) {
-                        $a_gateways = return_gateways_array(true);
                         $destif = $a_gateways[$rtent['gateway']]['interface'];
                         break;
                     }
