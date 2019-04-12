@@ -329,4 +329,32 @@ class Gateways
         return null;
     }
 
+    /**
+     * @param string $name gateway name
+     * @return string|null gateway interface
+     */
+    public function getInterface($name)
+    {
+        foreach ($this->getGateways() as $gateway) {
+            if ($gateway['name'] == $name && !empty($gateway['if'])){
+                return $gateway['if'];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $name gateway name
+     * @return string|null gateway interface
+     */
+    public function getInterfaceName($name)
+    {
+        foreach ($this->getGateways() as $gateway) {
+            if ($gateway['name'] == $name && !empty($gateway['interface'])){
+                return $gateway['interface'];
+            }
+        }
+        return null;
+    }
+
 }
