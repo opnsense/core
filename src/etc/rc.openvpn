@@ -34,30 +34,6 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-function gateway_is_gwgroup_member($name)
-{
-    global $config;
-
-    if (!isset($config['gateways']['gateway_group'])) {
-        return false;
-    }
-
-    $groups = $config['gateways']['gateway_group'];
-    $members = array();
-
-    foreach($groups as $group) {
-        if (isset($group['item'])) {
-            foreach($group['item'] as $item) {
-                $elements = explode("|", $item);
-                if ($name == $elements[0]) {
-                    $members[] = $group['name'];
-                }
-            }
-        }
-    }
-
-    return $members;
-}
 
 function try_lock($lock, $timeout = 5)
 {
@@ -93,16 +69,11 @@ if (file_exists('/var/run/booting')) {
         return;
 }
 
-/* Input argument is a comma-separated list of gateway names, blank or "all". */
+/* Input argument is a gateway name, blank or "all". */
 $argument = trim($argv[1], " \n");
 
 if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-    if (empty($argument) || $argument == "all") {
-        $argument = "all";
-        $log_text = "all";
-    } else {
-        $log_text = "endpoints that may use " . $argument;
-    }
+    $log_text = "endpoints that may use " . $argument;
     log_error("OpenVPN: One or more OpenVPN tunnel endpoints may have changed its IP. Reloading " . $log_text . ".");
 } else {
     return;
@@ -115,32 +86,13 @@ if (!$openvpnlck) {
     $openvpnlck = lock('openvpn', LOCK_EX);
 }
 
-$arg_array = explode(",",$argument);
-foreach ($arg_array as $arg_element) {
-    $gwgroups = array();
-    if ($arg_element == "all") {
-        $interface = "";
-    } else {
-        // e.g. $arg_element = "WANGW", $interface = "wan"
-        $interface = lookup_gateway_interface_by_name($arg_element);
-        if (empty($interface))
-            $interface = $arg_element;
-        else
-            // e.g. $arg_element = "WANGW", $gwgroups = array of gateway groups that use "wan"
-            $gwgroups = gateway_is_gwgroup_member($arg_element);
-    }
-
-    if(is_array($config['openvpn']['openvpn-server'])) {
-        foreach($config['openvpn']['openvpn-server'] as &$server) {
-            if ($server['interface'] == $interface || empty($interface) || (!empty($gwgroups) && in_array($server['interface'], $gwgroups)))
-                openvpn_resync_if_needed('server', $server, $interface);
-        }
-    }
-
-    if (is_array($config['openvpn']['openvpn-client'])) {
-        foreach($config['openvpn']['openvpn-client'] as &$client) {
-            if ($client['interface'] == $interface || empty($interface) || (!empty($gwgroups) && in_array($client['interface'], $gwgroups)))
-                openvpn_resync_if_needed('client', $client, $interface);
+$interface = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->getInterfaceName($argument);
+foreach (['server', 'client'] as $ovpntype) {
+    if(is_array($config['openvpn']['openvpn-'.$ovpntype])) {
+        foreach($config['openvpn']['openvpn-'.$ovpntype] as &$confitem) {
+            if ($confitem['interface'] == $interface || empty($interface)) {
+                openvpn_resync_if_needed($ovpntype, $confitem, $interface);
+            }
         }
     }
 }
