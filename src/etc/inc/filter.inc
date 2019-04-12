@@ -128,27 +128,18 @@ function filter_configure()
 
 function filter_delete_states_for_down_gateways()
 {
-    $GatewaysList = return_gateways_array(false, true) + return_gateway_groups_array();
     $a_gateways = return_gateways_status();
+    $ifdetails = legacy_interfaces_details();
     $any_gateway_down = false;
-
-    if (is_array($GatewaysList)) {
-        foreach ($GatewaysList as $gwname => $gateway) {
-            /* XXX what does this do exactly? */
-            if (empty($gateway['monitor'])) {
-                continue;
-            } elseif (!is_ipaddr($gateway['monitor'])) {
-                continue;
-            } elseif (strstr($gateway['monitor'], '127.0.0.')) {
-                continue;
-            } elseif (empty($a_gateways[$gateway['name']])) {
-                continue;
-            }
-
-            if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
-                $any_gateway_down = true;
-                break;
-            }
+    foreach ((new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true) as $gateway) {
+        if (empty($gateway['monitor']) || empty($a_gateways[$gateway['name']])) {
+            continue;
+        } elseif (!is_ipaddr($gateway['monitor']) || strstr($gateway['monitor'], '127.0.0.')) {
+            continue;
+        }
+        if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
+            $any_gateway_down = true;
+            break;
         }
     }
 
@@ -490,7 +481,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         flush();
     }
 
-    if (!isset($config['system']['kill_states'])) {
+    if (empty($config['system']['kill_states'])) {
         filter_delete_states_for_down_gateways();
     }
 
