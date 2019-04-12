@@ -54,18 +54,19 @@ function filter_core_bootstrap($fw)
 function filter_core_get_initialized_plugin_system()
 {
     $fw = new \OPNsense\Firewall\Plugin();
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $cnfint = legacy_config_get_interfaces(array("enable" => true));
     $ifdetails = legacy_interfaces_details();
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
         // setInterfaceMapping()
         if (!is_ipaddrv4($value['ipaddr']) || (!empty($value['gateway']) && $value['gateway'] != 'none')) {
-            $value['gateway'] = get_interface_gateway($key);
+            $value['gateway'] = $gateways->getInterfaceGateway($key, "inet");
         } else {
             $value['gateway'] = null;
         }
         if (!is_ipaddrv6($value['ipaddrv6']) || (!empty($value['gatewayv6']) && $value['gatewayv6'] != 'none')) {
-            $value['gatewayv6'] = get_interface_gateway_v6($key);
+            $value['gatewayv6'] = $gateways->getInterfaceGateway($key, "inet6");
         } else {
             $value['gatewayv6'] = null;
         }
@@ -79,7 +80,7 @@ function filter_core_get_initialized_plugin_system()
     }
     // init interfaces and gateways
     $fw->setInterfaceMapping($cnfint);
-    $fw->setGateways(new \OPNsense\Routing\Gateways(legacy_interfaces_details()));
+    $fw->setGateways($gateways);
     $fw->setGatewayGroups(return_gateway_groups_array());
     return $fw;
 }
