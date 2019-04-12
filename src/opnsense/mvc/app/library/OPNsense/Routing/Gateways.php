@@ -200,6 +200,7 @@ class Gateways
                         "ipprotocol" => $ipproto,
                         "name" => strtoupper("{$ifname}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$ifname}_{$ctype}") . " Gateway",
+                        "monitor_disable" => true, // disable monitoring by default
                         "if" => $ifcfg['if']
                     ];
                     if (file_exists("/tmp/{$ifcfg['if']}_defaultgw".$fsuffix)) {
