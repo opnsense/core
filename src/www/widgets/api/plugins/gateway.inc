@@ -62,8 +62,8 @@ function gateway_api()
                     break;
             }
         } else {
-            $gatewayItem['status'] = '~';
-            $gatewayItem['status_translated'] =  gettext('Unknown');
+            $gatewayItem['status'] = 'none';
+            $gatewayItem['status_translated'] =  gettext('Online');
             $gatewayItem['loss'] = '~';
             $gatewayItem['stddev'] = '~';
             $gatewayItem['delay'] = '~';
