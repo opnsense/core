@@ -86,7 +86,10 @@ POSSIBILITY OF SUCH DAMAGE.
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
             // fetch new log lines and add on top of grid-log
             ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, function(data, status) {
-                if (data !== undefined && data.length > 0) {
+                if (status == 'error') {
+                    // stop poller on failure
+                    $("#auto_refresh").prop('checked', false);
+                } else if (data !== undefined && data.length > 0) {
                     let record;
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
