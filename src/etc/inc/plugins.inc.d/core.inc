@@ -83,9 +83,7 @@ function core_services()
     }
 
     if (is_dpinger_enabled()) {
-        $gateways_arr_all = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true);
-
-        foreach ($gateways_arr_all as $name => $gateway) {
+        foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (isset($gateway['monitor_disable'])) {
                 continue;
             }
@@ -94,11 +92,11 @@ function core_services()
             $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
             $pconfig['php']['restart'] = array('setup_gateways_monitor');
             $pconfig['php']['start'] = array('setup_gateways_monitor');
-            $pconfig['pidfile'] = "/var/run/dpinger_{$name}.pid";
+            $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
             $pconfig['php']['args'] = array('verbose', 'id');
             $pconfig['name'] = 'dpinger';
             $pconfig['verbose'] = false;
-            $pconfig['id'] = $name;
+            $pconfig['id'] = $gateway['name'];
             $services[] = $pconfig;
         }
     }
