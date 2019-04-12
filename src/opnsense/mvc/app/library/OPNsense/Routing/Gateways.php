@@ -282,7 +282,6 @@ class Gateways
     {
         $result = array();
         foreach ($this->getGateways() as $gateway) {
-            $intf = $gateway['interface'];
             if (!empty($gateway['disabled']) && !$disabled) {
                 continue;
             }
