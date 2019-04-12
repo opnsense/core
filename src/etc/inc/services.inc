@@ -1791,7 +1791,7 @@ function is_dpinger_enabled()
         return false;
     }
 
-    return is_array(return_gateways_array());
+    return true;
 }
 
 function services_get()
