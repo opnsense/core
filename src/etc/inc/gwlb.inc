@@ -717,17 +717,6 @@ function return_gateway_groups_array()
     return $gateway_groups_array;
 }
 
-function lookup_gateway_interface_by_name($name)
-{
-    $gateways_arr = return_gateways_array(false, true);
-    if (!empty($gateways_arr[$name])) {
-        $interfacegw = $gateways_arr[$name]['friendlyiface'];
-        return ($interfacegw);
-    }
-
-    return (false);
-}
-
 function get_interface_gateway($wanif, &$dynamic = false)
 {
     $gw = null;
