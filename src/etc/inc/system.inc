@@ -460,88 +460,28 @@ function system_routing_configure($verbose = false, $interface = '')
         flush();
     }
 
-    $interfacegw = '';
-    $foundgw = false;
-    $gatewayip = '';
-    $fargw = false;
-
-    $interfacegwv6 = '';
-    $foundgwv6 = false;
-    $gatewayipv6 = '';
-
     if (!empty($interface)) {
         log_error("ROUTING: entering configure using '${interface}'");
     } else {
         log_error("ROUTING: entering configure using defaults");
     }
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
-        if (isset($gateway['defaultgw'])) {
-            if ($foundgw == false && $gateway['ipprotocol'] != 'inet6') {
-                if ($gateway['gateway'] == 'dynamic') {
-                    $gateway['gateway'] = get_interface_gateway($gateway['interface']);
-                }
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
-                $interfacegw = $gateway['interface'];
-                $fargw = isset($gateway['fargw']);
-                $gatewayip = $gateway['gateway'];
-                $foundgw = true;
-
-                log_error("ROUTING: IPv4 default gateway set to {$interfacegw}");
-            } elseif ($foundgwv6 == false && $gateway['ipprotocol'] == 'inet6') {
-                if ($gateway['gateway'] == 'dynamic') {
-                    $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
-                }
-
-                $interfacegwv6 = $gateway['interface'];
-                $gatewayipv6 = $gateway['gateway'];
-                $foundgwv6 = true;
-
-                log_error("ROUTING: IPv6 default gateway set to {$interfacegwv6}");
+    foreach (['inet', 'inet6'] as $ipproto) {
+        // deterine default gateway for inet/inet6, without considering monitor status.
+        $gateway = $gateways->getDefaultGW(array(), $ipproto);
+        $logproto = $ipproto == 'inet' ? "IPv4" : "IPv6";
+        if ($gateway != null) {
+            log_error("ROUTING: {$logproto} default gateway set to {$gateway['interface']}");
+            $fargw = isset($gateway['fargw']);
+            if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
+                log_error("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
+                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], $fargw);
+            } else {
+                log_error("ROUTING: skipping {$logproto} default route");
             }
         }
-    }
-
-    /*
-     * From the looks of the code below we cannot cope with
-     * multi-WAN without setting explicit gateways.  This is
-     * probably where the default gateway switching comes into
-     * play because this facility is allowed to use dynamically
-     * created gateways while the former code does not.
-     *
-     * In fact the following code is a mini gateway switcher
-     * facility which can only switch one hardcoded gateway and
-     * may obscure a problem with the setup for a long time... :(
-     *
-     * XXX Find a way to infer an upstream-capable interface or
-     * maybe make gateway switching the hardcoded behaviour, or
-     * at least the new default.
-     */
-
-    if (!$foundgw) {
-        $interfacegw = 'wan';
-        log_error("ROUTING: no IPv4 default gateway set, assuming {$interfacegw}");
-        $gatewayip = get_interface_gateway($interfacegw);
-    }
-
-    if (!$foundgwv6) {
-        $interfacegwv6 = 'wan';
-        log_error("ROUTING: no IPv6 default gateway set, assuming {$interfacegwv6}");
-        $gatewayipv6 = get_interface_gateway_v6($interfacegwv6);
-    }
-
-    if ((empty($interface) || $interface == $interfacegw) && is_ipaddrv4($gatewayip)) {
-        log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
-        system_default_route($gatewayip, 'inet', $interfacegw, $fargw);
-    } else {
-        log_error("ROUTING: skipping IPv4 default route");
-    }
-
-    if ((empty($interface) || $interface == $interfacegwv6) && is_ipaddrv6($gatewayipv6)) {
-        log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
-        system_default_route($gatewayipv6, 'inet6', $interfacegwv6);
-    } else {
-        log_error("ROUTING: skipping IPv6 default route");
     }
 
     system_staticroutes_configure($interface);
