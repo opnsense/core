@@ -498,17 +498,6 @@ authoritative;
 EOD;
 
     $dhcpdifs = array();
-    $add_routers = false;
-    $gateways_arr = return_gateways_array();
-    /* only add a routers line if the system has any IPv4 gateway at all */
-    /* a static route has a gateway, manually overriding this field always works */
-    foreach ($gateways_arr as $gwitem) {
-        if ($gwitem['ipprotocol'] == "inet") {
-            $add_routers = true;
-            break;
-        }
-    }
-
     /*    loop through and determine if we need to setup
      *    failover peer "bleh" entries
      */
@@ -805,15 +794,15 @@ EOPP;
         }
         // End of settings inside pools
 
-        if (!empty($dhcpifconf['gateway']) && $dhcpifconf['gateway'] != "none") {
-            $routers = $dhcpifconf['gateway'];
-            $add_routers = true;
-        } elseif (!empty($dhcpifconf['gateway']) && $dhcpifconf['gateway'] == "none") {
-            $add_routers = false;
-        } else {
+        if (!empty($dhcpifconf['gateway'])) {
+            $routers = $dhcpifconf['gateway'] != "none" ? $dhcpifconf['gateway'] : null;
+        } elseif ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->hasGateways("inet")) {
+            // by default, add interface address in "option routers"
             $routers = $ifcfgip;
+        } else {
+            $routers = null;
         }
-        if ($add_routers) {
+        if (!empty($routers)) {
             $dhcpdconf .= "  option routers {$routers};\n";
         }
 
