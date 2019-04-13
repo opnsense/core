@@ -4187,6 +4187,7 @@ function get_interfaces_info()
     global $config;
     $result = array();
     $all_intf_details = legacy_interfaces_details();
+    $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
     $ifup = legacy_interface_listget('up');
     $all_intf_stats = legacy_interface_stats();
     foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifdescr => $ifcnf) {
@@ -4326,8 +4327,8 @@ function get_interfaces_info()
             }
             /* lookup the gateway */
             if (interface_has_gateway($ifdescr)) {
-                $ifinfo['gateway'] = get_interface_gateway($ifdescr);
-                $ifinfo['gatewayv6'] = get_interface_gateway_v6($ifdescr);
+                $ifinfo['gateway'] = $gateways->getInterfaceGateway($ifdescr, "inet");
+                $ifinfo['gatewayv6'] = $gateways->getInterfaceGateway($ifdescr, "inet6");
             }
         }
 
