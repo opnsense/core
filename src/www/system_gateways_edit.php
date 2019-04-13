@@ -33,7 +33,7 @@ require_once("interfaces.inc");
 
 $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 $a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
-$dpinger_default = return_dpinger_defaults();
+$dpinger_default = dpinger_defaults();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
