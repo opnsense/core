@@ -508,7 +508,7 @@ function system_staticroutes_configure($interface = '')
                 continue;
             }
             $gateway = $gateways_arr[$rtent['gateway']];
-            if (!empty($interface) && $interface != $gateway['friendlyiface']) {
+            if (!empty($interface) && $interface != $gateway['interface']) {
                 continue;
             }
 

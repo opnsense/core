@@ -241,7 +241,7 @@ $( document ).ready(function() {
                               </option>
 <?php
                               foreach (get_configured_carp_interface_list() as $vip => $address):
-                                  if (!preg_match("/^{$gateway['friendlyiface']}_/i", $vip)) {
+                                  if (!preg_match("/^{$gateway['interface']}_/i", $vip)) {
                                       continue;
                                   }
                                   if (($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address))) {
