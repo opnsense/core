@@ -2833,7 +2833,8 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}");
     file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}");
 
-    $ip4gateway = get_interface_gateway($interface);
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
     if (is_ipaddrv4($ip4gateway)) {
         system_host_route('192.88.99.1', $ip4gateway);
     }
