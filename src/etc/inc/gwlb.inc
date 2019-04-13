@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function return_dpinger_defaults()
+function dpinger_defaults()
 {
     return array(
         'alert_interval' => '1',
@@ -51,7 +51,7 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
         flush();
     }
 
-    foreach (running_dpinger_processes() as $running_gwname => $process) {
+    foreach (dpinger_processes() as $running_gwname => $process) {
         if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
@@ -66,7 +66,7 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $monitor_ips = array();
 
-    $dpinger_default = return_dpinger_defaults();
+    $dpinger_default = dpinger_defaults();
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
@@ -266,7 +266,7 @@ function return_gateways_status()
         );
     }
 
-    foreach (running_dpinger_processes() as $gwname => $proc) {
+    foreach (dpinger_processes() as $gwname => $proc) {
         if (!isset($status[$gwname])) {
             continue;
         }
@@ -298,7 +298,7 @@ function return_gateways_status()
         $r['status'] = $status[$gwname]['status'];
 
         if ($r['status'] != 'force_down') {
-            $settings = return_dpinger_defaults();
+            $settings = dpinger_defaults();
 
             $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
 
@@ -435,7 +435,7 @@ function return_gateway_groups_array()
     return $gateway_groups_array;
 }
 
-function running_dpinger_processes()
+function dpinger_processes()
 {
     $result = array();
 
