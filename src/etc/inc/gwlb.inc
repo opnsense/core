@@ -399,12 +399,9 @@ function return_gateway_groups_array()
                     if (($member_item['up'] || $tiers_online == 0) && isset($gateways_arr[$member])) {
                         /* determine interface gateway */
                         $gateway = $gateways_arr[$member];
+                        $gatewayip = '';
                         if (is_ipaddr($gateway['gateway'])) {
                             $gatewayip = $gateway['gateway'];
-                        } elseif (!empty($gateway['interface'])) {
-                            $gatewayip = get_interface_gateway($gateway['friendlyiface']);
-                        } else {
-                            $gatewayip = '';
                         }
 
                         if (!empty($gateway['interface'])) {
