@@ -553,11 +553,11 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default Gateway"); ?></td>
+                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WAN Gateway"); ?></td>
                   <td>
                     <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_defaultgw">
-                      <?= gettext('This will select the above gateway as the default gateway.') ?>
+                      <?= gettext('This will select the above gateway as a default gateway candidate.') ?>
                     </div>
                   </td>
                 </tr>
