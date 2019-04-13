@@ -817,14 +817,12 @@ function interface_gif_configure(&$gif, $gifkey = "")
         } else {
             $realifip = get_interface_ip($gif['if']);
         }
-        $realifgw = get_interface_gateway($gif['if']);
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
         if (is_ipaddrv6($ipaddr)) {
             $realifip = $ipaddr;
         } else {
             $realifip = get_interface_ipv6($gif['if']);
         }
-        $realifgw = get_interface_gateway_v6($gif['if']);
     }
 
     interfaces_bring_up($realif);
@@ -869,12 +867,11 @@ function interface_gif_configure(&$gif, $gifkey = "")
 
     if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
         file_put_contents("/tmp/{$gifif}_router", $gif['tunnel-remote-addr']);
-    }
-    if (is_ipaddrv6($gif['tunnel-remote-addr'])) {
+    } elseif (is_ipaddrv6($gif['tunnel-remote-addr'])) {
         file_put_contents("/tmp/{$gifif}_routerv6", $gif['tunnel-remote-addr']);
     }
 
-    system_host_route($gif['remote-addr'], $realifgw);
+    system_host_route($gif['remote-addr'], $gif['tunnel-remote-addr']);
     interfaces_bring_up($gifif);
 
     return $gifif;
