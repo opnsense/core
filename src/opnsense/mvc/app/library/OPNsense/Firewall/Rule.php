@@ -254,17 +254,6 @@ abstract class Rule
                             $rule[$target] = "({$interfaces["{$matches[1]}"]['if']})";
                         }
                     } elseif (!empty($interfaces[$network_name]['if'])) {
-                        if ($rule['ipprotocol'] == "inet") {
-                            $network_found = !empty($interfaces[$network_name]['ifconfig']['ipv4']);
-                        } else {
-                            $network_found = !empty($interfaces[$network_name]['ifconfig']['ipv6']);
-                        }
-                        if (!$network_found) {
-                            $rule['disabled'] = true;
-                            $this->log(
-                              "network address type {$rule['ipprotocol']} not found on interface {$network_name}"
-                            );
-                        }
                         $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
                     } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
                         $rule[$target] = $rule[$tag]['network'];
