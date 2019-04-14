@@ -266,8 +266,9 @@ class Gateways
                     continue;
                 } elseif (!empty($gateway['disabled'])) {
                     continue;
+                } elseif (!empty($gateway['gateway'])) {
+                    return $gateway;
                 }
-                return $gateway;
             }
         }
         // not found
