@@ -332,8 +332,8 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <?=$gateway['name'];?>
-                        <?=!empty($default_gwv4) && $gateway['name'] == $default_gwv4['name'] ? "<strong>(default)</strong>" : "";?>
-                        <?=!empty($default_gwv6) && $gateway['name'] == $default_gwv6['name'] ? "<strong>(default)</strong>" : "";?>
+                        <?=!empty($default_gwv4) && $gateway['name'] == $default_gwv4['name'] ? "<strong>(active)</strong>" : "";?>
+                        <?=!empty($default_gwv6) && $gateway['name'] == $default_gwv6['name'] ? "<strong>(active)</strong>" : "";?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=convert_friendly_interface_to_friendly_descr($gateway['interface']);?>
