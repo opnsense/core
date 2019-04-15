@@ -288,47 +288,53 @@ function return_gateways_status()
         list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
             explode(' ', preg_replace('/\n/', '', $dinfo));
 
-        /* not yet ready, act like nothing was returned */
         if ($r['latency_stddev'] == '0' && $r['loss'] == '0') {
-            continue;
-        }
+            /* not yet ready, act like nothing was returned, but don't consider the gateway to be down */
+            $status[$gwname] = array(
+                'name' => $gwname,
+                'status' => 'none',
+                'stddev' => '~',
+                'delay' => '~',
+                'loss' => '~',
+            );
+        } else {
+            $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
+            $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
+            $r['status'] = $status[$gwname]['status'];
 
-        $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
-        $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
-        $r['status'] = $status[$gwname]['status'];
+            if ($r['status'] != 'force_down') {
+                $settings = dpinger_defaults();
 
-        if ($r['status'] != 'force_down') {
-            $settings = dpinger_defaults();
+                $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
 
-            $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
+                /* Replace default values by user-defined */
+                foreach ($keys as $key) {
+                    if (isset($gateways_arr[$gwname][$key]) && is_numeric($gateways_arr[$gwname][$key])) {
+                        $settings[$key] = $gateways_arr[$gwname][$key];
+                    }
+                }
 
-            /* Replace default values by user-defined */
-            foreach ($keys as $key) {
-                if (isset($gateways_arr[$gwname][$key]) && is_numeric($gateways_arr[$gwname][$key])) {
-                    $settings[$key] = $gateways_arr[$gwname][$key];
+                if ($r['latency_avg'] > $settings['latencyhigh']) {
+                    $r['status'] = 'down';
+                } elseif ($r['loss'] > $settings['losshigh']) {
+                    $r['status'] = 'down';
+                } elseif ($r['latency_avg'] > $settings['latencylow']) {
+                    $r['status'] = 'delay';
+                } elseif ($r['loss'] > $settings['losslow']) {
+                    $r['status'] = 'loss';
+                } else {
+                    $r['status'] = 'none';
                 }
             }
 
-            if ($r['latency_avg'] > $settings['latencyhigh']) {
-                $r['status'] = 'down';
-            } elseif ($r['loss'] > $settings['losshigh']) {
-                $r['status'] = 'down';
-            } elseif ($r['latency_avg'] > $settings['latencylow']) {
-                $r['status'] = 'delay';
-            } elseif ($r['loss'] > $settings['losslow']) {
-                $r['status'] = 'loss';
-            } else {
-                $r['status'] = 'none';
-            }
+            $status[$gwname] = array(
+                'delay' => sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1)),
+                'stddev' => sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1)),
+                'loss' => sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1)),
+                'status' => $r['status'],
+                'name' => $gwname,
+            );
         }
-
-        $status[$gwname] = array(
-            'delay' => sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1)),
-            'stddev' => sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1)),
-            'loss' => sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1)),
-            'status' => $r['status'],
-            'name' => $gwname,
-        );
     }
 
     return $status;
