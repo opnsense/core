@@ -732,7 +732,7 @@ $( document ).ready(function() {
                     <td class="view-stats"><?=!empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : "";?></td>
                     <td class="view-stats"><?=!empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : "";?></td>
                     <td>
-                      <?=htmlspecialchars($filterent['descr']);?>
+                      <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
                           <small><?=$rule_hash;?></small>
                       </div>
