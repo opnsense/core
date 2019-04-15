@@ -195,15 +195,7 @@ $( document ).ready(function() {
                           <td><?= gettext('Description') ?></td>
                         </tr>
 <?php
-                        foreach ($a_gateways as $gwname => $gateway):
-                        if (!empty($pconfig['item'])) {
-                            $af = explode("|", $pconfig['item'][0]);
-                            $family = $a_gateways[$af[0]]['ipprotocol'];
-                            if ($gateway['ipprotocol'] != $family) {
-                                continue;
-                            }
-                        }
-?>
+                        foreach ($a_gateways as $gwname => $gateway):?>
                         <tr>
                           <td><strong><?=$gateway['name'];?></strong></td>
                           <td>
