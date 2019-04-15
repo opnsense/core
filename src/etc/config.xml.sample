@@ -53,15 +53,6 @@
     </item>
     <item>
       <descr><![CDATA[
-        Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
-        to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
-        packets without returning a response.
-      ]]></descr>
-      <tunable>net.inet.icmp.drop_redirect</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[
         This option turns off the logging of redirect packets because there is no limit and this could fill
         up your logs consuming your whole hard drive.
       ]]></descr>
@@ -71,11 +62,6 @@
     <item>
       <descr><![CDATA[Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)]]></descr>
       <tunable>net.inet.tcp.drop_synfin</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable sending IPv4 redirects]]></descr>
-      <tunable>net.inet.ip.redirect</tunable>
       <value>default</value>
     </item>
     <item>
@@ -211,7 +197,11 @@
       <value>0</value>
     </item>
     <item>
-      <descr><![CDATA[Enable/disable dropping of ICMP Redirect packets]]></descr>
+      <descr><![CDATA[
+        Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
+        to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
+        packets without returning a response.
+      ]]></descr>
       <tunable>net.inet.icmp.drop_redirect</tunable>
       <value>1</value>
     </item>
