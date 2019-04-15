@@ -100,9 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['item'] = array();
     foreach ($a_gateways as $gwname => $gateway) {
         if (isset($pconfig[$gwname]) && $pconfig[$gwname] > 0) {
-            $vipname = "{$gwname}_vip";
             /* we have a priority above 0 (disabled), add item to list */
-            $pconfig['item'][] = "{$gwname}|{$pconfig[$gwname]}|{$pconfig[$vipname]}";
+            $pconfig['item'][] = "{$gwname}|{$pconfig[$gwname]}";
         }
         /* check for overlaps */
         if ($pconfig['name'] == $gwname) {
@@ -215,39 +214,6 @@ $( document ).ready(function() {
                                 </option>
 <?php
                               endfor;?>
-                            </select>
-                          </td>
-                          <td>
-                            <select name="<?=$gwname;?>_vip" class="selectpicker" data-width="auto">
-<?php
-                              $selected_key = 'address';
-                              foreach ((array)$pconfig['item'] as $item) {
-                                  $itemsplit = explode("|", $item);
-                                  if ($itemsplit[0] == $gwname) {
-                                      $selected_key = $itemsplit[2];
-                                      break;
-                                  }
-                              }?>
-                              <option value="address" <?=$selected_key == "address" ? "selected=\"selected\"" :"";?> >
-                                <?=gettext("Interface Address");?>
-                              </option>
-<?php
-                              foreach (get_configured_carp_interface_list() as $vip => $address):
-                                  if (!preg_match("/^{$gateway['interface']}_/i", $vip)) {
-                                      continue;
-                                  }
-                                  if (($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address))) {
-                                      continue;
-                                  }
-                                  if (($gateway['ipprotocol'] == "inet6") && (!is_ipaddrv6($address))) {
-                                      continue;
-                                  }?>
-                                  <option value="<?=$vip;?>" <?=$selected_key == $vip ? "selected=\"selected\"" :"";?> >
-                                    <?=$vip;?> - <?=$address;?>
-                                  </option>
-<?php
-                              endforeach;?>
-
                             </select>
                           </td>
                           <td><strong><?=$gateway['descr'];?></strong></td>

@@ -365,13 +365,12 @@ function return_gateway_groups_array()
     $gateway_groups_array = array();
 
     if (isset($config['gateways']['gateway_group'])) {
-        $carplist = get_configured_carp_interface_list();
         foreach ($config['gateways']['gateway_group'] as $group) {
             /* create array with group gateways members separated by tier */
             $tiers = array();
             $tiers_online = 0;
             foreach ($group['item'] as $item) {
-                list($gwname, $tier, $vipname) = explode("|", $item);
+                list($gwname, $tier) = explode("|", $item);
                 if (!isset($tiers[$tier])) {
                     $tiers[$tier] = array();
                 }
@@ -386,12 +385,7 @@ function return_gateway_groups_array()
                 } elseif (isset($gateways_arr[$gwname]['monitor_disable'])) {
                     $gwup = true;
                 }
-                $vip = null;
-                if (!empty($carplist[$vipname]) && is_ipaddr($carplist[$vipname])) {
-                    $vip = $vipname;
-                }
-
-                $tiers[$tier][] = array("up" => $gwup, "gwname" => $gwname, "vip" => $vip);
+                $tiers[$tier][] = array("up" => $gwup, "gwname" => $gwname);
             }
 
             /* sort the tiers array by the tier key */
@@ -419,9 +413,6 @@ function return_gateway_groups_array()
                                 $groupmember['int']  = $gateway['if'];
                                 $groupmember['gwip']  = $gatewayip;
                                 $groupmember['weight']  = isset($gateway['weight']) ? $gateway['weight'] : 1;
-                                if (!empty($member_item['vip'])) {
-                                    $groupmember['vip'] = $member_item['vip'];
-                                }
                                 $gateway_groups_array[$group['name']][] = $groupmember;
                             }
                         }
