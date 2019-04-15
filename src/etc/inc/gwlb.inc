@@ -416,7 +416,7 @@ function return_gateway_groups_array()
                             }
                             if (is_ipaddr($gatewayip)) {
                                 $groupmember = array();
-                                $groupmember['int']  = $gateway['interface'];
+                                $groupmember['int']  = $gateway['if'];
                                 $groupmember['gwip']  = $gatewayip;
                                 $groupmember['weight']  = isset($gateway['weight']) ? $gateway['weight'] : 1;
                                 if (!empty($member_item['vip'])) {
