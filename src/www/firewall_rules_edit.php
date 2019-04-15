@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'floating',
         'gateway',
         'icmptype',
+        'icmp6-type',
         'interface',
         'ipprotocol',
         'log',
@@ -246,6 +247,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype']) && $pconfig['ipprotocol'] == "inet46") {
+        $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
+    } elseif ($pconfig['protocol'] == "ipv6-icmp" && !empty($pconfig['icmp6-type']) && $pconfig['ipprotocol'] == "inet46") {
         $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
     }
     if ($pconfig['statetype'] == "synproxy state" || $pconfig['statetype'] == "modulate state") {
@@ -489,6 +492,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype'])) {
             $filterent['icmptype'] = $pconfig['icmptype'];
+        } elseif ($pconfig['protocol'] == 'ipv6-icmp' && !empty($pconfig['icmp6-type'])) {
+            $filterent['icmp6-type'] = $pconfig['icmp6-type'];
         }
 
         // reset port values for non tcp/udp traffic
@@ -595,10 +600,12 @@ include("head.inc");
       });
 
       $("#proto").change(function() {
+          $("#icmpbox").addClass("hidden");
+          $("#icmp6box").addClass("hidden");
           if ( $("#proto").val() == 'icmp' ) {
               $("#icmpbox").removeClass("hidden");
-          } else {
-              $("#icmpbox").addClass("hidden");
+          } else if ( $("#proto").val() == 'ipv6-icmp' ) {
+              $("#icmp6box").removeClass("hidden");
           }
           let port_disabled = true;
           // lock src/dst ports on other then tcp/udp
@@ -874,6 +881,53 @@ include("head.inc");
                       </select>
                       <div class="hidden" data-for="help_for_icmptype">
                         <?=gettext("If you selected ICMP for the protocol above, you may specify an ICMP type here.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="icmp6box">
+                    <td><a id="help_for_icmp6-type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ICMP6 type");?></td>
+                    <td>
+                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmp6-type" class="selectpicker" data-live-search="true" data-size="5" >
+<?php
+                      $icmp6types = array(
+                          "" => gettext("any"),
+                          "unreach" => gettext("Destination unreachable"),
+                          "toobig" => gettext("Packet too big"),
+                          "timex" => gettext("Time exceeded"),
+                          "paramprob" => gettext("Invalid IPv6 header"),
+                          "echoreq" => gettext("Echo service request"),
+                          "echorep" => gettext("Echo service reply"),
+                          "groupqry" => gettext("Group membership query"),
+                          "listqry" => gettext("Multicast listener query"),
+                          "grouprep" => gettext("Group membership report"),
+                          "listenrep" => gettext("Multicast listener report"),
+                          "groupterm" => gettext("Group membership termination"),
+                          "listendone" => gettext("Multicast listener done"),
+                          "routersol" => gettext("Router solicitation"),
+                          "routeradv" => gettext("Router advertisement"),
+                          "neighbrsol" => gettext("Neighbor solicitation"),
+                          "neighbradv" => gettext("Neighbor advertisement"),
+                          "redir" => gettext("Shorter route exists"),
+                          "routrrenum" => gettext("Route renumbering"),
+                          "fqdnreq" => gettext("FQDN query"),
+                          "niqry" => gettext("Node information query"),
+                          "wrureq" => gettext("Who-are-you request"),
+                          "fqdnrep" => gettext("FQDN reply"),
+                          "nirep" => gettext("Node information reply"),
+                          "wrurep" => gettext("Who-are-you reply"),
+                          "mtraceresp" => gettext("mtrace response"),
+                          "mtrace" => gettext("mtrace messages")
+                      );
+
+                      foreach ($icmp6types as $icmp6type => $descr): ?>
+                        <option value="<?=$icmp6type;?>" <?= $icmp6type == $pconfig['icmp6-type'] ? "selected=\"selected\"" : ""; ?>>
+                          <?=$descr;?>
+                        </option>
+<?php
+                      endforeach; ?>
+                      </select>
+                      <div class="hidden" data-for="help_for_icmp6-type">
+                        <?=gettext("If you selected ICMP6 for the protocol above, you may specify an ICMP6 type here.");?>
                       </div>
                     </td>
                   </tr>
