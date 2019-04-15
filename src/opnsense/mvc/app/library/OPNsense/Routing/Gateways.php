@@ -203,9 +203,6 @@ class Gateways
                         "monitor_disable" => true, // disable monitoring by default
                         "if" => $ifcfg['if']
                     ];
-                    if (file_exists("/tmp/{$ifcfg['if']}_defaultgw".$fsuffix)) {
-                        $thisconf["defaultgw"] = true;
-                    }
                     // locate interface gateway settings
                     if (!empty($dynamic_gw[$ifname])) {
                         foreach ($dynamic_gw[$ifname] as $gw_arr) {
