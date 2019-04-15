@@ -261,7 +261,7 @@ class Gateways
             if ($gateway['ipprotocol'] == $ipproto) {
                 if (is_array($skip) && in_array($gateway['name'], $skip)) {
                     continue;
-                } elseif (!empty($gateway['disabled'])) {
+                } elseif (!empty($gateway['disabled']) || !empty($gateway['is_loopback'])) {
                     continue;
                 } elseif (!empty($gateway['gateway'])) {
                     return $gateway;
