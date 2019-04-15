@@ -72,11 +72,48 @@ function firewall_rule_item_proto($filterent)
       "maskreq" => gettext("Address Mask Request (Deprecated)"),
       "maskrep" => gettext("Address Mask Reply (Deprecated)")
     );
+    $icmp6types = array(
+      "" => gettext("any"),
+      "unreach" => gettext("Destination unreachable"),
+      "toobig" => gettext("Packet too big"),
+      "timex" => gettext("Time exceeded"),
+      "paramprob" => gettext("Invalid IPv6 header"),
+      "echoreq" => gettext("Echo service request"),
+      "echorep" => gettext("Echo service reply"),
+      "groupqry" => gettext("Group membership query"),
+      "listqry" => gettext("Multicast listener query"),
+      "grouprep" => gettext("Group membership report"),
+      "listenrep" => gettext("Multicast listener report"),
+      "groupterm" => gettext("Group membership termination"),
+      "listendone" => gettext("Multicast listener done"),
+      "routersol" => gettext("Router solicitation"),
+      "routeradv" => gettext("Router advertisement"),
+      "neighbrsol" => gettext("Neighbor solicitation"),
+      "neighbradv" => gettext("Neighbor advertisement"),
+      "redir" => gettext("Shorter route exists"),
+      "routrrenum" => gettext("Route renumbering"),
+      "fqdnreq" => gettext("FQDN query"),
+      "niqry" => gettext("Node information query"),
+      "wrureq" => gettext("Who-are-you request"),
+      "fqdnrep" => gettext("FQDN reply"),
+      "nirep" => gettext("Node information reply"),
+      "wrurep" => gettext("Who-are-you reply"),
+      "mtraceresp" => gettext("mtrace response"),
+      "mtrace" => gettext("mtrace messages")
+    );
     if (isset($filterent['protocol']) && $filterent['protocol'] == "icmp" && !empty($filterent['icmptype'])) {
         $result = $record_ipprotocol;
         $result .= sprintf(
           "<span data-toggle=\"tooltip\" title=\"ICMP type: %s \"> %s </span>",
           html_safe($icmptypes[$filterent['icmptype']]),
+          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
+        );
+        return $result;
+    } elseif (isset($filterent['protocol']) && !empty($filterent['icmp6-type'])) {
+        $result = $record_ipprotocol;
+        $result .= sprintf(
+          "<span data-toggle=\"tooltip\" title=\"ICMP6 type: %s \"> %s </span>",
+          html_safe($icmp6types[$filterent['icmp6-type']]),
           isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
         );
         return $result;
