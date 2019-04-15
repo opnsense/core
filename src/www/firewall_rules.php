@@ -674,7 +674,7 @@ $( document ).ready(function() {
                        endif;?>
                     </td>
                     <td>
-                      <?=htmlspecialchars($filterent['descr']);?>
+                      <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
                           <small><?=$filterent['md5'];?></small>
                       </div>
