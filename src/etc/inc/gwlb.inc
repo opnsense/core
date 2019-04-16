@@ -358,78 +358,8 @@ function return_down_gateways()
  */
 function return_gateway_groups_array()
 {
-    global $config;
-
-    $gateways_status = return_gateways_status();
-    $gateways_arr = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
-    $gateway_groups_array = array();
-
-    if (isset($config['gateways']['gateway_group'])) {
-        foreach ($config['gateways']['gateway_group'] as $group) {
-            /* create array with group gateways members separated by tier */
-            $tiers = array();
-            $tiers_online = 0;
-            foreach ($group['item'] as $item) {
-                list($gwname, $tier) = explode("|", $item);
-                if (!isset($tiers[$tier])) {
-                    $tiers[$tier] = array();
-                }
-
-                $gwup = false;
-                if (!empty($gateways_status[$gwname])) {
-                    $error = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
-                    if ($error === null) {
-                        $tiers_online++;
-                        $gwup = true;
-                    }
-                } elseif (isset($gateways_arr[$gwname]['monitor_disable'])) {
-                    $gwup = true;
-                }
-                $tiers[$tier][] = array("up" => $gwup, "gwname" => $gwname);
-            }
-
-            /* sort the tiers array by the tier key */
-            ksort($tiers);
-
-            /* we do not really foreach the tiers as we stop after the first tier */
-            foreach ($tiers as $tieridx => $tier) {
-                /* process all gateways in this tier */
-                foreach ($tier as $member_item) {
-                    $member = $member_item['gwname'];
-                    if (($member_item['up'] || $tiers_online == 0) && isset($gateways_arr[$member])) {
-                        /* determine interface gateway */
-                        $gateway = $gateways_arr[$member];
-                        $gatewayip = '';
-                        if (is_ipaddr($gateway['gateway'])) {
-                            $gatewayip = $gateway['gateway'];
-                        }
-
-                        if (!empty($gateway['interface'])) {
-                            if (empty($gateway_groups_array[$group['name']])) {
-                                $gateway_groups_array[$group['name']] = array();
-                            }
-                            if (is_ipaddr($gatewayip)) {
-                                $groupmember = array();
-                                $groupmember['int']  = $gateway['if'];
-                                $groupmember['gwip']  = $gatewayip;
-                                $groupmember['weight']  = isset($gateway['weight']) ? $gateway['weight'] : 1;
-                                $gateway_groups_array[$group['name']][] = $groupmember;
-                            }
-                        }
-                    }
-                }
-
-                /* we should have the 1st available tier now, exit stage left */
-                if (!empty($gateway_groups_array[$group['name']])) {
-                    break;
-                } else {
-                    log_error("GATEWAYS: Group {$group['name']} did not have any gateways up on tier {$tieridx}!");
-                }
-            }
-        }
-    }
-
-    return $gateway_groups_array;
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    return $gateways->getGroups(return_gateways_status());
 }
 
 function dpinger_processes()
