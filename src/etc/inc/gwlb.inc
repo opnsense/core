@@ -384,22 +384,3 @@ function dpinger_processes()
 
     return $result;
 }
-
-/**
- * @param string $status
- * @param string $gwname
- * @param array $group
- * @return string|null A string detailing the error if there is one, null if there is no error.
- */
-function get_gateway_error(string $status, string $gwname, array $group)
-{
-    if (stristr($status, 'down') !== false) {
-        return sprintf(gettext('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
-    } elseif (stristr($status, 'loss') !== false && stristr($group['trigger'], 'loss') !== false) {
-        return sprintf(gettext('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
-    } elseif (stristr($status, 'delay') !== false && stristr($group['trigger'], 'latency') !== false) {
-        return sprintf(gettext('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
-    } else {
-        return null;
-    }
-}
