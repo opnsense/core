@@ -37,6 +37,11 @@ use OPNsense\Core\Config;
 class AuthenticationFactory
 {
     /**
+     * @var IAuthConnector|null last used authentication method in authenticate()
+     */
+    var $lastUsedAuth = null;
+
+    /**
      * search already known local userDN's into simple mapping if auth method is current standard method
      * @param string $authserver auth server name
      * @return array list of dn's
@@ -186,6 +191,7 @@ class AuthenticationFactory
             foreach ($service->supportedAuthenticators() as $authname) {
                 $authenticator = $this->get($authname);
                 if ($authenticator !== null) {
+                    $this->lastUsedAuth = $authenticator;
                     if ($authenticator->authenticate($service->getUserName(), $password)) {
                         if ($service->checkConstraints()) {
                             syslog(LOG_NOTICE, sprintf(
@@ -252,4 +258,19 @@ class AuthenticationFactory
         }
         return $result;
     }
+
+    /**
+     * return authenticator properties from last authentication
+     * @return array mixed named list of authentication properties
+     */
+    public function getLastAuthProperties()
+    {
+        if ($this->lastUsedAuth != null) {
+            return $this->lastUsedAuth->getLastAuthProperties();
+        } else {
+            return [];
+        }
+
+    }
+
 }
