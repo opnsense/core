@@ -14,7 +14,6 @@
 /usr/local/etc/inc/console.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
-/usr/local/etc/inc/gwlb.inc
 /usr/local/etc/inc/interfaces.inc
 /usr/local/etc/inc/interfaces.lib.inc
 /usr/local/etc/inc/legacy_bindings.inc
@@ -22,6 +21,7 @@
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
+/usr/local/etc/inc/plugins.inc.d/dpinger.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/monit.inc
