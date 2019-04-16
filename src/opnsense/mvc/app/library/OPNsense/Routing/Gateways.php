@@ -222,17 +222,6 @@ class Gateways
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    // } elseif (!empty($this->ifconfig[$thisconf["if"]]["tunnel"]["dest_addr"])) {
-                    //     // tunnel devices with a known endpoint
-                    //     $thisconf['gateway'] = $this->ifconfig[$thisconf["if"]]["tunnel"]["dest_addr"];
-                    //     $tunnel_ipproto = strpos($thisconf['gateway'], ":") != false ? "inet6" : "inet";
-                    //     if ($tunnel_ipproto == $ipproto) {
-                    //         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
-                    //             $thisconf['monitor'] = $thisconf['gateway'];
-                    //         }
-                    //         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
-                    //         $this->cached_gateways[$gwkey] = $thisconf;
-                    //     }
                     } elseif (self::convertType($ipproto, $ifcfg) != null) {
                         // other predefined types, only bound by interface (e.g. openvpn)
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
