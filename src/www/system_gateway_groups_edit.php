@@ -190,7 +190,6 @@ $( document ).ready(function() {
                         <tr>
                           <td><?= gettext('Gateway') ?></td>
                           <td><?= gettext('Tier') ?></td>
-                          <td><?= gettext('Virtual IP') ?></td>
                           <td><?= gettext('Description') ?></td>
                         </tr>
 <?php
