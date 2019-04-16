@@ -81,7 +81,7 @@ function filter_core_get_initialized_plugin_system()
     // init interfaces and gateways
     $fw->setInterfaceMapping($cnfint);
     $fw->setGateways($gateways);
-    $fw->setGatewayGroups(return_gateway_groups_array());
+    $fw->setGatewayGroups($gateways->getGroups(return_gateways_status()));
     return $fw;
 }
 
