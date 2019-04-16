@@ -40,6 +40,7 @@ $ostypes = json_decode(configd_run('filter list osfp json'));
 if ($ostypes == null) {
     $ostypes = array();
 }
+$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
 
 /**
@@ -220,24 +221,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("You can not assign a gateway to a rule that applies to IPv4 and IPv6");
     }
     if (!empty($pconfig['gateway']) && isset($config['gateways']['gateway_group'])) {
-        foreach($config['gateways']['gateway_group'] as $gw_group) {
-            if($gw_group['name'] == $pconfig['gateway']) {
-                $a_gatewaygroups = return_gateway_groups_array();
-                $family = 'inet';
-                if ( count($a_gatewaygroups[$pconfig['gateway']]) > 0 &&
-                     is_ipaddrv6($a_gatewaygroups[$pconfig['gateway']][0]['gwip'])) {
-                    $family = 'inet6';
-                }
-                if(($pconfig['ipprotocol'] == "inet6") && ($pconfig['ipprotocol'] != $family)) {
-                    $input_errors[] = gettext('You can not assign an IPv4 gateway group on an IPv6 rule.');
-                }
-                if(($pconfig['ipprotocol'] == "inet") && ($pconfig['ipprotocol'] != $family)) {
-                    $input_errors[] = gettext('You can not assign an IPv6 gateway group on an IPv4 rule.');
-                }
-            }
+        $family = $gateways->getGroupIPProto($pconfig['gateway']);
+        if ($pconfig['ipprotocol'] == "inet6" && $pconfig['ipprotocol'] != $family) {
+            $input_errors[] = gettext('You can not assign an IPv4 gateway group on an IPv6 rule.');
+        }
+        if ($pconfig['ipprotocol'] == "inet" && $pconfig['ipprotocol'] != $family) {
+            $input_errors[] = gettext('You can not assign an IPv6 gateway group on an IPv4 rule.');
         }
     }
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     if (!empty($pconfig['gateway']) && is_ipaddr($gateways->getAddress($pconfig['gateway']))) {
         if ($pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6($gateways->getAddress($pconfig['gateway']))) {
             $input_errors[] = gettext('You can not assign the IPv4 Gateway to an IPv6 filter rule.');
@@ -1278,7 +1269,7 @@ include("head.inc");
                         <select name='gateway' class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                         <option value="" ><?=gettext("default");?></option>
 <?php
-                        foreach((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true, true, true) as $gwname => $gw):
+                        foreach($gateways->gatewaysIndexedByName(true, true, true) as $gwname => $gw):
 ?>
                           <option value="<?=$gwname;?>" <?=$gwname == $pconfig['gateway'] ? " selected=\"selected\"" : "";?>>
                             <?=$gw['name'];?>
@@ -1286,12 +1277,10 @@ include("head.inc");
                           </option>
 <?php
                         endforeach;
-                        $a_gatewaygroups = return_gateway_groups_array();
-                        foreach($a_gatewaygroups as $gwg_name => $gwg_data):?>
+                        foreach ($gateways->getGroupNames() as $gwg_name):?>
                           <option value="<?=$gwg_name;?>" <?=$gwg_name == $pconfig['gateway'] ? " selected=\"selected\"" : "";?>>
                             <?=$gwg_name;?>
                           </option>
-
 <?php
                         endforeach;?>
                         </select>
