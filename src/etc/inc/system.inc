@@ -417,7 +417,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
     }
 
     if ($family == 'inet') {
-        foreach (glob('/tmp/*_defaultgw', GLOB_BRACE) as $to_delete) {
+        foreach (glob('/tmp/*_defaultgw') as $to_delete) {
             log_error("ROUTING: removing {$to_delete}");
             @unlink($to_delete);
         }
@@ -429,7 +429,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
             $realif = null;
         }
     } else {
-        foreach (glob('/tmp/*_defaultgwv6', GLOB_BRACE) as $to_delete) {
+        foreach (glob('/tmp/*_defaultgwv6') as $to_delete) {
             log_error("ROUTING: removing {$to_delete}");
             @unlink($to_delete);
         }
