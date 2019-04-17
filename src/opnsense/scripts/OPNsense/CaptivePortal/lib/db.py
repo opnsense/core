@@ -54,6 +54,9 @@ class DB(object):
     def open(self):
         """ open database
         """
+        db_path = os.path.dirname(self.database_filename)
+        if not os.path.isdir(db_path):
+            os.mkdir(db_path)
         self._connection = sqlite3.connect(self.database_filename)
 
     def create(self, force_recreate=False):
