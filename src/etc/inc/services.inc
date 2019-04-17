@@ -44,6 +44,7 @@
  * targets in the future:
  */
 require_once('plugins.inc.d/dnsmasq.inc');
+require_once('plugins.inc.d/dpinger.inc');
 require_once('plugins.inc.d/ipsec.inc');
 require_once('plugins.inc.d/openssh.inc');
 require_once('plugins.inc.d/openvpn.inc');
@@ -1760,27 +1761,6 @@ function get_dyndns_ip($int, $ipver = 4)
     }
 
     return $ip_address;
-}
-
-function is_dpinger_enabled()
-{
-    global $config;
-
-    $gwcount = 0;
-
-    if (isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gwkey => $gateway) {
-            if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == '0') {
-                $gwcount += 1;
-            }
-        }
-    }
-
-    if ($gwcount == 0) {
-        return false;
-    }
-
-    return true;
 }
 
 function services_get()

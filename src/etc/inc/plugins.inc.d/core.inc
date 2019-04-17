@@ -82,25 +82,6 @@ function core_services()
         $services[] = $pconfig;
     }
 
-    if (is_dpinger_enabled()) {
-        foreach ($config['gateways']['gateway_item'] as $gateway) {
-            if (isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
-            $pconfig = array();
-            $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
-            $pconfig['php']['restart'] = array('setup_gateways_monitor');
-            $pconfig['php']['start'] = array('setup_gateways_monitor');
-            $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
-            $pconfig['php']['args'] = array('verbose', 'id');
-            $pconfig['name'] = 'dpinger';
-            $pconfig['verbose'] = false;
-            $pconfig['id'] = $gateway['name'];
-            $services[] = $pconfig;
-        }
-    }
-
     if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
         $enabled = false;
         if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {
