@@ -220,8 +220,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $slease['mac'] = $static['mac'];
                 $slease['start'] = '';
                 $slease['end'] = '';
-                $slease['hostname'] = htmlentities($static['hostname']);
-                $slease['descr'] = htmlentities($static['descr']);
+                $slease['hostname'] = $static['hostname'];
+                $slease['descr'] = $static['descr'];
                 $slease['act'] = "static";
                 $slease['online'] = in_array(strtolower($slease['mac']), $arpdata_mac) ? 'online' : 'offline';
                 $leases[] = $slease;
@@ -291,6 +291,7 @@ foreach ($leases as $data) {
 }
 
 $gentitle_suffix = " ($leases_count)";
+legacy_html_escape_form_data($leases);
 
 ?>
 <body>
@@ -374,7 +375,6 @@ $gentitle_suffix = " ($leases_count)";
 <?php
               // Load MAC-Manufacturer table
               $mac_man = json_decode(configd_run("interface list macdb json"), true);
-              legacy_html_escape_form_data($leases);
               foreach ($leases as $data):
                   if (!($data['act'] == "active" || $data['act'] == "static" || $_GET['all'] == 1)) {
                       continue;

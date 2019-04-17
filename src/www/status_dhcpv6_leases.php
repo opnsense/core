@@ -293,8 +293,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $slease['duid'] = $static['duid'];
                 $slease['start'] = "";
                 $slease['end'] = "";
-                $slease['hostname'] = htmlentities($static['hostname']);
-                $slease['descr'] = htmlentities($static['descr']);
+                $slease['hostname'] = $static['hostname'];
+                $slease['descr'] = $static['descr'];
                 $slease['act'] = "static";
                 if (in_array($slease['ip'], array_keys($ndpdata))) {
                     $slease['online'] = 'online';
@@ -376,7 +376,7 @@ foreach ($leases as $data) {
 }
 
 $gentitle_suffix = " ($leases_count)";
-
+legacy_html_escape_form_data($leases);
 ?>
 <body>
   <script>
