@@ -30,6 +30,57 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function dpinger_enabled()
+{
+    global $config;
+
+    $gwcount = 0;
+
+    if (isset($config['gateways']['gateway_item'])) {
+        foreach ($config['gateways']['gateway_item'] as $gwkey => $gateway) {
+            if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == '0') {
+                $gwcount += 1;
+            }
+        }
+    }
+
+    if ($gwcount == 0) {
+        return false;
+    }
+
+    return true;
+}
+
+function dpinger_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (!dpinger_enabled()) {
+        return $services;
+    }
+
+    foreach ($config['gateways']['gateway_item'] as $gateway) {
+        if (isset($gateway['monitor_disable'])) {
+            continue;
+        }
+
+        $pconfig = array();
+        $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
+        $pconfig['php']['restart'] = array('setup_gateways_monitor');
+        $pconfig['php']['start'] = array('setup_gateways_monitor');
+        $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
+        $pconfig['php']['args'] = array('verbose', 'id');
+        $pconfig['name'] = 'dpinger';
+        $pconfig['verbose'] = false;
+        $pconfig['id'] = $gateway['name'];
+        $services[] = $pconfig;
+    }
+
+    return $services;
+}
+
 function dpinger_defaults()
 {
     return array(
