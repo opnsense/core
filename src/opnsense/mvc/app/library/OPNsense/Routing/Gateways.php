@@ -187,6 +187,10 @@ class Gateways
             }
             // add dynamic gateways
             foreach ($definedIntf as $ifname => $ifcfg) {
+                if (empty($ifcfg['enable'])) {
+                    // only consider active interfaces
+                    continue;
+                }
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
@@ -223,7 +227,7 @@ class Gateways
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (self::convertType($ipproto, $ifcfg) != null) {
+                    } elseif (substr($ifcfg['if'], 0, 5) == "ovpnc") {
                         // other predefined types, only bound by interface (e.g. openvpn)
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
