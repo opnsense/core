@@ -189,6 +189,7 @@ class Gateways
             foreach ($definedIntf as $ifname => $ifcfg) {
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
+                    $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
                     $fsuffix = $ipproto == "inet6" ? "v6" : "";
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
@@ -198,8 +199,8 @@ class Gateways
                         "interface" => $ifname,
                         "weight" => 1,
                         "ipprotocol" => $ipproto,
-                        "name" => strtoupper("{$ifname}_{$ctype}"),
-                        "descr" => "Interface " . strtoupper("{$ifname}_{$ctype}") . " Gateway",
+                        "name" => strtoupper("{$descr}_{$ctype}"),
+                        "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
                         "monitor_disable" => true, // disable monitoring by default
                         "if" => $ifcfg['if']
                     ];
