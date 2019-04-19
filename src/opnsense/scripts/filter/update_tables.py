@@ -38,6 +38,7 @@ import xml.etree.cElementTree as ET
 import syslog
 import tempfile
 import subprocess
+import glob
 from lib.alias import Alias
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -118,7 +119,9 @@ if __name__ == '__main__':
     aliases = AliasParser(source_tree)
     aliases.read()
 
+    registered_aliases = set()
     for alias in aliases:
+        registered_aliases.add(alias.get_name())
         # fetch alias content including dependencies
         alias_name = alias.get_name()
         alias_content = alias.resolve()
@@ -169,5 +172,21 @@ if __name__ == '__main__':
                             result['messages'] = list()
                         if error_output not in result['messages']:
                             result['messages'].append(error_output.replace('pfctl: ', ''))
+    # cleanup removed aliases
+    to_remove = dict()
+    for filename in glob.glob('/var/db/aliastables/*.txt'):
+        aliasname = os.path.basename(filename).split('.')[0]
+        if aliasname not in registered_aliases:
+            if aliasname not in to_remove:
+                to_remove[aliasname] = list()
+            to_remove[aliasname].append(filename)
+    for aliasname in to_remove:
+        syslog.syslog(syslog.LOG_NOTICE, 'remove old alias %s' % aliasname)
+        subprocess.call(
+            ['/sbin/pfctl', '-t', aliasname, '-T', 'kill'],
+            stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb')
+        )
+        for filename in to_remove[aliasname]:
+            os.remove(filename)
 
     print (json.dumps(result))
