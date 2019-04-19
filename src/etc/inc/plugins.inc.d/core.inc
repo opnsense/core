@@ -222,7 +222,12 @@ function core_cron()
         }
     }
 
-    $jobs[]['autocron'] = array('configctl system remote backup', 0, 1);
+    foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
+        if ($provider['handle']->isEnabled()) {
+            $jobs[]['autocron'] = array('configctl system remote backup', 0, 1);
+            break;
+        }
+    }
 
     return $jobs;
 }
