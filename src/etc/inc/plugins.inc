@@ -242,7 +242,7 @@ function plugins_run($hook, $verbose = false, $args = array())
                         if ($argc > count($args)) {
                             $argc = count($args);
                         }
-                        $ret[$worker] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                        $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
                     }
                 }
             }
