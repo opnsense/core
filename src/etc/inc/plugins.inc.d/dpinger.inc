@@ -305,7 +305,7 @@ function dpinger_run()
     );
 }
 
-function dpinger_status($verbose = false, $status)
+function dpinger_status($verbose = false)
 {
     $status = array();
 
