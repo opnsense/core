@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['apply'])) {
         system_routing_configure();
         clear_subsystem_dirty('staticroutes');
-        setup_gateways_monitor();
+        plugins_configure('monitor');
 
         configd_run('dyndns reload');
         configd_run('rfc2136 reload');

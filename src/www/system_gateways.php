@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // apply changes, reconfigure
         system_routing_configure();
         clear_subsystem_dirty('staticroutes');
-        setup_gateways_monitor();
+        plugins_configure('monitor');
         filter_configure();
         header(url_safe('Location: /system_gateways.php?displaysave=true'));
         exit;

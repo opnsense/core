@@ -601,7 +601,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 system_routing_configure();
-                setup_gateways_monitor();
+                plugins_configure('monitor');
                 filter_configure();
                 plugins_configure('newwanip');
                 rrd_configure();

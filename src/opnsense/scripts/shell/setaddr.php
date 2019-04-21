@@ -559,7 +559,7 @@ system_hosts_generate(true);
 system_resolvconf_generate(true);
 interface_bring_down($interface);
 interface_configure(true, $interface, true);
-setup_gateways_monitor(true);
+plugins_configure('monitor', true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {

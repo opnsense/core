@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
     }
 
+    plugins_configure('monitor');
     rrd_configure();
-    setup_gateways_monitor();
 }
 
 $all_rrd_files = json_decode(configd_run('systemhealth list'), true);
