@@ -75,7 +75,7 @@ def fetch_rule_details():
         # parse running config, fetch all md5 hashed labels
         rule_map = dict()
         hex_digits = set("0123456789abcdef")
-        with open('/tmp/rules.debug') as f_in:
+        with open('/tmp/rules.debug', "rt", encoding="utf-8") as f_in:
             for line in f_in:
                 if line.find(' label ') > -1:
                     lbl = line.split(' label ')[-1]
