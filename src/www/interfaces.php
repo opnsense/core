@@ -776,6 +776,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!empty($pconfig['track6-prefix-id--hex']) && !ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
+                    if (stristr($pconfig['track6-prefix-id--hex'], '0x') === 0) {
+                        $pconfig['track6-prefix-id--hex'] = substr($pconfig['track6-prefix-id--hex'], 2);
+                    }
                     $ipv6_delegation_length = calculate_ipv6_delegation_length($pconfig['track6-interface']);
                     if ($ipv6_delegation_length >= 0) {
                         $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
@@ -3023,9 +3026,9 @@ include("head.inc");
                                 $pconfig['track6-prefix-id'] = 0;
                             }
                             $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("%x", $pconfig['track6-prefix-id']);?>
-                            <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= "0x{$track6_prefix_id_hex}" ?>" />
                             <div class="hidden" data-for="help_for_track6-prefix-id">
-                              <?= gettext('The value in this field is the delegated IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                              <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
                             </div>
                           </td>
                         </tr>
