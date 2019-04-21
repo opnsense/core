@@ -159,3 +159,36 @@ function get_alias_description($name)
 {
     return OPNsense\Firewall\Util::aliasDescription($name);
 }
+
+function return_gateways_status()
+{
+    /* XXX quick and dirty compat layer */
+    $result = plugins_run('return_gateways_status');
+
+    if (!empty($result['dpinger'])) {
+        return $result['dpinger'];
+    }
+
+    return [];
+}
+
+function return_down_gateways()
+{
+    $result = array();
+    foreach (return_gateways_status() as $gwname => $stat) {
+        if (strpos($stat['status'], 'down') !== false) {
+            $result[] = $gwname;
+        }
+    }
+    return $result ;
+}
+
+/*
+ * Return an array with all gateway groups with name as key
+ * All gateway groups will be processed before returning the array.
+ */
+function return_gateway_groups_array()
+{
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    return $gateways->getGroups(return_gateways_status());
+}

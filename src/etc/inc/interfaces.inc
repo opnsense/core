@@ -31,7 +31,6 @@
  */
 
 require_once("interfaces.lib.inc");
-require_once("plugins.inc.d/dpinger.inc"); /* XXX remove me */
 
 /*
  * converts a string like "a,b,c,d"

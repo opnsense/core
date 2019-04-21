@@ -298,7 +298,14 @@ function dpinger_configure_do($verbose = false, $gwname = null)
     }
 }
 
-function return_gateways_status()
+function dpinger_run()
+{
+    return array(
+        'return_gateways_status' => array('dpinger_status'),
+    );
+}
+
+function dpinger_status($verbose = false, $status)
 {
     $status = array();
 
@@ -394,27 +401,6 @@ function return_gateways_status()
     }
 
     return $status;
-}
-
-function return_down_gateways()
-{
-    $result = array();
-    foreach (return_gateways_status() as $gwname => $stat) {
-        if (strpos($stat['status'], 'down') !== false) {
-            $result[] = $gwname;
-        }
-    }
-    return $result ;
-}
-
-/*
- * Return an array with all gateway groups with name as key
- * All gateway groups will be processed before returning the array.
- */
-function return_gateway_groups_array()
-{
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    return $gateways->getGroups(return_gateways_status());
 }
 
 function dpinger_processes()
