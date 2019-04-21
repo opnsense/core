@@ -181,14 +181,14 @@ class Alias(object):
             :return: iterator
         """
         for item in self._items:
-            if item not in self._known_aliases or item == self.get_name():
+            if item not in self._known_aliases:
                 yield item
 
     def uniqueid(self):
         """ generate an identification hash for this alias
             :return: md5 (string)
         """
-        tmp = ','.join(sorted(list(self.items())))
+        tmp = ','.join(sorted(list(self._items)))
         if self._proto:
             tmp = '%s[%s]' % (tmp, self._proto)
         return md5(tmp.encode()).hexdigest()
