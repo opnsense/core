@@ -68,8 +68,8 @@ function dpinger_services()
 
         $pconfig = array();
         $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
-        $pconfig['php']['restart'] = array('setup_gateways_monitor');
-        $pconfig['php']['start'] = array('setup_gateways_monitor');
+        $pconfig['php']['restart'] = array('dpinger_configure_do');
+        $pconfig['php']['start'] = array('dpinger_configure_do');
         $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
         $pconfig['php']['args'] = array('verbose', 'id');
         $pconfig['name'] = 'dpinger';
@@ -95,7 +95,14 @@ function dpinger_defaults()
     );
 }
 
-function setup_gateways_monitor($verbose = false, $gwname = null)
+function dpinger_configure()
+{
+    return array(
+        'monitor' => array('dpinger_configure_do'),
+    );
+}
+
+function dpinger_configure_do($verbose = false, $gwname = null)
 {
     if ($verbose) {
         echo 'Setting up gateway monitors...';
@@ -110,9 +117,6 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
         @unlink($process['pidfile']);
         @unlink($process['socket']);
     }
-
-    @mkdir('/var/db/rrd', 0775);
-    @chown('/var/db/rrd', 'nobody');
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $monitor_ips = array();
@@ -223,6 +227,7 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
          * Create custom RRD graph with suitable settings that
          * may differ from the daemon's standards.
          */
+        require_once("rrd.inc");
         rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd");
 
         /* log warnings via syslog */
@@ -401,7 +406,6 @@ function return_down_gateways()
     }
     return $result ;
 }
-
 
 /*
  * Return an array with all gateway groups with name as key
