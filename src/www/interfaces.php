@@ -773,12 +773,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "track6":
+                if (!empty($pconfig['track6-prefix-id--hex']) && strstr($pconfig['track6-prefix-id--hex'], '0x') === 0) {
+                    $pconfig['track6-prefix-id--hex'] = substr($pconfig['track6-prefix-id--hex'], 2);
+                }
                 if (!empty($pconfig['track6-prefix-id--hex']) && !ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
-                    if (stristr($pconfig['track6-prefix-id--hex'], '0x') === 0) {
-                        $pconfig['track6-prefix-id--hex'] = substr($pconfig['track6-prefix-id--hex'], 2);
-                    }
                     $ipv6_delegation_length = calculate_ipv6_delegation_length($pconfig['track6-interface']);
                     if ($ipv6_delegation_length >= 0) {
                         $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
