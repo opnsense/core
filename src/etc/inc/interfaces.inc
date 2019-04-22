@@ -2570,6 +2570,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             /* FALLTHROUGH */
         case 'dhcp6':
             if ($linkupevent) {
+                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
