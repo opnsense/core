@@ -29,8 +29,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once('guiconfig.inc');
-
 if (!isset($logsplit)) {
     $logsplit = 3;
 }
