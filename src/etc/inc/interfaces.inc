@@ -1065,6 +1065,9 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         case 'dhcp6':
             killbypid("/var/run/dhcp6c_{$realifv6}.pid", 'TERM', true);
             break;
+        case 'track6':
+            interface_track6_configure($interface, $ifcfg, false, true);
+            break;
         default:
             break;
     }
@@ -2544,7 +2547,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_staticarp_configure($interface);
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
+function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false, $linkdownevent = false)
 {
     global $config;
 
@@ -2556,6 +2559,17 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
     if (!isset($trackcfg['enable'])) {
         log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
+    }
+
+    switch ($trackcfg['ipaddrv6']) {
+        case 'slaac':
+        case 'dhcp6':
+            if ($linkdownevent) {
+                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
+                $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
+                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+            }
+            return;
     }
 
     switch ($trackcfg['ipaddrv6']) {
@@ -3786,7 +3800,6 @@ function link_interface_to_track6($wanif, $update = false)
         }
 
         foreach ($list as $lanif => $lancfg) {
-            interface_dhcpv6_prepare($wanif, $wancfg);
             interface_track6_configure($lanif, $lancfg);
         }
     }
