@@ -752,6 +752,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
                         $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
                     }
+                    foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
+                        if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
+                            $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                            break;
+                        }
+                    }
                 }
                 break;
         }
@@ -2907,9 +2913,12 @@ include("head.inc");
                                 $pconfig['track6-prefix-id'] = 0;
                             }
                             $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("%x", $pconfig['track6-prefix-id']);?>
-                            <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            <div class="input-group" style="max-width:348px">
+                              <div class="input-group-addon">0x</div>
+                              <input name="track6-prefix-id--hex" type="text" class="form-control" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            </div>
                             <div class="hidden" data-for="help_for_track6-prefix-id">
-                              <?= gettext('The value in this field is the delegated IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                              <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
                             </div>
                           </td>
                         </tr>
