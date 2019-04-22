@@ -443,7 +443,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
     $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
-    $pconfig['track6-prefix-id--hex'] = sprintf("0x%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
+    $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
     /*
@@ -773,9 +773,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "track6":
-                if (!empty($pconfig['track6-prefix-id--hex']) && strstr($pconfig['track6-prefix-id--hex'], '0x') === 0) {
-                    $pconfig['track6-prefix-id--hex'] = substr($pconfig['track6-prefix-id--hex'], 2);
-                }
                 if (!empty($pconfig['track6-prefix-id--hex']) && !ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
@@ -3023,10 +3020,13 @@ include("head.inc");
                           <td>
 <?php
                             if (empty($pconfig['track6-prefix-id'])) {
-                                $pconfig['track6-prefix-id'] = '0x0';
+                                $pconfig['track6-prefix-id'] = 0;
                             }
-                            $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("0x%x", $pconfig['track6-prefix-id']);?>
-                            <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("%x", $pconfig['track6-prefix-id']);?>
+                            <div class="input-group">
+                              <div class="input-group-addon">0x</div>
+                              <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            </div>
                             <div class="hidden" data-for="help_for_track6-prefix-id">
                               <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
                             </div>
