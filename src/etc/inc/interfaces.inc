@@ -2561,18 +2561,20 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
-    switch ($trackcfg['ipaddrv6']) {
-        case 'slaac':
-        case 'dhcp6':
-            if ($linkdownevent) {
+    if ($linkdownevent) {
+        switch ($trackcfg['ipaddrv6']) {
+            case 'slaac':
+            case 'dhcp6':
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
-                return;
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
+
+        /* exit now as there are only linkup-related bits following */
+        return;
     }
 
     switch ($trackcfg['ipaddrv6']) {
