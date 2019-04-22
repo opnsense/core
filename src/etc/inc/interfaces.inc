@@ -3786,6 +3786,7 @@ function link_interface_to_track6($wanif, $update = false)
         }
 
         foreach ($list as $lanif => $lancfg) {
+            interface_dhcpv6_prepare($wanif, $wancfg);
             interface_track6_configure($lanif, $lancfg);
         }
     }
