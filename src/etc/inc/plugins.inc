@@ -227,23 +227,21 @@ function plugins_run($hook, $verbose = false, $args = array())
         try { include_once $path; } catch (ParseError $e) { error_log($e); }
         $func = sprintf('%s_run', $name);
         if (function_exists($func)) {
-            foreach ($func() as $when => $worker) {
-                if ($hook == $when && is_array($worker)) {
-                    foreach ($worker as $task) {
-                        /*
-                         * An optional argument count parameter can be
-                         * given by the plugin, which allows to securely
-                         * pull more info from the configure call spot.
-                         */
-                        list($argf, $argc) = explode(':', $task);
-                        if (empty($argc) || !is_numeric($argc)) {
-                            $argc = 1;
-                        }
-                        if ($argc > count($args)) {
-                            $argc = count($args);
-                        }
-                        $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+            foreach ($func() as $when => $task) {
+                if ($hook == $when) {
+                    /*
+                     * An optional argument count parameter can be
+                     * given by the plugin, which allows to securely
+                     * pull more info from the configure call spot.
+                     */
+                    list($argf, $argc) = explode(':', $task);
+                    if (empty($argc) || !is_numeric($argc)) {
+                        $argc = 1;
                     }
+                    if ($argc > count($args)) {
+                        $argc = count($args);
+                    }
+                    $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
                 }
             }
         }

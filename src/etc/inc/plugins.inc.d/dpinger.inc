@@ -301,7 +301,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
 function dpinger_run()
 {
     return array(
-        'return_gateways_status' => array('dpinger_status'),
+        'return_gateways_status' => 'dpinger_status',
     );
 }
 
