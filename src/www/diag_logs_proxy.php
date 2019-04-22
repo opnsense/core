@@ -9,6 +9,8 @@ $logfile = "/var/log/squid/{$type}.log";
 $logclog = false;
 
 $logsplit = 2;
+$log_datetime_format = 'readable';
+
 if ($type === 'access' || $type === 'store') {
     $logsplit = 1;
     $log_datetime_format = 'unix';
