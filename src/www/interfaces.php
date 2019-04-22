@@ -783,8 +783,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
                             $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
                         }
+                        foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
+                            if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
+                                $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                                break;
+                            }
+                        }
                     }
-                    /* XXX should also check for duplicate delegation in peer trackers */
                 }
                 break;
         }
