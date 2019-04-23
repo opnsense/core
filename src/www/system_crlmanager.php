@@ -28,7 +28,6 @@
  */
 
 require_once('guiconfig.inc');
-require_once('services.inc');
 
 function cert_unrevoke($cert, &$crl)
 {
@@ -140,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $name = $thiscert['descr'];
         if (cert_unrevoke($thiscert, $thiscrl)) {
-            openvpn_refresh_crls();
+            plugins_configure('crl');
             write_config(sprintf('Deleted certificate %s from CRL %s', $name, $thiscrl['descr']));
             header(url_safe('Location: /system_crlmanager.php'));
             exit;
@@ -173,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!count($input_errors)) {
             $reason = (empty($pconfig['crlreason'])) ? OCSP_REVOKED_STATUS_UNSPECIFIED : $pconfig['crlreason'];
             cert_revoke($cert, $crl, $reason);
-            openvpn_refresh_crls();
+            plugins_configure('crl');
             write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
             header(url_safe('Location: /system_crlmanager.php'));
             exit;
@@ -230,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             write_config(sprintf('Saved CRL %s', $crl['descr']));
-            openvpn_refresh_crls();
+            plugins_configure('crl');
             header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }

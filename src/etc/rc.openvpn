@@ -34,7 +34,6 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-
 function try_lock($lock, $timeout = 5)
 {
     if (!$lock) {

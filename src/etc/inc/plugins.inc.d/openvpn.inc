@@ -33,6 +33,9 @@
 function openvpn_configure()
 {
     return array(
+        'crl' => array('openvpn_refresh_crls:0'),
+        'openvpn_reload' => array('openvpn_configure_do:2'),
+        'openvpn_prepare' => array('openvpn_prepare_all'),
         'remote' => array('openvpn_configure_do'),
         'vpn' => array('openvpn_configure_do:2'),
     );
@@ -1161,35 +1164,6 @@ function openvpn_prepare_all($verbose = false)
     }
 }
 
-function openvpn_configure_interface($interface)
-{
-    global $config;
-
-    if (substr($interface, 0, 5) == 'ovpns') {
-        if (isset($config['openvpn']['openvpn-server'])) {
-            foreach ($config['openvpn']['openvpn-server'] as $server) {
-                if ($interface == "ovpns{$server['vpnid']}") {
-                    log_error("OpenVPN: Resync server {$server['description']}");
-                    openvpn_reconfigure('server', $server);
-                    openvpn_restart('server', $server);
-                }
-            }
-            unset($server);
-        }
-    } elseif (substr($interface, 0, 5) == 'ovpnc') {
-        if (isset($config['openvpn']['openvpn-client'])) {
-            foreach ($config['openvpn']['openvpn-client'] as $client) {
-                if ($interface == "ovpnc{$client['vpnid']}") {
-                    log_error("OpenVPN: Resync server {$client['description']}");
-                    openvpn_reconfigure('client', $client);
-                    openvpn_restart('client', $client);
-                }
-            }
-            unset($client);
-        }
-    }
-}
-
 function openvpn_configure_single($id)
 {
     global $config;
@@ -1596,39 +1570,6 @@ function openvpn_get_remote_access_servers()
         }
     }
     return $result;
-}
-
-// Resync and restart all VPNs using a gateway group.
-function openvpn_configure_gwgroup($gwgroupname = '')
-{
-    global $config;
-
-    if (empty($gwgroupname)) {
-        log_error("openvpn_configure_gwgroup() called without gwgroup parameter.");
-        return;
-    }
-
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as &$settings) {
-            if ($gwgroupname == $settings['interface']) {
-                log_error("Resyncing OpenVPN server for gateway group " .
-                    $gwgroupname . " server " . $settings["description"] . ".");
-                openvpn_reconfigure('server', $settings);
-                openvpn_restart('server', $settings);
-            }
-        }
-    }
-
-    if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as &$settings) {
-            if ($gwgroupname == $settings['interface']) {
-                log_error("Resyncing OpenVPN client for gateway group " .
-                    $gwgroupname . " client " . $settings["description"] . ".");
-                openvpn_reconfigure('client', $settings);
-                openvpn_restart('client', $settings);
-            }
-        }
-    }
 }
 
 function openvpn_refresh_crls()

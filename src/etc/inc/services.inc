@@ -30,15 +30,10 @@
  */
 
 /*
- * XXX OpenVPN is the last base plugin that is not gracefully registering
- * its functionality to core.  With it being gone we can assume all
- * plugins even if core functionality must adhere to this idiom.
- *
- * This will allow us to remove all service-relevant parts from system.inc
- * and services.inc so that the latter does become obsolete.  For this to
- * succeed DHCP functionality needs to be put into a plugin as well.
+ * XXX Remove all service-relevant parts from system.inc and services.inc
+ * so that the latter does become obsolete.  For this to succeed all DHCP
+ * functionality needs to be put into its own plugin file.
  */
-require_once('plugins.inc.d/openvpn.inc');
 
 function generate_ipv6_from_mac($mac)
 {

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
@@ -95,7 +95,6 @@ system_hostname_configure(true);
 system_hosts_generate(true);
 system_syslogd_start(true);
 
-openvpn_prepare_all(true);
 interfaces_configure(true);
 
 system_resolvconf_generate(true);
