@@ -2272,7 +2272,7 @@ function kill_wpasupplicant($interface)
 function interface_virtual_create($interface)
 {
     if (strstr($interface, '_vlan')) {
-        interfaces_vlan_configure($vlan);
+        interfaces_vlan_configure($interface);
     } elseif (substr($interface, 0, 3) == 'gre') {
         interfaces_gre_configure(0, false, $interface);
     } elseif (substr($interface, 0, 3) == 'gif') {
