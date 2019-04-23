@@ -126,9 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_gateway_groups[] = $gateway_group;
         }
 
-        mark_subsystem_dirty('staticroutes');
-        mark_subsystem_dirty('gwgroup.' . $gateway_group['name']);
-
+        mark_subsystem_dirty('gwgroups');
         write_config();
 
         header(url_safe('Location: /system_gateway_groups.php'));

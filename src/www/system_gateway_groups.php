@@ -46,24 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             unset($a_gateway_groups[$_POST['id']]);
+            mark_subsystem_dirty('gwgroups');
             write_config();
-            mark_subsystem_dirty('staticroutes');
             header(url_safe('Location: /system_gateway_groups.php'));
             exit;
         }
     } elseif (isset($_POST['apply'])) {
-        system_routing_configure();
-        clear_subsystem_dirty('staticroutes');
         plugins_configure('monitor');
-
         configd_run('dyndns reload');
         configd_run('rfc2136 reload');
         configd_run('filter reload');
 
-        foreach ($a_gateway_groups as $gateway_group) {
-            $gw_subsystem = 'gwgroup.' . $gateway_group['name'];
-            clear_subsystem_dirty($gw_subsystem);
-        }
+        clear_subsystem_dirty('gwgroups');
 
         header(url_safe('Location: /system_gateway_groups.php'));
         exit;
@@ -114,7 +108,7 @@ $( document ).ready(function() {
     <div class="container-fluid">
       <div class="row">
 <?php
-      if (is_subsystem_dirty('staticroutes')) {
+      if (is_subsystem_dirty('gwgroups')) {
          print_info_box_apply(sprintf(gettext("The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));
       }
 ?>
