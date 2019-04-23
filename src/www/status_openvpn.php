@@ -1,34 +1,34 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("plugins.inc.d/openvpn.inc");
@@ -174,9 +174,9 @@ include("head.inc"); ?>
                                     endforeach; ?>
                                     <tr>
                                         <td colspan="2">
-                                            <?php $ssvc = find_service_by_name('openvpn', array('id' => $server['vpnid'])); ?>
-                                            <?= get_service_status_icon($ssvc, true); ?>
-                                            <?= get_service_control_links($ssvc, true); ?>
+                                            <?php $ssvc = service_by_name('openvpn', array('id' => $server['vpnid'])); ?>
+                                            <?= service_control_icon($ssvc, true); ?>
+                                            <?= service_control_links($ssvc, true); ?>
                                         </td>
                                         <td colspan="6">&nbsp;</td>
                                     </tr>
@@ -253,9 +253,9 @@ include("head.inc"); ?>
                                             <td><?= $sk_server['status']; ?></td>
                                             <td>
                                                 <div>
-                                                    <?php $ssvc = find_service_by_name('openvpn', array('id' => $sk_server['vpnid'])); ?>
-                                                    <?= get_service_status_icon($ssvc, true); ?>
-                                                    <?= get_service_control_links($ssvc, true); ?>
+                                                    <?php $ssvc = service_by_name('openvpn', array('id' => $sk_server['vpnid'])); ?>
+                                                    <?= service_control_icon($ssvc, true); ?>
+                                                    <?= service_control_links($ssvc, true); ?>
                                                 </div>
                                             </td>
                                         </tr>
@@ -291,9 +291,9 @@ include("head.inc"); ?>
                                             <td><?= $client['status']; ?></td>
                                             <td>
                                                 <div>
-                                                    <?php $ssvc = find_service_by_name('openvpn', array('id' => $client['vpnid'])); ?>
-                                                    <?= get_service_status_icon($ssvc, true); ?>
-                                                    <?= get_service_control_links($ssvc, true); ?>
+                                                    <?php $ssvc = service_by_name('openvpn', array('id' => $client['vpnid'])); ?>
+                                                    <?= service_control_icon($ssvc, true); ?>
+                                                    <?= service_control_links($ssvc, true); ?>
                                                 </div>
                                             </td>
                                         </tr>

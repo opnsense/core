@@ -53,7 +53,7 @@ function list_services_xmlrpc()
     $services = services_get();
 
     foreach ($services as &$service) {
-        $service['status'] = get_service_status($service);
+        $service['status'] = service_status($service);
     }
 
     return $services;
