@@ -29,9 +29,9 @@
  */
 
 require_once("guiconfig.inc");
-require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/ipsec.inc");
 
 $service_hook = 'strongswan';
 
@@ -39,8 +39,8 @@ include("head.inc");
 
 $sad = ipsec_dump_sad();
 legacy_html_escape_form_data($sad);
-?>
 
+?>
 <body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">

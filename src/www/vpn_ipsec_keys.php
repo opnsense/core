@@ -28,10 +28,10 @@
  */
 
 require_once("guiconfig.inc");
-require_once("plugins.inc.d/ipsec.inc");
 require_once("filter.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/ipsec.inc");
 
 config_read_array('ipsec', 'mobilekey');
 ipsec_mobilekey_sort();
