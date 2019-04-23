@@ -43,7 +43,6 @@
  * as plugins, but the things listed below are viable
  * targets in the future:
  */
-require_once('plugins.inc.d/dnsmasq.inc');
 require_once('plugins.inc.d/ipsec.inc');
 require_once('plugins.inc.d/openvpn.inc');
 
