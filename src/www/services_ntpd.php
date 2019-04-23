@@ -122,6 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config("Updated NTP Server Settings");
+
+        rrd_configure();
         ntpd_configure_start();
 
         header(url_safe('Location: /services_ntpd.php'));
@@ -315,12 +317,10 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_statsgraph" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NTP graphs') ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" data-for="help_for_statsgraph">
-                        <?=gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
-                      </div>
+                      <?= gettext('Enable RRD graphs of NTP statistics (default: disabled).') ?>
                     </td>
                   </tr>
                   <tr>
@@ -363,7 +363,7 @@ include("head.inc");
                       <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show access restriction options");?>
                       </div>
                       <div id="showrestrict" style="display:none">
-                      <?=gettext("these options control access to NTP from the WAN."); ?>
+                      <?=gettext("These options control access to NTP from the WAN."); ?>
                       <br /><br />
                       <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
