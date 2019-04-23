@@ -270,7 +270,5 @@ class AuthenticationFactory
         } else {
             return [];
         }
-
     }
-
 }

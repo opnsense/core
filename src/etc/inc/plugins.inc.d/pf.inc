@@ -129,7 +129,7 @@ function pf_firewall($fw)
         $GatewaysList = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
 
         foreach (get_staticroutes() as $route) {
-            if  (!empty($GatewaysList[$route['gateway']]['interface']) && empty($route['disabled'])) {
+            if (!empty($GatewaysList[$route['gateway']]['interface']) && empty($route['disabled'])) {
                 $gw = $GatewaysList[$route['gateway']];
                 $routeent = explode("/", $route['network']);
                 if (is_ipaddrv4($routeent[0]) && empty($ifdetails[$gw['if']]['ipv4'])) {

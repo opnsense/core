@@ -83,13 +83,12 @@ class Gateways
     private static function convertType($ipproto, $ifcfg)
     {
         if (!empty($ifcfg['if'])) {
-            if  ($ipproto == "inet") {
+            if ($ipproto == "inet") {
                 if (substr($ifcfg['if'], 0, 5) == "ovpnc") {
                     return "VPNv4";
                 } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
                     return "TUNNELv4";
                 }
-
             } elseif ($ipproto == "inet6" && !empty($ifcfg['if'])) {
                 if (substr($ifcfg['if'], 0, 5) == "ovpnc") {
                     return 'VPNv6';
@@ -112,7 +111,7 @@ class Gateways
      * @param bool $is_default is default wan gateway
      * @return string key
      */
-    private function newKey($prio, $is_default=false)
+    private function newKey($prio, $is_default = false)
     {
         if (empty($this->cached_gateways)) {
             $this->gatewaySeq = 1;
@@ -157,33 +156,33 @@ class Gateways
             ];
             // iterate configured gateways
             if (!empty($this->configHandle->gateways)) {
-                  foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
-                      if ($tag == "gateway_item") {
-                          $gw_arr = array();
-                          foreach ($gateway as $key => $value) {
-                              $gw_arr[(string)$key] = (string)$value;
-                          }
-                          if (empty($gw_arr['priority'])) {
-                              // default priority
-                              $gw_arr['priority'] = 255;
-                          }
-                          $gw_arr["if"] = $definedIntf[$gw_arr["interface"]]['if'];
-                          $gw_arr["attribute"] = $i++;
-                          if (Util::isIpAddress($gateway->gateway)) {
-                              if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
-                                  $gw_arr['monitor'] = $gw_arr['gateway'];
-                              }
-                              $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
-                              $this->cached_gateways[$gwkey] = $gw_arr;
-                          } else {
-                              // dynamic gateways might have settings, temporary store
-                              if (empty($dynamic_gw[(string)$gateway->interface])) {
-                                  $dynamic_gw[(string)$gateway->interface] = array();
-                              }
-                              $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
-                          }
-                      }
-                  }
+                foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
+                    if ($tag == "gateway_item") {
+                        $gw_arr = array();
+                        foreach ($gateway as $key => $value) {
+                            $gw_arr[(string)$key] = (string)$value;
+                        }
+                        if (empty($gw_arr['priority'])) {
+                            // default priority
+                            $gw_arr['priority'] = 255;
+                        }
+                        $gw_arr["if"] = $definedIntf[$gw_arr["interface"]]['if'];
+                        $gw_arr["attribute"] = $i++;
+                        if (Util::isIpAddress($gateway->gateway)) {
+                            if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
+                                $gw_arr['monitor'] = $gw_arr['gateway'];
+                            }
+                            $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
+                            $this->cached_gateways[$gwkey] = $gw_arr;
+                        } else {
+                            // dynamic gateways might have settings, temporary store
+                            if (empty($dynamic_gw[(string)$gateway->interface])) {
+                                $dynamic_gw[(string)$gateway->interface] = array();
+                            }
+                            $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
+                        }
+                    }
+                }
             }
             // add dynamic gateways
             foreach ($definedIntf as $ifname => $ifcfg) {
@@ -249,7 +248,7 @@ class Gateways
      * @param string $ipproto inet/inet6 type
      * @return string type name
      */
-    public function getDefaultGW($skip=null, $ipproto='inet')
+    public function getDefaultGW($skip = null, $ipproto = 'inet')
     {
         foreach ($this->getGateways() as $gateway) {
             if ($gateway['ipprotocol'] == $ipproto) {
@@ -272,7 +271,7 @@ class Gateways
      * @param bool $localhost inet/inet6 type
      * @return string type name
      */
-    public function gatewaysIndexedByName($disabled=false, $localhost=false, $inactive=false)
+    public function gatewaysIndexedByName($disabled = false, $localhost = false, $inactive = false)
     {
         $result = array();
         foreach ($this->getGateways() as $gateway) {
@@ -282,7 +281,7 @@ class Gateways
             if (!empty($gateway['is_loopback']) && !$localhost) {
                 continue;
             }
-            if (empty($gateway['is_loopback']) && empty($gateway['if']) && !$inactive){
+            if (empty($gateway['is_loopback']) && empty($gateway['if']) && !$inactive) {
                 continue;
             }
             $result[$gateway['name']] = $gateway;
@@ -311,7 +310,7 @@ class Gateways
     public function getAddress($name)
     {
         foreach ($this->getGateways() as $gateway) {
-            if ($gateway['name'] == $name && !empty($gateway['gateway'])){
+            if ($gateway['name'] == $name && !empty($gateway['gateway'])) {
                 $result = $gateway['gateway'];
                 if (strtolower(substr($gateway['gateway'], 0, 5)) == "fe80:") {
                     // link local, suffix interface
@@ -330,7 +329,7 @@ class Gateways
     public function getInterface($name)
     {
         foreach ($this->getGateways() as $gateway) {
-            if ($gateway['name'] == $name && !empty($gateway['if'])){
+            if ($gateway['name'] == $name && !empty($gateway['if'])) {
                 return $gateway['if'];
             }
         }
@@ -344,7 +343,7 @@ class Gateways
     public function getInterfaceName($name)
     {
         foreach ($this->getGateways() as $gateway) {
-            if ($gateway['name'] == $name && !empty($gateway['interface'])){
+            if ($gateway['name'] == $name && !empty($gateway['interface'])) {
                 return $gateway['interface'];
             }
         }
@@ -356,7 +355,7 @@ class Gateways
      * @param string $ipproto inet/inet6
      * @return string|null gateway address
      */
-    public function getInterfaceGateway($interface, $ipproto="inet")
+    public function getInterfaceGateway($interface, $ipproto = "inet")
     {
         foreach ($this->getGateways() as $gateway) {
             if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
@@ -365,7 +364,7 @@ class Gateways
                 continue;
             }
 
-            if (!empty($gateway['interface']) && $gateway['interface'] == $interface){
+            if (!empty($gateway['interface']) && $gateway['interface'] == $interface) {
                 return $gateway['gateway'];
             }
         }
@@ -381,68 +380,68 @@ class Gateways
     {
           $all_gateways = $this->gatewaysIndexedByName();
           $result = array();
-          if (isset($this->configHandle->gateways)) {
-              foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
-                  if ($tag == "gateway_group") {
-                      $tiers = array();
-                      if (isset($gw_group->item)) {
-                          foreach ($gw_group->item as $item) {
-                              list($gw, $tier) = explode("|", $item);
-                              if (!isset($tiers[$tier])) {
-                                  $tiers[$tier] =  array();
-                              }
-                              $tiers[$tier][] = $gw;
-                          }
-                      }
-                      ksort($tiers);
-                      $all_tiers =  array();
-                      foreach ($tiers as $tieridx => $tier) {
-                          $all_tiers[$tieridx] = array();
-                          if (!isset($result[(string)$gw_group->name])) {
-                              $result[(string)$gw_group->name] = array();
-                          }
-                          // check status for all gateways in this tier
-                          foreach ($tier as $gwname) {
-                              if (!empty($all_gateways[$gwname]['gateway']) && !empty($status_info[$gwname])) {
-                                  $gateway = $all_gateways[$gwname];
-                                  switch ($status_info[$gwname]['status']) {
-                                      case 'down':
-                                      case 'force_down':
-                                          $is_up = false;
-                                          break;
-                                      case 'delay':
-                                          $is_up = stristr($gw_group->trigger, 'latency') === false;
-                                          break;
-                                      case 'loss':
-                                          $is_up = stristr($gw_group->trigger, 'loss') === false;
-                                          break;
-                                      default:
-                                          $is_up = true;
-                                  }
-                                  $gateway_item = [
-                                      'int' => $gateway['if'],
-                                      'gwip' => $gateway['gateway'],
-                                      'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
-                                  ];
-                                  $all_tiers[$tieridx][] = $gateway_item;
-                                  if ($is_up) {
-                                      $result[(string)$gw_group->name][] = $gateway_item;
-                                  }
-                              }
-                          }
-                          // exit when tier has (a) usuable gateway(s)
-                          if (!empty($result[(string)$gw_group->name])) {
-                              break;
-                          }
-                      }
-                      // XXX: backwards compatibility, when no tiers are up, we seem to select all from the first
-                      //      found tier. not very useful, since we already seem to know these are down.
-                      if (empty($result[(string)$gw_group->name])) {
-                          $result[(string)$gw_group->name] = $all_tiers[array_keys($tiers)[0]];
-                      }
-                  }
-              }
-          }
+        if (isset($this->configHandle->gateways)) {
+            foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
+                if ($tag == "gateway_group") {
+                    $tiers = array();
+                    if (isset($gw_group->item)) {
+                        foreach ($gw_group->item as $item) {
+                            list($gw, $tier) = explode("|", $item);
+                            if (!isset($tiers[$tier])) {
+                                $tiers[$tier] =  array();
+                            }
+                            $tiers[$tier][] = $gw;
+                        }
+                    }
+                    ksort($tiers);
+                    $all_tiers =  array();
+                    foreach ($tiers as $tieridx => $tier) {
+                        $all_tiers[$tieridx] = array();
+                        if (!isset($result[(string)$gw_group->name])) {
+                            $result[(string)$gw_group->name] = array();
+                        }
+                        // check status for all gateways in this tier
+                        foreach ($tier as $gwname) {
+                            if (!empty($all_gateways[$gwname]['gateway']) && !empty($status_info[$gwname])) {
+                                $gateway = $all_gateways[$gwname];
+                                switch ($status_info[$gwname]['status']) {
+                                    case 'down':
+                                    case 'force_down':
+                                        $is_up = false;
+                                        break;
+                                    case 'delay':
+                                        $is_up = stristr($gw_group->trigger, 'latency') === false;
+                                        break;
+                                    case 'loss':
+                                        $is_up = stristr($gw_group->trigger, 'loss') === false;
+                                        break;
+                                    default:
+                                        $is_up = true;
+                                }
+                                $gateway_item = [
+                                    'int' => $gateway['if'],
+                                    'gwip' => $gateway['gateway'],
+                                    'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
+                                ];
+                                $all_tiers[$tieridx][] = $gateway_item;
+                                if ($is_up) {
+                                    $result[(string)$gw_group->name][] = $gateway_item;
+                                }
+                            }
+                        }
+                        // exit when tier has (a) usuable gateway(s)
+                        if (!empty($result[(string)$gw_group->name])) {
+                            break;
+                        }
+                    }
+                    // XXX: backwards compatibility, when no tiers are up, we seem to select all from the first
+                    //      found tier. not very useful, since we already seem to know these are down.
+                    if (empty($result[(string)$gw_group->name])) {
+                        $result[(string)$gw_group->name] = $all_tiers[array_keys($tiers)[0]];
+                    }
+                }
+            }
+        }
           return $result;
     }
 
