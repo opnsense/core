@@ -1193,8 +1193,8 @@ function openvpn_configure_do($verbose = false, $interface = '')
     }
 
     if (!empty($interface)) {
-        $interface_real = get_real_interface($interface);
-        if (substr($interface_real, 0, 4) == 'ovpn') {
+        $realif = get_real_interface($interface);
+        if (substr($realif, 0, 4) != 'ovpn') {
             return;
         }
         log_error(sprintf(
