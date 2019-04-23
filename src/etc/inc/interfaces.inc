@@ -889,6 +889,9 @@ function interfaces_configure($verbose = false)
     interfaces_lagg_configure('', $verbose);
     interfaces_vlan_configure('', $verbose);
 
+    /* XXX temporary plugin spot */
+    plugins_configure('openvpn_prepare', $verbose);
+
     $delayed_list = array();
     $bridge_list = array();
     $track6_list = array();
@@ -2269,24 +2272,6 @@ function kill_wpasupplicant($interface)
     mwexec("/bin/pkill -f \"wpa_supplicant .*{$interface}\\.conf\"\n");
 }
 
-function interface_virtual_create($interface)
-{
-    if (strstr($interface, '_vlan')) {
-        interfaces_vlan_configure($interface);
-    } elseif (substr($interface, 0, 3) == 'gre') {
-        interfaces_gre_configure(0, false, $interface);
-    } elseif (substr($interface, 0, 3) == 'gif') {
-        interfaces_gif_configure(0, false, $interface);
-    } elseif (substr($interface, 0, 4) == 'ovpn') {
-        /* XXX this looks like a plugin spot... */
-        openvpn_configure_interface($interface);
-    } elseif (substr($interface, 0, 4) == 'lagg') {
-        interfaces_lagg_configure($interface);
-    } elseif (substr($interface, 0, 6) == 'bridge') {
-        interfaces_bridge_configure(0, $interface);
-    }
-}
-
 function interface_static_configure($interface, $wancfg)
 {
     if (empty($wancfg['ipaddr']) || !is_ipaddrv4($wancfg['ipaddr']) || $wancfg['subnet'] == '') {
@@ -2366,8 +2351,21 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* Need to check that the interface exists or not in the case where its coming back from disabled state see #3270 */
-    if (in_array(substr($realif, 0, 3), array("gre", "gif")) || !does_interface_exist($interface_to_check)) {
-        interface_virtual_create($interface_to_check);
+    if (in_array(substr($realif, 0, 3), array('gre', 'gif')) || !does_interface_exist($interface_to_check)) {
+        if (strstr($interface_to_check, '_vlan')) {
+            interfaces_vlan_configure($interface_to_check);
+        } elseif (substr($interface_to_check, 0, 3) == 'gre') {
+            interfaces_gre_configure(0, false, $interface_to_check);
+        } elseif (substr($interface_to_check, 0, 3) == 'gif') {
+            interfaces_gif_configure(0, false, $interface_to_check);
+        /* XXX OpenVPN resolves the virtual interface name, check too explicit here */
+        } elseif (substr($interface_to_check, 0, 4) == 'ovpn') {
+            plugins_configure('openvpn_reload', false, array($interface));
+        } elseif (substr($interface_to_check, 0, 4) == 'lagg') {
+            interfaces_lagg_configure($interface_to_check);
+        } elseif (substr($interface_to_check, 0, 6) == 'bridge') {
+            interfaces_bridge_configure(0, $interface_to_check);
+        }
     }
 
     /* Disable Accepting router advertisements unless specifically requested */
