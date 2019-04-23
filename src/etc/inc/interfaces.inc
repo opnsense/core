@@ -2551,7 +2551,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
 {
     global $config;
 
-    if (!is_array($lancfg) || !isset($lancfg['enable']) || empty($lancfg['track6-interface'])) {
+    if (!is_array($lancfg) || empty($lancfg['track6-interface'])) {
         return;
     }
 
@@ -2561,8 +2561,9 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
-    if ($linkdownevent) {
+    if ($linkdownevent || !isset($lancfg['enable'])) {
         switch ($trackcfg['ipaddrv6']) {
+            /* deconfiguring 6to4 and 6rd is done elsewhere, simply removed addresses */
             case 'slaac':
             case 'dhcp6':
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
