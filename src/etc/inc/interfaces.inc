@@ -3638,16 +3638,16 @@ function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
 
-    $wanif = null;
+    $realif = null;
 
     switch ($interface) {
-        case "openvpn":
-        case "ppp":
-            $wanif = $interface;
+        case 'openvpn':
+        case 'ppp':
+            $realif = $interface;
             break;
-        case "ipsec":
-        case "enc0":
-            $wanif = "enc0";
+        case 'ipsec':
+        case 'enc0':
+            $realif = 'enc0';
             break;
         default:
             if (empty($config['interfaces'][$interface])) {
@@ -3657,7 +3657,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
                  * interface names. does_interface_exist() is quite expensive.
                  */
                 if (does_interface_exist($interface)) {
-                    $wanif = $interface;
+                    $realif = $interface;
                 }
                 break;
             }
@@ -3668,16 +3668,16 @@ function get_real_interface($interface = 'wan', $family = 'all')
                 switch (isset($cfg['ipaddrv6']) ? $cfg['ipaddrv6'] : '') {
                     case '6rd':
                     case '6to4':
-                        $wanif = "{$interface}_stf";
+                        $realif = "{$interface}_stf";
                         break;
                     case 'pppoe':
                     case 'ppp':
                     case 'l2tp':
                     case 'pptp':
                         if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
-                            $wanif = interface_get_wireless_clone($cfg['if']);
+                            $realif = interface_get_wireless_clone($cfg['if']);
                         } else {
-                            $wanif = $cfg['if'];
+                            $realif = $cfg['if'];
                         }
                         break;
                     default:
@@ -3687,21 +3687,21 @@ function get_real_interface($interface = 'wan', $family = 'all')
                             case 'l2tp':
                             case 'pptp':
                                 if (isset($cfg['dhcp6usev4iface'])) {
-                                    $wanif = $cfg['if'];
+                                    $realif = $cfg['if'];
                                 } else {
                                     $parents = get_parent_interface($interface);
                                     if (!empty($parents[0])) {
-                                        $wanif = $parents[0];
+                                        $realif = $parents[0];
                                     } else {
-                                        $wanif = $cfg['if'];
+                                        $realif = $cfg['if'];
                                     }
                                 }
                                 break;
                             default:
                                 if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
-                                    $wanif = interface_get_wireless_clone($cfg['if']);
+                                    $realif = interface_get_wireless_clone($cfg['if']);
                                 } else {
-                                    $wanif = $cfg['if'];
+                                    $realif = $cfg['if'];
                                 }
                                 break;
                         }
@@ -3712,15 +3712,15 @@ function get_real_interface($interface = 'wan', $family = 'all')
                 // interface name format: $parentnic_wlanparentnic#
                 // example: ath0_wlan0
                 if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
-                    $wanif = interface_get_wireless_clone($cfg['if']);
+                    $realif = interface_get_wireless_clone($cfg['if']);
                 } else {
-                    $wanif = $cfg['if'];
+                    $realif = $cfg['if'];
                 }
             }
             break;
     }
 
-    return $wanif;
+    return $realif;
 }
 
 function guess_interface_from_ip($ipaddress)
