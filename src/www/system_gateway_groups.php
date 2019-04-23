@@ -31,7 +31,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("system.inc");
 require_once("services.inc");
-require_once("rrd.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 $gateways_status = return_gateways_status();

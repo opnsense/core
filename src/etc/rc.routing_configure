@@ -32,7 +32,6 @@ require_once 'util.inc';
 require_once 'system.inc';
 require_once 'interfaces.inc';
 require_once 'filter.inc';
-require_once 'rrd.inc';
 
 // drop deleted routes
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {

@@ -121,7 +121,6 @@ function filter_configure_xmlrpc()
     require_once("util.inc");
     require_once("interfaces.inc");
     require_once("services.inc");
-    require_once("rrd.inc");
 
     system_routing_configure();
     plugins_configure('monitor');
