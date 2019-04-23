@@ -2535,7 +2535,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     if (!file_exists("/var/run/booting")) {
         if ($reload) {
             system_routing_configure($verbose, $interface);
-            ipsec_configure_do($verbose, $interface);
+            plugins_configure('ipsec', $verbose, array($interface));
             plugins_configure('dns', $verbose);
             services_dhcpd_configure($verbose);
             /* XXX move these up the call stack */

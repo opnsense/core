@@ -113,6 +113,7 @@ $p2_protos = array(
 function ipsec_configure()
 {
     return array(
+        'ipsec' => array('ipsec_configure_do:2'),
         'vpn' => array('ipsec_configure_do:2'),
     );
 }
