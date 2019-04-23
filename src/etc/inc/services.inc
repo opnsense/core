@@ -46,7 +46,6 @@
 require_once('plugins.inc.d/dnsmasq.inc');
 require_once('plugins.inc.d/ipsec.inc');
 require_once('plugins.inc.d/openvpn.inc');
-require_once('plugins.inc.d/unbound.inc');
 
 function generate_ipv6_from_mac($mac)
 {
