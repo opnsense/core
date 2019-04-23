@@ -34,7 +34,7 @@ function openvpn_configure()
 {
     return array(
         'crl' => array('openvpn_refresh_crls:0'),
-        'openvpn_reload' => array('openvpn_configure_do:2'),
+        'openvpn_reload' => array('openvpn_configure_do:3'),
         'openvpn_prepare' => array('openvpn_prepare_all'),
         'remote' => array('openvpn_configure_do'),
         'vpn' => array('openvpn_configure_do:2'),
@@ -1182,7 +1182,7 @@ function openvpn_configure_single($id)
     }
 }
 
-function openvpn_configure_do($verbose = false, $interface = '')
+function openvpn_configure_do($verbose = false, $interface = '', $realif = '')
 {
     global $config;
 
@@ -1192,11 +1192,15 @@ function openvpn_configure_do($verbose = false, $interface = '')
         return;
     }
 
-    if (!empty($interface)) {
+    if (empty($realif) && !empty($interface)) {
         $realif = get_real_interface($interface);
-        if (substr($realif, 0, 4) != 'ovpn') {
-            return;
-        }
+    }
+
+    if (!empty($realif) && substr($realif, 0, 4) != 'ovpn') {
+        return;
+    }
+
+    if (!empty($interface)) {
         log_error(sprintf(
             'Resyncing OpenVPN instances for interface %s.',
             convert_friendly_interface_to_friendly_descr($interface)

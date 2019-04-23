@@ -149,9 +149,13 @@ function interfaces_vlan_priorities()
     return $priorities;
 }
 
-function interfaces_vlan_configure($realif = '', $verbose = false)
+function interfaces_vlan_configure($verbose = false, $realif = '')
 {
     global $config;
+
+    if (!empty($realif) && strstr($realif, '_vlan') === false) {
+        return;
+    }
 
     if (!isset($config['vlans']['vlan'])) {
         return;
@@ -166,9 +170,11 @@ function interfaces_vlan_configure($realif = '', $verbose = false)
         if (empty($vlan['vlanif'])) {
             $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
         }
+
         if (!empty($realif) && $realif != $vlan['vlanif']) {
             continue;
         }
+
         interface_vlan_configure($vlan);
     }
 
@@ -301,44 +307,59 @@ function interfaces_create_wireless_clones($verbose = false)
     }
 }
 
-function interfaces_bridge_configure($checkmember = 0, $realif = '')
+function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif = '')
 {
     global $config;
 
-    $i = 0;
-    if (isset($config['bridges']['bridged'])) {
-        foreach ($config['bridges']['bridged'] as $bridge) {
-            if (empty($bridge['bridgeif'])) {
-                $bridge['bridgeif'] = "bridge{$i}";
-            }
-            if (!empty($realif) && $realif != $bridge['bridgeif']) {
+    if (!empty($realif) && substr($realif, 0, 6) != 'bridge') {
+        return;
+    }
+
+    if (!isset($config['bridges']['bridged'])) {
+        return;
+    }
+
+    if ($verbose) {
+        echo "Configuring bridge interfaces ($checkmember)...";
+        flush();
+    }
+
+    foreach ($config['bridges']['bridged'] as $i => $bridge) {
+        if (empty($bridge['bridgeif'])) {
+            $bridge['bridgeif'] = "bridge{$i}";
+        }
+
+        if (!empty($realif) && $realif != $bridge['bridgeif']) {
+            continue;
+        }
+
+        if ($checkmember == 1) {
+            if (strstr($bridge['if'], '_vip')) {
                 continue;
             }
-
-            if ($checkmember == 1) {
-                if (strstr($bridge['if'], "_vip")) {
-                    continue;
-                }
-                $members = explode(',', $bridge['members']);
-                foreach ($members as $member) {
-                    if (!empty($config['interfaces'][$bridge['if']]) && $config['interfaces'][$bridge['if']]['ipaddrv6'] == "track6") {
-                        continue 2;
-                    }
-                }
-            } elseif ($checkmember == 2) {
-                if (strstr($bridge['if'], "_vip")) {
-                    continue;
-                }
-                $members = explode(',', $bridge['members']);
-                foreach ($members as $member) {
-                    if (empty($config['interfaces'][$bridge['if']]) || $config['interfaces'][$bridge['if']]['ipaddrv6'] != "track6") {
-                        continue 2;
-                    }
+            $members = explode(',', $bridge['members']);
+            foreach ($members as $member) {
+                if (!empty($config['interfaces'][$bridge['if']]) && $config['interfaces'][$bridge['if']]['ipaddrv6'] == 'track6') {
+                    continue 2;
                 }
             }
-            interface_bridge_configure($bridge, $checkmember);
-            $i++;
+        } elseif ($checkmember == 2) {
+            if (strstr($bridge['if'], '_vip')) {
+                continue;
+            }
+            $members = explode(',', $bridge['members']);
+            foreach ($members as $member) {
+                if (empty($config['interfaces'][$bridge['if']]) || $config['interfaces'][$bridge['if']]['ipaddrv6'] != 'track6') {
+                    continue 2;
+                }
+            }
         }
+
+        interface_bridge_configure($bridge, $checkmember);
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -544,9 +565,13 @@ function interface_bridge_add_member($bridgeif, $interface)
     legacy_bridge_member($bridgeif, $interface);
 }
 
-function interfaces_lagg_configure($realif = '', $verbose = false)
+function interfaces_lagg_configure($verbose = false, $realif = '')
 {
     global $config;
+
+    if (!empty($realif) && substr($realif, 0, 4) != 'lagg') {
+        return;
+    }
 
     if (!isset($config['laggs']['lagg'])) {
         return;
@@ -557,17 +582,16 @@ function interfaces_lagg_configure($realif = '', $verbose = false)
         flush();
     }
 
-    $i = 0;
-
-    foreach ($config['laggs']['lagg'] as $lagg) {
+    foreach ($config['laggs']['lagg'] as $i => $lagg) {
         if (empty($lagg['laggif'])) {
             $lagg['laggif'] = "lagg{$i}";
         }
+
         if (!empty($realif) && $realif != $lagg['laggif']) {
             continue;
         }
+
         interface_lagg_configure($lagg);
-        $i++;
     }
 
     if ($verbose) {
@@ -640,9 +664,13 @@ function interface_lagg_configure(&$lagg)
     return $laggif;
 }
 
-function interfaces_gre_configure($checkparent = 0, $verbose = false, $realif = '')
+function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = '')
 {
     global $config;
+
+    if (!empty($realif) && substr($realif, 0, 3) != 'gre') {
+        return;
+    }
 
     if (!isset($config['gres']['gre'])) {
         return;
@@ -657,6 +685,7 @@ function interfaces_gre_configure($checkparent = 0, $verbose = false, $realif = 
         if (empty($gre['greif'])) {
             $gre['greif'] = "gre{$i}";
         }
+
         if (!empty($realif) && $realif != $gre['greif']) {
             continue;
         }
@@ -753,9 +782,13 @@ function interface_gre_configure(&$gre, $grekey = "")
     return $greif;
 }
 
-function interfaces_gif_configure($checkparent = 0, $verbose = false, $realif = '')
+function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = '')
 {
     global $config;
+
+    if (!empty($realif) && substr($realif, 0, 3) != 'gif') {
+        return;
+    }
 
     if (!isset($config['gifs']['gif'])) {
         return;
@@ -886,8 +919,8 @@ function interfaces_configure($verbose = false)
 
     interfaces_loopback_configure($verbose);
     interfaces_create_wireless_clones($verbose);
-    interfaces_lagg_configure('', $verbose);
-    interfaces_vlan_configure('', $verbose);
+    interfaces_lagg_configure($verbose);
+    interfaces_vlan_configure($verbose);
 
     /* XXX temporary plugin spot */
     plugins_configure('openvpn_prepare', $verbose);
@@ -915,23 +948,23 @@ function interfaces_configure($verbose = false)
      *  2 - Do load gre/gif/bridge with parent/member as vip
      */
 
-    interfaces_gre_configure(1, $verbose);
-    interfaces_gif_configure(1, $verbose);
-    interfaces_bridge_configure(1);
+    interfaces_gre_configure($verbose, 1);
+    interfaces_gif_configure($verbose, 1);
+    interfaces_bridge_configure($verbose, 1);
 
     foreach ($track6_list as $if => $ifname) {
         interface_configure($verbose, $if);
     }
 
-    interfaces_vips_configure('', $verbose);
-    interfaces_gre_configure(2, $verbose);
-    interfaces_gif_configure(2, $verbose);
+    interfaces_vips_configure($verbose);
+    interfaces_gre_configure($verbose, 2);
+    interfaces_gif_configure($verbose, 2);
 
     foreach ($delayed_list as $if => $ifname) {
         interface_configure($verbose, $if);
     }
 
-    interfaces_bridge_configure(2);
+    interfaces_bridge_configure($verbose, 2);
 
     foreach ($bridge_list as $if => $ifname) {
         interface_configure($verbose, $if);
@@ -1590,37 +1623,42 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($interface = '', $verbose = false)
+function interfaces_vips_configure($verbose = false, $interface = '')
 {
     global $config;
 
-    if (isset($config['virtualip']['vip'])) {
-        $carp_setuped = false;
-        $anyproxyarp = false;
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($interface == "" || $vip['interface'] == $interface) {
-                switch ($vip['mode']) {
-                    case "proxyarp":
-                        $anyproxyarp = true;
-                        break;
-                    case "ipalias":
-                        interface_ipalias_configure($vip);
-                        break;
-                    case "carp":
-                        if ($carp_setuped == false) {
-                            $carp_setuped = true;
-                        }
-                        interface_carp_configure($vip);
-                        break;
-                }
+    if (!isset($config['virtualip']['vip'])) {
+        return;
+    }
+
+    $carp_setup = false;
+    $anyproxyarp = false;
+
+    foreach ($config['virtualip']['vip'] as $vip) {
+        if (empty($interface) || $vip['interface'] == $interface) {
+            switch ($vip['mode']) {
+                case 'proxyarp':
+                    $anyproxyarp = true;
+                    break;
+                case 'ipalias':
+                    interface_ipalias_configure($vip);
+                    break;
+                case 'carp':
+                    if (!$carp_setup) {
+                        $carp_setup = true;
+                    }
+                    interface_carp_configure($vip);
+                    break;
             }
         }
-        if ($carp_setuped == true) {
-            interfaces_carp_setup($verbose);
-        }
-        if ($anyproxyarp == true) {
-            interface_proxyarp_configure();
-        }
+    }
+
+    if ($carp_setup) {
+        interfaces_carp_setup($verbose);
+    }
+
+    if ($anyproxyarp) {
+        interface_proxyarp_configure();
     }
 }
 
@@ -2350,22 +2388,26 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
-    /* Need to check that the interface exists or not in the case where its coming back from disabled state see #3270 */
-    if (in_array(substr($realif, 0, 3), array('gre', 'gif')) || !does_interface_exist($interface_to_check)) {
-        if (strstr($interface_to_check, '_vlan')) {
-            interfaces_vlan_configure($interface_to_check);
-        } elseif (substr($interface_to_check, 0, 3) == 'gre') {
-            interfaces_gre_configure(0, false, $interface_to_check);
-        } elseif (substr($interface_to_check, 0, 3) == 'gif') {
-            interfaces_gif_configure(0, false, $interface_to_check);
-        /* XXX OpenVPN resolves the virtual interface name, check too explicit here */
-        } elseif (substr($interface_to_check, 0, 4) == 'ovpn') {
-            plugins_configure('openvpn_reload', false, array($interface));
-        } elseif (substr($interface_to_check, 0, 4) == 'lagg') {
-            interfaces_lagg_configure($interface_to_check);
-        } elseif (substr($interface_to_check, 0, 6) == 'bridge') {
-            interfaces_bridge_configure(0, $interface_to_check);
-        }
+    /*
+     * Interface code must figure out if the call is for them so
+     * we start all but when we pass an interface the name will
+     * be matched so most will be a NOP.
+     *
+     * Verbose printing ($verbose) is off in the block because
+     * we are reconfiguring a specific interface and the verbose
+     * print was already started above.
+     */
+
+    /* make sure tunnel inside IP is set when interface changes #3702 */
+    interfaces_gre_configure(false, 0, $interface_to_check);
+    interfaces_gif_configure(false, 0, $interface_to_check);
+
+    /* need to check that the interface exists #3270 */
+    if (!does_interface_exist($interface_to_check)) {
+        interfaces_vlan_configure(false, $interface_to_check);
+        interfaces_lagg_configure(false, $interface_to_check);
+        interfaces_bridge_configure(false, 0, $interface_to_check);
+        plugins_configure('openvpn_reload', false, array($interface, $interface_to_check));
     }
 
     /* Disable Accepting router advertisements unless specifically requested */
@@ -3820,7 +3862,7 @@ function link_interface_to_vips($int, $action = '')
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($int == $vip['interface']) {
                 if ($action == 'update') {
-                    interfaces_vips_configure($int);
+                    interfaces_vips_configure(false, $int);
                 } else {
                     $result[] = $vip;
                 }
