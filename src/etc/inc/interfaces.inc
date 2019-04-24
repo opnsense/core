@@ -153,7 +153,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
 {
     global $config;
 
-    if (!empty($realif) && strstr($realif, '_vlan') === false) {
+    if (!empty($realif) && strstr($realif, '_vlan')) {
         return;
     }
 
@@ -934,13 +934,11 @@ function interfaces_configure($verbose = false)
     foreach (get_configured_interface_with_descr() as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
 
-        /* XXX strstr() return false or 0, this looks broken */
         if (strstr($realif, 'bridge')) {
             $bridge_list[$if] = $ifname;
             continue;
         }
 
-        /* XXX strstr() return false or 0, this looks broken */
         if (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
             $delayed_list[$if] = $ifname;
             continue;
