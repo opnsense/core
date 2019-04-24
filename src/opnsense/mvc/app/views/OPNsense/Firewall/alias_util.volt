@@ -106,7 +106,12 @@
                     // Remove all pre-existing event listeners, just to be sure.
                     $('#ip-search').off();
                     $('#ip-search').on('click', function(event) {
+                        if (!$("#ip-search > span").hasClass('fa-search')) {
+                            // already searching
+                            return;
+                        }
                         let ip = $('#ip').val();
+                        $("#ip-search > span").removeClass('fa-search').addClass("fa-spinner fa-pulse");
                         ajaxCall('/api/firewall/alias_util/find_references', {'ip': ip}, function(data, status) {
                             if (status !== 'success' || data['status'] !== 'ok') {
                                 $('#ip-results').html(
@@ -132,6 +137,7 @@
                                     $('#ip-results-list').append(item);
                                 });
                             }
+                            $("#ip-search > span").removeClass('fa-spinner fa-pulse').addClass("fa-search");
                         });
                     });
                 }
