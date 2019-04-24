@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
-    if (preg_match("/([^a-zA-Z])+/", $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
+    if (preg_match("/([^a-zA-Z0-9_])+/", $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
         $input_errors[] = gettext("Only letters A-Z are allowed as the group name.");
     }
 
@@ -102,9 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   }
               }
           }
+          $old_ifname = isset($id) ? $a_ifgroups[$id]['ifname'] : $pconfig['ifname'];
           // remove group members
           foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
-              if (!in_array($old_member, $pconfig['members'])) {
+              if (!in_array($old_member, $pconfig['members']) || $old_ifname != $pconfig['ifname']) {
                   $realif = get_real_interface($old_member);
                   if (!empty($realif)) {
                       mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
