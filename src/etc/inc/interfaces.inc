@@ -2995,8 +2995,8 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
             }
             foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
                 if (is_numeric($ifcfg['track6-prefix-id'])) {
-                    $realif = get_real_interface($friendly);
-                    $dhcp6cconf .= "  prefix-interface {$realif} {\n";
+                    $trackifv6 = get_real_interface($friendly, 'inet6');
+                    $dhcp6cconf .= "  prefix-interface {$trackifv6} {\n";
                     $dhcp6cconf .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
                     $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
                     $dhcp6cconf .= "  };\n";
@@ -3162,8 +3162,8 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
 
         foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
             if (is_numeric($ifcfg['track6-prefix-id'])) {
-                $realif = get_real_interface($friendly);
-                $id_assoc_statement_prefix .= "  prefix-interface {$realif} {\n";
+                $trackifv6 = get_real_interface($friendly, 'inet6');
+                $id_assoc_statement_prefix .= "  prefix-interface {$trackifv6} {\n";
                 $id_assoc_statement_prefix .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
                 if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
                     ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
