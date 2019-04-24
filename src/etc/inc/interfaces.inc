@@ -333,7 +333,7 @@ function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif
             continue;
         }
 
-        $vip_or_track6 = strstr($gif['if'], '_vip');
+        $vip_or_track6 = strstr($bridge['if'], '_vip');
 
         foreach (explode(',', $bridge['members']) as $member) {
             if (!empty($config['interfaces'][$member]['ipaddrv6']) && $config['interfaces'][$member]['ipaddrv6'] == 'track6') {
