@@ -344,7 +344,7 @@ function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif
 
         if ($checkmember == 1 && $vip_or_track6) {
             continue;
-        } elseif ($checkmember == 2 && $vip_or_track6) {
+        } elseif ($checkmember == 2 && !$vip_or_track6) {
             continue;
         }
 
