@@ -928,18 +928,41 @@ function interfaces_configure($verbose = false)
     $delayed_list = array();
     $bridge_list = array();
     $track6_list = array();
+    $dhcp6c_list = array();
 
+    /* XXX this code is truly weird */
     foreach (get_configured_interface_with_descr() as $if => $ifname) {
         $realif = $config['interfaces'][$if]['if'];
-        if (strstr($realif, "bridge")) {
+
+        /* XXX strstr() return false or 0, this looks broken */
+        if (strstr($realif, 'bridge')) {
             $bridge_list[$if] = $ifname;
-        } elseif (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
-            $delayed_list[$if] = $ifname;
-        } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'track6') {
-            $track6_list[$if] = $ifname;
-        } else {
-            interface_configure($verbose, $if);
+            continue;
         }
+
+        /* XXX strstr() return false or 0, this looks broken */
+        if (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
+            $delayed_list[$if] = $ifname;
+            continue;
+        }
+
+        /* XXX track6 should come earlier, but might be a bridge so ?! */
+        if (!empty($config['interfaces'][$if]['ipaddrv6'])) {
+            switch ($config['interfaces'][$if]['ipaddrv6']) {
+                case 'track6':
+                    $track6_list[$if] = $ifname;
+                    continue 2;
+                case 'dhcp6':
+                case 'slaac':
+                    $dhcp6c_list[$if] = $ifname;
+                    continue 2;
+                default:
+                    break;
+            }
+        }
+
+        /* XXX interfaces that are not special should be configured last */
+        interface_configure($verbose, $if);
     }
 
     /*
@@ -967,6 +990,10 @@ function interfaces_configure($verbose = false)
     interfaces_bridge_configure($verbose, 2);
 
     foreach ($bridge_list as $if => $ifname) {
+        interface_configure($verbose, $if);
+    }
+
+    foreach ($dhcp6c_list as $if => $ifname) {
         interface_configure($verbose, $if);
     }
 
