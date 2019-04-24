@@ -333,21 +333,6 @@ function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif
             continue;
         }
 
-        $vip_or_track6 = strstr($bridge['if'], '_vip');
-
-        foreach (explode(',', $bridge['members']) as $member) {
-            if (!empty($config['interfaces'][$member]['ipaddrv6']) && $config['interfaces'][$member]['ipaddrv6'] == 'track6') {
-                $vip_or_track6 = true;
-                break;
-            }
-        }
-
-        if ($checkmember == 1 && $vip_or_track6) {
-            continue;
-        } elseif ($checkmember == 2 && !$vip_or_track6) {
-            continue;
-        }
-
         interface_bridge_configure($bridge, $checkmember);
     }
 
@@ -683,13 +668,9 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
             continue;
         }
 
-        $vip_or_track6 = strstr($gre['if'], '_vip') ||
-            (!empty($config['interfaces'][$gre['if']]['ipaddrv6']) &&
-            $config['interfaces'][$gre['if']]['ipaddrv6'] == 'track6');
-
-        if ($checkparent == 1 && $vip_or_track6) {
+        if ($checkparent == 1 && strstr($gre['if'], '_vip')) {
             continue;
-        } elseif ($checkparent == 2 && !$vip_or_track6) {
+        } elseif ($checkparent == 2 && !strstr($gre['if'], '_vip')) {
             continue;
         }
 
@@ -790,17 +771,14 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
         if (empty($gif['gifif'])) {
             $gre['gifif'] = "gif{$i}";
         }
+
         if (!empty($realif) && $realif != $gif['gifif']) {
             continue;
         }
 
-        $vip_or_track6 = strstr($gif['if'], '_vip') ||
-            (!empty($config['interfaces'][$gif['if']]['ipaddrv6']) &&
-            $config['interfaces'][$gif['if']]['ipaddrv6'] == 'track6');
-
-        if ($checkparent == 1 && $vip_or_track6) {
+        if ($checkparent == 1 && strstr($gif['if'], '_vip')) {
             continue;
-        } elseif ($checkparent == 2 && !$vip_or_track6) {
+        } elseif ($checkparent == 2 && !strstr($gif['if'], '_vip')) {
             continue;
         }
 
@@ -896,8 +874,6 @@ function interface_gif_configure(&$gif, $gifkey = "")
 
 function interfaces_configure($verbose = false)
 {
-    global $config;
-
     interfaces_loopback_configure($verbose);
     interfaces_create_wireless_clones($verbose);
     interfaces_lagg_configure($verbose);
@@ -906,74 +882,69 @@ function interfaces_configure($verbose = false)
     /* XXX temporary plugin spot */
     plugins_configure('openvpn_prepare', $verbose);
 
-    $delayed_list = array();
-    $bridge_list = array();
-    $track6_list = array();
-    $dhcp6c_list = array();
+    /*
+     * Queues are set up to order interfaces according to their
+     * dependencies / requirements of devices or other interfaces.
+     * Some queues may overlap, but they are laid out in full to
+     * make sure that the configuration flow is as clean as possible.
+     * See individual notes in the queued handling below.
+     */
 
-    /* XXX this code is truly weird */
-    foreach (get_configured_interface_with_descr() as $if => $ifname) {
-        $realif = $config['interfaces'][$if]['if'];
+    $special = [];
+    $track6 = [];
+    $bridge = [];
+    $dhcp6c = [];
 
-        if (strstr($realif, 'bridge')) {
-            $bridge_list[$if] = $ifname;
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
+        if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
+            /* special interfaces on top of newly generated devices */
+            $special[] = $if;
             continue;
         }
 
-        if (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
-            $delayed_list[$if] = $ifname;
+        $is_track6 = !empty($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == 'track6';
+        if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
+            /* trackers without bridges are next */
+            $track6[] = $if;
             continue;
         }
 
-        /* XXX track6 should come earlier, but might be a bridge so ?! */
-        if (!empty($config['interfaces'][$if]['ipaddrv6'])) {
-            switch ($config['interfaces'][$if]['ipaddrv6']) {
-                case 'track6':
-                    $track6_list[$if] = $ifname;
-                    continue 2;
-                case 'dhcp6':
-                case 'slaac':
-                    $dhcp6c_list[$if] = $ifname;
-                    continue 2;
-                default:
-                    break;
-            }
+        $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
+        if (strstr($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
+            /* bridges that may be trackers, but not dhcp6c interfaces */
+            $bridge[] = $if;
+            continue;
+        } elseif ($is_dhcp6c) {
+            /* dhcp6c interfaces load last */
+            $dhcp6c[] = $if;
+            continue;
         }
 
-        /* XXX interfaces that are not special should be configured last */
+        /* everything else requires no queued handling and is available immediately */
         interface_configure($verbose, $if);
     }
 
     /*
      * NOTE: The following function parameter consists of
-     *  1 - Do not load gre/gif/bridge with parent/member as vip
-     *  2 - Do load gre/gif/bridge with parent/member as vip
+     *  1 - Do not load gre/gif with parent as vip
+     *  2 - Do load gre/gif with parent as vip
+     *  (bridge can't vip, but needs special gif handling)
      */
 
     interfaces_gre_configure($verbose, 1);
     interfaces_gif_configure($verbose, 1);
     interfaces_bridge_configure($verbose, 1);
 
-    foreach ($track6_list as $if => $ifname) {
-        interface_configure($verbose, $if);
-    }
-
     interfaces_vips_configure($verbose);
+
     interfaces_gre_configure($verbose, 2);
     interfaces_gif_configure($verbose, 2);
-
-    foreach ($delayed_list as $if => $ifname) {
-        interface_configure($verbose, $if);
-    }
-
     interfaces_bridge_configure($verbose, 2);
 
-    foreach ($bridge_list as $if => $ifname) {
-        interface_configure($verbose, $if);
-    }
-
-    foreach ($dhcp6c_list as $if => $ifname) {
-        interface_configure($verbose, $if);
+    foreach ([$special, $track6, $bridge, $dhcp6c] as $list) {
+        foreach ($list as $if) {
+            interface_configure($verbose, $if);
+        }
     }
 
     interfaces_group_setup();
