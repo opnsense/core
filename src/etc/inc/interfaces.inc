@@ -333,24 +333,19 @@ function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif
             continue;
         }
 
-        if ($checkmember == 1) {
-            if (strstr($bridge['if'], '_vip')) {
-                continue;
+        $vip_or_track6 = strstr($gif['if'], '_vip');
+
+        foreach (explode(',', $bridge['members']) as $member) {
+            if (!empty($config['interfaces'][$member]['ipaddrv6']) && $config['interfaces'][$member]['ipaddrv6'] == 'track6') {
+                $vip_or_track6 = true;
+                break;
             }
-            foreach (explode(',', $bridge['members']) as $member) {
-                if (!empty($config['interfaces'][$member]['ipaddrv6']) && $config['interfaces'][$member]['ipaddrv6'] == 'track6') {
-                    continue 2;
-                }
-            }
-        } elseif ($checkmember == 2) {
-            if (strstr($bridge['if'], '_vip')) {
-                continue;
-            }
-            foreach (explode(',', $bridge['members']) as $member) {
-                if (empty($config['interfaces'][$member]['ipaddrv6']) || $config['interfaces'][$member]['ipaddrv6'] != 'track6') {
-                    continue 2;
-                }
-            }
+        }
+
+        if ($checkmember == 1 && $vip_or_track6) {
+            continue;
+        } elseif ($checkmember == 2 && $vip_or_track6) {
+            continue;
         }
 
         interface_bridge_configure($bridge, $checkmember);
@@ -688,20 +683,14 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
             continue;
         }
 
-        if ($checkparent == 1) {
-            if (strstr($gre['if'], '_vip')) {
-                continue;
-            }
-            if (!empty($config['interfaces'][$gre['if']]['ipaddrv6']) && $config['interfaces'][$gre['if']]['ipaddrv6'] == 'track6') {
-                continue;
-            }
-        } elseif ($checkparent == 2) {
-            if (strstr($gre['if'], '_vip')) {
-                continue;
-            }
-            if (empty($config['interfaces'][$gre['if']]['ipaddrv6']) || $config['interfaces'][$gre['if']]['ipaddrv6'] != 'track6') {
-                continue;
-            }
+        $vip_or_track6 = strstr($gre['if'], '_vip') ||
+            (!empty($config['interfaces'][$gre['if']]['ipaddrv6']) &&
+            $config['interfaces'][$gre['if']]['ipaddrv6'] == 'track6');
+
+        if ($checkparent == 1 && $vip_or_track6) {
+            continue;
+        } elseif ($checkparent == 2 && !$vip_or_track6) {
+            continue;
         }
 
         interface_gre_configure($gre);
@@ -805,20 +794,14 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
             continue;
         }
 
-        if ($checkparent == 1) {
-            if (strstr($gif['if'], '_vip')) {
-                continue;
-            }
-            if (!empty($config['interfaces'][$gif['if']]['ipaddrv6']) && $config['interfaces'][$gif['if']]['ipaddrv6'] == 'track6') {
-                continue;
-            }
-        } elseif ($checkparent == 2) {
-            if (strstr($gif['if'], '_vip')) {
-                continue;
-            }
-            if (empty($config['interfaces'][$gif['if']]['ipaddrv6']) || $config['interfaces'][$gif['if']]['ipaddrv6'] != 'track6') {
-                continue;
-            }
+        $vip_or_track6 = strstr($gif['if'], '_vip') ||
+            (!empty($config['interfaces'][$gif['if']]['ipaddrv6']) &&
+            $config['interfaces'][$gif['if']]['ipaddrv6'] == 'track6');
+
+        if ($checkparent == 1 && $vip_or_track6) {
+            continue;
+        } elseif ($checkparent == 2 && !$vip_or_track6) {
+            continue;
         }
 
         interface_gif_configure($gif);
