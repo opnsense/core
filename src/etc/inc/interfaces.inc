@@ -937,6 +937,11 @@ function interfaces_configure($verbose = false)
     interfaces_gif_configure($verbose, 1);
     interfaces_bridge_configure($verbose, 1);
 
+    /*
+     * XXX Only unspecified VIP init call can probably be removed now
+     * which would also avoid having to use the 0, 1, 2 options in GRE,
+     * GIF and bride device setup.
+     */
     interfaces_vips_configure($verbose);
 
     interfaces_gre_configure($verbose, 2);
