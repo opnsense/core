@@ -2391,6 +2391,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     /* Disable Accepting router advertisements unless specifically requested */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
+    $realifv6 = get_real_interface($interface, 'inet6');
+    if ($realifv6 != $realif) {
+        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realifv6));
+    }
 
     /* wireless configuration? */
     if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
@@ -2619,9 +2623,9 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
 
 function interface_track6_slaac_configure($interface = 'lan', $lancfg)
 {
-    $realif = get_real_interface($interface);
-    log_error("Accept router advertisements on interface {$realif}");
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realif);
+    $realifv6 = get_real_interface($interface, 'inet6');
+    log_error("Accept router advertisements on interface {$realifv6}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 }
 
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
