@@ -58,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // bool fields
-    $pconfig['enablestp'] = isset($a_bridges[$id]['enablestp']);
+    $pconfig['enablestp'] = !empty($a_bridges[$id]['enablestp']);
+    $pconfig['linklocal'] = !empty($a_bridges[$id]['linklocal']);
 
     // simple array fields
     $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
@@ -144,7 +145,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $bridge = array();
-        $bridge['enablestp'] = !empty($pconfig['enablestp']);
+        // booleans
+        foreach (['enablestp', 'linklocal'] as $fieldname) {
+            if (!empty($pconfig[$fieldname])) {
+                $bridge[$fieldname] = true;
+            }
+        }
         // 1 on 1 copy
         $copy_fields = array('descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt');
         foreach ($copy_fields as $fieldname) {
@@ -269,6 +275,18 @@ $(document).ready(function() {
                         <input type="text" name="descr" value="<?=$pconfig['descr'];?>" />
                         <div class="hidden" data-for="help_for_descr">
                           <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_linklocal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Link-local address') ?></td>
+                      <td>
+                        <input type="checkbox" name="linklocal" <?= !empty($pconfig['linklocal']) ? 'checked="checked"' : '' ?> />
+                        <?= gettext('Enable link-local address') ?>
+                        <div class="hidden" data-for="help_for_linklocal">
+                          <?= gettext('By default, link-local addresses for bridges are disabled. You can enable them manually using this option. ' .
+                            'However, when a bridge interface has IPv6 addresses, IPv6 addresses on a member interface will be automatically ' .
+                            'removed before the interface is added.') ?>
                         </div>
                       </td>
                     </tr>

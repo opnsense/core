@@ -119,6 +119,7 @@ $main_buttons = array(
                         <th><?=gettext("Interface");?></th>
                         <th><?=gettext("Members");?></th>
                         <th><?=gettext("Description");?></th>
+                        <th><?=gettext("Link-local");?></th>
                         <th class="text-nowrap"></th>
                       </tr>
                     </thead>
@@ -128,7 +129,7 @@ $main_buttons = array(
                     $ifdescrs = get_configured_interface_with_descr();
                     foreach ($a_bridges as $bridge): ?>
                       <tr>
-                        <td><?=strtoupper($bridge['bridgeif']);?></td>
+                        <td><?= $bridge['bridgeif'] ?></td>
                         <td>
 <?php
                         $members = explode(',', $bridge['members']);
@@ -144,6 +145,7 @@ $main_buttons = array(
                         }?>
                         </td>
                         <td><?=$bridge['descr'];?></td>
+                        <td><?= !empty($bridge['linklocal']) ? gettext('On') : gettext('Off') ?></td>
                         <td class="text-nowrap">
                           <a href="interfaces_bridge_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                             <i class="fa fa-pencil fa-fw"></i>

@@ -392,6 +392,8 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         $bridge['bridgeif'] = $bridgeif;
     }
 
+    mwexecf('/sbin/ifconfig %s inet6 %sauto_linklocal', array($bridgeif, isset($bridge['linklocal']) ? '' : '-'));
+
     $checklist = get_configured_interface_with_descr();
 
     /* Add interfaces to bridge */
