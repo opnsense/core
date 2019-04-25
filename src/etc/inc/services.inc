@@ -1695,59 +1695,6 @@ function services_dhcrelay6_configure($verbose = false)
     }
 }
 
-function get_dyndns_ip($int, $ipver = 4)
-{
-    global $config;
-
-    $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
-    if (empty($ip_address)) {
-        log_error("Aborted IPv{$ipver} detection: no address for {$int}");
-        return 'down';
-    }
-
-    $gateways_status = return_gateways_status();
-
-    /*
-     * If the gateway for this interface is down, then the external
-     * check cannot work. Avoid the long wait for the external check
-     * to timeout.
-     */
-    if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
-        stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
-        log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
-        return 'down';
-    }
-
-    if ($ipver != 6 && is_private_ip($ip_address)) {
-        /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = 'http://checkip.dyndns.org';
-        $ip_ch = curl_init($hosttocheck);
-        curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
-        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        $ip_result = curl_exec($ip_ch);
-        if ($ip_result !== false) {
-            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
-            $ip_address = trim($matches[1]);
-        } else {
-            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
-            $ip_address = '';
-        }
-        curl_close($ip_ch);
-    } elseif ($ipver == 6 && is_linklocal($ip_address)) {
-        log_error('Aborted IPv6 detection: cannot bind to link-local address');
-        $ip_address = '';
-    }
-
-    if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
-        return 'down';
-    }
-
-    return $ip_address;
-}
-
 function is_radvd_enabled()
 {
     global $config;
