@@ -3522,42 +3522,41 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
     return null;
 }
 
-/* attempt to resolve interface to friendly descr */
 function convert_friendly_interface_to_friendly_descr($interface)
 {
     global $config;
-    $ifdesc = null;
+
+    $ifdesc = $interface;
 
     switch ($interface) {
-        case "l2tp":
-            $ifdesc = "L2TP";
+        case 'l2tp':
+            $ifdesc = 'L2TP';
             break;
-        case "pptp":
-            $ifdesc = "PPTP";
+        case 'pptp':
+            $ifdesc = 'PPTP';
             break;
-        case "pppoe":
-            $ifdesc = "PPPoE";
+        case 'pppoe':
+            $ifdesc = 'PPPoE';
             break;
-        case "openvpn":
-            /*XXX practically unneeded as we are rendering virtual interfaces to the config */
-            $ifdesc = "OpenVPN";
-            break;
-        case "enc0":
-        case "ipsec":
-        case "IPsec":
+        case 'openvpn':
             /* XXX practically unneeded as we are rendering virtual interfaces to the config */
-            /* XXX it should also be noted that "enc0" is the only proper way for this lookup */
-            $ifdesc = "IPsec";
+            $ifdesc = 'OpenVPN';
+            break;
+        case 'enc0':
+        case 'ipsec':
+        case 'IPsec':
+            /* XXX practically unneeded as we are rendering virtual interfaces to the config */
+            /* XXX it should also be noted that 'enc0' is the only proper way for this lookup */
+            $ifdesc = 'IPsec';
             break;
         default:
             if (isset($config['interfaces'][$interface])) {
-                $ifdesc = !empty($config['interfaces'][$interface]['descr']) ?
+                return !empty($config['interfaces'][$interface]['descr']) ?
                     $config['interfaces'][$interface]['descr'] : strtoupper($interface);
-                break;
-            } elseif (stristr($interface, "_vip")) {
+            } elseif (stristr($interface, '_vip')) {
                 if (isset($config['virtualip']['vip'])) {
                     foreach ($config['virtualip']['vip'] as $counter => $vip) {
-                        if ($vip['mode'] == "carp") {
+                        if ($vip['mode'] == 'carp') {
                             if ($interface == "{$vip['interface']}_vip{$vip['vhid']}") {
                                 return "{$vip['subnet']} - {$vip['descr']}";
                             }
