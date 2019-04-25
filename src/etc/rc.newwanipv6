@@ -108,6 +108,8 @@ if (is_ipaddr($ip)) {
     @file_put_contents($ip_file, $ip);
 }
 
+interfaces_vips_configure(false, $interface);
+
 $grouptmp = link_interface_to_group($interface);
 if (!empty($grouptmp)) {
     array_walk($grouptmp, 'interface_group_add_member');
