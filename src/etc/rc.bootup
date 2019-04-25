@@ -97,6 +97,7 @@ system_syslogd_start(true);
 
 openvpn_prepare_all(true);
 interfaces_configure(true);
+ipsec_configure_vti();
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
