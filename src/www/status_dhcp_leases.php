@@ -211,6 +211,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
+    $macs = [];
+    foreach ($leases as $i => $this_lease) {
+        if (!empty($this_lease['mac'])) {
+            $macs[$this_lease['mac']] = $i;
+        }
+    }
     foreach ($interfaces as $ifname => $ifarr) {
         if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
@@ -224,7 +230,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $slease['descr'] = $static['descr'];
                 $slease['act'] = "static";
                 $slease['online'] = in_array(strtolower($slease['mac']), $arpdata_mac) ? 'online' : 'offline';
-                $leases[] = $slease;
+                if (isset($macs[$slease['mac']])) {
+                    // update lease with static data
+                    foreach ($slease as $key => $value) {
+                        if (!empty($value)) {
+                            $leases[$macs[$slease['mac']]][$key] = $slease[$key];
+                        }
+                    }
+                } else {
+                    $leases[] = $slease;
+                }
             }
         }
     }
