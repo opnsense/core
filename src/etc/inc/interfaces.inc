@@ -882,6 +882,7 @@ function interfaces_configure($verbose = false)
     interfaces_vlan_configure($verbose);
 
     /* XXX temporary plugin spot */
+    plugins_configure('ipsec_prepare', $verbose);
     plugins_configure('openvpn_prepare', $verbose);
 
     /*
