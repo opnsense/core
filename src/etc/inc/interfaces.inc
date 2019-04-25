@@ -944,6 +944,8 @@ function interfaces_configure($verbose = false)
     foreach ([$special, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $if) {
             interface_configure($verbose, $if);
+            /* XXX why do we not configure VIPs in interface_configure()? */
+            interfaces_vips_configure(false, $if);
         }
     }
 
