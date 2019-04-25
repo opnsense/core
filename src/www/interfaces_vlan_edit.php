@@ -30,7 +30,6 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 $a_vlans = &config_read_array('vlans', 'vlan');
 

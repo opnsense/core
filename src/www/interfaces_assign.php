@@ -33,7 +33,6 @@ require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 function link_interface_to_vlans($int)
 {
