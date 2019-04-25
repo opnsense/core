@@ -2903,33 +2903,33 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         return;
     }
 
-    $wanif = get_real_interface($interface, 'inet6');
+    $realifv6 = get_real_interface($interface, 'inet6');
 
     /* accept router advertisements for this interface */
     set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-    log_error("Accept router advertisements on interface {$wanif}");
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $wanif);
+    log_error("Accept router advertisements on interface {$realifv6}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
     /* always kill rtsold in case of reconfigure */
-    killbypid("/var/run/rtsold_{$wanif}.pid", 'TERM', true);
+    killbypid("/var/run/rtsold_{$realifv6}.pid", 'TERM', true);
 
     /* fire up rtsold for IPv6 RAs first */
     mwexecf(
         '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
         array(
-            "/var/run/rtsold_{$wanif}.pid",
-            "/var/etc/rtsold_{$wanif}_script.sh",
+            "/var/run/rtsold_{$realifv6}.pid",
+            "/var/etc/rtsold_{$realifv6}_script.sh",
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
             empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
-            $wanif
+            $realifv6
         )
     );
 
     if (isset($wancfg['dhcp6sendsolicit'])) {
-        mwexec("/var/etc/rtsold_{$wanif}_script.sh");
+        mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
     }
 }
 
