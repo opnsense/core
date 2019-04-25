@@ -67,6 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("A valid gateway IP address must be specified.");
     }
 
+    $vips = [];
+
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($pconfig['interface'] == $vip['interface']) {
+            $vips[] = $vip;
+        }
+    }
+
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
             list ($parent_ip, $parent_sn) = explode('/', find_interface_network(get_real_interface($pconfig['interface']), false));
@@ -76,17 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $input_errors[] = gettext("Cannot add IPv4 Gateway Address because no IPv4 address could be found on the interface.");
             } else {
                 $subnets = array(gen_subnet($parent_ip, $parent_sn) . "/" . $parent_sn);
-                $vips = link_interface_to_vips($pconfig['interface']);
-                if (is_array($vips)) {
-                    foreach ($vips as $vip) {
-                        if (!is_ipaddrv4($vip['subnet'])) {
-                            continue;
-                        }
-                        $subnets[] = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
+                foreach ($vips as $vip) {
+                    if (!is_ipaddrv4($vip['subnet'])) {
+                        continue;
                     }
+                    $subnets[] = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
                 }
 
                 $found = false;
+
                 foreach ($subnets as $subnet) {
                     if (ip_in_subnet($pconfig['gateway'], $subnet)) {
                         $found = true;
@@ -108,14 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $input_errors[] = gettext("Cannot add IPv6 Gateway Address because no IPv6 address could be found on the interface.");
                 } else {
                     $subnets = array(gen_subnetv6($parent_ip, $parent_sn) . "/" . $parent_sn);
-                    $vips = link_interface_to_vips($pconfig['interface']);
-                    if (is_array($vips)) {
-                        foreach ($vips as $vip) {
-                            if (!is_ipaddrv6($vip['subnet'])) {
-                                continue;
-                            }
-                            $subnets[] = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
+                    foreach ($vips as $vip) {
+                        if (!is_ipaddrv6($vip['subnet'])) {
+                            continue;
                         }
+                        $subnets[] = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
                     }
 
                     $found = false;

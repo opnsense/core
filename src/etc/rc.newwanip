@@ -89,7 +89,7 @@ if (is_ipaddr($ip)) {
     @file_put_contents($ip_file, $ip);
 }
 
-link_interface_to_vips($interface, "update");
+interfaces_vips_configure(false, $interface);
 
 $gre = link_interface_to_gre($interface);
 if (!empty($gre)) {

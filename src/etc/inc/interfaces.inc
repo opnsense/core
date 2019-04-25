@@ -946,8 +946,6 @@ function interfaces_configure($verbose = false)
     foreach ([$special, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $if) {
             interface_configure($verbose, $if);
-            /* XXX why do we not configure VIPs in interface_configure()? */
-            interfaces_vips_configure(false, $if);
         }
     }
 
@@ -1647,7 +1645,7 @@ function interface_ipalias_configure(&$vip)
 {
     global $config;
 
-    if ($vip['mode'] != "ipalias") {
+    if ($vip['mode'] != 'ipalias') {
         return;
     }
 
@@ -1655,13 +1653,17 @@ function interface_ipalias_configure(&$vip)
         return;
     }
 
-    $if = escapeshellarg(get_real_interface($vip['interface']));
-    $af = "inet";
     if (is_ipaddrv6($vip['subnet'])) {
-        $af = "inet6";
+        $if = escapeshellarg(get_real_interface($vip['interface']), 'inet6');
+        $af = 'inet6';
+    } else {
+        $if = escapeshellarg(get_real_interface($vip['interface']));
+        $af = 'inet';
     }
-    $vhid = !empty($vip['vhid']) ? "vhid " . escapeshellarg($vip['vhid']) : "";
-    $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . " " : "";
+
+    $vhid = !empty($vip['vhid']) ? 'vhid ' . escapeshellarg($vip['vhid']) : '';
+    $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
+
     mwexec("/sbin/ifconfig " . $if ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ".$gateway. $vhid);
 }
 
@@ -2524,9 +2526,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interfaces_bring_up($wancfg['if']);
     }
 
-    if (!file_exists("/var/run/booting")) {
-        link_interface_to_vips($interface, "update");
+    /* always reconfigure VIPs since late boot configuration may need it too */
+    interfaces_vips_configure(false, $interface);
 
+    if (!file_exists("/var/run/booting")) {
         unset($gre);
         $gre = link_interface_to_gre($interface);
         if (!empty($gre)) {
@@ -3836,25 +3839,6 @@ function link_interface_to_track6($wanif, $update = false)
     }
 
     return $list;
-}
-
-function link_interface_to_vips($int, $action = '')
-{
-    global $config;
-
-    if (isset($config['virtualip']['vip'])) {
-        $result = array();
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($int == $vip['interface']) {
-                if ($action == 'update') {
-                    interfaces_vips_configure(false, $int);
-                } else {
-                    $result[] = $vip;
-                }
-            }
-        }
-        return $result;
-    }
 }
 
 /****f* interfaces/link_interface_to_bridge
