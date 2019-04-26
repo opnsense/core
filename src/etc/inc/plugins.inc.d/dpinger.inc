@@ -126,25 +126,27 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         if (!empty($gwname) && $gwname != $name) {
             continue;
         } elseif (empty($gateway['monitor'])) {
+            log_error(sprintf('The %s monitor address is empty, skipping.', $name));
             continue;
         } elseif (in_array($gateway['monitor'], $monitor_ips)) {
-            /* if the monitor address is already used before, skip */
+            log_error(sprintf('The %s monitor address "%s" cannot be used twice, skipping.', $name, $gateway['monitor']));
             continue;
         }
 
         /*
          * Interface IP is needed since dpinger will bind a socket to it.
          * However the config GUI should already have checked this and when
-         * PPPoE is used the IP address is set to "dynamic". So using
-         * is_ipaddrv4 * or is_ipaddrv6 to identify packet type would be
+         * PPPoE is used the IP address is set to "dynamic".  So using
+         * is_ipaddrv4() or is_ipaddrv6() to identify packet type would be
          * wrong, especially as further checks (that can cope with the
-         * "dynamic" case) are present inside the if block. So using
+         * "dynamic" case) are present inside the if block.  So using
          * $gateway['ipprotocol'] is the better option.
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
             $gwifip = find_interface_ip($gateway['if']);
             if (!is_ipaddrv4($gwifip)) {
-                continue; //Skip this target
+                log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
+                continue;
             }
 
             /* flush the monitor unconditionally */
@@ -178,7 +180,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
             }
 
             if (!is_ipaddrv6($gwifip)) {
-                /* skip this target */
+                log_error(sprintf('The %s IPv6 gateway address is invalid, skipping.', $name));
                 continue;
             }
 
@@ -218,10 +220,9 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                 system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } else {
+            log_error(sprintf('Unknown address family "%s" during monitor setup', $gateway['ipprotocol']));
             continue;
         }
-
-        $monitor_ips[] = $gateway['monitor'];
 
         /*
          * Create custom RRD graph with suitable settings that
