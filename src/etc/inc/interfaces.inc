@@ -2504,12 +2504,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    /* Disable Accepting router advertisements unless specifically requested */
-    $realifv6 = get_real_interface($interface, 'inet6');
-    if ($realifv6 != $realif) {
-        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realifv6));
-    }
-
     $intf_stats = legacy_interface_stats();
     if (!empty($wancfg['mtu'])) {
         if (stristr($realif, "_vlan")) {
