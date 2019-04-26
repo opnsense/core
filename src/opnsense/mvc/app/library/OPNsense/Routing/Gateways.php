@@ -205,7 +205,8 @@ class Gateways
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
                         "monitor_disable" => true, // disable monitoring by default
-                        "if" => $ifcfg['if']
+                        "if" => $ifcfg['if'],
+                        "dynamic" => true,
                     ];
                     // locate interface gateway settings
                     if (!empty($dynamic_gw[$ifname])) {
@@ -217,7 +218,6 @@ class Gateways
                             }
                         }
                     }
-                    $thisconf['dynamic'] = true;
                     // dynamic gateways dump their address in /tmp/[IF]_router[FSUFFIX]
                     if (file_exists("/tmp/{$ifcfg['if']}_router".$fsuffix)) {
                         $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router".$fsuffix));
@@ -231,6 +231,9 @@ class Gateways
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
+                        $this->cached_gateways[$gwkey] = $thisconf;
+                    } elseif (empty($thisconf['dynamic'])) {
+                        $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
                     }
                 }
