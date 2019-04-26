@@ -289,8 +289,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
 
         $params .= exec_safe('%s ', $gateway['monitor']);
 
-        /* daemonises forground mode because background mode does not work? */
-        mwexec_bg("/usr/local/bin/dpinger -f {$params}");
+        /* stdout to /dev/null because hangs otherwise */
+        mwexecf("/usr/local/bin/dpinger {$params} > /dev/null");
     }
 
     if ($verbose) {
