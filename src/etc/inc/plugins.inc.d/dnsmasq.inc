@@ -295,6 +295,7 @@ function _dnsmasq_dhcpleases_start()
 {
     global $config;
 
+    require_once 'services.inc';  /* XXX */
     $leases = services_dhcpd_leasesfile();
 
     if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
