@@ -57,8 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
-    if (preg_match("/([^a-zA-Z0-9_])+/", $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
-        $input_errors[] = gettext("Only letters A-Z are allowed as the group name.");
+
+    if (preg_match('/([^a-zA-Z0-9_])+/', $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
+        $input_errors[] = gettext('Only letters, digits and underscores are allowed as the group name.');
+    }
+
+    if (!empty($pconfig['ifname']) && strlen($pconfig['ifname']) > 15) {
+        $input_errors[] = gettext('The group name shall not be longer than 15 characters.');
     }
 
     foreach (get_configured_interface_with_descr() as $gif => $gdescr) {
