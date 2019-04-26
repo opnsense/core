@@ -2403,10 +2403,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     /* Disable Accepting router advertisements unless specifically requested */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
-    $realifv6 = get_real_interface($interface, 'inet6');
-    if ($realifv6 != $realif) {
-        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realifv6));
-    }
 
     /* wireless configuration? */
     if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
@@ -2450,7 +2446,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             mwexec($cmd);
         }
     }
-    // apply interface hardware settings (tso, lro, ..)
+    /* apply interface hardware settings (tso, lro, ..) */
     configure_interface_hardware($realhwif);
 
     /* XXX kludge for now related to #3280 */
@@ -2505,6 +2501,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_static6_configure($interface, $wancfg);
                 break;
         }
+    }
+
+    /* Disable Accepting router advertisements unless specifically requested */
+    $realifv6 = get_real_interface($interface, 'inet6');
+    if ($realifv6 != $realif) {
+        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realifv6));
     }
 
     $intf_stats = legacy_interface_stats();
