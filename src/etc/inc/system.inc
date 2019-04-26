@@ -333,20 +333,14 @@ function system_hosts_generate($verbose = false)
 
     $hosts = "127.0.0.1\tlocalhost localhost.{$syscfg['domain']}\n";
 
-    if (isset($config['interfaces']['lan'])) {
-        $cfgip = get_interface_ip("lan");
-        if (is_ipaddr($cfgip)) {
+    /* we pull the second host entry from a "priority" list: lan, optX or wan */
+    $iflist = array_keys(get_configured_interface_with_descr());
+    sort($iflist);
+
+    if (!empty($iflist[0])) {
+        $cfgip = get_interface_ip($iflist[0]);
+        if (is_ipaddrv4($cfgip)) {
             $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
-        }
-    } else {
-        foreach (array_keys(get_configured_interface_with_descr()) as $sysif) {
-            if (!interface_has_gateway($sysif)) {
-                $cfgip = get_interface_ip($sysif);
-                if (is_ipaddr($cfgip)) {
-                    $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
-                    break;
-                }
-            }
         }
     }
 
