@@ -30,39 +30,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function dpinger_enabled()
-{
-    global $config;
-
-    $gwcount = 0;
-
-    if (isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gwkey => $gateway) {
-            if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == '0') {
-                $gwcount += 1;
-            }
-        }
-    }
-
-    if ($gwcount == 0) {
-        return false;
-    }
-
-    return true;
-}
-
 function dpinger_services()
 {
     global $config;
 
     $services = array();
 
-    if (!dpinger_enabled()) {
+    if (!isset($config['gateways']['gateway_item'])) {
         return $services;
     }
 
     foreach ($config['gateways']['gateway_item'] as $gateway) {
-        if (isset($gateway['monitor_disable'])) {
+        if (isset($gateway['monitor_disable']) && $gateway['monitor_disable'] != '0') {
+            continue;
+        }
+
+        if (empty($config['interfaces'][$gateway['interface']]['enable'])) {
             continue;
         }
 
