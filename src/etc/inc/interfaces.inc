@@ -2446,11 +2446,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             mwexec($cmd);
         }
     }
+
     /* apply interface hardware settings (tso, lro, ..) */
     configure_interface_hardware($realhwif);
 
-    /* XXX kludge for now related to #3280 */
-    $tunnelif = in_array(substr($realif, 0, 3), array('gif', 'gre', 'ovp'));
+    /* XXX we should remove this beyond 19.7 as we cannot configure these interfaces anyway */
+    $tunnelif = in_array(substr($realif, 0, 3), array('gif', 'gre', 'ovp', 'ips'));
 
     switch ($wancfg['ipaddr']) {
         case 'dhcp':

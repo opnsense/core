@@ -275,7 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
                   }
 
-                  if (substr($ifport, 0, 3) == 'gre' || substr($ifport, 0, 3) == 'gif') {
+                  if (strstr($ifport, 'gre') || strstr($ifport, 'gif') || strstr($ifport, 'ovpn') || strstr($ifport, 'ipsec') {
                       unset($config['interfaces'][$ifname]['ipaddr']);
                       unset($config['interfaces'][$ifname]['subnet']);
                       unset($config['interfaces'][$ifname]['ipaddrv6']);
