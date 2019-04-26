@@ -651,14 +651,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $old_ppps = $a_ppps;
 
-        /* description unique? */
         foreach ($ifdescrs as $ifent => $ifcfg) {
             if ($if != $ifent && $ifcfg['descr'] == $pconfig['descr']) {
                 $input_errors[] = gettext("An interface with the specified description already exists.");
                 break;
             }
         }
-        /* input validation */
+
         if (isset($config['dhcpd']) && isset($config['dhcpd'][$if]['enable']) && !preg_match('/^staticv4/', $pconfig['type'])) {
             $input_errors[] = gettext("The DHCP Server is active on this interface and it can be used only with a static IP configuration. Please disable the DHCP Server service on this interface first, then change the interface configuration.");
         }
@@ -666,7 +665,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The DHCPv6 Server is active on this interface and it can be used only with a static IPv6 configuration. Please disable the DHCPv6 Server service on this interface first, then change the interface configuration.");
         }
 
-        switch (strtolower($pconfig['type'])) {
+        if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
+            if (strstr($pconfig['if'], 'gre') || strstr($pconfig['if'], 'gif') || strstr($pconfig['if'], 'ovpn') || strstr($pconfig['if'], 'ipsec')) {
+                $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+            }
+        }
+
+        switch ($pconfig['type']) {
             case "staticv4":
                 $reqdfields = explode(" ", "ipaddr subnet gateway");
                 $reqdfieldsn = array(gettext("IPv4 address"),gettext("Subnet bit count"),gettext("Gateway"));
@@ -721,7 +726,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
         }
-        switch (strtolower($pconfig['type6'])) {
+
+        switch ($pconfig['type6']) {
             case "staticv6":
                 $reqdfields = explode(" ", "ipaddrv6 subnetv6 gatewayv6");
                 $reqdfieldsn = array(gettext("IPv6 address"),gettext("Subnet bit count"),gettext("Gateway"));
@@ -1048,7 +1054,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // switch ipv4 config by type
-            switch($pconfig['type']) {
+            switch ($pconfig['type']) {
                 case "staticv4":
                     $new_config['ipaddr'] = $pconfig['ipaddr'];
                     $new_config['subnet'] = $pconfig['subnet'];
@@ -1142,7 +1148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // switch ipv6 config by type
-            switch($pconfig['type6']) {
+            switch ($pconfig['type6']) {
                 case 'staticv6':
                     if (!empty($pconfig['staticv6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
@@ -1860,7 +1866,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
                           <td>
-                          <select name="type" <?= substr($pconfig['if'], 0, 3) == 'gre' ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type">
+                          <select name="type" class="selectpicker" data-style="btn-default" id="type">
 <?php
                             $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
                             foreach ($types4 as $key => $opt):?>
@@ -1873,7 +1879,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 Configuration Type"); ?></td>
                           <td>
-                            <select name="type6" <?= (substr($pconfig['if'], 0, 3) == 'gre') ? 'disabled="disabled"' : '' ?> class="selectpicker" data-style="btn-default" id="type6">
+                            <select name="type6" class="selectpicker" data-style="btn-default" id="type6">
 <?php
                             $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
                             foreach ($types6 as $key => $opt):?>
@@ -2999,7 +3005,7 @@ include("head.inc");
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
                             foreach ($ifdescrs as $iface => $ifcfg):
-                              switch($config['interfaces'][$iface]['ipaddrv6']) {
+                              switch ($config['interfaces'][$iface]['ipaddrv6']) {
                                 case '6rd':
                                 case '6to4':
                                 case 'dhcp6':
