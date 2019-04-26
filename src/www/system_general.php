@@ -31,9 +31,9 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
-$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
+$all_intf_details = legacy_interfaces_details();
+$a_gateways = (new \OPNsense\Routing\Gateways($all_intf_details))->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -77,31 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
-    $ignore_posted_dnsgw = array();
-
-    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++){
-      $dnsname="dns{$dnscounter}";
-      $dnsgwname="dns{$dnscounter}gw";
-      if (!empty($pconfig[$dnsname]) && !is_ipaddr($pconfig[$dnsname])) {
-        $input_errors[] = gettext("A valid IP address must be specified for DNS server $dnscounter.");
-      } elseif (!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] != 'none') {
-            // A real gateway has been selected.
-            if (is_ipaddr($pconfig[$dnsname])) {
-                if (is_ipaddrv4($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet') {
-                    $input_errors[] = gettext("You can not specify IPv6 gateway '{$pconfig[$dnsgwname]}' for IPv4 DNS server '{$pconfig[$dnsname]}'");
-                }
-                if (is_ipaddrv6($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet6') {
-                    $input_errors[] = gettext("You can not specify IPv4 gateway '{$pconfig[$dnsgwname]}' for IPv6 DNS server '{$pconfig[$dnsname]}'");
-                }
-            } else {
-                // The user selected a gateway but did not provide a DNS address. Be nice and set the gateway back to "none".
-                $ignore_posted_dnsgw[$dnsgwname] = true;
-            }
-      }
-    }
     /* collect direct attached networks and static routes */
     $direct_networks_list = array();
-    foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
+    foreach ($all_intf_details as $ifname => $ifcnf) {
         foreach ($ifcnf['ipv4'] as $addr) {
             $direct_networks_list[] = gen_subnet($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
         }
@@ -114,14 +92,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
-        $dnsitem = "dns{$dnscounter}";
-        $dnsgwitem = "dns{$dnscounter}gw";
-        if (!empty($pconfig[$dnsgwitem])) {
-            if (interface_has_gateway($pconfig[$dnsgwitem])) {
-                foreach ($direct_networks_list as $direct_network) {
-                    if (ip_in_subnet($_POST[$dnsitem], $direct_network)) {
-                        $input_errors[] = sprintf(gettext("You can not assign a gateway to DNS '%s' server which is on a directly connected network."),$pconfig[$dnsitem]);
-                    }
+        $dnsname = "dns{$dnscounter}";
+        $dnsgwname = "dns{$dnscounter}gw";
+
+        if (!empty($pconfig[$dnsname]) && !is_ipaddr($pconfig[$dnsname])) {
+            $input_errors[] = sprintf(gettext('A valid IP address must be specified for DNS server "%s".'), $dnscounter);
+            continue;
+        }
+
+        if (!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] != 'none') {
+            if (is_ipaddr($pconfig[$dnsname])) {
+                if (is_ipaddrv4($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet') {
+                    $input_errors[] = gettext("You can not specify IPv6 gateway '{$pconfig[$dnsgwname]}' for IPv4 DNS server '{$pconfig[$dnsname]}'");
+                    continue;
+                }
+                if (is_ipaddrv6($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet6') {
+                    $input_errors[] = gettext("You can not specify IPv4 gateway '{$pconfig[$dnsgwname]}' for IPv6 DNS server '{$pconfig[$dnsname]}'");
+                    continue;
+                }
+            } else {
+                $input_errors[] = sprintf(gettext('A valid IP address must be specified for DNS server "%s".'), $dnscounter);
+                continue;
+            }
+
+            $af = is_ipaddrv6($pconfig[$dnsname]) ? 'inet6' : 'inet';
+
+            foreach ($direct_networks_list as $direct_network) {
+                if ($af == 'inet' && !is_subnetv4($direct_network)) {
+                    continue;
+                } elseif ($af == 'inet6' && !is_subnetv6($direct_network)) {
+                    continue;
+                }
+                if (ip_in_subnet($pconfig[$dnsname], $direct_network)) {
+                      $input_errors[] = sprintf(gettext('You can not assign a gateway to DNS server "%s" which is on a directly connected network.'), $pconfig[$dnsname]);
+                      break;
                 }
             }
         }
@@ -171,26 +175,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
             }
 
-            if ($ignore_posted_dnsgw[$dnsgwname]) {
-                $thisdnsgwname = "none";
-            } else {
-                $thisdnsgwname = $pconfig[$dnsgwname];
-            }
+            $thisdnsgwname = $pconfig[$dnsgwname];
 
             // "Blank" out the settings for this index, then we set them below using the "outdnscounter" index.
             $config['system'][$dnsgwname] = "none";
             $pconfig[$dnsgwname] = "none";
             $pconfig[$dnsname] = "";
 
-            if (!empty($_POST[$dnsname])) {
+            if (!empty($pconfig[$dnsname])) {
                 // Only the non-blank DNS servers were put into the config above.
                 // So we similarly only add the corresponding gateways sequentially to the config (and to pconfig), as we find non-blank DNS servers.
                 // This keeps the DNS server IP and corresponding gateway "lined up" when the user blanks out a DNS server IP in the middle of the list.
                 $outdnscounter++;
                 $outdnsname="dns{$outdnscounter}";
                 $outdnsgwname="dns{$outdnscounter}gw";
-                $pconfig[$outdnsname] = $_POST[$dnsname];
-                if (!empty($_POST[$dnsgwname])) {
+                $pconfig[$outdnsname] = $pconfig[$dnsname];
+                if (!empty($pconfig[$dnsgwname])) {
                     $config['system'][$outdnsgwname] = $thisdnsgwname;
                     $pconfig[$outdnsgwname] = $thisdnsgwname;
                 } else {
@@ -199,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $pconfig[$outdnsgwname] = "";
                 }
             }
-            if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $_POST[$dnsname])) {
+            if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $pconfig[$dnsname])) {
                 // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
                 // Remove the route. Later calls will add the correct new route if needed.
                 if (is_ipaddrv4($olddnsservers[$dnscounter-1])) {
