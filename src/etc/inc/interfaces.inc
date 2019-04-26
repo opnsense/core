@@ -4333,10 +4333,13 @@ function get_interfaces_info()
                 }
 
             }
-            /* lookup the gateway */
-            if (interface_has_gateway($ifdescr)) {
-                $ifinfo['gateway'] = $gateways->getInterfaceGateway($ifdescr, "inet");
-                $ifinfo['gatewayv6'] = $gateways->getInterfaceGateway($ifdescr, "inet6");
+            $gateway = $gateways->getInterfaceGateway($ifdescr, 'inet');
+            if (!empty($gateway)) {
+                $ifinfo['gateway'] = $gateway;
+            }
+            $gatewayv6 = $gateways->getInterfaceGateway($ifdescr, 'inet6');
+            if (!empty($gatewayv6)) {
+                $ifinfo['gatewayv6'] = $gatewayv6;
             }
         }
 
