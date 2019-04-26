@@ -4049,39 +4049,6 @@ function get_interface_ipv6($interface = 'wan')
     return null;
 }
 
-/* return true if interface has a gateway */
-function interface_has_gateway($friendly)
-{
-    global $config;
-
-    if (!empty($config['interfaces'][$friendly])) {
-        $ifname = &config_read_array('interfaces', $friendly);
-        switch ($ifname['ipaddr']) {
-            case "dhcp":
-            case "pppoe":
-            case "pptp":
-            case "l2tp":
-            case "ppp":
-                return true;
-                break;
-            default:
-                if (substr($ifname['if'], 0, 4) ==  "ovpn") {
-                    return true;
-                }
-                $tunnelif = substr($ifname['if'], 0, 3);
-                if ($tunnelif == "gif" || $tunnelif == "gre") {
-                    return true;
-                }
-                if (!empty($ifname['gateway'])) {
-                    return true;
-                }
-                break;
-        }
-    }
-
-    return false;
-}
-
 /****f* interfaces/is_interface_wireless
  * NAME
  *   is_interface_wireless - Returns if an interface is wireless
