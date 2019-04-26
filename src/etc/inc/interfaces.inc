@@ -4082,37 +4082,6 @@ function interface_has_gateway($friendly)
     return false;
 }
 
-function interface_has_gatewayv6($friendly)
-{
-    global $config;
-
-    if (!empty($config['interfaces'][$friendly])) {
-        $ifname = &config_read_array('interfaces', $friendly);
-        switch (isset($ifname['ipaddrv6']) ? $ifname['ipaddrv6'] : '') {
-            case 'slaac':
-            case 'dhcp6':
-            case '6to4':
-            case '6rd':
-                return true;
-                break;
-            default:
-                if (substr($ifname['if'], 0, 4) ==  'ovpn') {
-                    return true;
-                }
-                $tunnelif = substr($ifname['if'], 0, 3);
-                if ($tunnelif == 'gif' || $tunnelif == 'gre') {
-                    return true;
-                }
-                if (!empty($ifname['gatewayv6'])) {
-                    return true;
-                }
-                break;
-        }
-    }
-
-    return false;
-}
-
 /****f* interfaces/is_interface_wireless
  * NAME
  *   is_interface_wireless - Returns if an interface is wireless
