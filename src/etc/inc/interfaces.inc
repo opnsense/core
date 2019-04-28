@@ -3670,7 +3670,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
 
-    $realif = null;
+    $realif = $interface;
 
     switch ($interface) {
         case 'openvpn':
@@ -3683,14 +3683,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
             break;
         default:
             if (empty($config['interfaces'][$interface])) {
-                /*
-                 * Leftover from legacy code.  It's not a very bright idea
-                 * to use the same function call for both virtual as real
-                 * interface names. does_interface_exist() is quite expensive.
-                 */
-                if (does_interface_exist($interface)) {
-                    $realif = $interface;
-                }
+                /* assume the interface exists, most code does no verify return value anyway */
                 break;
             }
 
