@@ -153,7 +153,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
 {
     global $config;
 
-    if (!empty($realif) && strstr($realif, '_vlan')) {
+    if (!empty($realif) && !strstr($realif, '_vlan')) {
         return;
     }
 
