@@ -976,7 +976,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
 }
 
-function openvpn_restart($mode, $settings)
+function openvpn_restart($mode, $settings, $carp_event = false)
 {
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
@@ -987,10 +987,14 @@ function openvpn_restart($mode, $settings)
         return;
     }
 
-    /* Do not start a client if we are a CARP backup on this vip! */
-    if (($mode == 'client') && strstr($settings['interface'], '_vip') &&
-        get_carp_interface_status($settings['interface']) == gettext('BACKUP')) {
-        return;
+    if (strstr($settings['interface'], '_vip')) {
+        if ($mode == 'client' && get_carp_interface_status($settings['interface']) == gettext('BACKUP')) {
+            /* do not start a client if we are a CARP backup instance */
+            return;
+        } elseif ($mode == 'server' && $carp_event) {
+            /* do not start a server if we are handling a CARP event */
+            return;
+        }
     }
 
     @unlink("/var/etc/openvpn/{$mode_id}.sock");
@@ -1182,7 +1186,7 @@ function openvpn_configure_single($id)
     }
 }
 
-function openvpn_configure_do($verbose = false, $interface = '', $device_only = false)
+function openvpn_configure_do($verbose = false, $interface = '', $carp_event = false)
 {
     global $config;
 
@@ -1216,8 +1220,8 @@ function openvpn_configure_do($verbose = false, $interface = '', $device_only = 
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
                 if (empty($interface) || $interface == $settings['interface']) {
-                    openvpn_reconfigure($mode, $settings, $device_only);
-                    openvpn_restart($mode, $settings);
+                    openvpn_reconfigure($mode, $settings, $carp_event);
+                    openvpn_restart($mode, $settings, $carp_event);
                 }
             }
         }
