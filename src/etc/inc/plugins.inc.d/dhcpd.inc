@@ -29,7 +29,121 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function generate_ipv6_from_mac($mac)
+function dhcpd_radvd_enabled()
+{
+    global $config;
+
+    /* handle manually configured DHCP6 server settings first */
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
+            return true;
+        }
+    }
+
+    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function dhcpd_dhcpv6_enabled()
+{
+    global $config;
+
+    /* handle manually configured DHCP6 server settings first */
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['enable'])) {
+            return true;
+        }
+    }
+
+    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function dhcpd_dhcpv4_enabled()
+{
+    global $config;
+
+    foreach (config_read_array('dhcpd') as $dhcpif => $dhcpifconf) {
+        if (isset($dhcpifconf['enable']) && !empty($config['interfaces'][$dhcpif])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function dhcpd_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (dhcpd_radvd_enabled()) {
+        $pconfig = array();
+        $pconfig['name'] = "radvd";
+        $pconfig['description'] = gettext("Router Advertisement Daemon");
+        $pconfig['php']['restart'] = array('services_radvd_configure');
+        $pconfig['php']['start'] = array('services_radvd_configure');
+        $pconfig['pidfile'] = '/var/run/radvd.pid';
+        $services[] = $pconfig;
+    }
+
+    if (isset($config['dhcrelay']['enable'])) {
+        $pconfig = array();
+        $pconfig['name'] = "dhcrelay";
+        $pconfig['description'] = gettext("DHCPv4 Relay");
+        $pconfig['php']['restart'] = array('services_dhcrelay_configure');
+        $pconfig['php']['start'] = array('services_dhcrelay_configure');
+        $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
+        $services[] = $pconfig;
+    }
+
+    if (isset($config['dhcrelay6']['enable'])) {
+        $pconfig = array();
+        $pconfig['name'] = "dhcrelay6";
+        $pconfig['description'] = gettext("DHCPv6 Relay");
+        $pconfig['php']['restart'] = array('services_dhcrelay6_configure');
+        $pconfig['php']['start'] = array('services_dhcrelay6_configure');
+        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
+        $services[] = $pconfig;
+    }
+
+    if (dhcpd_dhcpv4_enabled()) {
+        $pconfig = array();
+        $pconfig['name'] = 'dhcpd';
+        $pconfig['description'] = gettext("DHCPv4 Server");
+        $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
+        $pconfig['php']['start'] = array('services_dhcpdv4_configure');
+        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
+        $services[] = $pconfig;
+    }
+
+    if (dhcpd_dhcpv6_enabled()) {
+        $pconfig = array();
+        $pconfig['name'] = 'dhcpd6';
+        $pconfig['description'] = gettext("DHCPv6 Server");
+        $pconfig['php']['restart'] = array('services_dhcpdv6_configure');
+        $pconfig['php']['start'] = array('services_dhcpdv6_configure');
+        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
+        $services[] = $pconfig;
+    }
+
+    return $services;
+}
+
+function dhcpd_generate_ipv6_from_mac($mac)
 {
     $elements = explode(":", $mac);
     if (count($elements) != 6) {
@@ -62,7 +176,7 @@ function generate_ipv6_from_mac($mac)
     return $ipv6;
 }
 
-function get_pppoes_child_interfaces($ifpattern)
+function dhcpd_get_pppoes_child_interfaces($ifpattern)
 {
     $if_arr = array();
     if ($ifpattern == "") {
@@ -84,7 +198,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
 
-    if (!is_radvd_enabled()) {
+    if (!dhcpd_radvd_enabled()) {
         return;
     }
 
@@ -372,16 +486,17 @@ function services_radvd_configure($verbose = false, $blacklist = array())
     }
 }
 
-function services_dhcpd_leasesfile()
+function dhcpd_dhcpv4_leasesfile()
 {
     return '/var/dhcpd/var/db/dhcpd.leases';
 }
 
-function services_dhcpdv6_leasesfile()
+function dhcpd_dhcpv6_leasesfile()
 {
     return '/var/dhcpd/var/db/dhcpd6.leases';
 }
 
+/* XXX dhcpd_configure_do() et al */
 function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist = array())
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
@@ -406,19 +521,6 @@ function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist 
     }
 }
 
-function is_dhcpv4_server_enabled()
-{
-    global $config;
-
-    foreach (config_read_array('dhcpd') as $dhcpif => $dhcpifconf) {
-        if (isset($dhcpifconf['enable']) && !empty($config['interfaces'][$dhcpif])) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function services_dhcpdv4_configure($verbose = false)
 {
     global $config;
@@ -428,7 +530,7 @@ function services_dhcpdv4_configure($verbose = false)
 
     killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
-    if (!is_dhcpv4_server_enabled()) {
+    if (!dhcpd_dhcpv4_enabled()) {
         return;
     }
 
@@ -986,7 +1088,7 @@ EOD;
     if ($need_ddns_updates) {
         $dhcpdconf .= "ddns-update-style interim;\n";
         $dhcpdconf .= "update-static-leases on;\n";
-        $dhcpdconf .= services_dhcpd_zones($ddns_zones);
+        $dhcpdconf .= dhcpd_zones($ddns_zones);
     }
 
     @file_put_contents('/var/dhcpd/etc/dhcpd.conf', $dhcpdconf);
@@ -1003,7 +1105,7 @@ EOD;
     }
 }
 
-function services_dhcpd_zones($ddns_zones)
+function dhcpd_zones($ddns_zones)
 {
     $dhcpdconf = '';
 
@@ -1058,27 +1160,6 @@ function services_dhcpd_zones($ddns_zones)
     return $dhcpdconf;
 }
 
-function is_dhcpv6_server_enabled()
-{
-    global $config;
-
-    /* handle manually configured DHCP6 server settings first */
-    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
-        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['enable'])) {
-            return true;
-        }
-    }
-
-    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
-        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function services_dhcpdv6_configure($verbose = false, $blacklist = array())
 {
     global $config;
@@ -1086,7 +1167,7 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
     killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
     killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
 
-    if (!is_dhcpv6_server_enabled()) {
+    if (!dhcpd_dhcpv6_enabled()) {
         return;
     }
 
@@ -1414,12 +1495,12 @@ EOD;
 
         if (preg_match("/poes/si", $dhcpv6if)) {
             /* magic here */
-            $dhcpdv6ifs = array_merge($dhcpdv6ifs, get_pppoes_child_interfaces($dhcpv6if));
+            $dhcpdv6ifs = array_merge($dhcpdv6ifs, dhcpd_get_pppoes_child_interfaces($dhcpv6if));
         } else {
             $realif = get_real_interface($dhcpv6if, "inet6");
             if (stristr("$realif", "bridge")) {
                 $mac = get_interface_mac($realif);
-                $v6address = generate_ipv6_from_mac($mac);
+                $v6address = dhcpd_generate_ipv6_from_mac($mac);
                 /* create link local address for bridges */
                 mwexec("/sbin/ifconfig {$realif} inet6 {$v6address}");
             }
@@ -1430,7 +1511,7 @@ EOD;
 
     if ($nsupdate) {
         $dhcpdv6conf .= "\nddns-update-style interim;\n";
-        $dhcpdv6conf .= services_dhcpd_zones($ddns_zones);
+        $dhcpdv6conf .= dhcpd_zones($ddns_zones);
     } else {
         $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
@@ -1687,25 +1768,4 @@ function services_dhcrelay6_configure($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
-}
-
-function is_radvd_enabled()
-{
-    global $config;
-
-    /* handle manually configured DHCP6 server settings first */
-    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
-        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
-            return true;
-        }
-    }
-
-    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
-        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
-            return true;
-        }
-    }
-
-    return false;
 }

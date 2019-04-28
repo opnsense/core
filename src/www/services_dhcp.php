@@ -32,6 +32,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
 /*
  * This function will remove entries from dhcpd.leases that would otherwise
@@ -42,7 +43,7 @@ function dhcp_clean_leases()
 {
     global $config;
 
-    $leasesfile = services_dhcpd_leasesfile();
+    $leasesfile = dhcpd_dhcpv4_leasesfile();
     if (!file_exists($leasesfile)) {
         return;
     }
