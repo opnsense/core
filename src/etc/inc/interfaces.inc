@@ -4510,7 +4510,7 @@ function get_carp_interface_status($carpinterface)
             return gettext("INIT");
         }
     }
-    return;
+    return gettext('DISABLED');
 }
 
 function make_ipv6_64_address($prefix, $suffix)
