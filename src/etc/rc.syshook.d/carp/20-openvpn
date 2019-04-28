@@ -54,11 +54,4 @@ $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
 
 log_error(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $friendly_descr, $subsystem, $type, $vhid));
 
-switch ($type) {
-    case 'MASTER':
-        openvpn_carp_start($carp_iface);
-        break;
-    case 'BACKUP':
-        openvpn_carp_stop($carp_iface);
-        break;
-}
+openvpn_configure_do(false, $carp_iface, true);
