@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 require_once("config.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
 function adjust_utc($dt)
 {
@@ -59,7 +60,7 @@ function remove_duplicate($array, $field)
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-$leasesfile = services_dhcpd_leasesfile();
+$leasesfile = dhcpd_dhcpv4_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";

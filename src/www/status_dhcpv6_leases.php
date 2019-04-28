@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
 function adjust_utc($dt)
 {
@@ -81,7 +82,7 @@ function parse_duid($duid_string)
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-$leasesfile = services_dhcpdv6_leasesfile();
+$leasesfile = dhcpd_dhcpv6_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $leases_content = array();
