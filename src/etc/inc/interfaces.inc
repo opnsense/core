@@ -3455,10 +3455,9 @@ function interface_group_setup(&$groupname)
         return;
     }
 
-    $members = explode(" ", $groupname['members']);
+    $members = explode(' ', $groupname['members']);
     foreach ($members as $ifs) {
-        $realif = get_real_interface($ifs);
-        mwexec("/sbin/ifconfig {$realif} group {$groupname['ifname']}");
+        mwexec('/sbin/ifconfig %s group %s', array(get_real_interface($ifs), $groupname['ifname']));
     }
 }
 
