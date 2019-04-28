@@ -4010,6 +4010,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
 
 function get_interface_ip($interface = 'wan')
 {
+    /* XXX maybe we should make a proper lookup */
     if (strstr($interface, '_vip')) {
         return get_configured_carp_interface_list($interface);
     }
@@ -4026,6 +4027,7 @@ function get_interface_ipv6($interface = 'wan')
 {
     global $config;
 
+    /* XXX maybe we should make a proper lookup */
     if (strstr($interface, '_vip')) {
         return get_configured_carp_interface_list($interface, 'inet6');
     }
