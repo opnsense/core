@@ -111,8 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           // remove group members
           foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
               if (!in_array($old_member, $pconfig['members']) || $old_ifname != $pconfig['ifname']) {
-                  $realif = get_real_interface($old_member);
-                  mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
+                  mwexecf('/sbin/ifconfig %s -group %s', array(get_real_interface($old_member), $a_ifgroups[$id]['ifname']));
               }
           }
           // update item

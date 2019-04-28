@@ -3479,8 +3479,7 @@ function is_interface_group($if)
 
 function interface_group_add_member($interface, $groupname)
 {
-    $interface = get_real_interface($interface);
-    mwexec("/sbin/ifconfig {$interface} group " . escapeshellarg($groupname), true);
+    mwexecf('/sbin/ifconfig %s group %s', array(get_real_interface($interface), $groupname));
 }
 
 /* convert fxp0 -> wan, etc. */
