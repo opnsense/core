@@ -3683,7 +3683,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
             break;
         default:
             if (empty($config['interfaces'][$interface])) {
-                /* assume the interface exists, most code does no verify return value anyway */
+                /* assume the interface exists, most code does not verify our return value anyway */
                 break;
             }
 
