@@ -37,8 +37,13 @@ require_once("interfaces.inc");
  */
 function xmlrpc_publishable_service()
 {
-    return array("list_services_xmlrpc", "stop_service_xmlrpc", "start_service_xmlrpc", "restart_service_xmlrpc",
-                 "configd_reload_all_templates_xmlrpc");
+    return array(
+        'list_services_xmlrpc',
+        'stop_service_xmlrpc',
+        'start_service_xmlrpc',
+        'restart_service_xmlrpc',
+        'configd_reload_all_templates_xmlrpc',
+    );
 }
 
 /**

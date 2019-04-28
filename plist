@@ -20,6 +20,7 @@
 /usr/local/etc/inc/notices.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
+/usr/local/etc/inc/plugins.inc.d/dhcpd.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/dpinger.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc

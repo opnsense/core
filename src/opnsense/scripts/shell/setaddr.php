@@ -33,9 +33,9 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("filter.inc");
 require_once("util.inc");
-require_once("services.inc");
 require_once("system.inc");
 require_once('plugins.inc.d/webgui.inc');
+require_once('plugins.inc.d/dhcpd.inc');
 
 function console_prompt_for_yn($prompt_text, $default = '')
 {
