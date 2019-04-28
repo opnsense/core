@@ -34,7 +34,7 @@ function openvpn_configure()
 {
     return array(
         'crl' => array('openvpn_refresh_crls:0'),
-        'openvpn_reload' => array('openvpn_configure_do:3'),
+        'openvpn_reload' => array('openvpn_configure_do:2'),
         'openvpn_prepare' => array('openvpn_prepare_all'),
         'remote' => array('openvpn_configure_do'),
         'vpn' => array('openvpn_configure_do:2'),
@@ -988,8 +988,8 @@ function openvpn_restart($mode, $settings)
     }
 
     /* Do not start a client if we are a CARP backup on this vip! */
-    if (($mode == "client") && (strstr($settings['interface'], "_vip") &&
-        get_carp_interface_status($settings['interface']) == gettext('BACKUP'))) {
+    if (($mode == 'client') && strstr($settings['interface'], '_vip') &&
+        get_carp_interface_status($settings['interface']) == gettext('BACKUP')) {
         return;
     }
 
@@ -1182,7 +1182,7 @@ function openvpn_configure_single($id)
     }
 }
 
-function openvpn_configure_do($verbose = false, $interface = '', $realif = '')
+function openvpn_configure_do($verbose = false, $interface = '', $device_only = false)
 {
     global $config;
 
@@ -1192,15 +1192,13 @@ function openvpn_configure_do($verbose = false, $interface = '', $realif = '')
         return;
     }
 
-    if (empty($realif) && !empty($interface)) {
-        $realif = get_real_interface($interface);
-    }
-
-    if (!empty($realif) && substr($realif, 0, 4) != 'ovpn') {
-        return;
-    }
-
     if (!empty($interface)) {
+        /* protect reload by ignoring unassociated devices */
+        $realif = get_real_interface($interface);
+        if (substr($realif, 0, 4) != 'ovpn') {
+            return;
+        }
+
         log_error(sprintf(
             'Resyncing OpenVPN instances for interface %s.',
             convert_friendly_interface_to_friendly_descr($interface)
@@ -1218,7 +1216,7 @@ function openvpn_configure_do($verbose = false, $interface = '', $realif = '')
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
                 if (empty($interface) || $interface == $settings['interface']) {
-                    openvpn_reconfigure($mode, $settings);
+                    openvpn_reconfigure($mode, $settings, $device_only);
                     openvpn_restart($mode, $settings);
                 }
             }
@@ -1636,48 +1634,5 @@ function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
         log_error("OpenVPN: Resync " . $mode_id . " " . $ovpn_settings['description']);
         openvpn_reconfigure($mode, $ovpn_settings);
         openvpn_restart($mode, $ovpn_settings);
-    }
-}
-
-function openvpn_carp_stop($carp_iface)
-{
-    global $config;
-
-    $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-
-    if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as $settings) {
-            if ($settings['interface'] == $carp_iface) {
-                log_error("Stopping OpenVPN client instance on {$friendly_descr} " .
-                    'because of transition to CARP backup.');
-                openvpn_restart('client', $settings);
-            }
-        }
-    }
-}
-
-function openvpn_carp_start($carp_iface)
-{
-    global $config;
-
-    $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-
-    if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as $settings) {
-            if ($settings['interface'] == $carp_iface) {
-                log_error("Starting OpenVPN client instance on {$friendly_descr} " .
-                    'because of transition to CARP master.');
-                openvpn_restart('client', $settings);
-            }
-        }
-    }
-    if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $settings) {
-            if ($settings['interface'] == $carp_iface) {
-                log_error("Starting OpenVPN server instance on {$friendly_descr} " .
-                    'because of transition to CARP master.');
-                openvpn_restart('server', $settings);
-            }
-        }
     }
 }
