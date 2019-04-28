@@ -1195,7 +1195,7 @@ function openvpn_configure_do($verbose = false, $interface = '', $device_only = 
     if (!empty($interface)) {
         /* protect reload by ignoring unassociated devices */
         $realif = get_real_interface($interface);
-        if (substr($realif, 0, 4) != 'ovpn') {
+        if (!strstr($realif, 'ovpn') && strstr($realif, '_vip')) {
             return;
         }
 
