@@ -989,7 +989,7 @@ function openvpn_restart($mode, $settings)
 
     /* Do not start a client if we are a CARP backup on this vip! */
     if (($mode == "client") && (strstr($settings['interface'], "_vip") &&
-        get_carp_interface_status($settings['interface']) == "BACKUP")) {
+        get_carp_interface_status($settings['interface']) == gettext('BACKUP'))) {
         return;
     }
 
