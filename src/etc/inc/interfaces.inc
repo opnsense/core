@@ -399,11 +399,13 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         if (empty($checklist[$member])) {
             continue;
         }
+
         $realif = get_real_interface($member);
-        if (!$realif) {
+        if (!does_interface_exist($realif)) {
             log_error('realif not defined in interfaces bridge - up');
             continue;
         }
+
         /* make sure the parent interface is up */
         legacy_interface_mtu($realif, $mtu);
         configure_interface_hardware($realif);
@@ -3456,9 +3458,7 @@ function interface_group_setup(&$groupname)
     $members = explode(" ", $groupname['members']);
     foreach ($members as $ifs) {
         $realif = get_real_interface($ifs);
-        if ($realif) {
-            mwexec("/sbin/ifconfig {$realif} group {$groupname['ifname']}");
-        }
+        mwexec("/sbin/ifconfig {$realif} group {$groupname['ifname']}");
     }
 }
 
@@ -3592,9 +3592,9 @@ function get_parent_interface($interface, $avoidrecurse = false)
     global $config;
 
     $parents = array();
-    //Check that we got a valid interface passed
+
     $realif = get_real_interface($interface);
-    if ($realif == null) {
+    if (does_interface_exist($realif)) {
         return $parents;
     }
 
@@ -4016,11 +4016,8 @@ function get_interface_ip($interface = 'wan')
     }
 
     $realif = get_real_interface($interface);
-    if ($realif) {
-        return find_interface_ip($realif);
-    }
 
-    return null;
+    return find_interface_ip($realif);
 }
 
 function get_interface_ipv6($interface = 'wan')
@@ -4033,12 +4030,9 @@ function get_interface_ipv6($interface = 'wan')
     }
 
     $realif = get_real_interface($interface, 'inet6');
-    if ($realif) {
-        return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
-            find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
-    }
 
-    return null;
+    return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
+        find_interface_ipv6_ll($realif) : find_interface_ipv6($realif);
 }
 
 /****f* interfaces/is_interface_wireless
@@ -4546,10 +4540,7 @@ function interfaces_addresses($interfaces, $as_subnet = false)
     foreach ($interfaces as $interface) {
         if (isset($config['interfaces'][$interface])) {
             foreach (array('all', 'inet6') as $family) {
-                $realif = get_real_interface($interface, $family);
-                if (!empty($realif)) {
-                    $realifs[] = $realif;
-                }
+                $realifs[] = get_real_interface($interface, $family);
             }
         } else {
             /* take interfaces as is */

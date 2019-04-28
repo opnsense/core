@@ -112,9 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
               if (!in_array($old_member, $pconfig['members']) || $old_ifname != $pconfig['ifname']) {
                   $realif = get_real_interface($old_member);
-                  if (!empty($realif)) {
-                      mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
-                  }
+                  mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
               }
           }
           // update item
