@@ -41,8 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
         $members = explode(" ", $a_ifgroups[$id]['members']);
         foreach ($members as $ifs) {
-            $realif = get_real_interface($ifs);
-            mwexec("/sbin/ifconfig  " . escapeshellarg($realif) . " -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
+            mwexecf('/sbin/ifconfig %s -group %s', array(get_real_interface($ifs), $a_ifgroups[$id]['ifname']));
         }
         unset($a_ifgroups[$id]);
         write_config();
