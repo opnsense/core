@@ -338,9 +338,15 @@
                 <default>1</default>
                 <Required>Y</Required>
             </addACLforInterfaceSubnets>
-            <transparentMode type="BooleanField">
-                <default>0</default>
+            <transparentMode type="OptionField">
+                <default>off</default>
                 <Required>Y</Required>
+                <BlankDesc>Default</BlankDesc>
+                <OptionValues>
+                    <off>Turn off transparent Mode</off>
+                    <bump>Do SSL-Bump in transparent Mode</bump>
+                    <splice>Log SNI only in transparent Mode</splice>
+                </OptionValues>
             </transparentMode>
             <acl>
                 <allowedSubnets type="CSVListField">

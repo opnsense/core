@@ -271,8 +271,8 @@
             </field>
             <field>
                 <id>proxy.forward.transparentMode</id>
-                <label>Enable Transparent HTTP proxy</label>
-                <type>checkbox</type>
+                <label>Select transparent mode:</label>
+                <type>dropdown</type>
                 <help><![CDATA[Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server. You may leave the proxy interfaces empty, but remember to set a valid ACL in that case. <a href="/firewall_nat_edit.php?template=transparent_proxy"> Add a new firewall rule </a>]]></help>
             </field>
             <field>
