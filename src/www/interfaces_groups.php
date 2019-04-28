@@ -42,9 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $members = explode(" ", $a_ifgroups[$id]['members']);
         foreach ($members as $ifs) {
             $realif = get_real_interface($ifs);
-            if (!empty($realif)) {
-                mwexec("/sbin/ifconfig  " . escapeshellarg($realif) . " -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
-            }
+            mwexec("/sbin/ifconfig  " . escapeshellarg($realif) . " -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
         }
         unset($a_ifgroups[$id]);
         write_config();

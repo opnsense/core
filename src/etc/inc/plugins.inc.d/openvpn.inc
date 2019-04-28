@@ -708,7 +708,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                         if (!empty($settings['serverbridge_interface']) &&
                             strcmp($settings['serverbridge_interface'], "none")) {
                             $realif = get_real_interface($settings['serverbridge_interface']);
-                            if (!$realif && strstr($settings['serverbridge_interface'], '_vip')) {
+                            if (strstr($settings['serverbridge_interface'], '_vip')) {
                                 list($vipif, $vhid) = explode('_vip', $settings['serverbridge_interface']);
                                 $realif = get_real_interface($vipif);
                             }
