@@ -42,7 +42,6 @@ foreach (get_configured_interface_with_descr() as $bif => $bdescr) {
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data
     if (!empty($a_bridges[$_GET['id']])) {
@@ -57,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+
     // bool fields
     $pconfig['enablestp'] = isset($a_bridges[$id]['enablestp']);
 
@@ -636,4 +636,7 @@ $(document).ready(function() {
       </div>
     </div>
   </section>
-<?php include("foot.inc"); ?>
+
+<?php
+
+include 'foot.inc';

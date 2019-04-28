@@ -28,9 +28,9 @@
  */
 
 require_once("guiconfig.inc");
-require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/openvpn.inc");
 
 $a_client = &config_read_array('openvpn', 'openvpn-client');
 
