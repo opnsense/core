@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -295,7 +295,7 @@ function _dnsmasq_dhcpleases_start()
 {
     global $config;
 
-    require_once 'services.inc';  /* XXX */
+    require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
     $leases = services_dhcpd_leasesfile();
 
     if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {

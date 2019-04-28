@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -32,7 +32,6 @@
 require_once("config.inc");
 require_once("auth.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
@@ -116,6 +115,7 @@ if (!empty($grouptmp)) {
 }
 
 if (count(link_interface_to_track6($interface, true))) {
+    require_once 'plugins.inc.d/dhcpd.inc'; /* XXX */
     services_dhcpd_configure(false, 'inet6');
 }
 

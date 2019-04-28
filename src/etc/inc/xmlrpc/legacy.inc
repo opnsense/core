@@ -120,7 +120,7 @@ function filter_configure_xmlrpc()
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("services.inc");
+    require_once("plugins.inc.d/dhcpd.inc"); /* XXX */
 
     system_routing_configure();
     plugins_configure('monitor');
@@ -144,7 +144,6 @@ function restore_config_section_xmlrpc($new_config)
     global $config;
 
     require_once("interfaces.inc");
-    require_once("services.inc");
     require_once("filter.inc");
 
     // save old config

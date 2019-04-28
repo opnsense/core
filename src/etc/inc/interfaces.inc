@@ -1080,7 +1080,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     $track6 = link_interface_to_track6($interface);
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
-        require_once 'services.inc'; /* XXX remove me */
+        require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
         services_dhcpd_configure(false, 'inet6', $track6);
     }
 
@@ -2571,7 +2571,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             system_routing_configure($verbose, $interface);
             plugins_configure('ipsec', $verbose, array($interface));
             plugins_configure('dns', $verbose);
-            require_once 'services.inc'; /* XXX remove me */
+            require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
             services_dhcpd_configure($verbose);
             /* XXX move these up the call stack */
             configdp_run('dyndns reload', array($interface));
@@ -3829,7 +3829,7 @@ function link_interface_to_track6($wanif, $update = false)
 
     if ($update) {
         if ($wancfg['ipaddrv6'] == 'slaac') {
-            require_once 'services.inc'; /* XXX remove me */
+            require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
             services_radvd_configure();
         }
 

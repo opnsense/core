@@ -33,8 +33,8 @@ require_once("filter.inc");
 require_once("util.inc");
 require_once("rrd.inc");
 require_once("system.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
+require_once('plugins.inc.d/dhcpd.inc');
 
 system_console_mute();
 
