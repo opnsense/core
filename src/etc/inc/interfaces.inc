@@ -3455,7 +3455,7 @@ function interface_group_setup(&$groupname)
 
     $members = explode(' ', $groupname['members']);
     foreach ($members as $ifs) {
-        mwexecf('/sbin/ifconfig %s group %s', array(get_real_interface($ifs), $groupname['ifname']));
+        interface_group_add_member($ifs, $groupname['ifname']);
     }
 }
 
