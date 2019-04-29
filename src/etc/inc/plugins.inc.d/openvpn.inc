@@ -981,20 +981,21 @@ function openvpn_restart($mode, $settings, $carp_event = false)
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 
+    if ($carp_event && $mode == 'server' && isvalidpid("/var/run/openvpn_{$mode_id}.pid")) {
+        /* do not stop or restart a server if we are handling a CARP event */
+        return;
+    }
+
     killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
 
     if (isset($settings['disable'])) {
         return;
     }
 
-    if (strstr($settings['interface'], '_vip')) {
-        if ($mode == 'client' && get_carp_interface_status($settings['interface']) == gettext('BACKUP')) {
-            /* do not start a client if we are a CARP backup instance */
+    if (strstr($settings['interface'], '_vip') && $mode == 'client' &&
+        get_carp_interface_status($settings['interface']) == gettext('BACKUP')) {
+            /* do not restart a client if we are a CARP backup instance */
             return;
-        } elseif ($mode == 'server' && $carp_event) {
-            /* do not start a server if we are handling a CARP event */
-            return;
-        }
     }
 
     @unlink("/var/etc/openvpn/{$mode_id}.sock");
