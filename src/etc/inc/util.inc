@@ -73,15 +73,15 @@ function waitforpid($pidfile, $timeout = -1)
 {
     $msec = $timeout * 1000;
 
-    do {
+    while (!isvalidpid($pidfile)) {
         usleep(200 * 1000);
         if ($timeout != -1) {
-           $msec -= 200;
+            $msec -= 200;
+            if ($msec < 0) {
+               return 0;
+            }
         }
-        if ($msec < 0) {
-            return 0;
-        }
-    } while (!isvalidpid($pidfile));
+    }
 
     return trim(file_get_contents($pidfile));
 }
