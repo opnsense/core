@@ -34,6 +34,7 @@ function webgui_configure()
         'earlybootup' => array('webgui_configure_do'),
         'local' => array('webgui_configure_do'),
         'newwanip' => array('webgui_configure_do:2'),
+        'webgui' => array('webgui_configure_do'),
     );
 }
 
