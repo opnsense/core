@@ -83,7 +83,7 @@ function waitforpid($pidfile, $timeout = -1)
         }
     } while (!isvalidpid($pidfile));
 
-    return file_get_contents($pidfile);
+    return trim(file_get_contents($pidfile));
 }
 
 function is_process_running($process)
