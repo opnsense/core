@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
@@ -154,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        services_radvd_configure();
+        dhcpd_radvd_configure();
         $savemsg = get_std_save_message();
     }
 }

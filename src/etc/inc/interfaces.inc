@@ -3825,8 +3825,7 @@ function link_interface_to_track6($wanif, $update = false)
 
     if ($update) {
         if ($wancfg['ipaddrv6'] == 'slaac') {
-            require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
-            services_radvd_configure();
+            plugins_configure('dhcp', false, array('inet6'));
         }
 
         foreach ($list as $lanif => $lancfg) {
