@@ -2573,7 +2573,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             plugins_configure('ipsec', $verbose, array($interface));
             plugins_configure('dhcp', $verbose);
             plugins_configure('dns', $verbose);
-            /* XXX move these up the call stack */
+            /* XXX move these up the call stack, plus the argument is wrong! (gwgroup != interface) */
             configdp_run('dyndns reload', array($interface));
             configdp_run('rfc2136 reload', array($interface));
         }
