@@ -37,8 +37,4 @@ fi
 echo -n "Reloading filter: "
 /usr/local/opnsense/service/configd_ctl.py filter reload
 
-# XXX move to plugins
-echo -n "Reloading DynDNS for ${GATEWAY}: "
-/usr/local/opnsense/service/configd_ctl.py dyndns reload ${GATEWAY}
-
 exit 0
