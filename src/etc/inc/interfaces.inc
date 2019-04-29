@@ -4112,31 +4112,6 @@ function interfaces_staticarp_configure($if)
     }
 }
 
-/* XXX this function is unused and to be removed on our way to 19.7 */
-function get_failover_interface($interface, $family = 'all')
-{
-    global $config;
-
-    /* shortcut for known interfaces */
-    if (isset($config['interfaces'][$interface])) {
-        return get_real_interface($interface, $family);
-    }
-
-    /* compare against gateway groups */
-    $a_groups = return_gateway_groups_array();
-    if (isset($a_groups[$interface])) {
-        /* we found a gateway group, fetch the interface or vip */
-        if ($a_groups[$interface][0]['vip'] != '') {
-            return $a_groups[$interface][0]['vip'];
-        } else {
-            return $a_groups[$interface][0]['int'];
-        }
-    }
-
-    /* fall through to get real interface the hard way */
-    return get_real_interface($interface, $family);
-}
-
 //returns interface information
 function get_interfaces_info()
 {
