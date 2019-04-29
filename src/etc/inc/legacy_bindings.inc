@@ -180,7 +180,7 @@ function return_down_gateways()
             $result[] = $gwname;
         }
     }
-    return $result ;
+    return $result;
 }
 
 /*
