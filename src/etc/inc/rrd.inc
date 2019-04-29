@@ -28,6 +28,9 @@
 
 function rrd_create($rrdcreatecmd)
 {
+    @mkdir('/var/db/rrd', 0775);
+    @chown('/var/db/rrd', 'nobody');
+
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
     exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
