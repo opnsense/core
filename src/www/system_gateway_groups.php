@@ -57,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         setup_gateways_monitor();
 
         configd_run('dyndns reload');
-        configd_run('rfc2136 reload');
         configd_run('filter reload');
 
         foreach ($a_gateway_groups as $gateway_group) {

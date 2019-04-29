@@ -37,7 +37,6 @@ fi
 /usr/local/opnsense/service/configd_ctl.py -m \
     "filter reload" \
     "openvpn reload ${GATEWAY}" \
-    "dyndns reload ${GATEWAY}" \
-    "rfc2136 reload ${GATEWAY}"
+    "dyndns reload ${GATEWAY}"
 
 exit 0
