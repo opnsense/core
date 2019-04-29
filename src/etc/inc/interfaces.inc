@@ -2573,7 +2573,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             plugins_configure('ipsec', $verbose, array($interface));
             plugins_configure('dhcp', $verbose);
             plugins_configure('dns', $verbose);
-            /* XXX move these up the call stack, plus the argument is wrong! (gwgroup != interface) */
+            /* XXX move these up the call stack */
             configdp_run('dyndns reload', array($interface));
             configdp_run('rfc2136 reload', array($interface));
         }
@@ -2688,7 +2688,6 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     }
 
     log_error("rd6 {$interface} with ipv6 address {$rd6lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
-    /* XXX why 64? */
     mwexec("/sbin/ifconfig {$lanif} inet6 {$rd6lan} prefixlen 64");
 }
 
@@ -2728,7 +2727,6 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
     }
 
     log_error("sixto4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
-    /* XXX why 64? */
     mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
 }
 
