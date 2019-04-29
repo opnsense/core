@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2006 Fernando Lemos
@@ -993,10 +994,17 @@ function openvpn_restart($mode, $settings, $carp_event = false)
     @unlink("/var/etc/openvpn/{$mode_id}.sock");
     @unlink("/var/run/openvpn_{$mode_id}.pid");
 
-    /* start the new process */
-    $fpath = "/var/etc/openvpn/{$mode_id}.conf";
     openvpn_clear_route($mode, $settings);
-    mwexecf('/usr/local/sbin/openvpn --config %s', $fpath);
+
+    if (mwexecf('/usr/local/sbin/openvpn --config %s', "/var/etc/openvpn/{$mode_id}.conf")) {
+        $pid = waitforpid("/var/run/openvpn_{$mode_id}.pid", 10);
+
+        if ($pid) {
+            log_error(sprintf('OpenVPN %s %s instance started on PID %s.', $mode, $vpnid, $pid));
+        } else {
+            log_error(sprintf('OpenVPN %s %s instance start timed out.', $mode, $vpnid));
+        }
+    }
 
     if (!file_exists("/var/run/booting")) {
         configd_run("filter reload");
