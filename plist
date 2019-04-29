@@ -98,7 +98,6 @@
 /usr/local/etc/rc.monitor
 /usr/local/etc/rc.newwanip
 /usr/local/etc/rc.newwanipv6
-/usr/local/etc/rc.openvpn
 /usr/local/etc/rc.reboot
 /usr/local/etc/rc.reload_all
 /usr/local/etc/rc.resolv_conf_generate
@@ -777,7 +776,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
-/usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_plugins.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
