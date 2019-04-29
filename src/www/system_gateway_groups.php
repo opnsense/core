@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['apply'])) {
         plugins_configure('monitor');
         configd_run('dyndns reload');
-        configd_run('rfc2136 reload');
         configd_run('filter reload');
 
         clear_subsystem_dirty('gwgroups');

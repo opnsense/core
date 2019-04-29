@@ -41,8 +41,4 @@ echo -n "Reloading filter: "
 echo -n "Reloading DynDNS for ${GATEWAY}: "
 /usr/local/opnsense/service/configd_ctl.py dyndns reload ${GATEWAY}
 
-# XXX move to plugins
-echo -n "Reloading RFC 2136 for ${GATEWAY}: "
-/usr/local/opnsense/service/configd_ctl.py rfc2136 reload ${GATEWAY}
-
 exit 0
