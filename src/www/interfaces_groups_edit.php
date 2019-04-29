@@ -58,12 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (preg_match('/([^a-zA-Z0-9_])+/', $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
+    if (empty($pconfig['ifname']) || preg_match('/[^a-zA-Z0-9_]+/', $pconfig['ifname'], $match)) {
         $input_errors[] = gettext('Only letters, digits and underscores are allowed as the group name.');
     }
 
-    if (!empty($pconfig['ifname']) && strlen($pconfig['ifname']) > 15) {
-        $input_errors[] = gettext('The group name shall not be longer than 15 characters.');
+    if (!empty($pconfig['ifname'])) {
+        if (strlen($pconfig['ifname']) > 15) {
+            $input_errors[] = gettext('The group name shall not be longer than 15 characters.');
+        }
+
+        if (preg_match('/[0-9]$/', $pconfig['ifname'], $match)) {
+            $input_errors[] = gettext('The group name shall not end in a digit.');
+        }
     }
 
     foreach (get_configured_interface_with_descr() as $gif => $gdescr) {
@@ -111,10 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           // remove group members
           foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
               if (!in_array($old_member, $pconfig['members']) || $old_ifname != $pconfig['ifname']) {
-                  $realif = get_real_interface($old_member);
-                  if (!empty($realif)) {
-                      mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
-                  }
+                  mwexecf('/sbin/ifconfig %s -group %s', array(get_real_interface($old_member), $a_ifgroups[$id]['ifname']));
               }
           }
           // update item

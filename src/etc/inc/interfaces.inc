@@ -3417,12 +3417,9 @@ function interface_group_setup(&$groupname)
         return;
     }
 
-    $members = explode(" ", $groupname['members']);
+    $members = explode(' ', $groupname['members']);
     foreach ($members as $ifs) {
-        $realif = get_real_interface($ifs);
-        if ($realif) {
-            mwexec("/sbin/ifconfig {$realif} group {$groupname['ifname']}");
-        }
+        interface_group_add_member($ifs, $groupname['ifname']);
     }
 }
 
@@ -3443,8 +3440,7 @@ function is_interface_group($if)
 
 function interface_group_add_member($interface, $groupname)
 {
-    $interface = get_real_interface($interface);
-    mwexec("/sbin/ifconfig {$interface} group " . escapeshellarg($groupname), true);
+    mwexecf('/sbin/ifconfig %s group %s', array(get_real_interface($interface), $groupname));
 }
 
 /* convert fxp0 -> wan, etc. */
