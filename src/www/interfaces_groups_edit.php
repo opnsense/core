@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (empty($pconfig['ifname']) || preg_match('/[^a-zA-Z0-9_]+/', $pconfig['ifname'], $match)) {
+    if (empty($pconfig['ifname']) || preg_match('/[^a-zA-Z0-9_]+/', $pconfig['ifname'], $match)) {
         $input_errors[] = gettext('Only letters, digits and underscores are allowed as the group name.');
     }
 
