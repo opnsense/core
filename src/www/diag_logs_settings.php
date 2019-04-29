@@ -33,7 +33,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("services.inc");
 
 function clear_all_log_files()
 {
@@ -80,7 +79,7 @@ function clear_all_log_files()
 
     system_syslogd_start();
     killbyname('dhcpd');
-    services_dhcpd_configure();
+    plugins_configure('dhcp');
 }
 
 function is_valid_syslog_server($target) {

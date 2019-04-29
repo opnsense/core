@@ -34,7 +34,6 @@ require_once("util.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once('plugins.inc.d/dhcpd.inc');
 
 system_console_mute();
 
@@ -47,7 +46,7 @@ if (set_networking_interfaces_ports()) {
     interfaces_configure(true);
     system_routing_configure(true);
     filter_configure_sync(true);
-    services_dhcpd_configure(true);
+    plugins_configure('dhcp', true);
     plugins_configure('local', true);
     plugins_configure('vpn', true);
     rrd_configure(true);

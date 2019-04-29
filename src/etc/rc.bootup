@@ -102,12 +102,10 @@ plugins_configure('earlybootup', true);
 system_cron_configure(true, true);
 system_routing_configure(true);
 
-plugins_configure('dns', true);
-require_once 'plugins.inc.d/dhcpd.inc'; /* XXX */
-services_dhcpd_configure(true);
 system_hosts_generate(true);
-services_dhcrelay_configure(true);
-services_dhcrelay6_configure(true);
+plugins_configure('dhcp', true);
+plugins_configure('dhcrelay', true);
+plugins_configure('dns', true);
 
 prefer_ipv4_or_ipv6();
 plugins_configure('monitor', true);

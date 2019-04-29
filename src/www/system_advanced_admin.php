@@ -34,7 +34,6 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("services.inc");
 
 $a_group = &config_read_array('system', 'group');
 $a_authmode = auth_get_authserver_list();
@@ -297,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_login_configure();
         system_hosts_generate();
         plugins_configure('dns');
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         configd_run('openssh restart', true);
 
         if ($restart_webgui) {

@@ -223,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_hosts_generate();
         system_resolvconf_generate();
         plugins_configure('dns');
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         filter_configure();
 
         header(url_safe('Location: /system_general.php?savemsg=%s', array('The changes have been applied successfully.')));

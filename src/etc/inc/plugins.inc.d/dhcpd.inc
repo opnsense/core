@@ -29,6 +29,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function dhcpd_configure()
+{
+    return array(
+        'dhcp' => array('services_dhcpd_configure:3'),
+        'dhcrelay' => array('dhcpd_dhcrelay_configure:2'),
+    );
+}
+
 function dhcpd_radvd_enabled()
 {
     global $config;
@@ -104,8 +112,8 @@ function dhcpd_services()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay";
         $pconfig['description'] = gettext("DHCPv4 Relay");
-        $pconfig['php']['restart'] = array('services_dhcrelay_configure');
-        $pconfig['php']['start'] = array('services_dhcrelay_configure');
+        $pconfig['php']['restart'] = array('dhcpd_dhcrelay4_configure');
+        $pconfig['php']['start'] = array('dhcpd_dhcrelay4_configure');
         $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
         $services[] = $pconfig;
     }
@@ -114,8 +122,8 @@ function dhcpd_services()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay6";
         $pconfig['description'] = gettext("DHCPv6 Relay");
-        $pconfig['php']['restart'] = array('services_dhcrelay6_configure');
-        $pconfig['php']['start'] = array('services_dhcrelay6_configure');
+        $pconfig['php']['restart'] = array('dhcpd_dhcrelay6_configure');
+        $pconfig['php']['start'] = array('dhcpd_dhcrelay6_configure');
         $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
         $services[] = $pconfig;
     }
@@ -1534,7 +1542,18 @@ EOD;
     }
 }
 
-function services_dhcrelay_configure($verbose = false)
+function dhcpd_dhcrelay_configure($verbose = false, $family = 'all')
+{
+    if ($family == 'all' || $family == 'inet') {
+        dhcpd_dhcrelay4_configure($verbose);
+    }
+
+    if ($family == 'all' || $family == 'inet6') {
+        dhcpd_dhcrelay6_configure($verbose);
+    }
+}
+
+function dhcpd_dhcrelay4_configure($verbose = false)
 {
     global $config;
 
@@ -1654,7 +1673,7 @@ function services_dhcrelay_configure($verbose = false)
     }
 }
 
-function services_dhcrelay6_configure($verbose = false)
+function dhcpd_dhcrelay6_configure($verbose = false)
 {
     global $config;
 
