@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -34,8 +34,6 @@ require_once("util.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("system.inc");
-require_once('plugins.inc.d/webgui.inc');
-require_once('plugins.inc.d/dhcpd.inc');
 
 function console_prompt_for_yn($prompt_text, $default = '')
 {
@@ -562,13 +560,11 @@ plugins_configure('monitor', true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
-    /* XXX plugins_configure() */
-    services_dhcpd_configure(true);
+    plugins_configure('dhcp', true);
 }
 
 if ($restart_webgui) {
-    /* XXX plugins_configure() */
-    webgui_configure_do(true);
+    plugins_configure('webgui', true);
 }
 
 echo "\n";

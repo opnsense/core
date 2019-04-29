@@ -34,6 +34,7 @@ function dhcpd_configure()
     return array(
         'dhcp' => array('services_dhcpd_configure:3'),
         'dhcrelay' => array('dhcpd_dhcrelay_configure:2'),
+        'local' => array('services_dhcpd_configure', 'dhcpd_dhcrelay_configure'),
     );
 }
 
@@ -102,8 +103,8 @@ function dhcpd_services()
         $pconfig = array();
         $pconfig['name'] = "radvd";
         $pconfig['description'] = gettext("Router Advertisement Daemon");
-        $pconfig['php']['restart'] = array('services_radvd_configure');
-        $pconfig['php']['start'] = array('services_radvd_configure');
+        $pconfig['php']['restart'] = array('dhcpd_radvd_configure');
+        $pconfig['php']['start'] = array('dhcpd_radvd_configure');
         $pconfig['pidfile'] = '/var/run/radvd.pid';
         $services[] = $pconfig;
     }
@@ -132,8 +133,8 @@ function dhcpd_services()
         $pconfig = array();
         $pconfig['name'] = 'dhcpd';
         $pconfig['description'] = gettext("DHCPv4 Server");
-        $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
-        $pconfig['php']['start'] = array('services_dhcpdv4_configure');
+        $pconfig['php']['restart'] = array('dhcpd_dhcp4_configure');
+        $pconfig['php']['start'] = array('dhcpd_dhcp4_configure');
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
         $services[] = $pconfig;
     }
@@ -142,8 +143,8 @@ function dhcpd_services()
         $pconfig = array();
         $pconfig['name'] = 'dhcpd6';
         $pconfig['description'] = gettext("DHCPv6 Server");
-        $pconfig['php']['restart'] = array('services_dhcpdv6_configure');
-        $pconfig['php']['start'] = array('services_dhcpdv6_configure');
+        $pconfig['php']['restart'] = array('dhcpd_dhcp6_configure');
+        $pconfig['php']['start'] = array('dhcpd_dhcp6_configure');
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
         $services[] = $pconfig;
     }
@@ -200,7 +201,7 @@ function dhcpd_get_pppoes_child_interfaces($ifpattern)
     return $if_arr;
 }
 
-function services_radvd_configure($verbose = false, $blacklist = array())
+function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 {
     global $config;
 
@@ -368,7 +369,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
             if (is_ipaddrv6($server)) {
                 $dnslist_tmp[] = $server;
             } else {
-                log_error("Warning! services_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
+                log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
             }
         } elseif (!empty($config['system']['dnsserver'][0])) {
             $dnslist_tmp = $config['system']['dnsserver'];
@@ -446,7 +447,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
-                log_error("Warning! services_radvd_configure(auto) found no suitable IPv6 address on {$realif}");
+                log_error("Warning! dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}");
             }
         } elseif (!empty($config['system']['dnsserver'])) {
             foreach ($config['system']['dnsserver'] as $server) {
@@ -504,7 +505,7 @@ function dhcpd_dhcpv6_leasesfile()
     return '/var/dhcpd/var/db/dhcpd6.leases';
 }
 
-/* XXX dhcpd_configure_do() et al */
+/* XXX dhcpd_dhcp_configure() */
 function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist = array())
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
@@ -520,16 +521,16 @@ function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist 
     mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', '/var/dhcpd');
 
     if ($family == 'all' || $family == 'inet') {
-        services_dhcpdv4_configure($verbose);
+        dhcpd_dhcp4_configure($verbose);
     }
 
     if ($family == 'all' || $family == 'inet6') {
-        services_dhcpdv6_configure($verbose, $blacklist);
-        services_radvd_configure($verbose, $blacklist);
+        dhcpd_dhcp6_configure($verbose, $blacklist);
+        dhcpd_radvd_configure($verbose, $blacklist);
     }
 }
 
-function services_dhcpdv4_configure($verbose = false)
+function dhcpd_dhcp4_configure($verbose = false)
 {
     global $config;
 
@@ -665,7 +666,7 @@ EOPP;
         $subnetmask = gen_subnet_mask($ifcfgsn);
 
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4("{$subnet}/{$ifcfgsn}")) {
-            log_error("Warning! services_dhcpdv4_configure() found no suitable IPv4 address on {$dhcpif}");
+            log_error("Warning! dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}");
             continue;
         }
 
@@ -1168,7 +1169,7 @@ function dhcpd_zones($ddns_zones)
     return $dhcpdconf;
 }
 
-function services_dhcpdv6_configure($verbose = false, $blacklist = array())
+function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
 {
     global $config;
 
@@ -1362,7 +1363,7 @@ EOD;
         $networkv6 = find_interface_networkv6($realif);
 
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            log_error("Warning! services_dhcpdv6_configure() found no suitable IPv6 address on {$dhcpv6if}");
+            log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
             continue;
         }
 
