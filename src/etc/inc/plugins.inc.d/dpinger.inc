@@ -233,7 +233,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         $params .= exec_safe('-u %s ', "/var/run/dpinger_{$name}.sock");
 
         /* command to run on alarm */
-        $params .= '-C /usr/local/etc/rc.monitor ';
+        $params .= '-C "/usr/local/etc/rc.syshook monitor" ';
 
         $params .= exec_safe(
             '-s %ss ',

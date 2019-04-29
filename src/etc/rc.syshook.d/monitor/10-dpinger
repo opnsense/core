@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2019 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -34,10 +34,10 @@ fi
 
 /usr/bin/logger -t dpinger "GATEWAY ALARM: ${GATEWAY} (Addr: ${2} Alarm: ${3} RTT: ${4}ms RTTd: ${5}ms Loss: ${6}%)"
 
-# XXX we should use configctl plugins configure here
-/usr/local/opnsense/service/configd_ctl.py -m \
-    "filter reload" \
-    "dyndns reload ${GATEWAY}" \
-    "rfc2136 reload ${GATEWAY}"
+/usr/local/opnsense/service/configd_ctl.py filter reload
+
+# XXX move to plugins
+/usr/local/opnsense/service/configd_ctl.py dyndns reload ${GATEWAY}
+/usr/local/opnsense/service/configd_ctl.py rfc2136 reload ${GATEWAY}
 
 exit 0
