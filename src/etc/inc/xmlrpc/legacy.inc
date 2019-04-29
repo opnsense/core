@@ -120,15 +120,14 @@ function filter_configure_xmlrpc()
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("plugins.inc.d/dhcpd.inc"); /* XXX */
 
     system_routing_configure();
     plugins_configure('monitor');
     filter_configure();
     system_hosts_generate();
     local_sync_accounts();
+    plugins_configure('dhcp');
     plugins_configure('dns');
-    services_dhcpd_configure();
     plugins_configure('remote');
 
     return true;

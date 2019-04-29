@@ -562,10 +562,12 @@ plugins_configure('monitor', true);
 filter_configure_sync(true);
 
 if ($restart_dhcpd) {
+    /* XXX plugins_configure() */
     services_dhcpd_configure(true);
 }
 
 if ($restart_webgui) {
+    /* XXX plugins_configure() */
     webgui_configure_do(true);
 }
 
