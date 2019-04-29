@@ -37,7 +37,6 @@ fi
 # XXX we should use configctl plugins configure here
 /usr/local/opnsense/service/configd_ctl.py -m \
     "filter reload" \
-    "openvpn reload ${GATEWAY}" \
     "dyndns reload ${GATEWAY}" \
     "rfc2136 reload ${GATEWAY}"
 

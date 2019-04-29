@@ -567,9 +567,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     /* defaults to SHA1, so use it when unset to maintain compatibility */
     $digest = !empty($settings['digest']) ? $settings['digest'] : 'SHA1';
 
-    /* the function is used incorrectly, but works as it only checks the link connectivity */
-    $interface = get_real_interface($settings['interface']);
-
     /*
      * If a specific IP address (VIP) is requested, use it.
      * Otherwise, if a specific interface is requested, use
@@ -963,14 +960,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     openvpn_add_custom($settings, $conf);
 
-    openvpn_create_dirs();
-    $fpath = "/var/etc/openvpn/{$mode_id}.conf";
-    file_put_contents($fpath, $conf);
-    unset($conf);
-    $fpath = "/var/etc/openvpn/{$mode_id}.interface";
-    file_put_contents($fpath, $interface);
+    file_put_contents("/var/etc/openvpn/{$mode_id}.conf", $conf);
+
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
-    @chmod("/var/etc/openvpn/{$mode_id}.interface", 0600);
     @chmod("/var/etc/openvpn/{$mode_id}.key", 0600);
     @chmod("/var/etc/openvpn/{$mode_id}.tls-auth", 0600);
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
@@ -1606,38 +1598,5 @@ function openvpn_refresh_crls()
                     break;
             }
         }
-    }
-}
-
-function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
-{
-    global $config;
-
-    $resync_needed = true;
-    if (isset($ovpn_settings['disable'])) {
-        $resync_needed = false;
-    } else {
-        if (!empty($interface)) {
-            $mode_id = $mode . $ovpn_settings['vpnid'];
-            $fpath = "/var/etc/openvpn/{$mode_id}.interface";
-            if (file_exists($fpath)) {
-                $current_device = file_get_contents($fpath);
-                $current_device = trim($current_device, " \t\n");
-                /* the function is used incorrectly, but works as it only checks the link connectivity */
-                $new_device = get_real_interface($ovpn_settings['interface']);
-                if (isset($config['interfaces'][$interface])) {
-                    /* this is tied to IPv4, but as stated above it only checks the link connectivity */
-                    $this_device = $config['interfaces'][$interface]['if'];
-                    if (($current_device == $new_device) && ($current_device != $this_device)) {
-                        $resync_needed = false;
-                    }
-                }
-            }
-        }
-    }
-    if ($resync_needed == true) {
-        log_error("OpenVPN: Resync " . $mode_id . " " . $ovpn_settings['description']);
-        openvpn_reconfigure($mode, $ovpn_settings);
-        openvpn_restart($mode, $ovpn_settings);
     }
 }
