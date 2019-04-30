@@ -1677,10 +1677,6 @@ function ipsec_configure_vti($verbose = false)
     $configured_intf = ipsec_get_configured_vtis();
     $current_interfaces = array();
 
-    if (empty($configured_intf)) {
-        return;
-    }
-
     foreach (legacy_interfaces_details() as $intf => $intf_details) {
         if (strpos($intf, 'ipsec') === 0) {
             $current_interfaces[$intf] = $intf_details;
