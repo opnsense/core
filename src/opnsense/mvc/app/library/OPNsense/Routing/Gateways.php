@@ -180,8 +180,6 @@ class Gateways
                                 $dynamic_gw[(string)$gateway->interface] = array();
                             }
                             $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
-                            // gateway should only contain a valid address, make sure its empty
-                            unset($thisconf['gateway']);
                         }
                     }
                 }
@@ -236,6 +234,8 @@ class Gateways
                         $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (empty($thisconf['dynamic'])) {
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
+                        // gateway should only contain a valid address, make sure its empty
+                        unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
                     }
                 }
