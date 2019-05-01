@@ -78,7 +78,7 @@ function waitforpid($pidfile, $timeout = -1)
         if ($timeout != -1) {
             $msec -= 200;
             if ($msec < 0) {
-               return 0;
+                return 0;
             }
         }
     }
