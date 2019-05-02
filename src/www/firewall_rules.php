@@ -267,15 +267,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$selected_if = 'FloatingRules';
 if (isset($_GET['if'])) {
     $selected_if = htmlspecialchars($_GET['if']);
-} else {
-    $selected_if = "FloatingRules";
 }
+
+$selected_category = [];
 if (isset($_GET['category'])) {
     $selected_category = !is_array($_GET['category']) ? array($_GET['category']) : $_GET['category'];
-} else {
-    $selected_category = array();
 }
 
 include("head.inc");
@@ -778,26 +777,22 @@ $( document ).ready(function() {
                       <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
+<?php if (isset($filterent['type'])): ?>
 <?php
                       // not very nice.... associated NAT rules don't have a type...
                       // if for some reason (broken config) a rule is in there which doesn't have a related nat rule
                       // make sure we are able to delete it.
-                      if (isset($filterent['type'])):?>
+?>
                       <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
                         <i class="fa fa-pencil fa-fw"></i>
                       </a>
-<?php
-                      endif;?>
-                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <i class="fa fa-trash fa-fw"></i>
-                      </a>
-<?php
-                      if (isset($filterent['type'])):?>
                       <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
                         <i class="fa fa-clone fa-fw"></i>
                       </a>
-<?php
-                      endif;?>
+<?php endif ?>
+                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <i class="fa fa-trash fa-fw"></i>
+                      </a>
                     </td>
                   </tr>
 <?php
@@ -814,8 +809,10 @@ $( document ).ready(function() {
                         'not bound to a single interface and can therefore be used to span ' .
                         'policies over multiple networks at the same time.'); ?>
                 <?php else: ?>
-                      <?= gettext('No interfaces rules are currently defined. All incoming connections ' .
-                        'on this interface will be blocked until you add a pass rule.') ?>
+                      <?= sprintf(gettext('No %s rules are currently defined. All incoming connections ' .
+                        'on this interface will be blocked until you add a pass rule.'),
+                        !empty($config['interfaces'][$selected_if]['descr']) ?
+                        $config['interfaces'][$selected_if]['descr'] : strtoupper($selected_if)) ?>
                 <?php endif; ?>
                     </span>
                     </td>
@@ -901,19 +898,20 @@ $( document ).ready(function() {
                   </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="8">
-                      <?php if ("FloatingRules" != $selected_if): ?>
-                      <?=gettext("Rules are evaluated on a first-match basis (i.e. " .
-                        "the action of the first rule to match a packet will be executed). " .
-                        "This means that if you use block rules, you'll have to pay attention " .
-                        "to the rule order. Everything that isn't explicitly passed is blocked " .
-                        "by default. ");?>
-                      <?php else: ?>
-                        <?=gettext("Floating rules are evaluated on a first-match basis (i.e. " .
-                        "the action of the first rule to match a packet will be executed) only " .
-                        "if the 'quick' option is checked on a rule. Otherwise they will only apply if no " .
-                        "other rules match. Pay close attention to the rule order and options " .
-                        "chosen. If no rule here matches, the per-interface or default rules are used. ");?>
-                      <?php endif; ?>
+<?php if ('FloatingRules' != $selected_if): ?>
+                      <?= sprintf(gettext('%s rules are evaluated on a first-match basis (i.e. ' .
+                        'the action of the first rule to match a packet will be executed). ' .
+                        'This means that if you use block rules, you will have to pay attention ' .
+                        'to the rule order. Everything that is not explicitly passed is blocked ' .
+                        'by default.'), !empty($config['interfaces'][$selected_if]['descr']) ?
+                        $config['interfaces'][$selected_if]['descr'] : strtoupper($selected_if)) ?>
+<?php else: ?>
+                        <?= gettext('Floating rules are evaluated on a first-match basis (i.e. ' .
+                        'the action of the first rule to match a packet will be executed) only ' .
+                        'if the "quick" option is checked on a rule. Otherwise they will only apply if no ' .
+                        'other rules match. Pay close attention to the rule order and options ' .
+                        'chosen. If no rule here matches, the per-interface or default rules are used.') ?>
+<?php endif ?>
                     </td>
                     <td colspan="2" class="view-info"></td>
                   </tr>
