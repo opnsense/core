@@ -1,69 +1,61 @@
 <?php
 
 /*
-    Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 if (!isset($logsplit)) {
     $logsplit = 3;
 }
 
-function format_unixtime($unixtime_before_point, $unixtime_after_point, $language) {
-    switch ($language) {
-        case 'ja_JP':
-        case 'zh_CN':
-            return date('Y/m/d H:i:s', $unixtime_before_point) . $unixtime_after_point;
-
-        default:
-            return date('D, d M Y H:i:s', $unixtime_before_point) . $unixtime_after_point . date(' O', $unixtime_before_point);
-    }
+if (!isset($logformat)) {
+    $logformat = 'keep';
 }
 
-function format_date_time($date_time, $log_datetime_format, $language) {
-    if (isset($log_datetime_format) && $log_datetime_format === 'unix') {
-        if (strpos($date_time, '.') !== FALSE) {
-            $unixtime_before_point = substr($date_time, 0, strpos($date_time, '.'));
-            $unixtime_after_point  = substr($date_time, strpos($date_time, '.'));
-        } else {
-            $unixtime_before_point = $date_time;
-            $unixtime_after_point  = '';
-        }
+if (!isset($logclog)) {
+    $logclog = false;
+}
 
-        return format_unixtime($unixtime_before_point, $unixtime_after_point, $language);
+function format_date_time($date_time)
+{
+    global $logformat;
+
+    if ($logformat == 'unix') {
+        /* could be wrapped in gettext(), but the default is used by squid cache log already */
+        return date('Y/m/d H:i:s', $date_time);
     }
 
-    // Unknown datetime format
     return $date_time;
 }
 
 function print_dump($logarr, $lineCharLimit)
 {
-    global $config, $logsplit, $log_datetime_format;
+    global $config, $logsplit;
 
     if (!is_array($logarr)) {
         echo "<tr>\n";
@@ -82,7 +74,10 @@ function print_dump($logarr, $lineCharLimit)
             continue;
         }
         echo "<tr>\n";
-        $entry_date_time = html_safe(format_date_time(join(' ', array_slice($logent, 0, $logsplit)), $log_datetime_format, $config['system']['language']));
+        $logdate = join(' ', array_slice($logent, 0, $logsplit));
+        $logdate = preg_replace('/\|$/', '', $logdate); /* for squid cache log */
+        $logdate = format_date_time($logdate);
+        $entry_date_time = html_safe($logdate);
         $entry_text = '';
         $hostname = $logent[$logsplit];
         if ($hostname != $config['system']['hostname']) {

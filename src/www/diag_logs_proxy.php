@@ -6,14 +6,12 @@ if (isset($_GET['type']) && ($_GET['type'] === 'access' || $_GET['type'] === 'st
 }
 
 $logfile = "/var/log/squid/{$type}.log";
-$logclog = false;
-
-$logsplit = 2;
-$log_datetime_format = 'readable';
 
 if ($type === 'access' || $type === 'store') {
+    $logformat = 'unix';
     $logsplit = 1;
-    $log_datetime_format = 'unix';
+} else {
+    $logsplit = 2;
 }
 
 $logpills = array();
