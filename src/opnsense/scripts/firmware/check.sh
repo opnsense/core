@@ -37,74 +37,72 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
-connection="error"
-repository="error"
-upgrade_needs_reboot="0"
-kernel_to_reboot=""
 base_to_reboot=""
-updates=""
-pkg_running=""
-packes_output=""
+connection="error"
+download_size=""
+itemcount=0
+kernel_to_reboot=""
 last_check="unknown"
+linecount=0
+packages_downgraded=""
+packages_new=""
 packages_upgraded=""
 pkg_selected=${1}
 pkg_upgraded=""
-packages_downgraded=""
-packages_new=""
-download_size=""
-itemcount=0
-linecount=0
+repository="error"
 timeout_update=30
 timeout_upgrade=60
+updates=""
+upgrade_needs_reboot="0"
 
-tmp_pkg_output_file="/tmp/packages.output"
-tmp_pkg_update_file="/tmp/pkg_updates.output"
+pidfile=/tmp/pkg_update.pid
+outfile=/tmp/pkg_update.out
 
-# Check if pkg is already runnig
-pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-if [ "$pkg_running" == "" ]; then
-      # start pkg update
-      pkg update -f > $tmp_pkg_update_file 2>&1 &
-      timer=$timeout_update
+pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
+
+if [ -z "${pkg_running}" ]; then
+      timer=${timeout_update}
       pkg_running="started"
+      : > ${outfile}
 
-      # Timeout loop for pkg update -f
-      while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; do
-        sleep 1 # wait for 1 second
-        pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-        timer=`echo $timer - 1 | bc`
+      daemon -p ${pidfile} -o ${outfile} pkg update -f
+
+      while [ -n "${pkg_running}" -a $timer -ne 0 ]; do
+        sleep 1
+        pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
+        timer=$(expr $timer - 1)
       done
 
       if [ $timer -eq 0 ]; then
         # We have a connection issue and could not
         # reach the pkg repository in timely fashion
         # Kill all running pkg instances
-        pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-        if [ "$pkg_running" != "" ]; then
-          killall pkg
+        pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
+        if [ -n "${pkg_running}" ]; then
+          pkill -F ${pidfile}
         fi
         connection="timeout"
       else
         # parse early errors
-        if grep -q 'No address record' $tmp_pkg_update_file; then
+        if grep -q 'No address record' ${outfile}; then
           # DNS resolution failed
           connection="unresolved"
           timer=0
-        elif grep -q 'Cannot parse configuration' $tmp_pkg_update_file; then
+        elif grep -q 'Cannot parse configuration' ${outfile}; then
           # configuration error
           connection="misconfigured"
           timer=0
-        elif grep -q 'Authentication error' $tmp_pkg_update_file; then
+        elif grep -q 'Authentication error' ${outfile}; then
           # TLS or authentication error
           connection="unauthenticated"
           timer=0
-        elif grep -q 'No trusted public keys found' $tmp_pkg_update_file; then
+        elif grep -q 'No trusted public keys found' ${outfile}; then
           # fingerprint mismatch
           repository="untrusted"
           connection="ok"
           timer=0
         # XXX two space typo here in pkg:
-        elif grep -q 'At least one of the [ ]*certificates has been revoked' $tmp_pkg_update_file; then
+        elif grep -q 'At least one of the [ ]*certificates has been revoked' ${outfile}; then
           # fingerprint mismatch
           repository="revoked"
           connection="ok"
@@ -115,37 +113,39 @@ if [ "$pkg_running" == "" ]; then
       if [ $timer -gt 0 ]; then
         # connection is still ok
         connection="ok"
-        # now check what happens when we would go ahead
-        if [ -z "${pkg_selected}" ]; then
-            pkg upgrade -n > $tmp_pkg_output_file &
-        else
-            # fetch before install lets us know more
-            pkg fetch -y "${pkg_selected}" > $tmp_pkg_output_file &
-            pkg install -n "${pkg_selected}" > $tmp_pkg_output_file &
-	fi
+
         timer=$timeout_upgrade
         pkg_running="started"
+        : > ${outfile}
 
-        # Timeout loop for pkg upgrade -n
-        while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; do
-          sleep 1 # wait for 1 second
-          pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-          timer=`echo $timer - 1 | bc`
+        # now check what happens when we would go ahead
+        if [ -z "${pkg_selected}" ]; then
+            daemon -p ${pidfile} -o ${outfile} pkg upgrade
+        else
+            # fetch before install lets us know more,
+            # although not as fast as it should be...
+            pkg fetch -qy "${pkg_selected}"
+            daemon -p ${pidfile} -o ${outfile} pkg install -n "${pkg_selected}"
+	fi
+
+        while [ -n "${pkg_running}" -a $timer -ne 0 ]; do
+          sleep 1
+          pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
+          timer=$(expr $timer - 1)
         done
 
         ## check if timeout is not reached
         if [ $timer -gt 0 ]; then
           # Check for additional repository errors
-          repo_ok=`cat $tmp_pkg_output_file | grep 'Unable to update repository'`
-          if [ "$repo_ok" == "" ]; then
+          if ! grep 'Unable to update repository' ${outfile} 2> /dev/null; then
             # Repository can be used for updates
             repository="ok"
-            updates=`cat $tmp_pkg_output_file | grep 'The following' | awk -F '[ ]' '{print $3}'`
-            if [ "$updates" == "" ]; then
+            updates=$(grep 'The following' ${outfile} | awk -F '[ ]' '{print $3}')
+            if [ -z "${updates}" ]; then
               # There are no updates
               updates="0"
             else
-              download_size=`cat $tmp_pkg_output_file | grep 'to be downloaded' | awk -F '[ ]' '{print $1$2}'`
+              download_size=$(grep 'to be downloaded' ${outfile} | awk -F '[ ]' '{print $1$2}')
 
               # see if packages indicate a new version (not revision) of base / kernel
               LQUERY=$(pkg query %v opnsense-update)
@@ -157,7 +157,7 @@ if [ "$pkg_running" == "" ]; then
 
               MODE=
 
-              for i in $(cat $tmp_pkg_output_file | tr '[' '(' | cut -d '(' -f1); do
+              for i in $(cat ${outfile} | tr '[' '(' | cut -d '(' -f1); do
                 case ${MODE} in
                 DOWNGRADED:)
                   if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
@@ -165,7 +165,7 @@ if [ "$pkg_running" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                       MODE=
                     else
-                      i=`echo $i | tr -d :`
+                      i=$(echo $i | tr -d :)
                       if [ -z "$packages_downgraded" ]; then
                         packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
@@ -187,7 +187,7 @@ if [ "$pkg_running" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                       MODE=
                     else
-                      i=`echo $i | tr -d :`
+                      i=$(echo $i | tr -d :)
                       if [ -n "$packages_new" ]; then
                         packages_new=$packages_new","
                       fi
@@ -237,7 +237,7 @@ if [ "$pkg_running" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                       MODE=
                     else
-                      i=`echo $i | tr -d :`
+                      i=$(echo $i | tr -d :)
                       if [ -z "$packages_upgraded" ]; then
                         if [ "$i" = "pkg" ]; then
                           # prevents leaking base / kernel advertising here
@@ -291,7 +291,7 @@ if [ "$pkg_running" == "" ]; then
               base_to_delete="$(opnsense-version -v base)"
               base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
-                if [ "$packages_upgraded" == "" ]; then
+                if [ -z "${packages_upgraded}" ]; then
                   packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"base\","
@@ -317,7 +317,7 @@ if [ "$pkg_running" == "" ]; then
               kernel_to_delete="$(opnsense-version -v kernel)"
               kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
-                if [ "$packages_upgraded" == "" ]; then
+                if [ -z "${packages_upgraded}" ]; then
                   packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
@@ -333,9 +333,9 @@ if [ "$pkg_running" == "" ]; then
         else
           # We have a connection issue and could not reach the pkg repository in timely fashion
           # Kill all running pkg instances
-          pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-          if [ "$pkg_running" != "" ]; then
-            killall pkg
+          pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
+          if [ -n "${pkg_running}" ]; then
+            pkill -F ${pidfile}
           fi
         fi
       fi
