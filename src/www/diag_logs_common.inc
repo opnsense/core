@@ -33,6 +33,26 @@ if (!isset($logsplit)) {
     $logsplit = 3;
 }
 
+if (!isset($logformat)) {
+    $logformat = 'keep';
+}
+
+if (!isset($logclog)) {
+    $logclog = false;
+}
+
+function format_date_time($date_time)
+{
+    global $logformat;
+
+    if ($logformat == 'unix') {
+        /* could be wrapped in gettext(), but the default is used by squid cache log already */
+        return date('Y/m/d H:i:s', $date_time);
+    }
+
+    return $date_time;
+}
+
 function print_dump($logarr, $lineCharLimit)
 {
     global $config, $logsplit;
@@ -54,7 +74,10 @@ function print_dump($logarr, $lineCharLimit)
             continue;
         }
         echo "<tr>\n";
-        $entry_date_time = html_safe(join(' ', array_slice($logent, 0, $logsplit)));
+        $logdate = join(' ', array_slice($logent, 0, $logsplit));
+        $logdate = preg_replace('/\|$/', '', $logdate); /* for squid cache log */
+        $logdate = format_date_time($logdate);
+        $entry_date_time = html_safe($logdate);
         $entry_text = '';
         $hostname = $logent[$logsplit];
         if ($hostname != $config['system']['hostname']) {
