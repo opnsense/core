@@ -1664,7 +1664,7 @@ function interface_ipalias_configure(&$vip)
     }
 
     if (is_ipaddrv6($vip['subnet'])) {
-        $if = escapeshellarg(get_real_interface($vip['interface']), 'inet6');
+        $if = escapeshellarg(get_real_interface($vip['interface'], 'inet6'));
         $af = 'inet6';
     } else {
         $if = escapeshellarg(get_real_interface($vip['interface']));
