@@ -234,26 +234,16 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             continue;
         }
 
-        $realif = get_real_interface($dhcpv6if, 'inet6');
-
         /*
-         * Check if we need to listen on a CARP interface.
-         * A CARP setup will not remove routes or deprecate
-         * a prefix: RemoveRoute off / DeprecatePrefix off
-         *
-         * XXX make sure that works as intended, because
-         * get_interface_ipv6() may not care what is given
-         * here instead of the proper interface.
+         * Check if we need to listen on a CARP interface.  A CARP setup will try
+         * to leave the clients configured: RemoveRoute off / DeprecatePrefix off
          */
-        if (!empty($dhcpv6ifconf['rainterface'])) {
-            $dhcpv6if = $dhcpv6ifconf['rainterface'];
-        }
-
-        $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
+        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         }
 
+        $realif = get_real_interface($dhcpv6if, 'inet6');
         $radvdifs[$realif] = 1;
 
         $mtu = legacy_interface_stats($realif)['mtu'];
