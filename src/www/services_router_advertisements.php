@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ *  Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  *  Copyright (C) 2014-2016 Deciso B.V.
  *  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  *  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
@@ -120,9 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $config['dhcpdv6'][$if]['ramode'] = $pconfig['ramode'];
         $config['dhcpdv6'][$if]['rapriority'] = $pconfig['rapriority'];
-        $config['dhcpdv6'][$if]['rainterface'] = $pconfig['rainterface'];
         $config['dhcpdv6'][$if]['ramininterval'] = $pconfig['ramininterval'];
         $config['dhcpdv6'][$if]['ramaxinterval'] = $pconfig['ramaxinterval'];
+
+        if (!empty($pconfig['rainterface'])) {
+            $config['dhcpdv6'][$if]['rainterface'] = $pconfig['rainterface'];
+        } elseif (isset($config['dhcpdv6'][$if]['rainterface'])) {
+            unset($config['dhcpdv6'][$if]['rainterface']);
+        }
 
         # flipped in GUI on purpose
         if (empty($pconfig['rasend'])) {
@@ -274,9 +279,9 @@ include("head.inc");
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?=empty($pconfig['rainterface'])  ? "selected=\"selected\"" : ""; ?> > <?=strtoupper($if); ?></option>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) ?></option>
 <?php foreach ($carplistif as $ifname => $vip): ?>
-                        <option value="<?=$ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo "selected=\"selected\""; ?> > <?="$ifname - $vip"; ?></option>
+                        <option value="<?= $ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo 'selected="selected"' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
