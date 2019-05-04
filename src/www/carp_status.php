@@ -145,16 +145,16 @@ include("head.inc");
                     if ($carp['mode'] != "carp") {
                         continue;
                     }
-                    $icon = "";
+                    $icon = '';
                     $intf_status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
                     if (($carpcount > 0 && !$status)) {
                         $icon = "fa fa-remove fa-fw text-danger";
-                        $intf_status = "DISABLED";
-                    } elseif ($intf_status == "MASTER") {
+                        $intf_status = gettext('DISABLED');
+                    } elseif ($intf_status == gettext('MASTER')) {
                         $icon = "fa fa-play fa-fw text-success";
-                    } elseif ($intf_status == "BACKUP") {
+                    } elseif ($intf_status == gettext('BACKUP')) {
                         $icon = "fa fa-play fa-fw text-muted";
-                    } elseif ($intf_status == "INIT") {
+                    } elseif ($intf_status == gettext('INIT')) {
                         $icon = "fa fa-info-circle fa-fw";
                     }?>
                 <tr>
