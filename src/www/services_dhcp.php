@@ -81,9 +81,6 @@ function validate_partial_mac_list($maclist) {
     return true;
 }
 
-/**
- * restart dhcp service
- */
 function reconfigure_dhcpd()
 {
     /* Stop DHCP so we can cleanup leases */
@@ -91,7 +88,7 @@ function reconfigure_dhcpd()
     dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    services_dhcpd_configure();
+    dhcpd_dhcp_configure(false, 'inet');
     clear_subsystem_dirty('staticmaps');
 }
 

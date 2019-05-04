@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($pconfig['apply'])) {
         system_resolvconf_generate();
         unbound_configure_do();
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         clear_subsystem_dirty('unbound');
         header(url_safe('Location: /services_unbound_overrides.php'));
         exit;

@@ -34,14 +34,11 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-/**
- * restart dhcp service
- */
 function reconfigure_dhcpd()
 {
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    services_dhcpd_configure();
+    dhcpd_dhcp_configure(false, 'inet6');
     clear_subsystem_dirty('staticmaps');
 }
 
