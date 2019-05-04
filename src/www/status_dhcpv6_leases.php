@@ -356,8 +356,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             fclose($fout);
             @unlink($leasesfile);
             @rename($leasesfile.".new", $leasesfile);
-            /* Restart DHCP Service */
-            services_dhcpd_configure();
+
+            dhcpd_dhcp_configure(false, 'inet6');
         }
     }
     exit;

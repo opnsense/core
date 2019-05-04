@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_domainOverrides[] = $doment;
         }
         dnsmasq_configure_do();
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         write_config();
         header(url_safe('Location: /services_dnsmasq.php'));
         exit;

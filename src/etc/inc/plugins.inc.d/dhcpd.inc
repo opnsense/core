@@ -32,9 +32,9 @@
 function dhcpd_configure()
 {
     return array(
-        'dhcp' => array('services_dhcpd_configure:3'),
+        'dhcp' => array('dhcpd_dhcp_configure:3'),
         'dhcrelay' => array('dhcpd_dhcrelay_configure:2'),
-        'local' => array('services_dhcpd_configure', 'dhcpd_dhcrelay_configure'),
+        'local' => array('dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'),
     );
 }
 
@@ -503,8 +503,7 @@ function dhcpd_dhcpv6_leasesfile()
     return '/var/dhcpd/var/db/dhcpd6.leases';
 }
 
-/* XXX dhcpd_dhcp_configure() */
-function services_dhcpd_configure($verbose = false, $family = 'all', $blacklist = array())
+function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = array())
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
 
