@@ -113,6 +113,8 @@ $p2_protos = array(
 function ipsec_configure()
 {
     return array(
+        'ipsec' => array('ipsec_configure_do:2'),
+        'ipsec_prepare' => array('ipsec_configure_vti'),
         'vpn' => array('ipsec_configure_do:2'),
     );
 }
@@ -1668,15 +1670,21 @@ function ipsec_get_configured_vtis()
 /**
  * Configure required Virtual Terminal Interfaces (synchronizes configuration with local interfaces named ipsec%)
  */
-function ipsec_configure_vti()
+function ipsec_configure_vti($verbose = false)
 {
     // query planned and configured interfaces
     $configured_intf = ipsec_get_configured_vtis();
     $current_interfaces = array();
+
     foreach (legacy_interfaces_details() as $intf => $intf_details) {
         if (strpos($intf, 'ipsec') === 0) {
             $current_interfaces[$intf] = $intf_details;
         }
+    }
+
+    if ($verbose) {
+        echo 'Creating IPsec VTI instances...';
+        flush();
     }
 
     // drop changed or not existing interfaces and tunnel endpoints
@@ -1752,5 +1760,9 @@ function ipsec_configure_vti()
                 ));
             }
         }
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
