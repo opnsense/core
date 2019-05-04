@@ -393,26 +393,6 @@ function configure_interface_hardware($ifs)
     }
 }
 
-function legacy_getall_interface_addresses($ifs)
-{
-    $result = array();
-    $intf_details = legacy_interface_details($ifs);
-    foreach (array('ipv4', 'ipv6') as $proto) {
-        if (empty($intf_details[$proto])) {
-            continue;
-        }
-        foreach ($intf_details[$proto] as $address) {
-            if (!empty($address['tunnel'])) {
-                continue;
-            }
-            if (!empty($address['ipaddr']) && !empty($address['subnetbits'])) {
-                $result[] = $address['ipaddr'] . '/' . $address['subnetbits'];
-            }
-        }
-    }
-    return $result;
-}
-
 function legacy_get_interface_addresses($ifs)
 {
     $intf_details = legacy_interface_details($ifs);
