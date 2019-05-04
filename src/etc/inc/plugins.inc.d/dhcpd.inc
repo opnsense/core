@@ -234,13 +234,19 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             continue;
         }
 
-        /* check if we need to listen on a CARP interface */
-        $realif = get_real_interface($dhcpv6if, "inet6");
-        if (!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'interface') {
+        $realif = get_real_interface($dhcpv6if, 'inet6');
+
+        /*
+         * Check if we need to listen on a CARP interface.
+         * A CARP setup will not remove routes or deprecate
+         * a prefix: RemoveRoute off / DeprecatePrefix off
+         *
+         * XXX make sure that works as intended, because
+         * get_interface_ipv6() may not care what is given
+         * here instead of the proper interface.
+         */
+        if (!empty($dhcpv6ifconf['rainterface'])) {
             $dhcpv6if = $dhcpv6ifconf['rainterface'];
-        } elseif (!empty($dhcpv6ifconf['rainterface'])) {
-            // backward compatibilty mode, unset invalid options
-            unset($dhcpv6ifconf['rainterface']);
         }
 
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
@@ -283,17 +289,21 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         switch ($dhcpv6ifconf['ramode']) {
-            case "managed":
-            case "assist":
+            case 'managed':
+            case 'assist':
                 $radvdconf .= "\tAdvManagedFlag on;\n";
                 $radvdconf .= "\tAdvOtherConfigFlag on;\n";
                 break;
-            case "stateless":
+            case 'stateless':
                 $radvdconf .= "\tAdvManagedFlag off;\n";
                 $radvdconf .= "\tAdvOtherConfigFlag on;\n";
                 break;
             default:
                 break;
+        }
+
+        if (!empty($dhcpv6ifconf['ranodefault'])) {
+            $radvdconf .= "\tAdvDefaultLifetime 0;\n";
         }
 
         $stanzas = array();
@@ -317,19 +327,19 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\tprefix {$stanza} {\n";
             $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
             switch ($dhcpv6ifconf['ramode']) {
-                case "managed":
+                case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
                     $radvdconf .= "\t\tAdvRouterAddr on;\n";
                     break;
-                case "router":
+                case 'router':
                     $radvdconf .= "\t\tAdvOnLink off;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
                     $radvdconf .= "\t\tAdvRouterAddr on;\n";
                     break;
-                case "assist":
-                case "unmanaged":
-                case "stateless":
+                case 'assist':
+                case 'unmanaged':
+                case 'stateless':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
                     $radvdconf .= "\t\tAdvAutonomous on;\n";
                     $radvdconf .= "\t\tAdvRouterAddr on;\n";
@@ -344,16 +354,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\troute ::/0 {\n";
             $radvdconf .= "\t\tRemoveRoute off;\n";
             $radvdconf .= "\t};\n";
-        } elseif (empty($dhcpv6ifconf['ranodefault'])) {
-            $radvdconf .= "\troute ::/0 {\n";
-            $radvdconf .= "\t\tRemoveRoute on;\n";
-            $radvdconf .= "\t};\n";
         }
 
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
                 $radvdconf .= "\troute {$raroute} {\n";
-                $radvdconf .= "\t\tRemoveRoute on;\n";
+                if (!empty($dhcpv6ifconf['rainterface'])) {
+                    $radvdconf .= "\t\tRemoveRoute off;\n";
+                }
                 $radvdconf .= "\t};\n";
             }
         }
