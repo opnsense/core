@@ -33,6 +33,9 @@
 function openvpn_configure()
 {
     return array(
+        'crl' => array('openvpn_refresh_crls:0'),
+        'openvpn_reload' => array('openvpn_configure_do:2'),
+        'openvpn_prepare' => array('openvpn_prepare_all'),
         'remote' => array('openvpn_configure_do'),
         'vpn' => array('openvpn_configure_do:2'),
     );
