@@ -54,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
-    $pconfig['rasend'] = empty($config['dhcpdv6'][$if]['ranosend']) ? true : null;
     $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
 
     // defaults
@@ -127,13 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dhcpdv6'][$if]['rainterface'] = $pconfig['rainterface'];
         } elseif (isset($config['dhcpdv6'][$if]['rainterface'])) {
             unset($config['dhcpdv6'][$if]['rainterface']);
-        }
-
-        # flipped in GUI on purpose
-        if (empty($pconfig['rasend'])) {
-            $config['dhcpdv6'][$if]['ranosend'] = true;
-        } elseif (isset($config['dhcpdv6'][$if]['ranosend'])) {
-            unset($config['dhcpdv6'][$if]['ranosend']);
         }
 
         # flipped in GUI on purpose
@@ -373,15 +365,6 @@ include("head.inc");
                       <input name="radomainsearchlist" type="text" id="radomainsearchlist" size="28" value="<?=$pconfig['radomainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_radomainsearchlist">
                         <?=gettext("The RA server can optionally provide a domain search list. Use the semicolon character as separator");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_rasend" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('RA Sending') ?></td>
-                    <td>
-                      <input id="rasend" name="rasend" type="checkbox" value="yes" <?= !empty($pconfig['rasend']) ? 'checked="checked"' : '' ?>/>
-                      <div class="hidden" data-for="help_for_rasend">
-                        <?= gettext('Enable the periodic sending of router advertisements and responding to router solicitations.') ?>
                       </div>
                     </td>
                   </tr>
