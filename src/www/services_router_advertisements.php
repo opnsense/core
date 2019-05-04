@@ -263,9 +263,9 @@ include("head.inc");
 <?php
                     $carplist = get_configured_carp_interface_list();
                     $carplistif = array();
-                    if(count($carplist) > 0) {
-                      foreach($carplist as $ifname => $vip) {
-                        if((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
+                    if (count($carplist) > 0) {
+                      foreach ($carplist as $ifname => $vip) {
+                        if ((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
                           $carplistif[$ifname] = $vip;
                       }
                     }
@@ -275,11 +275,9 @@ include("head.inc");
                     <td>
                       <select name="rainterface" id="rainterface">
                         <option value="" <?=empty($pconfig['rainterface'])  ? "selected=\"selected\"" : ""; ?> > <?=strtoupper($if); ?></option>
-<?php
-                      foreach($carplistif as $ifname => $vip): ?>
+<?php foreach ($carplistif as $ifname => $vip): ?>
                         <option value="<?=$ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo "selected=\"selected\""; ?> > <?="$ifname - $vip"; ?></option>
-<?php
-                      endforeach;?>
+<?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
                         <?= sprintf(gettext("Select the Interface for the Router Advertisement (RA) Daemon."))?>
@@ -308,7 +306,7 @@ include("head.inc");
                         <tbody>
 <?php
                         $pconfig['raroutes'][] = '';
-                        foreach($pconfig['raroutes'] as $item):
+                        foreach ($pconfig['raroutes'] as $item):
                           $parts = explode('/', $item);
                           if (count($parts) > 1) {
                               $sn_bits = intval($parts[1]);
@@ -319,31 +317,26 @@ include("head.inc");
                           ?>
                           <tr>
                             <td>
-<?php
-                          if (!empty($item)): ?>
+<?php if (!empty($item)): ?>
                               <label class="act-removerow btn btn-default btn-xs">
                                 <span class="fa fa-minus"></span>
                                 <span class="sr-only"><?= gettext('Remove') ?></span>
                               </label>
-<?php
-                          else: ?>
+<?php else: ?>
                               <label class="act-addrow btn btn-default btn-xs">
                                 <span class="fa fa-plus"></span>
                                 <span class="sr-only"><?= gettext('Add') ?></span>
                               </label>
-<?php
-                          endif ?>
+<?php endif ?>
                             </td>
                             <td>
                               <input name="route_address[]" type="text" value="<?=$sn_address;?>" />
                             </td>
                             <td>
                               <select name="route_bits[]">
-<?php
-                              for ($i = 128; $i >= 0; $i -= 1): ?>
+<?php for ($i = 128; $i >= 0; $i -= 1): ?>
                                 <option value="<?= $i ?>" <?= $sn_bits === $i ? 'selected="selected"' : '' ?>><?= $i ?></option>
-<?php
-                              endfor ?>
+<?php endfor ?>
                               </select>
                             </td>
                           </tr>
