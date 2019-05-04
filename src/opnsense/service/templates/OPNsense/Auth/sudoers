@@ -1,5 +1,11 @@
 {% if system.sudo_allow_wheel|default('0') == '1' %}
 %wheel ALL=(ALL) ALL
+{% if system.sudo_allow_group|default('') != '' %}
+%{{system.sudo_allow_group}} ALL=(ALL) ALL
+{% endif %}
 {% elif system.sudo_allow_wheel|default('0') == '2' %}
 %wheel ALL=(ALL) NOPASSWD: ALL
+{% if system.sudo_allow_group|default('') != '' %}
+%{{system.sudo_allow_group}} ALL=(ALL) NOPASSWD: ALL
+{% endif %}
 {% endif %}
