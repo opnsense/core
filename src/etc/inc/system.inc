@@ -228,6 +228,7 @@ function get_locale_list()
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
+    $locales['es_ES'] = gettext('Spanish');
 
     return $locales;
 }
