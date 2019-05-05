@@ -508,6 +508,9 @@ $( document ).ready(function() {
     .button-th {
         width: 150px;
     }
+    .select-col {
+        text-align: center;
+    }
 </style>
 
 <?php include("fbegin.inc"); ?>
@@ -551,7 +554,7 @@ $( document ).ready(function() {
                 <table class="table table-striped table-condensed table-hover" id="rules">
                   <thead>
                     <tr>
-                      <th><input type="checkbox" id="selectAll"></th>
+                      <th class="select-col"><input type="checkbox" id="selectAll"></th>
                       <th>&nbsp;</th>
                       <th class="view-info"><?=gettext("Proto");?></th>
                       <th class="view-info"><?=gettext("Source");?></th>
@@ -652,7 +655,7 @@ $( document ).ready(function() {
                   $interface_has_rules = true;
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
-                    <td>
+                    <td class="select-col">
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
