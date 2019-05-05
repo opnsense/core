@@ -1395,7 +1395,7 @@ include("head.inc");
                       <td>
                         <input name="max-src-nodes" type="text" value="<?=$pconfig['max-src-nodes'];?>"/>
                         <div class="hidden" data-for="help_for_max-src-nodes">
-                          <?=gettext(" Maximum number of unique source hosts");?>
+                          <?=gettext("Maximum number of unique source hosts");?>
                         </div>
                       </td>
                   </tr>
@@ -1404,7 +1404,7 @@ include("head.inc");
                       <td>
                         <input name="max-src-conn" type="text" value="<?= $pconfig['max-src-conn'];?>" />
                         <div class="hidden" data-for="help_for_max-src-conn">
-                            <?=gettext(" Maximum number of established connections per host (TCP only)");?>
+                            <?=gettext("Maximum number of established connections per host (TCP only)");?>
                         </div>
                       </td>
                   </tr>
@@ -1413,7 +1413,7 @@ include("head.inc");
                       <td>
                         <input name="max-src-states" type="text" value="<?=$pconfig['max-src-states'];?>" />
                         <div class="hidden" data-for="help_for_max-src-states">
-                            <?=gettext(" Maximum state entries per host");?>
+                            <?=gettext("Maximum state entries per host");?>
                         </div>
                       </td>
                   </tr>
