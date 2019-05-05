@@ -876,7 +876,7 @@ include("head.inc");
                                             echo " />\n";
 
                                             if ($field['typehint'] != '') {
-                                                echo $field['typehint'];
+                                                echo gettext($field['typehint']);
                                             }
 
                                             if ($field['description'] != '') {
@@ -887,7 +887,7 @@ include("head.inc");
                                     }
 
                                     if ($field['type'] != 'checkbox' && $field['typehint'] != '') {
-                                        echo $field['typehint'];
+                                        echo gettext($field['typehint']);
                                     }
 
                                     if (!$field['combinefieldsbegin']) {
