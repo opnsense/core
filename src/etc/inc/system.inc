@@ -179,10 +179,11 @@ function system_resolvconf_generate($verbose = false)
         }
     }
 
-    $dnslock = lock('resolvconf', LOCK_EX);
+    $tempfile = tempnam('/tmp', 'resolv.conf');
+    file_put_contents($tempfile, $resolvconf);
+    chmod($tempfile, 0644);
 
-    file_put_contents('/etc/resolv.conf', $resolvconf);
-    chmod('/etc/resolv.conf', 0644);
+    rename($tempfile, '/etc/resolv.conf');
 
     /* setup static routes for DNS servers. */
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
@@ -206,8 +207,6 @@ function system_resolvconf_generate($verbose = false)
             }
         }
     }
-
-    unlock($dnslock);
 
     if ($verbose) {
         echo "done.\n";
