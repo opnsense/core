@@ -345,7 +345,7 @@ sweep:
 	find ${.CURDIR} -type f -depth 1 -print0 | \
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
 
-STYLEDIRS?=	src/etc/inc/plugins.inc.d src/opnsense
+STYLEDIRS?=	src/etc/inc src/opnsense
 
 style-python: want-py${CORE_PYTHON2}-pycodestyle
 	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
