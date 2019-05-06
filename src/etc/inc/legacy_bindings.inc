@@ -109,13 +109,14 @@ function legacy_list_aliases($type)
  *  @param array $items item numbers to move
  *  @return array new constructed list
  */
-function legacy_move_config_list_items($source, $id, $items) {
+function legacy_move_config_list_items($source, $id, $items)
+{
     $new_config = array();
 
     if (!is_array($source)) {
         // input of wrong type, return empty array
         return array();
-    } elseif ( !is_array($items) || !is_numericint($id)) {
+    } elseif (!is_array($items) || !is_numericint($id)) {
         // selected items isn't an array or selected item isn't an int, return input
         return $source;
     } else {
@@ -129,9 +130,9 @@ function legacy_move_config_list_items($source, $id, $items) {
 
         // next copy all selected rules (=before $id)
         for ($i = 0; $i < count($source); $i++) {
-          if ($i != $id && in_array($i, $items)) {
-              $new_config[] = $source[$i];
-          }
+            if ($i != $id && in_array($i, $items)) {
+                $new_config[] = $source[$i];
+            }
         }
 
         // copy $id rule

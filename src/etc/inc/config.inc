@@ -174,8 +174,9 @@ function config_restore($conffile)
 {
     global $config;
 
-    if (!file_exists($conffile))
-      return 1;
+    if (!file_exists($conffile)) {
+        return 1;
+    }
 
     $cnf = OPNsense\Core\Config::getInstance();
     $cnf->backup();

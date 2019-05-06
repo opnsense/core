@@ -40,7 +40,7 @@ function legacy_interface_listget($flag = '')
 
     if ($flag === 'up') {
         $cmd .= 'u';
-    } else if ($flag === 'down') {
+    } elseif ($flag === 'down') {
         $cmd .= 'd';
     }
 
@@ -61,7 +61,7 @@ function legacy_interface_listget($flag = '')
     return ($ifs);
 }
 
-function legacy_interface_flags($ifs, $flag, $report_errors=true)
+function legacy_interface_flags($ifs, $flag, $report_errors = true)
 {
     /* $flags isn't escaped because it can be an argument list */
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' ' . $flag;
@@ -287,7 +287,7 @@ function legacy_interfaces_details($intf = null)
             if (isset($tmp['subnetbits'])) {
                 $result[$current_interface]["ipv6"][] = $tmp;
                 // sort link local to bottom, leave rest of sorting as-is (primary address on top)
-                usort($result[$current_interface]["ipv6"], function($a, $b) {
+                usort($result[$current_interface]["ipv6"], function ($a, $b) {
                     return $a['link-local'] - $b['link-local'];
                 });
             }

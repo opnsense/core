@@ -43,7 +43,7 @@ function get_notices()
     if (file_exists('/tmp/notices')) {
         $queue = unserialize(file_get_contents('/tmp/notices'));
         if ($queue) {
-            foreach($queue as $time => $notice) {
+            foreach ($queue as $time => $notice) {
                 if (strtolower($notice['category']) == strtolower($category)) {
                     $toreturn[$time] = $notice;
                 }

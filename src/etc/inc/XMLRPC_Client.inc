@@ -47,7 +47,7 @@ class SimpleXMLRPC_Client
      * remote host
      * @var null
      */
-    private $server = null ;
+    private $server = null;
 
     /**
      * @var bool debug mode
@@ -58,13 +58,13 @@ class SimpleXMLRPC_Client
      * process error
      * @var null
      */
-    public $error = null ;
+    public $error = null;
 
     /**
      * request timeout
      * @var int
      */
-    private $timeout = 60 ;
+    private $timeout = 60;
 
     /**
      * (last) response message
@@ -184,7 +184,7 @@ class SimpleXMLRPC_Client
      */
     public function getDetails()
     {
-        $result = "send >>> \n" . $this->request_send ;
+        $result = "send >>> \n" . $this->request_send;
         $result .= "received >>> \n".$this->response_received;
         if ($this->error != null) {
             $result .= "error >>> \n".$this->error;

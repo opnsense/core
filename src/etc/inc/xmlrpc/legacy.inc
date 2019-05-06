@@ -45,7 +45,7 @@ function xmlrpc_publishable_legacy()
  */
 function does_vip_exist($vip)
 {
-    if(!$vip) {
+    if (!$vip) {
         return false;
     }
 
@@ -81,20 +81,20 @@ function does_vip_exist($vip)
  */
 function merge_config_attributes(&$cnf_source, &$cnf_dest)
 {
-   foreach ($cnf_source as $cnf_key => &$cnf_value) {
-       if (is_array($cnf_value)) {
-           if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
+    foreach ($cnf_source as $cnf_key => &$cnf_value) {
+        if (is_array($cnf_value)) {
+            if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key][0])) || // sequenced item
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key]['@attributes']['uuid'])) // mvc array
                 ) {
-               // (re)set destination array when new or containing a sequenced list of items
-               $cnf_dest[$cnf_key] = array();
-           }
-           merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
-       } else {
-           $cnf_dest[$cnf_key] = $cnf_value;
-       }
-   }
+                // (re)set destination array when new or containing a sequenced list of items
+                $cnf_dest[$cnf_key] = array();
+            }
+            merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
+        } else {
+            $cnf_dest[$cnf_key] = $cnf_value;
+        }
+    }
 }
 
 /**
@@ -207,37 +207,37 @@ function restore_config_section_xmlrpc($new_config)
         $carp_setuped = false;
         $anyproxyarp = false;
         if (isset($config['virtualip']['vip'])) {
-          foreach ($config['virtualip']['vip'] as $vip) {
-              $vipKey = get_unique_vip_key($vip);
-              if (!empty($vip['vhid']) && isset($oldvips[$vipKey])) {
-                  $is_changed = false;
-                  foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
-                      if ($oldvips[$vipKey][$chk_key] != $vip[$chk_key]) {
-                          $is_changed = true;
-                          break;
-                      }
-                  }
-                  if (!$is_changed) {
-                      unset($oldvips[$vipKey]);
-                      if (does_vip_exist($vip)) {
-                          continue; // Skip reconfiguring this VIP since nothing has changed.
-                      }
-                  }
-              }
+            foreach ($config['virtualip']['vip'] as $vip) {
+                $vipKey = get_unique_vip_key($vip);
+                if (!empty($vip['vhid']) && isset($oldvips[$vipKey])) {
+                    $is_changed = false;
+                    foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
+                        if ($oldvips[$vipKey][$chk_key] != $vip[$chk_key]) {
+                            $is_changed = true;
+                            break;
+                        }
+                    }
+                    if (!$is_changed) {
+                        unset($oldvips[$vipKey]);
+                        if (does_vip_exist($vip)) {
+                            continue; // Skip reconfiguring this VIP since nothing has changed.
+                        }
+                    }
+                }
 
-              switch ($vip['mode']) {
-                  case "proxyarp":
-                      $anyproxyarp = true;
-                      break;
-                  case "ipalias":
-                      interface_ipalias_configure($vip);
-                      break;
-                  case "carp":
-                      $carp_setuped = true;
-                      interface_carp_configure($vip);
-                      break;
-              }
-          }
+                switch ($vip['mode']) {
+                    case "proxyarp":
+                        $anyproxyarp = true;
+                        break;
+                    case "ipalias":
+                        interface_ipalias_configure($vip);
+                        break;
+                    case "carp":
+                        $carp_setuped = true;
+                        interface_carp_configure($vip);
+                        break;
+                }
+            }
         }
 
         // remove old (carp/ipalias-with-vhid) virtual ip's
@@ -252,7 +252,6 @@ function restore_config_section_xmlrpc($new_config)
         if ($anyproxyarp) {
             interface_proxyarp_configure();
         }
-
     }
 
     if (isset($old_config['ipsec']['enable']) !== isset($config['ipsec']['enable'])) {
