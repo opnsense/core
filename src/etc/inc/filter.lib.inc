@@ -423,32 +423,31 @@ function filter_core_rules_system($fw, $defaults)
             default:
               if (isset($config['dhcpdv6'][$intf]['enable']) || isset($intfinfo['track6-interface'])
                 || (!empty($config['dhcrelay6']['interface']) && in_array($intf, explode(',', $config['dhcrelay6']['interface'])))) {
-                    $fw->registerFilterRule(5,
+                    $fw->registerFilterRule(1,
                       array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',
                             'to_port' => 546, 'interface' => $intf,
                             'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
                       $defaults['pass']
                     );
-                    $fw->registerFilterRule(5,
+                    $fw->registerFilterRule(1,
                       array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'ff02::/16',
                             'to_port' => 547, 'interface' => $intf,
                             'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
                       $defaults['pass']
                     );
-                    $fw->registerFilterRule(5,
+                    $fw->registerFilterRule(1,
                       array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'ff02::/16', 'to' => 'fe80::/10',
                             'to_port' => 547, 'interface' => $intf,
                             'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
                       $defaults['pass']
                     );
-
-                    $fw->registerFilterRule(5,
+                    $fw->registerFilterRule(1,
                       array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => '(self)',
                             'to_port' => 546, 'interface' => $intf, 'direction' => 'in',
                             'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
                       $defaults['pass']
                     );
-                    $fw->registerFilterRule(5,
+                    $fw->registerFilterRule(1,
                       array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => '(self)', 'to' => 'fe80::/10',
                             'from_port' => 547, 'interface' => $intf, 'direction' => 'out',
                             'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
