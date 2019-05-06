@@ -131,7 +131,7 @@ function system_sysctl_get()
     );
 
     if (isset($config['sysctl']['item'])) {
-        foreach($config['sysctl']['item'] as $tunable) {
+        foreach ($config['sysctl']['item'] as $tunable) {
             if ($tunable['value'] == 'default') {
                 $value = get_default_sysctl_value($tunable['tunable']);
             } else {
@@ -559,19 +559,20 @@ function system_syslogd_fixup_server($server)
     }
 }
 
-function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
+function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*")
+{
     // Rather than repeatedly use the same code, use this function to build a list of remote servers.
     $facility .= " ".
     $remote_servers = "";
     $pad_to  = 56;
     $padding = ceil(($pad_to - strlen($facility))/8)+1;
-    if(!empty($syslogcfg['remoteserver'])) {
+    if (!empty($syslogcfg['remoteserver'])) {
         $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
     }
-    if(!empty($syslogcfg['remoteserver2'])) {
+    if (!empty($syslogcfg['remoteserver2'])) {
         $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
     }
-    if(!empty($syslogcfg['remoteserver3'])) {
+    if (!empty($syslogcfg['remoteserver3'])) {
         $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
     }
     return $remote_servers;
@@ -764,7 +765,8 @@ function system_clear_clog($logfile, $restart_syslogd = true)
  *     [0] net memory available for the OS (FreeBSD) after some is taken by BIOS, video or whatever - e.g. 235 MBytes
  *     [1] real (actual) memory of the system, should be the size of the RAM card/s - e.g. 256 MBytes
  */
-function get_memory() {
+function get_memory()
+{
     $physmem = get_single_sysctl("hw.physmem");
     $realmem = get_single_sysctl("hw.realmem");
     /* convert from bytes to megabytes */

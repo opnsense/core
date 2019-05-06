@@ -31,8 +31,11 @@
 function timeout($timer = 5)
 {
     while (!isset($key)) {
-        if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
-        else { echo chr(8). "{$timer}"; }
+        if ($timer >= 9) {
+            echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";
+        } else {
+            echo chr(8). "{$timer}";
+        }
         shell_exec('/bin/stty -icanon min 0 time 25');
         $key = shell_exec('/bin/dd count=1 status=none');
         shell_exec('/bin/stty icanon');
@@ -140,8 +143,11 @@ EOD;
     if (isset($config['vlans']['vlan'][0])) {
         echo "\nVLAN interfaces:\n\n";
         foreach ($config['vlans']['vlan'] as $vlan) {
-            echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
-                "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
+            echo sprintf(
+                "% -16s%s\n",
+                "{$vlan['if']}_vlan{$vlan['tag']}",
+                "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}"
+            );
             $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
         }
     }
@@ -292,7 +298,7 @@ EOD;
         }
     }
 
-        if ($wanif != '' || $lanif != '' || count($optif)) {
+    if ($wanif != '' || $lanif != '' || count($optif)) {
         echo "\nThe interfaces will be assigned as follows:\n\n";
 
         if ($wanif != '') {
@@ -471,8 +477,7 @@ function vlan_setup($iflist, $fp)
     $yes_no_prompt = '[y/N]: ';
 
     if (count($vlancfg)) {
-
-    echo <<<EOD
+        echo <<<EOD
 
 WARNING: all existing VLANs will be cleared if you proceed!
 
@@ -496,8 +501,12 @@ EOD;
         } else {
             $vlan_capable = 0;
             foreach ($iflist as $iface => $ifa) {
-                echo sprintf("% -8s%s%s\n", $iface, $ifa['mac'],
-                    $ifa['up'] ? "   (up)" : "");
+                echo sprintf(
+                    "% -8s%s%s\n",
+                    $iface,
+                    $ifa['mac'],
+                    $ifa['up'] ? "   (up)" : ""
+                );
                 $vlan_capable++;
             }
         }

@@ -294,7 +294,7 @@ class Net_IPv6
      * @access public
      * @static
      */
-    public static function isInNetmask($ip, $netmask, $bits=null)
+    public static function isInNetmask($ip, $netmask, $bits = null)
     {
         // try to get the bit count
 
@@ -455,7 +455,7 @@ class Net_IPv6
         $c1 = -1;
         $c2 = -1;
 
-        if (false !== strpos($uip, '::') ) {
+        if (false !== strpos($uip, '::')) {
             list($ip1, $ip2) = explode('::', $uip);
             if ("" == $ip1) {
                 $c1 = -1;
@@ -497,7 +497,7 @@ class Net_IPv6
         if (true == $leadingZeros) {
             $uipT    = array();
             $uiparts = explode(':', $uip);
-            foreach($uiparts as $p) {
+            foreach ($uiparts as $p) {
                 $uipT[] = sprintf('%04s', $p);
             }
             $uip = implode(':', $uipT);
@@ -592,7 +592,6 @@ class Net_IPv6
         }
 
         return $cip.$prefix;
-
     }
 
     // }}}
@@ -708,7 +707,7 @@ class Net_IPv6
 
         if (!empty($ipPart[0])) {
             $ipv6 = explode(':', $ipPart[0]);
-            foreach($ipv6 as $element) { // made a validate precheck
+            foreach ($ipv6 as $element) { // made a validate precheck
                 if (!preg_match('/[0-9a-fA-F]*/', $element)) {
                     return false;
                 }
@@ -778,9 +777,9 @@ class Net_IPv6
     {
         $ip      = null;
         $bitmask = null;
-        if ( null == $bits ) {
+        if (null == $bits) {
             $elements = explode('/', $ipToParse);
-            if ( 2 == count($elements) ) {
+            if (2 == count($elements)) {
                 $ip      = Net_IPv6::uncompress($elements[0]);
                 $bitmask = $elements[1];
             } else {
@@ -826,7 +825,7 @@ class Net_IPv6
 
         $parts = explode(':', $ip);
 
-        foreach ( $parts as $v ) {
+        foreach ($parts as $v) {
             $str     = base_convert($v, 16, 2);
             $binstr .= str_pad($str, 16, '0', STR_PAD_LEFT);
         }
@@ -855,7 +854,7 @@ class Net_IPv6
 
         $parts = str_split($bin, "16");
 
-        foreach ( $parts as $v ) {
+        foreach ($parts as $v) {
             $str = base_convert($v, 2, 16);
             $ip .= $str.":";
         }
