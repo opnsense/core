@@ -29,6 +29,8 @@
 
     Install suricata ruleset into opnsense.rules directory
 """
+import os
+import glob
 import os.path
 import lib.rulecache
 from lib import rule_source_directory
@@ -90,3 +92,8 @@ if __name__ == '__main__':
         f_out.write('rule-files:\n')
         for installed_file in all_installed_files:
             f_out.write(' - %s\n' % installed_file)
+
+    # cleanup unused files in rule_target_dir, since it's only meant for staging.
+    for filename in glob.glob("%s/*.rules" % rule_target_dir):
+        if os.path.basename(filename) not in  all_installed_files:
+            os.remove(filename)
