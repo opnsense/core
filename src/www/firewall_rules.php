@@ -508,8 +508,10 @@ $( document ).ready(function() {
     .button-th {
         width: 150px;
     }
-    .select-col {
-        text-align: center;
+    #rules > thead > tr > th,
+    #rules > tbody > tr > td,
+    #rules > tfoot > tr > td {
+        padding:10px 0px 10px 20px;
     }
 </style>
 
@@ -554,7 +556,7 @@ $( document ).ready(function() {
                 <table class="table table-striped table-condensed table-hover" id="rules">
                   <thead>
                     <tr>
-                      <th class="select-col"><input type="checkbox" id="selectAll"></th>
+                      <th><input type="checkbox" id="selectAll"></th>
                       <th>&nbsp;</th>
                       <th class="view-info"><?=gettext("Proto");?></th>
                       <th class="view-info"><?=gettext("Source");?></th>
@@ -655,7 +657,7 @@ $( document ).ready(function() {
                   $interface_has_rules = true;
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
-                    <td class="select-col">
+                    <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
