@@ -219,7 +219,7 @@ function print_content_box($msg)
 EOFnp;
 }
 
-function print_info_box_apply($msg)
+function print_info_box_apply($msg, $alert = 'info')
 {
     $iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
     $label = gettext('Apply changes');
@@ -242,7 +242,7 @@ function print_info_box_apply($msg)
     }
     $savebutton .= '</form>';
 
-    print_alert_box($msg, 'info', $savebutton);
+    print_alert_box($msg, $alert, $savebutton);
 }
 
 function print_info_box($msg)

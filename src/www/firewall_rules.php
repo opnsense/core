@@ -533,7 +533,7 @@ $( document ).ready(function() {
 <?php
             endforeach;?>
         </select>
-        <button id="btn_inspect" class="btn btn-default hidden-xs hidden-sm">
+        <button id="btn_inspect" class="btn btn-default hidden-xs">
           <i class="fa fa-eye" aria-hidden="true"></i>
           <?=gettext("Inspect");?>
         </button>
@@ -543,10 +543,31 @@ $( document ).ready(function() {
     <div class="container-fluid">
       <div class="row">
         <?php print_service_banner('firewall'); ?>
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+        <?php if (isset($savemsg)) print_alert_box($savemsg, 'success'); ?>
         <?php if (is_subsystem_dirty('filter')): ?><p>
-        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
+        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."), 'warning') ?>
         <?php endif; ?>
+<?php
+          $interface_has_rules = false;
+          foreach ($a_filter as $i => $filterent) {
+            if ((!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
+              ((isset($filterent['floating']) || empty($filterent['interface'])) && $selected_if == 'FloatingRules')) {
+              $interface_has_rules = true;
+              break;
+            }
+          } ?>
+<?php if (!$interface_has_rules): ?>
+<?php if ($selected_if == 'FloatingRules'): ?>
+        <?php print_info_box(gettext('No floating rules are currently defined. Floating rules are ' .
+          'not bound to a single interface and can therefore be used to span ' .
+          'policies over multiple networks at the same time.')) ?>
+<?php else: ?>
+        <?php print_info_box(sprintf(gettext('No %s rules are currently defined. All incoming connections ' .
+          'on this interface will be blocked until you add a pass rule.'),
+          !empty($config['interfaces'][$selected_if]['descr']) ?
+          $config['interfaces'][$selected_if]['descr'] : strtoupper($selected_if))) ?>
+<?php endif ?>
+<?php endif ?>
         <section class="col-xs-12">
           <div class="content-box">
             <form action="firewall_rules.php?if=<?=$selected_if;?>" method="post" name="iform" id="iform">
@@ -641,7 +662,6 @@ $( document ).ready(function() {
                     endif;
                 endforeach;?>
 <?php
-                $interface_has_rules = false;
                 foreach ($a_filter as $i => $filterent):
                 if (
                     (!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
@@ -653,7 +673,6 @@ $( document ).ready(function() {
                   // calculate a hash so we can track these records in the ruleset, new style (mvc) code will
                   // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
                   $rule_hash = OPNsense\Firewall\Util::calcRuleHash($filterent);
-                  $interface_has_rules = true;
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
@@ -803,25 +822,7 @@ $( document ).ready(function() {
                   endif;
                   endforeach;
                   $i++;
-                  if (!$interface_has_rules):
 ?>
-                  <tr>
-                    <td colspan="11">
-                    <span class="text-muted">
-                <?php if ($selected_if == 'FloatingRules'): ?>
-                      <?= gettext('No floating rules are currently defined. Floating rules are ' .
-                        'not bound to a single interface and can therefore be used to span ' .
-                        'policies over multiple networks at the same time.'); ?>
-                <?php else: ?>
-                      <?= sprintf(gettext('No %s rules are currently defined. All incoming connections ' .
-                        'on this interface will be blocked until you add a pass rule.'),
-                        !empty($config['interfaces'][$selected_if]['descr']) ?
-                        $config['interfaces'][$selected_if]['descr'] : strtoupper($selected_if)) ?>
-                <?php endif; ?>
-                    </span>
-                    </td>
-                  </tr>
-                <?php endif; ?>
                   <tr>
                     <td colspan="2"></td>
                     <td colspan="2" class="view-info"></td>
