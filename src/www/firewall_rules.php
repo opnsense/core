@@ -511,7 +511,8 @@ $( document ).ready(function() {
     #rules > thead > tr > th,
     #rules > tbody > tr > td,
     #rules > tfoot > tr > td {
-        padding:10px 0px 10px 20px;
+        padding-left:15px;
+        padding-right:15px;
     }
 </style>
 
