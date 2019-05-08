@@ -128,31 +128,31 @@ function firewall_rule_item_icons($filterent)
     $result = "";
     if (!empty($filterent['direction']) && $filterent['direction'] == "in") {
         $result .= sprintf(
-            "<i class=\"fa fa-long-arrow-right text-info\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+            "<i class=\"fa fa-long-arrow-right fa-fw text-info\" data-toggle=\"tooltip\" title=\"%s\"></i>",
             gettext("in")
         );
     } elseif (!empty($filterent['direction']) && $filterent['direction'] == "out") {
         $result .= sprintf(
-            "<i class=\"fa fa-long-arrow-left\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+            "<i class=\"fa fa-long-arrow-left fa-fw\" data-toggle=\"tooltip\" title=\"%s\"></i>",
             gettext("out")
         );
     }
     if (!empty($filterent['floating'])) {
         if (isset($filterent['quick']) && $filterent['quick'] === 'yes') {
             $result .= sprintf(
-                "<i class=\"fa fa-flash text-warning\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+                "<i class=\"fa fa-flash fa-fw text-warning\" data-toggle=\"tooltip\" title=\"%s\"></i>",
                 gettext('first match')
             );
         } else {
           $result .= sprintf(
-              "<i class=\"fa fa-flash text-muted\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+              "<i class=\"fa fa-flash fa-fw text-muted\" data-toggle=\"tooltip\" title=\"%s\"></i>",
               gettext('last match')
           );
         }
     }
     if (isset($filterent['log'])) {
           $result .= sprintf(
-              "<i class=\"fa fa-info-circle %s\"></i>",
+              "<i class=\"fa fa-info-circle fa-fw %s\"></i>",
               !empty($filterent['disabled']) ? 'text-muted' : 'text-info'
           );
     }
@@ -163,17 +163,17 @@ function firewall_rule_item_icons($filterent)
 function firewall_rule_item_action($filterent)
 {
     if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
-        return "fa fa-times text-danger";
+        return "fa fa-times fa-fw text-danger";
     } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
-        return "fa fa-times text-muted";
+        return "fa fa-times fa-fw text-muted";
     }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
-        return "fa fa-times-circle text-danger";
+        return "fa fa-times-circle fa-fw text-danger";
     }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
-        return "fa fa-times-circle text-muted";
+        return "fa fa-times-circle fa-fw text-muted";
     } elseif (empty($filterent['disabled'])) {
-        return "fa fa-play text-success";
+        return "fa fa-play fa-fw text-success";
     } else {
-        return "fa fa-play text-muted";
+        return "fa fa-play fa-fw text-muted";
     }
 }
 /***********************************************************************************************************
@@ -519,8 +519,7 @@ $( document ).ready(function() {
 <?php include("fbegin.inc"); ?>
   <div class="hidden">
     <div id="category_block" style="z-index:-100;">
-        <div class="hidden-sm hidden-lg"><br/></div>
-        <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
+        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
 <?php
             // collect unique list of categories and append to option list
             $categories = array();
@@ -534,7 +533,7 @@ $( document ).ready(function() {
 <?php
             endforeach;?>
         </select>
-        <button id="btn_inspect" class="btn btn-default">
+        <button id="btn_inspect" class="btn btn-default hidden-xs hidden-sm">
           <i class="fa fa-eye" aria-hidden="true"></i>
           <?=gettext("Inspect");?>
         </button>
@@ -553,7 +552,7 @@ $( document ).ready(function() {
             <form action="firewall_rules.php?if=<?=$selected_if;?>" method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
-              <div class="table-responsive" >
+              <div class="table-responsive">
                 <table class="table table-striped table-condensed table-hover" id="rules">
                   <thead>
                     <tr>
@@ -566,10 +565,10 @@ $( document ).ready(function() {
                       <th class="view-info hidden-xs hidden-sm"><?=gettext("Port");?></th>
                       <th class="view-info hidden-xs hidden-sm"><?=gettext("Gateway");?></th>
                       <th class="view-info hidden-xs hidden-sm"><?=gettext("Schedule");?></th>
-                      <th class="view-stats"><?=gettext("Evaluations");?></th>
                       <th class="view-stats"><?=gettext("Packets");?></th>
                       <th class="view-stats"><?=gettext("Bytes");?></th>
-                      <th class="view-stats"><?=gettext("States");?></th>
+                      <th class="view-stats hidden-xs hidden-sm"><?=gettext("Evaluations");?></th>
+                      <th class="view-stats hidden-xs hidden-sm"><?=gettext("States");?></th>
                       <th class="text-nowrap">
                         <?=gettext("Description");?>
                         <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
@@ -579,7 +578,13 @@ $( document ).ready(function() {
                 </thead>
                 <tbody>
                   <tr id="expand-internal-rules" style="display: none;">
-                      <td>&nbsp;</td>
+                      <td><i class="fa fa-magic text-muted"></i></td>
+                      <td></td>
+                      <td class="view-info" colspan="2"> </td>
+                      <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
+                      <td colspan="2" class="view-stats"></td>
+                      <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
+                      <td><?= gettext('Automatically generated rules') ?></td>
                       <td>
                           <button class="btn btn-default btn-xs" id="expand-internal">
                             <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
@@ -588,11 +593,6 @@ $( document ).ready(function() {
                             </span>
                           </button>
                       </td>
-                      <td class="view-info" colspan="2"> </td>
-                      <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
-                      <td class="view-stats"></td>
-                      <td><?=gettext("Automatically generated");?> </td>
-                      <td> </td>
                   </tr>
 <?php
                 $fw = filter_core_get_initialized_plugin_system();
@@ -603,7 +603,7 @@ $( document ).ready(function() {
                         $filterent = $rule->getRawRule();
                         $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
                     <tr class="internal-rule" style="display: none;">
-                      <td>&nbsp;</td>
+                      <td><i class="fa fa-magic text-muted"></i></td>
                       <td>
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span><?=firewall_rule_item_icons($filterent);?>
                       </td>
@@ -626,17 +626,15 @@ $( document ).ready(function() {
                         <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">&nbsp;</td>
-                      <td class="view-stats"><?=!empty($rule_stats) ? $rule_stats['evaluations'] : "";?></td>
-                      <td class="view-stats"><?=!empty($rule_stats) ? $rule_stats['packets'] : "";?></td>
-                      <td class="view-stats"><?=!empty($rule_stats) ? format_bytes($rule_stats['bytes']) : "";?></td>
-                      <td class="view-stats"><?=!empty($rule_stats) ? $rule_stats['states'] : "";?></td>
+                      <td class="view-stats"><?= !empty($rule_stats) ? $rule_stats['packets'] : gettext('N/A') ?></td>
+                      <td class="view-stats"><?= !empty($rule_stats) ? format_bytes($rule_stats['bytes']) : gettext('N/A') ?></td>
+                      <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['evaluations'] : gettext('N/A') ?></td>
+                      <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['states'] : gettext('N/A') ?></td>
                       <td><?=$rule->getDescr();?></td>
                       <td>
-<?php
-                        if (!empty($rule->getRef())):?>
+<?php if (!empty($rule->getRef())): ?>
                           <a href="firewall_rule_lookup.php?rid=<?=html_safe($rule->getLabel());?>" class="btn btn-default btn-xs"><i class="fa fa-fw fa-search"></i></a>
-<?php
-                        endif;?>
+<?php endif ?>
                       </td>
                     </tr>
 <?php
@@ -769,10 +767,10 @@ $( document ).ready(function() {
 <?php
                        endif;?>
                     </td>
-                    <td class="view-stats"><?=!empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['evaluations'] : "";?></td>
-                    <td class="view-stats"><?=!empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : "";?></td>
-                    <td class="view-stats"><?=!empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : "";?></td>
-                    <td class="view-stats"><?=!empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : "";?></td>
+                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
+                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
+                    <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['evaluations'] : gettext('N/A') ?></td>
+                    <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : gettext('N/A') ?></td>
                     <td>
                       <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
@@ -828,7 +826,8 @@ $( document ).ready(function() {
                     <td colspan="2"></td>
                     <td colspan="2" class="view-info"></td>
                     <td colspan="5" class="view-info hidden-xs hidden-sm"></td>
-                    <td colspan="4" class="view-stats hidden-xs hidden-sm"></td>
+                    <td colspan="2" class="view-stats"></td>
+                    <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
                     <td></td>
                     <td>
                       <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
@@ -846,9 +845,11 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                 </tbody>
-                <tfoot>
+              </table>
+              <table class="table table-responsive table-condensed" id="rules">
+                <tbody>
                   <tr class="hidden-xs hidden-sm">
-                    <td colspan="9">
+                    <td>
                       <table style="width:100%; border:0;">
                         <tr>
                           <td style="width:16px"><span class="fa fa-play text-success"></span></td>
@@ -864,10 +865,10 @@ $( document ).ready(function() {
                           <td style="width:100px"><?=gettext("log");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
-<?php                     if ($selected_if == 'FloatingRules'): ?>
+<?php if ($selected_if == 'FloatingRules'): ?>
                           <td style="width:16px"><span class="fa fa-flash text-warning"></span></td>
                           <td style="width:100px"><?=gettext("first match");?></td>
-<?php                     endif; ?>
+<?php endif ?>
                         </tr>
                         <tr>
                           <td><span class="fa fa-play text-muted"></span></td>
@@ -883,27 +884,29 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
-<?php                     if ($selected_if == 'FloatingRules'): ?>
+<?php if ($selected_if == 'FloatingRules'): ?>
                           <td style="width:16px"><span class="fa fa-flash text-muted"></span></td>
                           <td style="width:100px"><?=gettext("last match");?></td>
-<?php                     endif; ?>
+<?php endif ?>
                         </tr>
                       </table>
                     </td>
-                    <td colspan="2" class="view-info"></td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><i class="fa fa-list fa-fw text-primary"></i></td>
-                    <td colspan="8"><?=gettext("Alias (click to view/edit)");?></td>
-                    <td colspan="2" class="view-info"></td>
+                    <td>
+                      <i class="fa fa-calendar fa-fw text-success"></i>
+                      <i class="fa fa-calendar fa-fw text-muted"></i>
+                      <?= gettext('Active/Inactive Schedule (click to view/edit)') ?></td>
+                    </td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td><i class="fa fa-calendar fa-fw text-success"></i><i class="fa fa-calendar fa-fw text-muted"></i></td>
-                    <td colspan="8"><?=gettext("Active/Inactive Schedule (click to view/edit)");?></td>
-                    <td colspan="2" class="view-info"></td>
+                    <td>
+                      <i class="fa fa-list fa-fw text-primary"></i>
+                      <?= gettext('Alias (click to view/edit)') ?>
+                    </td>
                   </tr>
                   <tr class="hidden-xs hidden-sm">
-                    <td colspan="8">
+                    <td>
 <?php if ('FloatingRules' != $selected_if): ?>
                       <?= sprintf(gettext('%s rules are evaluated on a first-match basis (i.e. ' .
                         'the action of the first rule to match a packet will be executed). ' .
@@ -919,9 +922,8 @@ $( document ).ready(function() {
                         'chosen. If no rule here matches, the per-interface or default rules are used.') ?>
 <?php endif ?>
                     </td>
-                    <td colspan="2" class="view-info"></td>
                   </tr>
-                </tfoot>
+                </tbody>
               </table>
             </div>
           </form>
