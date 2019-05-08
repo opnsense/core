@@ -38,9 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $act = "maintenance";
         if (isset($config["virtualip_carp_maintenancemode"])) {
             unset($config["virtualip_carp_maintenancemode"]);
+            $carp_demotion_default = '0';
+            foreach ($config['sysctl']['item'] as $tunable) {
+                if ($tunable['tunable'] == 'net.inet.carp.demotion' && ctype_digit($tunable['value'])) {
+                    $carp_demotion_default = $tunable['value'];
+                }
+            }
+            $carp_diff = $carp_demotion_default - get_single_sysctl('net.inet.carp.demotion');
+            set_single_sysctl('net.inet.carp.demotion', $carp_diff);
             write_config("Leave CARP maintenance mode");
         } else {
             $config["virtualip_carp_maintenancemode"] = true;
+            set_single_sysctl('net.inet.carp.demotion', '240');
             write_config("Enter CARP maintenance mode");
         }
     } elseif (!empty($_POST['disablecarp'])) {
@@ -59,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($vip['vhid'])) {
             switch ($act) {
                 case 'maintenance':
+                    break;
                 case 'enable':
                     if ($vip['mode'] == 'carp') {
                         interface_carp_configure($vip);
@@ -95,7 +105,11 @@ $pfsyncnodes = json_decode(configd_run("filter list pfsync json"), true);
 
 legacy_html_escape_form_data($a_vip);
 $status = (get_single_sysctl('net.inet.carp.allow') > 0);
-$carp_detected_problems = (array_pop(get_sysctl("net.inet.carp.demotion")) > 0);
+if (!empty($config["virtualip_carp_maintenancemode"])) {
+    $carp_detected_problems = false;
+} else {
+    $carp_detected_problems = get_single_sysctl("net.inet.carp.demotion") > 0;
+}
 include("head.inc");
 ?>
 
