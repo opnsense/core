@@ -423,7 +423,7 @@ $( document ).ready(function() {
           }
       });
 
-      $("#rules").removeClass("table-striped");
+      $(".opnsense-rules").removeClass("table-striped");
       // add stripes again
       $(".rule:visible").each(function (index) {
         $(this).css("background-color", "inherit");
@@ -454,6 +454,9 @@ $( document ).ready(function() {
       });
   });
   $("#fw_category").change();
+
+  // XXX striping seems broken after here...
+  $(".opnsense-rules").addClass("table-striped");
 
   // hide category search when not used
   if ($("#fw_category > option").length == 0) {
@@ -494,8 +497,8 @@ $( document ).ready(function() {
   $("#expand-internal").click(function(event){
       event.preventDefault();
       $(".internal-rule").toggle();
-      $("#rules").removeClass("table-striped");
-      $("#rules").addClass("table-striped");
+      $(".opnsense-rules").removeClass("table-striped");
+      $(".opnsense-rules").addClass("table-striped");
   });
 
 
@@ -508,9 +511,7 @@ $( document ).ready(function() {
     .button-th {
         width: 150px;
     }
-    #rules > thead > tr > th,
-    #rules > tbody > tr > td,
-    #rules > tfoot > tr > td {
+    .opnsense-rules > tbody > tr > td {
         padding-left:15px;
         padding-right:15px;
     }
@@ -563,7 +564,8 @@ $( document ).ready(function() {
           'policies over multiple networks at the same time.')) ?>
 <?php else: ?>
         <?php print_info_box(sprintf(gettext('No %s rules are currently defined. All incoming connections ' .
-          'on this interface will be blocked until you add a pass rule.'),
+          'on this interface will be blocked until you add a pass rule. Exceptions for automatically generated ' .
+          'rules may apply.'),
           !empty($config['interfaces'][$selected_if]['descr']) ?
           $config['interfaces'][$selected_if]['descr'] : strtoupper($selected_if))) ?>
 <?php endif ?>
@@ -574,37 +576,35 @@ $( document ).ready(function() {
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive">
-                <table class="table table-striped table-condensed table-hover" id="rules">
-                  <thead>
+                <table class="table table-condensed table-hover opnsense-rules">
+                  <tbody>
                     <tr>
-                      <th><input type="checkbox" id="selectAll"></th>
-                      <th>&nbsp;</th>
-                      <th class="view-info"><?=gettext("Proto");?></th>
-                      <th class="view-info"><?=gettext("Source");?></th>
-                      <th class="view-info hidden-xs hidden-sm"><?=gettext("Port");?></th>
-                      <th class="view-info hidden-xs hidden-sm"><?=gettext("Destination");?></th>
-                      <th class="view-info hidden-xs hidden-sm"><?=gettext("Port");?></th>
-                      <th class="view-info hidden-xs hidden-sm"><?=gettext("Gateway");?></th>
-                      <th class="view-info hidden-xs hidden-sm"><?=gettext("Schedule");?></th>
-                      <th class="view-stats"><?=gettext("Packets");?></th>
-                      <th class="view-stats"><?=gettext("Bytes");?></th>
-                      <th class="view-stats hidden-xs hidden-sm"><?=gettext("Evaluations");?></th>
-                      <th class="view-stats hidden-xs hidden-sm"><?=gettext("States");?></th>
-                      <th class="text-nowrap">
-                        <?=gettext("Description");?>
+                      <td><input type="checkbox" id="selectAll"></td>
+                      <td>&nbsp;</td>
+                      <td class="view-info"><strong><?= gettext('Protocol') ?></strong></td>
+                      <td class="view-info"><strong><?= gettext('Source') ?></strong></td>
+                      <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Port') ?></strong></td>
+                      <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Destination') ?></strong></td>
+                      <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Port') ?></strong></td>
+                      <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Gateway') ?></strong></td>
+                      <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Schedule') ?></strong></td>
+                      <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('Evaluations') ?></strong></td>
+                      <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('States') ?></strong></td>
+                      <td class="view-stats"><strong><?= gettext('Packets') ?></strong></td>
+                      <td class="view-stats"><strong><?= gettext('Bytes') ?></strong></td>
+                      <td class="text-nowrap">
+                        <strong><?= gettext('Description') ?></strong>
                         <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
-                      </th>
-                      <th class="button-th"></th>
+                      </td>
+                      <td class="button-th"></td>
                   </tr>
-                </thead>
-                <tbody>
                   <tr id="expand-internal-rules" style="display: none;">
-                      <td><i class="fa fa-magic text-muted"></i></td>
+                      <td><i class="fa fa-folder-o text-muted"></i></td>
                       <td></td>
                       <td class="view-info" colspan="2"> </td>
                       <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
-                      <td colspan="2" class="view-stats"></td>
                       <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
+                      <td colspan="2" class="view-stats"></td>
                       <td><?= gettext('Automatically generated rules') ?></td>
                       <td>
                           <button class="btn btn-default btn-xs" id="expand-internal">
@@ -624,7 +624,7 @@ $( document ).ready(function() {
                         $filterent = $rule->getRawRule();
                         $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
                     <tr class="internal-rule" style="display: none;">
-                      <td><i class="fa fa-magic text-muted"></i></td>
+                      <td><i class="fa fa-magic"></i></td>
                       <td>
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span><?=firewall_rule_item_icons($filterent);?>
                       </td>
@@ -646,11 +646,11 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm">
                         <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
                       </td>
-                      <td class="view-info hidden-xs hidden-sm">&nbsp;</td>
-                      <td class="view-stats"><?= !empty($rule_stats) ? $rule_stats['packets'] : gettext('N/A') ?></td>
-                      <td class="view-stats"><?= !empty($rule_stats) ? format_bytes($rule_stats['bytes']) : gettext('N/A') ?></td>
+                      <td class="view-info hidden-xs hidden-sm"><?= gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['evaluations'] : gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['states'] : gettext('N/A') ?></td>
+                      <td class="view-stats"><?= !empty($rule_stats) ? $rule_stats['packets'] : gettext('N/A') ?></td>
+                      <td class="view-stats"><?= !empty($rule_stats) ? format_bytes($rule_stats['bytes']) : gettext('N/A') ?></td>
                       <td><?=$rule->getDescr();?></td>
                       <td>
 <?php if (!empty($rule->getRef())): ?>
@@ -784,12 +784,15 @@ $( document ).ready(function() {
                         endif;?>
                         </a>
 <?php
+                      else: ?>
+                      *
+<?php
                        endif;?>
                     </td>
-                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
-                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
                     <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['evaluations'] : gettext('N/A') ?></td>
                     <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : gettext('N/A') ?></td>
+                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
+                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
                     <td>
                       <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
@@ -827,8 +830,8 @@ $( document ).ready(function() {
                     <td colspan="2"></td>
                     <td colspan="2" class="view-info"></td>
                     <td colspan="5" class="view-info hidden-xs hidden-sm"></td>
-                    <td colspan="2" class="view-stats"></td>
                     <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
+                    <td colspan="2" class="view-stats"></td>
                     <td></td>
                     <td>
                       <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
@@ -847,7 +850,7 @@ $( document ).ready(function() {
                   </tr>
                 </tbody>
               </table>
-              <table class="table table-responsive table-condensed" id="rules">
+              <table class="table table-responsive table-condensed opnsense-rules">
                 <tbody>
                   <tr class="hidden-xs hidden-sm">
                     <td>
