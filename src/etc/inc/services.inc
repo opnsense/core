@@ -63,7 +63,7 @@ function generate_ipv6_from_mac($mac)
             $hexadecimal =  substr($byte, 1, 2);
             $bitmap = base_convert($hexadecimal, 16, 2);
             $bitmap = str_pad($bitmap, 4, "0", STR_PAD_LEFT);
-            $bitmap = substr($bitmap, 0, 2) ."1". substr($bitmap, 3,4);
+            $bitmap = substr($bitmap, 0, 2) ."1". substr($bitmap, 3, 4);
             $byte = substr($byte, 0, 1) . base_convert($bitmap, 2, 16);
         }
         $ipv6 .= $byte;
@@ -167,7 +167,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
 
-        switch($dhcpv6ifconf['rapriority']) {
+        switch ($dhcpv6ifconf['rapriority']) {
             case "low":
                 $radvdconf .= "\tAdvDefaultPreference low;\n";
                 break;
@@ -179,7 +179,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
                 break;
         }
 
-        switch($dhcpv6ifconf['ramode']) {
+        switch ($dhcpv6ifconf['ramode']) {
             case "managed":
             case "assist":
                 $radvdconf .= "\tAdvManagedFlag on;\n";
@@ -213,7 +213,7 @@ function services_radvd_configure($verbose = false, $blacklist = array())
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
             $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
-            switch($dhcpv6ifconf['ramode']) {
+            switch ($dhcpv6ifconf['ramode']) {
                 case "managed":
                     $radvdconf .= "\t\tAdvOnLink on;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
@@ -1193,7 +1193,7 @@ function services_dhcpdv6_configure($verbose = false, $blacklist = array())
                     'to' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
                 );
 
-                if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to']) ) {
+                if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
                     $pd_prefix_from_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['from']);
                     $pd_prefix_to_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['to']);
 
@@ -1370,7 +1370,7 @@ EOD;
                     $ntpservers[] = $ntpserver;
                 }
             }
-            if (count($ntpservers) > 0 ) {
+            if (count($ntpservers) > 0) {
                 $dhcpdv6conf .= "  option dhcp6.sntp-servers " . join(",", $dhcpv6ifconf['ntpserver']) . ";\n";
             }
         }
@@ -1626,7 +1626,7 @@ function services_dhcrelay6_configure($verbose = false)
     $iflist = get_configured_interface_with_descr();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
-        if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif))  {
+        if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
             continue;
         }
 

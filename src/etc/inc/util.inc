@@ -214,7 +214,8 @@ function gen_subnetv6($ipaddr, $bits)
 }
 
 /* return the highest (broadcast) address in the subnet given a host address and a subnet bit count */
-function gen_subnet_max($ipaddr, $bits) {
+function gen_subnet_max($ipaddr, $bits)
+{
     if (!is_ipaddr($ipaddr) || !is_numeric($bits)) {
         return '';
     }
@@ -230,12 +231,12 @@ function gen_subnetv6_max($ipaddr, $bits)
         return false;
     }
 
-    set_error_handler (
+    set_error_handler(
         function () {
             return;
         }
     );
-    $mask = Net_IPv6::getNetmask('FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF',$bits);
+    $mask = Net_IPv6::getNetmask('FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF', $bits);
     $inet_ip = (binary)inet_pton($ipaddr);
     if ($inet_ip) {
         $inet_mask = (binary)inet_pton($mask);
@@ -341,7 +342,7 @@ function find_smallest_cidr($number)
 {
     $smallest = 1;
     for ($b=32; $b > 0; $b--) {
-        $smallest = ($number <= pow(2,$b)) ? $b : $smallest;
+        $smallest = ($number <= pow(2, $b)) ? $b : $smallest;
     }
     return (32-$smallest);
 }
@@ -606,7 +607,7 @@ function is_domain($domain)
 }
 
 /* returns true if $macaddr is a valid MAC address */
-function is_macaddr($macaddr, $partial=false)
+function is_macaddr($macaddr, $partial = false)
 {
     $repeat = ($partial) ? '1,5' : '5';
     return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){'.$repeat.'}$/i', $macaddr) == 1 ? true : false;
@@ -674,7 +675,7 @@ function is_portoralias($port)
 /* returns true if $test is in the range between $start and $end */
 function is_inrange_v4($test, $start, $end)
 {
-    if ( (ip2ulong($test) <= ip2ulong($end)) && (ip2ulong($test) >= ip2ulong($start)) ) {
+    if ((ip2ulong($test) <= ip2ulong($end)) && (ip2ulong($test) >= ip2ulong($start))) {
         return true;
     } else {
         return false;
@@ -684,7 +685,7 @@ function is_inrange_v4($test, $start, $end)
 /* returns true if $test is in the range between $start and $end */
 function is_inrange_v6($test, $start, $end)
 {
-    if ( (inet_pton($test) <= inet_pton($end)) && (inet_pton($test) >= inet_pton($start)) ) {
+    if ((inet_pton($test) <= inet_pton($end)) && (inet_pton($test) >= inet_pton($start))) {
         return true;
     } else {
         return false;
@@ -692,7 +693,8 @@ function is_inrange_v6($test, $start, $end)
 }
 
 /* returns true if $test is in the range between $start and $end */
-function is_inrange($test, $start, $end) {
+function is_inrange($test, $start, $end)
+{
     return is_ipaddrv6($test) ? is_inrange_v6($test, $start, $end) : is_inrange_v4($test, $start, $end);
 }
 
@@ -1050,7 +1052,7 @@ function ipcmp($a, $b)
 }
 
 /* return true if $addr is in $subnet, false if not */
-function ip_in_subnet($addr,$subnet)
+function ip_in_subnet($addr, $subnet)
 {
     if (is_ipaddrv6($addr)) {
         return (Net_IPv6::isInNetmask($addr, $subnet));
@@ -1066,8 +1068,8 @@ function ip_in_subnet($addr,$subnet)
 
 function is_private_ip($iptocheck)
 {
-    foreach(array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
-        if (ip_in_subnet($iptocheck,$private)==true) {
+    foreach (array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
+        if (ip_in_subnet($iptocheck, $private)==true) {
             return true;
         }
     }
@@ -1253,8 +1255,8 @@ function prefer_ipv4_or_ipv6()
     global $config;
 
     mwexecf(
-      '/etc/rc.d/ip6addrctl %s',
-      isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
+        '/etc/rc.d/ip6addrctl %s',
+        isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
     );
 }
 

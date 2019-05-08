@@ -75,7 +75,7 @@ function filter_rules_sort()
     for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
         $config['filter']['rule'][$i]['seq'] = $i;
     }
-    usort($config['filter']['rule'], function($a, $b){
+    usort($config['filter']['rule'], function ($a, $b) {
         if (isset($a['floating']) && isset($b['floating'])) {
             return $a['seq'] - $b['seq'];
         } elseif (isset($a['floating'])) {
@@ -197,7 +197,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
                 $descr = ": {$rule['descr']}";
             }
 
-            $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}") ;
+            $rule['label'] = fix_rule_label("USER_RULE{$sched}{$descr}");
             if (isset($rule['floating'])) {
                 $prio = 200000;
             } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
@@ -265,7 +265,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     }
 
     // prevent redirection on ports with "lock out" protection
-    foreach(filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
+    foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
         foreach ($lockoutprts as $port) {
             $rule = array(
                 'interface' => $lockoutif,
@@ -528,7 +528,7 @@ function filter_generate_scrubing(&$FilterIflist)
         foreach ($config['filter']['scrub']['rule'] as $scrub_rule) {
             if (!isset($scrub_rule['disabled'])) {
                 $scrub_rule_out = "scrub";
-                $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "" ;
+                $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
                 $scrub_rule_out .= " on ";
                 $interfaces = array();
                 foreach (explode(',', $scrub_rule['interface']) as $interface) {
@@ -684,15 +684,17 @@ function filter_rules_legacy(&$FilterIflist)
    </schedule>
  </schedules>
 */
-function filter_get_time_based_rule_status($schedule) {
+function filter_get_time_based_rule_status($schedule)
+{
     /* no schedule? rule should be installed */
-    if (empty($schedule))
-      return true;
+    if (empty($schedule)) {
+        return true;
+    }
     /*
      * iterate through time blocks and determine
      * if the rule should be installed or not.
      */
-    foreach($schedule['timerange'] as $timeday) {
+    foreach ($schedule['timerange'] as $timeday) {
         if (empty($timeday['month'])) {
             $monthstatus = true;
         } else {
@@ -729,7 +731,7 @@ function filter_tdr_day($schedule)
      */
     $date = date("d");
     $defined_days = explode(",", $schedule);
-    foreach($defined_days as $dd) {
+    foreach ($defined_days as $dd) {
         if ($date == $dd) {
             return true;
         }
@@ -764,7 +766,7 @@ function filter_tdr_position($schedule)
         $weekday = 7;
     }
     $schedule_days = explode(",", $schedule);
-    foreach($schedule_days as $day) {
+    foreach ($schedule_days as $day) {
         if ($day == $weekday) {
             return true;
         }
@@ -779,7 +781,7 @@ function filter_tdr_month($schedule)
      */
     $todays_month = date("n");
     $months = explode(",", $schedule);
-    foreach($months as $month) {
+    foreach ($months as $month) {
         if ($month == $todays_month) {
             return true;
         }
@@ -827,7 +829,7 @@ function get_protocols()
     $ipv6_ext = array('IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER');
 
     foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
-        if (substr($line,0, 1) != "#") {
+        if (substr($line, 0, 1) != "#") {
             $parts = preg_split('/\s+/', $line);
             if (count($parts) >= 4 && $parts[1] > 0) {
                 $protocol = trim(strtoupper($parts[0]));

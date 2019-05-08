@@ -224,7 +224,7 @@ function interface_vlan_configure(&$vlan)
                 }
             }
             // set one tag at a time to avoid driver issues
-            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso')  as $tag) {
+            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso') as $tag) {
                 if (!isset($config['system']['disablevlanhwfilter'])) {
                     if (!in_array($tag, $selected_opts)) {
                         legacy_interface_flags($member, $tag);
@@ -1370,7 +1370,7 @@ EOD;
         if (empty($mtus[$pid])) {
             $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) : 1500;
         }
-        if ($ppp['type'] == "pppoe" && $mtus[$pid] > 1500 ) {
+        if ($ppp['type'] == "pppoe" && $mtus[$pid] > 1500) {
             // use pppoe max-payload if mtu we're about to set > 1492
             $mpdconf_arr[] = "set pppoe max-payload " . ($mtus[$pid]-8);
         } else {
@@ -4335,7 +4335,6 @@ function get_interfaces_info()
                 if ($elements[4] != "") {
                     $ifinfo['rssi'] = $elements[4];
                 }
-
             }
             /* lookup the gateway */
             if (interface_has_gateway($ifdescr)) {

@@ -67,7 +67,7 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
     }
 
     if (isset($config['dyndnses']['dyndns']) && !$found_host) {
-        foreach($config['dyndnses']['dyndns'] as $dyndns) {
+        foreach ($config['dyndnses']['dyndns'] as $dyndns) {
             if (strcasecmp($dyndns['host'], $http_host) == 0) {
                 $found_host = true;
                 break;
@@ -96,7 +96,7 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
 
     if ($found_host == false) {
         if (!security_checks_disabled()) {
-            display_error_form("501", sprintf(gettext("A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname."),'<a href="http://en.wikipedia.org/wiki/DNS_rebinding">','</a>','<br />'));
+            display_error_form("501", sprintf(gettext("A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname."), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
             exit;
         }
         $security_passed = false;
@@ -215,7 +215,7 @@ function index_groups()
     $groupindex = array();
     if (isset($config['system']['group'])) {
         $i = 0;
-        foreach($config['system']['group'] as $groupent) {
+        foreach ($config['system']['group'] as $groupent) {
             if (isset($groupent['name'])) {
                 $groupindex[$groupent['name']] = $i;
                 $i++;
@@ -234,7 +234,7 @@ function index_users()
 
     if (is_array($config['system']['user'])) {
         $i = 0;
-        foreach($config['system']['user'] as $userent) {
+        foreach ($config['system']['user'] as $userent) {
             $userindex[$userent['name']] = $i;
             $i++;
         }
@@ -318,7 +318,7 @@ function get_user_privileges(&$user)
     if (!isset($user['priv']) || !is_array($user['priv'])) {
         $privs = array();
     } else {
-       $privs = $user['priv'];
+        $privs = $user['priv'];
     }
 
     $names = local_user_get_groups($user);
@@ -381,8 +381,8 @@ function local_sync_accounts()
     $fd = popen('/usr/sbin/pw usershow -a', 'r');
     if ($fd) {
         while (!feof($fd)) {
-            $line = explode(':',fgets($fd));
-            if ( count($line) < 3 ||  !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
+            $line = explode(':', fgets($fd));
+            if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
                 continue;
             }
             /*
@@ -399,8 +399,8 @@ function local_sync_accounts()
     $fd = popen('/usr/sbin/pw groupshow -a', 'r');
     if ($fd) {
         while (!feof($fd)) {
-            $line = explode(':',fgets($fd));
-            if (count($line) < 3 || !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000 ) {
+            $line = explode(':', fgets($fd));
+            if (count($line) < 3 || !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
                 continue;
             }
             mwexecf('/usr/sbin/pw groupdel %s', $line[2]);
@@ -433,8 +433,8 @@ function local_user_set(&$user, $force_password = false)
 
     if (empty($user['password'])) {
         log_error(sprintf(
-          gettext('There is something wrong in your config because user %s password is missing!'),
-          $user['name']
+            gettext('There is something wrong in your config because user %s password is missing!'),
+            $user['name']
         ));
         return;
     }
@@ -552,7 +552,7 @@ function local_user_set_password(&$user, $password = null)
     if ($password == null) {
         /* generate a random password */
         $bytes = openssl_random_pseudo_bytes(50);
-        $password = pack('H*',bin2hex($bytes));
+        $password = pack('H*', bin2hex($bytes));
     }
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
@@ -605,7 +605,7 @@ function local_user_set_groups($user, $new_groups = null)
 
     /* determine which memberships to add */
     foreach ($new_groups as $groupname) {
-        if (in_array($groupname,$cur_groups) || !isset($groupindex[$groupname])) {
+        if (in_array($groupname, $cur_groups) || !isset($groupindex[$groupname])) {
             // continue if group is already in current list or the groupname is invalid
             continue;
         }
@@ -616,7 +616,7 @@ function local_user_set_groups($user, $new_groups = null)
 
     /* determine which memberships to remove */
     foreach ($cur_groups as $groupname) {
-        if (in_array($groupname,$new_groups)) {
+        if (in_array($groupname, $new_groups)) {
             continue;
         }
         if (!isset($config['system']['group'][$groupindex[$groupname]])) {
@@ -754,7 +754,7 @@ function auth_get_authserver_list()
  * @param array|null $authcfg configuration
  * @return Auth\Base type object
  */
-function get_authenticator($authcfg = NULL)
+function get_authenticator($authcfg = null)
 {
     if (empty($authcfg)) {
         $authName = 'Local Database';
@@ -770,11 +770,11 @@ function get_authenticator($authcfg = NULL)
     return $authFactory->get($authName);
 }
 
-function authenticate_user($username, $password, $authcfg = NULL)
+function authenticate_user($username, $password, $authcfg = null)
 {
     $authenticator = get_authenticator($authcfg);
     if ($authenticator != null) {
-        return $authenticator->authenticate($username, $password) ;
+        return $authenticator->authenticate($username, $password);
     } else {
         log_error('Unable to retrieve authenticator for '. $username);
         return false;
