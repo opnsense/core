@@ -350,6 +350,11 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
+function userIsAdmin($username) {
+    $user = getUserEntry($username);
+    return userHasPrivilege($user, 'page-all');
+}
+
 function auth_get_shells($uid = 0)
 {
     $shells = array('' => '/sbin/nologin');
