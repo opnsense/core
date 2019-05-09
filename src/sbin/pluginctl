@@ -2,6 +2,7 @@
 <?php
 
 /*
+ * Copyright (C) 2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -34,15 +35,38 @@ require_once 'interfaces.inc';
 require_once 'filter.inc';
 require_once 'auth.inc';
 
-if (!empty($argv[1])) {
-    /* we have a hook specified, copy args */
-    $args = $argv;
-    /* first argument is command */
-    array_shift($args);
-    /* second argument is hook */
-    $hook = array_shift($args);
-    /* other arguments are passed as is */
-    plugins_configure($hook, true, $args);
-} else {
-    echo "Nothing to do.\n";
+if (empty($argv[1])) {
+    $commands = [];
+
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
+        $func = sprintf('%s_configure', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $when => $worker) {
+                $commands[$when] = 1;
+            }
+        }
+    }
+
+    $commands = array_keys($commands);
+    sort($commands);
+
+    foreach ($commands as $command) {
+        echo "$command\n";
+    }
+
+    exit(0);
 }
+
+/* we have a hook specified, copy args */
+$args = $argv;
+/* first argument is command */
+array_shift($args);
+/* second argument is hook */
+$hook = array_shift($args);
+/* other arguments are passed as is */
+plugins_configure($hook, true, $args);
