@@ -504,15 +504,19 @@ class LDAP extends Base implements IAuthConnector
                               && empty($ldap_groups[(string)$group->name])) {
                             unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
                             syslog(LOG_NOTICE, sprintf(
-                              'User: policy change for %s unlink group %s', $username, (string)$group->name
+                                'User: policy change for %s unlink group %s',
+                                $username,
+                                (string)$group->name
                             ));
                         } elseif (!in_array((string)$user->uid, (array)$group->member)
                               && !empty($ldap_groups[(string)$group->name])) {
                             syslog(LOG_NOTICE, sprintf(
-                              'User: policy change for %s link group %s [%s]',
-                              $username, (string)$group->name, $ldap_groups[(string)$group->name]
+                                'User: policy change for %s link group %s [%s]',
+                                $username,
+                                (string)$group->name,
+                                $ldap_groups[(string)$group->name]
                             ));
-                            $group->addChild('member',  (string)$user->uid);
+                            $group->addChild('member', (string)$user->uid);
                         }
                     }
                 }
