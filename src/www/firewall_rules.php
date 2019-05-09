@@ -399,7 +399,6 @@ $( document ).ready(function() {
 
   // link category select/search
   $("#fw_category").change(function(){
-      var stripe_color = 'transparent';
       var selected_values = [];
       $("#fw_category > option:selected").each(function(){
           if ($(this).val() != "") {
@@ -411,25 +410,11 @@ $( document ).ready(function() {
           }
       });
       $(".rule").each(function(){
-          // save zebra color
-          if ( $(this).children(0).css("background-color") != 'transparent') {
-              $("#fw_category").data('stripe_color', $(this).children(0).css("background-color"));
-          }
-
           if (selected_values.indexOf($(this).data('category')) == -1 && selected_values.length > 0) {
               $(this).hide();
           } else {
               $(this).show();
           }
-      });
-
-      $(".opnsense-rules").removeClass("table-striped");
-      // add stripes again
-      $(".rule:visible").each(function (index) {
-        $(this).css("background-color", "inherit");
-        if ( index % 2 == 0) {
-          $(this).css("background-color", $("#fw_category").data('stripe_color'));
-        }
       });
 
       // hook into tab changes, keep selected category/categories when following link
@@ -452,11 +437,8 @@ $( document ).ready(function() {
             $(this).val($(this).data('link') + add_link);
           }
       });
+      $(".opnsense-rules").change();
   });
-  $("#fw_category").change();
-
-  // XXX striping seems broken after here...
-  $(".opnsense-rules").addClass("table-striped");
 
   // hide category search when not used
   if ($("#fw_category > option").length == 0) {
@@ -494,14 +476,30 @@ $( document ).ready(function() {
       $("#internal-rule-count").text($("tr.internal-rule").length);
   }
 
+  // our usual zebra striping doesn't respect hidden rows, hook repaint on .opnsense-rules change() and fire initially
+  $(".opnsense-rules > tbody > tr").each(function(){
+      // save zebra color
+      let tr_color = $(this).children(0).css("background-color");
+      if (tr_color != 'transparent' && !tr_color.includes('(0, 0, 0')) {
+          $("#fw_category").data('stripe_color', tr_color);
+      }
+  });
+  $(".opnsense-rules").removeClass("table-striped");
+  $(".opnsense-rules").change(function(){
+      $(".opnsense-rules > tbody > tr:visible").each(function (index) {
+          $(this).css("background-color", "inherit");
+          if ( index % 2 == 0) {
+              $(this).css("background-color", $("#fw_category").data('stripe_color'));
+          }
+      });
+  });
+  //
+  $("#fw_category").change();
   $("#expand-internal").click(function(event){
       event.preventDefault();
       $(".internal-rule").toggle();
-      $(".opnsense-rules").removeClass("table-striped");
-      $(".opnsense-rules").addClass("table-striped");
+      $(".opnsense-rules").change();
   });
-
-
 });
 </script>
 <style>
@@ -576,7 +574,7 @@ $( document ).ready(function() {
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive">
-                <table class="table table-condensed table-hover opnsense-rules">
+                <table class="table table-condensed table-hover table-striped opnsense-rules">
                   <tbody>
                     <tr>
                       <td><input type="checkbox" id="selectAll"></td>
@@ -850,7 +848,7 @@ $( document ).ready(function() {
                   </tr>
                 </tbody>
               </table>
-              <table class="table table-responsive table-condensed opnsense-rules">
+              <table class="table table-responsive table-condensed table-striped opnsense-rules">
                 <tbody>
                   <tr class="hidden-xs hidden-sm">
                     <td>
