@@ -117,6 +117,11 @@ class LDAP extends Base implements IAuthConnector
     private $ldapSyncMemberOf = false;
 
     /**
+     * limit the groups which will be considered for sync, empty means all
+     */
+    private $ldapSyncMemberOfLimit = null;
+
+    /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
     private $lastAuthProperties = array();
@@ -245,7 +250,8 @@ class LDAP extends Base implements IAuthConnector
             "ldap_scope" => "ldapScope",
             "local_users" => "userDNmap",
             "ldap_read_properties" => "ldapReadProperties",
-            "ldap_sync_memberof" => "ldapSyncMemberOf"
+            "ldap_sync_memberof" => "ldapSyncMemberOf",
+            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit"
         );
 
         // map properties 1-on-1
@@ -480,8 +486,13 @@ class LDAP extends Base implements IAuthConnector
                     $ldap_groups[explode(",", substr($member, 3))[0]] = $member;
                 }
             }
-            // XXX: add list of enabled groups (all when empty), so we can ignore some local groups if needed
-            $sync_groups = $known_groups;
+            // list of enabled groups (all when empty), so we can ignore some local groups if needed
+            if (!empty($this->ldapSyncMemberOfLimit)) {
+                $sync_groups = explode(",", $this->ldapSyncMemberOfLimit);
+            } else {
+               $sync_groups = $known_groups;
+            }
+            //
             // sort groups and intersect with $sync_groups to determine difference.
             natcasesort($sync_groups);
             natcasesort($user_groups);
