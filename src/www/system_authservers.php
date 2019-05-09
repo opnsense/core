@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = $_GET['act'];
     }
     $pconfig = array();
+    $pconfig['ldap_sync_memberof_groups'] = array();
     if ($act == "new") {
         $pconfig['ldap_protver'] = 3;
         $pconfig['radius_srvcs'] = "both";
@@ -90,6 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
             $pconfig['ldap_sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
+                $pconfig['ldap_sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
+            }
         } elseif ($pconfig['type'] == "radius") {
             $pconfig['radius_host'] = $a_server[$id]['host'];
             $pconfig['radius_auth_port'] = $a_server[$id]['radius_auth_port'];
@@ -242,6 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['ldap_sync_memberof']);
+              $server['ldap_sync_memberof_groups'] = implode(",", $pconfig['ldap_sync_memberof_groups']);
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
@@ -483,8 +488,10 @@ $( document ).ready(function() {
     $("#ldap_read_properties").change(function(){
         if ($(this).is(":checked")) {
             $("#ldap_sync_memberof").prop('disabled', false);
+            $("#ldap_sync_memberof_groups").prop('disabled', false);
         } else {
             $("#ldap_sync_memberof").prop('disabled', true);
+            $("#ldap_sync_memberof_groups").prop('disabled', true);
         }
     });
     $("#ldap_read_properties").change();
@@ -765,6 +772,23 @@ endif; ?>
                                   "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
                                   "Group memberships will be persisted in OPNsense. ".
                                   "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_sync_memberof_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Limit groups'); ?></td>
+                  <td>
+                    <select name='ldap_sync_memberof_groups[]' id="ldap_sync_memberof_groups" class="selectpicker" multiple="multiple">
+<?php
+                    foreach (config_read_array('system', 'group') as $group):
+                        $selected = in_array($group['name'], $pconfig['ldap_sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
+                      <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_ldap_sync_memberof_groups">
+                      <?= gettext("Limit the groups which may be used by ldap, keep empty to consider all local groups in OPNsense. ".
+                                  "When groups are selected, you can assign unassigned groups to the user manually ");?>
                     </div>
                   </td>
                 </tr>
