@@ -574,7 +574,7 @@ $( document ).ready(function() {
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive">
-                <table class="table table-condensed table-hover table-striped opnsense-rules">
+                <table class="table table-condensed table-striped opnsense-rules">
                   <tbody>
                     <tr>
                       <td><input type="checkbox" id="selectAll"></td>
@@ -848,7 +848,7 @@ $( document ).ready(function() {
                   </tr>
                 </tbody>
               </table>
-              <table class="table table-responsive table-condensed table-striped opnsense-rules">
+              <table class="table table-condensed table-striped opnsense-rules">
                 <tbody>
                   <tr class="hidden-xs hidden-sm">
                     <td>
