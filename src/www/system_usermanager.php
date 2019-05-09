@@ -998,7 +998,7 @@ $( document ).ready(function() {
 <?php
                         if (isset($userent['disabled'])) {
                             $usrimg = 'text-muted';
-                        } elseif (userHasPrivilege($userent, 'page-all')) {
+                        } elseif (userIsAdmin($userent['name'])) {
                             $usrimg = 'text-danger';
                         } else {
                             $usrimg = 'text-info';
