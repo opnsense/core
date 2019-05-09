@@ -350,6 +350,13 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
+function userIsAdmin($username)
+{
+    $user = getUserEntry($username);
+
+    return userHasPrivilege($user, 'page-all');
+}
+
 function auth_get_shells($uid = 0)
 {
     $shells = array('' => '/sbin/nologin');
@@ -480,7 +487,7 @@ function local_user_set(&$user, $force_password = false)
     }
 
     /* admins access gives wheely rights */
-    if (userHasPrivilege($user, 'page-all')) {
+    if (userIsAdmin($user['name'])) {
         $user_group = 'wheel';
     }
 
