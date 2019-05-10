@@ -72,6 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['orphan']) && ($pconfig['orphan'] < 0 || $pconfig['orphan'] > 15 || !is_numeric($pconfig['orphan']))) {
         $input_errors[] = gettext("Orphan mode must be a value between 0..15");
     }
+    $prev_opt = !empty($a_ntpd['custom_options']) ? $a_ntpd['custom_options'] : "";
+    if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+        $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
+    }
 
     // swap fields, really stupid field usage which we are not going to change now....
     foreach (array('kod', 'nomodify', 'nopeer', 'notrap') as $fieldname) {
@@ -240,7 +244,7 @@ include("head.inc");
                           if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface)) {
                               continue;
                           }?>
-                          <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['interface']) ?" selected=\"selected\"" : "";?>>
+                          <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>
                               <?=htmlspecialchars($ifacename);?>
                           </option>
 <?php
@@ -411,6 +415,7 @@ include("head.inc");
                       <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
                         <strong><?=gettext("Advanced");?><br /></strong>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+                        <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?><br/>
                         <?= gettext('Enter any additional options you would like to add to the network time configuration here, separated by a space or newline.') ?>
                       </div>
                     </td>
