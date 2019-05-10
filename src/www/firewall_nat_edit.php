@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['protocol'] = "tcp";
     $pconfig['srcbeginport'] = "any";
     $pconfig['srcendport'] = "any";
-    $pconfig['interface'] = "wan";
+    $pconfig['interface'] = ["wan"];
     $pconfig['dstbeginport'] = 80 ;
     $pconfig['dstendport'] = 80 ;
     $pconfig['local-port'] = 80;
@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // fields with some kind of logic.
         $pconfig['disabled'] = isset($a_nat[$configId]['disabled']);
         $pconfig['nordr'] = isset($a_nat[$configId]['nordr']);
+        $pconfig['interface'] = explode(",", $pconfig['interface']);
         address_to_pconfig($a_nat[$configId]['source'], $pconfig['src'],
           $pconfig['srcmask'], $pconfig['srcnot'],
           $pconfig['srcbeginport'], $pconfig['srcendport']);
@@ -84,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
     } elseif (isset($_GET['template']) && $_GET['template'] == 'transparent_proxy') {
         // new rule for transparent proxy reflection, to use as sample
-        $pconfig['interface'] = "lan";
+        $pconfig['interface'] = ["lan"];
         $pconfig['src'] = "lan";
         $pconfig['dst'] = "any";
         $pconfig['ipprotocol'] = "inet";
@@ -210,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['protocol'] != 'any') {
             $natent['protocol'] = $pconfig['protocol'];
         }
-        $natent['interface'] = $pconfig['interface'];
+        $natent['interface'] = implode(",", $pconfig['interface']);
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
         $natent['descr'] = $pconfig['descr'];
         $natent['tag'] = $pconfig['tag'];
@@ -297,6 +298,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $filterent['destination'] = array();
             }
             $filterent['destination']['address'] = $pconfig['target'];
+            if (count($pconfig['interface']) > 1) {
+                $filterent['floating'] = true;
+                $filterent['quick'] = "yes";
+            } else {
+                unset($filterent['floating']);
+                unset($filterent['quick']);
+            }
 
             if (!empty($pconfig['log'])) {
                 $filterent['log'] = true;
@@ -532,10 +540,10 @@ $( document ).ready(function() {
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <div class="input-group">
-                      <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
+                      <select name="interface[]" class="selectpicker" data-width="auto" data-live-search="true" multiple="multiple">
 <?php
                         foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
-                        <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
                         <?php endforeach; ?>
