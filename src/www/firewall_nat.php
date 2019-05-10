@@ -363,7 +363,11 @@ $( document ).ready(function() {
                         </a>
                       </td>
                       <td>
-                        <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr(isset($natent['interface']) ? $natent['interface'] : "wan"));?>
+<?php
+                          foreach (explode(",", $natent['interface']) as $intf):?>
+                              <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($intf));?>
+<?php
+                          endforeach;?>
                       </td>
                       <td>
                         <?=strtoupper($natent['protocol']);?>
