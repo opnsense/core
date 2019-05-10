@@ -342,6 +342,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+        $prev_opt = (isset($id) && !empty($a_server[$id])) ? $a_server[$id]['custom_options'] : "";
+        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+            $input_errors[] = gettext("Advanced options may only be edited by admins (role page-all), due to the increased possibility of privilege escalation.");
+        }
 
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -1548,6 +1552,7 @@ endif; ?>
                       <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
                       <td>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+                        <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
                         <div class="hidden" data-for="help_for_custom_options">
                           <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
                         </div>

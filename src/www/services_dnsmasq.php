@@ -70,7 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext('Unbound is still active on the same port. Disable it before enabling Dnsmasq.');
         }
 
-        if (!empty($pconfig['custom_options'])) {
+        $prev_opt = !empty($config['dnsmasq']['custom_options']) ? $config['dnsmasq']['custom_options'] : "";
+        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+            $input_errors[] = gettext("Advanced options may only be edited by admins (role page-all), due to the increased possibility of privilege escalation.");
+        }
+        if (!empty($pconfig['custom_options']) && userIsAdmin($_SESSION['Username'])) {
             $args = '';
             foreach (preg_split('/\s+/', str_replace("\r\n", "\n", $pconfig['custom_options'])) as $c) {
                 if (!empty($c)) {
@@ -386,6 +390,7 @@ $( document ).ready(function() {
                     </div>
                     <div id="showadv" <?= empty($pconfig['custom_options']) ? "style='display:none'" : "" ?>>
                       <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+                      <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
                     </div>
                     <div class="hidden" data-for="help_for_advanced">
                       <?=gettext("Enter any additional options you would like to add to the Dnsmasq configuration here, separated by a space or newline"); ?>
