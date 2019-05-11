@@ -644,7 +644,7 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm">
                         <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
                       </td>
-                      <td class="view-info hidden-xs hidden-sm"><?= gettext('N/A') ?></td>
+                      <td class="view-info hidden-xs hidden-sm">*</td>
                       <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['evaluations'] : gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['states'] : gettext('N/A') ?></td>
                       <td class="view-stats"><?= !empty($rule_stats) ? $rule_stats['packets'] : gettext('N/A') ?></td>
