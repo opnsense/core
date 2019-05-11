@@ -332,7 +332,7 @@ include("fbegin.inc");?>
 <?php
           print_service_banner('livecd');
           $crash_report = get_crash_report();
-          if ($crash_report != '') {
+          if (!empty($crash_report)) {
               print_info_box($crash_report);
           }?>
         </div>
