@@ -473,6 +473,10 @@ date_default_timezone_set($timezone);
 
 function get_crash_report($pedantic = false)
 {
+    if (!userIsAdmin($_SESSION['Username'])) {
+        return;
+    }
+
     $savemsg = sprintf(
         gettext('A problem was detected. Click %shere%s for more information.'),
         '<a href="/crash_reporter.php">',
