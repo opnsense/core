@@ -114,6 +114,10 @@ if (!empty($grouptmp)) {
     array_walk($grouptmp, 'interface_group_add_member');
 }
 
+if (count(link_interface_to_track6($interface, true))) {
+    plugins_configure('dhcp', false, array('inet6'));
+}
+
 system_resolvconf_generate();
 system_hosts_generate();
 
@@ -134,10 +138,6 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     }
 
     @unlink($cacheip_file);
-
-    if (count(link_interface_to_track6($interface, true))) {
-        plugins_configure('dhcp', false, array('inet6'));
-    }
 
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
