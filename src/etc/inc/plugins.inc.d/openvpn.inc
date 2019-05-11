@@ -1324,9 +1324,9 @@ function openvpn_get_server_status($server, $socket)
         fclose($fp);
     } else {
         $conn = array();
-        $conn['common_name'] = "[error]";
-        $conn['remote_host'] = "Unable to contact daemon";
-        $conn['virtual_addr'] = "Service not running?";
+        $conn['common_name'] = '[error]'; // kind of a marker value now
+        $conn['remote_host'] = gettext('Unable to contact daemon');
+        $conn['virtual_addr'] = gettext('Service not running?');
         $conn['bytes_recv'] = 0;
         $conn['bytes_sent'] = 0;
         $conn['connect_time'] = 0;
@@ -1438,8 +1438,8 @@ function openvpn_get_client_status($client, $socket)
         }
         fclose($fp);
     } else {
-        $client['remote_host'] = "Unable to contact daemon";
-        $client['virtual_addr'] = "Service not running?";
+        $client['remote_host'] = gettext('Unable to contact daemon');
+        $client['virtual_addr'] = gettext('Service not running?');
         $client['bytes_recv'] = 0;
         $client['bytes_sent'] = 0;
         $client['connect_time'] = 0;
