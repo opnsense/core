@@ -176,10 +176,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             unset($config['interfaces'][$id]);  /* delete the specified OPTn or LAN*/
 
-            /* XXX what about DHCPv6? */
             if (isset($config['dhcpd'][$id])) {
                 unset($config['dhcpd'][$id]);
-                plugins_configure('dhcp');
+                plugins_configure('dhcp', false, array('inet'));
+            }
+            if (isset($config['dhcpdv6'][$id])) {
+                unset($config['dhcpdv6'][$id]);
+                plugins_configure('dhcp', false, array('inet6'));
             }
             if (isset($config['filter']['rule'])) {
                 foreach ($config['filter']['rule'] as $x => $rule) {
