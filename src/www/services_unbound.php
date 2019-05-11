@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $prev_opt = !empty($a_unboundcfg['custom_options']) ? $a_unboundcfg['custom_options'] : "";
         if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
-            $input_errors[] = gettext("Advanced options may only be edited by admins (role page-all), due to the increased possibility of privilege escalation.");
+            $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
         }
 
         if (count($input_errors) == 0) {
