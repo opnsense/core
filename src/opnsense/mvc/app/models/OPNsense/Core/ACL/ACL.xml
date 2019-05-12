@@ -47,7 +47,7 @@
         <name>Dashboard (all)</name>
         <patterns>
             <pattern>index.php*</pattern>
-            <pattern>*.widget.php*</pattern>
+            <pattern>widgets/widgets/*.widget.php*</pattern>
             <pattern>widgets/api/get.php*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
         </patterns>
@@ -55,7 +55,7 @@
     <page-dashboard-widgets>
         <name>Dashboard (widgets only)</name>
         <patterns>
-            <pattern>*.widget.php*</pattern>
+            <pattern>widgets/widgets/*.widget.php*</pattern>
         </patterns>
     </page-dashboard-widgets>
     <page-diagnostics-authentication>
