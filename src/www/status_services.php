@@ -33,7 +33,6 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
-require_once("rrd.inc");
 
 if (!empty($_POST['service'])) {
     $service_name = $_POST['service'];

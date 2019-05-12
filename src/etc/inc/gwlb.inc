@@ -60,9 +60,6 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
         @unlink($process['socket']);
     }
 
-    @mkdir('/var/db/rrd', 0775);
-    @chown('/var/db/rrd', 'nobody');
-
     $gateways_arr_all = return_gateways_array(true);
     $monitor_ips = array();
 
@@ -181,6 +178,7 @@ function setup_gateways_monitor($verbose = false, $gwname = null)
          * Create custom RRD graph with suitable settings that
          * may differ from the daemon's standards.
          */
+        require_once("rrd.inc");
         rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd");
 
         /* log warnings via syslog */
