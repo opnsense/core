@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/usr/local/sbin/ipsec', 'leases'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
-        data = output_stream.read().strip()
+        data = output_stream.read().decode().strip()
         current_pool=None
         for line in data.split('\n'):
             if line.find('Leases in pool') > -1:
