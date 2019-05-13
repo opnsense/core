@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,8 @@ def unbound_control(commands, output_stream=None):
         :param output_stream: (optional)output stream
         :return: None
     """
-    output_stream = open(os.devnull, 'w')
+    if output_stream is None:
+        output_stream = open(os.devnull, 'w')
     subprocess.check_call(['/usr/sbin/chroot', '-u', 'unbound', '-g', 'unbound', '/',
                            '/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf'] + commands,
                           stdout=output_stream, stderr=subprocess.STDOUT)
@@ -60,8 +61,8 @@ def unbound_known_addresses():
     result = list()
     with tempfile.NamedTemporaryFile() as output_stream:
         unbound_control(['list_local_data'], output_stream)
-        for line in output_stream.read().split('\n'):
-            parts = line.split()
+        for line in output_stream:
+            parts = line.decode().split()
             if len(parts) > 4 and parts[3] == 'A':
                 result.append(parts[4])
     return result
@@ -105,12 +106,12 @@ def main():
             # dump dns output to target
             with open(app_params['target'], 'w') as unbound_conf:
                 for address in cached_leases:
-                    unbound_conf.write('local-data-ptr: "%s %s.%s"\n' % (address,
-                                                                         cached_leases[address]['client-hostname'],
-                                                                         app_params['domain']))
-                    unbound_conf.write('local-data: "%s.%s IN A %s"\n' % (cached_leases[address]['client-hostname'],
-                                                                          app_params['domain'],
-                                                                          address))
+                    unbound_conf.write('local-data-ptr: "%s %s.%s"\n' % (
+                        address, cached_leases[address]['client-hostname'], app_params['domain'])
+                    )
+                    unbound_conf.write('local-data: "%s.%s IN A %s"\n' % (
+                        cached_leases[address]['client-hostname'], app_params['domain'], address)
+                    )
             # signal unbound
             for address in cached_leases:
                 if address not in known_addresses:
