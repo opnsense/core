@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.6
+#!/usr/local/bin/python3
 
 """
     Copyright (c) 2018-2019 Deciso B.V.
