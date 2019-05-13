@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,11 +45,11 @@ def parse_sa(in_conn):
     result = {'local-addrs': '', 'remote-addrs': '', 'children': '', 'local-id': '', 'remote-id': ''}
     result['version'] = in_conn['version']
     if 'local_addrs' in in_conn:
-        result['local-addrs'] = ','.join(in_conn['local_addrs'])
+        result['local-addrs'] = b','.join(in_conn['local_addrs'])
     elif 'local-host' in in_conn:
         result['local-addrs'] = in_conn['local-host']
     if 'remote_addrs'  in in_conn:
-        result['remote-addrs'] =  ','.join(in_conn['remote_addrs'])
+        result['remote-addrs'] =  b','.join(in_conn['remote_addrs'])
     elif 'remote-host' in in_conn:
         result['remote-addrs'] = in_conn['remote-host']
     if 'children' in in_conn:
@@ -76,8 +76,8 @@ for conns in s.list_conns():
                 if 'id' in conns[connection_id][connKey]:
                     result[connection_id]['remote-id'] = conns[connection_id][connKey]['id']
                 result[connection_id]['remote-class'].append(conns[connection_id][connKey]['class'])
-        result[connection_id]['local-class'] = '+'.join(result[connection_id]['local-class'])
-        result[connection_id]['remote-class'] = '+'.join(result[connection_id]['remote-class'])
+        result[connection_id]['local-class'] = b'+'.join(result[connection_id]['local-class'])
+        result[connection_id]['remote-class'] = b'+'.join(result[connection_id]['remote-class'])
 
 # attach Security Associations
 for sas in s.list_sas():
