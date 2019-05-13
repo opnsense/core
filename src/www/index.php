@@ -124,7 +124,11 @@ include("fbegin.inc");?>
         <section class="col-xs-12">
           <div class="content-box" style="padding: 20px;">
             <div class="table-responsive">
-              <img src="/ui/themes/<?=$themename;?>/build/images/default-logo.<?=file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg") ? "svg" : "png";?>" border="0" alt="logo" style="max-width:380px;" />
+<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php else: ?>
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php endif ?>
               <br />
               <div class="content-box-main" style="padding-bottom:0px;">
                 <?php
