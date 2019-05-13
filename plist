@@ -1,5 +1,6 @@
 /boot/brand-opnsense.4th
 /boot/logo-hourglass.4th
+/usr/local/bin/python3
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
 /usr/local/etc/dh-parameters.2048.rfc7919
