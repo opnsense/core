@@ -631,7 +631,6 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/daemonize.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/db.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/ipfw.py
-/usr/local/opnsense/scripts/OPNsense/CaptivePortal/listARPtable.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/listClients.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/overlay_template.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php
