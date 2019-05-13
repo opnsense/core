@@ -215,6 +215,12 @@ name:
 depends:
 	@echo ${CORE_DEPENDS}
 
+.if ${.TARGETS:Mupgrade}
+PKG_FORMAT?=	tar
+.else
+PKG_FORMAT?=	txz
+.endif
+
 PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 		+PRE_UPGRADE +POST_UPGRADE \
 		+PRE_DEINSTALL +POST_DEINSTALL
@@ -284,8 +290,8 @@ package: plist-check package-check clean-wrksrc
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@echo " done"
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
-	@PORTSDIR=${.CURDIR} ${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
-	    -p ${WRKSRC}/plist -o ${PKGDIR}
+	@PORTSDIR=${.CURDIR} ${PKG} create -f ${PKG_FORMAT} -v -m ${WRKSRC} \
+	    -r ${WRKSRC} -p ${WRKSRC}/plist -o ${PKGDIR}
 
 upgrade-check:
 	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
@@ -295,8 +301,9 @@ upgrade-check:
 
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
-	@${PKG} add ${PKGDIR}/*.txz
-	@${LOCALBASE}/etc/rc.restart_webgui
+	@${PKG} add ${PKGDIR}/*.${PKG_FORMAT}
+	@touch ${LOCALBASE}/opnsense/www/index.php
+	@pluginctl webgui
 
 lint-shell:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
