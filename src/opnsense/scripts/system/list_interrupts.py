@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,12 +39,12 @@ if __name__ == '__main__':
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/usr/bin/vmstat', '-i'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
-        data = output_stream.read().strip()
 
         intf = None
         interrupts = dict()
         interrupt_map = dict()
-        for line in data.split('\n'):
+        for line in output_stream:
+            line = line.decode()
             if line.find(':') > -1:
                 intrp = line.split(':')[0].strip()
                 parts = ':'.join(line.split(':')[1:]).split()
