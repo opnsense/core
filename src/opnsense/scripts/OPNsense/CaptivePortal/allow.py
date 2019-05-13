@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -75,6 +75,6 @@ else:
 # output result as plain text or json
 if parameters['output_type'] != 'json':
     for item in response:
-        print '%20s %s' % (item, response[item])
+        print ('%20s %s' % (item, response[item]))
 else:
     print(ujson.dumps(response))

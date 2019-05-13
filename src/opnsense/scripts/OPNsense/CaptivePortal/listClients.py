@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,22 +45,22 @@ for param in sys.argv[1:]:
         current_param = None
 
 if parameters['zoneid'] is not None:
-    cpDB = DB()
-    response = cpDB.list_clients(parameters['zoneid'])
+    response = DB().list_clients(parameters['zoneid'])
 else:
     response = []
 
 # output result as plain text or json
 if parameters['output_type'] != 'json':
-    heading = {'sessionId': 'sessionid',
-               'userName': 'username',
-               'ipAddress': 'ip_address',
-               'macAddress': 'mac_address',
-               'total_bytes': 'total_bytes',
-               'idletime': 'idletime',
-               'totaltime': 'totaltime',
-               'acc_timeout': 'acc_session_timeout'
-               }
+    heading = {
+        'sessionId': 'sessionid',
+        'userName': 'username',
+        'ipAddress': 'ip_address',
+        'macAddress': 'mac_address',
+        'total_bytes': 'total_bytes',
+        'idletime': 'idletime',
+        'totaltime': 'totaltime',
+        'acc_timeout': 'acc_session_timeout'
+    }
     heading_format = '%(sessionId)-30s %(userName)-25s %(ipAddress)-20s %(macAddress)-20s '\
                    + '%(total_bytes)-15s %(idletime)-10s %(totaltime)-10s %(acc_timeout)-10s'
     print (heading_format % heading)

@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,18 +46,16 @@ for param in sys.argv[1:]:
 # disconnect client
 response = {'terminateCause': 'UNKNOWN'}
 if parameters['sessionid'] is not None and parameters['zoneid'] is not None:
-    cp_db = DB()
     # remove client
-    client_session_info = cp_db.del_client(parameters['zoneid'], parameters['sessionid'])
+    client_session_info =  DB().del_client(parameters['zoneid'], parameters['sessionid'])
     if client_session_info is not None:
-        cpIPFW = IPFW()
-        cpIPFW.delete(parameters['zoneid'], client_session_info['ip_address'])
+        IPFW().delete(parameters['zoneid'], client_session_info['ip_address'])
         client_session_info['terminateCause'] = 'User-Request'
         response = client_session_info
 
 # output result as plain text or json
 if parameters['output_type'] != 'json':
     for item in response:
-        print '%20s %s' % (item, response[item])
+        print ('%20s %s' % (item, response[item]))
 else:
     print(ujson.dumps(response))

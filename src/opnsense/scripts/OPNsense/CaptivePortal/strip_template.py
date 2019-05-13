@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,10 @@
 import sys
 import os.path
 import binascii
-import StringIO
 import zipfile
 import ujson
+import base64
+from io import BytesIO
 from hashlib import md5
 
 htdocs_default_root = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
@@ -60,7 +61,7 @@ if len(sys.argv) < 2:
 else:
     input_filename = '/tmp/%s' % os.path.basename(sys.argv[1])
     try:
-        zip_content = open(input_filename, 'r').read().decode('base64')
+        zip_content = base64.b64decode(open(input_filename, 'rb').read())
     except binascii.Error:
         # not in base64
         response['error'] = 'Not a base64 encoded file'
@@ -70,8 +71,8 @@ else:
 
 if 'error' not in response:
     exclude_list = load_exclude_list()
-    input_data = StringIO.StringIO(zip_content)
-    output_data = StringIO.StringIO()
+    input_data = BytesIO(zip_content)
+    output_data = BytesIO()
     with zipfile.ZipFile(input_data, mode='r', compression=zipfile.ZIP_DEFLATED) as zf_in:
         with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as zf_out:
             # the zip content may be in a folder, use index to track actual location
@@ -101,7 +102,7 @@ if 'error' not in response:
                                 # new file, always write
                                 zf_out.writestr(filename, file_data)
         if 'error' not in response:
-            response['payload'] = output_data.getvalue().encode('base64').strip().replace('\n', '')
+            response['payload'] = base64.b64encode(output_data.getvalue()).decode().replace('\n', '')
             response['size'] = len(response['payload'])
 
 print(ujson.dumps(response))

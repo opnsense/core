@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,14 @@ import sys
 import ujson
 import binascii
 import zipfile
-import StringIO
+import base64
+from io import BytesIO
 from lib import OPNsenseConfig
 
 response = dict()
 source_directory = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
 
-output_data = StringIO.StringIO()
+output_data = BytesIO()
 
 with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
     # overlay user template data
@@ -52,7 +53,7 @@ with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as
         template_content = cnf.get_template(sys.argv[1])
         if template_content is not None:
             try:
-                input_data = StringIO.StringIO(template_content.decode('base64'))
+                input_data = BytesIO(base64.b64decode(template_content))
                 with zipfile.ZipFile(input_data, mode='r', compression=zipfile.ZIP_DEFLATED) as zf_in:
                     for zf_info in zf_in.infolist():
                         user_filenames.append(zf_info.filename)
@@ -70,8 +71,9 @@ with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as
             filename = '%s/%s' % (root, filename)
             output_filename = filename[len(source_directory)+1:]
             if output_filename not in user_filenames:
-                zf.writestr(output_filename, open(filename, 'rb').read())
+                tmp = open(filename, 'rb').read()
+                zf.writestr(output_filename, tmp)
 
-response['payload'] = output_data.getvalue().encode('base64')
+response['payload'] = base64.b64encode(output_data.getvalue()).decode()
 response['size'] = len(response['payload'])
 print(ujson.dumps(response))
