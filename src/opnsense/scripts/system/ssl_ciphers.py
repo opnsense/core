@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     rfc5246_file = '%s/rfc5246_cipher_suites.csv' % os.path.dirname(os.path.realpath(__file__))
     rfc5246 = dict()
     if os.path.isfile(rfc5246_file):
-        with open(rfc5246_file, 'rb') as csvfile:
+        with open(rfc5246_file, 'r') as csvfile:
             for row in csv.reader(csvfile, delimiter=',', quotechar='"'):
                 rfc5246[row[0]] = {'description': row[1]}
 
@@ -48,8 +48,8 @@ if __name__ == '__main__':
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/usr/local/bin/openssl', 'ciphers', '-V'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
-        for line in output_stream.read().strip().split('\n'):
-            parts = line.strip().split()
+        for line in output_stream:
+            parts = line.decode().strip().split()
             if len(parts) > 1:
                 cipher_id = parts[0]
                 cipher_key = parts[2]
@@ -59,4 +59,4 @@ if __name__ == '__main__':
                 if cipher_id in rfc5246:
                     item['description'] = rfc5246[cipher_id]['description']
                 result[cipher_key] = item
-    print ujson.dumps(result)
+    print (ujson.dumps(result))
