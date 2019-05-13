@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,8 @@ class IPFW(object):
                                   stdout=output_stream,
                                   stderr=devnull)
             output_stream.seek(0)
-            for line in output_stream.read().split('\n'):
+            for line in output_stream:
+                line = line.decode()
                 if line.split(' ')[0].strip() != "":
                     # process / 32 nets as single addresses to align better with the rule syntax
                     # and local administration.
@@ -103,8 +104,8 @@ class IPFW(object):
                                   stdout=output_stream,
                                   stderr=devnull)
             output_stream.seek(0)
-            for line in output_stream.read().split('\n'):
-                parts = line.split()
+            for line in output_stream:
+                parts = line.decode().split()
                 if len(parts) > 5:
                     if 30001 <= int(parts[0]) <= 50000 and parts[4] == 'count':
                         line_pkts = int(parts[1])

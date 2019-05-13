@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -84,9 +84,14 @@ class DB(object):
         :return: active status (boolean)
         """
         cur = self._connection.cursor()
-        request = {'zoneid': zoneid, 'ip_address': ip_address, 'mac_address': mac_address}
+        request = {
+            'zoneid': zoneid,
+            'ip_address': ip_address,
+            'mac_address': mac_address
+        }
         cur.execute("""select   cc.sessionid         sessionId
                         ,       cc.authenticated_via authenticated_via
+                        , cc.ip_address
                        from     cp_clients cc
                        where    cc.deleted = 0
                        and      cc.zoneid = :zoneid
@@ -117,7 +122,7 @@ class DB(object):
         response['ipAddress'] = ip_address
         response['macAddress'] = mac_address
         response['startTime'] = time.time()  # record creation = sign-in time
-        response['sessionId'] = base64.b64encode(os.urandom(16))  # generate a new random session id
+        response['sessionId'] = base64.b64encode(os.urandom(16)).decode()  # generate a new random session id
 
         cur = self._connection.cursor()
         # set cp_client as deleted in case there's already a user logged-in at this ip address.
@@ -139,6 +144,8 @@ class DB(object):
     def update_client_ip(self, zoneid, sessionid, ip_address):
         """ change client ip address
         """
+        if type(sessionid) == bytes:
+            sessionid = sessionid.decode()
         cur = self._connection.cursor()
         cur.execute("""update cp_clients
                        set    ip_address = :ip_address
@@ -154,6 +161,8 @@ class DB(object):
         :param sessionid: session id
         :return: client info before removal or None if client not found
         """
+        if type(sessionid) == bytes:
+            sessionid = sessionid.decode()
         cur = self._connection.cursor()
         cur.execute(""" select  *
                         from    cp_clients

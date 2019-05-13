@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -50,13 +50,12 @@ class ARP(object):
         with tempfile.NamedTemporaryFile() as output_stream:
             subprocess.check_call(['/usr/sbin/arp', '-an'], stdout=output_stream, stderr=subprocess.STDOUT)
             output_stream.seek(0)
-            for line in output_stream.read().split('\n'):
-                line_parts = line.split()
+            for line in output_stream:
+                line_parts = line.decode().split()
 
                 if len(line_parts) < 6 or line_parts[2] != 'at' or line_parts[4] != 'on':
                     continue
-
-                if len(line_parts[1]) < 2 or line_parts[1][0] != '(' or line_parts[1][-1] != ')':
+                elif len(line_parts[1]) < 2 or line_parts[1][0] != '(' or line_parts[1][-1] != ')':
                     continue
 
                 address = line_parts[1][1:-1]

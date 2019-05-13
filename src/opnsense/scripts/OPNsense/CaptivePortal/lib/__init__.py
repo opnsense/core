@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 import os.path
 import stat
 import xml.etree.ElementTree
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 
 class Config(object):
@@ -67,12 +67,12 @@ class Config(object):
                     # convert allowed(MAC)addresses string to list
                     if 'allowedaddresses' in result[zoneid] and result[zoneid]['allowedaddresses'].strip() != '':
                         result[zoneid]['allowedaddresses'] = \
-                            map(lambda x: x.strip(), result[zoneid]['allowedaddresses'].split(','))
+                            [x.strip() for x in result[zoneid]['allowedaddresses'].split(',')]
                     else:
                         result[zoneid]['allowedaddresses'] = list()
                     if 'allowedmacaddresses' in result[zoneid] and result[zoneid]['allowedmacaddresses'].strip() != '':
                         result[zoneid]['allowedmacaddresses'] = \
-                            map(lambda x: x.strip(), result[zoneid]['allowedmacaddresses'].split(','))
+                            [x.strip() for x in result[zoneid]['allowedmacaddresses'].split(',')]
                     else:
                         result[zoneid]['allowedmacaddresses'] = list()
         return result
