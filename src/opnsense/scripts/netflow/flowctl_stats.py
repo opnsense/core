@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
     Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
@@ -40,7 +40,8 @@ if __name__ == '__main__':
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/usr/sbin/ngctl', 'list'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
-        for line in output_stream.read().split('\n'):
+        for line in output_stream:
+            line = line.decode()
             if line.find('netflow_') > -1:
                 netflow_nodes.append(line.split()[1])
 
@@ -50,8 +51,8 @@ if __name__ == '__main__':
             subprocess.call(['/usr/sbin/flowctl', '%s:' % netflow_node, 'show'],
                             stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
-            for line in output_stream.read().split('\n'):
-                fields = line.split()
+            for line in output_stream:
+                fields = line.decode().split()
                 if len(fields) >= 8 and fields[0] != 'SrcIf':
                     node_stats['Pkts'] += int(fields[7])
                     if fields[1] not in node_stats['SrcIPaddress']:
