@@ -116,7 +116,7 @@ class FlowParser:
             while True:
                 # header [version, len_words, reserved, fields]
                 hdata = flowh.read(8)
-                if hdata == '':
+                if hdata == b'':
                     break
                 header = struct.unpack('BBHI', hdata)
                 record = self._parse_binary(
