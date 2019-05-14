@@ -303,7 +303,7 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.${PKG_FORMAT}
-	@touch /usr/local/opnsense/www/index.php
+	@touch ${LOCALBASE}/opnsense/www/index.php
 	@pluginctl webgui
 
 lint-shell:
