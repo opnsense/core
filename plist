@@ -713,6 +713,7 @@
 /usr/local/opnsense/scripts/netflow/lib/aggregates/interface.py
 /usr/local/opnsense/scripts/netflow/lib/aggregates/ports.py
 /usr/local/opnsense/scripts/netflow/lib/aggregates/source.py
+/usr/local/opnsense/scripts/netflow/lib/flowparser.py
 /usr/local/opnsense/scripts/netflow/lib/parse.py
 /usr/local/opnsense/scripts/proxy/fetchACLs.py
 /usr/local/opnsense/scripts/proxy/generate_cert.php
