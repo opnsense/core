@@ -112,6 +112,9 @@ class FlowParser:
         """ iterate flowd log file
         :return:
         """
+        # pre-compile address formatters to save time
+        ip_formatv4 = ".".join(["{}" for i in xrange(4)])
+        ip_formatv6 = ":".join(["{}" for i in xrange(16)])
         with open(self._filename, 'rb') as flowh:
             while True:
                 # header [version, len_words, reserved, fields]
@@ -137,10 +140,10 @@ class FlowParser:
                 # concat ipv4/v6 fields into field without [4,6]
                 for key in self.field_definition_order:
                     if key in record:
-                        if key.endswith('4'):
-                            record[key[:-1]] = '.'.join(str(x) for x in record[key])
-                        elif key.endswith('6'):
-                            record[key[:-1]] = ':'.join(str(x) for x in record[key])
+                        if key.endswith('4') and len(record[key]) == 4:
+                            record[key[:-1]] = ip_formatv4.format(*record[key])
+                        elif key.endswith('6') and len(record[key]) == 16:
+                            record[key[:-1]] = ip_formatv6.format(*record[key])
 
                 # calculated values
                 record['flow_end'] = record['recv_sec'] - (record['sys_uptime_ms'] - record['flow_finish']) / 1000.0
