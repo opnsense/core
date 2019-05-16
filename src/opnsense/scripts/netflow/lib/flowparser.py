@@ -79,15 +79,21 @@ class FlowParser:
 
     def __init__(self, filename):
         self._filename = filename
+        # cache formatter vs byte length
+        self._fmt_cache = dict()
+        # pre-calculate powers of 2
+        self._pow = dict()
+        for idx in range(len(self.field_definition_order)):
+            self._pow[idx] = pow(2, idx)
 
-    @staticmethod
-    def calculate_size(fmt):
-        fmts = {'B': 1, 'H': 2, 'I': 4, 'Q': 8}
-        result = 0
-        for key in fmt:
-            if key in fmts:
-                result += fmts[key]
-        return result
+    def calculate_size(self, fmt):
+        if fmt not in self._fmt_cache:
+            fmts = {'B': 1, 'H': 2, 'I': 4, 'Q': 8}
+            self._fmt_cache[fmt] = 0
+            for key in fmt:
+                if key in fmts:
+                    self._fmt_cache[fmt] += fmts[key]
+        return self._fmt_cache[fmt]
 
     def _parse_binary(self, raw_data, data_fields):
         """ parse binary record
@@ -98,11 +104,14 @@ class FlowParser:
         raw_data_idx = 0
         raw_record = dict()
         for idx in range(len(self.field_definition_order)):
-            if pow(2, idx) & data_fields:
+            if self._pow[idx] & data_fields:
                 fieldname = self.field_definition_order[idx]
                 if fieldname in self.field_definition:
                     fsize = self.calculate_size(self.field_definition[fieldname])
-                    content = struct.unpack(self.field_definition[fieldname], raw_data[raw_data_idx:raw_data_idx + fsize])
+                    content = struct.unpack(
+                        self.field_definition[fieldname],
+                        raw_data[raw_data_idx:raw_data_idx + fsize]
+                    )
                     raw_record[fieldname] = content[0] if len(content) == 1 else content
                     raw_data_idx += fsize
 
@@ -140,9 +149,9 @@ class FlowParser:
                 # concat ipv4/v6 fields into field without [4,6]
                 for key in self.field_definition_order:
                     if key in record:
-                        if key.endswith('4') and len(record[key]) == 4:
+                        if key[-1] == '4' and len(record[key]) == 4:
                             record[key[:-1]] = ip_formatv4.format(*record[key])
-                        elif key.endswith('6') and len(record[key]) == 16:
+                        elif key[-1] == '6' and len(record[key]) == 16:
                             record[key[:-1]] = ip_formatv6.format(*record[key])
 
                 # calculated values
