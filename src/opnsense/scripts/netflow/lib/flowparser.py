@@ -140,6 +140,7 @@ class FlowParser:
                 record['sys_uptime_ms'] = record['agent_info'][0]
                 record['netflow_ver'] = record['agent_info'][3]
                 record['recv_sec'] = record['recv_time'][0]
+                record['recv'] = record['recv_sec']
                 record['recv_usec'] = record['recv_time'][1]
                 if 'proto_flags_tos' in record:
                     record['tcp_flags'] = record['proto_flags_tos'][0]
