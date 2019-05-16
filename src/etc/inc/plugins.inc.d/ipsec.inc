@@ -1151,9 +1151,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "mobike = yes";
                 }
 
-                if (isset($ph1ent['mobile'])) {
-                    $right_spec = "%any";
-                } else {
+                $right_spec = '%any';
+                $right_any = '';
+                if (!isset($ph1ent['mobile'])) {
                     $right_spec = $ph1ent['remote-gateway'];
 
                     if ($ph1ent['rightallowany']) {
