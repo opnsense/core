@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 """
     Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
@@ -160,7 +160,8 @@ class Main(object):
                     syslog.syslog(syslog.LOG_NOTICE, 'vacuum done')
             except:
                 syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
-                return
+                raise
+
             # rotate if needed
             check_rotate(self.config.flowd_source)
 
@@ -213,7 +214,7 @@ if __name__ == '__main__':
             sortby = 'cumulative'
             ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
             ps.print_stats()
-            print s.getvalue()
+            print (s.getvalue())
         else:
             Main()
     elif cmd_args.repair:
