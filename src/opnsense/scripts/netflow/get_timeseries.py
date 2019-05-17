@@ -61,7 +61,7 @@ if __name__ == '__main__':
                     record_key = []
                     for key_field in cmd_args.key_fields.split(','):
                         if key_field in record and record[key_field] is not None:
-                            record_key.append(record[key_field])
+                            record_key.append(str(record[key_field]))
                         else:
                             record_key.append('')
                     record_key = ','.join(record_key)
