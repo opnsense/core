@@ -267,7 +267,10 @@ class BaseFlowAggregator(object):
                 result_record = dict()
                 for field_indx in range(len(field_names)):
                     if len(record) > field_indx:
-                        result_record[field_names[field_indx]] = record[field_indx]
+                        if type(record[field_indx]) == bytes:
+                            result_record[field_names[field_indx]] = record[field_indx].decode()
+                        else:
+                            result_record[field_names[field_indx]] = record[field_indx]
                 if 'start_time' in result_record:
                     result_record['end_time'] = result_record['start_time'] \
                                                 + datetime.timedelta(seconds=self.resolution)
