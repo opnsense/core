@@ -57,4 +57,51 @@ class HS256Test extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($result);
     }
+
+
+    public function testCreateAndVerifyExpiredRejects() {
+
+        $hs256 = new HS256(HS256Test::$hmac_key);
+
+        $claims = array('iss' => 'OPNsense', 'sub' => 'Fabian', 'exp' => time() - 10);
+        $jwt = $hs256->sign($claims);
+
+        $result = $hs256->parseToken($jwt);
+
+        $this->assertFalse($result);
+    }
+    public function testCreateAndVerifyFutureTokenRejects() {
+
+        $hs256 = new HS256(HS256Test::$hmac_key);
+
+        $claims = array('iss' => 'OPNsense', 'sub' => 'Fabian', 'nbf' => time() + 1000000);
+        $jwt = $hs256->sign($claims);
+
+        $result = $hs256->parseToken($jwt);
+        $this->assertFalse($result);
+    }
+    public function testCreateAndVerifyCustomAccepts() {
+
+        $hs256 = new HS256(HS256Test::$hmac_key);
+
+        $claims = array('iss' => 'OPNsense', 'sub' => 'Fabian');
+        $jwt = $hs256->sign($claims);
+
+        $hs256->addVerifier(new ClaimEqualsVerifier('sub', 'Fabian'));
+
+        $result = $hs256->parseToken($jwt);
+        $this->assertTrue($result);
+    }
+    public function testCreateAndVerifyCustomRejects() {
+
+        $hs256 = new HS256(HS256Test::$hmac_key);
+
+        $claims = array('iss' => 'OPNsense', 'sub' => 'Fabian');
+        $jwt = $hs256->sign($claims);
+
+        $hs256->addVerifier(new ClaimEqualsVerifier('sub', 'unknown'));
+
+        $result = $hs256->parseToken($jwt);
+        $this->assertFalse($result);
+    }
 }

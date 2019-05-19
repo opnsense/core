@@ -34,6 +34,15 @@ abstract class JWTToken
     protected $type_hash;
     protected $claims;
     protected $verify_string;
+    private $verifier;
+
+    public function addVerifier(ClaimVerifier $verifier) {
+        if (!is_array($this->verifier)) {
+            $this->verifier = array();
+        }
+        $this->verifier[] = $verifier;
+    }
+
     public function b64UrlEncode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
@@ -58,10 +67,31 @@ abstract class JWTToken
 
         $this->verify_string = $split[0] . '.' . $split[1];
 
-        return $this->verify();
+        if ($this->verify()) {
+            return $this->verify_claims();
+        }
+        return false;
     }
 
     public function verify_claims() : bool {
+        $now = time();
+        $c = &$this->claims; // short - don't want to write that
+
+        if (array_key_exists('exp', $c) && $c['exp'] < $now) {
+            return false;
+        }
+        if (array_key_exists('nbf', $c) && $c['nbf'] > $now) {
+            return false;
+        }
+
+        if (is_array($this->verifier)) {
+            foreach ($this->verifier as $verify) {
+                if (!$verify->verify($this->claims)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 

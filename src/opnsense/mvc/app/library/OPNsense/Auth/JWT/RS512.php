@@ -33,11 +33,7 @@ class RS512 extends RSABased
 
     public function verify(): bool
     {
-        if (openssl_verify($this->verify_string, $this->signature_value, $this->getPublicKey(), OPENSSL_ALGO_SHA512) == 1)
-        {
-            return $this->verify_claims();
-        }
-        return false;
+        return openssl_verify($this->verify_string, $this->signature_value, $this->getPublicKey(), OPENSSL_ALGO_SHA512) == 1;
     }
 
     public function sign($claims): string

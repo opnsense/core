@@ -28,23 +28,23 @@
 namespace OPNsense\Auth\JWT;
 
 
-class RS256 extends RSABased
+class ClaimEqualsVerifier implements ClaimVerifier
 {
-
-
-    public function verify(): bool
+    private $claim;
+    private $value;
+    private $default;
+    public function __construct($claim, $value, $default = true)
     {
-        return openssl_verify($this->verify_string, $this->signature_value, $this->getPublicKey(), OPENSSL_ALGO_SHA256) == 1;
+        $this->claim = $claim;
+        $this->value = $value;
+        $this->default = $default;
     }
 
-    public function sign($claims): string
+    public function verify($jwt): bool
     {
-        $prefix = $this->b64UrlEncode(json_encode(array('typ' => 'jwt', 'alg' => 'RS256')));
-        $claims = $this->b64UrlEncode(json_encode($claims));
-
-        $to_sign = $prefix . '.' . $claims;
-        if (openssl_sign($to_sign, $signature, $this->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
-            return $to_sign . '.' . $this->b64UrlEncode($signature);
+        if (array_key_exists($this->claim, $jwt)) {
+            return $jwt[$this->claim] == $this->value;
         }
+        return $this->default;
     }
 }

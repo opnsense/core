@@ -28,23 +28,7 @@
 namespace OPNsense\Auth\JWT;
 
 
-class RS256 extends RSABased
+interface ClaimVerifier
 {
-
-
-    public function verify(): bool
-    {
-        return openssl_verify($this->verify_string, $this->signature_value, $this->getPublicKey(), OPENSSL_ALGO_SHA256) == 1;
-    }
-
-    public function sign($claims): string
-    {
-        $prefix = $this->b64UrlEncode(json_encode(array('typ' => 'jwt', 'alg' => 'RS256')));
-        $claims = $this->b64UrlEncode(json_encode($claims));
-
-        $to_sign = $prefix . '.' . $claims;
-        if (openssl_sign($to_sign, $signature, $this->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
-            return $to_sign . '.' . $this->b64UrlEncode($signature);
-        }
-    }
+    public function verify($jwt) : bool;
 }
