@@ -181,7 +181,7 @@ class ACL
      * @param string $urlmask regex mask
      * @return bool url matches mask
      */
-    private function urlMatch($url, $urlmask)
+    public function urlMatch($url, $urlmask)
     {
         /* "." and "?" have no effect on match, but "*" is a wildcard */
         $match = str_replace(array('.', '*','?'), array('\.', '.*','\?'), $urlmask);
@@ -242,6 +242,14 @@ class ACL
                 }
             }
         }
+
+        /*
+         * Always allow logout and menu, should be yielded as final items
+         * to prevent redirect to the logout page in case unauthorised
+         * pages are tried.
+         */
+        yield 'index.php?logout';
+        yield 'api/core/menu/*';
     }
 
     /**
@@ -252,10 +260,7 @@ class ACL
      */
     public function isPageAccessible($username, $url)
     {
-        if ($url == '/index.php?logout' || strpos($url, 'api/core/menu/') !== false) {
-            // always allow logout and menu, could use better structuring...
-            return true;
-        } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+        if (!empty($_SESSION['user_shouldChangePassword'])) {
             // when a password change is enforced, lock all other endpoints
             return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
         }
