@@ -198,8 +198,17 @@ set_language();
 /*
  * redirect to first allowed page if requesting a wrong url
  */
-$page =  $_SERVER['REQUEST_URI']  == "/" ? "/index.php" : $_SERVER['REQUEST_URI'];
-if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Username'],$page)) {
+if ($_SERVER['REQUEST_URI']  == '/') {
+    $page = '/index.php';
+} else {
+    /* reconstruct page uri to use actual script location, mimic realpath() behaviour */
+    $page = $_SERVER['SCRIPT_NAME'];
+    $tmp_uri = parse_url($_SERVER['REQUEST_URI']);
+    if (!empty($tmp_uri['query'])) {
+        $page .= '?' . $tmp_uri['query'];
+    }
+}
+if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Username'], $page)) {
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
