@@ -36,37 +36,65 @@ require_once 'filter.inc';
 require_once 'services.inc';
 require_once 'auth.inc';
 
-if (empty($argv[1])) {
-    $commands = [];
+/*
+ * -c is configure mode
+ * -s is service mode
+ */
+$opts = getopt('cs', array(), $optind);
+$args = array_slice($argv, $optind);
 
-    foreach (plugins_scan() as $name => $path) {
-        try {
-            include_once $path;
-        } catch (ParseError $e) {
-            error_log($e);
+if (empty($args[0])) {
+    $results = [];
+    if (isset($opts['s'])) {
+        foreach (services_get() as $service) {
+            $results[$service['name']] = 1;
         }
-        $func = sprintf('%s_configure', $name);
-        if (function_exists($func)) {
-            foreach ($func() as $when => $worker) {
-                $commands[$when] = 1;
+    } else {
+        foreach (plugins_scan() as $name => $path) {
+            try {
+                include_once $path;
+            } catch (ParseError $e) {
+                error_log($e);
+            }
+            $func = sprintf('%s_configure', $name);
+            if (function_exists($func)) {
+                foreach ($func() as $when => $worker) {
+                    $results[$when] = 1;
+                }
             }
         }
     }
 
-    $commands = array_keys($commands);
-    sort($commands);
+    $results = array_keys($results);
+    sort($results);
 
-    foreach ($commands as $command) {
-        echo "$command\n";
+    foreach ($results as $result) {
+        echo "$result\n";
     }
 
     exit(0);
 }
 
-/* we have a hook specified, copy args */
-$args = $argv;
-/* first argument is command */
-array_shift($args);
+if (isset($opts['s'])) {
+    $name = !empty($args[0]) ? $args[0] : '';
+    $act = !empty($args[1]) ? $args[1] : '';
+    switch ($act) {
+        case 'start':
+            service_control_start($name, array());
+            break;
+        case 'stop':
+            service_control_stop($name, array());
+            break;
+        case 'restart':
+            service_control_restart($name, array());
+            break;
+        default:
+            echo "Unknown command `$act'\n";
+            break;
+    }
+    exit (0);
+}
+
 /* second argument is hook */
 $hook = array_shift($args);
 /* other arguments are passed as is */
