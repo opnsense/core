@@ -33,6 +33,10 @@
             <description>FourDots (HTTPS, Belgrade, RS)</description>
         </mirror>
         <mirror>
+            <url>https://mirror.homelab.no/opnsense</url>
+            <description>Homelab.no (HTTPS, Horten, Norway)</description>
+        </mirror>
+        <mirror>
             <url>http://mirror.as24220.net/opnsense</url>
             <description>Hostcentral (HTTP, Melbourne, Australia)</description>
         </mirror>
