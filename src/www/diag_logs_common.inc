@@ -29,6 +29,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+if (!isset($logsplit)) {
+    $logsplit = 3;
+}
+
 function print_dump($logarr, $lineCharLimit)
 {
     global $config, $logsplit;
