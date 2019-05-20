@@ -70,6 +70,7 @@ def aggregate_flowd(config, do_vacuum=False):
             # commit data on receive timestamp change or last record
             for stream_agg_object in stream_agg_objects:
                 stream_agg_object.commit()
+                commit_record_count = 0
             metadata.update_sync_time(prev_recv)
         if flow_record is not None:
             # send to aggregator
