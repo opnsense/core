@@ -401,32 +401,10 @@ legacy_html_escape_form_data($leases);
                   }
 
                   $lip = ip2ulong($data['ip']);
-                  if ($data['act'] == "static") {
-                      foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if (isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
-                              foreach ($dhcpifconf['staticmap'] as $staticent) {
-                                  if ($data['ip'] == $staticent['ipaddr']) {
-                                      $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
-                                      $data['if'] = $dhcpif;
-                                      break;
-                                  }
-                              }
-                          }
-                          /* exit as soon as we have an interface */
-                          if ($data['if'] != '') {
-                              break;
-                          }
-                      }
-                  } else {
-                      foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if (empty($dhcpifconf['range'])) {
-                              continue;
-                          }
-                          if (!empty($dhcpifconf["enable"]) && $lip >= ip2ulong($dhcpifconf['range']['from']) && $lip <= ip2ulong($dhcpifconf['range']['to'])) {
-                              $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
-                              $data['if'] = $dhcpif;
-                              break;
-                          }
+                  foreach ($dhcpd as $dhcpif => $dhcpifconf) {
+                      if ($lip >= ip2ulong($dhcpifconf['range']['from']) && $lip <= ip2ulong($dhcpifconf['range']['to'])) {
+                          $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
+                          $data['if'] = $dhcpif;
                       }
                   }
                   $mac_hi = strtoupper($data['mac'][0] . $data['mac'][1] . $data['mac'][3] . $data['mac'][4] . $data['mac'][6] . $data['mac'][7]);
