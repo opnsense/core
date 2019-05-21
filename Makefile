@@ -46,7 +46,7 @@ CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	72
 CORE_PYTHON2?=	27
-CORE_PYTHON3?=	36
+CORE_PYTHON?=	36
 CORE_RADVD?=	1
 CORE_SQUID?=	3
 CORE_SURICATA?=	# empty
@@ -132,12 +132,12 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON2}-requests \
 			py${CORE_PYTHON2}-sqlite3 \
 			py${CORE_PYTHON2}-ujson \
-			py${CORE_PYTHON3}-Jinja2 \
-			py${CORE_PYTHON3}-dnspython \
-			py${CORE_PYTHON3}-netaddr \
-			py${CORE_PYTHON3}-requests \
-			py${CORE_PYTHON3}-sqlite3 \
-			py${CORE_PYTHON3}-ujson \
+			py${CORE_PYTHON}-Jinja2 \
+			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-netaddr \
+			py${CORE_PYTHON}-requests \
+			py${CORE_PYTHON}-sqlite3 \
+			py${CORE_PYTHON}-ujson \
 			radvd${CORE_RADVD} \
 			rate \
 			rrdtool \
@@ -158,7 +158,7 @@ PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit7-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
+		phpunit7-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -353,7 +353,7 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc src/opnsense
 
-style-python: want-py${CORE_PYTHON2}-pycodestyle
+style-python: want-py${CORE_PYTHON}-pycodestyle
 	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
 
 style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
