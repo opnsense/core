@@ -159,7 +159,7 @@ PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit7-php${CORE_PHP} py${CORE_PYTHON2}-pycodestyle
+		phpunit7-php${CORE_PHP} py${CORE_PYTHON3}-pycodestyle
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -354,7 +354,7 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc src/opnsense
 
-style-python: want-py${CORE_PYTHON2}-pycodestyle
+style-python: want-py${CORE_PYTHON3}-pycodestyle
 	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
 
 style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
