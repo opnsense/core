@@ -173,9 +173,9 @@ $( document ).ready(function() {
                 endforeach; ?>
                 <tr>
                   <td colspan="2">
-                    <?php $ssvc = find_service_by_name('openvpn', array('id' => $server['vpnid'])); ?>
-                    <?= get_service_status_icon($ssvc, true); ?>
-                    <?= get_service_control_links($ssvc, true); ?>
+                    <?php $ssvc = service_by_name('openvpn', array('id' => $server['vpnid'])); ?>
+                    <?= service_control_icon($ssvc, true); ?>
+                    <?= service_control_links($ssvc, true); ?>
                   </td>
                   <td colspan="6">&nbsp;</td>
                 </tr>
@@ -250,9 +250,9 @@ $( document ).ready(function() {
                   <td><?=$sk_server['status'];?></td>
                   <td>
                     <div>
-                      <?php $ssvc = find_service_by_name('openvpn', array('id' => $sk_server['vpnid'])); ?>
-                      <?= get_service_status_icon($ssvc, true); ?>
-                      <?= get_service_control_links($ssvc, true); ?>
+                      <?php $ssvc = service_by_name('openvpn', array('id' => $sk_server['vpnid'])); ?>
+                      <?= service_control_icon($ssvc, true); ?>
+                      <?= service_control_links($ssvc, true); ?>
                     </div>
                   </td>
                 </tr>
@@ -288,9 +288,9 @@ $( document ).ready(function() {
                   <td><?=$client['status'];?></td>
                   <td>
                     <div>
-                      <?php $ssvc = find_service_by_name('openvpn', array('id' => $client['vpnid'])); ?>
-                      <?= get_service_status_icon($ssvc, true); ?>
-                      <?= get_service_control_links($ssvc, true); ?>
+                      <?php $ssvc = service_by_name('openvpn', array('id' => $client['vpnid'])); ?>
+                      <?= service_control_icon($ssvc, true); ?>
+                      <?= service_control_links($ssvc, true); ?>
                     </div>
                   </td>
                 </tr>

@@ -1794,6 +1794,27 @@ function is_dpinger_enabled()
     return is_array(return_gateways_array());
 }
 
+function is_radvd_enabled()
+{
+    global $config;
+
+    /* handle manually configured DHCP6 server settings first */
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
+            return true;
+        }
+    }
+
+    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function services_get()
 {
     $services = array();
@@ -1809,7 +1830,7 @@ function services_get()
     return $services;
 }
 
-function find_service_by_name($name, $filter = array())
+function service_by_name($name, $filter = array())
 {
     $services = services_get();
 
@@ -1831,7 +1852,7 @@ function find_service_by_name($name, $filter = array())
     return array();
 }
 
-function get_service_status($service)
+function service_status($service)
 {
     if (!empty($service['nocheck'])) {
         return true;
@@ -1844,12 +1865,11 @@ function get_service_status($service)
     return is_process_running($service['name']);
 }
 
-
-function get_service_status_icon($service, $xs = false)
+function service_control_icon($service, $xs = false)
 {
     $output = '';
 
-    if (get_service_status($service)) {
+    if (service_status($service)) {
         $output .= '<span class="label label-opnsense label-opnsense-%s label-success"><i class="fa fa-play fa-fw"></i></span>' . PHP_EOL;
     } else {
         $output .= '<span class="label label-opnsense label-opnsense-%s label-danger"><i class="fa fa-stop fa-fw"></i></span>' . PHP_EOL;
@@ -1858,7 +1878,7 @@ function get_service_status_icon($service, $xs = false)
     return sprintf($output, $xs ? 'xs' : 'sm');
 }
 
-function get_service_control_links($service, $xs = false)
+function service_control_links($service, $xs = false)
 {
     $service_id = isset($service['id']) ? $service['id'] : '';
 
@@ -1867,7 +1887,7 @@ function get_service_control_links($service, $xs = false)
 
     $output = '';
 
-    if (get_service_status($service)) {
+    if (service_status($service)) {
         $output .= sprintf(
             $template,
             $service_id,
@@ -1903,27 +1923,6 @@ function get_service_control_links($service, $xs = false)
     return $output;
 }
 
-function is_radvd_enabled()
-{
-    global $config;
-
-    /* handle manually configured DHCP6 server settings first */
-    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
-        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
-            return true;
-        }
-    }
-
-    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
-        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function service_control_start($name, $extras)
 {
     $filter = array();
@@ -1932,7 +1931,7 @@ function service_control_start($name, $extras)
         $filter['id'] = $extras['id'];
     }
 
-    $service = find_service_by_name($name, $filter);
+    $service = service_by_name($name, $filter);
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
     }
@@ -1970,7 +1969,7 @@ function service_control_stop($name, $extras)
         $filter['id'] = $extras['id'];
     }
 
-    $service = find_service_by_name($name, $filter);
+    $service = service_by_name($name, $filter);
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not stop unknown service `%s'"), htmlspecialchars($name));
     }
@@ -2005,7 +2004,7 @@ function service_control_restart($name, $extras)
         $filter['id'] = $extras['id'];
     }
 
-    $service = find_service_by_name($name, $filter);
+    $service = service_by_name($name, $filter);
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not restart unknown service `%s'"), htmlspecialchars($name));
     }
