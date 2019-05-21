@@ -92,7 +92,7 @@ function reconfigure_dhcpd()
     clear_subsystem_dirty('staticmaps');
 }
 
-$config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcpleaseinlocaltime','descr',
+$config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
@@ -303,6 +303,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ) {
             $input_errors[] = gettext("A valid MTU value must be specified.");
         }
+        if ($pconfig['failover_split'] != "" && (
+            (string)((int)$pconfig['failover_split']) != $pconfig['failover_split'] || $pconfig['failover_split'] < 0 || $pconfig['failover_split'] > 256)
+        ) {
+            $input_errors[] = gettext("Failover split must be a number between 0 and 256.");
+        }
 
         if (is_array($pconfig['numberoptions']['item'])) {
             foreach ($pconfig['numberoptions']['item'] as $numberoption) {
@@ -387,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdconf = array();
             // simple 1-on-1 copy
             foreach ($config_copy_fieldsnames as $fieldname) {
-                if (!empty($pconfig[$fieldname])) {
+                if (!empty($pconfig[$fieldname]) || $pconfig[$fieldname] === "0") {
                     $dhcpdconf[$fieldname] = $pconfig[$fieldname];
                 }
             }
@@ -842,10 +847,23 @@ include("head.inc");
                       <td>
                         <input name="failover_peerip" type="text" class="form-control host" id="failover_peerip" value="<?=$pconfig['failover_peerip'];?>" />
                         <div class="hidden" data-for="help_for_failover_peerip">
-                          <?=gettext("Leave blank to disable. Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
+                          <?=gettext("Leave blank to disable. Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20). Note that changing this value will delete the current leases-database!");?>
                         </div>
                       </td>
                     </tr>
+                    <td><a id="help_for_failover_split" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Failover split:");?></td>
+                      <td>
+                        <input name="failover_split" type="text" class="form-control host" id="failover_split" value="<?=$pconfig['failover_split'];?>" />
+                        <div class="hidden" data-for="help_for_failover_split">
+                          <?=gettext("Leave blank to use default (128) which should be fine for most cases. ".
+                                     "Enter a number (0-256) to specify the load-balancing split between the failover peers, ".
+                                     "the default of 128 means both peers will handle approximately 50% of the clients, ".
+                                     "256 will make the primary handle all the clients. This value is only used on the primary peer, ".
+                                     "leave blank on the secondary.");?>
+                        </div>
+                      </td>
+                    </tr>
+
                     <tr>
                       <td><a id="help_for_failover_staticarp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static ARP");?></td>
                       <td>

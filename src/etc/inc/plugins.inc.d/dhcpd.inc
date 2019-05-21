@@ -624,6 +624,9 @@ EOD;
                 $peer_port = "520";
                 $type = "primary";
                 $dhcpdconf_pri  = "split 128;\n";
+                if (isset($dhcpifconf['failover_split'])) {
+                    $dhcpdconf_pri  = "split {$dhcpifconf['failover_split']};\n";
+                }
                 $dhcpdconf_pri .= "  mclt 600;\n";
             } else {
                 $type = "secondary";
