@@ -303,8 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ) {
             $input_errors[] = gettext("A valid MTU value must be specified.");
         }
-        if (!empty($pconfig['failover_split']) && (
-          (string)((int)$pconfig['failover_split']) != $pconfig['failover_split'] || $pconfig['failover_split'] < 0 || $pconfig['failover_split'] > 256)
+        if ($pconfig['failover_split'] != "" && (
+            (string)((int)$pconfig['failover_split']) != $pconfig['failover_split'] || $pconfig['failover_split'] < 0 || $pconfig['failover_split'] > 256)
         ) {
             $input_errors[] = gettext("Failover split must be a number between 0 and 256.");
         }
@@ -392,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdconf = array();
             // simple 1-on-1 copy
             foreach ($config_copy_fieldsnames as $fieldname) {
-                if (!empty($pconfig[$fieldname])) {
+                if (!empty($pconfig[$fieldname]) || $pconfig[$fieldname] === "0") {
                     $dhcpdconf[$fieldname] = $pconfig[$fieldname];
                 }
             }
@@ -855,8 +855,11 @@ include("head.inc");
                       <td>
                         <input name="failover_split" type="text" class="form-control host" id="failover_split" value="<?=$pconfig['failover_split'];?>" />
                         <div class="hidden" data-for="help_for_failover_split">
-                          <?=gettext("Leave blank to use default (128) which should be fine for most cases. Enter a number (0-256) to specify the load-balancing split between the failover peers, the default of 128 means both peers will h
-andle approximately 50% of the clients, 256 will make the primary handle all the clients. This value is only used on the primary peer, leave blank on the secondary.");?>
+                          <?=gettext("Leave blank to use default (128) which should be fine for most cases. ".
+                                     "Enter a number (0-256) to specify the load-balancing split between the failover peers, ".
+                                     "the default of 128 means both peers will handle approximately 50% of the clients, ".
+                                     "256 will make the primary handle all the clients. This value is only used on the primary peer, ".
+                                     "leave blank on the secondary.");?>
                         </div>
                       </td>
                     </tr>
