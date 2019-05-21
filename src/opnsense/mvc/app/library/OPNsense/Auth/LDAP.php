@@ -490,7 +490,7 @@ class LDAP extends Base implements IAuthConnector
             if (!empty($this->ldapSyncMemberOfLimit)) {
                 $sync_groups = explode(",", $this->ldapSyncMemberOfLimit);
             } else {
-               $sync_groups = $known_groups;
+                $sync_groups = $known_groups;
             }
             //
             // sort groups and intersect with $sync_groups to determine difference.
