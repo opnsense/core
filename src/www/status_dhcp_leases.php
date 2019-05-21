@@ -402,9 +402,13 @@ legacy_html_escape_form_data($leases);
 
                   $lip = ip2ulong($data['ip']);
                   foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                      if ($lip >= ip2ulong($dhcpifconf['range']['from']) && $lip <= ip2ulong($dhcpifconf['range']['to'])) {
-                          $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
-                          $data['if'] = $dhcpif;
+                      if (!empty($interfaces[$dhcpif]['ipaddr'])) {
+                          $ip_min = gen_subnet($interfaces[$dhcpif]['ipaddr'], $interfaces[$dhcpif]['subnet']);
+                          $ip_max = gen_subnet_max($interfaces[$dhcpif]['ipaddr'], $interfaces[$dhcpif]['subnet']);
+                          if ($lip >= ip2ulong($ip_min) && $lip <= ip2ulong($ip_max)) {
+                              $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
+                              $data['if'] = $dhcpif;
+                          }
                       }
                   }
                   $mac_hi = strtoupper($data['mac'][0] . $data['mac'][1] . $data['mac'][3] . $data['mac'][4] . $data['mac'][6] . $data['mac'][7]);
