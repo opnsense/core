@@ -258,7 +258,7 @@ function restore_config_section_xmlrpc($new_config)
     }
 
     if (isset($old_config['ipsec']['enable']) !== isset($config['ipsec']['enable'])) {
-        ipsec_configure_do();
+        plugins_configure('ipsec');
     }
 
     unset($old_config);
