@@ -56,6 +56,7 @@
             <Required>Y</Required>
             <mask>/[dDjlNSwzWFmMntLoYyaABgGhHisuveIOPTZcrU\.\-\_\:]+/</mask>
             <default>Y-m-d_h:m:s</default>
-            <ValidationMessage>The Date / Time Format can only consist of PHP date()-parsable characters</ValidationMessage> 
+            <ValidationMessage>The Date / Time Format can only consist of PHP date()-parsable characters</ValidationMessage>
+        </dateformat>
     </items>
 </model>
