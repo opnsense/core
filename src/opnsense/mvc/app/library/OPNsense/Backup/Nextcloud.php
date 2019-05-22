@@ -84,6 +84,13 @@ class Nextcloud extends Base implements IBackupProvider
                 "type" => "text",
                 "label" => gettext("Directory Name"),
                 "value" => 'OPNsense-Backup'
+            ),
+            array(
+                "name" => "dateformat",
+                "type" => "text",
+                "label" => gettext("Date / Time Format"),
+                "help" => gettext("The date/time format that'll get appended to new backup files"),
+                "value" => 'Y-m-d_h:m:s'
             )
         );
         $nextcloud = new NextcloudSettings();
@@ -137,7 +144,7 @@ class Nextcloud extends Base implements IBackupProvider
             $backupdir = (string)$nextcloud->backupdir;
             $crypto_password = (string)$nextcloud->password_encryption;
             $hostname = $config->system->hostname . '.' .$config->system->domain;
-            $configname = 'config-' . $hostname . '-' .  date("Y-m-d_H:i:s") . '.xml';
+            $configname = 'config-' . $hostname . '-' .  date((string)$nextcloud->dateformat) . '.xml';
             // backup source data to local strings (plain/encrypted)
             $confdata = file_get_contents('/conf/config.xml');
             if (!empty($crypto_password)) {

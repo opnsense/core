@@ -52,5 +52,10 @@
             <default>OPNsense-Backup</default>
             <ValidationMessage>The Backup Directory can only consist of alphanumeric characters.</ValidationMessage>
         </backupdir>
+        <dateformat type="TextField">
+            <Required>Y</Required>
+            <mask>/[dDjlNSwzWFmMntLoYyaABgGhHisuveIOPTZcrU\.\-\_\:]+/</mask>
+            <default>Y-m-d_h:m:s</default>
+            <ValidationMessage>The Date / Time Format can only consist of PHP date()-parsable characters</ValidationMessage> 
     </items>
 </model>
