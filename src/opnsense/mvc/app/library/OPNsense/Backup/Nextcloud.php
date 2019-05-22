@@ -89,7 +89,7 @@ class Nextcloud extends Base implements IBackupProvider
                 "name" => "dateformat",
                 "type" => "text",
                 "label" => gettext("Date / Time Format"),
-                "help" => gettext("The date/time format that'll get appended to new backup files"),
+                "help" => gettext("The date/time format that'll get appended to new backup files. For example: Y-m-d_h-i-s"),
                 "value" => 'Y-m-d_h:m:s'
             )
         );
