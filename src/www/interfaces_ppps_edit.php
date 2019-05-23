@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['localip'][$iface_idx]) && !is_ipaddr($pconfig['localip'][$iface_idx])) {
             $input_errors[] = sprintf(gettext("A valid local IP address must be specified for %s."),$iface);
         }
-        if (!empty($pconfig['gateway'][$iface_idx]) && !is_ipaddr($pconfig['gateway'][$iface_idx]) && !is_hostname($pconfig['gateway'][$iface_idx])) {
+        if (!empty($pconfig['gateway'][$iface_idx]) && !is_ipaddr($pconfig['gateway'][$iface_idx])) {
             $input_errors[] = sprintf(gettext("A valid gateway IP address OR hostname must be specified for %s."),$iface);
         }
         if (!empty($pconfig['bandwidth'][$iface_idx]) && !is_numericint($pconfig['bandwidth'][$iface_idx])) {
@@ -578,7 +578,7 @@ include("head.inc");
                         <td style="width:78%">
                           <input name="gateway[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['gateway'][$intf_idx]) ? $pconfig['gateway'][$intf_idx] : "";?>" />
                           <div class="hidden" data-for="help_for_gateway_<?=$intf_idx;?>">
-                            <?= gettext("IP Address OR Hostname"); ?>
+                            <?= gettext("IP Address"); ?>
                           </div>
                         </td>
                       </tr>
