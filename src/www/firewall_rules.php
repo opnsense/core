@@ -542,9 +542,9 @@ $( document ).ready(function() {
     <div class="container-fluid">
       <div class="row">
         <?php print_service_banner('firewall'); ?>
-        <?php if (isset($savemsg)) print_alert_box($savemsg, 'success'); ?>
+        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('filter')): ?><p>
-        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."), 'warning') ?>
+        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
         <?php endif; ?>
 <?php
           $interface_has_rules = false;
