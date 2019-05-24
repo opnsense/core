@@ -922,7 +922,7 @@ function interfaces_configure($verbose = false)
         interface_configure($verbose, $if);
     }
 
-    interfaces_vips_configure('', $verbose);
+    interfaces_vips_configure($verbose);
     interfaces_gre_configure(2, $verbose);
     interfaces_gif_configure(2, $verbose);
 
@@ -1592,37 +1592,42 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($interface = '', $verbose = false)
+function interfaces_vips_configure($verbose = false, $interface = '')
 {
     global $config;
 
-    if (isset($config['virtualip']['vip'])) {
-        $carp_setuped = false;
-        $anyproxyarp = false;
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($interface == "" || $vip['interface'] == $interface) {
-                switch ($vip['mode']) {
-                    case "proxyarp":
-                        $anyproxyarp = true;
-                        break;
-                    case "ipalias":
-                        interface_ipalias_configure($vip);
-                        break;
-                    case "carp":
-                        if ($carp_setuped == false) {
-                            $carp_setuped = true;
-                        }
-                        interface_carp_configure($vip);
-                        break;
-                }
+    if (!isset($config['virtualip']['vip'])) {
+        return;
+    }
+
+    $carp_setup = false;
+    $anyproxyarp = false;
+
+    foreach ($config['virtualip']['vip'] as $vip) {
+        if (empty($interface) || $vip['interface'] == $interface) {
+            switch ($vip['mode']) {
+                case 'proxyarp':
+                    $anyproxyarp = true;
+                    break;
+                case 'ipalias':
+                    interface_ipalias_configure($vip);
+                    break;
+                case 'carp':
+                    if (!$carp_setup) {
+                        $carp_setup = true;
+                    }
+                    interface_carp_configure($vip);
+                    break;
             }
         }
-        if ($carp_setuped == true) {
-            interfaces_carp_setup($verbose);
-        }
-        if ($anyproxyarp == true) {
-            interface_proxyarp_configure();
-        }
+    }
+
+    if ($carp_setup) {
+        interfaces_carp_setup($verbose);
+    }
+
+    if ($anyproxyarp) {
+        interface_proxyarp_configure();
     }
 }
 
@@ -1630,7 +1635,7 @@ function interface_ipalias_configure(&$vip)
 {
     global $config;
 
-    if ($vip['mode'] != "ipalias") {
+    if ($vip['mode'] != 'ipalias') {
         return;
     }
 
@@ -3819,7 +3824,7 @@ function link_interface_to_vips($int, $action = '')
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($int == $vip['interface']) {
                 if ($action == 'update') {
-                    interfaces_vips_configure($int);
+                    interfaces_vips_configure(false, $int);
                 } else {
                     $result[] = $vip;
                 }
