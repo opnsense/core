@@ -402,7 +402,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
             continue;
         }
         $realif = get_real_interface($member);
-        if (!$realif) {
+        if (!does_interface_exist($realif)) {
             log_error('realif not defined in interfaces bridge - up');
             continue;
         }
@@ -3555,9 +3555,9 @@ function get_parent_interface($interface, $avoidrecurse = false)
     global $config;
 
     $parents = array();
-    //Check that we got a valid interface passed
+
     $realif = get_real_interface($interface);
-    if ($realif == null) {
+    if (!does_interface_exist($realif)) {
         return $parents;
     }
 
