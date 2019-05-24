@@ -2605,9 +2605,9 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
 
 function interface_track6_slaac_configure($interface = 'lan', $lancfg)
 {
-    $realif = get_real_interface($interface);
-    log_error("Accept router advertisements on interface {$realif}");
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realif);
+    $realifv6 = get_real_interface($interface, 'inet6');
+    log_error("Accept router advertisements on interface {$realifv6}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 }
 
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
@@ -2881,33 +2881,33 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         return;
     }
 
-    $wanif = get_real_interface($interface, 'inet6');
+    $realifv6 = get_real_interface($interface, 'inet6');
 
     /* accept router advertisements for this interface */
     set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-    log_error("Accept router advertisements on interface {$wanif}");
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $wanif);
+    log_error("Accept router advertisements on interface {$realifv6}");
+    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
     /* always kill rtsold in case of reconfigure */
-    killbypid("/var/run/rtsold_{$wanif}.pid", 'TERM', true);
+    killbypid("/var/run/rtsold_{$realifv6}.pid", 'TERM', true);
 
     /* fire up rtsold for IPv6 RAs first */
     mwexecf(
         '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
         array(
-            "/var/run/rtsold_{$wanif}.pid",
-            "/var/etc/rtsold_{$wanif}_script.sh",
+            "/var/run/rtsold_{$realifv6}.pid",
+            "/var/etc/rtsold_{$realifv6}_script.sh",
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
             empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
-            $wanif
+            $realifv6
         )
     );
 
     if (isset($wancfg['dhcp6sendsolicit'])) {
-        mwexec("/var/etc/rtsold_{$wanif}_script.sh");
+        mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
     }
 }
 
@@ -2956,8 +2956,8 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
             }
             foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
                 if (is_numeric($ifcfg['track6-prefix-id'])) {
-                    $realif = get_real_interface($friendly);
-                    $dhcp6cconf .= "  prefix-interface {$realif} {\n";
+                    $trackifv6 = get_real_interface($friendly, 'inet6');
+                    $dhcp6cconf .= "  prefix-interface {$trackifv6} {\n";
                     $dhcp6cconf .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
                     $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
                     $dhcp6cconf .= "  };\n";
@@ -3123,8 +3123,8 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
 
         foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
             if (is_numeric($ifcfg['track6-prefix-id'])) {
-                $realif = get_real_interface($friendly);
-                $id_assoc_statement_prefix .= "  prefix-interface {$realif} {\n";
+                $trackifv6 = get_real_interface($friendly, 'inet6');
+                $id_assoc_statement_prefix .= "  prefix-interface {$trackifv6} {\n";
                 $id_assoc_statement_prefix .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
                 if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
                     ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
