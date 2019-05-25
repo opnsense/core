@@ -207,7 +207,7 @@ function filter_core_rules_system($fw, $defaults)
     // block All IPv6 except loopback traffic
     $fw->registerFilterRule(
         1,
-        array('interface' => 'loopback', 'ipprotocol'=>'inet6', 'disabled' => isset($config['system']['ipv6allow']),
+        array('interface' => 'loopback', 'ipprotocol'=>'inet6', 'disabled' => !isset($config['system']['ipv6allow']),
           'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_firewall.php#ipv6allow'),
         $defaults['pass']
     );
