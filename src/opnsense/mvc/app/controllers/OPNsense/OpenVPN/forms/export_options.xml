@@ -46,6 +46,15 @@
         <help>Verify the server certificate name when the client connects</help>
     </field>
     <field>
+        <id>openvpn_export.cryptoapi</id>
+        <label>Windows Certificate System Store</label>
+        <type>checkbox</type>
+        <style>export_option</style>
+        <help>
+          Load the certificate and private key from the Windows Certificate System Store (Windows/OpenSSL Only).
+        </help>
+    </field>
+    <field>
         <id>openvpn_export.auth_nocache</id>
         <label>Disable password save</label>
         <type>checkbox</type>
