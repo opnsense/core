@@ -48,7 +48,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
      */
     public function supportedOptions()
     {
-        return array("plain_config", "p12_password", "random_local_port", "auth_nocache");
+        return array("plain_config", "p12_password", "random_local_port", "auth_nocache", "cryptoapi");
     }
 
     /**
@@ -74,15 +74,25 @@ class ArchiveOpenVPN extends PlainOpenVPN
         }
         mkdir($content_dir, 0700, true);
 
-        $p12 = $this->export_pkcs12(
-            $this->config['client_crt'],
-            $this->config['client_prv'],
-            !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
-            !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
-        );
+        if (empty($this->config['cryptoapi'])) {
+            // export keypair
+            $p12 = $this->export_pkcs12(
+                $this->config['client_crt'],
+                $this->config['client_prv'],
+                !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
+                !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
+            );
 
-        file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);
-        $conf[] = "pkcs12 {$base_filename}.p12";
+            file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);
+            $conf[] = "pkcs12 {$base_filename}.p12";
+        } else {
+            // use internal Windows store, only flush ca (when available)
+            if (!empty($this->config['server_ca_chain'])) {
+                $cafilename = "{$base_filename}.crt";
+                file_put_contents("{$content_dir}/$cafilename", implode("\n", $this->config['server_ca_chain']));
+                $conf[] = "ca {$cafilename}";
+            }
+        }
         if (!empty($this->config['tls'])) {
             $conf[] = "tls-auth {$base_filename}-tls.key 1";
             file_put_contents("{$content_dir}/{$base_filename}-tls.key", trim(base64_decode($this->config['tls'])));
