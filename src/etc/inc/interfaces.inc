@@ -3588,7 +3588,7 @@ function get_parent_interface($interface, $avoidrecurse = false)
     $parents = array();
 
     $realif = get_real_interface($interface);
-    if (does_interface_exist($realif)) {
+    if (!does_interface_exist($realif)) {
         return $parents;
     }
 
