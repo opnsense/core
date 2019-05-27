@@ -54,8 +54,8 @@
         </backupdir>
         <dateformat type="TextField">
             <Required>Y</Required>
-            <mask>/[dDjlNSwzWFmMntLoYyaABgGhHisuveIOPTZcrU\.\-\_\:\(\)]+/</mask>
-            <default>Y-m-d_h:m:s</default>
+            <mask>/[dDjlNSwzWFmMntLoYyaABgGhHisuveIOPTZcrU\.\-\_\:]+/</mask>
+            <default>Y-m-d_h:i:s</default>
             <ValidationMessage>The Date / Time Format can only consist of PHP date()-parsable characters and the following special characters: .-_:()</ValidationMessage>
         </dateformat>
     </items>
