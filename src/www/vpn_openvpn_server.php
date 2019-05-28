@@ -764,7 +764,7 @@ $( document ).ready(function() {
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface"); ?></td>
                       <td>
-                        <select name="interface" class="selectpicker">
+                        <select name="interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $interfaces = get_configured_interface_with_descr();
                         $carplist = get_configured_carp_interface_list();
@@ -832,7 +832,7 @@ endif; ?>
                         <td>
 <?php
                         if (isset($config['ca'])) :?>
-                          <select name='caref' class="selectpicker">
+                          <select name='caref' class="selectpicker" data-size="5" data-live-search="true">
 <?php
                           foreach ($config['ca'] as $ca) :
                               $selected = "";
@@ -859,7 +859,7 @@ endif; ?>
                       <td>
 <?php
                         if (isset($config['crl'])) :?>
-                        <select name='crlref' class="selectpicker">
+                        <select name='crlref' class="selectpicker" data-size="5" data-live-search="true">
                           <option value="">None</option>
 <?php
                           foreach ($config['crl'] as $crl) :
@@ -887,7 +887,7 @@ endif; ?>
                       <td>
 <?php
                       if (isset($config['cert'])) :?>
-                        <select name='certref' class="selectpicker">
+                        <select name='certref' class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         foreach ($config['cert'] as $cert) :
                             $selected = "";
@@ -984,7 +984,7 @@ endif; ?>
                     <tr>
                       <td><a id="help_for_digest" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auth Digest Algorithm"); ?></td>
                       <td>
-                        <select name="digest" class="selectpicker">
+                        <select name="digest" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $digestlist = openvpn_get_digestlist();
                         foreach ($digestlist as $name => $desc) :
@@ -1007,7 +1007,7 @@ endif; ?>
                     <tr id="engine">
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
                       <td>
-                        <select name="engine" class="selectpicker">
+                        <select name="engine" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $engines = openvpn_get_engines();
                         foreach ($engines as $name => $desc) :
@@ -1128,7 +1128,7 @@ endif; ?>
                     <tr class="dev_mode dev_mode_tap">
                       <td style="width:22%"><a id="help_for_serverbridge_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bridge Interface"); ?></td>
                       <td>
-                        <select id="serverbridge_interface" name="serverbridge_interface" class="selectpicker">
+                        <select id="serverbridge_interface" name="serverbridge_interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $serverbridge_interface['none'] = "none";
                         $serverbridge_interface = array_merge($serverbridge_interface, get_configured_interface_with_descr());
