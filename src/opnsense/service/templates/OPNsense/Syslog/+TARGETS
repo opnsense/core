@@ -1,2 +1,4 @@
+rc.conf.d:/etc/rc.conf.d/syslog_ng
 newsyslog.conf:/etc/newsyslog.conf
 syslog-ng.conf:/usr/local/etc/syslog-ng.conf
+syslog-ng-legacy.conf:/usr/local/etc/syslog-ng.conf.d/legacy.conf

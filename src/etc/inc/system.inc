@@ -618,14 +618,14 @@ function system_syslogd_start($verbose = false, $restart = false)
      * the key as a "name" entry in the array...
      */
     $syslogconfs['configd'] = array('facility' => array('configd.py'));
-    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
+    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'), 'remote' => 'dhcp');
     $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
     $syslogconfs['gateways'] = array('facility' => array('dpinger'), 'remote' => 'apinger');
     $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
     $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
     $syslogconfs['ppps'] = array('facility' => array('ppp'));
-    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'local' => '/var/unbound/var/run/log', 'remote' => 'dns');
+    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
     $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
     $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 
@@ -643,6 +643,7 @@ function system_syslogd_start($verbose = false, $restart = false)
             $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
         }
     }
+    $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k '; // XXX: add "-s -s" when remotes are handled by syslog-ng
 
     asort($separatelogfacilities);
     $facilitylist = implode(',', array_unique($separatelogfacilities));
@@ -707,9 +708,12 @@ EOD;
 
     if (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
+        mwexecf("/usr/sbin/service syslog-ng reload");
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
+        mwexecf("/usr/sbin/service syslog-ng stop");
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
+        mwexecf("/usr/sbin/service syslog-ng start");
     }
 
     if ($verbose) {
