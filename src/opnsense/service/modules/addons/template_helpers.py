@@ -28,6 +28,8 @@
     package : configd
 """
 
+import os
+import glob
 import collections
 import netaddr
 
@@ -167,3 +169,18 @@ class Helpers(object):
         elif type(lst) in (collections.OrderedDict, dict):
             return [lst]
         return lst
+
+    @staticmethod
+    def glob(pathname):
+        """ glob within template directory scope
+            :param pathname: relative path name
+            :return: list
+        """
+        result = list()
+        template_path = os.path.realpath("%s/../../templates/" % os.path.dirname(__file__))
+        for sfilename in glob.glob("%s/%s" % (template_path, pathname)):
+            sfilename = os.path.realpath(sfilename)
+            if sfilename.startswith(template_path):
+                result.append(sfilename[len(template_path):].lstrip('/'))
+
+        return result
