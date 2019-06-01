@@ -846,7 +846,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="alerts" class="tab-pane fade in">
         <!-- tab page "alerts" -->
-        <div class="bootgrid-header container-fluid">
+        <div id="grid-alerts-header" class="bootgrid-header container-fluid">
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
