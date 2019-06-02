@@ -558,24 +558,6 @@ function system_syslogd_fixup_server($server)
     }
 }
 
-function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*")
-{
-    // Rather than repeatedly use the same code, use this function to build a list of remote servers.
-    $facility .= " ".
-    $remote_servers = "";
-    $pad_to  = 56;
-    $padding = ceil(($pad_to - strlen($facility))/8)+1;
-    if (!empty($syslogcfg['remoteserver'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
-    }
-    if (!empty($syslogcfg['remoteserver2'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
-    }
-    if (!empty($syslogcfg['remoteserver3'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
-    }
-    return $remote_servers;
-}
 
 function system_syslogd_extra_local($logsocket)
 {
@@ -636,9 +618,6 @@ function system_syslogd_start($verbose = false, $restart = false)
         if (!isset($syslogcfg['disablelocallogging'])) {
             $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
         }
-        if (!empty($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-        }
         if (!empty($logConfig['local'])) {
             $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
         }
@@ -663,22 +642,6 @@ auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
 *.emerg								*
 
 EOD;
-    }
-    if (!empty($syslogcfg['enable'])) {
-        /* XXX most remote facilities are already sent to remote using the 'remote' keyword */
-        if (isset($syslogcfg['system'])) {
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.notice;kern.debug;lpr.info;mail.crit;daemon.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'news.err;local0.none;local3.none;local4.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'local7.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'security.*');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'auth.info;authpriv.info;daemon.info');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.emerg');
-        }
-        if (isset($syslogcfg['logall'])) {
-            // Make everything mean everything, including facilities excluded above.
-            $syslogconf .= "!*\n";
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.*');
-        }
     }
 
     file_put_contents('/var/etc/syslog.conf', $syslogconf);
