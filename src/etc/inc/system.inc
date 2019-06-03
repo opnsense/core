@@ -645,16 +645,6 @@ EOD;
     }
 
     file_put_contents('/var/etc/syslog.conf', $syslogconf);
-
-    if (!empty($syslogcfg['sourceip'])) {
-        $ifaddr = $syslogcfg['ipproto'] == 'ipv6' ?
-            get_interface_ipv6($syslogcfg['sourceip']) :
-            get_interface_ip($syslogcfg['sourceip']);
-        if (is_ipaddr($ifaddr)) {
-            $syslogd_extra .= exec_safe('-b %s ', $ifaddr);
-        }
-    }
-
     $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
 
     // setup log files for all facilities including default
