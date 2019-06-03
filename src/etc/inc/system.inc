@@ -600,16 +600,16 @@ function system_syslogd_start($verbose = false, $restart = false)
      * the key as a "name" entry in the array...
      */
     $syslogconfs['configd'] = array('facility' => array('configd.py'));
-    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'), 'remote' => 'dhcp');
-    $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-    $syslogconfs['gateways'] = array('facility' => array('dpinger'), 'remote' => 'apinger');
+    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $syslogconfs['filter'] = array('facility' => array('filterlog'));
+    $syslogconfs['gateways'] = array('facility' => array('dpinger'));
     $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
     $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
-    $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
+    $syslogconfs['portalauth'] = array('facility' => array('captiveportal'));
     $syslogconfs['ppps'] = array('facility' => array('ppp'));
-    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'remote' => 'dns');
+    $syslogconfs['resolver'] = array('facility' => array('unbound'));
     $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
-    $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
+    $syslogconfs['wireless'] = array('facility' => array('hostapd'));
 
     $separatelogfacilities = array();
     foreach ($syslogconfs as $logTopic => $logConfig) {
@@ -622,7 +622,7 @@ function system_syslogd_start($verbose = false, $restart = false)
             $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
         }
     }
-    $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k '; // XXX: add "-s -s" when remotes are handled by syslog-ng
+    $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
 
     asort($separatelogfacilities);
     $facilitylist = implode(',', array_unique($separatelogfacilities));
