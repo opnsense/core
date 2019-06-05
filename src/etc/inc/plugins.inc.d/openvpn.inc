@@ -35,9 +35,9 @@ function openvpn_configure()
 {
     return array(
         'crl' => array('openvpn_refresh_crls:0'),
-        'openvpn_reload' => array('openvpn_configure_do:2'),
-        'openvpn_prepare' => array('openvpn_prepare_all'),
+        'openvpn_prepare' => array('openvpn_prepare:2'),
         'remote' => array('openvpn_configure_do'),
+        'openvpn' => array('openvpn_configure_do:2'),
         'vpn' => array('openvpn_configure_do:2'),
     );
 }
@@ -1142,7 +1142,7 @@ function openvpn_fetch_csc_list()
     return $result;
 }
 
-function openvpn_prepare_all($verbose = false)
+function openvpn_prepare($verbose = false, $interface = null)
 {
     global $config;
 
@@ -1158,7 +1158,9 @@ function openvpn_prepare_all($verbose = false)
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
-                openvpn_reconfigure($mode, $settings, true);
+                if (empty($interface) || $interface == "ovpn${mode[0]}{$settings['vpnid']}") {
+                    openvpn_reconfigure($mode, $settings, true);
+                }
             }
         }
     }
