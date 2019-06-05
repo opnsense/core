@@ -1197,12 +1197,6 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
     }
 
     if (!empty($interface)) {
-        /* protect reload by ignoring unassociated devices */
-        $realif = get_real_interface($interface);
-        if (!strstr($realif, 'ovpn') && !strstr($realif, '_vip')) {
-            return;
-        }
-
         log_error(sprintf(
             'Resyncing OpenVPN instances for interface %s.',
             convert_friendly_interface_to_friendly_descr($interface)
