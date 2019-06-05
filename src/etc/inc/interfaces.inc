@@ -2400,6 +2400,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interfaces_vlan_configure(false, $interface_to_check);
         interfaces_lagg_configure(false, $interface_to_check);
         interfaces_bridge_configure(false, 0, $interface_to_check);
+        /* XXX weird: create interface, but maybe do not start yet */
         plugins_configure('openvpn_reload', false, array($interface));
     }
 
