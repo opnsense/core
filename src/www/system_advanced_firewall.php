@@ -349,7 +349,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
+                <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable kill states");?> </td>
                 <td>
                   <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
                   <?=gettext("Disable State Killing on Gateway Failure"); ?>
