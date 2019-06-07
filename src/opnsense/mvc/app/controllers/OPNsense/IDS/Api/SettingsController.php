@@ -498,7 +498,6 @@ class SettingsController extends ApiMutableModelControllerBase
                     } else {
                         $new_state = 0;
                     }
-
                     if ($ruleinfo['enabled_default'] == $new_state &&
                         array_key_exists($ruleinfo['action_default'], $ruleinfo['action']) &&
                         $ruleinfo['action'][$ruleinfo['action_default']]['selected'] == 1
@@ -506,9 +505,9 @@ class SettingsController extends ApiMutableModelControllerBase
                         // if we're switching back to default, remove alter rule
                         $this->getModel()->removeRule($sid);
                     } elseif ($new_state == 1) {
-                        $this->getModel()->enableRule($sid);
+                        $this->getModel()->enableRule($sid)->action = $ruleinfo['installed_action'];
                     } else {
-                        $this->getModel()->disableRule($sid);
+                        $this->getModel()->disableRule($sid)->action = $ruleinfo['installed_action'];
                     }
                     $update_count++;
                 }
