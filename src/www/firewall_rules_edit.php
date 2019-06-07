@@ -222,10 +222,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['gateway']) && isset($config['gateways']['gateway_group'])) {
         $family = $gateways->getGroupIPProto($pconfig['gateway']);
-        if ($pconfig['ipprotocol'] == "inet6" && $pconfig['ipprotocol'] != $family) {
+        if ($family !== null && $pconfig['ipprotocol'] == "inet6" && $pconfig['ipprotocol'] != $family) {
             $input_errors[] = gettext('You can not assign an IPv4 gateway group on an IPv6 rule.');
         }
-        if ($pconfig['ipprotocol'] == "inet" && $pconfig['ipprotocol'] != $family) {
+        if ($family !== null && $pconfig['ipprotocol'] == "inet" && $pconfig['ipprotocol'] != $family) {
             $input_errors[] = gettext('You can not assign an IPv6 gateway group on an IPv4 rule.');
         }
     }
