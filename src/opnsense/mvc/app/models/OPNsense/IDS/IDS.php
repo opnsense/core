@@ -79,21 +79,25 @@ class IDS extends BaseModel
     /**
      * enable rule
      * @param string $sid unique id
+     * @return ArrayField affected rule
      */
     public function enableRule($sid)
     {
         $rule = $this->getRule($sid);
         $rule->enabled = "1";
+        return $rule;
     }
 
     /**
      * disable rule
      * @param string $sid unique id
+     * @return ArrayField affected rule
      */
     public function disableRule($sid)
     {
         $rule = $this->getRule($sid);
         $rule->enabled = "0";
+        return $rule;
     }
 
     /**
