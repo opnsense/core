@@ -448,6 +448,12 @@ class SettingsController extends ApiMutableModelControllerBase
                     $node = $this->getModel()->getFileNode($filename);
                     if ($enabled == "0" || $enabled == "1") {
                         $node->enabled = (string)$enabled;
+                    } elseif ($enabled == "drop") {
+                        $node->enabled = "1";
+                        $node->filter = "drop";
+                    } elseif ($enabled == "clear") {
+                        $node->enabled = "1";
+                        $node->filter = "";
                     } elseif ((string)$node->enabled == "1") {
                         $node->enabled = "0";
                     } else {
