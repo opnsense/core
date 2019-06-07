@@ -485,6 +485,12 @@ class SettingsController extends ApiMutableModelControllerBase
             $update_count = 0;
             foreach (explode(",", $sids) as $sid) {
                 $ruleinfo = $this->getRuleInfoAction($sid);
+                $current_action = null;
+                foreach ($ruleinfo['action'] as $key => $act) {
+                    if (!empty($act['selected'])) {
+                        $current_action = $key;
+                    }
+                }
                 if (!empty($ruleinfo)) {
                     if ($enabled == null) {
                         // toggle state
@@ -495,19 +501,22 @@ class SettingsController extends ApiMutableModelControllerBase
                         }
                     } elseif ($enabled == 1) {
                         $new_state = 1;
+                    } elseif ($enabled == "alert") {
+                        $current_action = "alert";
+                        $new_state = 1;
+                    } elseif ($enabled == "drop") {
+                        $current_action = "drop";
+                        $new_state = 1;
                     } else {
                         $new_state = 0;
                     }
-                    if ($ruleinfo['enabled_default'] == $new_state &&
-                        array_key_exists($ruleinfo['action_default'], $ruleinfo['action']) &&
-                        $ruleinfo['action'][$ruleinfo['action_default']]['selected'] == 1
-                        ) {
+                    if ($ruleinfo['enabled_default'] == $new_state && $current_action == $ruleinfo['action_default']) {
                         // if we're switching back to default, remove alter rule
                         $this->getModel()->removeRule($sid);
                     } elseif ($new_state == 1) {
-                        $this->getModel()->enableRule($sid)->action = $ruleinfo['installed_action'];
+                        $this->getModel()->enableRule($sid)->action = $current_action;
                     } else {
-                        $this->getModel()->disableRule($sid)->action = $ruleinfo['installed_action'];
+                        $this->getModel()->disableRule($sid)->action = $current_action;
                     }
                     $update_count++;
                 }

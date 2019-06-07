@@ -560,18 +560,14 @@ POSSIBILITY OF SUCH DAMAGE.
          * disable selected rulesets
          */
         $("#disableSelectedRuleSets").click(function(){
-            var gridId = 'grid-rule-files';
-            var url = '/api/ids/settings/toggleRuleset/';
-            actionToggleSelected(gridId, url, 0, 20);
+            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
         });
 
         /**
          * enable selected rulesets
          */
         $("#enableSelectedRuleSets").click(function(){
-            var gridId = 'grid-rule-files';
-            var url = '/api/ids/settings/toggleRuleset/';
-            actionToggleSelected(gridId, url, 1, 20);
+            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
         });
 
         /**
@@ -579,11 +575,8 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#disableSelectedRules").click(function(event){
             event.preventDefault();
-            var gridId = 'grid-installedrules';
-            var url = '/api/ids/settings/toggleRule/';
-            $("#disableSelectedRules > span").removeClass("fa-square-o");
-            $("#disableSelectedRules > span").addClass("fa-spinner fa-pulse");
-            actionToggleSelected(gridId, url, 0, 100).done(function(){
+            $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
+            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
                 $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
                 $("#disableSelectedRules > span").addClass("fa-square-o");
             });
@@ -593,13 +586,29 @@ POSSIBILITY OF SUCH DAMAGE.
          * enable selected rules
          */
         $("#enableSelectedRules").unbind('click').click(function(){
-            var gridId = 'grid-installedrules';
-            var url = '/api/ids/settings/toggleRule/';
-            $("#enableSelectedRules > span").removeClass("fa-check-square-o");
-            $("#enableSelectedRules > span").addClass("fa-spinner fa-pulse");
-            actionToggleSelected(gridId, url, 1, 100).done(function(){
-                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                $("#enableSelectedRules > span").addClass("fa-check-square-o");
+            $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
+            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
+                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+            });
+        });
+
+        /**
+         * enable+alert selected rules
+         */
+        $("#alertSelectedRules").unbind('click').click(function(){
+            $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
+            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
+                $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
+            });
+        });
+
+        /**
+         * enable+alert selected rules
+         */
+        $("#dropSelectedRules").unbind('click').click(function(){
+            $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
+            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
+                $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
             });
         });
 
@@ -801,8 +810,10 @@ POSSIBILITY OF SUCH DAMAGE.
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o"></span></button>
-                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o"></span></button>
+                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o"></span></button>
+                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o"></span></button>
+                    <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('alert') }}</button>
+                    <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('drop') }}</button>
                 </td>
                 <td></td>
             </tr>
