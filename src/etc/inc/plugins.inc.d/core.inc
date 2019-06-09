@@ -89,6 +89,17 @@ function core_services()
         'name' => 'syslog',
     );
 
+    $services[] = array(
+        'description' => gettext('Local Syslog-NG'),
+        'mwexec' => array(
+            'restart' => array('/usr/local/etc/rc.d/syslog-ng restart'),
+            'start' => array('/usr/local/etc/rc.d/syslog-ng start'),
+            'stop' => array('/usr/local/etc/rc.d/syslog-ng stop'),
+        ),
+        'pidfile' => '/var/run/syslog-ng.pid',
+        'name' => 'syslog-ng',
+    );
+
     return $services;
 }
 
