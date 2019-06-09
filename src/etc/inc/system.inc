@@ -558,24 +558,6 @@ function system_syslogd_fixup_server($server)
     }
 }
 
-function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*")
-{
-    // Rather than repeatedly use the same code, use this function to build a list of remote servers.
-    $facility .= " ".
-    $remote_servers = "";
-    $pad_to  = 56;
-    $padding = ceil(($pad_to - strlen($facility))/8)+1;
-    if (!empty($syslogcfg['remoteserver'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
-    }
-    if (!empty($syslogcfg['remoteserver2'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
-    }
-    if (!empty($syslogcfg['remoteserver3'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
-    }
-    return $remote_servers;
-}
 
 function system_syslogd_extra_local($logsocket)
 {
@@ -618,16 +600,16 @@ function system_syslogd_start($verbose = false, $restart = false)
      * the key as a "name" entry in the array...
      */
     $syslogconfs['configd'] = array('facility' => array('configd.py'));
-    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
-    $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-    $syslogconfs['gateways'] = array('facility' => array('dpinger'), 'remote' => 'apinger');
+    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $syslogconfs['filter'] = array('facility' => array('filterlog'));
+    $syslogconfs['gateways'] = array('facility' => array('dpinger'));
     $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
     $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
-    $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
+    $syslogconfs['portalauth'] = array('facility' => array('captiveportal'));
     $syslogconfs['ppps'] = array('facility' => array('ppp'));
-    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'local' => '/var/unbound/var/run/log', 'remote' => 'dns');
+    $syslogconfs['resolver'] = array('facility' => array('unbound'));
     $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
-    $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
+    $syslogconfs['wireless'] = array('facility' => array('hostapd'));
 
     $separatelogfacilities = array();
     foreach ($syslogconfs as $logTopic => $logConfig) {
@@ -636,13 +618,11 @@ function system_syslogd_start($verbose = false, $restart = false)
         if (!isset($syslogcfg['disablelocallogging'])) {
             $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
         }
-        if (!empty($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-        }
         if (!empty($logConfig['local'])) {
             $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
         }
     }
+    $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
 
     asort($separatelogfacilities);
     $facilitylist = implode(',', array_unique($separatelogfacilities));
@@ -663,34 +643,8 @@ auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
 
 EOD;
     }
-    if (!empty($syslogcfg['enable'])) {
-        /* XXX most remote facilities are already sent to remote using the 'remote' keyword */
-        if (isset($syslogcfg['system'])) {
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.notice;kern.debug;lpr.info;mail.crit;daemon.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'news.err;local0.none;local3.none;local4.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'local7.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'security.*');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'auth.info;authpriv.info;daemon.info');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.emerg');
-        }
-        if (isset($syslogcfg['logall'])) {
-            // Make everything mean everything, including facilities excluded above.
-            $syslogconf .= "!*\n";
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.*');
-        }
-    }
 
     file_put_contents('/var/etc/syslog.conf', $syslogconf);
-
-    if (!empty($syslogcfg['sourceip'])) {
-        $ifaddr = $syslogcfg['ipproto'] == 'ipv6' ?
-            get_interface_ipv6($syslogcfg['sourceip']) :
-            get_interface_ip($syslogcfg['sourceip']);
-        if (is_ipaddr($ifaddr)) {
-            $syslogd_extra .= exec_safe('-b %s ', $ifaddr);
-        }
-    }
-
     $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
 
     // setup log files for all facilities including default
@@ -707,9 +661,12 @@ EOD;
 
     if (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
+        mwexecf("/usr/sbin/service syslog-ng reload");
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
+        mwexecf("/usr/sbin/service syslog-ng stop");
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
+        mwexecf("/usr/sbin/service syslog-ng start");
     }
 
     if ($verbose) {
