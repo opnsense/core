@@ -90,7 +90,7 @@ function core_services()
     );
 
     $services[] = array(
-        'description' => gettext('Local Syslog-NG'),
+        'description' => gettext('Remote Syslog'),
         'mwexec' => array(
             'restart' => array('/usr/local/etc/rc.d/syslog-ng restart'),
             'start' => array('/usr/local/etc/rc.d/syslog-ng start'),
