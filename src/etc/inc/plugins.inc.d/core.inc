@@ -171,3 +171,24 @@ function core_cron()
 
     return $jobs;
 }
+
+function core_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['configd'] = array('facility' => array('configd.py'));
+    $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $logfacilities['filter'] = array('facility' => array('filterlog'));
+    $logfacilities['gateways'] = array('facility' => array('dpinger'));
+    $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
+    $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
+    $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
+    $logfacilities['ppps'] = array('facility' => array('ppp'));
+    $logfacilities['resolver'] = array('facility' => array('unbound'));
+    $logfacilities['routing'] = array('facility' => array(
+          'radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
+    ));
+    $logfacilities['wireless'] = array('facility' => array('hostapd'));
+
+    return $logfacilities;
+}

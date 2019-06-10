@@ -594,23 +594,6 @@ function system_syslogd_start($verbose = false, $restart = false)
         $syslogconfs[$plugin_name] = $plugin_details;
     }
 
-    /*
-     * XXX Standard syslog configs overwrite plugins, but we can
-     * get rid of this behaviour by wrapping this local array using
-     * the key as a "name" entry in the array...
-     */
-    $syslogconfs['configd'] = array('facility' => array('configd.py'));
-    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
-    $syslogconfs['filter'] = array('facility' => array('filterlog'));
-    $syslogconfs['gateways'] = array('facility' => array('dpinger'));
-    $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
-    $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
-    $syslogconfs['portalauth'] = array('facility' => array('captiveportal'));
-    $syslogconfs['ppps'] = array('facility' => array('ppp'));
-    $syslogconfs['resolver'] = array('facility' => array('unbound'));
-    $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
-    $syslogconfs['wireless'] = array('facility' => array('hostapd'));
-
     $separatelogfacilities = array();
     foreach ($syslogconfs as $logTopic => $logConfig) {
         $syslogconf .= "!".implode(',', $logConfig['facility'])."\n";
