@@ -748,6 +748,7 @@
 /usr/local/opnsense/scripts/suricata/queryInstalledRules.py
 /usr/local/opnsense/scripts/suricata/rule-updater.py
 /usr/local/opnsense/scripts/suricata/setup.sh
+/usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/system/dh_parameters.sh
 /usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
