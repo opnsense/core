@@ -68,7 +68,7 @@ function dnsmasq_syslog()
 {
     $logfacilities = array();
 
-    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'), 'remote' => 'dns');
+    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'));
 
     return $logfacilities;
 }
