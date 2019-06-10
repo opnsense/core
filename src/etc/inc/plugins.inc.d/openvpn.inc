@@ -45,12 +45,7 @@ function openvpn_configure()
 function openvpn_syslog()
 {
     $logfacilities = array();
-
-    $logfacilities['openvpn'] = array(
-        'facility' => array('openvpn'),
-        'remote' => 'vpn',
-    );
-
+    $logfacilities['openvpn'] = array('facility' => array('openvpn'));
     return $logfacilities;
 }
 
