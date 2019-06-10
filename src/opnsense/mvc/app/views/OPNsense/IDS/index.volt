@@ -873,6 +873,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
               <tr>
                   <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
+                  <th data-column-id="alert_sid" data-type="string" data-sortable="false"  data-width="70px">{{ lang._('SID') }}</th>
                   <th data-column-id="alert_action" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Action') }}</th>
                   <th data-column-id="in_iface" data-type="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
                   <th data-column-id="src_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Source') }}</th>
