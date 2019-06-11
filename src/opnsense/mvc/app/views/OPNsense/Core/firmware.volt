@@ -334,20 +334,20 @@
                         $('#updatestatus').html("{{ lang._('Audit done.') }}");
                     } else if ($.upgrade_action == 'action') {
                         $('#updatestatus').html("{{ lang._('Action done.') }}");
-                        $.ajax({
-                            type: 'GET',
-                            url: '/ui/core/firmware',
-                            dataType:'html',
-                            contentType: 'text/html',
-                            complete: function(data,status) {
-                                $('#mainmenu').html($('#mainmenu', data.responseText));
-                            }
-                        });
                     } else {
                         $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
                     }
                     packagesInfo(true);
                 }
+                $.ajax({
+                    type: 'GET',
+                    url: '/ui/core/firmware',
+                    dataType:'html',
+                    contentType: 'text/html',
+                    complete: function(data,status) {
+                        $('#mainmenu').html($('#mainmenu', data.responseText));
+                    }
+                });
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
