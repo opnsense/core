@@ -471,7 +471,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         });
 
                                         if (rule_data.action != undefined) {
-                                            var alert_select = $('<select class="selectpicker"/>');
+                                            var alert_select = $('<select/>');
                                             var alert_enabled = $('<input type="checkbox"/>');
                                             if (rule_data.enabled == '1') {
                                                 alert_enabled.prop('checked', true);
@@ -487,7 +487,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                               $("<tr/>").append(
                                                 $("<td/>").text("{{ lang._('Configured action') }}"),
                                                 $("<td id='alert_sid_action'/>").append(
-                                                  alert_enabled, $("<span/>").html("&nbsp; <strong>{{ lang._('Enabled')}}</strong>"), alert_select
+                                                  alert_enabled, $("<span/>").html("&nbsp; <strong>{{lang._('Enabled')}}</strong><br/>"), alert_select, $("<br/>")
                                                 )
                                               )
                                             );
@@ -523,6 +523,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                                         tbl.append(tbl_tbody);
                                         stdDialogInform("{{ lang._('Alert info') }}", tbl, "{{ lang._('Close') }}", undefined, "info", 'suricata-alert');
+                                        alert_select.selectpicker('refresh');
                                   });
                                 }
                             });
