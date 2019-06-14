@@ -263,6 +263,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (is_array($data) && !empty($data['aliases'])
                     && !empty($data['aliases']['alias']) && is_array($data['aliases']['alias'])) {
                 Config::getInstance()->lock();
+
                 // save into model
                 $uuid_mapping = array();
                 foreach ($data['aliases']['alias'] as $uuid => $content) {
@@ -280,7 +281,10 @@ class AliasController extends ApiMutableModelControllerBase
                         $uuid_mapping[$node->getAttribute('uuid')] = $uuid;
                     }
                 }
-                // perform validation, record details
+                // attach this alias to util class, to avoid recursion issues (aliases used in aliases).
+                \OPNsense\Firewall\Util::attachAliasObject($this->getModel());
+
+                // perform validation, record details.
                 foreach ($this->getModel()->performValidation() as $msg) {
                     if (empty($result['validations'])) {
                         $result['validations'] = array();
@@ -290,7 +294,9 @@ class AliasController extends ApiMutableModelControllerBase
                     $fieldname = $parts[count($parts)-1];
                     $result['validations'][$uuid_mapping[$uuid] . "." . $fieldname] = $msg->getMessage();
                 }
-                // only persist changes
+
+
+                // only persist when valid import
                 if (empty($result['validations'])) {
                     $result['status'] = "ok";
                     $this->save();
