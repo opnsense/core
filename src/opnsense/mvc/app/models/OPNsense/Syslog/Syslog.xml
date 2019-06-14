@@ -1,0 +1,25 @@
+<model>
+    <mount>//OPNsense/Syslog</mount>
+    <version>1.0.0</version>
+    <items>
+        <destinations>
+            <destination type="ArrayField">
+                <enabled type="BooleanField">
+                  <default>1</default>
+                  <Required>Y</Required>
+                </enabled>
+                <applications type="JsonKeyValueStoreField">
+                  <Required>Y</Required>
+                  <Multiple>Y</Multiple>
+                  <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
+                  <SourceFile>/tmp/syslog_applications.json</SourceFile>
+                  <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+                  <ValidationMessage>Specify valid source applications.</ValidationMessage>
+                </applications>
+                <description type="TextField">
+                  <Required>N</Required>
+                </description>
+            </destination>
+        </destinations>
+    </items>
+</model>
