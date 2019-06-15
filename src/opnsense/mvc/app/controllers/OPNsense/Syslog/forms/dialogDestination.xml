@@ -6,10 +6,38 @@
     <help>Set this option to enable this destination.</help>
   </field>
   <field>
+    <id>destination.transport</id>
+    <label>Transport</label>
+    <type>dropdown</type>
+    <help>Transport protocol</help>
+  </field>
+  <field>
     <id>destination.applications</id>
     <label>Applications</label>
     <type>select_multiple</type>
-    <help><![CDATA[Choose which applications should be forwarded to the specified target.]]></help>
+    <help>Choose which applications should be forwarded to the specified target.</help>
+  </field>
+  <field>
+    <id>destination.levels</id>
+    <label>Levels</label>
+    <type>select_multiple</type>
+    <help>Choose which levels to include.</help>
+  </field>
+  <field>
+    <id>destination.facility</id>
+    <label>Facilities</label>
+    <type>select_multiple</type>
+    <help>Choose which facilities to include.</help>
+  </field>
+  <field>
+    <id>destination.hostname</id>
+    <label>Hostname</label>
+    <type>text</type>
+  </field>
+  <field>
+    <id>destination.port</id>
+    <label>Port</label>
+    <type>text</type>
   </field>
   <field>
     <id>destination.description</id>
