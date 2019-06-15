@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
 
 $a_ifgroups = &config_read_array('ifgroups', 'ifgroupentry');
 
@@ -112,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       }
                   }
               }
+              mark_subsystem_dirty('filter');
           }
           $old_ifname = isset($id) ? $a_ifgroups[$id]['ifname'] : $pconfig['ifname'];
           // remove group members
@@ -123,9 +125,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           // update item
           $a_ifgroups[$id] = $ifgroupentry;
       } else {
+          mark_subsystem_dirty('filter');
           // add new item
           $a_ifgroups[] = $ifgroupentry;
       }
+      usort($a_ifgroups, function($a, $b) {
+          return strnatcmp($a['ifname'], $b['ifname']);
+      });
+      filter_rules_sort();
       write_config();
       interface_group_setup($ifgroupentry);
       header(url_safe('Location: /interfaces_groups.php'));
