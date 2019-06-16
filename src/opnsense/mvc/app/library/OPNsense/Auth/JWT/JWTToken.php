@@ -27,8 +27,11 @@
 
 namespace OPNsense\Auth\JWT;
 
-
-abstract class JWTToken
+/**
+ * Class JWTToken - Base class for all JSON Web Token classes
+ * @package OPNsense\Auth\JWT
+ */
+abstract class JWTToken extends BaseObject
 {
     protected $signature_value;
     protected $type_hash;
@@ -36,6 +39,10 @@ abstract class JWTToken
     protected $verify_string;
     private $verifier;
 
+    /**
+     * add a new verifier
+     * @param ClaimVerifier $verifier a verifier used to validate claims
+     */
     public function addVerifier(ClaimVerifier $verifier) {
         if (!is_array($this->verifier)) {
             $this->verifier = array();
@@ -43,13 +50,11 @@ abstract class JWTToken
         $this->verifier[] = $verifier;
     }
 
-    public function b64UrlEncode($data) {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-    public function b64UrlDecode($data) {
-        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
-    }
-
+    /**
+     * @param $token string representation
+     * @return bool if the token is valid
+     * @throws \Exception when an invalid token is given, that cannot be verified (syntax error)
+     */
     public function parseToken($token) {
         if (substr_count($token, '.') != 2){
             throw new \Exception("Invalid JWT given");
@@ -73,6 +78,10 @@ abstract class JWTToken
         return false;
     }
 
+    /**
+     * run the verifier
+     * @return bool true if the claims are valid, otherwise false
+     */
     public function verify_claims() : bool {
         $now = time();
         $c = &$this->claims; // short - don't want to write that

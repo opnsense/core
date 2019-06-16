@@ -37,6 +37,15 @@ require_once("system.inc");
 
 $a_group = &config_read_array('system', 'group');
 $a_authmode = auth_get_authserver_list();
+$a_cert = isset($config['cert']) ? $config['cert'] : array();
+$jwt_types = array(
+    'RS256' => gettext("RS256"),
+    'RS384' => gettext("RS384"),
+    'RS512' => gettext("RS512"),
+    'HS256' => gettext("HS256"),
+    'HS384' => gettext("HS384"),
+    'HS512' => gettext("HS512"),
+);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -70,6 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
+    /* JWT */
+    $pconfig['jwt_asymmetric'] = !empty($config['system']['jwt']['asymmetric']) ? $config['system']['jwt']['asymmetric'] : null;
+    $pconfig['jwt_symmetric'] = !empty($config['system']['jwt']['symmetric']) ? $config['system']['jwt']['symmetric'] : null;
+    $pconfig['jwt_type'] = !empty($config['system']['jwt']['type']) ? $config['system']['jwt']['type'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -105,6 +118,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext('Authentication server "%s" is invalid.'), $auth_mode);
             }
         }
+    }
+
+    if (!empty($pconfig['jwt_asymmetric'])) {
+        $found = false;
+        foreach ($a_cert as $cert) {
+            if ($cert['refid'] == $pconfig['jwt_asymmetric'] && !empty($cert['prv'])) {
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            $input_errors[] = gettext('JWT certificate not found');
+        }
+    }
+    if (!empty($pconfig['jwt_type']) && !array_key_exists($pconfig['jwt_type'], $jwt_types)) {
+        $input_errors[] = gettext('JWT certificate not found');
     }
 
     if (count($input_errors) == 0) {
@@ -264,6 +293,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ssh']['permitrootlogin']);
         }
 
+        if (!empty($pconfig['jwt_type'])) {
+            $config['system']['jwt']['type'] = $pconfig['jwt_type'];
+        } elseif (isset($config['system']['jwt']['type'])) {
+            unset($config['system']['jwt']['type']);
+        }
+        if (!empty($pconfig['jwt_asymmetric'])) {
+            $config['system']['jwt']['asymmetric'] = $pconfig['jwt_asymmetric'];
+        } elseif (isset($config['system']['jwt']['asymmetric'])) {
+            unset($config['system']['jwt']['asymmetric']);
+        }
+        if (!empty($pconfig['jwt_symmetric'])) {
+            $config['system']['jwt']['symmetric'] = $pconfig['jwt_symmetric'];
+        } elseif (isset($config['system']['jwt']['symmetric'])) {
+            unset($config['system']['jwt']['asymmetric']);
+        }
+
         if ($restart_webgui) {
             $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
             /* IPv6 address check */
@@ -305,7 +350,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$a_cert = isset($config['cert']) ? $config['cert'] : array();
 $interfaces = get_configured_interface_with_descr();
 
 $certs_available = false;
@@ -336,8 +380,7 @@ $(document).ready(function() {
              $("#webguiport").attr('placeholder', '80');
              $(".ssl_opts").hide();
          }
-     });
-     $(".proto").change();
+     }).change();
 
      $('#webguiinterface').change(function () {
          if ($('#webguiinterface option:selected').text() == '') {
@@ -836,7 +879,55 @@ $(document).ready(function() {
               </tr>
             </table>
           </div>
-          <div class="content-box tab-content table-responsive">
+          <div class="content-box tab-content table-responsive __mb">
+                <table class="table table-striped opnsense_standard_table_form">
+                    <tr>
+                        <td style="width:22%"><strong><?= gettext('JSON Web Token') ?></strong></td>
+                        <td style="width:78%"></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Symmetric Key"); ?></td>
+                        <td>
+                            <input name="jwt_symmetric" type="text" value="<?= empty($pconfig['jwt_symmetric']) ? '' : $pconfig['jwt_symmetric'] ?>" />
+                            <?=gettext("Configure a symmetric key for HMACs"); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i><?=gettext('Asymmetric Key') ?></td>
+                        <td>
+                            <select name="jwt_asymmetric" class="selectpicker" data-style="btn-default">
+                                <option value="" <?= empty($pconfig['jwt_asymmetric']) ? "selected=\"selected\"" : "" ?>>
+                                    <?= gettext("none") ?>
+                                </option>
+                                <?php foreach ($a_cert as $cert): ?>
+                                    <?php if (isset($cert['prv'])): ?>
+                                        <option value="<?= $cert['refid'] ?>" <?= $pconfig['jwt_asymmetric'] == $cert['refid'] ? "selected=\"selected\"" : "" ?>>
+                                            <?=$cert['descr'];?>
+                                        </option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i><?=gettext('Key Type') ?></td>
+                        <td>
+                            <select name="jwt_type" class="selectpicker" data-style="btn-default">
+                                <option value="" <?= empty($pconfig['jwt_type']) ? "selected=\"selected\"" : "" ?>>
+                                    <?= gettext("none") ?>
+                                </option>
+                                <?php foreach ($jwt_types as $jwt_name => $jwt_translated): ?>
+                                    <option value="<?= $jwt_name ?>" <?= $pconfig['jwt_type'] == $jwt_name ? "selected=\"selected\"" : "" ?>>
+                                        <?= html_safe($jwt_translated) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-box tab-content table-responsive">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"></td>
