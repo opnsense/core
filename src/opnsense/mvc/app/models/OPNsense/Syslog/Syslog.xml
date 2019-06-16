@@ -34,7 +34,10 @@
                       <warn>warn</warn>
                       <err>error</err>
                       <crit>critical</crit>
+                      <alert>alert</alert>
+                      <emerg>emergency</emerg>
                   </OptionValues>
+                  <default>info,notice,warn,err,crit,alert,emerg</default>
                 </levels>
                 <facility type="OptionField">
                   <Required>N</Required>
