@@ -1,0 +1,9 @@
+<acl>
+    <page-trust-jwt>
+        <name>Trust: JWT</name>
+        <patterns>
+            <pattern>ui/trust/jwt/*</pattern>
+            <pattern>api/trust/jwt/*</pattern>
+        </patterns>
+    </page-trust-jwt>
+</acl>

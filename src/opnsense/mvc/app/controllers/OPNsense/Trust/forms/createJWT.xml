@@ -1,0 +1,59 @@
+<form>
+    <field>
+        <label>Signature / Type</label>
+        <type>header</type>
+    </field>
+    <field>
+        <id>jwt.signature_type</id>
+        <label>Signature Type</label>
+        <type>dropdown</type>
+        <help>The type of the web token.</help>
+    </field>
+    <field>
+        <id>jwt.rsa_keys</id>
+        <label>RSA Key</label>
+        <type>dropdown</type>
+        <style>rsa_key</style>
+    </field>
+    <field>
+        <id>jwt.key</id>
+        <label>HMAC Key</label>
+        <type>text</type>
+        <style>password</style>
+    </field>
+    <field>
+        <label>Claims</label>
+        <type>header</type>
+    </field>
+    <field>
+        <id>jwt.subject</id>
+        <label>Subject (Username)</label>
+        <type>text</type>
+        <help>The subject for which this token will be valid</help>
+    </field>
+    <field>
+        <id>jwt.not_before</id>
+        <label>Valid From</label>
+        <type>date</type>
+        <help>The day on which the token should expire</help>
+    </field>
+    <field>
+        <id>jwt.expire</id>
+        <label>Valid To</label>
+        <type>date</type>
+        <help>The day on which the token should expire</help>
+    </field>
+    <field>
+        <id>jwt.issuer</id>
+        <label>Issuer</label>
+        <type>dropdown</type>
+        <help>The system which is creating this token.</help>
+    </field>
+    <field>
+        <id>jwt.audience</id>
+        <label>Audience</label>
+        <type>select_multiple</type>
+        <allownew>true</allownew>
+        <help>Enter systems, for which this token is valid.</help>
+    </field>
+</form>
