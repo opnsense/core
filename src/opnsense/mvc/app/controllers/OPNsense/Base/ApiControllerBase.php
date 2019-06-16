@@ -28,6 +28,8 @@
  */
 namespace OPNsense\Base;
 
+use OPNsense\Auth\JWT\TokenParserFactory;
+use OPNsense\Auth\JWT\WebUIKeyStore;
 use OPNsense\Core\ACL;
 use OPNsense\Auth\AuthenticationFactory;
 
@@ -104,6 +106,89 @@ class ApiControllerBase extends ControllerRoot
         return !empty($this->request->getHeader('Authorization'));
     }
 
+    private function performAfterAuth($dispatcher, $authResult, $apiKey) {
+        $username = null;
+        if (array_key_exists('username', $authResult))
+        {
+            $username = $authResult['username'];
+        } elseif (array_key_exists('sub', $authResult)) {
+            // jwt calls it sub (subject)
+            $username = $authResult['sub'];
+        }
+        if ($username != null) {
+            // check ACL if user is returned by the Authenticator object
+            $acl = new ACL();
+            if (!$acl->isPageAccessible($username, $_SERVER['REQUEST_URI'])) {
+                $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
+                    " not accessible for user ". $username . " using api key ".
+                    $apiKey);
+            } else {
+                // authentication + authorization successful.
+                // pre validate request and communicate back to the user on errors
+                $callMethodName = $dispatcher->getActionName().'Action';
+                $dispatchError = null;
+                // check number of parameters using reflection
+                $object_info = new \ReflectionObject($this);
+                if ($object_info->hasMethod($callMethodName)) {
+                    // only inspect parameters if object exists
+                    $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
+                    if ($req_c > count($dispatcher->getParams())) {
+                        $dispatchError = 'action ' . $dispatcher->getActionName() .
+                            ' expects at least ' . $req_c . ' parameter(s)';
+                    }
+                }
+                // if body is send as json data, parse to $_POST first
+                $dispatchError = empty($dispatchError) ? $this->parseJsonBodyData() : $dispatchError;
+
+                if ($dispatchError != null) {
+                    // send error to client
+                    $this->response->setStatusCode(400, "Bad Request");
+                    $this->response->setContentType('application/json', 'UTF-8');
+                    $this->response->setJsonContent(
+                        array('message' => $dispatchError,
+                            'status'  => 400)
+                    );
+                    $this->response->send();
+                    return false;
+                }
+
+                // link username on successful login
+                $this->logged_in_user = $username;
+
+                return true;
+            }
+        }
+        return null;
+    }
+
+    private function basicAuth($dispatcher, $authFactory, $key_secret_hash)
+    {
+        $key_secret = explode(':', base64_decode($key_secret_hash));
+        if (count($key_secret) > 1) {
+            $apiKey = $key_secret[0];
+            $apiSecret = $key_secret[1];
+
+            $authenticator = $authFactory->get("Local API");
+            if ($authenticator->authenticate($apiKey, $apiSecret))
+            {
+                $authResult = $authenticator->getLastAuthProperties();
+                return $this->performAfterAuth($dispatcher, $authResult, $apiKey);
+            }
+        }
+    }
+    private function bearerAuth($dispatcher, $authFactory, $key_secret_hash)
+    {
+        $key_config = new WebUIKeyStore();
+        $token_parser_factory = new TokenParserFactory();
+        try {
+            $token = $token_parser_factory->makeTokenInstance($key_secret_hash, $key_config);
+        } catch (\Exception $e) {
+            return null;
+        }
+        $claims = $token->get_claims();
+        return $this->performAfterAuth($dispatcher, $claims, json_encode($claims));
+    }
+
     /**
      * before routing event.
      * Handles authentication and authentication of user requests
@@ -119,60 +204,21 @@ class ApiControllerBase extends ControllerRoot
             // Authorization header send, handle API request
             $authHeader = explode(' ', $this->request->getHeader('Authorization'));
             if (count($authHeader) > 1) {
+                $authFactory = new AuthenticationFactory();
                 $key_secret_hash = $authHeader[1];
-                $key_secret = explode(':', base64_decode($key_secret_hash));
-                if (count($key_secret) > 1) {
-                    $apiKey = $key_secret[0];
-                    $apiSecret = $key_secret[1];
+                switch (strtolower($authHeader[0])) {
+                    case 'basic':
+                        $afterAuthResult = $this->basicAuth($authFactory, $key_secret_hash);
+                        break;
+                    case 'bearer':
+                        $afterAuthResult = $this->bearerAuth($authFactory, $key_secret_hash);
+                        break;
+                    default:
+                        $afterAuthResult = null;
+                }
 
-                    $authFactory = new AuthenticationFactory();
-                    $authenticator = $authFactory->get("Local API");
-                    if ($authenticator->authenticate($apiKey, $apiSecret)) {
-                        $authResult = $authenticator->getLastAuthProperties();
-                        if (array_key_exists('username', $authResult)) {
-                            // check ACL if user is returned by the Authenticator object
-                            $acl = new ACL();
-                            if (!$acl->isPageAccessible($authResult['username'], $_SERVER['REQUEST_URI'])) {
-                                $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
-                                    " not accessible for user ".$authResult['username'] . " using api key ".
-                                    $apiKey);
-                            } else {
-                                // authentication + authorization successful.
-                                // pre validate request and communicate back to the user on errors
-                                $callMethodName = $dispatcher->getActionName().'Action';
-                                $dispatchError = null;
-                                // check number of parameters using reflection
-                                $object_info = new \ReflectionObject($this);
-                                if ($object_info->hasMethod($callMethodName)) {
-                                    // only inspect parameters if object exists
-                                    $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
-                                    if ($req_c > count($dispatcher->getParams())) {
-                                        $dispatchError = 'action ' . $dispatcher->getActionName() .
-                                            ' expects at least ' . $req_c . ' parameter(s)';
-                                    }
-                                }
-                                // if body is send as json data, parse to $_POST first
-                                $dispatchError = empty($dispatchError) ? $this->parseJsonBodyData() : $dispatchError;
-
-                                if ($dispatchError != null) {
-                                    // send error to client
-                                    $this->response->setStatusCode(400, "Bad Request");
-                                    $this->response->setContentType('application/json', 'UTF-8');
-                                    $this->response->setJsonContent(
-                                        array('message' => $dispatchError,
-                                            'status'  => 400)
-                                    );
-                                    $this->response->send();
-                                    return false;
-                                }
-
-                                // link username on successful login
-                                $this->logged_in_user = $authResult['username'];
-
-                                return true;
-                            }
-                        }
-                    }
+                if ($afterAuthResult != null) {
+                    return $afterAuthResult;
                 }
             }
             // not authenticated

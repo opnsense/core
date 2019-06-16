@@ -78,6 +78,11 @@ abstract class JWTToken extends BaseObject
         return false;
     }
 
+    public function get_claims()
+    {
+        return $this->claims;
+    }
+
     /**
      * run the verifier
      * @return bool true if the claims are valid, otherwise false

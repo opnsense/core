@@ -10,7 +10,7 @@
         <help>The type of the web token.</help>
     </field>
     <field>
-        <id>jwt.rsa_keys</id>
+        <id>jwt.rsa_key</id>
         <label>RSA Key</label>
         <type>dropdown</type>
         <style>rsa_key</style>

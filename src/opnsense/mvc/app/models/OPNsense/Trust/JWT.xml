@@ -5,319 +5,41 @@
         OPNsense JWT Helper
     </description>
     <items>
-        <signature_type type="OptionField">
-            <Required>N</Required>
-            <default>HS256</default>
-            <OptionValues>
-                <HS256>HS256</HS256>
-                <HS384>HS384</HS384>
-                <HS512>HS512</HS512>
-                <RS256>RS256</RS256>
-                <RS384>RS384</RS384>
-                <RS512>RS512</RS512>
-            </OptionValues>
-        </signature_type>
-        <pipes>
-            <pipe type="ArrayField">
-                <number type="IntegerField">
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>Pipe number must be between 1...65535</ValidationMessage>
-                    <Required>Y</Required>
-                </number>
-                <enabled type="BooleanField">
-                    <default>1</default>
-                    <Required>Y</Required>
-                </enabled>
-                <bandwidth type="IntegerField">
-                    <Required>Y</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>899795</MaximumValue>
-                    <ValidationMessage>Bandwidth out of range</ValidationMessage>
-                </bandwidth>
-                <bandwidthMetric type="OptionField">
-                    <Required>Y</Required>
-                    <default>Kbit</default>
-                    <OptionValues>
-                        <bit>bit/s</bit>
-                        <Kbit>kbit/s</Kbit>
-                        <Mbit>Mbit/s</Mbit>
-                    </OptionValues>
-                    <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s or Mbit/s</ValidationMessage>
-                </bandwidthMetric>
-                <queue type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>2</MinimumValue>
-                    <MaximumValue>100</MaximumValue>
-                    <ValidationMessage>queue size should be between 2...100</ValidationMessage>
-                </queue>
-                <mask type="OptionField">
-                    <Required>Y</Required>
-                    <default>none</default>
-                    <OptionValues>
-                        <none></none>
-                        <src-ip>source</src-ip>
-                        <dst-ip>destination</dst-ip>
-                    </OptionValues>
-                </mask>
-                <buckets type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
-                </buckets>
-                <scheduler type="OptionField">
-                    <Required>N</Required>
-                    <default></default>
-                    <BlankDesc>Weighted Fair Queueing</BlankDesc>
-                    <OptionValues>
-                        <fifo>FIFO</fifo>
-                        <rr>Deficit Round Robin</rr>
-                        <qfq>QFQ</qfq>
-                        <fq_codel>FlowQueue-CoDel</fq_codel>
-                        <fq_pie>FlowQueue-PIE</fq_pie>
-                    </OptionValues>
-                </scheduler>
-                <codel_enable type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                    <Constraints>
-                        <check001>
-                            <ValidationMessage>CoDel and PIE can not be combined.</ValidationMessage>
-                            <type>SingleSelectConstraint</type>
-                            <addFields>
-                                <pie_enable>pie_enable</pie_enable>
-                            </addFields>
-                        </check001>
-                    </Constraints>
-                </codel_enable>
-                <codel_target type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>10000</MaximumValue>
-                </codel_target>
-                <codel_interval type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>10000</MaximumValue>
-                </codel_interval>
-                <codel_ecn_enable type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </codel_ecn_enable>
-                <pie_enable type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                    <Constraints>
-                        <check001>
-                            <reference>codel_enable.check001</reference>
-                        </check001>
-                    </Constraints>
-                </pie_enable>
-                <fqcodel_quantum type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                </fqcodel_quantum>
-                <fqcodel_limit type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                </fqcodel_limit>
-                <fqcodel_flows type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                </fqcodel_flows>
-                <origin type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
-                    <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
-                </origin>
-                <delay type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>3000</MaximumValue>
-                    <ValidationMessage>Please choose a value between 1 and 3000</ValidationMessage>
-                </delay>
-                <description type="TextField">
-                    <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
-            </pipe>
-        </pipes>
-        <queues>
-            <queue type="ArrayField">
-                <number type="IntegerField">
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>Queue number must be between 1...65535</ValidationMessage>
-                    <Required>Y</Required>
-                </number>
-                <enabled type="BooleanField">
-                    <default>1</default>
-                    <Required>Y</Required>
-                </enabled>
-                <pipe type="ModelRelationField">
-                    <Model>
-                        <pipes>
-                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
-                            <items>pipes.pipe</items>
-                            <display>description</display>
-                        </pipes>
-                    </Model>
-                    <ValidationMessage>Related pipe not found</ValidationMessage>
-                    <Required>Y</Required>
-                </pipe>
-                <weight type="IntegerField">
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>100</MaximumValue>
-                    <Default>100</Default>
-                    <Required>Y</Required>
-                    <ValidationMessage>Weight must be between 1...100</ValidationMessage>
-                </weight>
-                <mask type="OptionField">
-                    <Required>Y</Required>
-                    <default>none</default>
-                    <OptionValues>
-                        <none></none>
-                        <src-ip>source</src-ip>
-                        <dst-ip>destination</dst-ip>
-                    </OptionValues>
-                </mask>
-                <buckets type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
-                </buckets>
-                <codel_enable type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                    <Constraints>
-                        <check001>
-                            <ValidationMessage>CoDel and PIE can not be combined.</ValidationMessage>
-                            <type>SingleSelectConstraint</type>
-                            <addFields>
-                                <pie_enable>pie_enable</pie_enable>
-                            </addFields>
-                        </check001>
-                    </Constraints>
-                </codel_enable>
-                <codel_target type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>10000</MaximumValue>
-                </codel_target>
-                <codel_interval type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>10000</MaximumValue>
-                </codel_interval>
-                <codel_ecn_enable type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </codel_ecn_enable>
-                <pie_enable type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                    <Constraints>
-                        <check001>
-                            <reference>codel_enable.check001</reference>
-                        </check001>
-                    </Constraints>
-                </pie_enable>
-                <description type="TextField">
-                    <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
-                <origin type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
-                    <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
-                </origin>
-            </queue>
-        </queues>
-        <rules>
-            <rule type="ArrayField">
-                <enabled type="BooleanField">
-                    <default>1</default>
-                    <Required>Y</Required>
-                </enabled>
-                <sequence type="IntegerField">
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>1000000</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
-                    <Required>Y</Required>
-                    <default>1</default>
-                </sequence>
-                <interface type="InterfaceField">
-                    <Required>Y</Required>
-                    <default>wan</default>
-                    <filters>
-                        <enable>/^(?!0).*$/</enable>
-                    </filters>
-                </interface>
-                <interface2 type="InterfaceField">
-                    <Required>N</Required>
-                    <default></default>
-                    <filters>
-                        <enable>/^(?!0).*$/</enable>
-                    </filters>
-                </interface2>
-                <proto type="OptionField">
-                    <Required>Y</Required>
-                    <default>ip</default>
-                    <OptionValues>
-                        <ip>ip</ip>
-                        <ip4>ipv4</ip4>
-                        <ip6>ipv6</ip6>
-                        <udp>udp</udp>
-                        <tcp>tcp</tcp>
-                        <tcp_ack>tcp (ACK packets only)</tcp_ack>
-                        <tcp_ack_not>tcp (non-ACK packets)</tcp_ack_not>
-                        <icmp>icmp</icmp>
-                        <igmp>igmp</igmp>
-                        <esp>esp</esp>
-                        <ah>ah</ah>
-                        <gre>gre</gre>
-                    </OptionValues>
-                </proto>
-                <source type="NetworkField">
-                    <Required>Y</Required>
-                    <FieldSeparator>,</FieldSeparator>
-                    <default>any</default>
-                    <asList>Y</asList>
-                </source>
-                <source_not type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </source_not>
-                <src_port type="PortField">
-                    <Required>Y</Required>
-                    <EnableWellKnown>Y</EnableWellKnown>
-                    <EnableRanges>Y</EnableRanges>
-                    <default>any</default>
-                </src_port>
-                <destination type="NetworkField">
-                    <Required>Y</Required>
-                    <FieldSeparator>,</FieldSeparator>
-                    <default>any</default>
-                    <asList>Y</asList>
-                </destination>
-                <destination_not type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </destination_not>
-                <dst_port type="PortField">
-                    <Required>Y</Required>
-                    <EnableWellKnown>Y</EnableWellKnown>
-                    <EnableRanges>Y</EnableRanges>
-                    <default>any</default>
-                </dst_port>
-            </rule>
-        </rules>
+        <creator>
+            <signature_type type="OptionField">
+                <Required>Y</Required>
+                <default>HS256</default>
+                <OptionValues>
+                    <HS256>HS256</HS256>
+                    <HS384>HS384</HS384>
+                    <HS512>HS512</HS512>
+                    <RS256>RS256</RS256>
+                    <RS384>RS384</RS384>
+                    <RS512>RS512</RS512>
+                </OptionValues>
+            </signature_type>
+            <rsa_key>
+                <!-- -->
+            </rsa_key>
+            <key type="TextField">
+            </key>
+            <!-- issuer -->
+            <issuer type="TextField">
+            </issuer>
+            <!-- subject -> username -->
+            <subject type="TextField">
+            </subject>
+            <!-- expires -->
+            <expire type="TextField">
+            </expire>
+            <!-- expires -->
+            <not_before type="TextField">
+            </not_before>
+
+            <issuer type="TextField">
+            </issuer>
+
+            <audience type="TextField"></audience>
+        </creator>
     </items>
 </model>

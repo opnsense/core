@@ -40,7 +40,8 @@ class TokenParserFactory extends BaseObject
         $this->config = Config::getInstance()->toArray();
     }
 
-    public function makeTokenInstance(string $token, TokenKeyStore $key_configuration) {
+    public function makeTokenInstance(string $token, TokenKeyStore $key_configuration) : JWTToken
+    {
         $parts = explode(".", $token);
         if (count($parts) <= 1) {
             return null;
@@ -56,7 +57,6 @@ class TokenParserFactory extends BaseObject
             return null;
         }
 
-        $token = null;
         $tokenparser = null;
         switch ($format['alg']) {
             case 'RS256':
@@ -72,7 +72,10 @@ class TokenParserFactory extends BaseObject
         }
 
         if ($tokenparser != null) {
-            return $tokenparser->parseToken($token);
+            if ($tokenparser->parseToken($token) == false) {
+                throw new \Exception("The token is invalid");
+            }
+            return $tokenparser;
         }
     }
 
