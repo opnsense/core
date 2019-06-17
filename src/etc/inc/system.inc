@@ -657,6 +657,15 @@ EOD;
     }
 }
 
+/**
+ * stop syslog + syslog-ng
+ */
+function system_syslogd_stop()
+{
+    killbypid('/var/run/syslog.pid', 'TERM', true);
+    mwexecf("/usr/sbin/service syslog-ng stop");
+}
+
 function system_clear_log($logfile, $restart_syslogd = true)
 {
     if ($restart_syslogd) {

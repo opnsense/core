@@ -82,6 +82,7 @@ function core_services()
     $services[] = array(
         'description' => gettext('Local Syslog'),
         'php' => array(
+            "stop" => array('system_syslogd_stop'),
             "start" => array('system_syslogd_start'),
             "restart" => array('system_syslogd_start')
         ),
@@ -92,9 +93,9 @@ function core_services()
     $services[] = array(
         'description' => gettext('Remote Syslog'),
         'mwexec' => array(
-            'restart' => array('/usr/local/etc/rc.d/syslog-ng restart'),
-            'start' => array('/usr/local/etc/rc.d/syslog-ng start'),
-            'stop' => array('/usr/local/etc/rc.d/syslog-ng stop'),
+            "stop" => array('system_syslogd_stop'),
+            "start" => array('system_syslogd_start'),
+            "restart" => array('system_syslogd_start')
         ),
         'pidfile' => '/var/run/syslog-ng.pid',
         'name' => 'syslog-ng',
