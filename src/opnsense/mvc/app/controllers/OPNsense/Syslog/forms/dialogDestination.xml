@@ -12,13 +12,13 @@
     <help>Transport protocol</help>
   </field>
   <field>
-    <id>destination.applications</id>
+    <id>destination.program</id>
     <label>Applications</label>
     <type>select_multiple</type>
     <help>Choose which applications should be forwarded to the specified target, omit to select all.</help>
   </field>
   <field>
-    <id>destination.levels</id>
+    <id>destination.level</id>
     <label>Levels</label>
     <type>select_multiple</type>
     <help>Choose which levels to include, omit to select all.</help>
