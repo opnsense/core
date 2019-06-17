@@ -2,6 +2,12 @@
     <mount>//OPNsense/Syslog</mount>
     <version>1.0.0</version>
     <items>
+        <general>
+            <enabled type="BooleanField">
+              <default>1</default>
+              <Required>Y</Required>
+            </enabled>
+        </general>
         <destinations>
             <destination type="ArrayField">
                 <enabled type="BooleanField">
@@ -12,8 +18,10 @@
                   <Required>Y</Required>
                   <default>udp</default>
                   <OptionValues>
-                      <udp>UDP</udp>
-                      <tcp>TCP</tcp>
+                      <udp4>UDP(4)</udp4>
+                      <tcp4>TCP(4)</tcp4>
+                      <udp6>UDP(6)</udp6>
+                      <tcp6>TCP(6)</tcp6>
                   </OptionValues>
                 </transport>
                 <program type="JsonKeyValueStoreField">
@@ -24,7 +32,7 @@
                   <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
                   <ValidationMessage>Specify valid source applications.</ValidationMessage>
                 </program>
-                <levels type="OptionField">
+                <level type="OptionField">
                   <Required>N</Required>
                   <Multiple>Y</Multiple>
                   <OptionValues>
@@ -38,7 +46,7 @@
                       <emerg>emergency</emerg>
                   </OptionValues>
                   <default>info,notice,warn,err,crit,alert,emerg</default>
-                </levels>
+                </level>
                 <facility type="OptionField">
                   <Required>N</Required>
                   <Multiple>Y</Multiple>

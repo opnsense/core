@@ -29,6 +29,7 @@
 namespace OPNsense\Syslog;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Syslog
@@ -36,4 +37,34 @@ use OPNsense\Base\BaseModel;
  */
 class Syslog extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        // standard model validations
+        $messages = parent::performValidation($validateFullModel);
+        // extended validations
+        foreach ($this->getFlatNodes() as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $parentNode = $node->getParentNode();
+                $ptagname = $parentNode->getInternalXMLTagName();
+                $tagname = $node->getInternalXMLTagName();
+                if ($ptagname == 'destination' && in_array($tagname, array('hostname', 'transport'))) {
+                    // protocol family check
+                    if (in_array((string)$parentNode->transport, array('udp4', 'udp6', 'tcp4', 'tcp6'))) {
+                        $ipproto = ((string)$parentNode->transport)[3];
+                        $hostproto = strpos((string)$parentNode->hostname, ":") === false ? "4" : "6";
+                        if (Util::isIpAddress((string)$parentNode->hostname) && $ipproto != $hostproto) {
+                            $messages->appendMessage(new \Phalcon\Validation\Message(
+                              gettext("Transport protocol does not match address in hostname"),
+                              $key
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+        return $messages;
+    }
 }

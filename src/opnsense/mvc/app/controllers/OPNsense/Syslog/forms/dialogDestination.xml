@@ -15,19 +15,19 @@
     <id>destination.applications</id>
     <label>Applications</label>
     <type>select_multiple</type>
-    <help>Choose which applications should be forwarded to the specified target.</help>
+    <help>Choose which applications should be forwarded to the specified target, omit to select all.</help>
   </field>
   <field>
     <id>destination.levels</id>
     <label>Levels</label>
     <type>select_multiple</type>
-    <help>Choose which levels to include.</help>
+    <help>Choose which levels to include, omit to select all.</help>
   </field>
   <field>
     <id>destination.facility</id>
     <label>Facilities</label>
     <type>select_multiple</type>
-    <help>Choose which facilities to include.</help>
+    <help>Choose which facilities to include, omit to select all.</help>
   </field>
   <field>
     <id>destination.hostname</id>

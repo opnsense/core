@@ -37,6 +37,27 @@ POSSIBILITY OF SUCH DAMAGE.
                 toggle:'/api/syslog/settings/toggleDestination/'
             }
         );
+        /**
+         * Reconfigure syslog
+         */
+        $("#reconfigureAct").click(function(){
+            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall("/api/syslog/service/reconfigure", {}, function(data,status) {
+                // when done, disable progress animation.
+                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "{{ lang._('Error reconfiguring syslog') }}",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+                updateServiceControlUI('syslog');
+            });
+        });
+        updateServiceControlUI('syslog');
+
     });
 
 </script>
@@ -51,6 +72,8 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="transport" data-type="string">{{ lang._('Transport') }}</th>
+                <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
