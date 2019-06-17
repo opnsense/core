@@ -16,14 +16,14 @@
                       <tcp>TCP</tcp>
                   </OptionValues>
                 </transport>
-                <applications type="JsonKeyValueStoreField">
+                <program type="JsonKeyValueStoreField">
                   <Required>N</Required>
                   <Multiple>Y</Multiple>
                   <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
                   <SourceFile>/tmp/syslog_applications.json</SourceFile>
                   <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
                   <ValidationMessage>Specify valid source applications.</ValidationMessage>
-                </applications>
+                </program>
                 <levels type="OptionField">
                   <Required>N</Required>
                   <Multiple>Y</Multiple>
