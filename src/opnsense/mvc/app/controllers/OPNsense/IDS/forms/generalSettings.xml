@@ -24,6 +24,16 @@
         <help><![CDATA[Send alerts to system log in fast log format. This will not change the alert logging used by the product itself.]]></help>
     </field>
     <field>
+        <id>ids.general.syslog_eve</id>
+        <label>Enable eve syslog output</label>
+        <type>checkbox</type>
+        <help><![CDATA[
+          Send alerts in eve format to syslog, using log level info.
+          This will not change the alert logging used by the product itself.
+          Drop logs will only be send to the internal logger, due to restrictions in suricata.
+          ]]></help>
+    </field>
+    <field>
         <id>ids.general.MPMAlgo</id>
         <label>Pattern matcher</label>
         <type>dropdown</type>
