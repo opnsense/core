@@ -37,6 +37,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 toggle:'/api/syslog/settings/toggleDestination/'
             }
         );
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id === 'statistics') {
+                $("#grid-statistics").UIBootgrid({
+                    search: '/api/syslog/service/stats/'
+                });
+            }
+        });
         /**
          * Reconfigure syslog
          */
@@ -63,10 +70,11 @@ POSSIBILITY OF SUCH DAMAGE.
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#destinations">{{ lang._('Destinations') }}</a></li>
+    <li class="active"><a data-toggle="tab" id="destinations" href="#tab_destinations">{{ lang._('Destinations') }}</a></li>
+    <li><a data-toggle="tab" id="statistics" href="#tab_statistics">{{ lang._('Statistics') }}</a></li>
 </ul>
 <div class="tab-content content-box">
-    <div id="destinations" class="tab-pane fade in active">
+    <div id="tab_destinations" class="tab-pane fade in active">
         <!-- tab page "destinations" -->
         <table id="grid-destinations" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogDestination" data-editAlert="syslogChangeMessage">
             <thead>
@@ -90,6 +98,23 @@ POSSIBILITY OF SUCH DAMAGE.
                 </td>
             </tr>
             </tfoot>
+        </table>
+    </div>
+    <div id="tab_statistics" class="tab-pane fade in">
+        <table id="grid-statistics" class="table table-condensed table-hover table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th data-column-id="SourceName" data-type="string">{{ lang._('SourceName') }}</th>
+                    <th data-column-id="SourceId" data-type="string">{{ lang._('SourceId') }}</th>
+                    <th data-column-id="SourceInstance" data-type="string">{{ lang._('SourceInstance') }}</th>
+                    <th data-column-id="State" data-type="string">{{ lang._('State') }}</th>
+                    <th data-column-id="Type" data-type="string">{{ lang._('Type') }}</th>
+                    <th data-column-id="Number" data-type="numeric">{{ lang._('Number') }}</th>
+                    <th data-column-id="Description" data-type="string">{{ lang._('Description') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
         </table>
     </div>
     <div class="col-md-12">
