@@ -644,7 +644,11 @@ EOD;
 
     if (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
-        mwexecf("/usr/sbin/service syslog-ng reload");
+        if (isvalidpid('/var/run/syslog-ng.pid')) {
+            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
+        } else {
+            mwexecf("/usr/sbin/service syslog-ng restart");
+        }
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
         mwexecf("/usr/sbin/service syslog-ng stop");
