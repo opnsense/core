@@ -30,6 +30,7 @@
                   <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
                   <SourceFile>/tmp/syslog_applications.json</SourceFile>
                   <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+                  <SortByValue>Y</SortByValue>
                   <ValidationMessage>Specify valid source applications.</ValidationMessage>
                 </program>
                 <level type="OptionField">
