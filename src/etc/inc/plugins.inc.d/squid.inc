@@ -61,3 +61,16 @@ function squid_xmlrpc_sync()
 
     return $result;
 }
+
+/**
+ * our squid instance by default logs to file, when syslog is selected, we need a target definition to catch traffic.
+ * which flushes our local traffic to /var/log/squid.log (which would otherwise end up in /var/log/squid/access.log)
+ */
+function squid_syslog()
+{
+    $logfacilities = array();
+    $logfacilities['squid'] = array(
+        'facility' => array('(squid-1)')
+    );
+    return $logfacilities;
+}
