@@ -90,6 +90,11 @@ class JsonKeyValueStoreField extends BaseField
     private $internalConfigdPopulateTTL = 3600;
 
     /**
+     * @var bool sort by value (default is by key)
+     */
+     private $internalSortByValue = false;
+
+    /**
      * set descriptive text for empty value
      * @param string $value description
      */
@@ -200,6 +205,19 @@ class JsonKeyValueStoreField extends BaseField
     }
 
     /**
+     * change default sorting order (value vs key)
+     * @param $value boolean value Y/N
+     */
+    public function setSortByValue($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalSortByValue = true;
+        } else {
+            $this->internalSortByValue = false;
+        }
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -212,6 +230,12 @@ class JsonKeyValueStoreField extends BaseField
         }
 
         $options = explode(',', $this->internalValue);
+        // set sorting by key (default) or value
+        if ($this->internalSortByValue) {
+            natcasesort($this->internalOptionList);
+        } else {
+            ksort($this->internalOptionList);
+        }
         foreach ($this->internalOptionList as $optKey => $optValue) {
             if (in_array($optKey, $options)) {
                 $selected = 1;
@@ -220,8 +244,6 @@ class JsonKeyValueStoreField extends BaseField
             }
             $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
         }
-        // sort keys
-        ksort($result);
         return $result;
     }
 
