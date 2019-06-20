@@ -268,6 +268,33 @@
             });
         });
 
+        $("#resetAct").click(function() {
+
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: '{{ lang._('Reset') }} ',
+                message: '{{ lang._('Are you sure you want to flush all generated content and restart the proxy?') }}',
+                buttons: [{
+                    label: '{{ lang._('Yes') }}',
+                    cssClass: 'btn-primary',
+                    action: function(dlg){
+                        dlg.close();
+                        $("#resetAct_progress").addClass("fa fa-spinner fa-pulse");
+                        ajaxCall("/api/proxy/service/reset", {}, function(data,status) {
+                            $("#resetAct_progress").removeClass("fa fa-spinner fa-pulse");
+                            updateServiceControlUI('proxy');
+                        });
+                    }
+                }, {
+                    label: '{{ lang._('No') }}',
+                    action: function(dlg){
+                        dlg.close();
+                    }
+                }]
+            });
+
+        });
+
         // update history on tab state and implement navigation
         if(window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click()
@@ -301,6 +328,7 @@
         </ul>
     </li>
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
+    <li><a data-toggle="tab" href="#support"><b>{{ lang._('Support') }}</b></a></li>
 </ul>
 
 <div class="content-box tab-content">
@@ -439,6 +467,26 @@
                     </div>
                 </td>
             </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="support" class="tab-pane fade">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>{{ lang._('Action')}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                  <td>
+                      <button class="btn btn-primary" id="resetAct" type="button">{{ lang._('Reset') }}<i id="resetAct_progress" class=""></button>
+                  </td>
+                  <td>
+                      {{ lang._('Reset all generated content (cached files and certificates included) and restart the proxy.') }}
+                  </td>
+              </tr>
             </tbody>
         </table>
     </div>
