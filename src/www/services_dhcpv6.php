@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid domain name must be specified for the dynamic DNS registration.");
         }
         if (!empty($pconfig['ddnsdomain']) && !is_ipaddrv4($pconfig['ddnsdomainprimary'])) {
-            $input_errors[] = gettext("A valid primary domain name server IPv4 address must be specified for the dynamic domain name.");
+            $input_errors[] = gettext("A valid primary domain name server IPv6 address must be specified for the dynamic domain name.");
         }
         if (!empty($pconfig['ddnsdomainkey']) && base64_encode(base64_decode($pconfig['ddnsdomainkey'], true)) !== $pconfig['ddnsdomainkey']) {
             $input_errors[] = gettext('You must specify a Base64-encoded domain key.');
