@@ -147,7 +147,7 @@ if (count($argv) > 6) {
     }
 
     // perform the actual authentication
-    $authFactory = new OPNsense\Auth\AuthenticationFactory;
+    $authFactory = new OPNsense\Auth\AuthenticationFactory();
     foreach ($authmodes as $authName) {
         $authenticator = $authFactory->get($authName);
         if ($authenticator) {
