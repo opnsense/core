@@ -45,6 +45,7 @@ $checkbox_names = array(
     'synchronizestaticroutes',
     'synchronizeusers',
     'synchronizevirtualip',
+    'synchronizewidgets',
 );
 
 $syncplugins = plugins_xmlrpc_sync();
@@ -238,6 +239,15 @@ include("head.inc");
                       <div class="well well-sm">
                         <b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b>
                       </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_synchronizewidgets" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dashboard') ?></td>
+                  <td>
+                    <input type="checkbox" name="synchronizewidgets" value="on" <?=!empty($pconfig['synchronizewidgets']) ? "checked=\"checked\"" : "";?> />
+                    <div class="hidden" data-for="help_for_synchronizewidgets">
+                      <?=gettext('Synchronize dashboard widgets.') ?>
                     </div>
                   </td>
                 </tr>
