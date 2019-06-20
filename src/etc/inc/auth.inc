@@ -410,7 +410,7 @@ function local_sync_accounts()
             if (count($line) < 3 || !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
                 continue;
             }
-            mwexecf('/usr/sbin/pw groupdel %s', $line[2]);
+            mwexecf('/usr/sbin/pw groupdel -g %s', $line[2]);
         }
         pclose($fd);
     }
