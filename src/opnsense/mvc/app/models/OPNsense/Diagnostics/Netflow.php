@@ -36,4 +36,38 @@ use OPNsense\Base\BaseModel;
  */
 class Netflow extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        // standard model validations
+        $messages = parent::performValidation($validateFullModel);
+        // extended validations
+        foreach ($this->getFlatNodes() as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $parentNode = $node->getParentNode();
+                $ptagname = $parentNode->getInternalXMLTagName();
+                $tagname = $node->getInternalXMLTagName();
+                if ($ptagname == 'capture' && in_array($tagname, array('interfaces', 'egress_only'))) {
+                    $intf_list = explode(',', (string)$parentNode->interfaces);
+                    $egress_list  = explode(',', (string)$parentNode->egress_only);
+                    $missing = array();
+                    foreach ($egress_list as $egress_item) {
+                        if (!in_array($egress_item, $intf_list)) {
+                            $missing[] = $egress_item;
+                        }
+                    }
+                    if (!empty($missing)) {
+                        $messages->appendMessage(new \Phalcon\Validation\Message(
+                            sprintf(gettext("Egress interface(s) [%s] missing in listening interfaces"),
+                                    implode(',', $missing)),
+                            $key
+                        ));
+                    }
+                }
+            }
+        }
+        return $messages;
+    }
 }
