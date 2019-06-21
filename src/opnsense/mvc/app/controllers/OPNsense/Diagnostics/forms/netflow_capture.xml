@@ -3,7 +3,7 @@
         <id>netflow.capture.interfaces</id>
         <label>Listening interfaces</label>
         <type>select_multiple</type>
-        <help><![CDATA[Select internal interfaces to enable NetFlow on.]]></help>
+        <help><![CDATA[Select all the interfaces to enable NetFlow on.]]></help>
         <hint>Type or select interface.</hint>
     </field>
     <field>
