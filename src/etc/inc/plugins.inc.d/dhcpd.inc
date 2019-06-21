@@ -264,6 +264,11 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
+        foreach (array('AdvDefaultLifetime', 'AdvValidLifetime', 'AdvPreferredLifetime', 'AdvRDNSSLifetime', 'AdvDNSSLLifetime') as $opt) {
+            if (!empty($dhcpv6ifconf[$opt])) {
+                $radvdconf .= sprintf("\t%s %s;\n", $opt, $dhcpv6ifconf[$opt]);
+            }
+        }
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
 
         switch ($dhcpv6ifconf['rapriority']) {
@@ -351,6 +356,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 $radvdconf .= "\troute {$raroute} {\n";
                 if (!empty($dhcpv6ifconf['rainterface'])) {
                     $radvdconf .= "\t\tRemoveRoute off;\n";
+                }
+                if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {
+                    $radvdconf .= "\t\tAdvRouteLifetime {$dhcpv6ifconf['AdvRouteLifetime']};\n";
                 }
                 $radvdconf .= "\t};\n";
             }
