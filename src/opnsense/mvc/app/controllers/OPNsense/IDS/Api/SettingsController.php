@@ -134,7 +134,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
                 }
 
-                $result['rowCount'] = empty($result['rows']) ? 0 : count($result['rows']);
+                $result['rowCount'] = empty($result['rows']) || !is_array($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
                 $result['parameters'] = $data['parameters'];
                 $result['current'] = (int)$currentPage;
