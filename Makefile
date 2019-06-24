@@ -316,7 +316,7 @@ lint-xml:
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
 lint-exec:
-.for DIR in ${.CURDIR}/src/etc/rc.d ${SCRIPTDIRS}
+.for DIR in ${.CURDIR}/src/etc/rc.d ${.CURDIR}/src/etc/rc.syshook.d ${SCRIPTDIRS}
 .if exists(${DIR})
 	@find ${DIR} -path '**/htdocs_default' -prune -o -type f \
 	    ! -name "*.xml" ! -name "*.csv" ! -name "*.sql" -print0 | \
