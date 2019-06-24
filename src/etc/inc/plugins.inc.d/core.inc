@@ -87,7 +87,7 @@ function core_services()
             "restart" => array('system_syslogd_start')
         ),
         'pidfile' => '/var/run/syslog.pid',
-        'name' => 'syslog',
+        'name' => 'syslogd',
     );
 
     $services[] = array(
