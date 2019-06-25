@@ -235,6 +235,10 @@ scripts:
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
+.if exists(${LOCALBASE}/opnsense/www/index.php)
+	# try to update the current system if it looks like one
+	@touch ${LOCALBASE}/opnsense/www/index.php
+.endif
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -302,7 +306,10 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.${PKG_FORMAT}
+.if exists(${LOCALBASE}/opnsense/www/index.php)
+	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
+.endif
 	@pluginctl webgui
 
 lint-shell:
