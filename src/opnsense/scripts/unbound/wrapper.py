@@ -42,6 +42,12 @@ def unbound_control_reader(action):
         for line in output_stream:
             yield line.decode()
 
+try:
+    if subprocess.call("pgrep -F /var/run/unbound.pid 2>/dev/null >/dev/null", shell=True) != 0:
+        sys.exit(1)
+except:
+    sys.exit(1)
+
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--cache', help='Dump cache', action="store_true", default=False)
