@@ -30,7 +30,6 @@ namespace OPNsense\Unbound\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
-use \OPNsense\Core\Config;
 
 /**
  * Class DiagnosticsextensionController
@@ -44,10 +43,6 @@ class DiagnosticsController extends ApiControllerBase
     public function statsAction()
     {
         $ret['status'] = "failed";
-        $config = Config::getInstance();
-        if (!isset($config->object()->unbound->enable) || $config->object()->unbound->enable->__toString() != "1") {
-            return $ret;
-        }
         $backend = new Backend();
         $result = trim($backend->configdRun('unbound stats'));
         if ($result != "null") {
@@ -63,10 +58,6 @@ class DiagnosticsController extends ApiControllerBase
     public function dumpcacheAction()
     {
         $ret['status'] = "failed";
-        $config = Config::getInstance();
-        if (!isset($config->object()->unbound->enable) || $config->object()->unbound->enable->__toString() != "1") {
-            return $ret;
-        }
         $backend = new Backend();
         $result = json_decode(trim($backend->configdRun("unbound dumpcache")), true);
         if ($result !== null) {
@@ -78,10 +69,6 @@ class DiagnosticsController extends ApiControllerBase
     public function dumpinfraAction()
     {
         $ret['status'] = "failed";
-        $config = Config::getInstance();
-        if (!isset($config->object()->unbound->enable) || $config->object()->unbound->enable->__toString() != "1") {
-            return $ret;
-        }
         $backend = new Backend();
         $result = json_decode(trim($backend->configdRun("unbound dumpinfra")), true);
         if ($result !== null) {
@@ -93,10 +80,6 @@ class DiagnosticsController extends ApiControllerBase
     public function listlocaldataAction()
     {
         $ret['status'] = "failed";
-        $config = Config::getInstance();
-        if (!isset($config->object()->unbound->enable) || $config->object()->unbound->enable->__toString() != "1") {
-            return $ret;
-        }
         $backend = new Backend();
         $result = json_decode(trim($backend->configdRun("unbound listlocaldata")), true);
         if ($result !== null) {
@@ -108,10 +91,6 @@ class DiagnosticsController extends ApiControllerBase
     public function listlocalzonesAction()
     {
         $ret['status'] = "failed";
-        $config = Config::getInstance();
-        if (!isset($config->object()->unbound->enable) || $config->object()->unbound->enable->__toString() != "1") {
-            return $ret;
-        }
         $backend = new Backend();
         $result = json_decode(trim($backend->configdRun("unbound listlocalzones")), true);
         if ($result !== null) {
@@ -123,10 +102,6 @@ class DiagnosticsController extends ApiControllerBase
     public function listinsecureAction()
     {
         $ret['status'] = "failed";
-        $config = Config::getInstance();
-        if (!isset($config->object()->unbound->enable) || $config->object()->unbound->enable->__toString() != "1") {
-            return $ret;
-        }
         $backend = new Backend();
         $result = json_decode(trim($backend->configdRun("unbound listinsecure")), true);
         if ($result !== null) {
