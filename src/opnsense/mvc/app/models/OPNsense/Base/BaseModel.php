@@ -80,7 +80,6 @@ abstract class BaseModel
      */
     protected function init()
     {
-        return;
     }
 
     /**
@@ -198,7 +197,7 @@ abstract class BaseModel
             $fieldObject->setParentModel($this);
 
             // now add content to this model (recursive)
-            if ($fieldObject->isContainer() == false) {
+            if (!$fieldObject->isContainer()) {
                 $internal_data->addChildNode($tagName, $fieldObject);
                 if ($xmlNode->count() > 0) {
                     // if fieldtype contains properties, try to call the setters
@@ -382,7 +381,7 @@ abstract class BaseModel
      * @param bool $validateFullModel validate full model or only changed fields
      * @return \Phalcon\Validation\Message\Group
      */
-    public function performValidation($validateFullModel = false)
+    public function performValidation($validateFullModel = false) : \Phalcon\Validation\Message\Group
     {
         // create a Phalcon validator and collect all model validations
         $validation = new \Phalcon\Validation();
@@ -417,7 +416,7 @@ abstract class BaseModel
      * @param string $targetref target reference, for example section. used as prefix if no source given
      * @return array list of validation errors, indexed by field reference
      */
-    public function validate($sourceref = null, $targetref = "")
+    public function validate($sourceref = null, $targetref = "") : array
     {
         $result = array();
         $valMsgs = $this->performValidation();

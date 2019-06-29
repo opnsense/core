@@ -41,7 +41,7 @@ use OPNsense\Core\Config;
 class CertificateField extends BaseField
 {
     /**
-     * @var bool marks if this is a data node or a container
+     * @var bool marks if this is a data node or <a container
      */
     protected $internalIsContainer = false;
 

@@ -37,7 +37,7 @@ class RS384 extends RSABased
         return openssl_verify($this->verify_string, $this->signature_value, $this->getPublicKey(), OPENSSL_ALGO_SHA384) == 1;
     }
 
-    public function sign($claims): string
+    public function sign($claims): ?string
     {
         $prefix = $this->b64UrlEncode(json_encode(array('typ' => 'jwt', 'alg' => 'RS384')));
         $claims = $this->b64UrlEncode(json_encode($claims));
@@ -45,6 +45,8 @@ class RS384 extends RSABased
         $to_sign = $prefix . '.' . $claims;
         if (openssl_sign($to_sign, $signature, $this->getPrivateKey(), OPENSSL_ALGO_SHA384)) {
             return $to_sign . '.' . $this->b64UrlEncode($signature);
+        } else {
+            throw new Exception("signature failed");
         }
     }
 }

@@ -111,5 +111,5 @@ abstract class JWTToken extends BaseObject
 
 
     public abstract function verify(): bool;
-    public abstract function sign($claims): string;
+    public abstract function sign($claims): ?string;
 }

@@ -30,6 +30,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use OPNsense\Base\Constraints\BaseConstraint;
 use Phalcon\Validation\Validator\PresenceOf;
 
 /**
@@ -126,7 +127,7 @@ abstract class BaseField
      * generate a new UUID v4 number
      * @return string uuid v4 number
      */
-    public function generateUUID()
+    public function generateUUID() : string
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -147,7 +148,6 @@ abstract class BaseField
      */
     protected function actionPostLoadingEvent()
     {
-        return;
     }
 
     /**
@@ -175,7 +175,7 @@ abstract class BaseField
      */
     public function eventPostLoading()
     {
-        foreach ($this->internalChildnodes as $nodeName => $node) {
+        foreach ($this->internalChildnodes as $node) {
             $node->eventPostLoading();
         }
         $this->actionPostLoadingEvent();
@@ -292,7 +292,7 @@ abstract class BaseField
     public function iterateItems()
     {
         foreach ($this->internalChildnodes as $key => $value) {
-            if ($value->internalIsVirtual == false) {
+            if (!$value->internalIsVirtual) {
                 yield $key => $value;
             }
         }
@@ -316,7 +316,7 @@ abstract class BaseField
      * return string interpretation of this field
      * @return null|string string interpretation of this field
      */
-    public function __toString()
+    public function __toString() : ?string
     {
         return (string)$this->internalValue;
     }
@@ -351,13 +351,9 @@ abstract class BaseField
      * check if field content has changed
      * @return bool change indicator
      */
-    public function isFieldChanged()
+    public function isFieldChanged() : bool
     {
-        if ($this->internalInitialValue !==  $this->internalValue) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->internalInitialValue !== $this->internalValue;
     }
 
     /**
@@ -397,7 +393,7 @@ abstract class BaseField
      * get this nodes children
      * @return array child items
      */
-    public function getChildren()
+    public function getChildren() : array
     {
         return $this->internalChildnodes;
     }
@@ -406,13 +402,9 @@ abstract class BaseField
      * check if this field is unused and required
      * @return bool
      */
-    public function isEmptyAndRequired()
+    public function isEmptyAndRequired() : bool
     {
-        if ($this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
     }
 
     /**
@@ -420,7 +412,7 @@ abstract class BaseField
      * @param $name
      * @return null|object
      */
-    public function getConstraintByName($name)
+    public function getConstraintByName($name) : BaseConstraint
     {
         if (isset($this->internalConstraints[$name])) {
             $constraint = $this->internalConstraints[$name];
@@ -433,7 +425,7 @@ abstract class BaseField
                         return $constr_class->newInstance($constraint);
                     }
                 } catch (\ReflectionException $e) {
-                    null; // ignore configuration errors, if the constraint can't be found, skip.
+                    return null; // ignore configuration errors, if the constraint can't be found, skip.
                 }
             }
         }
@@ -444,7 +436,7 @@ abstract class BaseField
      * fetch all additional validators
      * @return array
      */
-    private function getConstraintValidators()
+    private function getConstraintValidators() : array
     {
         $result = array();
         foreach ($this->internalConstraints as $name => $constraint) {
@@ -474,7 +466,7 @@ abstract class BaseField
      * return field validators for this field
      * @return array returns validators for this field type (empty if none)
      */
-    public function getValidators()
+    public function getValidators() : array
     {
         $validators = $this->getConstraintValidators();
         if ($this->isEmptyAndRequired()) {
@@ -497,7 +489,7 @@ abstract class BaseField
      * clone children. (using ArrayFields)
      * @return bool is virtual node
      */
-    public function getInternalIsVirtual()
+    public function getInternalIsVirtual() : bool
     {
         return $this->internalIsVirtual;
     }
@@ -515,9 +507,9 @@ abstract class BaseField
      * Recursive method to flatten tree structure for easy validation, returns only leaf nodes.
      * @return array named array with field type nodes, using the internal reference.
      */
-    public function getFlatNodes()
+    public function getFlatNodes() : array
     {
-        $result = array ();
+        $result = array();
         if (count($this->internalChildnodes) == 0) {
             return array($this);
         }
@@ -536,9 +528,9 @@ abstract class BaseField
      * get nodes as array structure
      * @return array
      */
-    public function getNodes()
+    public function getNodes() : array
     {
-        $result = array ();
+        $result = array();
         foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodes();
@@ -554,7 +546,7 @@ abstract class BaseField
      * companion for getNodes, displays node content. may be overwritten for alternative presentation.
      * @return null|string
      */
-    public function getNodeData()
+    public function getNodeData() : ?string
     {
         return $this->__toString();
     }
@@ -574,7 +566,7 @@ abstract class BaseField
                     if (is_array($data[$key])) {
                         $node->setNodes($data[$key]);
                     } else {
-                        throw new \Exception("Invalid  input type for {$key} (configuration error?)");
+                        throw new \Exception("Invalid input type for {$key} (configuration error?)");
                     }
                 } else {
                     $node->setValue($data[$key]);
@@ -706,7 +698,7 @@ abstract class BaseField
      * return object type as string
      * @return string
      */
-    public function getObjectType()
+    public function getObjectType() : string
     {
         $parts = explode("\\", get_class($this));
         return $parts[count($parts)-1];
