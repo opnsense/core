@@ -28,13 +28,13 @@
  *
  */
 
-namespace OPNsense\TrafficShaper;
+namespace OPNsense\Trust;
 
 /**
  * Class IndexController
  * @package OPNsense\TrafficShaper
  */
-class IndexController extends \OPNsense\Base\IndexController
+class JwtController extends \OPNsense\Base\ControllerBase
 {
     /**
      * traffic shaper index
@@ -43,7 +43,7 @@ class IndexController extends \OPNsense\Base\IndexController
     public function createAction()
     {
         // include dialog form definitions
-        $this->view->formDialogPipe = $this->getForm("createJWT");
+        $this->view->formDialogCreate = $this->getForm("createJWT");
         // choose template
         $this->view->pick('OPNsense/Trust/createJWT');
     }

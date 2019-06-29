@@ -30,6 +30,13 @@
 namespace OPNsense\Trust\Api;
 
 
+use OPNsense\Trust\JWT;
+
 class JwtController extends \OPNsense\Base\ApiControllerBase {
+
+    public function create_templateAction() {
+        $jwt = new JWT();
+        return array('jwt' => $jwt->creator->Add()->getNodes());
+    }
 
 }

@@ -46,7 +46,9 @@
     <field>
         <id>jwt.issuer</id>
         <label>Issuer</label>
-        <type>dropdown</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
         <help>The system which is creating this token.</help>
     </field>
     <field>
@@ -54,6 +56,7 @@
         <label>Audience</label>
         <type>select_multiple</type>
         <allownew>true</allownew>
+        <style>tokenize</style>
         <help>Enter systems, for which this token is valid.</help>
     </field>
 </form>

@@ -1,7 +1,7 @@
 <menu>
-    <Trust>
-        <JWT visibleName="JSON Web Token" order="35" cssClass="fa fa-filter fa-fw">
-            <Create order="10" url="/ui/trust/jwt/create" />
-        </JWT>
-    </Trust>
+    <System>
+        <Trust>
+                <JWTCreate visibleName="Create JSON Web Token" url="/ui/trust/jwt/create" cssClass="fa fa-filter fa-fw" order="35" />
+        </Trust>
+    </System>
 </menu>

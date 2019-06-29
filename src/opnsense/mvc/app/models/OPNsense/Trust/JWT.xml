@@ -5,7 +5,7 @@
         OPNsense JWT Helper
     </description>
     <items>
-        <creator>
+        <creator type="ArrayField"><!-- do not render -->
             <signature_type type="OptionField">
                 <Required>Y</Required>
                 <default>HS256</default>
@@ -18,8 +18,8 @@
                     <RS512>RS512</RS512>
                 </OptionValues>
             </signature_type>
-            <rsa_key>
-                <!-- -->
+            <rsa_key type="CertificateField">
+                <Type>cert</Type>
             </rsa_key>
             <key type="TextField">
             </key>
@@ -36,10 +36,13 @@
             <not_before type="TextField">
             </not_before>
 
-            <issuer type="TextField">
+            <issuer type="CSVListField">
+                <multiple>Y</multiple>
             </issuer>
 
-            <audience type="TextField"></audience>
+            <audience type="CSVListField">
+                <multiple>Y</multiple>
+            </audience>
         </creator>
     </items>
 </model>
