@@ -86,7 +86,7 @@ def fetch_rule_details():
 
         # use pfctl to create a list per rule number with the details found
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-vvPnf', '/tmp/rules.debug'],
+            subprocess.call(['/sbin/pfctl', '-vvPsr'],
                             stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
             for line in output_stream.read().decode().strip().split('\n'):
