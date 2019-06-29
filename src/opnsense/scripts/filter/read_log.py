@@ -73,7 +73,7 @@ def fetch_rules_descriptions():
     result = dict()
     if os.path.isfile('/tmp/rules.debug'):
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-vvPnf', '/tmp/rules.debug'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            subprocess.call(['/sbin/pfctl', '-vvPsr'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
             for line in output_stream.read().strip().split('\n'):
                 if line.startswith('@'):
