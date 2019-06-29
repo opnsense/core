@@ -28,8 +28,16 @@
 namespace OPNsense\Auth\JWT;
 
 
+use OPNsense\Core\Config;
+
 class BaseObject
 {
+    protected $config;
+    public function __construct()
+    {
+        $this->config = Config::getInstance()->toArray();
+    }
+
     public function b64UrlEncode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
@@ -47,7 +55,7 @@ class BaseObject
         $certificates = isset($this->config['cert']) ? $this->config['cert'] : array();
         foreach ($certificates as $certificate)
         {
-            if ($certificate['ref'] == $ref)
+            if ($certificate['refid'] == $ref)
             {
                 return base64_decode($certificate[$type]);
             }

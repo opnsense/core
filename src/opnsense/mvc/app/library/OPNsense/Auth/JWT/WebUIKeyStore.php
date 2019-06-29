@@ -32,14 +32,13 @@ use OPNsense\Core\Config;
 
 class WebUIKeyStore extends BaseObject implements TokenKeyStore
 {
-    private $config;
     private $jwt;
     const CERTICICATE_XML_NAME = 'crt';
     const PRIVATE_KEY_XML_NAME = 'prv';
 
     public function __construct()
     {
-        $this->config = Config::getInstance()->toArray();
+        parent::__construct();
         $this->jwt = isset($this->config['system']['jwt']) ? $this->config['system']['jwt'] : null;
     }
 
@@ -48,8 +47,8 @@ class WebUIKeyStore extends BaseObject implements TokenKeyStore
         if (empty($this->jwt)) {
             return null;
         }
-        return array_key_exists('private', $this->jwt) ?
-            $this->resolveCertificate($this->jwt['private'], WebUIKeyStore::PRIVATE_KEY_XML_NAME) : null;
+        return array_key_exists('asymmetric', $this->jwt) ?
+            $this->resolveCertificate($this->jwt['asymmetric'], WebUIKeyStore::PRIVATE_KEY_XML_NAME) : null;
     }
     public function getAsymmetricPublicKey()
     {
@@ -57,8 +56,8 @@ class WebUIKeyStore extends BaseObject implements TokenKeyStore
             return null;
         }
 
-        return array_key_exists('public', $this->jwt) ?
-            $this->resolveCertificate($this->jwt['public'], WebUIKeyStore::CERTICICATE_XML_NAME) : null;
+        return array_key_exists('asymmetric', $this->jwt) ?
+            $this->resolveCertificate($this->jwt['asymmetric'], WebUIKeyStore::CERTICICATE_XML_NAME) : null;
     }
 
     public function getSymmetricKey()

@@ -33,17 +33,15 @@ use OPNsense\Core\Config;
 class TokenParserFactory extends BaseObject
 {
 
-    private $config;
-
     public function __construct()
     {
-        $this->config = Config::getInstance()->toArray();
+        parent::__construct();
     }
 
-    public function makeTokenInstance(string $token, TokenKeyStore $key_configuration) : JWTToken
+    public function makeTokenInstance(string $token, TokenKeyStore $key_configuration) : ?JWTToken
     {
         $parts = explode(".", $token);
-        if (count($parts) <= 1) {
+        if (count($parts) <= 2) {
             return null;
         }
 
@@ -67,7 +65,7 @@ class TokenParserFactory extends BaseObject
             case 'HS256':
             case 'HS384':
             case 'HS512':
-                $tokenparser = $this->parseHMAC($format['alg']);
+                $tokenparser = $this->parseHMAC($format['alg'], $key_configuration);
                 break;
         }
 
@@ -77,6 +75,7 @@ class TokenParserFactory extends BaseObject
             }
             return $tokenparser;
         }
+        return null;
     }
 
     private function parseRSA($format, TokenKeyStore $key_store) {

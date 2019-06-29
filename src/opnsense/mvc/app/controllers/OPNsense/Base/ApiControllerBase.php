@@ -180,12 +180,15 @@ class ApiControllerBase extends ControllerRoot
     {
         $key_config = new WebUIKeyStore();
         $token_parser_factory = new TokenParserFactory();
+        $claims = array();
         try {
             $token = $token_parser_factory->makeTokenInstance($key_secret_hash, $key_config);
+            if ($token != null) {
+                $claims = $token->get_claims();
+            }
         } catch (\Exception $e) {
             return null;
         }
-        $claims = $token->get_claims();
         return $this->performAfterAuth($dispatcher, $claims, json_encode($claims));
     }
 
@@ -211,7 +214,7 @@ class ApiControllerBase extends ControllerRoot
                         $afterAuthResult = $this->basicAuth($authFactory, $key_secret_hash);
                         break;
                     case 'bearer':
-                        $afterAuthResult = $this->bearerAuth($authFactory, $key_secret_hash);
+                        $afterAuthResult = $this->bearerAuth($dispatcher, $authFactory, $key_secret_hash);
                         break;
                     default:
                         $afterAuthResult = null;
