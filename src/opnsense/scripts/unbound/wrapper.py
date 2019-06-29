@@ -33,20 +33,20 @@ import tempfile
 import subprocess
 import argparse
 import json
+import psutil
 
 def unbound_control_reader(action):
+    try:
+        if not psutil.pid_exists(int(open("/var/run/unbound.pid").read().strip())):
+            sys.exit(1)
+    except:
+        sys.exit(1)
     with tempfile.NamedTemporaryFile() as output_stream:
         subprocess.call(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
                         stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         for line in output_stream:
             yield line.decode()
-
-try:
-    if subprocess.call("pgrep -F /var/run/unbound.pid 2>/dev/null >/dev/null", shell=True) != 0:
-        sys.exit(1)
-except:
-    sys.exit(1)
 
 # parse arguments
 parser = argparse.ArgumentParser()

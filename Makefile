@@ -129,6 +129,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON2}-dnspython \
 			py${CORE_PYTHON2}-ipaddress \
 			py${CORE_PYTHON2}-netaddr \
+			py${CORE_PYTHON2}-psutil \
 			py${CORE_PYTHON2}-requests \
 			py${CORE_PYTHON2}-sqlite3 \
 			py${CORE_PYTHON2}-ujson \
