@@ -53,7 +53,7 @@ class AliasController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "aliases.alias",
             array('enabled', 'name', 'description', 'type', 'content'),
-            "description"
+            "name"
         );
     }
 
