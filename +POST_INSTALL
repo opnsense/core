@@ -35,5 +35,5 @@ rm -f /etc/rc.shutdown.bak
 
 /usr/local/etc/rc.configure_firmware
 
-# cerate a unique timestamp for our asset caching
+# create a unique timestamp for our asset caching
 touch /usr/local/opnsense/www/index.php
