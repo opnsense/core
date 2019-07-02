@@ -461,7 +461,7 @@
                         '<i class="fa fa-trash fa-fw">' +
                         '</i></button>' :
                         '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '" ' +
-                        ' data-toggle="tooltip" title="{{ lang._('Install') }}">' +
+                        'data-repository="'+row['repository']+'" data-toggle="tooltip" title="{{ lang._('Install') }}">' +
                         '<i class="fa fa-plus fa-fw">' +
                         '</i></button>'
                     ) + '</td>' + '</tr>'
@@ -543,7 +543,29 @@
             });
             $(".act_install").click(function(event) {
                 event.preventDefault();
-                action('install', $(this).data('package'));
+                let package_name = $(this).data('package');
+                /* XXX temporary placeholder to inform the user that he/she is installing from a different (external) source */
+                if ($(this).data('repository') !== 'OPNsense') {
+                    BootstrapDialog.show({
+                        type:BootstrapDialog.TYPE_INFO,
+                        title: "{{ lang._('Third party software') }}",
+                        message: "{{ lang._('This software package is provided by an external vendor, for more information contact the author')}}",
+                        buttons: [{
+                            label: "{{ lang._('Install') }}",
+                            action: function(dialogRef){
+                                dialogRef.close();
+                                action('install', package_name);
+                            }
+                        }, {
+                            label: "{{ lang._('Abort') }}",
+                            action: function(dialogRef){
+                                dialogRef.close();
+                            }
+                        }]
+                    });
+                } else {
+                    action('install', package_name);
+                }
             });
             $(".act_changelog").click(function(event) {
                 event.preventDefault();

@@ -719,7 +719,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license');
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license', 'repository', 'origin');
         $backend = new Backend();
         $response = array();
 
@@ -763,6 +763,10 @@ class FirmwareController extends ApiControllerBase
                 if (isset($packages[$translated['name']])) {
                     /* local iteration, mark package provided */
                     $translated['provided'] = '1';
+                    /* XXX could be simplified, init with remote, overwrite with local when provided */
+                    $translated['origin'] = $packages[$translated['name']]['origin'];
+                    $translated['repository'] = $packages[$translated['name']]['repository'];
+                    $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
                 }
                 $packages[$translated['name']] = $translated;
 
