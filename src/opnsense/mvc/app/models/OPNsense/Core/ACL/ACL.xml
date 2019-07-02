@@ -2,9 +2,6 @@
     <user-config-readonly>
         <name>System: Deny config write</name>
     </user-config-readonly>
-    <user-proxy-auth>
-        <name>Proxy: Login</name>
-    </user-proxy-auth>
     <page-diagnostics-backup-restore>
         <name>Diagnostics: Backup / Restore</name>
         <patterns>
