@@ -763,11 +763,8 @@ class FirmwareController extends ApiControllerBase
                 if (isset($packages[$translated['name']])) {
                     /* local iteration, mark package provided */
                     $translated['provided'] = '1';
-                    /* XXX could be simplified, init with remote, overwrite with local when provided */
-                    $translated['origin'] = $packages[$translated['name']]['origin'];
-                    $translated['repository'] = $packages[$translated['name']]['repository'];
-                    $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
                 }
+                $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
                 $packages[$translated['name']] = $translated;
 
                 /* figure out local and remote plugins */
