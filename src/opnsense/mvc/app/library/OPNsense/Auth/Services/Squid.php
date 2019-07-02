@@ -88,11 +88,17 @@ class Squid implements IService
       */
     public function checkConstraints()
     {
-         // XXX: replace with group membership in 19.7
-        if (in_array('Local Database', $this->supportedAuthenticators())) {
-            return (new ACL())->hasPrivilege($this->getUserName(), 'user-proxy-auth');
+        $configObj = Config::getInstance()->object();
+        if (!empty((string)$configObj->OPNsense->proxy->forward->authentication->authEnforceGroup)) {
+            $groups = explode(',', (string)$configObj->OPNsense->proxy->forward->authentication->authEnforceGroup);
+            $acl = new ACL();
+            foreach ($groups as $local_group) {
+                if ($acl->inGroup($this->getUserName(), $local_group, false)) {
+                    return true;
+                }
+            }
+            return false;
         } else {
-            // XXX non local auth, constraints not used. remove with https://github.com/opnsense/core/issues/3250
             return true;
         }
     }
