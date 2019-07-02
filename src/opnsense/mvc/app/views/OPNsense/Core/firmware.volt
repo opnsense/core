@@ -427,7 +427,7 @@
 
             if (local_count == 0) {
                 $('#packageslist > tbody').append(
-                    '<tr><td colspan=5>{{ lang._('No packages were found on your system. Please call for help.') }}</td></tr>'
+                    '<tr><td colspan=6>{{ lang._('No packages were found on your system. Please call for help.') }}</td></tr>'
                 );
             }
 
