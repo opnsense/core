@@ -87,7 +87,7 @@ class IPsec implements IService
       */
     public function checkConstraints()
     {
-          $configObj = Config::getInstance()->object();
+        $configObj = Config::getInstance()->object();
         if (empty((string)$configObj->ipsec->client->enable)) {
             // IPsec mobile extension is disabled.
             return false;
