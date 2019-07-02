@@ -105,6 +105,7 @@ class ACL
                     $this->userDatabase[(string)$node->name] = array();
                     $this->userDatabase[(string)$node->name]['uid'] = (string)$node->uid;
                     $this->userDatabase[(string)$node->name]['groups'] = array();
+                    $this->userDatabase[(string)$node->name]['gids'] = array();
                     $this->userDatabase[(string)$node->name]['priv'] = array();
                     if (!empty($node->landing_page)) {
                         $this->userDatabase[(string)$node->name]['landing_page'] = (string)$node->landing_page;
@@ -128,6 +129,7 @@ class ACL
                     foreach ($this->userDatabase as $username => $userinfo) {
                         if ($this->userDatabase[$username]["uid"] == (string)$node) {
                             $this->userDatabase[$username]["groups"][] = $groupkey;
+                            $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
                         }
                     }
                 } elseif ($node->getName() == "priv") {
@@ -319,12 +321,17 @@ class ACL
      * check if user has group membership
      * @param string $username user name
      * @param string $groupname group name
+     * @param boolean $byname query by name (or gid)
      * @return bool|null|string|string[]
      */
-    public function inGroup($username, $groupname)
+    public function inGroup($username, $groupname, $byname=true)
     {
         if (!empty($this->userDatabase[$username])) {
-            return in_array($groupname, $this->userDatabase[$username]['groups']);
+            if ($byname) {
+                return in_array($groupname, $this->userDatabase[$username]['groups']);
+            } else {
+                return in_array($groupname, $this->userDatabase[$username]['gids']);
+            }
         }
         return false;
     }
