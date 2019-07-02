@@ -69,6 +69,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20180614
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20181218
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20190702
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.configure_firmware
