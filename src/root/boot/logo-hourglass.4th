@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"    19.7  ``The Road Ahead''   #[m" logo+
+	s"    19.7  ``To Be Annouced''   #[m" logo+
 
 	2drop
 ;

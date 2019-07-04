@@ -262,15 +262,6 @@
             <sslbump type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
-		    <Constraints>
-		        <check001>
-		        <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
-		            <type>DependConstraint</type>
-		            <addFields>
-                                <field1>sslurlonly</field1>
-                            </addFields>
-		        </check001>
-                    </Constraints>
             </sslbump>
             <sslurlonly type="BooleanField">
                 <default>0</default>
