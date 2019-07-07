@@ -48,10 +48,8 @@ function start_capture($options)
 {
       $cmd_opts = array();
       $filter_opts = array();
-      if (!empty($options['interface'])) {
-          $intf = get_real_interface($options['interface']);
-          $cmd_opts[] = '-i ' . $intf;
-      }
+      $intf = get_real_interface($options['interface']);
+      $cmd_opts[] = '-i ' . $intf;
 
       if (empty($options['promiscuous'])) {
           // disable promiscuous mode
@@ -106,13 +104,15 @@ function start_capture($options)
           $filter_opts[] = "port " . str_replace("!", "not ", $options['port']);
       }
 
-      $cmd = '/usr/sbin/tcpdump ';
-      $cmd .= implode(' ', $cmd_opts);
-      $cmd .= ' -w /tmp/packetcapture.cap ';
-      $cmd .= " ".escapeshellarg(implode(' and ', $filter_opts));
-      //delete previous packet capture if it exists
-      @unlink('/tmp/packetcapture.cap');
-      mwexec_bg($cmd);
+      if (!empty($intf)) {
+          $cmd = '/usr/sbin/tcpdump ';
+          $cmd .= implode(' ', $cmd_opts);
+          $cmd .= ' -w /tmp/packetcapture.cap ';
+          $cmd .= " ".escapeshellarg(implode(' and ', $filter_opts));
+          //delete previous packet capture if it exists
+          @unlink('/tmp/packetcapture.cap');
+          mwexec_bg($cmd);
+      }
 }
 
 /**
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         // set form defaults
         $pconfig = array();
-        $pconfig['interface'] = "wan";
+        $pconfig['interface'] = "WAN";
         $pconfig['promiscuous'] = null;
         $pconfig['fam'] = null;
         $pconfig['proto'] = null;
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($_POST['start'])) {
-        if (!empty($pconfig['interface']) && !array_key_exists($pconfig['interface'], $interfaces)) {
+        if (!array_key_exists($pconfig['interface'], $interfaces)) {
             $input_errors[] = gettext("Invalid interface.");
         }
         if ($pconfig['fam'] !== "" && $pconfig['fam'] !== "ip" && $pconfig['fam'] !== "ip6") {
@@ -312,9 +312,6 @@ include("fbegin.inc");
                     <td><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
                       <select name="interface" class="selectpicker">
-                        <option value="" <?=empty($pconfig['interface']) ?  "selected=\"selected\"" : ""; ?>>
-                          <?=gettext("Any");?>
-                        </option>
 <?php
                       foreach ($interfaces as $iface => $ifacename): ?>
                         <option value="<?=$iface;?>" <?=$pconfig['interface'] == $iface ? "selected=\"selected\"" : ""; ?>>
