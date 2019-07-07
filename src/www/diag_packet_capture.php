@@ -34,7 +34,7 @@ require_once("interfaces.inc");
  */
 function stop_capture()
 {
-    $processes_running = trim(shell_exec("/bin/ps axw -O pid= | /usr/bin/grep tcpdump | /usr/bin/grep packetcapture.cap | /usr/bin/egrep -v '(pflog|grep)'"));
+    $processes_running = trim(shell_exec("/bin/ps axw -O pid= | /usr/bin/grep tcpdump | /usr/bin/grep packetcapture_ | /usr/bin/egrep -v '(pflog|grep)'"));
     foreach (explode("\n", $processes_running) as $process) {
         exec("kill ". explode(' ',$process)[0]);
     }
@@ -48,8 +48,6 @@ function start_capture($options)
 {
       $cmd_opts = array();
       $filter_opts = array();
-      $intf = get_real_interface($options['interface']);
-      $cmd_opts[] = '-i ' . $intf;
 
       if (empty($options['promiscuous'])) {
           // disable promiscuous mode
@@ -104,14 +102,20 @@ function start_capture($options)
           $filter_opts[] = "port " . str_replace("!", "not ", $options['port']);
       }
 
-      if (!empty($intf)) {
-          $cmd = '/usr/sbin/tcpdump ';
-          $cmd .= implode(' ', $cmd_opts);
-          $cmd .= ' -w /tmp/packetcapture.cap ';
-          $cmd .= " ".escapeshellarg(implode(' and ', $filter_opts));
-          //delete previous packet capture if it exists
-          @unlink('/tmp/packetcapture.cap');
-          mwexec_bg($cmd);
+      foreach (glob("/tmp/packetcapture_*.cap") as $filename) {
+          @unlink($filename);
+      }
+      foreach ($options['interface'] as $key) {
+          $intf = get_real_interface($key);
+          if (!empty($intf)) {
+              $cmd = '/usr/sbin/tcpdump ';
+              $cmd .= "-i " . escapeshellarg($intf) . " ";
+              $cmd .= implode(' ', $cmd_opts);
+              $cmd .= " -w /tmp/packetcapture_{$intf}.cap ";
+              $cmd .= " ".escapeshellarg(implode(' and ', $filter_opts));
+              //delete previous packet capture if it exists
+              mwexec_bg($cmd);
+          }
       }
 }
 
@@ -121,7 +125,7 @@ function start_capture($options)
  */
 function capture_running()
 {
-    $processcheck = (trim(shell_exec("/bin/ps axw -O pid= | /usr/bin/grep tcpdump | /usr/bin/grep  packetcapture.cap | /usr/bin/egrep -v '(pflog|grep)'")));
+    $processcheck = (trim(shell_exec("/bin/ps axw -O pid= | /usr/bin/grep tcpdump | /usr/bin/grep  packetcapture_ | /usr/bin/egrep -v '(pflog|grep)'")));
     if (!empty($processcheck)) {
         return true;
     } else {
@@ -150,50 +154,62 @@ foreach (array('server', 'client') as $mode) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['download'])) {
         // download capture file
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename=packetcapture.cap");
-        header("Content-Length: ".filesize("/tmp/packetcapture.cap"));
-        $file = fopen("/tmp/packetcapture.cap", "r");
-        while(!feof($file)) {
-            print(fread($file, 32 * 1024));
-            ob_flush();
+        foreach (glob("/tmp/packetcapture_*.cap") as $filename) {
+            $bfilename = basename($filename);
+            if ($_GET['download'] === $bfilename) {
+                header("Content-Type: application/octet-stream");
+                header("Content-Disposition: attachment; filename={$bfilename}");
+                header("Content-Length: ".filesize($filename));
+                $file = fopen($filename, "r");
+                while(!feof($file)) {
+                    print(fread($file, 32 * 1024));
+                    ob_flush();
+                }
+                fclose($file);
+                break;
+            }
         }
-        fclose($file);
         exit;
     } elseif (!empty($_GET['view'])) {
-        // download capture contents
-        if (!empty($_GET['dnsquery'])) {
-            //if dns lookup is checked
-            $disabledns = "";
-        } else {
-            //if dns lookup is unchecked
-            $disabledns = "-n";
-        }
-        $detail_args = "";
-        switch (!empty($_GET['detail']) ? $_GET['detail'] : null) {
-            case "full":
-                $detail_args = "-vv -e";
-                break;
-            case "high":
-                $detail_args = "-vv";
-                break;
-            case "medium":
-                $detail_args = "-v";
-                break;
-            case "normal":
-            default:
-                $detail_args = "-q";
-                break;
-        }
-        $result = array();
-        $dump_output = array();
-        exec("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r /tmp/packetcapture.cap |  /usr/bin/tail -n 5000", $dump_output);
-        // reformat raw output to 1 packet per array item
-        foreach ($dump_output as $line) {
-            if ($line[0] == ' ' && count($result) > 0) {
-                $result[count($result)-1] .= "\n" . $line;
+        $result = [];
+        foreach (glob("/tmp/packetcapture_*.cap") as $filename) {
+            $intf = explode(".", substr(basename($filename), 14))[0];
+            $intf_key = convert_real_interface_to_friendly_interface_name($intf);
+            $intf_name = !empty($interfaces[$intf_key]) ? $interfaces[$intf_key] : $intf_key;
+            $result[$intf] = ['name' => $intf_name, 'content' => []];
+            // download capture contents
+            if (!empty($_GET['dnsquery'])) {
+                //if dns lookup is checked
+                $disabledns = "";
             } else {
-                $result[] = $line;
+                //if dns lookup is unchecked
+                $disabledns = "-n";
+            }
+            $detail_args = "";
+            switch (!empty($_GET['detail']) ? $_GET['detail'] : null) {
+                case "full":
+                    $detail_args = "-vv -e";
+                    break;
+                case "high":
+                    $detail_args = "-vv";
+                    break;
+                case "medium":
+                    $detail_args = "-v";
+                    break;
+                case "normal":
+                default:
+                    $detail_args = "-q";
+                    break;
+            }
+            $dump_output = array();
+            exec("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r {$filename} |  /usr/bin/tail -n 5000", $dump_output);
+            // reformat raw output to 1 packet per array item
+            foreach ($dump_output as $line) {
+                if ($line[0] == ' ' && count($result) > 0) {
+                    $result[$intf]['content'][count($result)-1] .= "\n" . $line;
+                } else {
+                    $result[$intf]['content'][] = $line;
+                }
             }
         }
         echo json_encode($result);
@@ -201,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         // set form defaults
         $pconfig = array();
-        $pconfig['interface'] = "wan";
+        $pconfig['interface'] = ["wan"];
         $pconfig['promiscuous'] = null;
         $pconfig['fam'] = null;
         $pconfig['proto'] = null;
@@ -215,8 +231,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($_POST['start'])) {
-        if (!array_key_exists($pconfig['interface'], $interfaces)) {
-            $input_errors[] = gettext("Invalid interface.");
+        foreach ($pconfig['interface'] as $key) {
+            if (!array_key_exists($key, $interfaces)) {
+                $input_errors[] = sprintf(gettext("Invalid interface %s."), $key);
+            }
         }
         if ($pconfig['fam'] !== "" && $pconfig['fam'] !== "ip" && $pconfig['fam'] !== "ip6") {
             $input_errors[] = gettext("Invalid address family.");
@@ -249,7 +267,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($pconfig['stop'])) {
         stop_capture();
     } elseif (!empty($pconfig['remove'])) {
-        @unlink('/tmp/packetcapture.cap');
+        foreach (glob("/tmp/packetcapture_*.cap") as $filename) {
+            @unlink($filename);
+        }
         header(url_safe('Location: /diag_packet_capture.php'));
         exit;
     }
@@ -269,10 +289,22 @@ include("head.inc");
               data: {view: 'view', 'dnsquery': $("#dnsquery:checked").val() ,'detail': $("#detail").val()},
               success: function(response) {
                 var html = [];
-                $.each(response, function(idx, line){
-                    html.push('<tr><td>'+line+'</td></tr>');
+                $.each(response, function(intf, data){
+                  $.each(data['content'], function(idx, line){
+                      html.push(
+                        $("<tr>").append(
+                          $("<td>").append(
+                            $("<span>").text(data['name']),
+                            $("<br>"),
+                            $("<small>").text(intf),
+                          )
+                        ).append(
+                           $("<td>").text(line)
+                        )
+                      );
+                  });
                 });
-                $("#capture_output").html(html.join(''));
+                $("#capture_output").empty().append(html);
                 $("#capture").removeClass('hidden');
                 // scroll to capture output
                 $('html, body').animate({
@@ -311,10 +343,10 @@ include("fbegin.inc");
                   <tr>
                     <td><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
-                      <select name="interface" class="selectpicker">
+                      <select name="interface[]" class="selectpicker" multiple="multiple">
 <?php
                       foreach ($interfaces as $iface => $ifacename): ?>
-                        <option value="<?=$iface;?>" <?=$pconfig['interface'] == $iface ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
                           <?=$ifacename;?>
                         </option>
 <?php
@@ -456,10 +488,29 @@ include("fbegin.inc");
                     else:?>
                       <input type="submit" class="btn" name="start" value="<?= html_safe(gettext('Start')) ?>"/>
 <?php
-                    if (file_exists('/tmp/packetcapture.cap')):?>
+                    if (count(glob('/tmp/packetcapture_*.cap')) > 0):?>
                       <button type="button" id="view" class="btn"> <?=gettext("View Capture");?> </button>
-                      <a href="?download" type="submit" class="btn"><?=gettext("Download Capture");?></a>
                       <input type="submit" class="btn" name="remove" value="<?= html_safe(gettext('Delete Capture')) ?>"/>
+                    <table class="table table-condensed">
+                      <thead>
+                          <tr>
+                              <th><?=gettext("Download Capture");?></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+<?php
+                    foreach (glob("/tmp/packetcapture_*.cap") as $filename):?>
+                      <tr>
+                        <td><a href="?download=<?=basename($filename);?>">
+                          <i class="fa fa-file"></i>
+                          <?=basename($filename);?>
+                        </a>
+                        </td>
+                      </tr>
+<?php
+                    endforeach;?>
+                      </tbody>
+                    </table>
 <?php
                     endif;
                     endif;?>
@@ -477,6 +528,7 @@ include("fbegin.inc");
             <table class="table table-condensed">
               <thead>
                   <tr>
+                    <th><?=gettext("Interface");?></th>
                     <th><?=gettext("Capture output");?></th>
                   </tr>
               </thead>
