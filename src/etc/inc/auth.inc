@@ -192,12 +192,6 @@ $userindex = index_users();
 function isAuthLocalIP($http_host)
 {
     global $config;
-    $interface_list_ips = get_configured_ip_addresses();
-    foreach ($interface_list_ips as $ilips => $ifname) {
-        if (strcasecmp($http_host, $ilips) == 0) {
-            return true;
-        }
-    }
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($vip['subnet'] == $http_host) {
@@ -205,7 +199,23 @@ function isAuthLocalIP($http_host)
             }
         }
     }
-    return false;
+    $address_in_list = function($interface_list_ips, $http_host) {
+        foreach ($interface_list_ips as $ilips => $ifname) {
+            if (strcasecmp($http_host, $ilips) == 0) {
+                return true;
+            }
+        }
+    };
+    // try using cached addresses
+    $interface_list_ips = get_cached_json_content("/tmp/isAuthLocalIP.cache.json");
+    if (!empty($interface_list_ips) && $address_in_list($interface_list_ips, $http_host)) {
+        return true;
+    }
+    // fetch addresses and store in cache
+    $interface_list_ips = get_configured_ip_addresses();
+    file_put_contents("/tmp/isAuthLocalIP.cache.json", json_encode($interface_list_ips));
+
+    return $address_in_list($interface_list_ips, $http_host);
 }
 
 function index_groups()
