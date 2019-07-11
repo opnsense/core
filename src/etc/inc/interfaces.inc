@@ -2381,26 +2381,31 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
-    /*
-     * Interface code must figure out if the call is for them so
-     * we start all but when we pass an interface the name will
-     * be matched so most will be a NOP.
-     *
-     * Verbose printing ($verbose) is off in the block because
-     * we are reconfiguring a specific interface and the verbose
-     * print was already started above.
-     */
+    /* XXX we come up empty here in edge cases, which is silly AND dangerous */
+    if (empty($interface_to_check)) {
+        log_error("Interface {$interface} device lookup came up empty");
+    } else {
+        /*
+         * Interface code must figure out if the call is for them so
+         * we start all but when we pass an interface the name will
+         * be matched so most will be a NOP.
+         *
+         * Verbose printing ($verbose) is off in the block because
+         * we are reconfiguring a specific interface and the verbose
+         * print was already started above.
+         */
 
-    /* make sure tunnel inside IP is set when interface changes #3702 */
-    interfaces_gre_configure(false, 0, $interface_to_check);
-    interfaces_gif_configure(false, 0, $interface_to_check);
+        /* make sure tunnel inside IP is set when interface changes #3702 */
+        interfaces_gre_configure(false, 0, $interface_to_check);
+        interfaces_gif_configure(false, 0, $interface_to_check);
 
-    /* need to check that the interface exists #3270 */
-    if (!does_interface_exist($interface_to_check)) {
-        interfaces_vlan_configure(false, $interface_to_check);
-        interfaces_lagg_configure(false, $interface_to_check);
-        interfaces_bridge_configure(false, 0, $interface_to_check);
-        plugins_configure('openvpn_prepare', false, array($interface_to_check));
+        /* need to check that the interface exists #3270 */
+        if (!does_interface_exist($interface_to_check)) {
+            interfaces_vlan_configure(false, $interface_to_check);
+            interfaces_lagg_configure(false, $interface_to_check);
+            interfaces_bridge_configure(false, 0, $interface_to_check);
+            plugins_configure('openvpn_prepare', false, array($interface_to_check));
+        }
     }
 
     /* Disable Accepting router advertisements unless specifically requested */
