@@ -3588,9 +3588,6 @@ function get_parent_interface($interface, $avoidrecurse = false)
     $parents = array();
 
     $realif = get_real_interface($interface);
-    if (!does_interface_exist($realif)) {
-        return $parents;
-    }
 
     // If we got a real interface, find it's friendly assigned name
     if ($interface == $realif && $avoidrecurse == false) {
