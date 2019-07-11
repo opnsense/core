@@ -2511,12 +2511,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    $intf_stats = legacy_interface_stats();
     if (!empty($wancfg['mtu'])) {
+        $intf_stats = legacy_interface_stats($realhwif);
         if (stristr($realif, "_vlan")) {
             // max mtu to parent
-            $mtu = $wancfg['mtu'] < $intf_stats[$realhwif]['mtu'] ? $wancfg['mtu'] : $intf_stats[$realhwif]['mtu'];
-            if ($mtu != $intf_stats[$realif]['mtu']) {
+            $mtu = $wancfg['mtu'] < $intf_stats['mtu'] ? $wancfg['mtu'] : $intf_stats['mtu'];
+            if ($mtu != $intf_stats['mtu']) {
                 legacy_interface_mtu($realif, $mtu);
             }
         } elseif ($wancfg['mtu'] != $intf_stats['mtu']) {
@@ -4521,8 +4521,9 @@ function interfaces_addresses($interfaces, $as_subnet = false)
         return $result;
     }
 
-    $intf_details = legacy_interfaces_details();
+
     $realifs = array_unique($realifs);
+    $intf_details = count($realifs) > 1 ? legacy_interfaces_details() : legacy_interfaces_details($realifs[0]);
 
     foreach ($realifs as $realif) {
         foreach (array('ipv4', 'ipv6') as $proto) {
