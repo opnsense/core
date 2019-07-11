@@ -125,8 +125,8 @@ function pf_firewall($fw)
      */
     if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) &&
         count($config['staticroutes']['route'])) {
-        $ifdetails = legacy_interfaces_details();
-        $GatewaysList = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
+        $ifdetails = $fw->getIfconfigDetails();
+        $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 
         foreach (get_staticroutes() as $route) {
             if (!empty($GatewaysList[$route['gateway']]['interface']) && empty($route['disabled'])) {
