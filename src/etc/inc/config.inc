@@ -301,6 +301,22 @@ function legacy_config_get_interfaces($filters = array())
     return $interfaces;
 }
 
+/**
+ * parse stored json content, return empty when not found or expired
+ */
+function get_cached_json_content($filename, $ttl=3600)
+{
+    $result = null;
+    if (file_exists($filename)) {
+        $fstat = stat($filename);
+        if ((time() - $fstat['mtime']) < $ttl) {
+            $result = json_decode(file_get_contents($filename), true);
+        }
+    }
+    return $result;
+}
+
+
 $config = parse_config();
 
 /* set timezone */
