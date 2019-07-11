@@ -1,5 +1,10 @@
 #!/bin/sh
 
+mkdir -p /etc/rc.conf.d
+
+# disable configd so that no backend command will execute
+echo 'configd_enable="NO"' >> /etc/rc.conf.d/configd
+
 # Perform major updates
 for STAGE in B P; do
 	if opnsense-update -${STAGE}; then
@@ -7,3 +12,6 @@ for STAGE in B P; do
 		reboot
 	fi
 done
+
+# bring back configd, slightly better than deleting file
+echo 'configd_enable="YES"' >> /etc/rc.conf.d/configd
