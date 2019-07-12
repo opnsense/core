@@ -45,7 +45,7 @@ class Interfaces(object):
             output_stream.seek(0)
             if_index = 1
             for line in output_stream.readline().split():
-                self._if_index["%s" % if_index] = line
+                self._if_index["%s" % if_index] = line.decode()
                 if_index += 1
 
     def if_device(self, if_index):
