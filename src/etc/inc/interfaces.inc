@@ -2435,8 +2435,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    /* skip vlans for media setup and only apply when changed */
-    if (!stristr($realhwif, "_vlan") && (!empty($wancfg['media']) || !empty($wancfg['mediaopt']))) {
+    /* only try to set media properties on (parent) device when requested */
+    if (!empty($wancfg['media']) || !empty($wancfg['mediaopt'])) {
         $intf_details = legacy_interface_details($realhwif);
         $media_changed = stripos($intf_details['media_raw'], $wancfg['media']) == false;
         if (!empty($wancfg['mediaopt'])) {
