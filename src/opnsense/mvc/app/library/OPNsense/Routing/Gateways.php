@@ -209,7 +209,7 @@ class Gateways
                     ];
                     // set default priority
                     if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
-                        // consider tunnel ttype interfaces least attractive by default
+                        // consider tunnel type interfaces least attractive by default
                         $thisconf['priority'] = 255;
                     } else {
                         $thisconf['priority'] = 254;
