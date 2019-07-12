@@ -598,9 +598,11 @@ EOD;
      *    failover peer "bleh" entries
      */
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-        interfaces_staticarp_configure($dhcpif);
         if (!isset($dhcpifconf['enable'])) {
             continue;
+        }
+        if (!empty($config['dhcpd'][$dhcpif]['staticmap'])) {
+            interfaces_staticarp_configure($dhcpif);
         }
 
         if (!empty($dhcpifconf['failover_peerip'])) {
@@ -662,6 +664,7 @@ EOPP;
     }
 
     $iflist = get_configured_interface_with_descr();
+    $gwObject = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
@@ -895,7 +898,7 @@ EOPP;
 
         if (!empty($dhcpifconf['gateway'])) {
             $routers = $dhcpifconf['gateway'] != "none" ? $dhcpifconf['gateway'] : null;
-        } elseif ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->hasGateways("inet")) {
+        } elseif ($gwObject->hasGateways("inet")) {
             // by default, add interface address in "option routers"
             $routers = $ifcfgip;
         } else {
