@@ -392,9 +392,18 @@ function configure_interface_hardware($ifs)
     }
 }
 
-function legacy_get_interface_addresses($ifs)
+function legacy_get_interface_addresses($ifs, $ifconfig_details = null)
 {
-    $intf_details = legacy_interface_details($ifs);
+    if (empty($ifconfig_details)) {
+        $intf_details = legacy_interface_details($ifs);
+    } else {
+        if (!empty($ifconfig_details[$ifs])) {
+            $intf_details = $ifconfig_details[$ifs];
+        } else {
+            $intf_details = array();
+        }
+    }
+
     $addrs = array("macaddr" => $intf_details['macaddr']);
     if (!empty($intf_details['ipv4'][0])) {
         $addrs['ipaddr'] = $intf_details['ipv4'][0]['ipaddr'];

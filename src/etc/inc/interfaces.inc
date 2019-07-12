@@ -3908,9 +3908,9 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-function find_interface_ip($realif)
+function find_interface_ip($realif, $ifconfig_details = null)
 {
-    $ifinfo = legacy_get_interface_addresses($realif);
+    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
 
     if (!isset($ifinfo['ipaddr'])) {
         return null;
@@ -3919,9 +3919,9 @@ function find_interface_ip($realif)
     return $ifinfo['ipaddr'];
 }
 
-function find_interface_network($realif, $subnet = true)
+function find_interface_network($realif, $subnet = true, $ifconfig_details = null)
 {
-    $ifinfo = legacy_get_interface_addresses($realif);
+    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
 
     if (!isset($ifinfo['ipaddr']) || !isset($ifinfo['subnetbits'])) {
         return null;
@@ -3937,9 +3937,9 @@ function find_interface_network($realif, $subnet = true)
     return "{$addr}/${net}";
 }
 
-function find_interface_ipv6($realif)
+function find_interface_ipv6($realif, $ifconfig_details = null)
 {
-    $ifinfo = legacy_get_interface_addresses($realif);
+    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
 
     if (!isset($ifinfo['ipaddr6'])) {
         return null;
@@ -3948,9 +3948,9 @@ function find_interface_ipv6($realif)
     return $ifinfo['ipaddr6'];
 }
 
-function find_interface_networkv6($realif, $subnet = true)
+function find_interface_networkv6($realif, $subnet = true, $ifconfig_details = null)
 {
-    $ifinfo = legacy_get_interface_addresses($realif);
+    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
 
     if (!isset($ifinfo['ipaddr6']) || !isset($ifinfo['subnetbits6'])) {
         return null;
@@ -3966,9 +3966,9 @@ function find_interface_networkv6($realif, $subnet = true)
     return "{$addr}/${net}";
 }
 
-function find_interface_ipv6_ll($realif)
+function find_interface_ipv6_ll($realif, $ifconfig_details = null)
 {
-    $ifinfo = legacy_get_interface_addresses($realif);
+    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
 
     if (!isset($ifinfo['ipaddr6_ll'])) {
         return null;
@@ -4052,9 +4052,9 @@ function is_interface_wireless($interface)
     return true;
 }
 
-function get_interface_mac($interface)
+function get_interface_mac($interface, $ifconfig_details = null)
 {
-    $macinfo = legacy_get_interface_addresses($interface);
+    $macinfo = legacy_get_interface_addresses($interface, $ifconfig_details);
 
     return $macinfo["macaddr"];
 }
