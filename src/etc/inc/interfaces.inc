@@ -4083,7 +4083,10 @@ function interfaces_staticarp_configure($if)
 
     if (isset($config['dhcpd'][$if]['staticarp'])) {
         mwexecf('/sbin/ifconfig %s staticarp', array($ifcfg['if']));
-        mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
+        if (!file_exists("/var/run/booting")) {
+            // XXX: arp is really slow when there are many interfaces, while booting -d -a shouldn't be needed anyway
+            mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
+        }
         if (isset($config['dhcpd'][$if]['staticmap'])) {
             foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
                 if (isset($arpent['ipaddr'])) {
@@ -4096,7 +4099,10 @@ function interfaces_staticarp_configure($if)
         }
     } else {
         mwexecf('/sbin/ifconfig %s -staticarp', array($ifcfg['if']));
-        mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
+        if (!file_exists("/var/run/booting")) {
+            // XXX: arp is really slow when there are many interfaces, while booting -d -a shouldn't be needed anyway
+            mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
+        }
         if (isset($config['dhcpd'][$if]['staticmap'])) {
             foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
                 if (isset($arpent['arp_table_static_entry'])) {
