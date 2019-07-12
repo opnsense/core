@@ -198,7 +198,6 @@ class Gateways
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
                     $thisconf = [
-                        "priority" => 255,
                         "interface" => $ifname,
                         "weight" => 1,
                         "ipprotocol" => $ipproto,
@@ -208,6 +207,13 @@ class Gateways
                         "if" => $ifcfg['if'],
                         "dynamic" => true,
                     ];
+                    // set default priority
+                    if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
+                        // consider tunnel ttype interfaces least attractive by default
+                        $thisconf['priority'] = 255;
+                    } else {
+                        $thisconf['priority'] = 254;
+                    }
                     // locate interface gateway settings
                     if (!empty($dynamic_gw[$ifname])) {
                         foreach ($dynamic_gw[$ifname] as $gw_arr) {
