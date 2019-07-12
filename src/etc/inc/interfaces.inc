@@ -4495,7 +4495,7 @@ function make_ipv6_64_address($prefix, $suffix)
     return implode(':', $prefix_array);
 }
 
-function interfaces_addresses($interfaces, $as_subnet = false)
+function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details = null)
 {
     global $config;
 
@@ -4523,7 +4523,11 @@ function interfaces_addresses($interfaces, $as_subnet = false)
 
 
     $realifs = array_unique($realifs);
-    $intf_details = count($realifs) > 1 ? legacy_interfaces_details() : legacy_interfaces_details($realifs[0]);
+    if (!empty($ifconfig_details)) {
+        $intf_details = $ifconfig_details;
+    } else {
+        $intf_details = count($realifs) > 1 ? legacy_interfaces_details() : legacy_interfaces_details($realifs[0]);
+    }
 
     foreach ($realifs as $realif) {
         foreach (array('ipv4', 'ipv6') as $proto) {
