@@ -577,7 +577,7 @@ function filter_core_rules_system($fw, $defaults)
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $intf_has_v4 = false;
                 $intf_has_v6 = false;
-                foreach (array_keys(interfaces_addresses($ifcfg['if'], true)) as $addr) {
+                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $fw->getIfconfigDetails())) as $addr) {
                     $intf_has_v4 = $intf_has_v4 || is_subnetv4($addr);
                     $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
                 }
