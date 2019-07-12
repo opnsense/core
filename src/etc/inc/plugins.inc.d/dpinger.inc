@@ -101,7 +101,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         @unlink($process['socket']);
     }
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $ifconfig_details = legacy_interfaces_details();
+    $gateways = new \OPNsense\Routing\Gateways($ifconfig_details);
     $monitor_ips = array();
 
     $dpinger_default = dpinger_defaults();
@@ -126,7 +127,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
          * $gateway['ipprotocol'] is the better option.
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-            $gwifip = find_interface_ip($gateway['if']);
+            $gwifip = find_interface_ip($gateway['if'], $ifconfig_details);
             if (!is_ipaddrv4($gwifip)) {
                 log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
                 continue;
@@ -156,10 +157,10 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
             if (is_linklocal($gateway['monitor'])) {
                 /* link local monitor needs a link local address for the "src" part */
-                $gwifip = find_interface_ipv6_ll($gateway['if']);
+                $gwifip = find_interface_ipv6_ll($gateway['if'], $ifconfig_details);
             } else {
                 /* monitor is a routable address, so use a routable address for the "src" part */
-                $gwifip = find_interface_ipv6($gateway['if']);
+                $gwifip = find_interface_ipv6($gateway['if'], $ifconfig_details);
             }
 
             if (!is_ipaddrv6($gwifip)) {
