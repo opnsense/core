@@ -122,7 +122,7 @@ include("fbegin.inc");?>
     <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
       <div class="row">
         <section class="col-xs-12">
-          <div class="content-box" style="padding: 20px;">
+          <div class="content-box wizard" style="padding: 20px;">
             <div class="table-responsive">
 <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
               <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
