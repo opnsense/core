@@ -316,7 +316,6 @@ function get_cached_json_content($filename, $ttl = 3600)
     return $result;
 }
 
-
 $config = parse_config();
 
 /* set timezone */
