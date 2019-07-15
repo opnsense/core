@@ -199,7 +199,7 @@ function isAuthLocalIP($http_host)
             }
         }
     }
-    $address_in_list = function($interface_list_ips, $http_host) {
+    $address_in_list = function ($interface_list_ips, $http_host) {
         foreach ($interface_list_ips as $ilips => $ifname) {
             if (strcasecmp($http_host, $ilips) == 0) {
                 return true;

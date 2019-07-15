@@ -324,7 +324,7 @@ class ACL
      * @param boolean $byname query by name (or gid)
      * @return bool|null|string|string[]
      */
-    public function inGroup($username, $groupname, $byname=true)
+    public function inGroup($username, $groupname, $byname = true)
     {
         if (!empty($this->userDatabase[$username])) {
             if ($byname) {

@@ -304,7 +304,7 @@ function legacy_config_get_interfaces($filters = array())
 /**
  * parse stored json content, return empty when not found or expired
  */
-function get_cached_json_content($filename, $ttl=3600)
+function get_cached_json_content($filename, $ttl = 3600)
 {
     $result = null;
     if (file_exists($filename)) {
