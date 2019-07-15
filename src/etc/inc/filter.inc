@@ -151,8 +151,12 @@ function filter_delete_states_for_down_gateways()
 function filter_configure_sync($verbose = false, $flush_states = false, $load_aliases = true)
 {
     global $config;
-
     $sched_kill_states = array(); // kill states for schedules
+
+    if ($verbose) {
+        echo 'Configuring firewall.';
+        flush();
+    }
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
@@ -279,11 +283,6 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         foreach ($config['nat']['rule'] as $rule) {
             $fw->registerForwardRule(600, $rule);
         }
-    }
-
-    if ($verbose) {
-        echo 'Configuring firewall.';
-        flush();
     }
 
     if (isset($config['system']['gw_switch_default'])) {
