@@ -45,7 +45,6 @@ CORE_ARCH?=	${ARCH}
 CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	72
-CORE_PYTHON2?=	27
 CORE_PYTHON?=	37
 CORE_RADVD?=	1
 CORE_SQUID?=	# empty
@@ -125,13 +124,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
-			py${CORE_PYTHON2}-Jinja2 \
-			py${CORE_PYTHON2}-dnspython \
-			py${CORE_PYTHON2}-ipaddress \
-			py${CORE_PYTHON2}-netaddr \
-			py${CORE_PYTHON2}-requests \
-			py${CORE_PYTHON2}-sqlite3 \
-			py${CORE_PYTHON2}-ujson \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
 			py${CORE_PYTHON}-netaddr \
