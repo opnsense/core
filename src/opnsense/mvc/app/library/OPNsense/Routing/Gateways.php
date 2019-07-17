@@ -389,11 +389,11 @@ class Gateways
      */
     public function getGroups($status_info)
     {
-          $all_gateways = $this->gatewaysIndexedByName();
-          $result = array();
+        $all_gateways = $this->gatewaysIndexedByName();
+        $result = array();
         if (isset($this->configHandle->gateways)) {
             foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
-                if ($tag == "gateway_group") {
+                if ($tag == "gateway_group" && !empty($gw_group)) {
                     $tiers = array();
                     if (isset($gw_group->item)) {
                         foreach ($gw_group->item as $item) {
@@ -453,7 +453,7 @@ class Gateways
                 }
             }
         }
-          return $result;
+        return $result;
     }
 
     /**
