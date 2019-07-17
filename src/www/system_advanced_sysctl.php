@@ -206,7 +206,7 @@ $( document ).ready(function() {
               foreach ($a_tunable as $tunable) :?>
               <tr>
                 <td><?=$tunable['tunable']; ?></td>
-                <td><?=gettext($tunable['descr']); ?></td>
+                <td><?=!empty($tunable['descr']) ? gettext($tunable['descr']) : ""; ?></td>
                 <td>
                   <?=$tunable['value']; ?>
                   <?=$tunable['value'] == "default" ? "(" . get_default_sysctl_value($tunable['tunable']) . ")" : "";?>
