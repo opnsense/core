@@ -275,7 +275,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         $params .= exec_safe('%s ', $gateway['monitor']);
 
         /* stdout to /dev/null because hangs otherwise */
-        mwexecf("/usr/local/bin/dpinger {$params} > /dev/null");
+        mwexec("/usr/local/bin/dpinger {$params} > /dev/null");
     }
 
     if ($verbose) {
