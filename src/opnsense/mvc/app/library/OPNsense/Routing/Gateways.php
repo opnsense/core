@@ -134,6 +134,7 @@ class Gateways
             $dynamic_gw = array();
             $gatewaySeq = 1;
             $i=0; // sequence used in legacy edit form (item in the list)
+            $reservednames = array();
 
             // add loopback, lowest priority
             $this->cached_gateways[$this->newKey(255)] = [
@@ -158,6 +159,7 @@ class Gateways
             if (!empty($this->configHandle->gateways)) {
                 foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
                     if ($tag == "gateway_item") {
+                        $reservednames[] = (string)$gateway->name;
                         $gw_arr = array();
                         foreach ($gateway as $key => $value) {
                             $gw_arr[(string)$key] = (string)$value;
@@ -207,6 +209,7 @@ class Gateways
                         "monitor_disable" => true, // disable monitoring by default
                         "if" => $ifcfg['if'],
                         "dynamic" => true,
+                        "virtual" => true
                     ];
                     // set default priority
                     if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
@@ -226,7 +229,10 @@ class Gateways
                         }
                     }
                     // dynamic gateways dump their address in /tmp/[IF]_router[FSUFFIX]
-                    if (file_exists("/tmp/{$ifcfg['if']}_router".$fsuffix)) {
+                    if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
+                        // if name is already taken, don't try to add a new (virtual) entry
+                        null;
+                    } elseif (file_exists("/tmp/{$ifcfg['if']}_router".$fsuffix)) {
                         $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router".$fsuffix));
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
