@@ -51,7 +51,21 @@ function firewall_rule_item_proto($filterent)
                 break;
         }
     } else {
-        $record_ipprotocol = "IPv4 ";
+        // when ipprotocol is not set, pf would normally figure out the ip proto itself.
+        // reconstruct ipproto depending on source/destination address.
+        if (!empty($filterent['from']) && is_ipaddr(explode("/", $filterent['from'])[0])) {
+            $record_ipprotocol = strpos($filterent['from'], ":") === false ? "IPv4 " :  "IPv6 ";
+        } elseif (!empty($filterent['to']) && is_ipaddr(explode("/", $filterent['to'])[0])) {
+            $record_ipprotocol = strpos($filterent['to'], ":") === false ? "IPv4 " :  "IPv6 ";
+        } elseif (isset($filterent['source']['address'])
+                    && is_ipaddr(explode("/", $filterent['source']['address'])[0])) {
+            $record_ipprotocol = strpos($filterent['source']['address'], ":") === false ? "IPv4 " : "IPv6 ";
+        } elseif (isset($filterent['destination']['address'])
+                    && is_ipaddr(explode("/", $filterent['destination']['address'])[0])) {
+            $record_ipprotocol = strpos($filterent['destination']['address'], ":") === false ? "IPv4 " : "IPv6 ";
+        } else {
+            $record_ipprotocol = "IPv4+6 ";
+        }
     }
     $icmptypes = array(
       "" => gettext("any"),
