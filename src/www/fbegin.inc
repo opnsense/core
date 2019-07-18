@@ -181,7 +181,7 @@ if($need_alert_display == true) {
         <ul class="list-inline">
           <li><h1><?= gentitle($menuBreadcrumbs) ?></h1></li>
           <li class="btn-group-container">
-            <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+            <form method="post">
               <?php
               if (isset($service_hook)) {
                 $ssvc = service_by_name($service_hook);

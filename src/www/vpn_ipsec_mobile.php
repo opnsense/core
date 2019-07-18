@@ -306,7 +306,7 @@ foreach ($config['ipsec']['phase1'] as $ph1ent) {
 
 function print_legacy_box($msg, $name, $value)
 {
-  $savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
+  $savebutton = "<form method=\"post\">";
   $savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"{$name}\" value=\"{$value}\" />";
   if (!empty($_POST['if'])) {
     $savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
