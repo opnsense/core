@@ -351,7 +351,7 @@ function display_login_form($Login_Error)
       <div class="login-modal-content">
         <div id="inputerrors" class="text-danger"><?= !empty($Login_Error) ? $Login_Error : '&nbsp;' ?></div><br />
 
-            <form class="clearfix" id="iform" name="iform" method="post" autocomplete="off" action="<?=$_SERVER['REQUEST_URI'];?>">
+            <form class="clearfix" id="iform" name="iform" method="post" autocomplete="off">
 
         <div class="form-group">
           <label for="usernamefld"><?=gettext("Username:"); ?></label>
