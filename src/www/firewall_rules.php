@@ -634,6 +634,7 @@ $( document ).ready(function() {
                 foreach ($fw->iterateFilterRules() as $rule):
                     if ($rule->getInterface() == $selected_if && $rule->isEnabled()):
                         $filterent = $rule->getRawRule();
+                        legacy_html_escape_form_data($filterent);
                         $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
                     <tr class="internal-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
