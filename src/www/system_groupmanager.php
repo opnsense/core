@@ -316,16 +316,29 @@ $( document ).ready(function() {
                 <td>
                   <table class="table table-hover table-condensed">
                     <tr>
+                      <td><b><?=gettext("Type");?></b></td>
                       <td><b><?=gettext("Name");?></b></td>
-                      <td><b><?=gettext("Description");?></b></td>
                     </tr>
 <?php
                     if (isset($pconfig['priv']) && is_array($pconfig['priv'])) :
                         foreach ($pconfig['priv'] as $priv) :
                     ?>
                     <tr>
+                      <td>
+<?php
+                             switch (substr($priv, 0, 5)) {
+                                 case 'page-':
+                                     echo gettext('GUI');
+                                     break;
+                                 case 'user-':
+                                     echo gettext('User');
+                                     break;
+                                 default:
+                                     echo gettext('N/A');
+                                     break;
+                             } ?>
+                        </td>
                       <td><?=$priv_list[$priv]['name'];?></td>
-                      <td><?=$priv_list[$priv]['descr'];?></td>
                     </tr>
 <?php
                         endforeach;
