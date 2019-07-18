@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             write_config();
-            header(url_safe('Location: /system_groupmanager.php?act=edit&groupid=%s', array($groupid)));
+            header(url_safe('Location: /system_groupmanager.php?act=edit&groupid=%d', array($groupid)));
             exit;
         }
     } else {
