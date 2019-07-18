@@ -756,6 +756,18 @@ function system_firmware_configure($verbose = false)
         );
     }
 
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
+function system_trust_configure($verbose = false)
+{
+    if ($verbose) {
+        echo 'Writing trust files...';
+        flush();
+    }
+
     $ca_root_nss = '/usr/local/share/certs/ca-root-nss.crt';
     $ca_cert_pem = '/usr/local/openssl/cert.pem';
     if (file_exists($ca_root_nss)) {
