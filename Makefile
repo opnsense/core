@@ -350,7 +350,7 @@ sweep:
 STYLEDIRS?=	src/etc/inc src/opnsense
 
 style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
+	@pycodestyle-${CORE_PYTHON:C/./&./1} --ignore=E501 ${.CURDIR}/src || true
 
 style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out
