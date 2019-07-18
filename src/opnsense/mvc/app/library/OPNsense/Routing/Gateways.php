@@ -179,6 +179,7 @@ class Gateways
                             if (empty($dynamic_gw[(string)$gateway->interface])) {
                                 $dynamic_gw[(string)$gateway->interface] = array();
                             }
+                            $gw_arr['dynamic'] =  true;
                             $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
                         }
                     }
