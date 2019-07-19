@@ -71,7 +71,7 @@ def parse_flow(recv_stamp, flowd_source='/var/log/flowd.log'):
         if parse_done:
             # log file contains older data (recv_stamp), break
             break
-        for flow_record in FlowParser(filename):
+        for flow_record in FlowParser(filename, recv_stamp):
             if flow_record['recv_sec'] <= recv_stamp:
                 # do not parse next flow archive (oldest reached)
                 parse_done = True
