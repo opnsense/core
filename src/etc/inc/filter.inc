@@ -213,7 +213,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     }
 
     // manual outbound nat rules
-    if (in_array($config['nat']['outbound']['mode'], array("advanced", "hybrid"))) {
+    if (!empty($config['nat']['outbound']['mode']) &&
+          in_array($config['nat']['outbound']['mode'], array("advanced", "hybrid"))) {
         if (!empty($config['nat']['outbound']['rule'])) {
             foreach ($config['nat']['outbound']['rule'] as $rule) {
                 $fw->registerSNatRule(100, $rule);
@@ -221,7 +222,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         }
     }
 
-    if (in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))) {
+    if (empty($config['nat']['outbound']['mode']) ||
+          in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))) {
         // generate standard outbound rules when mode is automatic ot hybrid
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
