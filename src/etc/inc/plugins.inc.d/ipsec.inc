@@ -667,7 +667,15 @@ function ipsec_configure_spd()
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
-                    $myid_data = ipsec_find_id($ph1ent, "local");
+                    $myid_data = ipsec_get_phase1_src($ph1ent);
+                    // XXX: remove me, temporary logging to validate https://github.com/opnsense/core/issues/1773
+                    $myid_data_prev = ipsec_find_id($ph1ent, "local");
+                    if ($myid_data_prev != $myid_data) {
+                        log_error(sprintf(
+                          "spdadd: using %s in source policy, local id set to %s", $myid_data, $myid_data_prev
+                        ));
+                    }
+
                     $peerid_spec = ipsec_find_id($ph1ent, "peer");
                     if (!is_ipaddr($peerid_spec)) {
                         if (is_ipaddr($ph1ent['remote-gateway'])) {
