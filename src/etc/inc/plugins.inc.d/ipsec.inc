@@ -665,17 +665,15 @@ function ipsec_configure_spd()
     // add manual added spd entries
     if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            if (!empty($ph1ent['disabled'])) {
+                continue;
+            }
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
-                    $myid_data = ipsec_get_phase1_src($ph1ent);
-                    // XXX: remove me, temporary logging to validate https://github.com/opnsense/core/issues/1773
-                    $myid_data_prev = ipsec_find_id($ph1ent, "local");
-                    if ($myid_data_prev != $myid_data) {
-                        log_error(sprintf(
-                          "spdadd: using %s in source policy, local id set to %s", $myid_data, $myid_data_prev
-                        ));
-                    }
+                    $tunnel_src = ipsec_get_phase1_src($ph1ent);
+                    $tunnel_dst = ipsec_resolve($ph1ent['remote-gateway']);
 
+                    // XXX: remove me, temporary logging to validate https://github.com/opnsense/core/issues/1773
                     $peerid_spec = ipsec_find_id($ph1ent, "peer");
                     if (!is_ipaddr($peerid_spec)) {
                         if (is_ipaddr($ph1ent['remote-gateway'])) {
@@ -686,9 +684,25 @@ function ipsec_configure_spd()
                                 $peerid_spec,
                                 $ph1ent['remote-gateway']
                             ));
-                            continue;
                         }
                     }
+                    $myid_data = ipsec_find_id($ph1ent, "local");
+                    if ($myid_data != $tunnel_src) {
+                        log_error(sprintf(
+                          "spdadd: using %s in source policy, local id set to %s", $tunnel_src, $myid_data
+                        ));
+                    }
+                    if ($peerid_spec != $tunnel_dst) {
+                        log_error(sprintf(
+                          "spdadd: using %s in destination policy, peer id set to %s", $tunnel_dst, $peerid_spec
+                        ));
+                    }
+                    // XXX: end
+
+                    if (empty($tunnel_dst) || empty($tunnel_src)) {
+                        continue;
+                    }
+
                     foreach (explode(',', $ph2ent['spd']) as $local_net) {
                         $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
                         $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
@@ -698,8 +712,8 @@ function ipsec_configure_spd()
                             trim($local_net),
                             $remote_net,
                             $ph2ent['protocol'],
-                            $myid_data,
-                            $peerid_spec
+                            $tunnel_src,
+                            $tunnel_dst
                         );
                     }
                 }
