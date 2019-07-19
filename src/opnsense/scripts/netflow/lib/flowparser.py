@@ -77,8 +77,9 @@ class FlowParser:
         'flow_engine_info': 'HHII'
     }
 
-    def __init__(self, filename):
+    def __init__(self, filename, recv_stamp=None):
         self._filename = filename
+        self._recv_stamp = recv_stamp
         # cache formatter vs byte length
         self._fmt_cache = dict()
         # pre-calculate powers of 2
@@ -137,9 +138,15 @@ class FlowParser:
                     raw_data=flowh.read(header[1] * 4),
                     data_fields=ntohl(header[3])
                 )
+                record['recv_sec'] = record['recv_time'][0]
+                if self._recv_stamp is not None and record['recv_sec'] < self._recv_stamp:
+                    # self._recv_stamp can contain the last received timestamp, in which case
+                    # we should not return older data. The exact timestamp will be returned, so the
+                    # consumer knows it doesn't have to read other, older, flowd log files
+                    continue
+
                 record['sys_uptime_ms'] = record['agent_info'][0]
                 record['netflow_ver'] = record['agent_info'][3]
-                record['recv_sec'] = record['recv_time'][0]
                 record['recv'] = record['recv_sec']
                 record['recv_usec'] = record['recv_time'][1]
                 if 'proto_flags_tos' in record:
