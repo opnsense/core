@@ -124,7 +124,10 @@ if __name__ == '__main__':
             rulep = record['line'].split('filterlog:')[1].strip().split(',')
             update_rule(rule, metadata, rulep, fields_general)
 
-            if 'version' in rule:
+            if 'action' not in rule:
+                # not a filter log line, skip
+                continue
+            elif 'version' in rule:
                 if rule['version'] == '4':
                     update_rule(rule, metadata, rulep, fields_ipv4)
                     if 'proto' in rule:
