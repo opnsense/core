@@ -400,7 +400,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         if (!empty($dhcpv6ifconf['radomainsearchlist'])) {
-
             $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
         } elseif (!empty($config['system']['domain'])) {
             $dnssl = $config['system']['domain'];
@@ -413,7 +412,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 $radvdconf .= "\t\tAdvDNSSLLifetime {$dhcpv6ifconf['AdvDNSSLLifetime']};\n";
             }
             $radvdconf .= "\t};\n";
-      }
+        }
 
         $radvdconf .= "};\n";
     }
