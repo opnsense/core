@@ -92,7 +92,7 @@ function core_services()
 
     $services[] = array(
         'description' => gettext('Remote Syslog'),
-        'mwexec' => array(
+        'php' => array(
             "stop" => array('system_syslogd_stop'),
             "start" => array('system_syslogd_start'),
             "restart" => array('system_syslogd_start')
