@@ -264,10 +264,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
-        foreach (array('AdvDefaultLifetime', 'AdvValidLifetime', 'AdvPreferredLifetime', 'AdvRDNSSLifetime', 'AdvDNSSLLifetime') as $opt) {
-            if (!empty($dhcpv6ifconf[$opt])) {
-                $radvdconf .= sprintf("\t%s %s;\n", $opt, $dhcpv6ifconf[$opt]);
-            }
+        if (!empty($dhcpv6ifconf['AdvDefaultLifetime'])) {
+            $radvdconf .= sprintf("\tAdvDefaultLifetime %s;\n", $dhcpv6ifconf['AdvDefaultLifetime']);
         }
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
 
@@ -342,6 +340,12 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 default:
                     break;
             }
+            if (!empty($dhcpv6ifconf['AdvValidLifetime'])) {
+                $radvdconf .= sprintf("\t\tAdvValidLifetime %s;\n", $dhcpv6ifconf['AdvValidLifetime']);
+            }
+            if (!empty($dhcpv6ifconf['AdvPreferredLifetime'])) {
+                $radvdconf .= sprintf("\t\tAdvPreferredLifetime %s;\n", $dhcpv6ifconf['AdvPreferredLifetime']);
+            }
             $radvdconf .= "\t};\n";
         }
 
@@ -388,14 +392,29 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         if (count($dnslist) > 0) {
-            $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
+            $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " {\n";
+            if (!empty($dhcpv6ifconf['AdvRDNSSLifetime'])) {
+                $radvdconf .= "\t\tAdvRDNSSLifetime {$dhcpv6ifconf['AdvRDNSSLifetime']};\n";
+            }
+            $radvdconf .= "\t};\n";
         }
+
         if (!empty($dhcpv6ifconf['radomainsearchlist'])) {
+
             $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
-            $radvdconf .= "\tDNSSL {$dnssl} { };\n";
         } elseif (!empty($config['system']['domain'])) {
-            $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
+            $dnssl = $config['system']['domain'];
+        } else {
+            $dnssl = null;
         }
+        if (!empty($dnssl)) {
+            $radvdconf .= "\tDNSSL {$dnssl} {\n";
+            if (!empty($dhcpv6ifconf['AdvDNSSLLifetime'])) {
+                $radvdconf .= "\t\tAdvDNSSLLifetime {$dhcpv6ifconf['AdvDNSSLLifetime']};\n";
+            }
+            $radvdconf .= "\t};\n";
+      }
+
         $radvdconf .= "};\n";
     }
 
