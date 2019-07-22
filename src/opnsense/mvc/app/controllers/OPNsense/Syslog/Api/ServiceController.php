@@ -92,8 +92,13 @@ class ServiceController extends ApiMutableServiceControllerBase
         $entry_keys = array_keys($records);
         if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
             $searchPhrase = $this->request->getPost('searchPhrase');
-            $entry_keys = array_filter($entry_keys, function ($value) use ($searchPhrase) {
-                return strpos($value, $searchPhrase) !== false;
+            $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $records) {
+                foreach ($records[$key] as $itemval) {
+                    if (strpos($itemval, $searchPhrase)) {
+                        return true;
+                    }
+                }
+                return false;
             });
         }
         $formatted = array_map(function ($value) use (&$records) {
