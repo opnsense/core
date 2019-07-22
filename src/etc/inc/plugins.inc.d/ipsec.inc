@@ -696,12 +696,16 @@ function ipsec_configure_spd()
                     $myid_data = ipsec_find_id($ph1ent, "local");
                     if ($myid_data != $tunnel_src) {
                         log_error(sprintf(
-                          "spdadd: using %s in source policy, local id set to %s", $tunnel_src, $myid_data
+                            "spdadd: using %s in source policy, local id set to %s",
+                            $tunnel_src,
+                            $myid_data
                         ));
                     }
                     if ($peerid_spec != $tunnel_dst) {
                         log_error(sprintf(
-                          "spdadd: using %s in destination policy, peer id set to %s", $tunnel_dst, $peerid_spec
+                            "spdadd: using %s in destination policy, peer id set to %s",
+                            $tunnel_dst,
+                            $peerid_spec
                         ));
                     }
                     // XXX: end
