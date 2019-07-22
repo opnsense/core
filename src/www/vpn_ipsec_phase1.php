@@ -340,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dhgroup'] = array();
     }
 
-    foreach ($p1_ealgos as $algo => $algodata) {
+    foreach (ipsec_p1_ealgos() as $algo => $algodata) {
         if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && !empty($algodata['iketype'])
           && $pconfig['iketype'] != $algodata['iketype'] && $pconfig['encryption-algorithm']['name'] == $algo) {
             $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), $algodata['name']);
@@ -726,7 +726,7 @@ include("head.inc");
                     <td>
                       <select name="authentication_method" id="authentication_method">
 <?php
-                      foreach ($p1_authentication_methods as $method_type => $method_params) :
+                      foreach (ipsec_p1_authentication_methods() as $method_type => $method_params) :
                           if (empty($pconfig['mobile']) && $method_params['mobile']) {
                               continue;
                           }
@@ -905,7 +905,7 @@ endforeach; ?>
                     <td>
                       <select name="ealgo" id="ealgo" data-default-keylen="<?=$pconfig['encryption-algorithm']['keylen'];?>">
 <?php
-                      foreach ($p1_ealgos as $algo => $algodata) :
+                      foreach (ipsec_p1_ealgos() as $algo => $algodata) :
                       ?>
                         <option value="<?=$algo;?>" <?= $algo == $pconfig['encryption-algorithm']['name'] ? "selected=\"selected\"" : "" ;?>
                                 data-hi="<?=$algodata['keysel']['hi'];?>"

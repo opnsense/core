@@ -38,7 +38,7 @@ require_once("plugins.inc.d/ipsec.inc");
  */
 function pconfig_to_ealgos($pconfig)
 {
-    global $p2_ealgos;
+    $p2_ealgos = ipsec_p2_ealgos();
 
     $ealgos = array();
     if (isset($pconfig['ealgos'])) {
@@ -675,7 +675,7 @@ endif; ?>
                   <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
 <?php
-                  foreach ($p2_ealgos as $algo => $algodata) :?>
+                  foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
                     <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
                       <?=$algodata['name'];?>
 <?php
@@ -710,7 +710,7 @@ endif; ?>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
-<?php foreach ($p2_halgos as $algo => $algoname): ?>
+<?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
                       <option value="<?= html_safe($algo) ?>" <?= in_array($algo, $pconfig['hash-algorithm-option']) ? 'selected="selected"' : '' ?>>
                         <?= html_safe($algoname) ?>
                       </option>

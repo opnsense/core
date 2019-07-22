@@ -209,6 +209,16 @@ $dhgroups = array(
     31 => '31 (Elliptic Curve 25519)',
 );
 
+$p2_protos = array(
+    'esp' => 'ESP',
+    'ah' => 'AH'
+);
+
+$p1_ealgos = ipsec_p1_ealgos();
+$p2_ealgos = ipsec_p2_ealgos();
+$p1_authentication_methods = ipsec_p1_authentication_methods();
+$p2_halgos = ipsec_p2_halgos();
+
 ?>
 <body>
 <script>
