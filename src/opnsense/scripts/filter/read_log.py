@@ -33,7 +33,6 @@ import sys
 from hashlib import md5
 import argparse
 import ujson
-import tempfile
 import subprocess
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
@@ -85,19 +84,16 @@ def fetch_rule_details():
                             rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
 
         # use pfctl to create a list per rule number with the details found
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-vvPsr'],
-                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            for line in output_stream.read().decode().strip().split('\n'):
-                if line.startswith('@'):
-                    line_id = line.split()[0][1:]
-                    if line.find(' label ') > -1:
-                        rid = ''.join(line.split(' label ')[-1:]).strip()[1:-1]
-                        if rid in rule_map:
-                            result[line_id] = {'rid': rid, 'label': rule_map[rid]}
-                        else:
-                            result[line_id] = {'rid': None, 'label': rid}
+        sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
+        for line in sp.stdout.strip().split('\n'):
+            if line.startswith('@'):
+                line_id = line.split()[0][1:]
+                if line.find(' label ') > -1:
+                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:-1]
+                    if rid in rule_map:
+                        result[line_id] = {'rid': rid, 'label': rule_map[rid]}
+                    else:
+                        result[line_id] = {'rid': None, 'label': rid}
 
     return result
 

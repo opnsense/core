@@ -28,20 +28,15 @@
     --------------------------------------------------------------------------------------
     returns a list of pf tables (optional as a json container)
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = []
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-sT'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream.read().decode().strip().split('\n'):
-            result.append(line.strip())
-
+    sp = subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True)
+    for line in sp.stdout.strip().split('\n'):
+        result.append(line.strip())
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
         print(ujson.dumps(result))
