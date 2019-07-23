@@ -29,24 +29,20 @@
     list pfsync info
     - nodes (unique creator id's from states)
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = {'nodes': []}
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-s', 'state', '-vv'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        data = output_stream.read().decode().strip()
-        if data.count('\n') > 2:
-            for line in data.split('\n'):
-                if line.find('creatorid:') > -1:
-                    creatorid = line.split('creatorid:')[1].strip()
-                    if creatorid not in result['nodes']:
-                        result['nodes'].append(creatorid)
+    sp = subprocess.run(['/sbin/pfctl', '-s', 'state', '-vv'], capture_output=True)
+    data = sp.stdout.decode().strip()
+    if data.count('\n') > 2:
+        for line in data.split('\n'):
+            if line.find('creatorid:') > -1:
+                creatorid = line.split('creatorid:')[1].strip()
+                if creatorid not in result['nodes']:
+                    result['nodes'].append(creatorid)
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':

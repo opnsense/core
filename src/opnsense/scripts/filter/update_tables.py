@@ -36,7 +36,6 @@ import json
 import urllib3
 import xml.etree.cElementTree as ET
 import syslog
-import tempfile
 import subprocess
 import glob
 from lib.alias import Alias
@@ -142,36 +141,30 @@ if __name__ == '__main__':
             alias_content_txt = ""
 
         alias_pf_content = list()
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'show'],
-                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            for line in output_stream.read().decode().strip().split('\n'):
-                line = line.strip()
-                if line:
-                    alias_pf_content.append(line)
+        sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
+        for line in sp.stdout.strip().split('\n'):
+            line = line.strip()
+            if line:
+                alias_pf_content.append(line)
 
         if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired) and alias.get_parser():
             # if the alias is changed, expired or the one in memory has a different number of items, load table
             # (but only if we know how to handle this alias type)
             if len(alias_content) == 0:
                 # flush when target is empty
-                subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'],
-                                stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+                subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'], capture_output=True)
             else:
                 # replace table contents with collected alias
-                with tempfile.NamedTemporaryFile() as output_stream:
-                    subprocess.call(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
-                                     '/var/db/aliastables/%s.txt' % alias_name],
-                                     stdout=open(os.devnull, 'wb'), stderr=output_stream)
-                    output_stream.seek(0)
-                    error_output = output_stream.read().decode().strip()
-                    if error_output.find('pfctl: ') > -1:
-                        result['status'] = 'error'
-                        if 'messages' not in result:
-                            result['messages'] = list()
-                        if error_output not in result['messages']:
-                            result['messages'].append(error_output.replace('pfctl: ', ''))
+                sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
+                                     '/var/db/aliastables/%s.txt' % alias_name], capture_output=True, text=True)
+
+                error_output = sp.stdout.strip()
+                if error_output.find('pfctl: ') > -1:
+                    result['status'] = 'error'
+                    if 'messages' not in result:
+                        result['messages'] = list()
+                    if error_output not in result['messages']:
+                        result['messages'].append(error_output.replace('pfctl: ', ''))
     # cleanup removed aliases
     to_remove = dict()
     for filename in glob.glob('/var/db/aliastables/*.txt'):
@@ -182,10 +175,7 @@ if __name__ == '__main__':
             to_remove[aliasname].append(filename)
     for aliasname in to_remove:
         syslog.syslog(syslog.LOG_NOTICE, 'remove old alias %s' % aliasname)
-        subprocess.call(
-            ['/sbin/pfctl', '-t', aliasname, '-T', 'kill'],
-            stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb')
-        )
+        subprocess.run(['/sbin/pfctl', '-t', aliasname, '-T', 'kill'], capture_output=True)
         for filename in to_remove[aliasname]:
             os.remove(filename)
 

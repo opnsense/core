@@ -28,28 +28,25 @@
     --------------------------------------------------------------------------------------
     drop an existing pf alias table
 """
-import tempfile
 import subprocess
 import os
 import sys
 import ujson
 
 if __name__ == '__main__':
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-sT'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        tables = list()
-        for line in output_stream.read().decode().strip().split('\n'):
-            tables.append(line.strip())
-        # only try to remove alias if it exists
-        if len(sys.argv) > 1 and sys.argv[1] in tables:
-            # cleanup related alias file
-            for suffix in  ['txt', 'md5.txt', 'self.txt']:
-                if os.path.isfile('/var/db/aliastables/%s.%s' % (sys.argv[1], suffix)):
-                    os.remove('/var/db/aliastables/%s.%s' % (sys.argv[1], suffix))
-            subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'kill'], stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-            # all good, exit 0
-            sys.exit(0)
+    sp = subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True)
+    tables = list()
+    for line in sp.stdout.strip().split('\n'):
+        tables.append(line.strip())
+    # only try to remove alias if it exists
+    if len(sys.argv) > 1 and sys.argv[1] in tables:
+        # cleanup related alias file
+        for suffix in  ['txt', 'md5.txt', 'self.txt']:
+            if os.path.isfile('/var/db/aliastables/%s.%s' % (sys.argv[1], suffix)):
+                os.remove('/var/db/aliastables/%s.%s' % (sys.argv[1], suffix))
+        subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'kill'], capture_output=True)
+        # all good, exit 0
+        sys.exit(0)
 
 # not found (or other issue)
 sys.exit(-1)

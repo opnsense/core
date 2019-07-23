@@ -29,40 +29,33 @@
     returns the contents of a pf table (optional as a json container)
     usage : list_table.py [tablename] [optional|json]
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = dict()
     if len(sys.argv) > 1:
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-vT', 'show'],
-                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.write(b'\n') # always make sure we have a final line-ending
-            output_stream.seek(0)
-            prev_entry=''
-            statistics=dict()
-            for rline in output_stream:
-                line = rline.decode()
-                if not line.startswith('\t'):
-                    this_entry = line.strip()
-                    if len(prev_entry) > 0:
-                        result[prev_entry] = statistics
-                    prev_entry = this_entry
-                    statistics=dict()
-                else:
-                    parts = line.split()
-                    if len(parts) > 6:
-                        if parts[3].isdigit() and parts[5].isdigit():
-                            pkts=int(parts[3])
-                            bytes=int(parts[5])
-                            topic = parts[0].lower().replace('/', '_').replace(':', '')
-                            if pkts > 0:
-                                statistics['%s_p' % topic] = pkts
-                                statistics['%s_b' % topic] = bytes
+        sp = subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-vT', 'show'], capture_output=True, text=True)
+        prev_entry=''
+        statistics=dict()
+        for line in sp.stdout.split('\n') + []:
+            if not line.startswith('\t'):
+                this_entry = line.strip()
+                if len(prev_entry) > 0:
+                    result[prev_entry] = statistics
+                prev_entry = this_entry
+                statistics=dict()
+            else:
+                parts = line.split()
+                if len(parts) > 6:
+                    if parts[3].isdigit() and parts[5].isdigit():
+                        pkts=int(parts[3])
+                        bytes=int(parts[5])
+                        topic = parts[0].lower().replace('/', '_').replace(':', '')
+                        if pkts > 0:
+                            statistics['%s_p' % topic] = pkts
+                            statistics['%s_b' % topic] = bytes
 
     # handle command line argument (type selection)
     if len(sys.argv) > 2 and sys.argv[2] == 'json':
