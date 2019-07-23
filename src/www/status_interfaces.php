@@ -279,19 +279,32 @@ include("head.inc");
                     </tr>
 <?php
                   endif;
+                  if ($ifinfo['mtu']): ?>
+                  <tr>
+                    <td><?=gettext("MTU");?></td>
+                    <td>
+                      <?=$ifinfo['mtu'];?>
+                    </td>
+                  </tr>
+<?php
+                endif;
                 if ($ifinfo['status'] != "down"):
                   if ($ifinfo['dhcplink'] != "down" && $ifinfo['pppoelink'] != "down" && $ifinfo['pptplink'] != "down"):
-                    if ($ifinfo['ipaddr']):?>
+                    if (!empty($ifinfo['ipaddr'])):?>
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
-                      <td><?= $ifinfo['ipaddr'] ?></td>
-                    </tr>
+                      <td>
+                        <?=$ifinfo['ipaddr'];?> /  <?=$ifinfo['subnet'];?>
 <?php
-                    endif;
-                    if (!empty($ifinfo['subnet'])):?>
-                    <tr>
-                      <td><?= gettext("Subnet mask IPv4") ?></td>
-                      <td><?= $ifinfo['subnet'] ?></td>
+                        foreach($ifinfo['ipv4'] as $ipv4):
+                            if ($ipv4['ipaddr'] != $ifinfo['ipaddr']):?>
+                            <br/>
+                            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                            <?=$ipv4['ipaddr'];?> / <?=$ipv4['subnetbits'];?> <?= !empty($ipv4['vhid']) ? 'vhid ' . $ipv4['vhid'] : "" ;?>
+<?php
+                            endif;
+                        endforeach;?>
+                      </td>
                     </tr>
 <?php
                     endif;
@@ -302,24 +315,29 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['linklocal'])): ?>
+                    $llitem = !empty($ifinfo['ipv6']) ? end($ifinfo['ipv6']) : null;
+                    if (!empty($llitem['link-local'])): ?>
                     <tr>
                       <td><?= gettext("IPv6 Link Local") ?></td>
-                      <td><?= $ifinfo['linklocal'] ?></td>
+                      <td><?= $llitem['ipaddr'];?> / <?= $llitem['subnetbits'];?>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['ipaddrv6'])): ?>
                     <tr>
                       <td><?= gettext("IPv6 address") ?></td>
-                      <td><?= $ifinfo['ipaddrv6'] ?></td>
-                    </tr>
+                      <td>
+                        <?= $ifinfo['ipaddrv6'] ?> / <?= $ifinfo['subnetv6'] ?>
 <?php
-                    endif;
-                    if (!empty($ifinfo['subnetv6'])): ?>
-                    <tr>
-                      <td><?= gettext("Subnet mask IPv6") ?></td>
-                      <td><?= $ifinfo['subnetv6'] ?></td>
+                        foreach($ifinfo['ipv6'] as $ipv6):
+                            if ($ipv6['ipaddr'] != $ifinfo['ipaddrv6'] && empty($ipv6['link-local'])):?>
+                            <br/>
+                            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                            <?=$ipv6['ipaddr'];?> / <?=$ipv6['subnetbits'];?> <?= !empty($ipv6['vhid']) ? 'vhid ' . $ipv6['vhid'] : "" ;?>
+<?php
+                            endif;
+                        endforeach;?>
+                      </td>
                     </tr>
 <?php
                     endif;
@@ -450,7 +468,7 @@ include("head.inc");
                     <tr>
                       <td><?= gettext("Interrupts") ?></td>
                       <td>
-                        <table class="table">
+                        <table class="table table-condensed">
                           <thead>
                             <tr>
                               <th><?=gettext("irq");?></th>
@@ -474,6 +492,37 @@ include("head.inc");
                     </tr>
 <?php
                   endif; ?>
+<?php
+                  if (!empty($ifinfo['carp'])):?>
+                  <tr>
+                      <td><?=gettext("CARP");?></td>
+                      <td>
+                          <table class="table table-condensed">
+                            <thead>
+                              <tr>
+                                <th><?=gettext("status");?></th>
+                                <th><?=gettext("vhid");?></th>
+                                <th><?=gettext("advbase");?></th>
+                                <th><?=gettext("advskew");?></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+<?php
+                            foreach($ifinfo['carp'] as $carpitem):?>
+                                <tr>
+                                  <td><?=$carpitem['status'];?></td>
+                                  <td><?=$carpitem['vhid'];?></td>
+                                  <td><?=$carpitem['advbase'];?></td>
+                                  <td><?=$carpitem['advskew'];?></td>
+                                </tr>
+<?php
+                            endforeach;?>
+                            </tbody>
+                          </table>
+                      </td>
+                  </tr>
+<?php
+                  endif;?>
                   </tbody>
                 </table>
               </div>
