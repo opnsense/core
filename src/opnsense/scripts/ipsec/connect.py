@@ -53,5 +53,4 @@ for conns in s.list_conns():
 
 # setup connection if found
 for conn_id in conns_found:
-    devnull = open(os.devnull, 'w')
-    subprocess.call(['/usr/local/sbin/ipsec', 'up', conn_id], stdin=devnull, stdout=devnull, stderr=devnull)
+    subprocess.run(['/usr/local/sbin/ipsec', 'up', conn_id], capture_output=True)
