@@ -40,13 +40,11 @@ class Interfaces(object):
         """ construct local interface mapping
         """
         self._if_index = dict()
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/ifconfig', '-l'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            if_index = 1
-            for line in output_stream.readline().split():
-                self._if_index["%s" % if_index] = line.decode()
-                if_index += 1
+        sp = subprocess.run(['/sbin/ifconfig', '-l'], capture_output=True, text=True)
+        if_index = 1
+        for line in sp.stdout.split():
+            self._if_index["%s" % if_index] = line
+            if_index += 1
 
     def if_device(self, if_index):
         """ convert index to device (if found)
