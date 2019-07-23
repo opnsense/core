@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,43 +28,39 @@
     --------------------------------------------------------------------------------------
     returns the system routing table
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = []
     fieldnames=[]
-    with tempfile.NamedTemporaryFile() as output_stream:
-        if '-n' in sys.argv:
-            resolv = 'n'
-        else:
-            resolv = ''
-        subprocess.call(['/usr/bin/netstat', '-rW' + resolv], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        current_proto = ""
-        for line in output_stream:
-            fields = line.decode().split()
-            if len(fields) == 0:
-                continue
-            elif len(fields) == 1 and fields[0] == 'Internet:':
-                current_proto = 'ipv4'
-            elif len(fields) == 1 and  fields[0] == 'Internet6:':
-                current_proto = 'ipv6'
-            elif len(fields) > 2 and fields[0] == 'Destination' and fields[1] == 'Gateway':
-                fieldnames = list(map(lambda x : x.lower(), fields))
-            elif len(fields) > 2:
-                record = {'proto': current_proto}
-                for fieldid in range(len(fields)):
-                    if len(fieldnames) > fieldid:
-                        record[fieldnames[fieldid]] = fields[fieldid]
-                # space out missing fields
-                for fieldname in fieldnames:
-                    if fieldname not in record:
-                        record[fieldname] = ""
-                result.append(record)
+    if '-n' in sys.argv:
+        resolv = 'n'
+    else:
+        resolv = ''
+    sp = subprocess.run(['/usr/bin/netstat', '-rW' + resolv], capture_output=True, text=True)
+    current_proto = ""
+    for line in sp.stdout.split("\n"):
+        fields = line.split()
+        if len(fields) == 0:
+            continue
+        elif len(fields) == 1 and fields[0] == 'Internet:':
+            current_proto = 'ipv4'
+        elif len(fields) == 1 and  fields[0] == 'Internet6:':
+            current_proto = 'ipv6'
+        elif len(fields) > 2 and fields[0] == 'Destination' and fields[1] == 'Gateway':
+            fieldnames = list(map(lambda x : x.lower(), fields))
+        elif len(fields) > 2:
+            record = {'proto': current_proto}
+            for fieldid in range(len(fields)):
+                if len(fieldnames) > fieldid:
+                    record[fieldnames[fieldid]] = fields[fieldid]
+            # space out missing fields
+            for fieldname in fieldnames:
+                if fieldname not in record:
+                    record[fieldname] = ""
+            result.append(record)
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and 'json' in sys.argv:
