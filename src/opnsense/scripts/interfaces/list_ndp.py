@@ -28,36 +28,30 @@
     --------------------------------------------------------------------------------------
     list ndp table
 """
-import tempfile
 import subprocess
 import os
-import os.path
 import sys
 import ujson
 import netaddr
 
 if __name__ == '__main__':
     result = []
-
     # parse ndp output
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/sbin/ndp', '-an'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        data = output_stream.read().decode().strip()
-        for line in data.split('\n')[1:]:
-            line_parts = line.split()
-            if len(line_parts) > 3 and line_parts[1] != '(incomplete)':
-                record = {'mac': line_parts[1],
-                          'ip': line_parts[0],
-                          'intf': line_parts[2],
-                          'manufacturer': ''
-                          }
-                manufacturer_mac = netaddr.EUI(record['mac'])
-                try:
-                    record['manufacturer'] = manufacturer_mac.oui.registration().org
-                except netaddr.NotRegisteredError:
-                    pass
-                result.append(record)
+    sp = subprocess.run(['/usr/sbin/ndp', '-an'], capture_output=True, text=True)
+    for line in sp.stdout.split('\n')[1:]:
+        line_parts = line.split()
+        if len(line_parts) > 3 and line_parts[1] != '(incomplete)':
+            record = {'mac': line_parts[1],
+                      'ip': line_parts[0],
+                      'intf': line_parts[2],
+                      'manufacturer': ''
+                      }
+            manufacturer_mac = netaddr.EUI(record['mac'])
+            try:
+                record['manufacturer'] = manufacturer_mac.oui.registration().org
+            except netaddr.NotRegisteredError:
+                pass
+            result.append(record)
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
