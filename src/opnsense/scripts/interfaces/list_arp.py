@@ -28,10 +28,8 @@
     --------------------------------------------------------------------------------------
     list arp table
 """
-import tempfile
 import subprocess
 import os
-import os.path
 import sys
 import ujson
 import netaddr
@@ -51,27 +49,24 @@ if __name__ == '__main__':
                     dhcp_leases[dhcp_ipv4_address] = {'hostname': lease.split('client-hostname')[1].strip()[1:-2]}
 
     # parse arp output
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/sbin/arp', '-an'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream:
-            line = line.decode()
-            line_parts = line.split()
-            if len(line_parts) > 3 and line_parts[3] != '(incomplete)':
-                record = {'mac': line_parts[3],
-                          'ip': line_parts[1][1:-1],
-                          'intf': line_parts[5],
-                          'manufacturer': '',
-                          'hostname': ''
-                          }
-                manufacturer_mac = netaddr.EUI(record['mac'])
-                try:
-                    record['manufacturer'] = manufacturer_mac.oui.registration().org
-                except netaddr.NotRegisteredError:
-                    pass
-                if record['ip'] in dhcp_leases:
-                    record['hostname'] = dhcp_leases[record['ip']]['hostname']
-                result.append(record)
+    sp = subprocess.run(['/usr/sbin/arp', '-an'], capture_output=True, text=True)
+    for line in sp.stdout.split('\n'):
+        line_parts = line.split()
+        if len(line_parts) > 3 and line_parts[3] != '(incomplete)':
+            record = {'mac': line_parts[3],
+                      'ip': line_parts[1][1:-1],
+                      'intf': line_parts[5],
+                      'manufacturer': '',
+                      'hostname': ''
+                      }
+            manufacturer_mac = netaddr.EUI(record['mac'])
+            try:
+                record['manufacturer'] = manufacturer_mac.oui.registration().org
+            except netaddr.NotRegisteredError:
+                pass
+            if record['ip'] in dhcp_leases:
+                record['hostname'] = dhcp_leases[record['ip']]['hostname']
+            result.append(record)
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
