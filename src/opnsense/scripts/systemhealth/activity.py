@@ -39,36 +39,33 @@ if __name__ == '__main__':
     fieldnames = None
     field_max_width = dict()
     result = {'headers': [], 'details': []}
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/bin/top','-aHSn','999999'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        is_header = True
-        lines = output_stream.read().decode().strip().split('\n')
-        for line in lines:
-            # end of header, start of top detection
-            if line.find('USERNAME') > -1 and line.find('COMMAND') > -1:
-                is_header = False
-            if is_header:
-                # parse headers from top command, add to result
-                if len(line.strip()) > 0:
-                    result['headers'].append(line)
+    sp = subprocess.run(['/usr/bin/top','-aHSn','999999'], capture_output=True, text=True)
+    is_header = True
+    for line in sp.stdout.strip().split('\n'):
+        # end of header, start of top detection
+        if line.find('USERNAME') > -1 and line.find('COMMAND') > -1:
+            is_header = False
+        if is_header:
+            # parse headers from top command, add to result
+            if len(line.strip()) > 0:
+                result['headers'].append(line)
+        else:
+            # parse details including fieldnames (leave original)
+            if fieldnames is None:
+                fieldnames = line.split()
             else:
-                # parse details including fieldnames (leave original)
-                if fieldnames is None:
-                    fieldnames = line.split()
-                else:
-                    tmp = line.split()
-                    record = dict()
-                    for field_id in range(len(fieldnames)):
-                        fieldname = fieldnames[field_id]
-                        if field_id == len(fieldnames)-1:
-                            record[fieldname] = ' '.join(tmp[field_id:])
-                        else:
-                            record[fieldname] = tmp[field_id]
+                tmp = line.split()
+                record = dict()
+                for field_id in range(len(fieldnames)):
+                    fieldname = fieldnames[field_id]
+                    if field_id == len(fieldnames)-1:
+                        record[fieldname] = ' '.join(tmp[field_id:])
+                    else:
+                        record[fieldname] = tmp[field_id]
 
-                        if fieldname not in field_max_width or field_max_width[fieldname] < len(record[fieldname]):
-                            field_max_width[fieldname] = len(record[fieldname])
-                    result['details'].append(record)
+                    if fieldname not in field_max_width or field_max_width[fieldname] < len(record[fieldname]):
+                        field_max_width[fieldname] = len(record[fieldname])
+                result['details'].append(record)
 
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
         # output as json
