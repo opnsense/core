@@ -29,26 +29,21 @@
     list ipsec pools and leases
 """
 
-import tempfile
 import subprocess
-import os
 import ujson
 
 result = dict()
 if __name__ == '__main__':
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/local/sbin/ipsec', 'leases'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        data = output_stream.read().decode().strip()
-        current_pool=None
-        for line in data.split('\n'):
-            if line.find('Leases in pool') > -1:
-                current_pool = line.split("'")[1]
-                result[current_pool] = {'items': []}
-                result[current_pool]['usage'] = line.split(',')[1].split(':')[1].strip()
-                result[current_pool]['online'] = line.split(',')[2].strip().split(' ')[0]
-            elif current_pool is not None and line.find('line') > -1:
-                lease = {'address': line.split()[0], 'status': line.split()[1], 'user': line.split("'")[1]}
-                result[current_pool] ['items'].append(lease)
+    sp = subprocess.run(['/usr/local/sbin/ipsec', 'leases'], capture_output=True, text=True)
+    current_pool=None
+    for line in sp.stdout.strip().split('\n'):
+        if line.find('Leases in pool') > -1:
+            current_pool = line.split("'")[1]
+            result[current_pool] = {'items': []}
+            result[current_pool]['usage'] = line.split(',')[1].split(':')[1].strip()
+            result[current_pool]['online'] = line.split(',')[2].strip().split(' ')[0]
+        elif current_pool is not None and line.find('line') > -1:
+            lease = {'address': line.split()[0], 'status': line.split()[1], 'user': line.split("'")[1]}
+            result[current_pool] ['items'].append(lease)
 
 print(ujson.dumps(result))
