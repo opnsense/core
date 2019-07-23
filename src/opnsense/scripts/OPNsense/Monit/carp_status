@@ -32,7 +32,9 @@ require_once("interfaces.lib.inc");
 $statuses = array();
 foreach (legacy_interfaces_details() as $intf) {
     if (!empty($intf['carp'])) {
-        $statuses[$intf['carp']['status']] = true;
+        foreach ($intf['carp'] as $carpitem) {
+            $statuses[$carpitem['status']] = true;
+        }
     }
 }
 
