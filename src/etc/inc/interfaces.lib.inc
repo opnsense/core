@@ -258,15 +258,21 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tinet ") !== false) {
             // IPv4 information
             unset($mask);
+            unset($vhid);
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'netmask') {
                     $mask = substr_count(base_convert(hexdec($line_parts[$i + 1]), 10, 2), '1');
+                } elseif ($line_parts[$i] == 'vhid') {
+                    $vhid = $line_parts[$i+1];
                 }
             }
             if (isset($mask)) {
                 $tmp = array("ipaddr" => $line_parts[1], "subnetbits" => $mask);
                 if ($line_parts[2] == '-->') {
                     $tmp['endpoint'] = $line_parts[3];
+                }
+                if (isset($vhid)) {
+                    $tmp['vhid'] = $vhid;
                 }
                 $result[$current_interface]["ipv4"][] = $tmp;
             }
@@ -277,6 +283,8 @@ function legacy_interfaces_details($intf = null)
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
                     $tmp['subnetbits'] = intval($line_parts[$i + 1]);
+                } elseif ($line_parts[$i] == 'vhid') {
+                    $tmp['vhid'] = $line_parts[$i+1];
                 }
                 if ($line_parts[$i] == '-->') {
                     $tmp['tunnel'] = true;
@@ -320,11 +328,15 @@ function legacy_interfaces_details($intf = null)
             array_shift($line_parts);
             $result[$current_interface]['groups'] = $line_parts;
         } elseif (strpos($line, "\tcarp: ") !== false) {
-            $result[$current_interface]["carp"] = array();
-            $result[$current_interface]["carp"]['status'] = $line_parts[1];
-            $result[$current_interface]["carp"]['vhid'] = $line_parts[3];
-            $result[$current_interface]["carp"]['advbase'] = $line_parts[5];
-            $result[$current_interface]["carp"]['advskew'] = $line_parts[7];
+            if (empty($result[$current_interface]["carp"])) {
+                $result[$current_interface]["carp"] = array();
+            }
+            $result[$current_interface]["carp"][] = array(
+                "status" => $line_parts[1],
+                "vhid" => $line_parts[3],
+                "advbase" => $line_parts[5],
+                "advskew" => $line_parts[7]
+            );
         }
     }
 
