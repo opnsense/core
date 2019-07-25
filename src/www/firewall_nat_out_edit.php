@@ -40,7 +40,7 @@ function formTranslateAddresses() {
 
     // add this hosts ips
     foreach ($config['interfaces'] as $intf => $intfdata) {
-        if (isset($intfdata['ipaddr']) && $intfdata['ipaddr'] != 'dhcp') {
+        if (isset($intfdata['ipaddr']) && is_ipaddr($intfdata['ipaddr'])) {
             $retval[$intfdata['ipaddr']] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
         }
     }
