@@ -35,20 +35,18 @@ import os.path
 import sys
 import ujson
 import netaddr
+sys.path.insert(0, "/usr/local/opnsense/site-python")
+import watchers.dhcpd
 
 if __name__ == '__main__':
     result = []
 
     # import dhcp_leases (index by ip address)
     dhcp_leases = {}
-    dhcp_leases_filename = '/var/dhcpd/var/db/dhcpd.leases'
-    if os.path.isfile(dhcp_leases_filename):
-        leases = open(dhcp_leases_filename, 'r').read()
-        for lease in leases.split('}'):
-            if lease.strip().find('lease') == 0 and lease.find('{') > -1:
-                dhcp_ipv4_address = lease.split('{')[0].split('lease')[1].strip()
-                if lease.find('client-hostname') > -1:
-                    dhcp_leases[dhcp_ipv4_address] = {'hostname': lease.split('client-hostname')[1].strip()[1:-2]}
+    dhcpdleases = watchers.dhcpd.DHCPDLease()
+    for lease in dhcpdleases.watch():
+        if 'client-hostname' in lease and 'address' in lease:
+            dhcp_leases[lease['address']]  = {'hostname': lease['client-hostname']}
 
     # parse arp output
     with tempfile.NamedTemporaryFile() as output_stream:
