@@ -29,10 +29,11 @@
 namespace OPNsense\Monit\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
 
 class M1_0_6 extends BaseModelMigration
 {
-    public function run($model)
+    public function post($model)
     {
         /* extend tests */
         $defaultTests = array();
@@ -70,5 +71,8 @@ class M1_0_6 extends BaseModelMigration
             $srv->path = $newservice['path'];
             $srv->tests = $newservice['tests'];
         }
+        // validation will fail because we want to change the type of tests linked to services
+        $model->serializeToConfig(false, true);
+        Config::getInstance()->save();
     }
 }
