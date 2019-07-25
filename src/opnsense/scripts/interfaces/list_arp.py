@@ -42,6 +42,10 @@ if __name__ == '__main__':
     dhcp_leases_filename = '/var/dhcpd/var/db/dhcpd.leases'
     if os.path.isfile(dhcp_leases_filename):
         leases = open(dhcp_leases_filename, 'r').read()
+        first_lease = leases.find('\nlease')
+        if first_lease > 0:
+            leases = leases[first_lease:].strip()
+
         for lease in leases.split('}'):
             if lease.strip().find('lease') == 0 and lease.find('{') > -1:
                 dhcp_ipv4_address = lease.split('{')[0].split('lease')[1].strip()
