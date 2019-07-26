@@ -76,15 +76,17 @@ if __name__ == '__main__':
         if rule['metadata_source'] not in metadata_sources:
             metadata_sources[rule['metadata_source']] = 0
         if 'url' in rule['source']:
+            full_path = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
             if dl.is_supported(url=rule['source']['url']):
-                if rule['required'] and metadata_sources[rule['metadata_source']] > 0:
+                if rule['required']:
                     # Required files are always sorted last in list_rules(), add required when there's at least one
-                    # file selected from the metadata package.
-                    enabled_rulefiles[rule['filename']] = {'filter': ''}
+                    # file selected from the metadata package or not on disk yet.
+                    if metadata_sources[rule['metadata_source']] > 0 or not os.path.isfile(full_path):
+                        enabled_rulefiles[rule['filename']] = {'filter': ''}
                 if rule['filename'] not in enabled_rulefiles:
-                    full_path = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
-                    if os.path.isfile(full_path):
-                        os.remove(full_path)
+                    if not rule['required']:
+                        if os.path.isfile(full_path):
+                            os.remove(full_path)
                 else:
                     input_filter = enabled_rulefiles[rule['filename']]['filter']
                     if ('username' in rule['source'] and 'password' in rule['source']):
