@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
              * Our firewall filter description may be no longer than
              * 63 characters, so don't let it be.
              */
-            $filterent['descr'] = substr("NAT " . $pconfig['descr'], 0, 62);
+            $filterent['descr'] = mb_substr("NAT " . $pconfig['descr'], 0, 62, 'UTF-8');
 
             // If this is a new rule, create an ID and add the rule
             if (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass') {
