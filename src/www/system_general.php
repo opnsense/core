@@ -170,34 +170,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dnsname="dns{$dnscounter}";
             $dnsgwname="dns{$dnscounter}gw";
             $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
+            $thisdnsgwname = $pconfig[$dnsgwname];
 
             if (!empty($pconfig[$dnsname])) {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
             }
-
-            $thisdnsgwname = $pconfig[$dnsgwname];
-
-            // "Blank" out the settings for this index, then we set them below using the "outdnscounter" index.
             $config['system'][$dnsgwname] = "none";
-            $pconfig[$dnsgwname] = "none";
-            $pconfig[$dnsname] = "";
-
-            if (!empty($pconfig[$dnsname])) {
-                // Only the non-blank DNS servers were put into the config above.
-                // So we similarly only add the corresponding gateways sequentially to the config (and to pconfig), as we find non-blank DNS servers.
-                // This keeps the DNS server IP and corresponding gateway "lined up" when the user blanks out a DNS server IP in the middle of the list.
+            if (!empty($pconfig[$dnsgwname])) {
+                // The indexes used to save the item don't have to correspond to the ones in the config, but since
+                // we always redirect after save, the configuration content is read after a successfull change.
                 $outdnscounter++;
-                $outdnsname="dns{$outdnscounter}";
                 $outdnsgwname="dns{$outdnscounter}gw";
-                $pconfig[$outdnsname] = $pconfig[$dnsname];
-                if (!empty($pconfig[$dnsgwname])) {
-                    $config['system'][$outdnsgwname] = $thisdnsgwname;
-                    $pconfig[$outdnsgwname] = $thisdnsgwname;
-                } else {
-                    // Note: when no DNS GW name is chosen, the entry is set to "none", so actually this case never happens.
-                    unset($config['system'][$outdnsgwname]);
-                    $pconfig[$outdnsgwname] = "";
-                }
+                $config['system'][$outdnsgwname] = $thisdnsgwname;
             }
             if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $pconfig[$dnsname])) {
                 // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
