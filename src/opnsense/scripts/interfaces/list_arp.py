@@ -44,7 +44,7 @@ if __name__ == '__main__':
     dhcpdleases = watchers.dhcpd.DHCPDLease()
     for lease in dhcpdleases.watch():
         if 'client-hostname' in lease and 'address' in lease:
-            dhcp_leases[lease['address']]  = lease['client-hostname']
+            dhcp_leases[lease['address']]  = {'hostname': lease['client-hostname']}
 
     # parse arp output
     sp = subprocess.run(['/usr/sbin/arp', '-an'], capture_output=True, text=True)
