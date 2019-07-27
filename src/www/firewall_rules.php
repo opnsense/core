@@ -164,13 +164,6 @@ function firewall_rule_item_icons($filterent)
           );
         }
     }
-    if (isset($filterent['log'])) {
-          $result .= sprintf(
-              "<i class=\"fa fa-info-circle fa-fw %s\"></i>",
-              !empty($filterent['disabled']) ? 'text-muted' : 'text-info'
-          );
-    }
-
     return $result;
 }
 
@@ -188,6 +181,19 @@ function firewall_rule_item_action($filterent)
         return "fa fa-play fa-fw text-success";
     } else {
         return "fa fa-play fa-fw text-muted";
+    }
+}
+
+function firewall_rule_item_log($filterent)
+{
+    if ($filterent['log'] == true && empty($filterent['disabled'])) {
+        return "fa fa-toggle-on text-success";
+    } elseif ($filterent['log'] == false && empty($filterent['disabled'])) {
+        return "fa fa-toggle-off text-danger";
+    } elseif ($filterent['log'] == true && !empty($filterent['disabled'])) {
+        return "fa fa-toggle-on text-muted";
+    } else {
+        return "fa fa-toggle-off text-muted";
     }
 }
 /***********************************************************************************************************
@@ -278,7 +284,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mark_subsystem_dirty('filter');
         header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         exit;
-    }
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'log' && isset($id)) {
+        // toggle logging
+        if(isset($a_filter[$id]['log'])) {
+            unset($a_filter[$id]['log']);
+        } else {
+            $a_filter[$id]['log'] = true;
+        }
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        exit;
+    }    
 }
 
 $selected_if = 'FloatingRules';
@@ -407,6 +424,15 @@ $( document ).ready(function() {
     $("#action").val("toggle");
     $("#iform").submit();
   });
+
+   // link log buttons
+  $(".act_log").click(function(event){
+    event.preventDefault();
+    var id = $(this).attr("id").split('_').pop(-1);
+    $("#id").val(id);
+    $("#action").val("log");
+    $("#iform").submit();
+  }); 
 
   // watch scroll position and set to last known on page load
   watchScrollPosition();
@@ -639,7 +665,7 @@ $( document ).ready(function() {
                     <tr class="internal-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
-                          <span class="<?=firewall_rule_item_action($filterent);?>"></span><?=firewall_rule_item_icons($filterent);?>
+                          <span class="<?=firewall_rule_item_action($filterent);?>"></span><i class="<?=firewall_rule_item_log($filterent);?>"></i><?=firewall_rule_item_icons($filterent);?>
                       </td>
                       <td class="view-info">
                           <?=firewall_rule_item_proto($filterent);?>
@@ -694,6 +720,9 @@ $( document ).ready(function() {
                     <td>
                       <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
                         <span class="<?=firewall_rule_item_action($filterent);?>"></span>
+                      </a>
+                      <a href="#" class="act_log" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Log");?>">
+                        <i class="<?=firewall_rule_item_log($filterent);?>"></i>
                       </a>
                       <?=firewall_rule_item_icons($filterent);?>
                     </td>
@@ -878,7 +907,7 @@ $( document ).ready(function() {
                           <td style="width:16px"><span class="fa fa-times-circle text-danger"></span></td>
                           <td style="width:100px"><?=gettext("reject");?></td>
                           <td style="width:14px"></td>
-                          <td style="width:16px"><span class="fa fa-info-circle text-info"></span></td>
+                          <td style="width:16px"><span class="fa fa-toggle-on text-success"></span></td>
                           <td style="width:100px"><?=gettext("log");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
@@ -897,7 +926,7 @@ $( document ).ready(function() {
                           <td><span class="fa fa-times-circle text-muted"></span></td>
                           <td class="nowrap"><?=gettext("reject (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td style="width:16px"><span class="fa fa-info-circle text-muted"></span></td>
+                          <td style="width:16px"><span class="fa fa-toggle-on text-muted"></span></td>
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
