@@ -1641,7 +1641,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         if (!isset($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = $a_gateways[$rtent['gateway']]['interface'];
+                    $destif = get_real_interface($a_gateways[$rtent['gateway']]['interface']);
                     break;
                 }
             }
