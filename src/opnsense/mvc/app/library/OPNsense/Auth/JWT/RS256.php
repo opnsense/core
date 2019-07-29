@@ -46,7 +46,7 @@ class RS256 extends RSABased
         if (openssl_sign($to_sign, $signature, $this->getPrivateKey(), OPENSSL_ALGO_SHA256)) {
             return $to_sign . '.' . $this->b64UrlEncode($signature);
         } else {
-            throw new Exception("signature failed");
+            throw new \Exception("signature failed");
         }
     }
 }
