@@ -632,7 +632,10 @@ $( document ).ready(function() {
                 filter_core_bootstrap($fw);
                 plugins_firewall($fw);
                 foreach ($fw->iterateFilterRules() as $rule):
-                    if ($rule->getInterface() == $selected_if && $rule->isEnabled()):
+                    $is_selected = $rule->getInterface() == $selected_if || (
+                        $rule->getInterface() == "" && $selected_if == "FloatingRules"
+                    );
+                    if ($rule->isEnabled() && $is_selected):
                         $filterent = $rule->getRawRule();
                         legacy_html_escape_form_data($filterent);
                         $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
