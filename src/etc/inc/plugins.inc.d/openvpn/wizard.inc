@@ -194,10 +194,23 @@ function step5_submitphpaction()
 function step6_stepbeforeformdisplay()
 {
     global $stepid, $config;
+    $no_internal_ca = true;
 
-    if (!empty($config['ca'])) {
+    if (empty($config['ca'])) {
         $stepid++;
     }
+    else do {
+            foreach ($config['ca'] as $ca) {
+                if (!empty($ca['prv'])) {
+                    $no_internal_ca=false;
+                }
+            }
+    }
+    while ($no_internal_ca);
+
+    if ($no_internal_ca) {
+        $stepid++;
+    }  
 }
 
 function step6_submitphpaction()
