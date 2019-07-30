@@ -156,9 +156,9 @@ function firewall_rule_item_icons($filterent)
             gettext("any")
         );
     }
-    if (empty($filterent['floating']) && $filterent['quick'] == null){
+    if (empty($filterent['floating']) && $filterent['quick'] === null){
         $is_quick = true;
-    } elseif (!empty($filterent['floating']) && $filterent['quick'] == null) {
+    } elseif (!empty($filterent['floating']) && $filterent['quick'] === null) {
         $is_quick = false;
     } else {
         $is_quick = $filterent['quick'];
@@ -649,6 +649,7 @@ $( document ).ready(function() {
                     );
                     if ($rule->isEnabled() && $is_selected):
                         $filterent = $rule->getRawRule();
+                        $filterent['quick'] = !isset($filterent['quick']) || $filterent['quick'];
                         legacy_html_escape_form_data($filterent);
                         $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
                     <tr class="internal-rule" style="display: none;">
