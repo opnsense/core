@@ -74,7 +74,7 @@ class DB(object):
         if cur.fetchall()[0][0] == 0:
             # empty database, initialize database
             init_script_filename = '%s/../sql/init.sql' % os.path.dirname(os.path.abspath(__file__))
-            cur.executescript(open(init_script_filename, 'rb').read())
+            cur.executescript(open(init_script_filename, 'r').read())
         cur.close()
 
     def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
