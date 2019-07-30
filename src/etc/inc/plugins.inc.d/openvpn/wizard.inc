@@ -199,15 +199,13 @@ function step6_stepbeforeformdisplay()
     if (empty($config['ca'])) {
         $stepid++;
     }
-    else do {
-            foreach ($config['ca'] as $ca) {
-                if (!empty($ca['prv'])) {
-                    $no_internal_ca=false;
-                }
-            }
+    else foreach ($config['ca'] as $ca) {
+        if (!empty($ca['prv'])) {
+            $no_internal_ca=false;
+        }
+        
     }
-    while ($no_internal_ca);
-
+    
     if ($no_internal_ca) {
         $stepid++;
     }  
