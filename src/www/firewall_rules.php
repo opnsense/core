@@ -936,7 +936,7 @@ $( document ).ready(function() {
                   <tr class="hidden-xs hidden-sm">
                     <td>
 <?php if ('FloatingRules' != $selected_if): ?>
-                      <?= sprintf(gettext('%s rules are evaluated on a first-match basis (i.e. ' .
+                      <?= sprintf(gettext('%s rules are evaluated on a first-match basis by default (i.e. ' .
                         'the action of the first rule to match a packet will be executed). ' .
                         'This means that if you use block rules, you will have to pay attention ' .
                         'to the rule order. Everything that is not explicitly passed is blocked ' .
