@@ -202,8 +202,8 @@ function step6_stepbeforeformdisplay()
     else foreach ($config['ca'] as $ca) {
         if (!empty($ca['prv'])) {
             $no_internal_ca=false;
-        }
-        
+            break;
+        }   
     }
     
     if ($no_internal_ca) {
