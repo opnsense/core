@@ -655,7 +655,8 @@ $( document ).ready(function() {
                     <tr class="internal-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
-                          <span class="<?=firewall_rule_item_action($filterent);?>"></span><?=firewall_rule_item_icons($filterent);?>
+                          <span class="<?=firewall_rule_item_action($filterent);?>"></span>
+                          <?=firewall_rule_item_icons($filterent);?>
                       </td>
                       <td class="view-info">
                           <?=firewall_rule_item_proto($filterent);?>
