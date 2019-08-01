@@ -318,6 +318,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['floating']) && !empty($pconfig['gateway']) && (empty($pconfig['direction']) || $pconfig['direction'] == "any")) {
         $input_errors[] = gettext("You can not use gateways in Floating rules without choosing a direction.");
+    } elseif (empty($pconfig['floating']) && $pconfig['direction'] != "in" && !empty($pconfig['gateway'])) {
+        // XXX: Technically this is not completely true, but since you can only send to other destinations reachable
+        //      from the selected interface in this case, it will likely be confusing for our users.
+        //      Policy based routing rules on inbound traffic can use the correct outbound interface, which is the
+        //      scenario that is most commonly used .
+        //      For compatibilty reasons, we only apply this on non-floating rules.
+        $input_errors[] = gettext("Policy based routing (gateway setting) is only supported on inbound rules.");
     }
 
     if (!in_array($pconfig['protocol'], array("tcp","tcp/udp"))) {
@@ -406,13 +413,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // 1-on-1 copy of form values
         $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
                             , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
-                            , 'sched', 'associated-rule-id', 'direction', 'quick'
+                            , 'sched', 'associated-rule-id', 'direction'
                             , 'max-src-conn-rate', 'max-src-conn-rates', 'category') ;
 
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 if (is_array($pconfig[$fieldname])) {
-                     $filterent[$fieldname] = implode(",", $pconfig[$fieldname]);
+                    $filterent[$fieldname] = implode(",", $pconfig[$fieldname]);
                 } else  {
                     $filterent[$fieldname] = trim($pconfig[$fieldname]);
                 }
@@ -475,7 +482,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['prio']) && $pconfig['prio'] !== '') {
             $filterent['prio'] = $pconfig['prio'];
         }
-
+        // XXX: Always store quick, so none existent can have a different functional meaning than an empty value.
+        //      Not existent means previous defaults (empty + floating --> non quick, empty + non floating --> quick)
+        $filterent['quick'] = !empty($pconfig['quick']) ? 1 : 0;
 
         if ($pconfig['protocol'] != "any") {
             $filterent['protocol'] = $pconfig['protocol'];
@@ -715,21 +724,30 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-<?php             if (!empty($pconfig['floating'])):
+<?php
+                  // XXX: either use quick setting from the config, or fallback to the defaults
+                  //      floating and not set --> deselected, interface rule and not set --> selected
+                  if (empty($pconfig['floating']) && $pconfig['quick'] == null){
+                      $is_quick = true;
+                  } elseif (!empty($pconfig['floating']) && $pconfig['quick'] == null) {
+                      $is_quick = false;
+                  } else {
+                      $is_quick = $pconfig['quick'];
+                  }
 ?>
                   <tr>
                     <td><a id="help_for_quick" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Quick");?>
                     </td>
                     <td>
-                      <input name="quick" type="checkbox" id="quick" value="yes" <?php if ($pconfig['quick']) echo "checked=\"checked\""; ?> />
+                      <input name="quick" type="checkbox" id="quick" value="yes" <?= !empty($is_quick) ? "checked=\"checked\"" : "";?> />
                       <strong><?=gettext("Apply the action immediately on match.");?></strong>
                       <div class="hidden" data-for="help_for_quick">
-                        <?=gettext("Set this option if you need to apply this action to traffic that matches this rule immediately.");?>
+                        <?=gettext("If a packet matches a rule specifying quick, ".
+                                   "then that rule is considered the last matching rule and the specified action is taken. ".
+                                   "When a rule does not have quick enabled, the last matching rule wins.");?>
                       </div>
                     </td>
                   </tr>
-<?php
-                  endif; ?>
 <?php
                   if( !empty($pconfig['associated-rule-id']) ): ?>
                   <tr>
@@ -786,23 +804,28 @@ include("head.inc");
                     </td>
                   </tr>
 <?php
-                  if (!empty($pconfig['floating'])): ?>
+                  // XXX: for legacy compatibility we keep supporting "any" on floating rules, regular rules should choose
+                  $direction_options = !empty($pconfig['floating']) ? array('in','out', 'any') : array('in','out');?>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Direction");?></td>
+                    <td><a id="help_for_direction" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Direction");?></td>
                     <td>
                       <select name="direction" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
-                      foreach (array('any','in','out') as $direction): ?>
+                      foreach ($direction_options as $direction): ?>
                       <option value="<?=$direction;?>" <?= $direction == $pconfig['direction'] ? "selected=\"selected\"" : "" ?>>
                           <?=$direction;?>
                       </option>
 <?php
                       endforeach; ?>
                       </select>
+                      <div class="hidden" data-for="help_for_direction">
+                        <?=gettext("Direction of the traffic, our default policy is to filter inbound traffic, ".
+                                   "which sets the policy to the interface originally receiving the traffic. ".
+                                   "If you are not sure, you best leave this setting as is. ".
+                                   "There are some remarks when using outbound (egress) filtering.");?>
+                      </div>
                     </td>
                   <tr>
-<?php
-                  endif; ?>
                   <tr>
                     <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
                     <td>
