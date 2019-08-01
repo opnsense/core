@@ -245,7 +245,9 @@ class Gateways
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (empty($thisconf['dynamic'])) {
+                    } elseif ($ipproto == 'inet6'
+                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))) {
+                        // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
