@@ -276,7 +276,7 @@ class Gateways
                     continue;
                 } elseif (!empty($gateway['disabled']) || !empty($gateway['is_loopback'])) {
                     continue;
-                } elseif (!empty($gateway['gateway'])) {
+                } else {
                     return $gateway;
                 }
             }
