@@ -21,8 +21,8 @@
             <description>c0urier.net (HTTPS, Lund, SE)</description>
         </mirror>
         <mirror>
-            <url>https://mirror.cloudfence.com.br/opnsense/</url>
-            <description>Cloudfence (HTTPS, Brazil)</description>
+            <url>https://mirror.cloudfence.com.br/opnsense</url>
+            <description>Cloudfence (HTTPS, Sao Paulo, Brazil)</description>
         </mirror>
         <mirror>
             <url>https://ftp.yzu.edu.tw/opnsense</url>
