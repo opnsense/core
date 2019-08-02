@@ -628,7 +628,7 @@ include("head.inc");
                                                 echo "<option value='" . $field['add_to_cert_selection'] . "'" . $SELECTED . ">" . $field['add_to_cert_selection'] . "</option>\n";
                                             }
                                             foreach ($config['cert'] as $ca) {
-                                                if (stristr($ca['descr'], "webconf"))
+                                                if (cert_get_purpose($ca['crt'])['server'] == 'No')
                                                     continue;
                                                 $name = htmlspecialchars($ca['descr']);
                                                 $SELECTED = '';
