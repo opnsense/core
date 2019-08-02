@@ -417,9 +417,13 @@ $( document ).ready(function() {
 <?php
                     $i++;
                   endforeach;?>
+                </tbody>
+                <thead>
                     <tr>
                       <td colspan="2"></td>
                       <td></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
@@ -440,7 +444,7 @@ $( document ).ready(function() {
                       endif;?>
                       </td>
                     </tr>
-                </tbody>
+                </thead>
               </table>
             </form>
           </div>
