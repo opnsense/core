@@ -206,7 +206,7 @@ function step6_stepbeforeformdisplay()
             }
         }
     }
-    
+
     if ($no_internal_ca) {
         $stepid++;
     }

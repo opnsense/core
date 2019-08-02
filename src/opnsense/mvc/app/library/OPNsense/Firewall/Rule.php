@@ -75,7 +75,7 @@ abstract class Rule
      */
     protected function parseComment($value)
     {
-        return !empty($value) ? "# " . preg_replace( "/\r|\n/", "", $value) : "";
+        return !empty($value) ? "# " . preg_replace("/\r|\n/", "", $value) : "";
     }
 
     /**
