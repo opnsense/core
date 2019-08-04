@@ -175,17 +175,7 @@ function firewall_rule_item_icons($filterent)
           gettext('last match')
       );
     }
-<<<<<<< HEAD
-=======
 
-    if (isset($filterent['log'])) {
-          $result .= sprintf(
-              "<i class=\"fa fa-info-circle fa-fw %s\"></i>",
-              !empty($filterent['disabled']) ? 'text-muted' : 'text-info'
-          );
-    }
-
->>>>>>> opnsense/master
     return $result;
 }
 
@@ -208,14 +198,10 @@ function firewall_rule_item_action($filterent)
 
 function firewall_rule_item_log($filterent)
 {
-    if ($filterent['log'] == true && empty($filterent['disabled'])) {
-        return "fa fa-toggle-on text-success";
-    } elseif ($filterent['log'] == false && empty($filterent['disabled'])) {
-        return "fa fa-toggle-off text-danger";
-    } elseif ($filterent['log'] == true && !empty($filterent['disabled'])) {
-        return "fa fa-toggle-on text-muted";
+    if ($filterent['log'] == true) {
+        return "fa fa-info-circle fa-fw text-info";
     } else {
-        return "fa fa-toggle-off text-muted";
+        return "fa fa-info-circle fa-fw text-muted";
     }
 }
 /***********************************************************************************************************
@@ -317,7 +303,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mark_subsystem_dirty('filter');
         header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         exit;
-    }    
+    } elseif (isset($pconfig['act']) && in_array($pconfig['act'], array('log_enable', 'log_disable')) && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        foreach ($pconfig['rule'] as $rulei) {
+            $a_filter[$rulei]['log'] = $pconfig['act'] == 'log_enable';
+        }
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        exit;    
+    }
 }
 
 $selected_if = 'FloatingRules';
@@ -429,6 +423,48 @@ $( document ).ready(function() {
     });
   });
 
+  // enable/disable logging on selected
+  $(".act_log_enable").click(function(event){
+    event.preventDefault();
+    BootstrapDialog.show({
+      type:BootstrapDialog.TYPE_DANGER,
+      title: "<?= gettext("Rules");?>",
+      message: "<?=gettext("Enable logging on selected rules?");?>",
+      buttons: [{
+                label: "<?= gettext("No");?>",
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }}, {
+                label: "<?= gettext("Yes");?>",
+                action: function(dialogRef) {
+                  $("#id").val("");
+                  $("#action").val("log_enable");
+                  $("#iform").submit()
+              }
+            }]
+    });
+  });
+  $(".act_log_disable").click(function(event){
+    event.preventDefault();
+    BootstrapDialog.show({
+      type:BootstrapDialog.TYPE_DANGER,
+      title: "<?= gettext("Rules");?>",
+      message: "<?=gettext("Disable logging on selected rules?");?>",
+      buttons: [{
+                label: "<?= gettext("No");?>",
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }}, {
+                label: "<?= gettext("Yes");?>",
+                action: function(dialogRef) {
+                  $("#id").val("");
+                  $("#action").val("log_disable");
+                  $("#iform").submit()
+              }
+            }]
+    });
+  });
+
   // link move buttons
   $(".act_move").click(function(event){
     event.preventDefault();
@@ -454,7 +490,7 @@ $( document ).ready(function() {
     $("#id").val(id);
     $("#action").val("log");
     $("#iform").submit();
-  }); 
+  });
 
   // watch scroll position and set to last known on page load
   watchScrollPosition();
@@ -691,12 +727,9 @@ $( document ).ready(function() {
                     <tr class="internal-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
-<<<<<<< HEAD
-                          <span class="<?=firewall_rule_item_action($filterent);?>"></span><i class="<?=firewall_rule_item_log($filterent);?>"></i><?=firewall_rule_item_icons($filterent);?>
-=======
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span>
                           <?=firewall_rule_item_icons($filterent);?>
->>>>>>> opnsense/master
+                          <i class="<?=firewall_rule_item_log($filterent);?>"></i>
                       </td>
                       <td class="view-info">
                           <?=firewall_rule_item_proto($filterent);?>
@@ -749,13 +782,13 @@ $( document ).ready(function() {
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable Rule") : gettext("Enable Rule");?>">
                         <span class="<?=firewall_rule_item_action($filterent);?>"></span>
                       </a>
-                      <a href="#" class="act_log" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Log");?>">
+                      <?=firewall_rule_item_icons($filterent);?>
+                      <a href="#" class="act_log" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['log'])) ? gettext("Enable Log") : gettext("Disable Log");?>">
                         <i class="<?=firewall_rule_item_log($filterent);?>"></i>
                       </a>
-                      <?=firewall_rule_item_icons($filterent);?>
                     </td>
                     <td class="view-info">
                         <?=firewall_rule_item_proto($filterent);?>
@@ -919,6 +952,12 @@ $( document ).ready(function() {
                       <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
                           <i class="fa fa-square-o fa-fw"></i>
                       </button>
+                      <button title="<?= html_safe(gettext('Enable logging on selected rules')) ?>" data-toggle="tooltip" class="act_log_enable btn btn-default btn-xs">
+                        <i class="fa fa-info-circle fa-fw text-info"></i>
+                      </button>
+                      <button title="<?= html_safe(gettext('Disable logging on selected rules')) ?>" data-toggle="tooltip" class="act_log_disable btn btn-default btn-xs">
+                        <i class="fa fa-info-circle fa-fw"></i>
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -938,8 +977,8 @@ $( document ).ready(function() {
                           <td style="width:16px"><span class="fa fa-times-circle text-danger"></span></td>
                           <td style="width:100px"><?=gettext("reject");?></td>
                           <td style="width:14px"></td>
-                          <td style="width:16px"><span class="fa fa-toggle-on text-success"></span></td>
-                          <td style="width:100px"><?=gettext("log");?></td>
+                          <td style="width:16px"><span class="fa fa-info-circle text-info"></span></td>
+                          <td style="width:100px"><?=gettext("log enabled");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
                           <td style="width:16px"><span class="fa fa-flash text-warning"></span></td>
@@ -955,8 +994,8 @@ $( document ).ready(function() {
                           <td><span class="fa fa-times-circle text-muted"></span></td>
                           <td class="nowrap"><?=gettext("reject (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td style="width:16px"><span class="fa fa-toggle-on text-muted"></span></td>
-                          <td class="nowrap"><?=gettext("log (disabled)");?></td>
+                          <td style="width:16px"><span class="fa fa-info-circle text-muted"></span></td>
+                          <td class="nowrap"><?=gettext("log disabled");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
                           <td style="width:16px"><span class="fa fa-flash text-muted"></span></td>
