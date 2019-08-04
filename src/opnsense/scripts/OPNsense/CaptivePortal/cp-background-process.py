@@ -161,17 +161,12 @@ class CPBackgroundProcess(object):
                             self.ipfw.delete(zoneid, db_client['ipAddress'])
                         self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
                         self.ipfw.add_to_table(zoneid, current_ip)
-                        self.ipfw.add_accounting(current_ip)
 
                 # check session, if it should be active, validate its properties
                 if drop_session_reason is None:
-                    # registered client, but not active according to ipfw (after reboot)
-                    if cpnet not in registered_addresses:
+                    # registered client, but not active or missing accounting according to ipfw (after reboot)
+                    if cpnet not in registered_addresses or cpnet not in registered_addr_accounting:
                         self.ipfw.add_to_table(zoneid, cpnet)
-
-                    # is accounting rule still available? need to reapply after reload / reboot
-                    if cpnet not in registered_addr_accounting:
-                        self.ipfw.add_accounting(cpnet)
                 else:
                     # remove session
                     syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)

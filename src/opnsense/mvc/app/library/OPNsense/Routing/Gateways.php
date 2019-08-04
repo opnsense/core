@@ -245,7 +245,9 @@ class Gateways
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (empty($thisconf['dynamic'])) {
+                    } elseif ($ipproto == 'inet6'
+                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))) {
+                        // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
@@ -274,7 +276,7 @@ class Gateways
                     continue;
                 } elseif (!empty($gateway['disabled']) || !empty($gateway['is_loopback'])) {
                     continue;
-                } elseif (!empty($gateway['gateway'])) {
+                } else {
                     return $gateway;
                 }
             }
@@ -371,9 +373,10 @@ class Gateways
     /**
      * @param string $interface interface name
      * @param string $ipproto inet/inet6
+     * @param boolean $only_configured only return configured in interface or dynamic gateways
      * @return string|null gateway address
      */
-    public function getInterfaceGateway($interface, $ipproto = "inet")
+    public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured=false)
     {
         foreach ($this->getGateways() as $gateway) {
             if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
@@ -381,9 +384,20 @@ class Gateways
             } elseif (!empty($gateway['is_loopback']) || empty($gateway['gateway'])) {
                 continue;
             }
+            // The interface might have a gateway configured
+            if (isset($this->configHandle->interfaces->$interface)) {
+                $intf_gateway = $this->configHandle->interfaces->$interface->gateway;
+            } else {
+                $intf_gateway = null;
+            }
 
             if (!empty($gateway['interface']) && $gateway['interface'] == $interface) {
-                return $gateway['gateway'];
+                // XXX: $only_configured mimics the pre 19.7 behaviour, which means static non linked interfaces
+                //      are not returned as valid gateway address (automatic outbound nat rules).
+                //      An alternative setup option would be practical here, less fuzzy.
+                if (!$only_configured || $intf_gateway == $gateway['name'] || !empty($gateway['dynamic'])) {
+                    return $gateway['gateway'];
+                }
             }
         }
         return null;
