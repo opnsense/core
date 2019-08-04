@@ -140,7 +140,7 @@ function firewall_rule_item_proto($filterent)
 function firewall_rule_item_icons($filterent)
 {
     $result = "";
-    if (!empty($filterent['direction']) && $filterent['direction'] == "in") {
+    if (empty($filterent['direction']) || $filterent['direction'] == "in") {
         $result .= sprintf(
             "<i class=\"fa fa-long-arrow-right fa-fw text-info\" data-toggle=\"tooltip\" title=\"%s\"></i>",
             gettext("in")
@@ -150,20 +150,42 @@ function firewall_rule_item_icons($filterent)
             "<i class=\"fa fa-long-arrow-left fa-fw\" data-toggle=\"tooltip\" title=\"%s\"></i>",
             gettext("out")
         );
+    } else {
+        $result .= sprintf(
+            "<i class=\"fa fa-exchange fa-fw\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+            gettext("any")
+        );
     }
-    if (!empty($filterent['floating'])) {
-        if (isset($filterent['quick']) && $filterent['quick'] === 'yes') {
-            $result .= sprintf(
-                "<i class=\"fa fa-flash fa-fw text-warning\" data-toggle=\"tooltip\" title=\"%s\"></i>",
-                gettext('first match')
-            );
-        } else {
+    if (empty($filterent['floating']) && $filterent['quick'] === null){
+        $is_quick = true;
+    } elseif (!empty($filterent['floating']) && $filterent['quick'] === null) {
+        $is_quick = false;
+    } else {
+        $is_quick = $filterent['quick'];
+    }
+
+    if ($is_quick) {
+        $result .= sprintf(
+            "<i class=\"fa fa-flash fa-fw text-warning\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+            gettext('first match')
+        );
+    } else {
+      $result .= sprintf(
+          "<i class=\"fa fa-flash fa-fw text-muted\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+          gettext('last match')
+      );
+    }
+<<<<<<< HEAD
+=======
+
+    if (isset($filterent['log'])) {
           $result .= sprintf(
-              "<i class=\"fa fa-flash fa-fw text-muted\" data-toggle=\"tooltip\" title=\"%s\"></i>",
-              gettext('last match')
+              "<i class=\"fa fa-info-circle fa-fw %s\"></i>",
+              !empty($filterent['disabled']) ? 'text-muted' : 'text-info'
           );
-        }
     }
+
+>>>>>>> opnsense/master
     return $result;
 }
 
@@ -658,14 +680,23 @@ $( document ).ready(function() {
                 filter_core_bootstrap($fw);
                 plugins_firewall($fw);
                 foreach ($fw->iterateFilterRules() as $rule):
-                    if ($rule->getInterface() == $selected_if && $rule->isEnabled()):
+                    $is_selected = $rule->getInterface() == $selected_if || (
+                        $rule->getInterface() == "" && $selected_if == "FloatingRules"
+                    );
+                    if ($rule->isEnabled() && $is_selected):
                         $filterent = $rule->getRawRule();
+                        $filterent['quick'] = !isset($filterent['quick']) || $filterent['quick'];
                         legacy_html_escape_form_data($filterent);
                         $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
                     <tr class="internal-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
+<<<<<<< HEAD
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span><i class="<?=firewall_rule_item_log($filterent);?>"></i><?=firewall_rule_item_icons($filterent);?>
+=======
+                          <span class="<?=firewall_rule_item_action($filterent);?>"></span>
+                          <?=firewall_rule_item_icons($filterent);?>
+>>>>>>> opnsense/master
                       </td>
                       <td class="view-info">
                           <?=firewall_rule_item_proto($filterent);?>
@@ -911,10 +942,8 @@ $( document ).ready(function() {
                           <td style="width:100px"><?=gettext("log");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
-<?php if ($selected_if == 'FloatingRules'): ?>
                           <td style="width:16px"><span class="fa fa-flash text-warning"></span></td>
                           <td style="width:100px"><?=gettext("first match");?></td>
-<?php endif ?>
                         </tr>
                         <tr>
                           <td><span class="fa fa-play text-muted"></span></td>
@@ -930,10 +959,8 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
-<?php if ($selected_if == 'FloatingRules'): ?>
                           <td style="width:16px"><span class="fa fa-flash text-muted"></span></td>
                           <td style="width:100px"><?=gettext("last match");?></td>
-<?php endif ?>
                         </tr>
                       </table>
                     </td>
@@ -954,7 +981,7 @@ $( document ).ready(function() {
                   <tr class="hidden-xs hidden-sm">
                     <td>
 <?php if ('FloatingRules' != $selected_if): ?>
-                      <?= sprintf(gettext('%s rules are evaluated on a first-match basis (i.e. ' .
+                      <?= sprintf(gettext('%s rules are evaluated on a first-match basis by default (i.e. ' .
                         'the action of the first rule to match a packet will be executed). ' .
                         'This means that if you use block rules, you will have to pay attention ' .
                         'to the rule order. Everything that is not explicitly passed is blocked ' .

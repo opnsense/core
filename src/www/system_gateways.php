@@ -289,6 +289,8 @@ $( document ).ready(function() {
                     <th colspan="2">&nbsp;</th>
                     <th><?=gettext("Name"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Interface"); ?></th>
+                    <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Protocol"); ?></th>
+                    <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Priority"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Gateway"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Monitor IP"); ?></th>
                     <th class="text-nowrap hidden-xs"><?= gettext('RTT') ?></th>
@@ -336,6 +338,13 @@ $( document ).ready(function() {
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=convert_friendly_interface_to_friendly_descr($gateway['interface']);?>
+                      </td>
+                      <td class="hidden-xs hidden-sm hidden-md">
+                        <?=$gateway['ipprotocol'] == "inet" ?  "IPv4 " :  "IPv6 ";?>
+                      </td>
+                      <td class="hidden-xs hidden-sm hidden-md">
+                        <?=$gateway['priority'];?>
+                        <small><?=!empty($gateway['defaultgw']) ? gettext("(upstream)") : "";?></small>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=$gateway['gateway'];?>
@@ -408,9 +417,13 @@ $( document ).ready(function() {
 <?php
                     $i++;
                   endforeach;?>
+                </tbody>
+                <thead>
                     <tr>
                       <td colspan="2"></td>
                       <td></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
@@ -431,7 +444,7 @@ $( document ).ready(function() {
                       endif;?>
                       </td>
                     </tr>
-                </tbody>
+                </thead>
               </table>
             </form>
           </div>

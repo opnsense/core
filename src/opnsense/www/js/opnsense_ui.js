@@ -367,7 +367,8 @@ function initFormAdvancedUI() {
         elements.toggleClass("text-success text-danger");
     } else {
         $('[data-advanced*="true"]').hide(function(){
-            $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>"); // the table row is added to keep correct table striping
+            // the table row is added to keep correct table striping
+            $(this).after("<tr data-advanced='hidden_row'></tr>");
         });
     }
 

@@ -194,8 +194,20 @@ function step5_submitphpaction()
 function step6_stepbeforeformdisplay()
 {
     global $stepid, $config;
+    $no_internal_ca = true;
 
-    if (!empty($config['ca'])) {
+    if (empty($config['ca'])) {
+        $stepid++;
+    } else {
+        foreach ($config['ca'] as $ca) {
+            if (!empty($ca['prv'])) {
+                $no_internal_ca=false;
+                break;
+            }
+        }
+    }
+
+    if ($no_internal_ca) {
         $stepid++;
     }
 }
@@ -447,7 +459,7 @@ function step10_submitphpaction()
     if (!isset($_POST['generatetlskey']) && isset($_POST['tlsauthentication'])) {
         if (!strstr($_POST['tlssharedkey'], "-----BEGIN OpenVPN Static key V1-----") ||
           !strstr($_POST['tlssharedkey'], "-----END OpenVPN Static key V1-----")) {
-              $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid.");
+            $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid.");
         }
     }
 

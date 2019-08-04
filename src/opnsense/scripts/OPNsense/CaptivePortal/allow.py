@@ -61,12 +61,7 @@ if parameters['ip_address'] is not None and parameters['zoneid'] is not None:
                                ip_address=parameters['ip_address'],
                                mac_address=mac_address
                                )
-    # check if address is not already registered before adding it to the ipfw table
-    if not cpIPFW.ip_or_net_in_table(table_number=parameters['zoneid'], address=parameters['ip_address']):
-        cpIPFW.add_to_table(table_number=parameters['zoneid'], address=parameters['ip_address'])
-
-    # add accounting for this ip address
-    cpIPFW.add_accounting(parameters['ip_address'])
+    cpIPFW.add_to_table(table_number=parameters['zoneid'], address=parameters['ip_address'])
     response['clientState'] = 'AUTHORIZED'
 else:
     response = {'clientState': 'UNKNOWN'}
