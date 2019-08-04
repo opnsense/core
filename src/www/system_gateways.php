@@ -343,7 +343,7 @@ $( document ).ready(function() {
                         <?=$gateway['ipprotocol'] == "inet" ?  "IPv4 " :  "IPv6 ";?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
-                        <?=$gateway['priority'];?>
+                        <?=empty($gateway['defunct']) ? $gateway['priority'] : gettext("defunct");?>
                         <small><?=!empty($gateway['defaultgw']) ? gettext("(upstream)") : "";?></small>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">

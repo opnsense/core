@@ -220,9 +220,10 @@ class Gateways
                     }
                     // locate interface gateway settings
                     if (!empty($dynamic_gw[$ifname])) {
-                        foreach ($dynamic_gw[$ifname] as $gw_arr) {
+                        foreach ($dynamic_gw[$ifname] as $gwidx => $gw_arr) {
                             if ($gw_arr['ipprotocol'] == $ipproto) {
                                 // dynamic gateway for this ip protocol found, use config
+                                unset($dynamic_gw[$ifname][$gwidx]);
                                 $thisconf = $gw_arr;
                                 break;
                             }
@@ -257,6 +258,17 @@ class Gateways
             }
             // sort by priority
             krsort($this->cached_gateways);
+            // entries left in $dynamic_gw are defunct,  add them in in disabled state
+            foreach ($dynamic_gw as $intfgws) {
+                foreach ($intfgws as $gw_arr) {
+                    if (!empty($gw_arr)) {
+                        $gw_arr['disabled'] = true;
+                        $gw_arr['defunct'] = true;
+                        unset($gw_arr['gateway']);
+                        $this->cached_gateways[] = $gw_arr;
+                    }
+                }
+            }
         }
         return $this->cached_gateways;
     }
