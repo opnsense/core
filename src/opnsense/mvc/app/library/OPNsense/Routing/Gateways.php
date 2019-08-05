@@ -253,6 +253,9 @@ class Gateways
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
+                    } elseif (empty($thisconf['virtual'])) {
+                        // skipped dynamic gateway from config, add to $dynamic_gw to handle defunct
+                        $dynamic_gw[$ifname][] = $thisconf;
                     }
                 }
             }
