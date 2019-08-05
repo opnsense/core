@@ -105,6 +105,10 @@ function delete_gateway_item($id, $a_gateways)
         }
     }
     unset($config['gateways']['gateway_item'][$a_gateways[$id]['attribute']]);
+    if (empty($config['gateways']['gateway_item'])) {
+        // make sure we don't leave a stray gateway_item
+        unset($config['gateways']['gateway_item']);
+    }
 }
 
 // fetch gateway list including active default for IPv4/IPv6
