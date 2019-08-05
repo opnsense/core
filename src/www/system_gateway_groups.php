@@ -117,7 +117,7 @@ $( document ).ready(function() {
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped table-condensed">
                   <thead>
                     <tr>
                       <td><?= gettext('Name') ?></td>
