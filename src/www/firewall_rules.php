@@ -176,13 +176,6 @@ function firewall_rule_item_icons($filterent)
       );
     }
 
-    if (isset($filterent['log'])) {
-          $result .= sprintf(
-              "<i class=\"fa fa-info-circle fa-fw %s\"></i>",
-              !empty($filterent['disabled']) ? 'text-muted' : 'text-info'
-          );
-    }
-
     return $result;
 }
 
@@ -200,6 +193,15 @@ function firewall_rule_item_action($filterent)
         return "fa fa-play fa-fw text-success";
     } else {
         return "fa fa-play fa-fw text-muted";
+    }
+}
+
+function firewall_rule_item_log($filterent)
+{
+    if ($filterent['log'] == true) {
+        return "fa fa-info-circle fa-fw text-info";
+    } else {
+        return "fa fa-info-circle fa-fw text-muted";
     }
 }
 /***********************************************************************************************************
@@ -288,7 +290,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('filter');
-        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        $response = array("id" => $id);
+        $response["new_label"] = !isset($a_filter[$id]['disabled']) ?  gettext("Disable Rule") : gettext("Enable Rule");
+        $response["new_state"] = !isset($a_filter[$id]['disabled']) ;
+        echo json_encode($response);
+        exit;
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'log' && isset($id)) {
+        // toggle logging
+        if(isset($a_filter[$id]['log'])) {
+            unset($a_filter[$id]['log']);
+        } else {
+            $a_filter[$id]['log'] = true;
+        }
+        write_config();
+        mark_subsystem_dirty('filter');
+        //header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        $response = array("id" => $id);
+        $response["new_label"] = isset($a_filter[$id]['log']) ?  gettext("Disable Log") : gettext("Enable Log");
+        $response["new_state"] = isset($a_filter[$id]['log']) ;
+        echo json_encode($response);
         exit;
     }
 }
@@ -413,11 +433,44 @@ $( document ).ready(function() {
 
   // link toggle buttons
   $(".act_toggle").click(function(event){
-    event.preventDefault();
-    var id = $(this).attr("id").split('_').pop(-1);
-    $("#id").val(id);
-    $("#action").val("toggle");
-    $("#iform").submit();
+      event.preventDefault();
+      let target = $(this);
+      let id = target.attr("id").split('_').pop(-1);
+      $.ajax("firewall_rules.php",{
+          type: 'post',
+          cache: false,
+          dataType: "json",
+          data: {'act': 'toggle', 'id': id},
+          success: function(response) {
+              target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
+              if (response['new_state']) {
+                  target.find('span').removeClass('text-muted').addClass('text-success');
+              } else {
+                  target.find('span').removeClass('text-success').addClass('text-muted');
+              }
+          }
+      });
+  });
+
+   // link log buttons
+  $(".act_log").click(function(event){
+      event.preventDefault();
+      let target = $(this);
+      let id = target.attr("id").split('_').pop(-1);
+      $.ajax("firewall_rules.php",{
+          type: 'post',
+          cache: false,
+          dataType: "json",
+          data: {'act': 'log', 'id': id},
+          success: function(response) {
+              target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
+              if (response['new_state']) {
+                  target.find('i').removeClass('text-muted').addClass('text-info');
+              } else {
+                  target.find('i').removeClass('text-info').addClass('text-muted');
+              }
+          }
+      });
   });
 
   // watch scroll position and set to last known on page load
@@ -657,6 +710,7 @@ $( document ).ready(function() {
                       <td>
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span>
                           <?=firewall_rule_item_icons($filterent);?>
+                          <i class="<?=firewall_rule_item_log($filterent);?>"></i>
                       </td>
                       <td class="view-info">
                           <?=firewall_rule_item_proto($filterent);?>
@@ -709,10 +763,13 @@ $( document ).ready(function() {
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable") : gettext("Enable");?>">
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable Rule") : gettext("Enable Rule");?>">
                         <span class="<?=firewall_rule_item_action($filterent);?>"></span>
                       </a>
                       <?=firewall_rule_item_icons($filterent);?>
+                      <a href="#" class="act_log" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['log'])) ? gettext("Enable Log") : gettext("Disable Log");?>">
+                        <i class="<?=firewall_rule_item_log($filterent);?>"></i>
+                      </a>
                     </td>
                     <td class="view-info">
                         <?=firewall_rule_item_proto($filterent);?>
