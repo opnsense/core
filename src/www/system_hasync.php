@@ -328,7 +328,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizestaticroutes" value="on" <?=!empty($pconfig['synchronizestaticroutes']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_synchronizestaticroutes">
-                      <?=gettext('Synchronize the Static Route configuration to the other HA host.') ?>
+                      <?=gettext('Synchronize the Static Route configuration and Gateways to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>
