@@ -290,7 +290,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('filter');
-        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        $response = array("id" => $id);
+        $response["new_label"] = !isset($a_filter[$id]['disabled']) ?  gettext("Disable Rule") : gettext("Enable Rule");
+        $response["new_state"] = !isset($a_filter[$id]['disabled']) ;
+        echo json_encode($response);
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'log' && isset($id)) {
         // toggle logging
@@ -301,16 +304,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('filter');
-        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        //header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
+        $response = array("id" => $id);
+        $response["new_label"] = isset($a_filter[$id]['log']) ?  gettext("Disable Log") : gettext("Enable Log");
+        $response["new_state"] = isset($a_filter[$id]['log']) ;
+        echo json_encode($response);
         exit;
-    } elseif (isset($pconfig['act']) && in_array($pconfig['act'], array('log_enable', 'log_disable')) && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
-        foreach ($pconfig['rule'] as $rulei) {
-            $a_filter[$rulei]['log'] = $pconfig['act'] == 'log_enable';
-        }
-        write_config();
-        mark_subsystem_dirty('filter');
-        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
-        exit;    
     }
 }
 
@@ -423,48 +422,6 @@ $( document ).ready(function() {
     });
   });
 
-  // enable/disable logging on selected
-  $(".act_log_enable").click(function(event){
-    event.preventDefault();
-    BootstrapDialog.show({
-      type:BootstrapDialog.TYPE_DANGER,
-      title: "<?= gettext("Rules");?>",
-      message: "<?=gettext("Enable logging on selected rules?");?>",
-      buttons: [{
-                label: "<?= gettext("No");?>",
-                action: function(dialogRef) {
-                    dialogRef.close();
-                }}, {
-                label: "<?= gettext("Yes");?>",
-                action: function(dialogRef) {
-                  $("#id").val("");
-                  $("#action").val("log_enable");
-                  $("#iform").submit()
-              }
-            }]
-    });
-  });
-  $(".act_log_disable").click(function(event){
-    event.preventDefault();
-    BootstrapDialog.show({
-      type:BootstrapDialog.TYPE_DANGER,
-      title: "<?= gettext("Rules");?>",
-      message: "<?=gettext("Disable logging on selected rules?");?>",
-      buttons: [{
-                label: "<?= gettext("No");?>",
-                action: function(dialogRef) {
-                    dialogRef.close();
-                }}, {
-                label: "<?= gettext("Yes");?>",
-                action: function(dialogRef) {
-                  $("#id").val("");
-                  $("#action").val("log_disable");
-                  $("#iform").submit()
-              }
-            }]
-    });
-  });
-
   // link move buttons
   $(".act_move").click(function(event){
     event.preventDefault();
@@ -476,20 +433,44 @@ $( document ).ready(function() {
 
   // link toggle buttons
   $(".act_toggle").click(function(event){
-    event.preventDefault();
-    var id = $(this).attr("id").split('_').pop(-1);
-    $("#id").val(id);
-    $("#action").val("toggle");
-    $("#iform").submit();
+      event.preventDefault();
+      let target = $(this);
+      let id = target.attr("id").split('_').pop(-1);
+      $.ajax("firewall_rules.php",{
+          type: 'post',
+          cache: false,
+          dataType: "json",
+          data: {'act': 'toggle', 'id': id},
+          success: function(response) {
+              target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
+              if (response['new_state']) {
+                  target.find('span').removeClass('text-muted').addClass('text-success');
+              } else {
+                  target.find('span').removeClass('text-success').addClass('text-muted');
+              }
+          }
+      });
   });
 
    // link log buttons
   $(".act_log").click(function(event){
-    event.preventDefault();
-    var id = $(this).attr("id").split('_').pop(-1);
-    $("#id").val(id);
-    $("#action").val("log");
-    $("#iform").submit();
+      event.preventDefault();
+      let target = $(this);
+      let id = target.attr("id").split('_').pop(-1);
+      $.ajax("firewall_rules.php",{
+          type: 'post',
+          cache: false,
+          dataType: "json",
+          data: {'act': 'log', 'id': id},
+          success: function(response) {
+              target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
+              if (response['new_state']) {
+                  target.find('i').removeClass('text-muted').addClass('text-info');
+              } else {
+                  target.find('i').removeClass('text-info').addClass('text-muted');
+              }
+          }
+      });
   });
 
   // watch scroll position and set to last known on page load
@@ -952,12 +933,6 @@ $( document ).ready(function() {
                       <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
                           <i class="fa fa-square-o fa-fw"></i>
                       </button>
-                      <button title="<?= html_safe(gettext('Enable logging on selected rules')) ?>" data-toggle="tooltip" class="act_log_enable btn btn-default btn-xs">
-                        <i class="fa fa-info-circle fa-fw text-info"></i>
-                      </button>
-                      <button title="<?= html_safe(gettext('Disable logging on selected rules')) ?>" data-toggle="tooltip" class="act_log_disable btn btn-default btn-xs">
-                        <i class="fa fa-info-circle fa-fw"></i>
-                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -978,7 +953,7 @@ $( document ).ready(function() {
                           <td style="width:100px"><?=gettext("reject");?></td>
                           <td style="width:14px"></td>
                           <td style="width:16px"><span class="fa fa-info-circle text-info"></span></td>
-                          <td style="width:100px"><?=gettext("log enabled");?></td>
+                          <td style="width:100px"><?=gettext("log");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-right text-info"></span></td>
                           <td style="width:100px"><?=gettext("in");?></td>
                           <td style="width:16px"><span class="fa fa-flash text-warning"></span></td>
@@ -995,7 +970,7 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("reject (disabled)");?></td>
                           <td>&nbsp;</td>
                           <td style="width:16px"><span class="fa fa-info-circle text-muted"></span></td>
-                          <td class="nowrap"><?=gettext("log disabled");?></td>
+                          <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td style="width:16px"><span class="fa fa-long-arrow-left"></span></td>
                           <td style="width:100px"><?=gettext("out");?></td>
                           <td style="width:16px"><span class="fa fa-flash text-muted"></span></td>
