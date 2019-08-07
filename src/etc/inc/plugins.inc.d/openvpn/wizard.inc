@@ -206,7 +206,7 @@ function step6_stepbeforeformdisplay()
             }
         }
         if ($no_internal_ca) {
-        $stepid++;
+            $stepid++;
         }
     }
 }
@@ -276,7 +276,7 @@ function step8_stepbeforeformdisplay()
             }
         }
         if ($no_server_cert) {
-        $stepid++;
+            $stepid++;
         }
     }
 }
