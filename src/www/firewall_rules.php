@@ -225,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         system_cron_configure();
         filter_configure();
         clear_subsystem_dirty('filter');
-        $savemsg = gettext('The settings have been applied and the rules are now reloading in the background.');
+        $savemsg = get_std_save_message();
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single item
         if (!empty($a_filter[$id]['associated-rule-id'])) {
