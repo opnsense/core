@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // id found and valid
         $id = $pconfig['id'];
     }
-    if (isset($pconfig['apply'])) {
+    if (isset($pconfig['act']) && $pconfig['act'] == "apply") {
         system_cron_configure();
         filter_configure();
         clear_subsystem_dirty('filter');
@@ -431,6 +431,13 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
+  // link move buttons
+  $("#btn_apply").click(function(event){
+    event.preventDefault();
+    $("#action").val("apply");
+    $("#iform").submit();
+  });
+
   // link toggle buttons
   $(".act_toggle").click(function(event){
       event.preventDefault();
@@ -448,6 +455,9 @@ $( document ).ready(function() {
               } else {
                   target.find('span').removeClass('text-success').addClass('text-muted');
               }
+              $("#fw-alert-box").removeClass("hidden");
+              $(".fw-alert-messages").addClass("hidden");
+              $("#fw-alert-changes").removeClass("hidden");
           }
       });
   });
@@ -469,6 +479,9 @@ $( document ).ready(function() {
               } else {
                   target.find('i').removeClass('text-info').addClass('text-muted');
               }
+              $("#fw-alert-box").removeClass("hidden");
+              $(".fw-alert-messages").addClass("hidden");
+              $("#fw-alert-changes").removeClass("hidden");
           }
       });
   });
@@ -621,10 +634,19 @@ $( document ).ready(function() {
     <div class="container-fluid">
       <div class="row">
         <?php print_service_banner('firewall'); ?>
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-        <?php if (is_subsystem_dirty('filter')): ?><p>
-        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
-        <?php endif; ?>
+        <div id="fw-alert-box" class="col-xs-12 <?=!is_subsystem_dirty('filter') && !isset($savemsg) ? "hidden":"";?>">
+          <div class="alert alert-info" role="alert">
+            <div id="fw-alert-changes" class="fw-alert-messages <?=!is_subsystem_dirty('filter') ? "hidden":"";?>">
+                <label for="btn_apply">
+                  <?=gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect.");?>
+                </label>
+                <button id="btn_apply" class="btn btn-primary pull-right" value="Apply changes"><?=gettext("Apply changes");?></button>
+            </div>
+            <div id="fw-alert-message" class="fw-alert-messages <?=!isset($savemsg) ? "hidden":"";?>">
+                <?=isset($savemsg) ? $savemsg : "";?>
+            </div>
+          </div>
+        </div>
 <?php
           $interface_has_rules = false;
           foreach ($a_filter as $i => $filterent) {
