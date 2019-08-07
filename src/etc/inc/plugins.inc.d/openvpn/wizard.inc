@@ -205,10 +205,9 @@ function step6_stepbeforeformdisplay()
                 break;
             }
         }
-    }
-
-    if ($no_internal_ca) {
+        if ($no_internal_ca) {
         $stepid++;
+        }
     }
 }
 
@@ -265,10 +264,20 @@ function step7_submitphpaction()
 function step8_stepbeforeformdisplay()
 {
     global $stepid, $config;
+    $no_server_cert = true;
 
-    if (empty($config['cert']) || (count($config['cert']) == 1 &&
-        stristr($config['cert'][0]['descr'], "webconf"))) {
+    if (empty($config['cert'])) {
         $stepid++;
+    } else {
+        foreach ($config['cert'] as $cert) {
+            if (cert_get_purpose($cert['crt'])['server'] == 'Yes') {
+                $no_server_cert=false;
+                break;
+            }
+        }
+        if ($no_server_cert) {
+        $stepid++;
+        }
     }
 }
 
