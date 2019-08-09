@@ -102,13 +102,14 @@ foreach ($a_vip as $carp) {
 
 // fetch pfsync info
 $pfsyncnodes = json_decode(configd_run("filter list pfsync json"), true);
+$current_carp_demotion = get_single_sysctl("net.inet.carp.demotion");
 
 legacy_html_escape_form_data($a_vip);
 $status = (get_single_sysctl('net.inet.carp.allow') > 0);
 if (!empty($config["virtualip_carp_maintenancemode"])) {
     $carp_detected_problems = false;
 } else {
-    $carp_detected_problems = get_single_sysctl("net.inet.carp.demotion") > 0;
+    $carp_detected_problems = $current_carp_demotion > 0;
 }
 include("head.inc");
 ?>
@@ -131,15 +132,22 @@ include("head.inc");
         <div class="content-box">
           <form method="post">
             <table class="table table-condensed">
-              <tr>
-                <td>
-                  <input type="submit" class="btn btn-primary" name="disablecarp" value="<?= ($carpcount > 0 && !$status) ? html_safe(gettext('Enable CARP')) : html_safe(gettext('Temporarily Disable CARP')) ?>" />
-                  <input type="submit" class="btn btn-primary" name="carp_maintenancemode" value="<?= isset($config["virtualip_carp_maintenancemode"]) ? html_safe(gettext('Leave Persistent CARP Maintenance Mode')) : html_safe(gettext('Enter Persistent CARP Maintenance Mode')) ?>" />
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td>
+                    <input type="submit" class="btn btn-primary" name="disablecarp" value="<?= ($carpcount > 0 && !$status) ? html_safe(gettext('Enable CARP')) : html_safe(gettext('Temporarily Disable CARP')) ?>" />
+                    <input type="submit" class="btn btn-primary" name="carp_maintenancemode" value="<?= isset($config["virtualip_carp_maintenancemode"]) ? html_safe(gettext('Leave Persistent CARP Maintenance Mode')) : html_safe(gettext('Enter Persistent CARP Maintenance Mode')) ?>" />
+                  </td>
+                </tr>
+              </tbody>
             </table>
+          </form>
+        </div>
+      </section>
+      <section class="col-xs-12">
+        <div class="content-box">
             <div class="table-responsive">
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed">
                 <thead>
                   <tr>
                     <td><?=gettext("CARP Interface"); ?></td>
@@ -180,11 +188,20 @@ include("head.inc");
                   endforeach;
                 endif;?>
               </tbody>
+              <tfoot>
+                  <tr>
+                      <td colspan="2"><?=gettext("Current CARP demotion level");?></td>
+                      <td><?=$current_carp_demotion;?>
+                  </tr>
+              </tfoot>
             </table>
           </div>
-          <hr/>
+        </div>
+      </section>
+      <section class="col-xs-12">
+        <div class="content-box">
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped table-condensed">
               <thead>
                 <tr>
                   <td><?=gettext("pfSync nodes");?></td>
