@@ -288,7 +288,14 @@ class Config extends Singleton
             if (count($backups) > 0) {
                 // load last backup
                 $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
-                $this->restoreBackup($backups[0]);
+                foreach ($backups as $backup) {
+                    try {
+                        $this->restoreBackup($backup);
+                        return;
+                    } catch (ConfigException $e) {
+                        $logger->error("failed restoring " . $backup);
+                    }
+                }
             } else {
                 // in case there are no backups, restore defaults.
                 $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
