@@ -296,11 +296,10 @@ class Config extends Singleton
                         $logger->error("failed restoring " . $backup);
                     }
                 }
-            } else {
-                // in case there are no backups, restore defaults.
-                $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
-                $this->restoreBackup('/usr/local/etc/config.xml');
             }
+            // in case there are no backups, restore defaults.
+            $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
+            $this->restoreBackup('/usr/local/etc/config.xml');
         }
     }
 
