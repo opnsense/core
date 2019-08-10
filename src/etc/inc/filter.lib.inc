@@ -578,7 +578,7 @@ function filter_core_rules_system($fw, $defaults)
     // Our default setting has been to force traffic leaving a specific interface to use the associated gateway.
     // This behaviour can be disabled, so settings can be customized using manual firewall rules.
     if (empty($config['system']['pf_disable_force_gw'])) {
-        foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
+        foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $intf_has_v4 = false;
                 $intf_has_v6 = false;
@@ -593,9 +593,11 @@ function filter_core_rules_system($fw, $defaults)
                     if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(
                             100000,
-                            array('interface'=> $intf, 'from' => $ifcfg['if'], 'direction' => 'out',
-                            'destination' => array('network'=> $intf, "not" => true),
-                            'statetype' => 'keep', 'allowopts' => true, 'quick' => false, 'gateway' => $gwname,
+                            array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
+                            'destination' => array('network'=> $ifdescr, "not" => true),
+                            'statetype' => 'keep',
+                            'allowopts' => true,
+                            'quick' => false,
                             '#ref' => 'system_advanced_firewall.php#pf_disable_force_gw',
                             'descr' => "let out anything from firewall host itself (force gw)"),
                             $defaults['pass']

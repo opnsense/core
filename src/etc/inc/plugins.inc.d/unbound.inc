@@ -339,6 +339,9 @@ include: /var/unbound/host_entries.conf
 # Domain overrides
 include: /var/unbound/domainoverrides.conf
 
+# Custom includes (plugins)
+include: /var/unbound/etc/*.conf
+
 {$custom_options}
 
 {$forward_conf}
@@ -354,7 +357,6 @@ remote-control:
 
 EOD;
 
-    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 }
 
@@ -439,6 +441,7 @@ function unbound_configure_do($verbose = false, $interface = '')
     }
 
     unbound_generate_config();
+    configd_run("template reload OPNsense/Unbound/*");
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];

@@ -44,7 +44,6 @@
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
-/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints
 /usr/local/etc/inc/plugins.inc.d/webgui.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/services.inc
@@ -879,6 +878,8 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-legacy-remote.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-legacy.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.etc.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.ini

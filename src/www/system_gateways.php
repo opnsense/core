@@ -105,6 +105,10 @@ function delete_gateway_item($id, $a_gateways)
         }
     }
     unset($config['gateways']['gateway_item'][$a_gateways[$id]['attribute']]);
+    if (empty($config['gateways']['gateway_item'])) {
+        // make sure we don't leave a stray gateway_item
+        unset($config['gateways']['gateway_item']);
+    }
 }
 
 // fetch gateway list including active default for IPv4/IPv6
@@ -283,7 +287,7 @@ $( document ).ready(function() {
             <form method="post"  name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed">
                 <thead>
                   <tr>
                     <th colspan="2">&nbsp;</th>
@@ -343,7 +347,7 @@ $( document ).ready(function() {
                         <?=$gateway['ipprotocol'] == "inet" ?  "IPv4 " :  "IPv6 ";?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
-                        <?=$gateway['priority'];?>
+                        <?=empty($gateway['defunct']) ? $gateway['priority'] : gettext("defunct");?>
                         <small><?=!empty($gateway['defaultgw']) ? gettext("(upstream)") : "";?></small>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
