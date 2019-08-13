@@ -233,6 +233,7 @@
          <interface type="InterfaceField">
             <Required>N</Required>
             <multiple>N</multiple>
+            <AddParentDevices>Y</AddParentDevices>
             <filters>
                 <enable>/^(?!0).*$/</enable>
                 <ipaddr>/^((?!dhcp).)*$/</ipaddr>
