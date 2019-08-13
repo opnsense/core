@@ -282,7 +282,7 @@ chroot: /var/unbound
 username: unbound
 directory: /var/unbound
 pidfile: /var/run/unbound.pid
-root-hints: /root.hints
+root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
 verbosity: {$verbosity}
