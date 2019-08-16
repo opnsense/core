@@ -27,10 +27,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('guiconfig.inc');
+require_once("guiconfig.inc");
 require_once("system.inc");
 
-function ca_import(& $ca, $str, $key="", $serial=0) {
+function system_trust_configure($verbose = false)
+{
+    if ($verbose) {
+        echo 'Writing trust files...';
+        flush();
+    }
+
+    $ca_root_nss = '/usr/local/share/certs/ca-root-nss.crt';
+    $ca_cert_pem = '/usr/local/openssl/cert.pem';
+    if (file_exists($ca_root_nss)) {
+        $ca = file_get_contents($ca_root_nss);
+        foreach (config_read_array('ca') as $entry) {
+            if (!empty($entry['crt'])) {
+                $ca .= "\n# {$entry['descr']}\n" . str_replace("\r", '', base64_decode($entry['crt']));
+            }
+        }
+
+        file_put_contents($ca_cert_pem, $ca);
+        copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
+        @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
+        copy($ca_cert_pem, '/etc/ssl/cert.pem');
+    }
+
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
+function ca_import(& $ca, $str, $key="", $serial=0)
+{
     global $config;
 
     $ca['crt'] = base64_encode($str);
@@ -71,7 +100,7 @@ function ca_import(& $ca, $str, $key="", $serial=0) {
     return true;
 }
 
-function ca_inter_create(&$ca, $keylen, $lifetime, $dn, $caref, $digest_alg = 'sha256')
+function ca_inter_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $caref, $digest_alg)
 {
     // Create Intermediate Certificate Authority
     $signing_ca = &lookup_ca($caref);
@@ -95,22 +124,52 @@ function ca_inter_create(&$ca, $keylen, $lifetime, $dn, $caref, $digest_alg = 's
         'encrypt_key' => false
     );
 
+    $ecargs = array(
+        'config' => '/usr/local/etc/ssl/opnsense.cnf',
+        'private_key_type' => OPENSSL_KEYTYPE_EC,
+        'curve_name' => $curve,
+        'x509_extensions' => 'v3_ca',
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+
     // generate a new key pair
-    $res_key = openssl_pkey_new($args);
-    if (!$res_key) {
-        return false;
+    if ($keytype == "Elliptic Curve") {
+        $res_key = openssl_pkey_new($ecargs);
+        if (!$res_key) {
+            return false;
+        }
+    } else {
+        $res_key = openssl_pkey_new($args);
+        if (!$res_key) {
+            return false;
+        }
     }
 
     // generate a certificate signing request
-    $res_csr = openssl_csr_new($dn, $res_key, $args);
-    if (!$res_csr) {
-        return false;
+    if ($keytype == "Elliptic Curve") {
+        $res_csr = openssl_csr_new($dn, $res_key, $ecargs);
+        if (!$res_csr) {
+            return false;
+        }
+    } else {
+        $res_csr = openssl_csr_new($dn, $res_key, $args);
+        if (!$res_csr) {
+            return false;
+        }
     }
 
     // Sign the certificate
-    $res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $args, $signing_ca_serial);
-    if (!$res_crt) {
-        return false;
+    if ($keytype == "Elliptic Curve") {
+        $res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $ecargs, $signing_ca_serial);
+        if (!$res_crt) {
+            return false;
+        }
+    } else {
+        $res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $args, $signing_ca_serial);
+        if (!$res_crt) {
+            return false;
+        }
     }
 
     // export our certificate data
@@ -128,8 +187,8 @@ function ca_inter_create(&$ca, $keylen, $lifetime, $dn, $caref, $digest_alg = 's
     return true;
 }
 
-
 $ca_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
+$ec_curves = array( "prime256v1", "secp384r1", "secp521r1");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 $a_ca = &config_read_array('ca');
 $a_cert = &config_read_array('cert');
@@ -176,6 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['camethod'] = $_GET['method'];
         }
         $pconfig['refid'] = null;
+        $pconfig['keytype'] = "RSA";
         $pconfig['keylen'] = "2048";
         $pconfig['digest_alg'] = "sha256";
         $pconfig['lifetime'] = "365";
@@ -363,7 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['dn_organization'],
                         'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
-                    if (!ca_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
+                    if (!ca_create($ca, $pconfig['keytype'], $pconfig['keylen'], $pconfig['curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
@@ -377,7 +437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['dn_organization'],
                         'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
-                    if (!ca_inter_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
+                    if (!ca_inter_create($ca, $pconfig['keytype'], $pconfig['keylen'], $pconfig['curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
@@ -453,6 +513,18 @@ $main_buttons = array(
     });
 
     $("#camethod").change();
+
+    $("#keytype").change(function(){
+        $("#EC").addClass("hidden");
+        $("#RSA").addClass("hidden");
+        if ($(this).val() == "Elliptic Curve") {
+            $("#EC").removeClass("hidden");
+        } else {
+            $("#RSA").removeClass("hidden");
+        }
+    });
+
+    $("#keytype").change();
   });
   </script>
 
@@ -573,12 +645,37 @@ $main_buttons = array(
                   </td>
                 </tr>
                 <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key Type");?></td>
+                  <td style="width:78%">
+                    <select name='keytype' id='keytype' class="selectpicker">
+                  <option value="RSA" <?=$pconfig['keytype'] == "RSA" ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("RSA");?>
+                  </option>
+                  <option value="Elliptic Curve" <?=$pconfig['keytype'] == "Elliptic Curve" ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("Elliptic Curve");?>
+                  </option>
+                    </select>
+                  </td>
+                </tr>
+                <tr id='RSA'>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                   <td style="width:78%">
                     <select name='keylen' id='keylen' class="selectpicker">
 <?php
                     foreach ($ca_keylens as $len) :?>
                       <option value="<?=$len;?>" <?=isset($pconfig['keylen']) && $pconfig['keylen'] == $len ? "selected=\"selected\"" : "";?>><?=$len;?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                  </td>
+                </tr>
+                <tr id='EC'>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
+                  <td style="width:78%">
+                    <select name='curve' id='curve' class="selectpicker">
+<?php
+                    foreach ($ec_curves as $curve) :?>
+                      <option value="<?=$curve;?>" <?=isset($pconfig['curve']) && $pconfig['curve'] == $curve ? "selected=\"selected\"" : "";?>><?=$curve;?></option>
 <?php
                     endforeach; ?>
                     </select>

@@ -144,7 +144,7 @@ function ca_chain(&$cert)
     return str_replace("\n\n", "\n", str_replace("\r", "", $ca));
 }
 
-function ca_create(&$ca, $keylen, $lifetime, $dn, $digest_alg = 'sha256')
+function ca_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $digest_alg)
 {
     $args = array(
         'config' => '/usr/local/etc/ssl/opnsense.cnf',
@@ -155,22 +155,52 @@ function ca_create(&$ca, $keylen, $lifetime, $dn, $digest_alg = 'sha256')
         'encrypt_key' => false
     );
 
+    $ecargs = array(
+        'config' => '/usr/local/etc/ssl/opnsense.cnf',
+        'private_key_type' => OPENSSL_KEYTYPE_EC,
+        'curve_name' => $curve,
+        'x509_extensions' => 'v3_ca',
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+
     // generate a new key pair
-    $res_key = openssl_pkey_new($args);
-    if (!$res_key) {
-        return false;
+    if ($keytype == "Elliptic Curve") {
+        $res_key = openssl_pkey_new($ecargs);
+        if (!$res_key) {
+            return false;
+        }
+    } else {
+        $res_key = openssl_pkey_new($args);
+        if (!$res_key) {
+            return false;
+        }
     }
 
     // generate a certificate signing request
-    $res_csr = openssl_csr_new($dn, $res_key, $args);
-    if (!$res_csr) {
-        return false;
+    if ($keytype == "Elliptic Curve") {
+        $res_csr = openssl_csr_new($dn, $res_key, $ecargs);
+        if (!$res_csr) {
+            return false;
+        }
+    } else {
+        $res_csr = openssl_csr_new($dn, $res_key, $args);
+        if (!$res_csr) {
+            return false;
+        }
     }
 
     // self sign the certificate
-    $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $args);
-    if (!$res_crt) {
-        return false;
+    if ($keytype == "Elliptic Curve") {
+        $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $ecargs);
+        if (!$res_crt) {
+            return false;
+        }
+    } else {
+        $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $args);
+        if (!$res_crt) {
+            return false;
+        }
     }
 
     // export our certificate data
