@@ -162,22 +162,26 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                       <select name="if" class="selectpicker">
 <?php
-                      $portlist = get_interface_list();
-                      /* add LAGG interfaces */
-                      if (isset($config['laggs']['lagg'])) {
-                          foreach ($config['laggs']['lagg'] as $lagg) {
-                              $portlist[$lagg['laggif']] = $lagg;
+                      $all_interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                      $all_interface_data = legacy_interfaces_details();
+                      foreach ($all_interfaces as $intf) {
+                          if (!empty($intf['if']) && !empty($all_interface_data[$intf['if']])) {
+                              $all_interface_data[$intf['if']]['descr'] = $intf['descr'];
                           }
                       }
-                      foreach ($portlist as $ifn => $ifinfo): ?>
+                      foreach ($all_interface_data as $ifn => $ifinfo):
+                        if (strpos($ifn, "_vlan") > 1 || strpos($ifn, "lo") === 0 || strpos($ifn, "enc") === 0 ||
+                              strpos($ifn, "pflog") === 0 || strpos($ifn, "pfsync") === 0 ||
+                              strpos($ifn, "ipsec") === 0){
+                            continue;
+                        }?>
+
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? " selected=\"selected\"" : "";?>>
                           <?=htmlspecialchars($ifn);?>
-                          ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
+                          ( <?= !empty($ifinfo['macaddr']) ? $ifinfo['macaddr'] :"" ;?> )
 <?php
-                          if (!empty($ifinfo['friendly'])):?>
-                          [
-                          <?=!empty($config['interfaces'][$ifinfo['friendly']]['descr']) ? htmlspecialchars($config['interfaces'][$ifinfo['friendly']]['descr']) : $ifinfo['friendly'];?>
-                          ]
+                          if (!empty($ifinfo['descr'])):?>
+                          [<?=htmlspecialchars($ifinfo['descr']);?>]
 <?php
                           endif;?>
                         </option>
