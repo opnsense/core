@@ -138,6 +138,9 @@ class FlowParser:
                     raw_data=flowh.read(header[1] * 4),
                     data_fields=ntohl(header[3])
                 )
+                if 'recv_time' not in record or 'agent_info' not in record:
+                    # XXX invalid (empty?) flow record.
+                    continue
                 record['recv_sec'] = record['recv_time'][0]
                 if self._recv_stamp is not None and record['recv_sec'] < self._recv_stamp:
                     # self._recv_stamp can contain the last received timestamp, in which case
