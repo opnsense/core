@@ -58,7 +58,7 @@ $(document).ready(function () {
                 var divTop = (offsetTop - winscrTop);
                 var currentHeight = (divTop + divHeight);
                 var thatTrigger = that.trigger('click');
-								close_submenu(this);
+		close_submenu(this);
                 if (currentHeight > winHeight) {
                     var result = that.next('div').css('margin-top', -divHeight - (that.is(layer1_a) ? 3 : 0));
                 }
