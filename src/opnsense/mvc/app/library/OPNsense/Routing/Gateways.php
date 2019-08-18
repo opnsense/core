@@ -391,7 +391,7 @@ class Gateways
      * @param boolean $only_configured only return configured in interface or dynamic gateways
      * @return string|null gateway address
      */
-    public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured=false)
+    public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured = false)
     {
         foreach ($this->getGateways() as $gateway) {
             if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
