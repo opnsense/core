@@ -72,6 +72,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20190702
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
+/usr/local/etc/rc.carp_service_status.d/.placeholder
 /usr/local/etc/rc.configure_firmware
 /usr/local/etc/rc.configure_interface
 /usr/local/etc/rc.configure_plugins
@@ -123,6 +124,7 @@
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
 /usr/local/etc/rc.syshook.d/early/20-backup
+/usr/local/etc/rc.syshook.d/early/99-carp_service_status
 /usr/local/etc/rc.syshook.d/monitor/10-dpinger
 /usr/local/etc/rc.syshook.d/start/10-newwanip
 /usr/local/etc/rc.syshook.d/start/20-freebsd
@@ -1582,6 +1584,7 @@
 /usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.svg
 /usr/local/sbin/3gstats.php
 /usr/local/sbin/beep.sh
+/usr/local/sbin/carp_service_status
 /usr/local/sbin/configctl
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
