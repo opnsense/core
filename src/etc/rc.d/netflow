@@ -89,6 +89,7 @@ setup_interface()
        name	$interface:lower netflow_$interface
        connect $interface: netflow_$interface: upper	out$ifIndex
        mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp
+       msg netflow_$interface: settimeouts { inactive=$netflow_inactive_timeout active=$netflow_active_timeout }
        msg netflow_$interface: setconfig {iface=$ifIndex conf=$conf}
        msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
 SEQ

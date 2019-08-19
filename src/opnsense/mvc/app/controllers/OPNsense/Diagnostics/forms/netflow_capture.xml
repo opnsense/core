@@ -34,4 +34,18 @@
         <hint>Type or select destinations.</hint>
         <allownew>true</allownew>
     </field>
+    <field>
+      <id>netflow.activeTimeout</id>
+      <label>Active Timeout</label>
+      <type>text</type>
+      <advanced>true</advanced>
+      <help><![CDATA[Split long running flows into smaller parts.]]></help>
+   </field>
+   <field>
+      <id>netflow.inactiveTimeout</id>
+      <label>Inactive Timeout</label>
+      <type>text</type>
+      <advanced>true</advanced>
+      <help><![CDATA[Expire idle flows.]]></help>
+   </field>
 </form>
