@@ -31,6 +31,7 @@
     function: commandline tool to send commands to configd (response to stdout)
 """
 
+import argparse
 import socket
 import os.path
 import traceback
@@ -76,14 +77,13 @@ def exec_config_cmd(exec_command):
         sock.close()
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
+parser.add_argument("command", help="command(s) to execute", nargs="+")
+args = parser.parse_args()
 
 # set a timeout to the socket
 socket.setdefaulttimeout(120)
-
-# validate parameters
-if len(sys.argv) <= 1:
-    print('usage : %s [-m] <command>'%sys.argv[0])
-    sys.exit(0)
 
 # check if configd socket exists
 # (wait for a maximum of "configd_socket_wait" seconds for configd to start)
@@ -98,16 +98,16 @@ if not os.path.exists(configd_socket_name):
     print('configd socket missing (@%s)'%configd_socket_name)
     sys.exit(-1)
 
-if sys.argv[1] == '-m':
+if args.m:
     # execute multiple commands at once ( -m "action1 param .." "action2 param .." )
-    for exec_command in sys.argv[2:]:
+    for exec_command in args.command:
         result=exec_config_cmd(exec_command=exec_command)
         if result is None:
             sys.exit(-1)
         print('%s' % (result.strip()))
 else:
     # execute single command sequence
-    exec_command=' '.join(sys.argv[1:])
+    exec_command=' '.join(args.command)
     result=exec_config_cmd(exec_command=exec_command)
     if result is None:
         sys.exit(-1)
