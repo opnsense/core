@@ -172,7 +172,11 @@ class Monit extends BaseModel
                                     $node->isFieldChanged() &&
                                     $this->isTestServiceRelated($testUuid)) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                        gettext("Cannot change the type. Test is linked to a service."),
+                                        sprintf(
+                                            gettext("Cannot change the test type to '%s'. Test '%s' is linked to a service."),
+                                            (string)$node,
+                                            (string)$this->getNodeByReference('test.' . $parentNode->getAttribute('uuid'))->name
+                                        ),
                                         $key
                                     ));
                                 }
@@ -185,7 +189,11 @@ class Monit extends BaseModel
                                     strcmp((string)$parentNode->type, $type) != 0 &&
                                     $this->isTestServiceRelated($parentNode->getAttribute('uuid'))) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                        gettext("Condition would change the type of the test but it is linked to a service."),
+                                        sprintf(
+                                            gettext("Condition '%s' would change the type of the test '%s' but it is linked to a service."),
+                                            (string)$node,
+                                            (string)$this->getNodeByReference('test.' . $parentNode->getAttribute('uuid'))->name
+                                        ),
                                         $key
                                     ));
                                 } else {
