@@ -38,6 +38,7 @@ import traceback
 import syslog
 import sys
 import time
+from select import select
 
 __author__ = 'Ad Schellevis'
 
@@ -79,8 +80,16 @@ def exec_config_cmd(exec_command):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
+parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
+parser.add_argument(
+    "-t",
+    help="threshold between events,  wait this interval before executing commands, combine input into single events",
+    type=float
+)
 parser.add_argument("command", help="command(s) to execute", nargs="+")
 args = parser.parse_args()
+
+syslog.openlog("configctl")
 
 # set a timeout to the socket
 socket.setdefaulttimeout(120)
@@ -98,17 +107,38 @@ if not os.path.exists(configd_socket_name):
     print('configd socket missing (@%s)'%configd_socket_name)
     sys.exit(-1)
 
+
+# command(s) to execute
 if args.m:
     # execute multiple commands at once ( -m "action1 param .." "action2 param .." )
-    for exec_command in args.command:
+    exec_commands=args.command
+else:
+    # execute single command sequence
+    exec_commands=[' '.join(args.command)]
+
+if args.e:
+    # use as event handler, execute configd command on every line on stdin
+    last_message_stamp = time.time()
+    stashed_lines = list()
+    while True:
+        rlist, _, _ = select([sys.stdin], [], [], args.t)
+        if rlist:
+            last_message_stamp = time.time()
+            stashed_lines.append(sys.stdin.readline())
+
+        if len(stashed_lines) >= 1 and (args.t is None or time.time() - last_message_stamp > args.t):
+            # emit event trigger(s) to syslog
+            for line in stashed_lines:
+                syslog.syslog(syslog.LOG_NOTICE,  "event @ %.2f msg: %s" % (last_message_stamp, line))
+            # execute command(s)
+            for exec_command in exec_commands:
+                syslog.syslog(syslog.LOG_NOTICE,  "event @ %.2f exec: %s" % (last_message_stamp, exec_command))
+                exec_config_cmd(exec_command=exec_command)
+            stashed_lines = list()
+else:
+    # normal execution mode
+    for exec_command in exec_commands:
         result=exec_config_cmd(exec_command=exec_command)
         if result is None:
             sys.exit(-1)
         print('%s' % (result.strip()))
-else:
-    # execute single command sequence
-    exec_command=' '.join(args.command)
-    result=exec_config_cmd(exec_command=exec_command)
-    if result is None:
-        sys.exit(-1)
-    print('%s' % (result.strip()))
