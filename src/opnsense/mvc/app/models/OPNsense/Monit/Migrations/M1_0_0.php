@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 EURO-LOG AG
+ * Copyright (C) 2017-2019 EURO-LOG AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ use OPNsense\Core\Shell;
 
 class M1_0_0 extends BaseModelMigration
 {
-    public function run($model)
+    public function post($model)
     {
         $cfg = Config::getInstance();
         $cfgObj = $cfg->object();
@@ -85,15 +85,15 @@ class M1_0_0 extends BaseModelMigration
 
         /* define some tests */
         $defaultTests = array(
-            array("name" => "Ping", "condition" => "failed ping", "action" => "alert"),
-            array("name" => "NetworkLink", "condition" => "failed link", "action" => "alert"),
-            array("name" => "NetworkSaturation", "condition" => "saturation is greater than 75%", "action" => "alert"),
-            array("name" => "MemoryUsage", "condition" => "memory usage is greater than 75%", "action" => "alert"),
-            array("name" => "CPUUsage", "condition" => "cpu usage is greater than 75%", "action" => "alert"),
-            array("name" => "LoadAvg1", "condition" => "loadavg (1min) is greater than $LoadAvg1", "action" => "alert"),
-            array("name" => "LoadAvg5", "condition" => "loadavg (5min) is greater than $LoadAvg5", "action" => "alert"),
-            array("name" => "LoadAvg15", "condition" => "loadavg (15min) is greater than $LoadAvg15", "action" => "alert"),
-            array("name" => "SpaceUsage", "condition" => "space usage is greater than 75%", "action" => "alert")
+            array("name" => "Ping", "condition" => "failed ping", "action" => "alert", "type" => "NetworkPing"),
+            array("name" => "NetworkLink", "condition" => "failed link", "action" => "alert", "type" => "NetworkInterface"),
+            array("name" => "NetworkSaturation", "condition" => "saturation is greater than 75%", "action" => "alert", "type" => "NetworkInterface"),
+            array("name" => "MemoryUsage", "condition" => "memory usage is greater than 75%", "action" => "alert", "type" => "SystemResource"),
+            array("name" => "CPUUsage", "condition" => "cpu usage is greater than 75%", "action" => "alert", "type" => "SystemResource"),
+            array("name" => "LoadAvg1", "condition" => "loadavg (1min) is greater than $LoadAvg1", "action" => "alert", "type" => "SystemResource"),
+            array("name" => "LoadAvg5", "condition" => "loadavg (5min) is greater than $LoadAvg5", "action" => "alert", "type" => "SystemResource"),
+            array("name" => "LoadAvg15", "condition" => "loadavg (15min) is greater than $LoadAvg15", "action" => "alert", "type" => "SystemResource"),
+            array("name" => "SpaceUsage", "condition" => "space usage is greater than 75%", "action" => "alert", "type" => "SpaceUsage")
         );
 
         /* define system service */
