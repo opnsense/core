@@ -32,14 +32,15 @@ use OPNsense\Base\BaseModelMigration;
 
 class M1_0_7 extends BaseModelMigration
 {
-    public function run($model)
+    public function post($model)
     {
         /* extend tests */
         $defaultTests = [];
         $defaultTests['NonZeroStatus'] = [
             'name' => 'NonZeroStatus',
             'condition' => 'status != 0',
-            'action' => 'alert'
+            'action' => 'alert',
+            'type' => 'ProgramStatus'
         ];
 
         foreach ($defaultTests as &$newtest) {
@@ -54,6 +55,7 @@ class M1_0_7 extends BaseModelMigration
                 $found->name = $newtest['name'];
                 $found->condition = $newtest['condition'];
                 $found->action = $newtest['action'];
+                $found->type = $newtest['type'];
             }
             $newtest['uuid'] = $found->getAttribute('uuid');
         }
