@@ -217,6 +217,14 @@ POSSIBILITY OF SUCH DAMAGE.
                 // last action in the list, reload grid and release this promise
                 base.then(function(){
                     $("#"+gridId).bootgrid("reload");
+                    let changemsg = $("#"+gridId).data("editalert");
+                    if (changemsg !== undefined) {
+                        $("#"+changemsg).slideDown(1000, function(){
+                            setTimeout(function(){
+                                $("#"+changemsg).slideUp(2000);
+                            }, 2000);
+                        });
+                    }
                     defer_toggle.resolve();
                 });
             } else {
@@ -577,6 +585,11 @@ POSSIBILITY OF SUCH DAMAGE.
             });
             ajaxCall("/api/ids/settings/setRulesetproperties", {'properties': settings}, function(data,status) {
                 $("#updateSettings_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#rulesetChangeMessage").slideDown(1000, function(){
+                    setTimeout(function(){
+                        $("#rulesetChangeMessage").slideUp(2000);
+                    }, 2000);
+                });
             });
         });
 
