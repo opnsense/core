@@ -475,12 +475,12 @@ function filter_core_rules_system($fw, $defaults)
                 break;
             default:
                 $dhcpdv6_enabled = isset($config['dhcpdv6'][$intf]['enable']);
-                $dhcrelay6_enabled = isset($config['dhcrelay6']['enable']);
+                $track6_enabled = isset($intfinfo['track6-interface']);
                 $dhcrelay6_interfaces = array();
-                if (!empty($config['dhcrelay6']['interface'])) {
+                if (!empty($config['dhcrelay6']['interface']) && isset($config['dhcrelay6']['enable'])) {
                     $dhcrelay6_interfaces = explode(',', $config['dhcrelay6']['interface']);
                 }
-                if ($dhcpdv6_enabled || ($dhcrelay6_enabled && in_array($intf, $dhcrelay6_interfaces))) {
+                if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
                         1,
                         array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',
