@@ -183,7 +183,8 @@ $( document ).ready(function() {
             print_info_box($savemsg);
         }
         if (is_subsystem_dirty('sysctl') && ($act != "edit" )) {
-            print_info_box_apply(gettext("The firewall tunables have changed. You must apply the configuration to take affect. <br />Tunables are composed of runtime settings for sysctl.conf which take effect immediately after apply and boot settings for loader.conf which require a reboot."));
+            print_info_box_apply(gettext('The firewall tunables have changed. You must apply the configuration to take affect.'). ' ' .gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
+                    'immediately after apply and boot settings for loader.conf which require a reboot.');
         }
 ?>
       <form method="post" id="iform">
