@@ -26,20 +26,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 function opendns_configure()
 {
     return array(
         'bootup' => array('opendns_configure_do'),
         'local' => array('opendns_configure_do'),
-        'newwanip' => array('opendns_configure_do:1'),
+        'newwanip' => array('opendns_configure_do'),
     );
 }
 
 function opendns_configure_do($verbose = false)
 {
     global $config;
-    if (!empty($config['opendns'])  && !empty($config['opendns']['enable'])) {
+
+    if (!empty($config['opendns']['enable'])) {
         if ($verbose) {
             echo 'Configure OpenDNS...';
             flush();
@@ -60,5 +60,6 @@ function opendns_register($pconfig)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $output = curl_exec($ch);
     curl_close($ch);
+
     return $output;
 }
