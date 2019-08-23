@@ -222,12 +222,6 @@ $( document ).ready(function() {
               </tr>
 <?php
               $i++; endforeach; ?>
-              <tr>
-                <td colspan="4">
-                  <?= gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
-                    'immediately after apply and boot settings for loader.conf which require a reboot.') ?>
-                </td>
-              </tr>
             </table>
 <?php
             else : ?>
