@@ -30,34 +30,6 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-function system_trust_configure($verbose = false)
-{
-    if ($verbose) {
-        echo 'Writing trust files...';
-        flush();
-    }
-
-    $ca_root_nss = '/usr/local/share/certs/ca-root-nss.crt';
-    $ca_cert_pem = '/usr/local/openssl/cert.pem';
-    if (file_exists($ca_root_nss)) {
-        $ca = file_get_contents($ca_root_nss);
-        foreach (config_read_array('ca') as $entry) {
-            if (!empty($entry['crt'])) {
-                $ca .= "\n# {$entry['descr']}\n" . str_replace("\r", '', base64_decode($entry['crt']));
-            }
-        }
-
-        file_put_contents($ca_cert_pem, $ca);
-        copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
-        @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
-        copy($ca_cert_pem, '/etc/ssl/cert.pem');
-    }
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-}
-
 function ca_import(& $ca, $str, $key="", $serial=0)
 {
     global $config;
@@ -324,12 +296,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif ($pconfig['camethod'] == "internal") {
             $reqdfields = explode(
                 " ",
-                "descr keylen lifetime dn_country dn_state dn_city ".
+                "descr keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
                 "dn_organization dn_email dn_commonname"
             );
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
+                    gettext("Key type"),
                     gettext("Key length"),
+                    gettext("Curve"),
+                    gettext("Digest algorithm"),
                     gettext("Lifetime"),
                     gettext("Distinguished name Country Code"),
                     gettext("Distinguished name State or Province"),
@@ -340,13 +315,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif ($pconfig['camethod'] == "intermediate") {
             $reqdfields = explode(
                 " ",
-                "descr caref keylen lifetime dn_country dn_state dn_city ".
+                "descr caref keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
                 "dn_organization dn_email dn_commonname"
             );
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
                     gettext("Signing Certificate Authority"),
+                    gettext("Key type"),
                     gettext("Key length"),
+                    gettext("Curve"),
+                    gettext("Digest algorithm"),
                     gettext("Lifetime"),
                     gettext("Distinguished name Country Code"),
                     gettext("Distinguished name State or Province"),
@@ -372,8 +350,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
+            if ($pconfig["keytype"] != ("RSA" || "Elliptic Curve")) {
+                $input_errors[] = gettext("Please select a valid Key Type.");
+            }
             if (!in_array($pconfig["keylen"], $ca_keylens)) {
                 $input_errors[] = gettext("Please select a valid Key Length.");
+            }
+            if (!in_array($pconfig["curve"], $ec_curves)) {
+                $input_errors[] = gettext("Please select a valid Curve.");
             }
             if (!in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
                 $input_errors[] = gettext("Please select a valid Digest Algorithm.");
