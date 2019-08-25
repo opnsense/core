@@ -1,0 +1,11 @@
+<acl>
+    <page-vpn-ipsec-keypairs>
+        <name>VPN: IPsec: Key Pairs</name>
+        <description>Allow access to the IPsec Key Pairs</description>
+        <patterns>
+            <pattern>ui/ipsec/key-pairs/*</pattern>
+            <pattern>api/ipsec/key-pairs/*</pattern>
+            <pattern>api/ipsec/legacy-subsystem/*</pattern>
+        </patterns>
+    </page-vpn-ipsec-keypairs>
+</acl>

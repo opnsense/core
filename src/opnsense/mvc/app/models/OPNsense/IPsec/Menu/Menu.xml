@@ -1,0 +1,7 @@
+<menu>
+    <VPN>
+        <IPsec>
+            <PublicKeys order="31" VisibleName="RSA Key Pairs" url="/ui/ipsec/key-pairs" />
+        </IPsec>
+    </VPN>
+</menu>

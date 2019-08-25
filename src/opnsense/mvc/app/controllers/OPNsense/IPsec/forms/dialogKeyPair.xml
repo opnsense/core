@@ -1,0 +1,33 @@
+<form>
+    <field>
+        <id>keyPair.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Enter a name for this key pair. The name should help you to identify this key pair.</help>
+    </field>
+    <field>
+        <id>keyPair.keyType</id>
+        <label>Key Type</label>
+        <type>dropdown</type>
+        <help>Select the type of the key pair. Currently RSA is the only supported type.</help>
+    </field>
+    <field>
+        <id>keyPair.publicKey</id>
+        <label>Public Key</label>
+        <type>textbox</type>
+        <help>
+            Paste a public key of the selected type in X.509 format.
+            Must be pasted including the '-----BEGIN ...-----' and '-----END [...]-----' headers.
+        </help>
+    </field>
+    <field>
+        <id>keyPair.privateKey</id>
+        <label>Private Key</label>
+        <type>textbox</type>
+        <help>
+            Paste an optional private key of the selected type in X.509 format which belongs to the public key specified above.
+            When adding the public key of a peer, this field should not be specified as the private key remains solely with the peer.
+            Must be pasted including the '-----BEGIN ...-----' and '-----END [...]-----' headers.
+        </help>
+    </field>
+</form>
