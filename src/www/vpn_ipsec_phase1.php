@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
@@ -62,6 +63,14 @@ function ipsec_ikeid_next() {
     return $ikeid;
 }
 
+function ipsec_keypairs()
+{
+    $mdl = new \OPNsense\IPsec\IPsec();
+    $node = $mdl->getNodeByReference('keyPairs.keyPair');
+
+    return $node ? $node->getNodes() : [];
+}
+
 config_read_array('ipsec', 'phase1');
 config_read_array('ipsec', 'phase2');
 
@@ -80,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
-    ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
+    ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -210,6 +219,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         case "rsasig":
             $reqdfields = explode(" ", "caref certref");
             $reqdfieldsn = array(gettext("Certificate Authority"),gettext("Certificate"));
+            break;
+        case "pubkey":
+            $reqdfields = explode(" ", "local-kpref peer-kpref");
+            $reqdfieldsn = array(gettext("Local Key Pair"),gettext("Peer Key Pair"));
             break;
     }
 
@@ -363,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz
-        ,lifetime,pre-shared-key,certref,caref,authentication_method,descr
+        ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
         ,nat_traversal,auto,mobike";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
@@ -524,6 +537,10 @@ include("head.inc");
                     $(".auth_eap_tls_caref :input").prop( "disabled", false );
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
+                    break;
+                case "pubkey":
+                    $(".auth_pubkey").show();
+                    $(".auth_pubkey :input").prop("disabled", false);
                     break;
                 default: /* psk modes*/
                     $(".auth_psk").show();
@@ -805,7 +822,7 @@ endforeach; ?>
                   </tr>
 <?php
                   if (empty($pconfig['mobile'])):?>
-                  <tr class="auth_opt auth_eap_tls auth_psk">
+                  <tr class="auth_opt auth_eap_tls auth_psk auth_pubkey">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
                       <select name="peerid_type" id="peerid_type">
@@ -890,6 +907,52 @@ endforeach; ?>
                         <?=gettext("Select a certificate authority previously configured in the Certificate Manager."); ?>
                       </div>
                     </td>
+                  </tr>
+                  <tr class="auth_opt auth_pubkey">
+                      <td><a id="help_for_pubkey_local" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Key Pair"); ?></td>
+                      <td>
+                          <select name="local-kpref">
+                              <?php
+                              foreach (ipsec_keypairs() as $keypair_uuid => $keypair) :
+                                  if ($keypair['publicKey'] and $keypair['privateKey']) :
+                                      ?>
+                                      <option value="<?= $keypair_uuid; ?>" <?= isset($pconfig['local-kpref']) && $pconfig['local-kpref'] == $keypair_uuid ? "selected=\"selected\"" : "" ?>>
+                                          <?= $keypair['name']; ?>
+                                      </option>
+                                  <?php
+                                  endif;
+                              endforeach;
+                              ?>
+                          </select>
+                          <div class="hidden" data-for="help_for_pubkey_local">
+                              <?= gettext("Select a local key pair previously configured at IPsec \\ Key Pairs."); ?>
+                              <br />
+                              <?= gettext("This selection will only display key pairs which have both a public and private key."); ?>
+                          </div>
+                      </td>
+                  </tr>
+                  <tr class="auth_opt auth_pubkey">
+                      <td><a id="help_for_pubkey_peer" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Peer Key Pair"); ?></td>
+                      <td>
+                          <select name="peer-kpref">
+                              <?php
+                              foreach (ipsec_keypairs() as $keypair_uuid => $keypair) :
+                                  if ($keypair['publicKey']) :
+                                      ?>
+                                      <option value="<?= $keypair_uuid; ?>" <?= isset($pconfig['peer-kpref']) && $pconfig['peer-kpref'] == $keypair_uuid ? "selected=\"selected\"" : "" ?>>
+                                          <?= $keypair['name']; ?>
+                                      </option>
+                                  <?php
+                                  endif;
+                              endforeach;
+                              ?>
+                          </select>
+                          <div class="hidden" data-for="help_for_pubkey_peer">
+                              <?=gettext("Select a peer key pair previously configured at IPsec \\ Key Pairs."); ?>
+                              <br />
+                              <?= gettext("This selection will only display key pairs which have a public key."); ?>
+                          </div>
+                      </td>
                   </tr>
                   <tr class="auth_opt auth_eap_radius">
                     <td><a id="help_for_authservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Radius servers"); ?></td>

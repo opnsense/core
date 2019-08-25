@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2008 Ermal Luçi
@@ -106,6 +107,7 @@ function ipsec_p1_authentication_methods()
         'rsa_eap-mschapv2' => array( 'name' => 'Mutual RSA + EAP-MSCHAPV2', 'mobile' => true),
         'eap-radius' => array( 'name' => 'EAP-RADIUS', 'mobile' => true),
         'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
+        'pubkey' => array( 'name' => 'Mutual Public Key', 'mobile' => false ),
         'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
     );
 }
@@ -562,6 +564,14 @@ function ipsec_mobilekey_sort()
     });
 }
 
+function ipsec_lookup_keypair($uuid)
+{
+    $mdl = new \OPNsense\IPsec\IPsec();
+    $node = $mdl->getNodeByReference('keyPairs.keyPair.' . $uuid);
+
+    return $node ? $node->getNodes() : null;
+}
+
 function ipsec_get_number_of_phase2($ikeid)
 {
     global $config;
@@ -811,14 +821,16 @@ function ipsec_configure_do($verbose = false, $interface = '')
     } else {
         $certpath = "/usr/local/etc/ipsec.d/certs";
         $capath = "/usr/local/etc/ipsec.d/cacerts";
-        $keypath = "/usr/local/etc/ipsec.d/private";
+        $publickeypath = "/usr/local/etc/ipsec.d/public";
+        $privatekeypath = "/usr/local/etc/ipsec.d/private";
 
         mwexec("/sbin/ifconfig enc0 up");
         set_single_sysctl("net.inet.ip.ipsec_in_use", "1");
 
         /* needed directories for config files */
         @mkdir($capath);
-        @mkdir($keypath);
+        @mkdir($privatekeypath);
+        @mkdir($publickeypath);
         @mkdir($certpath);
         @mkdir('/usr/local/etc/ipsec.d');
         @mkdir('/usr/local/etc/ipsec.d/crls');
@@ -1113,7 +1125,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
                 @chmod($certpath, 0600);
 
-                $ph1keyfile = "{$keypath}/cert-{$ph1ent['ikeid']}.key";
+                $ph1keyfile = "{$privatekeypath}/cert-{$ph1ent['ikeid']}.key";
                 if (!file_put_contents($ph1keyfile, base64_decode($cert['prv']))) {
                     log_error(sprintf('Error: Cannot write phase1 key file for %s', $ph1ent['name']));
                     continue;
@@ -1137,6 +1149,59 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 if (!empty($peerid_data)) {
                     $pskconf .= $myid . " " . trim($peerid_data) . " : PSK 0s" . base64_encode(trim($ph1ent['pre-shared-key'])) . "\n";
                 }
+            }
+        }
+
+        /* Generate files for key pairs (e.g. RSA) */
+        foreach ($a_phase1 as $ph1ent) {
+            if(isset($ph1ent['disabled'])) {
+                continue;
+            }
+
+            if (!empty($ph1ent['local-kpref'])) {
+                $keyPair = ipsec_lookup_keypair($ph1ent['local-kpref']);
+                if (!$keyPair || empty($keyPair['publicKey']) || empty($keyPair['privateKey'])) {
+                    log_error(sprintf('Error: Invalid phase1 local key pair reference for %s', $ph1ent['name']));
+                    continue;
+                }
+
+                @chmod($publickeypath, 0600);
+
+                $ph1publickeyfile = "${publickeypath}/publickey-local-{$ph1ent['ikeid']}.pem";
+                if (!file_put_contents($ph1publickeyfile, $keyPair['publicKey'])) {
+                    log_error(sprintf('Error: Cannot write phase1 local public key file for %s', $ph1ent['name']));
+                    @unlink($ph1publickeyfile);
+                    continue;
+                }
+                @chmod($ph1publickeyfile, 0600);
+
+                $ph1privatekeyfile = "${privatekeypath}/privatekey-local-{$ph1ent['ikeid']}.pem";
+                if (!file_put_contents($ph1privatekeyfile, $keyPair['privateKey'])) {
+                    log_error(sprintf('Error: Cannot write phase1 local private key file for %s', $ph1ent['name']));
+                    @unlink($ph1privatekeyfile);
+                    continue;
+                }
+                @chmod($ph1privatekeyfile, 0600);
+
+                $pskconf .= " : ".ipsec_get_key_type($ph1privatekeyfile)." {$ph1privatekeyfile}\n";
+            }
+
+            if (!empty($ph1ent['peer-kpref'])) {
+                $keyPair = ipsec_lookup_keypair($ph1ent['peer-kpref']);
+                if (!$keyPair || empty($keyPair['publicKey'])) {
+                    log_error(sprintf('Error: Invalid phase1 peer key pair reference for %s', $ph1ent['name']));
+                    continue;
+                }
+
+                @chmod($publickeypath, 0600);
+
+                $ph1publickeyfile = "${publickeypath}/publickey-peer-{$ph1ent['ikeid']}.pem";
+                if (!file_put_contents($ph1publickeyfile, $keyPair['publicKey'])) {
+                    log_error(sprintf('Error: Cannot write phase1 peer public key file for %s', $ph1ent['name']));
+                    @unlink($ph1publickeyfile);
+                    continue;
+                }
+                @chmod($ph1publickeyfile, 0600);
             }
         }
 
@@ -1311,12 +1376,14 @@ function ipsec_configure_do($verbose = false, $interface = '')
                         $authentication = "leftauth = psk\n\trightauth = psk";
                         break;
                     case 'rsasig':
+                    case 'pubkey':
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
                         break;
                     case 'hybrid_rsa_server':
                         $authentication = "leftauth = pubkey\n\trightauth = xauth";
                         break;
                 }
+
                 if (!empty($ph1ent['certref'])) {
                     $authentication .= "\n\tleftcert = {$certpath}/cert-{$ph1ent['ikeid']}.crt";
                     $authentication .= "\n\tleftsendcert = always";
@@ -1331,8 +1398,15 @@ function ipsec_configure_do($verbose = false, $interface = '')
                         $authentication .= "\n\trightca = \"/$rightca\"";
                     }
                 }
-                $left_spec = $ep;
 
+                if (!empty($ph1ent['local-kpref'])) {
+                    $authentication .= "\n\tleftsigkey = {$publickeypath}/publickey-local-{$ph1ent['ikeid']}.pem";
+                }
+                if (!empty($ph1ent['peer-kpref'])) {
+                    $authentication .= "\n\trightsigkey = {$publickeypath}/publickey-peer-{$ph1ent['ikeid']}.pem";
+                }
+
+                $left_spec = $ep;
                 if (isset($ph1ent['reauth_enable'])) {
                     $reauth = "reauth = no";
                 } else {
