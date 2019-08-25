@@ -614,7 +614,9 @@ function step12_submitphpaction()
         cert_create(
             $cert,
             $ca['refid'],
+            'RSA',
             $pconfig['step9']['keylength'],
+            '',
             $pconfig['step9']['lifetime'],
             $dn,
             'sha256',

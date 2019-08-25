@@ -146,6 +146,16 @@ function ca_chain(&$cert)
 
 function ca_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $digest_alg)
 {
+    if ($keytype == "Elliptic Curve") {
+    $args = array(
+        'config' => '/usr/local/etc/ssl/opnsense.cnf',
+        'private_key_type' => OPENSSL_KEYTYPE_EC,
+        'curve_name' => $curve,
+        'x509_extensions' => 'v3_ca',
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+    } else {
     $args = array(
         'config' => '/usr/local/etc/ssl/opnsense.cnf',
         'private_key_type' => OPENSSL_KEYTYPE_RSA,
@@ -154,53 +164,24 @@ function ca_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $digest_alg)
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
     );
-
-    $ecargs = array(
-        'config' => '/usr/local/etc/ssl/opnsense.cnf',
-        'private_key_type' => OPENSSL_KEYTYPE_EC,
-        'curve_name' => $curve,
-        'x509_extensions' => 'v3_ca',
-        'digest_alg' => $digest_alg,
-        'encrypt_key' => false
-    );
+    }
 
     // generate a new key pair
-    if ($keytype == "Elliptic Curve") {
-        $res_key = openssl_pkey_new($ecargs);
-        if (!$res_key) {
-            return false;
-        }
-    } else {
-        $res_key = openssl_pkey_new($args);
-        if (!$res_key) {
-            return false;
-        }
+    $res_key = openssl_pkey_new($args);
+    if (!$res_key) {
+        return false;
     }
 
     // generate a certificate signing request
-    if ($keytype == "Elliptic Curve") {
-        $res_csr = openssl_csr_new($dn, $res_key, $ecargs);
-        if (!$res_csr) {
-            return false;
-        }
-    } else {
-        $res_csr = openssl_csr_new($dn, $res_key, $args);
-        if (!$res_csr) {
-            return false;
-        }
+    $res_csr = openssl_csr_new($dn, $res_key, $args);
+    if (!$res_csr) {
+        return false;
     }
 
     // self sign the certificate
-    if ($keytype == "Elliptic Curve") {
-        $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $ecargs);
-        if (!$res_crt) {
-            return false;
-        }
-    } else {
-        $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $args);
-        if (!$res_crt) {
-            return false;
-        }
+    $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $args);
+    if (!$res_crt) {
+        return false;
     }
 
     // export our certificate data
@@ -235,7 +216,7 @@ function cert_import(& $cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256', $x509_extensions = 'usr_cert')
+function cert_create(&$cert, $caref, $keytype, $keylen, $curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert')
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -254,6 +235,16 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     // handle parameters which can only be set via the configuration file
     $config_filename = create_temp_openssl_config($dn);
 
+    if ($keytype == "Elliptic Curve") {
+    $args = array(
+        'config' => $config_filename,
+        'private_key_type' => OPENSSL_KEYTYPE_EC,
+        'curve_name' => $curve,
+        'x509_extensions' => $x509_extensions,
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+    } else {
     $args = array(
         'config' => $config_filename,
         'private_key_type' => OPENSSL_KEYTYPE_RSA,
@@ -262,6 +253,7 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
     );
+    }
 
     // generate a new key pair
     $res_key = openssl_pkey_new($args);

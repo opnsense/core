@@ -36,18 +36,29 @@ require_once('phpseclib/File/ASN1/Element.php');
 require_once('phpseclib/Crypt/RSA.php');
 require_once('phpseclib/Crypt/Hash.php');
 
-function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
+function csr_generate(&$cert, $keytype, $keylen, $curve, $dn, $digest_alg)
 {
     $configFilename = create_temp_openssl_config($dn);
 
-    $args = array(
-        'config' => $configFilename,
-        'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        'private_key_bits' => (int)$keylen,
-        'req_extensions' => 'v3_req',
-        'digest_alg' => $digest_alg,
-        'encrypt_key' => false
-    );
+    if ($keytype == "Elliptic Curve") {
+        $args = array(
+            'config' => $configFilename,
+            'private_key_type' => OPENSSL_KEYTYPE_EC,
+            'curve_name' => $curve,
+            'req_extensions' => 'v3_req',
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        );
+    } else {
+        $args = array(
+            'config' => $configFilename,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+            'private_key_bits' => (int)$keylen,
+            'req_extensions' => 'v3_req',
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        );
+    }
 
     // generate a new key pair
     $res_key = openssl_pkey_new($args);
@@ -59,7 +70,7 @@ function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
     $res_csr = openssl_csr_new($dn, $res_key, $args);
     if (!$res_csr) {
         return false;
-    }
+    }    
 
     // export our request data
     if (!openssl_pkey_export($res_key, $str_key) ||
@@ -214,6 +225,7 @@ $cert_methods = array(
     "sign_cert_csr" => gettext("Sign a Certificate Signing Request"),
 );
 $cert_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
+$ec_curves = array( "prime256v1", "secp384r1", "secp521r1");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 $cert_types = array('usr_cert', 'server_cert', 'combined_server_client', 'v3_ca');
 $key_usages = array(
@@ -266,10 +278,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $pconfig['certmethod'] = null;
         }
+        $pconfig['keytype'] = "RSA";
         $pconfig['keylen'] = "2048";
+        $pconfig['curve'] = null;
         $pconfig['digest_alg'] = "sha256";
         $pconfig['digest_alg_sign_csr'] = "sha256";
+        $pconfig['csr_keytype'] = "RSA";
         $pconfig['csr_keylen'] = "2048";
+        $pconfig['csr_curve'] = null;
         $pconfig['csr_digest_alg'] = "sha256";
         $pconfig['lifetime'] = "365";
         $pconfig['lifetime_sign_csr'] = "365";
@@ -495,13 +511,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("This certificate does not appear to be valid.");
             }
         } elseif ($pconfig['certmethod'] == "internal") {
-            $reqdfields = explode(" ", "descr caref keylen lifetime dn_country dn_state dn_city ".
+            $reqdfields = explode(" ", "descr caref keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
                 "dn_organization dn_email dn_commonname"
             );
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
                     gettext("Certificate authority"),
+                    gettext("Key type"),
                     gettext("Key length"),
+                    gettext("Curve"),
+                    gettext("Digest algorithm"),
                     gettext("Lifetime"),
                     gettext("Distinguished name Country Code"),
                     gettext("Distinguished name State or Province"),
@@ -510,12 +529,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         } elseif ($pconfig['certmethod'] == "external") {
-            $reqdfields = explode(" ", "descr csr_keylen csr_dn_country csr_dn_state csr_dn_city ".
+            $reqdfields = explode(" ", "descr csr_keytype csr_keylen csr_curve csr_digest_alg csr_dn_country csr_dn_state csr_dn_city ".
                 "csr_dn_organization csr_dn_email csr_dn_commonname"
             );
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
+                    gettext("Key type"),
                     gettext("Key length"),
+                    gettext("Curve"),
+                    gettext("Digest algorithm"),
                     gettext("Distinguished name Country Code"),
                     gettext("Distinguished name State or Province"),
                     gettext("Distinguished name City"),
@@ -564,19 +586,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
+            if ($pconfig['certmethod'] != "external" && ($pconfig["keytype"] != ("RSA" || "Elliptic Curve"))) {
+                $input_errors[] = gettext("Please select a valid Key Type.");
+            }
             if ($pconfig['certmethod'] == "internal" && !in_array($pconfig["cert_type"], $cert_types)) {
                 $input_errors[] = gettext("Please select a valid Type.");
             }
-
             if ($pconfig['certmethod'] != "external" && isset($pconfig["keylen"]) && !in_array($pconfig["keylen"], $cert_keylens)) {
                 $input_errors[] = gettext("Please select a valid Key Length.");
+            }
+            if ($pconfig['certmethod'] != "external" && isset($pconfig["curve"]) && !in_array($pconfig["curve"], $ec_curves)) {
+                $input_errors[] = gettext("Please select a valid Curve.");
             }
             if ($pconfig['certmethod'] != "external" && !in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
                 $input_errors[] = gettext("Please select a valid Digest Algorithm.");
             }
-
+            if ($pconfig['certmethod'] == "external" && ($pconfig["csr_keytype"] != ("RSA" || "Elliptic Curve"))) {
+                $input_errors[] = gettext("Please select a valid Key Type.");
+            }
             if ($pconfig['certmethod'] == "external" && isset($pconfig["csr_keylen"]) && !in_array($pconfig["csr_keylen"], $cert_keylens)) {
                 $input_errors[] = gettext("Please select a valid Key Length.");
+            }
+            if ($pconfig['certmethod'] == "external" && isset($pconfig["csr_curve"]) && !in_array($pconfig["csr_curve"], $ec_curves)) {
+                $input_errors[] = gettext("Please select a valid Curve.");
             }
             if ($pconfig['certmethod'] == "external" && !in_array($pconfig["csr_digest_alg"], $openssl_digest_algs)) {
                 $input_errors[] = gettext("Please select a valid Digest Algorithm.");
@@ -689,7 +721,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!cert_create(
                         $cert,
                         $pconfig['caref'],
+                        $pconfig['keytype'],
                         $pconfig['keylen'],
+                        $pconfig['curve'],
                         $pconfig['lifetime'],
                         $dn,
                         $pconfig['digest_alg'],
@@ -732,7 +766,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                         $dn['subjectAltName'] = implode(",", $altnames_tmp);
                     }
-                    if (!csr_generate($cert, $pconfig['csr_keylen'], $dn, $pconfig['csr_digest_alg'])) {
+                    if (!csr_generate($cert, $pconfig['csr_keytype'], $pconfig['csr_keylen'], $pconfig['csr_curve'], $dn, $pconfig['csr_digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
@@ -1115,6 +1149,29 @@ if (empty($act)) {
         $(".text_download_btn").remove();
     }
 
+$("#keytype").change(function(){
+        $("#EC").addClass("hidden");
+        $("#RSA").addClass("hidden");
+        if ($(this).val() == "Elliptic Curve") {
+            $("#EC").removeClass("hidden");
+        } else {
+            $("#RSA").removeClass("hidden");
+        }
+});
+
+$("#keytype").change();
+
+$("#csr_keytype").change(function(){
+        $("#csr_EC").addClass("hidden");
+        $("#csr_RSA").addClass("hidden");
+        if ($(this).val() == "Elliptic Curve") {
+            $("#csr_EC").removeClass("hidden");
+        } else {
+            $("#csr_RSA").removeClass("hidden");
+        }
+});
+
+$("#csr_keytype").change();
 
   });
 
@@ -1472,6 +1529,19 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key Type");?></td>
+                  <td style="width:78%">
+                    <select name='keytype' id='keytype' class="selectpicker">
+                  <option value="RSA" <?=$pconfig['keytype'] == "RSA" ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("RSA");?>
+                  </option>
+                  <option value="Elliptic Curve" <?=$pconfig['keytype'] == "Elliptic Curve" ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("Elliptic Curve");?>
+                  </option>
+                    </select>
+                  </td>
+                </tr>
+              <tr id='RSA'>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                 <td>
                   <select name='keylen'>
@@ -1483,6 +1553,18 @@ $( document ).ready(function() {
                   </select>
                 </td>
               </tr>
+              <tr id='EC'>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
+                  <td style="width:78%">
+                    <select name='curve' id='curve' class="selectpicker">
+<?php
+                    foreach ($ec_curves as $curve) :?>
+                      <option value="<?=$curve;?>" <?=isset($pconfig['curve']) && $pconfig['curve'] == $curve ? "selected=\"selected\"" : "";?>><?=$curve;?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                  </td>
+                </tr>
               <tr>
                 <td><a id="help_for_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
@@ -1668,6 +1750,19 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key Type");?></td>
+                  <td style="width:78%">
+                    <select name='csr_keytype' id='csr_keytype' class="selectpicker">
+                  <option value="RSA" <?=$pconfig['csr_keytype'] == "RSA" ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("RSA");?>
+                  </option>
+                  <option value="Elliptic Curve" <?=$pconfig['csr_keytype'] == "Elliptic Curve" ? "selected=\"selected\"" : "";?>>
+                    <?=gettext("Elliptic Curve");?>
+                  </option>
+                    </select>
+                  </td>
+                </tr>
+                <tr id='csr_RSA'>
                   <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                   <td style="width:78%">
                     <select name='csr_keylen' class="selectpicker">
@@ -1677,9 +1772,20 @@ $( document ).ready(function() {
 <?php
                     endforeach; ?>
                     </select>
-
                 </td>
               </tr>
+              <tr id='csr_EC'>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
+                  <td style="width:78%">
+                    <select name='csr_curve' id='csr_curve' class="selectpicker">
+<?php
+                    foreach ($ec_curves as $curve) :?>
+                      <option value="<?=$curve;?>" <?=isset($pconfig['csr_curve']) && $pconfig['csr_curve'] == $curve ? "selected=\"selected\"" : "";?>><?=$curve;?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                  </td>
+                </tr>
               <tr>
                 <td><a id="help_for_csr_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
