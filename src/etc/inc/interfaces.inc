@@ -1708,12 +1708,7 @@ function interface_carp_configure(&$vip)
         $advbase = "advbase " . escapeshellarg($vip['advbase']);
     }
 
-    $carp_maintenancemode = isset($config["virtualip_carp_maintenancemode"]);
-    if ($carp_maintenancemode) {
-        $advskew = "advskew 254";
-    } else {
-        $advskew = "advskew " . escapeshellarg($vip['advskew']);
-    }
+    $advskew = "advskew " . escapeshellarg($vip['advskew']);
 
     mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$advskew} {$advbase} {$password}");
 
