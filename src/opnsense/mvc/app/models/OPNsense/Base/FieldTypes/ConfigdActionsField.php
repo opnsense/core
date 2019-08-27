@@ -106,7 +106,7 @@ class ConfigdActionsField extends BaseField
                     if (!isset($value['description']) || $value['description'] == '') {
                         self::$internalOptionList[$this->internalCacheKey][$key] = $key;
                     } else {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = $value['description'];
+                        self::$internalOptionList[$this->internalCacheKey][$key] = gettext($value['description']);
                     }
                 }
             }
