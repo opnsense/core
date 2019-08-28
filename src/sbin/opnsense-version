@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2019 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -103,6 +103,9 @@ core)
 	if [ -z "${OUTPUT}" ]; then
 		OUTPUT="\${product_version}"
 	fi
+
+	# mock ID target, there is no .name file
+	product_id=${TARGET}
 
 	if [ -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
 		product_version=$(cat ${VERSION})

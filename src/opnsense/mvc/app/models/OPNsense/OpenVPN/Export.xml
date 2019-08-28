@@ -27,6 +27,14 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </validate_server_cn>
+                <cryptoapi type="BooleanField">
+                    <default>0</default>
+                    <Required>N</Required>
+                </cryptoapi>
+                <auth_nocache type="BooleanField">
+                    <default>0</default>
+                    <Required>N</Required>
+                </auth_nocache>
                 <plain_config type="TextField"/>
             </server>
         </servers>

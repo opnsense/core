@@ -30,7 +30,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
@@ -629,7 +628,7 @@ include("head.inc");
                                                 echo "<option value='" . $field['add_to_cert_selection'] . "'" . $SELECTED . ">" . $field['add_to_cert_selection'] . "</option>\n";
                                             }
                                             foreach ($config['cert'] as $ca) {
-                                                if (stristr($ca['descr'], "webconf"))
+                                                if (cert_get_purpose($ca['crt'])['server'] == 'No')
                                                     continue;
                                                 $name = htmlspecialchars($ca['descr']);
                                                 $SELECTED = '';
@@ -876,7 +875,7 @@ include("head.inc");
                                             echo " />\n";
 
                                             if ($field['typehint'] != '') {
-                                                echo $field['typehint'];
+                                                echo gettext($field['typehint']);
                                             }
 
                                             if ($field['description'] != '') {
@@ -887,7 +886,7 @@ include("head.inc");
                                     }
 
                                     if ($field['type'] != 'checkbox' && $field['typehint'] != '') {
-                                        echo $field['typehint'];
+                                        echo gettext($field['typehint']);
                                     }
 
                                     if (!$field['combinefieldsbegin']) {

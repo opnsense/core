@@ -1,30 +1,30 @@
 <?php
 
 /*
-    Copyright (C) 2010 Ermal Luçi
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2010 Ermal Luçi
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("plugins.inc.d/openvpn.inc");
 require_once("util.inc");
@@ -113,7 +113,7 @@ function step3_submitphpaction()
          empty($_POST['scope']) || empty($_POST['basedn']) || empty($_POST['authscope']) || empty($_POST['nameattr'])) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
-    } elseif ($authcfg !== false && count($authcfg) > 0) {
+    } elseif ($authcfg !== false && !empty($authcfg)) {
         $input_errors[] = gettext('Please choose a different name because an authentication ' .
             'server with this name already exists.');
         $stepid--;
@@ -178,7 +178,7 @@ function step5_submitphpaction()
     if (empty($_POST['name']) || empty($_POST['ip']) || empty($_POST['secret'])) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
-    } elseif ($authcfg !== false && count($authcfg) > 0) {
+    } elseif ($authcfg !== false && !empty($authcfg)) {
         $input_errors[] = gettext('Please choose a different name because an authentication ' .
             'server with this name already exists.');
         $stepid--;
@@ -194,9 +194,20 @@ function step5_submitphpaction()
 function step6_stepbeforeformdisplay()
 {
     global $stepid, $config;
+    $no_internal_ca = true;
 
-    if (count($config['ca']) < 1) {
+    if (empty($config['ca'])) {
         $stepid++;
+    } else {
+        foreach ($config['ca'] as $ca) {
+            if (!empty($ca['prv'])) {
+                $no_internal_ca=false;
+                break;
+            }
+        }
+        if ($no_internal_ca) {
+            $stepid++;
+        }
     }
 }
 
@@ -253,10 +264,20 @@ function step7_submitphpaction()
 function step8_stepbeforeformdisplay()
 {
     global $stepid, $config;
+    $no_server_cert = true;
 
-    if (count($config['cert']) < 1 || (count($config['cert']) == 1 &&
-        stristr($config['cert'][0]['descr'], "webconf"))) {
+    if (empty($config['cert'])) {
         $stepid++;
+    } else {
+        foreach ($config['cert'] as $cert) {
+            if (cert_get_purpose($cert['crt'])['server'] == 'Yes') {
+                $no_server_cert=false;
+                break;
+            }
+        }
+        if ($no_server_cert) {
+            $stepid++;
+        }
     }
 }
 
@@ -447,7 +468,7 @@ function step10_submitphpaction()
     if (!isset($_POST['generatetlskey']) && isset($_POST['tlsauthentication'])) {
         if (!strstr($_POST['tlssharedkey'], "-----BEGIN OpenVPN Static key V1-----") ||
           !strstr($_POST['tlssharedkey'], "-----END OpenVPN Static key V1-----")) {
-              $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid.");
+            $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid.");
         }
     }
 
@@ -486,7 +507,7 @@ function step10_submitphpaction()
         $input_errors[] = gettext("You must specify a 'Tunnel network'.");
     }
 
-    if (count($input_errors) > 0) {
+    if (!empty($input_errors)) {
         $stepid = $stepid - 1;
     }
 }
@@ -635,7 +656,6 @@ function step12_submitphpaction()
         $pconfig['step10']['descr'] = substr($pconfig['step10']['descr'], 0, 30);
     }
     $server['description'] = $pconfig['step10']['descr'];
-    $server['custom_options'] = $pconfig['step10']['advanced'];
     if (isset($pconfig['step10']['tlsauth'])) {
         if (isset($pconfig['step10']['gentlskey'])) {
             $tlskey = openvpn_create_key();

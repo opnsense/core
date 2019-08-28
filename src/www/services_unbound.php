@@ -33,6 +33,7 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/unbound.inc");
 
 $a_unboundcfg = &config_read_array('unbound');
 
@@ -62,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['apply'])) {
         system_resolvconf_generate();
         unbound_configure_do();
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         clear_subsystem_dirty('unbound');
         header(url_safe('Location: /services_unbound.php'));
         exit;
@@ -81,6 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
             $input_errors[] = sprintf(gettext('Local zone type "%s" is not known.'), $pconfig['local_zone_type']);
+        }
+        $prev_opt = !empty($a_unboundcfg['custom_options']) ? $a_unboundcfg['custom_options'] : "";
+        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+            $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
         }
 
         if (count($input_errors) == 0) {
@@ -317,6 +322,7 @@ include_once("head.inc");
                         <td><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Custom options') ?></td>
                         <td>
                           <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+                          <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
                           <div class="hidden" data-for="help_for_custom_options">
                             <?=gettext("Enter any additional options you would like to add to the Unbound configuration here."); ?>
                           </div>

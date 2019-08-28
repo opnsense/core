@@ -34,6 +34,10 @@
         white-space: nowrap;
         overflow: auto;
     }
+
+    .ui_hide {
+        display: none !important;
+    }
 </style>
 
 <script>
@@ -81,6 +85,7 @@
                 $("#row_openvpn_export\\."+selected_options[i]).show();
             }
             $("#openvpn_export\\.template").selectpicker('refresh');
+            $("#openvpn_export\\.cryptoapi").change();
         });
 
         /**
@@ -107,6 +112,8 @@
                     } else {
                         target.val(record[key]);
                     }
+                } else if (target.is('textarea')) {
+                    target.val(record[key]);
                 }
             });
 
@@ -162,6 +169,15 @@
             } else {
                 $(".password_field").removeClass("has-warning");
                 $(".password_field").closest('tr').removeClass('has-warning');
+            }
+        });
+
+        // hide pkcs12 password when not applicable
+        $("#openvpn_export\\.cryptoapi").change(function(){
+            if ($("#openvpn_export\\.cryptoapi").prop("checked") && $("#openvpn_export\\.cryptoapi").is(":visible")) {
+                $("#row_openvpn_export\\.p12_password").addClass("ui_hide");
+            } else {
+                $("#row_openvpn_export\\.p12_password").removeClass("ui_hide");
             }
         });
     });

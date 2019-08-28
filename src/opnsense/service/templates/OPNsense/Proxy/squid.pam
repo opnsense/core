@@ -1,0 +1,5 @@
+# auth
+auth		sufficient	pam_opnsense.so
+
+# account
+account		sufficient	pam_opnsense.so

@@ -53,9 +53,10 @@ class UIModelGrid
      * @param $request request variable
      * @param array $fields to collect
      * @param null|string $defaultSort default sort order
+     * @param null|function $filter_funct additional filter callable
      * @return array
      */
-    public function fetchBindRequest($request, $fields, $defaultSort = null)
+    public function fetchBindRequest($request, $fields, $defaultSort = null, $filter_funct = null)
     {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
@@ -70,7 +71,15 @@ class UIModelGrid
         }
 
         $searchPhrase = $request->get('searchPhrase', 'string', '');
-        return $this->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        return $this->fetch(
+            $fields,
+            $itemsPerPage,
+            $currentPage,
+            $sortBy,
+            $sortDescending,
+            $searchPhrase,
+            $filter_funct
+        );
     }
 
     /**
@@ -81,6 +90,7 @@ class UIModelGrid
      * @param array $sortBy sort by fieldnames
      * @param bool $sortDescending sort in descending order
      * @param string $searchPhrase search phrase to use
+     * @param null|function $filter_funct additional filter callable
      * @return array
      */
     public function fetch(
@@ -89,13 +99,19 @@ class UIModelGrid
         $currentPage,
         $sortBy = array(),
         $sortDescending = false,
-        $searchPhrase = ''
+        $searchPhrase = '',
+        $filter_funct = null
     ) {
         $result = array('rows'=>array());
 
         $recordIndex = 0;
         foreach ($this->DataField->sortedBy($sortBy, $sortDescending) as $record) {
             if (array_key_exists("uuid", $record->getAttributes())) {
+                if (is_callable($filter_funct) && !$filter_funct($record)) {
+                    // not applicable according to $filter_funct()
+                    continue;
+                }
+
                 // parse rows, because we may need to convert some (list) items we need to know the actual content
                 // before searching.
                 $row =  array();

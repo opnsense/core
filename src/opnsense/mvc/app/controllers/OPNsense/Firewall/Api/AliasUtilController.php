@@ -101,11 +101,12 @@ class AliasUtilController extends ApiControllerBase
         $offset = ($currentPage - 1) * $itemsPerPage;
 
         $backend = new Backend();
-        $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")));
+        $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")), true);
+        $entry_keys = array_keys($entries);
 
         if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
             $searchPhrase = $this->request->getPost('searchPhrase');
-            $entries = array_filter($entries, function ($value) use ($searchPhrase) {
+            $entry_keys = array_filter($entry_keys, function ($value) use ($searchPhrase) {
                 return strpos($value, $searchPhrase) !== false;
             });
         }
@@ -115,17 +116,21 @@ class AliasUtilController extends ApiControllerBase
             array_key_exists('ip', $this->request->getPost('sort')) &&
             $this->request->getPost('sort')['ip'] === 'desc'
         ) {
-            rsort($entries);
+            rsort($entry_keys);
         } else {
-            sort($entries);
+            sort($entry_keys);
         }
 
-        $formatted = array_map(function ($value) {
-            return ['ip' => $value];
-        }, array_slice($entries, $offset, $itemsPerPage));
+        $formatted = array_map(function ($value) use (&$entries) {
+            $item = ['ip' => $value];
+            foreach ($entries[$value] as $ekey => $evalue) {
+                $item[$ekey] = $evalue;
+            }
+            return $item;
+        }, array_slice($entry_keys, $offset, $itemsPerPage));
 
         return [
-            'total' => count($entries),
+            'total' => count($entry_keys),
             'rowCount' => $itemsPerPage,
             'current' => $currentPage,
             'rows' => $formatted,

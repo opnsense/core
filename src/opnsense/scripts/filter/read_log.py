@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,9 @@
 """
 import os
 import sys
-import md5
+from hashlib import md5
 import argparse
 import ujson
-import tempfile
 import subprocess
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
@@ -66,23 +65,36 @@ def update_rule(target, metadata_target, ruleparts, spec):
     # full spec
     metadata_target['__spec__'] = spec
 
-def fetch_rules_descriptions():
+def fetch_rule_details():
     """ Fetch rule descriptions from the current running config if available
         :return : rule details per line number
     """
     result = dict()
     if os.path.isfile('/tmp/rules.debug'):
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-vvPnf', '/tmp/rules.debug'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            for line in output_stream.read().strip().split('\n'):
-                if line.startswith('@'):
-                    line_id = line.split()[0][1:]
-                    if line.find(' label ') > -1:
-                        result[line_id] = {'label': ''.join(line.split(' label ')[-1:]).strip()[1:-1]}
+        # parse running config, fetch all md5 hashed labels
+        rule_map = dict()
+        hex_digits = set("0123456789abcdef")
+        with open('/tmp/rules.debug', "rt", encoding="utf-8") as f_in:
+            for line in f_in:
+                if line.find(' label ') > -1:
+                    lbl = line.split(' label ')[-1]
+                    if lbl.count('"') >= 2:
+                        rule_md5 = lbl.split('"')[1]
+                        if len(rule_md5) == 32 and set(rule_md5).issubset(hex_digits):
+                            rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
+
+        # use pfctl to create a list per rule number with the details found
+        sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
+        for line in sp.stdout.strip().split('\n'):
+            if line.startswith('@'):
+                line_id = line.split()[0][1:]
+                if line.find(' label ') > -1:
+                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:-1]
+                    if rid in rule_map:
+                        result[line_id] = {'rid': rid, 'label': rule_map[rid]}
                     else:
-                        # XXX happens on rdr (ID is not unique) or when no label is found
-                        result[line_id] = {'label': 'XXX'}
+                        result[line_id] = {'rid': None, 'label': rid}
+
     return result
 
 
@@ -93,7 +105,7 @@ if __name__ == '__main__':
     parameters['limit'] = int(parameters['limit'])
 
     # parse current running config
-    running_conf_descr = fetch_rules_descriptions()
+    running_conf_descr = fetch_rule_details()
 
     result = list()
     for record in reverse_log_reader(fetch_clog(filter_log)):
@@ -102,13 +114,16 @@ if __name__ == '__main__':
             metadata = dict()
             # rule metadata (unique hash, hostname, timestamp)
             tmp = record['line'].split('filterlog:')[0].split()
-            metadata['__digest__'] = md5.new(record['line']).hexdigest()
+            metadata['__digest__'] = md5(record['line'].encode()).hexdigest()
             metadata['__host__'] = tmp.pop()
             metadata['__timestamp__'] = ' '.join(tmp)
             rulep = record['line'].split('filterlog:')[1].strip().split(',')
             update_rule(rule, metadata, rulep, fields_general)
 
-            if 'version' in rule:
+            if 'action' not in rule:
+                # not a filter log line, skip
+                continue
+            elif 'version' in rule:
                 if rule['version'] == '4':
                     update_rule(rule, metadata, rulep, fields_ipv4)
                     if 'proto' in rule:
@@ -130,7 +145,12 @@ if __name__ == '__main__':
 
             rule.update(metadata)
             if 'rulenr' in rule and rule['rulenr'] in running_conf_descr:
-                rule['label'] = running_conf_descr[rule['rulenr']]['label']
+                if rule['action'] in ['pass', 'block']:
+                    rule['label'] = running_conf_descr[rule['rulenr']]['label']
+                    rule['rid'] = running_conf_descr[rule['rulenr']]['rid']
+            elif rule['action'] not in ['pass', 'block']:
+                rule['label'] = "%s rule" % rule['action']
+
             result.append(rule)
 
             # handle exit criteria, row limit or last digest

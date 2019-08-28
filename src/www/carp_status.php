@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -38,9 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $act = "maintenance";
         if (isset($config["virtualip_carp_maintenancemode"])) {
             unset($config["virtualip_carp_maintenancemode"]);
+            $carp_demotion_default = '0';
+            foreach ($config['sysctl']['item'] as $tunable) {
+                if ($tunable['tunable'] == 'net.inet.carp.demotion' && ctype_digit($tunable['value'])) {
+                    $carp_demotion_default = $tunable['value'];
+                }
+            }
+            $carp_diff = $carp_demotion_default - get_single_sysctl('net.inet.carp.demotion');
+            set_single_sysctl('net.inet.carp.demotion', $carp_diff);
             write_config("Leave CARP maintenance mode");
         } else {
             $config["virtualip_carp_maintenancemode"] = true;
+            set_single_sysctl('net.inet.carp.demotion', '240');
             write_config("Enter CARP maintenance mode");
         }
     } elseif (!empty($_POST['disablecarp'])) {
@@ -59,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($vip['vhid'])) {
             switch ($act) {
                 case 'maintenance':
+                    break;
                 case 'enable':
                     if ($vip['mode'] == 'carp') {
                         interface_carp_configure($vip);
@@ -92,10 +102,15 @@ foreach ($a_vip as $carp) {
 
 // fetch pfsync info
 $pfsyncnodes = json_decode(configd_run("filter list pfsync json"), true);
+$current_carp_demotion = get_single_sysctl("net.inet.carp.demotion");
 
 legacy_html_escape_form_data($a_vip);
 $status = (get_single_sysctl('net.inet.carp.allow') > 0);
-$carp_detected_problems = (array_pop(get_sysctl("net.inet.carp.demotion")) > 0);
+if (!empty($config["virtualip_carp_maintenancemode"])) {
+    $carp_detected_problems = false;
+} else {
+    $carp_detected_problems = $current_carp_demotion > 0;
+}
 include("head.inc");
 ?>
 
@@ -117,15 +132,22 @@ include("head.inc");
         <div class="content-box">
           <form method="post">
             <table class="table table-condensed">
-              <tr>
-                <td>
-                  <input type="submit" class="btn btn-primary" name="disablecarp" value="<?=($carpcount > 0 && !$status) ? gettext("Enable CARP") : gettext("Temporarily Disable CARP") ;?>" />
-                  <input type="submit" class="btn btn-primary" name="carp_maintenancemode" value="<?=isset($config["virtualip_carp_maintenancemode"]) ? gettext("Leave Persistent CARP Maintenance Mode") : gettext("Enter Persistent CARP Maintenance Mode");?> " />
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td>
+                    <input type="submit" class="btn btn-primary" name="disablecarp" value="<?= ($carpcount > 0 && !$status) ? html_safe(gettext('Enable CARP')) : html_safe(gettext('Temporarily Disable CARP')) ?>" />
+                    <input type="submit" class="btn btn-primary" name="carp_maintenancemode" value="<?= isset($config["virtualip_carp_maintenancemode"]) ? html_safe(gettext('Leave Persistent CARP Maintenance Mode')) : html_safe(gettext('Enter Persistent CARP Maintenance Mode')) ?>" />
+                  </td>
+                </tr>
+              </tbody>
             </table>
+          </form>
+        </div>
+      </section>
+      <section class="col-xs-12">
+        <div class="content-box">
             <div class="table-responsive">
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed">
                 <thead>
                   <tr>
                     <td><?=gettext("CARP Interface"); ?></td>
@@ -145,16 +167,16 @@ include("head.inc");
                     if ($carp['mode'] != "carp") {
                         continue;
                     }
-                    $icon = "";
+                    $icon = '';
                     $intf_status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
                     if (($carpcount > 0 && !$status)) {
                         $icon = "fa fa-remove fa-fw text-danger";
-                        $intf_status = "DISABLED";
-                    } elseif ($intf_status == "MASTER") {
+                        $intf_status = gettext('DISABLED');
+                    } elseif ($intf_status == gettext('MASTER')) {
                         $icon = "fa fa-play fa-fw text-success";
-                    } elseif ($intf_status == "BACKUP") {
+                    } elseif ($intf_status == gettext('BACKUP')) {
                         $icon = "fa fa-play fa-fw text-muted";
-                    } elseif ($intf_status == "INIT") {
+                    } elseif ($intf_status == gettext('INIT')) {
                         $icon = "fa fa-info-circle fa-fw";
                     }?>
                 <tr>
@@ -166,11 +188,20 @@ include("head.inc");
                   endforeach;
                 endif;?>
               </tbody>
+              <tfoot>
+                  <tr>
+                      <td colspan="2"><?=gettext("Current CARP demotion level");?></td>
+                      <td><?=$current_carp_demotion;?>
+                  </tr>
+              </tfoot>
             </table>
           </div>
-          <hr/>
+        </div>
+      </section>
+      <section class="col-xs-12">
+        <div class="content-box">
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped table-condensed">
               <thead>
                 <tr>
                   <td><?=gettext("pfSync nodes");?></td>

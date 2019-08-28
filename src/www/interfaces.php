@@ -36,7 +36,6 @@ require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 function create_OR_FR_Credentials($userID, $password, $livebox_ID)
 {
@@ -601,7 +600,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 system_routing_configure();
-                setup_gateways_monitor();
+                plugins_configure('monitor');
                 filter_configure();
                 plugins_configure('newwanip');
                 rrd_configure();
@@ -652,14 +651,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $old_ppps = $a_ppps;
 
-        /* description unique? */
         foreach ($ifdescrs as $ifent => $ifcfg) {
             if ($if != $ifent && $ifcfg['descr'] == $pconfig['descr']) {
                 $input_errors[] = gettext("An interface with the specified description already exists.");
                 break;
             }
         }
-        /* input validation */
+
         if (isset($config['dhcpd']) && isset($config['dhcpd'][$if]['enable']) && !preg_match('/^staticv4/', $pconfig['type'])) {
             $input_errors[] = gettext("The DHCP Server is active on this interface and it can be used only with a static IP configuration. Please disable the DHCP Server service on this interface first, then change the interface configuration.");
         }
@@ -667,7 +665,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The DHCPv6 Server is active on this interface and it can be used only with a static IPv6 configuration. Please disable the DHCPv6 Server service on this interface first, then change the interface configuration.");
         }
 
-        switch (strtolower($pconfig['type'])) {
+        if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
+            if (strstr($pconfig['if'], 'gre') || strstr($pconfig['if'], 'gif') || strstr($pconfig['if'], 'ovpn') || strstr($pconfig['if'], 'ipsec')) {
+                $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+            }
+        }
+
+        switch ($pconfig['type']) {
             case "staticv4":
                 $reqdfields = explode(" ", "ipaddr subnet gateway");
                 $reqdfieldsn = array(gettext("IPv4 address"),gettext("Subnet bit count"),gettext("Gateway"));
@@ -722,7 +726,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
         }
-        switch (strtolower($pconfig['type6'])) {
+
+        switch ($pconfig['type6']) {
             case "staticv6":
                 $reqdfields = explode(" ", "ipaddrv6 subnetv6 gatewayv6");
                 $reqdfieldsn = array(gettext("IPv6 address"),gettext("Subnet bit count"),gettext("Gateway"));
@@ -783,8 +788,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
                             $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
                         }
+                        foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
+                            if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
+                                $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                                break;
+                            }
+                        }
                     }
-                    /* XXX should also check for duplicate delegation in peer trackers */
                 }
                 break;
         }
@@ -1044,7 +1054,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // switch ipv4 config by type
-            switch($pconfig['type']) {
+            switch ($pconfig['type']) {
                 case "staticv4":
                     $new_config['ipaddr'] = $pconfig['ipaddr'];
                     $new_config['subnet'] = $pconfig['subnet'];
@@ -1138,7 +1148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // switch ipv6 config by type
-            switch($pconfig['type6']) {
+            switch ($pconfig['type6']) {
                 case 'staticv6':
                     if (!empty($pconfig['staticv6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
@@ -1756,7 +1766,7 @@ include("head.inc");
           }
       });
       $("#rfc3118_isp").change();
-
+      window_highlight_table_option();
   });
 </script>
 
@@ -1856,7 +1866,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
                           <td>
-                          <select name="type" <?= substr($pconfig['if'], 0, 3) == 'gre' ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type">
+                          <select name="type" class="selectpicker" data-style="btn-default" id="type">
 <?php
                             $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
                             foreach ($types4 as $key => $opt):?>
@@ -1869,7 +1879,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 Configuration Type"); ?></td>
                           <td>
-                            <select name="type6" <?= (substr($pconfig['if'], 0, 3) == 'gre') ? 'disabled="disabled"' : '' ?> class="selectpicker" data-style="btn-default" id="type6">
+                            <select name="type6" class="selectpicker" data-style="btn-default" id="type6">
 <?php
                             $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
                             foreach ($types6 as $key => $opt):?>
@@ -2995,7 +3005,7 @@ include("head.inc");
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
                             foreach ($ifdescrs as $iface => $ifcfg):
-                              switch($config['interfaces'][$iface]['ipaddrv6']) {
+                              switch ($config['interfaces'][$iface]['ipaddrv6']) {
                                 case '6rd':
                                 case '6to4':
                                 case 'dhcp6':
@@ -3023,9 +3033,12 @@ include("head.inc");
                                 $pconfig['track6-prefix-id'] = 0;
                             }
                             $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("%x", $pconfig['track6-prefix-id']);?>
-                            <input name="track6-prefix-id--hex" type="text" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            <div class="input-group" style="max-width:348px">
+                              <div class="input-group-addon">0x</div>
+                              <input name="track6-prefix-id--hex" type="text" class="form-control" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
+                            </div>
                             <div class="hidden" data-for="help_for_track6-prefix-id">
-                              <?= gettext('The value in this field is the delegated IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                              <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
                             </div>
                           </td>
                         </tr>

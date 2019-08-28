@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,38 +28,32 @@
     --------------------------------------------------------------------------------------
     list device interrupts stats
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = dict()
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/bin/vmstat', '-i'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        data = output_stream.read().strip()
-
-        intf = None
-        interrupts = dict()
-        interrupt_map = dict()
-        for line in data.split('\n'):
-            if line.find(':') > -1:
-                intrp = line.split(':')[0].strip()
-                parts = ':'.join(line.split(':')[1:]).split()
-                interrupts[intrp] = {'devices': [], 'total': None, 'rate': None}
-                for part in parts:
-                    if not part.isdigit():
-                        interrupts[intrp]['devices'].append(part)
-                        devnm = part.split(':')[0]
-                        if devnm not in interrupt_map:
-                            interrupt_map[devnm] = list()
-                        interrupt_map[devnm].append(intrp)
-                    elif interrupts[intrp]['total'] is None:
-                        interrupts[intrp]['total'] = int(part)
-                    else:
-                        interrupts[intrp]['rate'] = int(part)
+    sp = subprocess.run(['/usr/bin/vmstat', '-i'], capture_output=True, text=True)
+    intf = None
+    interrupts = dict()
+    interrupt_map = dict()
+    for line in sp.stdout.split("\n"):
+        if line.find(':') > -1:
+            intrp = line.split(':')[0].strip()
+            parts = ':'.join(line.split(':')[1:]).split()
+            interrupts[intrp] = {'devices': [], 'total': None, 'rate': None}
+            for part in parts:
+                if not part.isdigit():
+                    interrupts[intrp]['devices'].append(part)
+                    devnm = part.split(':')[0]
+                    if devnm not in interrupt_map:
+                        interrupt_map[devnm] = list()
+                    interrupt_map[devnm].append(intrp)
+                elif interrupts[intrp]['total'] is None:
+                    interrupts[intrp]['total'] = int(part)
+                else:
+                    interrupts[intrp]['rate'] = int(part)
         result['interrupts'] = interrupts # interrupts as reported by vmstat
         result['interrupt_map'] = interrupt_map # link device to interrupt
 

@@ -46,13 +46,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
             });
         });
-
     });
 
 </script>
 
 <div class="content-box">
-    <table id="grid-routes" class="table table-responsive" data-editDialog="DialogRoute">
+    <table id="grid-routes" class="table table-responsive" data-editDialog="DialogRoute" data-editAlert="routeChangeMessage">
         <thead>
             <tr>
                 <th data-column-id="disabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Disabled') }}</th>
@@ -75,6 +74,9 @@ POSSIBILITY OF SUCH DAMAGE.
         </tfoot>
     </table>
     <div class="col-md-12">
+        <div id="routeChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
         {{ lang._('Do not enter static routes for networks assigned on any interface of this firewall. Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.')}}
         <hr/>
         <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>

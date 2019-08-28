@@ -303,7 +303,7 @@ $( document ).ready(function() {
                       <th style="width:2%"><input type="checkbox" id="selectAll"></th>
                       <th style="width:2%">&nbsp;</th>
                       <th style="width:2%">&nbsp;</th>
-                      <th><?=gettext("If");?></th>
+                      <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Proto");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Address");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Ports");?></th>
@@ -363,7 +363,11 @@ $( document ).ready(function() {
                         </a>
                       </td>
                       <td>
-                        <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr(isset($natent['interface']) ? $natent['interface'] : "wan"));?>
+<?php
+                          foreach (explode(",", $natent['interface']) as $intf):?>
+                              <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($intf));?>
+<?php
+                          endforeach;?>
                       </td>
                       <td>
                         <?=strtoupper($natent['protocol']);?>

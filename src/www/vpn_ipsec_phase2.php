@@ -30,15 +30,15 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
+require_once("plugins.inc.d/ipsec.inc");
 
 /**
  * combine ealgos and keylen_* tags
  */
 function pconfig_to_ealgos($pconfig)
 {
-    global $p2_ealgos;
+    $p2_ealgos = ipsec_p2_ealgos();
 
     $ealgos = array();
     if (isset($pconfig['ealgos'])) {
@@ -145,7 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize form data
     $pconfig = array();
 
-    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,lifetime,pinghost,protocol,spd";
+    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,lifetime,pinghost,protocol,spd,";
+    $phase2_fields .= "tunnel_local,tunnel_remote";
     if ($p2index !== null) {
         // 1-on-1 copy
         foreach (explode(",", $phase2_fields) as $fieldname) {
@@ -269,6 +270,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
         }
+    } elseif ($pconfig['mode'] == 'route-based') {
+        // validate if both tunnel networks are using the correct address family
+        $protocol = 'inet';
+        foreach ($config['ipsec']['phase1'] as $phase1ent) {
+            if ($phase1ent['ikeid'] == $pconfig['ikeid']) {
+                $protocol = $phase1ent['protocol'];
+                break;
+            }
+        }
+        if ($protocol == 'inet') {
+            if (!is_ipaddrv4($pconfig['tunnel_local'])) {
+                $input_errors[] = gettext('A valid local network IP address must be specified.');
+            }
+            if (!is_ipaddrv4($pconfig['tunnel_remote'])) {
+                $input_errors[] = gettext("A valid remote network IP address must be specified.");
+            }
+        } else {
+            if (!is_ipaddrv6($pconfig['tunnel_local'])) {
+                $input_errors[] = gettext('A valid local network IP address must be specified.');
+            }
+            if (!is_ipaddrv6($pconfig['tunnel_remote'])) {
+                $input_errors[] = gettext("A valid remote network IP address must be specified.");
+            }
+        }
     }
     /* Validate enabled phase2's are not duplicates */
     if (isset($pconfig['mobile'])) {
@@ -375,6 +400,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (($ph2ent['mode'] == "tunnel") || ($ph2ent['mode'] == "tunnel6")) {
             $ph2ent['localid'] = pconfig_to_idinfo("local", $pconfig);
             $ph2ent['remoteid'] = pconfig_to_idinfo("remote", $pconfig);
+        } elseif ($ph2ent['mode'] == 'route-based') {
+            $ph2ent['tunnel_local'] = $pconfig['tunnel_local'];
+            $ph2ent['tunnel_remote'] = $pconfig['tunnel_remote'];
         }
 
         $ph2ent['encryption-algorithm-option'] = pconfig_to_ealgos($pconfig);
@@ -420,11 +448,14 @@ include("head.inc");
         $("#mode").change(function(){
             $(".opt_localid").hide();
             $(".opt_remoteid").hide();
+            $(".opt_route").hide();
             if ($(this).val() == 'tunnel' || $(this).val() == 'tunnel6') {
                 $(".opt_localid").show();
                 if ($("#mobile").val() == undefined) {
                     $(".opt_remoteid").show();
                 }
+            } else if ($(this).val() == 'route-based') {
+                $(".opt_route").show();
             }
             $(window).resize();
         });
@@ -444,7 +475,6 @@ include("head.inc");
             $("#"+field+"_type").change(function(){
                 $("#"+field+"_netbits").prop("disabled", true);
                 $("#"+field+"_address").prop("disabled", true);
-                $("#"+field+"_netbits").parent().parent().show();
                 switch ($(this).val()) {
                     case 'address':
                         $("#"+field+"_address").prop("disabled", false);
@@ -454,7 +484,6 @@ include("head.inc");
                         $("#"+field+"_address").prop("disabled", false);
                         break;
                     default:
-                        $("#"+field+"_netbits").parent().parent().hide();
                         break;
                 }
                 $(window).resize();
@@ -506,6 +535,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         $p2_modes = array(
                         'tunnel' => 'Tunnel IPv4',
                         'tunnel6' => 'Tunnel IPv6',
+                        'route-based' => 'Route-based',
                         'transport' => 'Transport');
                         foreach ($p2_modes as $name => $value) :
     ?>
@@ -528,6 +558,23 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </div>
                   </td>
                 </tr>
+                <!-- Route based tunnel -->
+                <tr class="opt_route">
+                  <td colspan="2"><b><?=gettext("Tunnel network");?></b></td>
+                </tr>
+                <tr class="opt_route">
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local Address");?> </td>
+                  <td>
+                    <input name="tunnel_local" type="text" id="tunnel_local" size="28" value="<?=$pconfig['tunnel_local'];?>" />
+                  </td>
+                </tr>
+                <tr class="opt_route">
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Address");?> </td>
+                  <td>
+                    <input name="tunnel_remote" type="text" id="tunnel_remote" size="28" value="<?=$pconfig['tunnel_remote'];?>" />
+                  </td>
+                </tr>
+                <!-- Tunnel settings -->
                 <tr class="opt_localid">
                   <td colspan="2"><b><?=gettext("Local Network");?></b></td>
                 </tr>
@@ -585,9 +632,9 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr class="opt_remoteid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address"); ?>:&nbsp;&nbsp;</td>
                   <td>
-                    <input name="remoteid_address" type="text" class="formfld unknown ipv4v6" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
+                    <input name="remoteid_address" type="text" class="formfld unknown" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
                     /
-                    <select name="remoteid_netbits" class="ipv4v6" id="remoteid_netbits">
+                    <select name="remoteid_netbits" data-network-id="remoteid_address" class="ipv4v6net" id="remoteid_netbits">
 <?php              for ($i = 128; $i >= 0; $i--) :
 ?>
                       <option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
@@ -628,7 +675,7 @@ endif; ?>
                   <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
 <?php
-                  foreach ($p2_ealgos as $algo => $algodata) :?>
+                  foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
                     <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
                       <?=$algodata['name'];?>
 <?php
@@ -663,7 +710,7 @@ endif; ?>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
-<?php foreach ($p2_halgos as $algo => $algoname): ?>
+<?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
                       <option value="<?= html_safe($algo) ?>" <?= in_array($algo, $pconfig['hash-algorithm-option']) ? 'selected="selected"' : '' ?>>
                         <?= html_safe($algoname) ?>
                       </option>
@@ -697,6 +744,7 @@ endif; ?>
                         28 => '28 (Brainpool EC 256 bits)',
                         29 => '29 (Brainpool EC 384 bits)',
                         30 => '30 (Brainpool EC 512 bits)',
+                        31 => '31 (Elliptic Curve 25519)',
                     );
                     foreach ($p2_dhgroups as $keygroup => $keygroupname): ?>
                       <option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['pfsgroup'] ? "selected=\"selected\"" : "";?>>

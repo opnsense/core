@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 require_once("auth.inc");
 
-function add_local_user($username, $userdn, $userfullname)
+function add_local_user($username, $userdn, $userfullname, $useremail)
 {
     global $config;
 
@@ -39,7 +39,7 @@ function add_local_user($username, $userdn, $userfullname)
           // link local user to remote server by updating user_dn
           $user['user_dn'] = $userdn;
           // trash user password when linking to ldap, avoid accidental login
-          // using fall-back local password. User could still reset it's
+          // using fall-back local password. User could still reset its
           // local password, but only by choice.
           local_user_set_password($user);
           local_user_set($user);
@@ -52,6 +52,7 @@ function add_local_user($username, $userdn, $userfullname)
     $new_user['name'] = $username;
     $new_user['user_dn'] = $userdn;
     $new_user['descr'] = $userfullname;
+    $new_user['email'] = $useremail;
     local_user_set_password($new_user);
     $new_user['uid'] = $config['system']['nextuid']++;
     $config['system']['user'][] = $new_user;
@@ -60,7 +61,8 @@ function add_local_user($username, $userdn, $userfullname)
 
 $ldap_is_connected = false;
 $ldap_users = array();
-$ldap_server = null;
+$ldap_server = array();
+$authName = null;
 $exit_form = false;
 
 // XXX find first LDAP GUI auth server, better select later on
@@ -68,19 +70,19 @@ $servers = explode(',', $config['system']['webgui']['authmode']);
 foreach ($servers as $server) {
     $authcfg = auth_get_authserver($server);
     if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
+        $authName = $server;
         $ldap_server = $authcfg;
         break;
     }
 }
 
-if ($ldap_server !== null) {
+if ($authName !== null) {
     // connect to ldap server
-    $ldap_auth = new OPNsense\Auth\LDAP($ldap_server['ldap_basedn'], $ldap_server['ldap_protver']);
-    if (!empty($ldap_server['ldap_caref']) && stristr($ldap_server['ldap_urltype'], "standard") === false) {
-        // setup peer ca
-        $ldap_auth->setupCaEnv($ldap_server['ldap_caref']);
-    }
-    $ldap_is_connected = $ldap_auth->connect($ldap_server['ldap_full_url'], $ldap_server['ldap_binddn'], $ldap_server['ldap_bindpw']);
+    $authenticator = (new OPNsense\Auth\AuthenticationFactory())->get($authName);
+    // search ldap
+    $ldap_is_connected = $authenticator->connect(
+        $ldap_server['ldap_full_url'], $ldap_server['ldap_binddn'], $ldap_server['ldap_bindpw']
+    );
 
     if ($ldap_is_connected) {
         // collect list of current ldap users from config
@@ -90,10 +92,8 @@ if ($ldap_server !== null) {
               $confDNs[] = trim($confUser['user_dn']);
            }
         }
-
         // search ldap
-        $result = $ldap_auth->searchUsers('*', $ldap_server['ldap_attr_user'], $ldap_server['ldap_extended_query']);
-
+        $result = $authenticator->searchUsers('*', $ldap_server['ldap_attr_user'], $ldap_server['ldap_extended_query']);
         // actual form action, either save new accounts or list missing
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           // create selected accounts
@@ -107,7 +107,7 @@ if ($ldap_server !== null) {
                           // our system.
                           $username = explode('@', $ldap_user['name'])[0];
                           $username = substr(preg_replace("/[^a-zA-Z0-9\.\-_]/", "", $username),0 ,32);
-                          add_local_user($username , $ldap_user['dn'], $ldap_user['fullname']);
+                          add_local_user($username , $ldap_user['dn'], $ldap_user['fullname'], $ldap_user['email']);
                           $update_count++;
                       }
                   }

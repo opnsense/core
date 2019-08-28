@@ -28,7 +28,6 @@
                 <help>Send log data to the selected target.</help>
                 <advanced>true</advanced>
             </field>
-
             <field>
                 <id>proxy.general.logging.enable.storeLog</id>
                 <label>Enable store logging</label>
@@ -204,7 +203,7 @@
                 <id>proxy.general.parentproxy.enabled</id>
                 <label>Enable Parent Proxy</label>
                 <type>checkbox</type>
-                <help>Enable parent proxy feature</help>
+                <help>Enable parent proxy feature.</help>
             </field>
             <field>
                 <id>proxy.general.parentproxy.host</id>
@@ -217,6 +216,24 @@
                 <label>Port</label>
                 <type>text</type>
                 <help>Parent proxy port.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.enableauth</id>
+                <label>Enable Authentication</label>
+                <type>checkbox</type>
+                <help>Enable authentication against the parent proxy.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.user</id>
+                <label>Username</label>
+                <type>text</type>
+                <help>Set a username if parent proxy requires authentication.</help>
+            </field>
+            <field>
+                <id>proxy.general.parentproxy.password</id>
+                <label>Password</label>
+                <type>password</type>
+                <help>Set a password if parent proxy requires authentication.</help>
             </field>
             <field>
                 <id>proxy.general.parentproxy.localdomains</id>
@@ -536,6 +553,14 @@
                 <label>Authentication method</label>
                 <type>select_multiple</type>
                 <help>Select Authentication method</help>
+            </field>
+            <field>
+                <id>proxy.forward.authentication.authEnforceGroup</id>
+                <label>Enforce local group</label>
+                <type>select_multiple</type>
+                <help><![CDATA[Restrict access to users in the selected (local)group. <br/>
+                <b>NOTE:</b> please be aware that users (or vouchers) which aren't administered locally will be denied when using this option.]]>
+                </help>
             </field>
             <field>
                 <id>proxy.forward.authentication.realm</id>

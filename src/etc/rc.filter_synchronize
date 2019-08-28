@@ -270,6 +270,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     $section_cnf['synchronizeusers'] = 'system.user,system.group';
     $section_cnf['synchronizeauthservers'] = 'system.authserver';
     $section_cnf['synchronizeschedules'] = 'schedules';
+    $section_cnf['synchronizewidgets'] = 'widgets';
 
     foreach (plugins_xmlrpc_sync() as $syncid => $syncconf) {
         $section_cnf['synchronize'.$syncid] = $syncconf['section'];

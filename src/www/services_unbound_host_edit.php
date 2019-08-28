@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
     }
     $pconfig = array();
-    foreach (array('rr', 'host', 'domain', 'ip', 'mxprio', 'mx', 'descr') as $fieldname) {
+    foreach (array('rr', 'host', 'domain', 'ip', 'mxprio', 'mx', 'descr', 'aliases') as $fieldname) {
         if (isset($id) && !empty($a_hosts[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_hosts[$id][$fieldname];
         } else {
@@ -56,7 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    /* input validation */
+    $pconfig['aliases'] =  array();
+    if (isset($pconfig['aliases_host'])) {
+        $pconfig['aliases']['item'] = array();
+        foreach ($pconfig['aliases_host'] as $opt_seq => $opt_host) {
+            if (empty($opt_host) && empty($pconfig['aliases_domain'][$opt_seq]) && empty($pconfig['aliases_descr'][$opt_seq])) {
+                continue;
+            }
+            $pconfig['aliases']['item'][] = array(
+                'domain' => $pconfig['aliases_domain'][$opt_seq],
+                'descr' => $pconfig['aliases_descr'][$opt_seq],
+                'host' => $opt_host,
+            );
+        }
+    }
+
     $reqdfields = explode(" ", "domain rr");
     $reqdfieldsn = array(gettext("Domain"),gettext("Type"));
 
@@ -98,6 +112,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             break;
     }
 
+    foreach ($pconfig['aliases']['item'] as $idx => $alias) {
+        if (!empty($alias['host']) && !is_hostname($alias['host'])) {
+            $input_errors[] = gettext('Hostnames in alias list can only contain the characters A-Z, 0-9 and \'-\'.');
+        }
+        if (!empty($alias['domain']) && !is_domain($alias['domain'])) {
+            $input_errors[] = gettext('A valid domain must be specified in alias list.');
+        }
+        if (empty($alias['host']) && empty($alias['domain'])) {
+            $input_errors[] = gettext('A valid hostname or domain must be specified in alias list.');
+        }
+    }
+
     if (count($input_errors) == 0) {
         $hostent = array();
         $hostent['host'] = $pconfig['host'];
@@ -108,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $hostent['mxprio'] = $pconfig['mxprio'];
         $hostent['mx'] = $pconfig['mx'];
         $hostent['descr'] = $pconfig['descr'];
+        $hostent['aliases'] = $pconfig['aliases'];
 
         if (isset($id)) {
             $a_hosts[$id] = $hostent;
@@ -154,6 +181,29 @@ include("head.inc");
     });
     // trigger initial change
     $("#rr").change();
+
+    /**
+     *  Aliases
+     */
+    function removeRow() {
+        if ( $('#aliases_table > tbody > tr').length == 1 ) {
+            $('#aliases_table > tbody > tr:last > td > input').each(function(){
+              $(this).val("");
+            });
+        } else {
+            $(this).parent().parent().remove();
+        }
+    }
+    // add new detail record
+    $("#addNew").click(function(){
+        // copy last row and reset values
+        $('#aliases_table > tbody').append('<tr>'+$('#aliases_table > tbody > tr:last').html()+'</tr>');
+        $('#aliases_table > tbody > tr:last > td > input').each(function(){
+          $(this).val("");
+        });
+        $(".act-removerow").click(removeRow);
+    });
+    $(".act-removerow").click(removeRow);
   });
 </script>
 <body>
@@ -253,10 +303,58 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases"); ?></td>
+                    <td>
+                      <table class="table table-striped table-condensed" id="aliases_table">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th id="detailsHeading1"><?=gettext("Host"); ?></th>
+                            <th id="detailsHeading3"><?=gettext("Domain"); ?></th>
+                            <th id="updatefreqHeader" ><?=gettext("Description");?></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+<?php
+                        $aliases = !empty($pconfig['aliases']['item']) ? $pconfig['aliases']['item'] : array();
+                        $aliases[] = array('number' => null, 'value' => null, 'type' => null);
+
+                        foreach($aliases as $item): ?>
+                          <tr>
+                            <td>
+                              <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
+                            </td>
+                            <td>
+                              <input name="aliases_host[]" type="text" value="<?=$item['host'];?>" />
+                            </td>
+                            <td>
+                              <input name="aliases_domain[]" type="text" value="<?=$item['domain'];?>" />
+                            </td>
+                            <td>
+                              <input name="aliases_descr[]" type="text" value="<?=$item['descr'];?>" />
+                            </td>
+                          </tr>
+<?php
+                        endforeach;?>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="4">
+                              <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                      <div class="hidden" data-for="help_for_alias">
+                        <?=gettext("Enter additional names for this host."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_unbound_overrides.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>" />
+                      <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Cancel')) ?>" onclick="window.location.href='/services_unbound_overrides.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

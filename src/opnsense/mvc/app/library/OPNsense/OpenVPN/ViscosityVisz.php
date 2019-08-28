@@ -48,7 +48,7 @@ class ViscosityVisz extends PlainOpenVPN
      */
     public function supportedOptions()
     {
-        return array("plain_config", "p12_password", "random_local_port");
+        return array("plain_config", "p12_password", "random_local_port", "auth_nocache", "cryptoapi");
     }
 
     /**
@@ -108,15 +108,24 @@ class ViscosityVisz extends PlainOpenVPN
         }
         mkdir($content_dir, 0700, true);
 
-        $p12 = $this->export_pkcs12(
-            $this->config['client_crt'],
-            $this->config['client_prv'],
-            !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
-            !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
-        );
+        if (empty($this->config['cryptoapi'])) {
+            // export keypair
+            $p12 = $this->export_pkcs12(
+                $this->config['client_crt'],
+                $this->config['client_prv'],
+                !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
+                !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
+            );
 
-        file_put_contents("{$content_dir}/pkcs.p12", $p12);
-        $conf[] = "pkcs12 pkcs.p12";
+            file_put_contents("{$content_dir}/pkcs.p12", $p12);
+            $conf[] = "pkcs12 pkcs.p12";
+        } else {
+            // use internal Windows store, only flush ca (when available)
+            if (!empty($this->config['server_ca_chain'])) {
+                file_put_contents("{$content_dir}/ca.crt", implode("\n", $this->config['server_ca_chain']));
+                $conf[] = "ca ca.crt";
+            }
+        }
         if (!empty($this->config['tls'])) {
             $conf[] = "tls-auth ta.key 1";
             file_put_contents("{$content_dir}/ta.key", trim(base64_decode($this->config['tls'])));

@@ -42,39 +42,6 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\TrafficShaper\TrafficShaper';
 
     /**
-     * validate and save model after update or insertion.
-     * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
-     * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $mdlShaper
-     * @param $node reference node, to use as relative offset
-     * @param $reference reference for validation output, used to rename the validation output keys
-     * @return array result / validation output
-     */
-    private function validateSave($mdlShaper, $node = null, $reference = null)
-    {
-        $result = array("result"=>"failed","validations" => array());
-        // perform validation
-        $valMsgs = $mdlShaper->performValidation();
-        foreach ($valMsgs as $field => $msg) {
-            // replace absolute path to attribute for relative one at uuid.
-            if ($node != null) {
-                $fieldnm = str_replace($node->__reference, $reference, $msg->getField());
-                $result["validations"][$fieldnm] = $msg->getMessage();
-            } else {
-                $result["validations"][$msg->getField()] = $msg->getMessage();
-            }
-        }
-        // serialize model to config and save when there are no validation errors
-        if (count($result['validations']) == 0) {
-            // save config if validated correctly
-            $mdlShaper->serializeToConfig();
-            Config::getInstance()->save();
-            $result = array("result" => "saved");
-        }
-        return $result;
-    }
-
-    /**
      * Retrieve pipe settings or return defaults
      * @param $uuid item unique id
      * @return array traffic shaper pipe content
@@ -105,15 +72,10 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addPipeAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("pipe")) {
-            $mdlShaper = new TrafficShaper();
-            $node = $mdlShaper->addPipe();
-            $node->setNodes($this->request->getPost("pipe"));
-            $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->validateSave($mdlShaper, $node, "pipe");
-        }
-        return $result;
+        return $this->addBase("pipe", "pipes.pipe", [
+            "origin" => "TrafficShaper",
+            "number" => (new TrafficShaper())->newPipeNumber()
+        ]);
     }
 
     /**
@@ -201,17 +163,11 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addQueueAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("queue")) {
-            $mdlShaper = new TrafficShaper();
-            $node = $mdlShaper->addQueue();
-            $node->setNodes($this->request->getPost("queue"));
-            $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->validateSave($mdlShaper, $node, "queue");
-        }
-        return $result;
+        return $this->addBase("queue", "queues.queue", [
+            "origin" => "TrafficShaper",
+            "number" => (new TrafficShaper())->newQueueNumber()
+        ]);
     }
-
     /**
      * Delete queue by uuid
      * @param string $uuid internal id
@@ -261,7 +217,11 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getRuleAction($uuid = null)
     {
-        return $this->getBase("rule", "rules.rule", $uuid);
+        $result = $this->getBase("rule", "rules.rule", $uuid);
+        if ($uuid === null) {
+            $result["rule"]["sequence"] = (string)((new TrafficShaper())->getMaxRuleSequence() + 1);
+        }
+        return $result;
     }
 
     /**
@@ -284,15 +244,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function addRuleAction()
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("rule")) {
-            $mdlShaper = new TrafficShaper();
-            $node = $mdlShaper->rules->rule->add();
-            $node->setNodes($this->request->getPost("rule"));
-            $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->validateSave($mdlShaper, $node, "rule");
-        }
-        return $result;
+        return $this->addBase('rule', 'rules.rule', [ "origin" => "TrafficShaper"]);
     }
     /**
      * Delete rule by uuid

@@ -33,7 +33,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("services.inc");
 
 function clear_all_log_files()
 {
@@ -80,7 +79,7 @@ function clear_all_log_files()
 
     system_syslogd_start();
     killbyname('dhcpd');
-    services_dhcpd_configure();
+    plugins_configure('dhcp');
 }
 
 function is_valid_syslog_server($target) {
@@ -430,7 +429,7 @@ $(document).ready(function() {
                   <tr>
                     <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>
                     <td>
-                      <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?=gettext("Reset Log Files"); ?>"/>
+                      <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?= html_safe(gettext('Reset Log Files')) ?>"/>
                       <div class="hidden" data-for="help_for_resetlogs">
                         <?= gettext("Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
                       </div>
@@ -445,6 +444,13 @@ $(document).ready(function() {
                   <tr>
                     <td style="width:22%"><strong><?=gettext("Remote Logging Options");?></strong></td>
                     <td style="width:78%"></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Enable Remote Logging');?></td>
+                    <td>
+                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : ''; ?> onclick="enable_change(false)" />
+                      <?=gettext('Send log messages to remote syslog server');?>
+                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_sourceip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source Address"); ?></td>
@@ -475,13 +481,6 @@ $(document).ready(function() {
                       <div class="hidden" data-for="help_for_ipproto">
                         <?= gettext("This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried."); ?>
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable Remote Logging");?></td>
-                    <td>
-                      <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
-                      <?=gettext("Send log messages to remote syslog server");?>
                     </td>
                   </tr>
                   <tr>

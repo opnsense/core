@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,35 @@
     package : configd
 """
 
+import os
+import glob
 import collections
 import netaddr
-import operator
+
+
+class SortKeyHelper:
+    """ generate item key for sort function
+    """
+    def __init__(self, fields):
+        """ initialize SortKeyHelper
+
+        :param fields: field names
+        """
+        self._fields = fields
+
+    def get_key(self, record):
+        """ initialize SortKeyHelper
+
+        :param fields: dictionary item
+        :return: list of keys for this record
+        """
+        result = list()
+        for field in self._fields:
+            if field in record:
+                result.append(record[field])
+            else:
+                result.append('')
+        return result
 
 
 # noinspection PyPep8Naming
@@ -65,6 +91,21 @@ class Helpers(object):
         :return: boolean
         """
         if self.getNodeByTag(tag):
+            return True
+        else:
+            return False
+
+    def empty(self, tag):
+        """ check if either the node does not exist or is empty
+        :param tag: tag in dot notation (section.item)
+        :return: boolean
+        """
+        node = self.getNodeByTag(tag)
+        if node is None:
+            return True
+        elif len(node) == 0:
+            return True
+        elif hasattr(node, 'strip') and node.strip() in ('', '0'):
             return True
         else:
             return False
@@ -124,7 +165,22 @@ class Helpers(object):
     @staticmethod
     def sortDictList(lst, *operators):
         if type(lst) == list:
-            lst.sort(key=operator.itemgetter(*operators))
+            lst.sort(key=SortKeyHelper(operators).get_key)
         elif type(lst) in (collections.OrderedDict, dict):
             return [lst]
         return lst
+
+    @staticmethod
+    def glob(pathname):
+        """ glob within template directory scope
+            :param pathname: relative path name
+            :return: list
+        """
+        result = list()
+        template_path = os.path.realpath("%s/../../templates/" % os.path.dirname(__file__))
+        for sfilename in glob.glob("%s/%s" % (template_path, pathname)):
+            sfilename = os.path.realpath(sfilename)
+            if sfilename.startswith(template_path):
+                result.append(sfilename[len(template_path):].lstrip('/'))
+
+        return result

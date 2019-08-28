@@ -34,14 +34,11 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-/**
- * restart dhcp service
- */
 function reconfigure_dhcpd()
 {
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    services_dhcpd_configure();
+    dhcpd_dhcp_configure(false, 'inet6');
     clear_subsystem_dirty('staticmaps');
 }
 
@@ -156,8 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['ddnsdomain']) && !is_domain($pconfig['ddnsdomain'])) {
             $input_errors[] = gettext("A valid domain name must be specified for the dynamic DNS registration.");
         }
-        if (!empty($pconfig['ddnsdomain']) && !is_ipaddrv4($pconfig['ddnsdomainprimary'])) {
-            $input_errors[] = gettext("A valid primary domain name server IPv4 address must be specified for the dynamic domain name.");
+        if (!empty($pconfig['ddnsdomainprimary']) && !is_ipaddrv6($pconfig['ddnsdomainprimary'])) {
+            $input_errors[] = gettext("A valid primary domain name server IPv6 address must be specified for the dynamic domain name.");
         }
         if (!empty($pconfig['ddnsdomainkey']) && base64_encode(base64_decode($pconfig['ddnsdomainkey'], true)) !== $pconfig['ddnsdomainkey']) {
             $input_errors[] = gettext('You must specify a Base64-encoded domain key.');
@@ -613,7 +610,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
                       <td>
                         <div id="showddnsbox">
-                          <input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
+                          <input type="button" onclick="show_ddns_config()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
                         </div>
                         <div id="showddns" style="display:none">
                           <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if ($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
@@ -634,7 +631,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
                       <td>
                         <div id="showntpbox">
-                          <input type="button" onclick="show_ntp_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show NTP configuration");?>
+                          <input type="button" onclick="show_ntp_config()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show NTP configuration");?>
                         </div>
                         <div id="showntp" style="display:none">
                           <input name="ntp1" type="text" id="ntp1" value="<?=$pconfig['ntp1'];?>" /><br />
@@ -646,7 +643,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
                       <td>
                         <div id="shownetbootbox">
-                          <input type="button" onclick="show_netboot_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Network booting");?>
+                          <input type="button" onclick="show_netboot_config()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
                           <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? 'checked="checked"' : ""; ?> />
@@ -661,7 +658,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Additional BOOTP/DHCP Options");?></td>
                       <td>
                         <div id="shownumbervaluebox">
-                          <input type="button" onclick="show_shownumbervalue()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
+                          <input type="button" onclick="show_shownumbervalue()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
                         </div>
                         <div id="shownumbervalue" style="display:none">
                           <table class="table table-striped table-condensed" id="numberoptions_table">

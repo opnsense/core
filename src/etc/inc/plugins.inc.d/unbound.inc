@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -171,15 +171,16 @@ EOF;
     }
 
     $outgoingints = '';
+    $ifconfig_details = legacy_interfaces_details();
     if (!empty($config['unbound']['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
         foreach ($outgoing_interfaces as $outif) {
-            $outip = get_interface_ip($outif);
+            $outip = get_interface_ip($outif, $ifconfig_details);
             if (!empty($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
             }
-            $outip = get_interface_ipv6($outif);
+            $outip = get_interface_ipv6($outif, $ifconfig_details);
             if (!empty($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
             }
@@ -281,7 +282,7 @@ chroot: /var/unbound
 username: unbound
 directory: /var/unbound
 pidfile: /var/run/unbound.pid
-root-hints: /root.hints
+root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
 verbosity: {$verbosity}
@@ -338,6 +339,9 @@ include: /var/unbound/host_entries.conf
 # Domain overrides
 include: /var/unbound/domainoverrides.conf
 
+# Custom includes (plugins)
+include: /var/unbound/etc/*.conf
+
 {$custom_options}
 
 {$forward_conf}
@@ -353,7 +357,6 @@ remote-control:
 
 EOD;
 
-    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 }
 
@@ -438,6 +441,7 @@ function unbound_configure_do($verbose = false, $interface = '')
     }
 
     unbound_generate_config();
+    configd_run("template reload OPNsense/Unbound/*");
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
@@ -522,7 +526,7 @@ function unbound_add_host_entries()
     } else {
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
-
+    $ifconfig_details = legacy_interfaces_details();
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
@@ -531,7 +535,7 @@ function unbound_add_host_entries()
         $realifv4 = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
 
-        $laddr = find_interface_ip($realifv4);
+        $laddr = find_interface_ip($realifv4, $ifconfig_details);
         if (is_ipaddrv4($laddr)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
@@ -541,7 +545,7 @@ function unbound_add_host_entries()
             $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
         }
-        $laddr6 = find_interface_ipv6($realifv6);
+        $laddr6 = find_interface_ipv6($realifv6, $ifconfig_details);
         if (is_ipaddrv6($laddr6)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
@@ -552,7 +556,7 @@ function unbound_add_host_entries()
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
         }
         if (empty($config['unbound']['noreglladdr6'])) {
-            $lladdr6 = find_interface_ipv6_ll($realifv6);
+            $lladdr6 = find_interface_ipv6_ll($realifv6, $ifconfig_details);
             if (is_ipaddrv6($lladdr6)) {
                 $domain = $config['system']['domain'];
                 if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
@@ -589,8 +593,20 @@ function unbound_add_host_entries()
 
     if (isset($config['unbound']['hosts'])) {
         foreach ($config['unbound']['hosts'] as $host) {
-            if ($host['host'] != '') {
-                $host['host'] = $host['host'].".";
+            $aliases = array(array(
+                'domain' => $host['domain'],
+                'descr' => $host['descr'],
+                'host' => $host['host'],
+            ));
+
+            if (!empty($host['aliases']['item'])) {
+                foreach ($host['aliases']['item'] as $alias) {
+                    $aliases[] = array(
+                        'domain' => !empty($alias['domain']) ? $alias['domain'] : $aliases[0]['domain'],
+                        'descr' => !empty($alias['descr']) ? $alias['descr'] : $aliases[0]['descr'],
+                        'host' => !empty($alias['host']) ? $alias['host'] : $aliases[0]['host'],
+                    );
+                }
             }
 
             /* Backwards compatibility for records created before introducing RR types. */
@@ -598,25 +614,31 @@ function unbound_add_host_entries()
                 $host['rr'] = (is_ipaddrv6($host['ip'])) ? 'AAAA' : 'A';
             }
 
-            switch ($host['rr']) {
-                case 'A':
-                case 'AAAA':
-                    /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
-                    if (trim($host['host']) == '*.') {
-                        $unbound_entries .= "local-zone: \"{$host['domain']}\" redirect\n";
-                        $unbound_entries .= "local-data: \"{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
-                    } else {
-                        $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
-                        $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
-                    }
-                    break;
-                case 'MX':
-                    $unbound_entries .= "local-data: \"{$host['host']}{$host['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
-                    break;
-            }
+            foreach ($aliases as $alias) {
+                if ($alias['host'] != '') {
+                    $alias['host'] .= '.';
+                }
 
-            if (!empty($host['descr']) && isset($config['unbound']['txtsupport'])) {
-                $unbound_entries .= "local-data: '{$host['host']}{$host['domain']} TXT \"".addslashes($host['descr'])."\"'\n";
+                switch ($host['rr']) {
+                    case 'A':
+                    case 'AAAA':
+                        /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
+                        if ($alias['host'] == '*.') {
+                            $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
+                            $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                        } else {
+                            $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$alias['host']}{$alias['domain']}\"\n";
+                            $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                        }
+                        break;
+                    case 'MX':
+                        $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
+                        break;
+                }
+
+                if (!empty($alias['descr']) && isset($config['unbound']['txtsupport'])) {
+                    $unbound_entries .= "local-data: '{$alias['host']}{$alias['domain']} TXT \"".addslashes($alias['descr'])."\"'\n";
+                }
             }
         }
     }
@@ -678,41 +700,42 @@ function unbound_acls_subnets()
 {
     global $config;
 
+    $any = true;
+
     if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = array_flip(explode(',', $config['unbound']['active_interface']));
-
-        /* in case of OpenVPN interface we need to correct the subnet */
-        foreach (array('server', 'client') as $mode) {
-            foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
-                $ovpn = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
-                if (!array_key_exists($ovpn, $active_interfaces)) {
-                    continue;
-                }
-                $active_interfaces[$ovpn] = [];
-                if (!empty($setting['tunnel_network'])) {
-                    $active_interfaces[$ovpn]['net4'] = explode('/', $setting['tunnel_network'])[1];
-                }
-                if (!empty($setting['tunnel_networkv6'])) {
-                    $active_interfaces[$ovpn]['net6'] = explode('/', $setting['tunnel_networkv6'])[1];
-                }
-            }
-        }
+        $any = false;
     } else {
         $active_interfaces = get_configured_interface_with_descr();
+    }
+
+    /* in case of OpenVPN interface we need to correct the subnet */
+    foreach (array('server', 'client') as $mode) {
+        foreach (config_read_array('openvpn', "openvpn-{$mode}") as $id => $setting) {
+            $ovpn = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
+            if (!$any && !array_key_exists($ovpn, $active_interfaces)) {
+                continue;
+            }
+            $active_interfaces[$ovpn] = [];
+            if (!empty($setting['tunnel_network'])) {
+                $active_interfaces[$ovpn]['net4'] = explode('/', $setting['tunnel_network'])[1];
+            }
+            if (!empty($setting['tunnel_networkv6'])) {
+                $active_interfaces[$ovpn]['net6'] = explode('/', $setting['tunnel_networkv6'])[1];
+            }
+        }
     }
 
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
-    foreach ($active_interfaces as $ubif => $ubextra) {
-        foreach (legacy_getall_interface_addresses(get_real_interface($ubif)) as $subnet) {
-            if (!empty($ubextra['net4']) && is_subnetv4($subnet)) {
-                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net4'];
-            } elseif (!empty($ubextra['net6']) && is_subnetv6($subnet)) {
-                $subnet = explode('/', $subnet)[0] . '/' . $ubextra['net6'];
-            }
-            $subnets[] = $subnet;
+    foreach (interfaces_addresses(array_keys($active_interfaces), true) as $subnet => $info) {
+        if (!empty($active_interfaces[$info['name']]['net4']) && is_subnetv4($subnet)) {
+            $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net4'];
+        } elseif (!empty($active_interfaces[$info['name']]['net6']) && is_subnetv6($subnet)) {
+            $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net6'];
         }
+        $subnets[] = $subnet;
     }
 
     return $subnets;

@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     Copyright (c) 2015 Jos Schellevis <jos@opnsense.org>
     All rights reserved.
 
@@ -37,17 +37,13 @@ import tarfile
 import gzip
 import zipfile
 import syslog
-if sys.version_info < (3, 0):
-    from ConfigParser import ConfigParser
-    from urllib2 import urlopen
-    from urllib2 import URLError
-    from urllib2 import HTTPError
-else:
-    from configparser import ConfigParser
-    from urllib.request import urlopen
-    from urllib.error import URLError
-    from urllib.error import HTTPError
+import urllib3
+from configparser import ConfigParser
+from urllib.request import urlopen
+from urllib.error import URLError
+from urllib.error import HTTPError
 import requests
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 acl_config_fn = '/usr/local/etc/squid/externalACLs.conf'
 acl_target_dir = '/usr/local/etc/squid/acl'
@@ -154,16 +150,12 @@ class Downloader(object):
         """ download / unpack ACL
             :return: iterator filename, type, content
         """
-        is_python3 = sys.version_info >= (3, 0)
         self.fetch()
         for filename, filehandle in self.get_files():
             basefilename = os.path.basename(filename).lower()
             file_ext = filename.split('.')[-1].lower()
             while True:
-                if is_python3:
-                    line = filehandle.readline().decode(encoding='utf-8', errors='ignore')
-                else:
-                    line = filehandle.readline()
+                line = filehandle.readline().decode(encoding='utf-8', errors='ignore')
                 if not line:
                     break
                 yield filename, basefilename, file_ext, line
@@ -174,7 +166,7 @@ class DomainSorter(object):
         Use as file type object, close flushes the actual (sorted) data to disc
     """
 
-    def __init__(self, filename=None, mode=None):
+    def __init__(self, filename=None):
         """ new sorted output file, uses an acl record in reverse order as sort key
             :param filename: target filename
             :param mode: file open mode
@@ -185,7 +177,6 @@ class DomainSorter(object):
         self._sort_map = dict()
         # setup target
         self._target_filename = filename
-        self._target_mode = mode
         # setup temp files
         self.generate_targets()
 
@@ -197,7 +188,7 @@ class DomainSorter(object):
             target = chr(i + 1)
             setid = int(i / (sets / self._num_targets))
             if setid not in self._buckets:
-                self._buckets[setid] = tempfile.NamedTemporaryFile('w+', 10240)
+                self._buckets[setid] = tempfile.NamedTemporaryFile('wb+', 10240)
             self._sort_map[target] = self._buckets[setid]
 
     def write(self, data):
@@ -221,7 +212,7 @@ class DomainSorter(object):
         target = key[0]
         if target in self._sort_map:
             for part in (key, self._separator, value, '\n'):
-                self._sort_map[target].write(part)
+                self._sort_map[target].write(part.encode('utf-8'))
         else:
             # not supposed to happen, every key should have a calculated target pool
             pass
@@ -233,7 +224,7 @@ class DomainSorter(object):
             self._buckets[target].seek(0)
             set_content = dict()
             while True:
-                line = self._buckets[target].readline()
+                line = self._buckets[target].readline().decode()
                 if not line:
                     break
                 else:
@@ -261,9 +252,9 @@ class DomainSorter(object):
     def close(self):
         """ close and dump content
         """
-        if self._target_filename is not None and self._target_mode is not None:
+        if self._target_filename is not None:
             # flush to file on close
-            with open(self._target_filename, self._target_mode, buffering=10240) as f_out:
+            with open(self._target_filename, 'wb', buffering=10240) as f_out:
                 prev_line = None
                 for line in self.reader():
                     line = line.lstrip('.')
@@ -273,8 +264,8 @@ class DomainSorter(object):
                     if self.is_domain(line):
                         # prefix domain, if this domain is different then the previous one
                         if prev_line is None or '.%s' % line not in prev_line:
-                            f_out.write('.')
-                    f_out.write(line)
+                            f_out.write(b'.')
+                    f_out.write(line.encode())
                     prev_line = line
 
 
@@ -339,6 +330,8 @@ def main():
                         # detect output type
                         if '/' in line or '|' in line:
                             filetype = 'url'
+                        elif line.startswith('#'):
+                            filetype = 'comment'
                         else:
                             filetype = 'domain'
 
@@ -356,7 +349,7 @@ def main():
                                 continue
 
                         if filetype in targets and targets[filetype]['handle'] is None:
-                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'],'w')
+                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'])
                         if filetype in targets:
                             targets[filetype]['handle'].write(line)
                             targets[filetype]['handle'].write('\n')

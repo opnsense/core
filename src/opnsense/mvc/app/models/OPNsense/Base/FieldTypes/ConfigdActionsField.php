@@ -110,6 +110,7 @@ class ConfigdActionsField extends BaseField
                     }
                 }
             }
+            natcasesort(self::$internalOptionList[$this->internalCacheKey]);
         }
     }
 

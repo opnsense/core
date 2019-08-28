@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
@@ -42,7 +42,6 @@ $inc_files = array(
     'auth.inc',
     'util.inc',
     'interfaces.inc',
-    'services.inc',
     'system.inc',
     'filter.inc',
     'rrd.inc',
@@ -91,27 +90,26 @@ system_kernel_configure(true);
 system_sysctl_configure(true);
 system_timezone_configure(true);
 system_firmware_configure(true);
+system_trust_configure(true);
 system_hostname_configure(true);
 system_hosts_generate(true);
 system_syslogd_start(true);
 
-openvpn_prepare_all(true);
 interfaces_configure(true);
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
-setup_gateways_monitor(true);
 plugins_configure('earlybootup', true);
 system_cron_configure(true, true);
 system_routing_configure(true);
 
-plugins_configure('dns', true);
-services_dhcpd_configure(true);
 system_hosts_generate(true);
-services_dhcrelay_configure(true);
-services_dhcrelay6_configure(true);
+plugins_configure('dhcp', true);
+plugins_configure('dhcrelay', true);
+plugins_configure('dns', true);
 
 prefer_ipv4_or_ipv6();
+plugins_configure('monitor', true);
 filter_configure_sync(true);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);

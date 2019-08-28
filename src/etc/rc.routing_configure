@@ -32,7 +32,6 @@ require_once 'util.inc';
 require_once 'system.inc';
 require_once 'interfaces.inc';
 require_once 'filter.inc';
-require_once 'rrd.inc';
 
 // drop deleted routes
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
@@ -43,5 +42,5 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 }
 
 system_routing_configure(true);
-setup_gateways_monitor(true);
+plugins_configure('monitor', true);
 filter_configure_sync(true);

@@ -181,13 +181,13 @@ if($need_alert_display == true) {
         <ul class="list-inline">
           <li><h1><?= gentitle($menuBreadcrumbs) ?></h1></li>
           <li class="btn-group-container">
-            <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+            <form method="post">
               <?php
               if (isset($service_hook)) {
-                $ssvc = find_service_by_name($service_hook);
+                $ssvc = service_by_name($service_hook);
                 if (!empty($ssvc)) {
-                  echo get_service_status_icon($ssvc);
-                  echo get_service_control_links($ssvc);
+                  echo service_control_icon($ssvc);
+                  echo service_control_links($ssvc);
                 }
               } ?>
               <?php if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>

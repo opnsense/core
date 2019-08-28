@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,9 +45,5 @@ if len(sys.argv) > 1:
     # scan rrd directory for requested file
     for rrdFilename in glob.glob('%s/*.rrd' % rrd_reports_dir):
         if os.path.basename(rrdFilename) == filename:
-            with tempfile.NamedTemporaryFile() as output_stream:
-                subprocess.check_call(['/usr/local/bin/rrdtool', 'dump', rrdFilename],
-                                      stdout=output_stream, stderr=subprocess.STDOUT)
-                output_stream.seek(0)
-                print (output_stream.read())
+            subprocess.run(['/usr/local/bin/rrdtool', 'dump', rrdFilename])
             break

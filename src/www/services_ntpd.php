@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2013 Dagorlad
-    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2013 Dagorlad
+ * Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("rrd.inc");
@@ -71,6 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     if (!empty($pconfig['orphan']) && ($pconfig['orphan'] < 0 || $pconfig['orphan'] > 15 || !is_numeric($pconfig['orphan']))) {
         $input_errors[] = gettext("Orphan mode must be a value between 0..15");
+    }
+    $prev_opt = !empty($a_ntpd['custom_options']) ? $a_ntpd['custom_options'] : "";
+    if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+        $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
     }
 
     // swap fields, really stupid field usage which we are not going to change now....
@@ -122,6 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config("Updated NTP Server Settings");
+
+        rrd_configure();
         ntpd_configure_start();
 
         header(url_safe('Location: /services_ntpd.php'));
@@ -238,7 +244,7 @@ include("head.inc");
                           if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface)) {
                               continue;
                           }?>
-                          <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['interface']) ?" selected=\"selected\"" : "";?>>
+                          <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>
                               <?=htmlspecialchars($ifacename);?>
                           </option>
 <?php
@@ -315,12 +321,10 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_statsgraph" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NTP graphs') ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" data-for="help_for_statsgraph">
-                        <?=gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
-                      </div>
+                      <?= gettext('Enable RRD graphs of NTP statistics (default: disabled).') ?>
                     </td>
                   </tr>
                   <tr>
@@ -340,7 +344,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Statistics logging') ?></td>
                     <td>
                       <div>
-                        <input class="btn btn-default btn-xs" id="showstatisticsbox" type="button" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
+                        <input class="btn btn-default btn-xs" id="showstatisticsbox" type="button" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show statistics logging options");?>
                       </div>
                       <div id="showstatistics" style="display:none">
                       <?= gettext("These options will create persistent daily log files in /var/log/ntp.") ?>
@@ -360,10 +364,10 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Access restrictions') ?></td>
                     <td>
                       <div>
-                      <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show access restriction options");?>
+                      <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show access restriction options");?>
                       </div>
                       <div id="showrestrict" style="display:none">
-                      <?=gettext("these options control access to NTP from the WAN."); ?>
+                      <?=gettext("These options control access to NTP from the WAN."); ?>
                       <br /><br />
                       <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
@@ -389,7 +393,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Leap seconds') ?></td>
                     <td>
                       <div>
-                        <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Leap second configuration");?>
+                        <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Leap second configuration");?>
                       </div>
                       <div id="showleapsec" style="display:none">
                         <?=gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
@@ -406,11 +410,12 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                     <td>
                       <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                        <input type="button" class="btn btn-default btn-xs" id="show_advanced_ntpd" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                        <input type="button" class="btn btn-default btn-xs" id="show_advanced_ntpd" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show advanced option");?>
                       </div>
                       <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
                         <strong><?=gettext("Advanced");?><br /></strong>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+                        <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?><br/>
                         <?= gettext('Enter any additional options you would like to add to the network time configuration here, separated by a space or newline.') ?>
                       </div>
                     </td>

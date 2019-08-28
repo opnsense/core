@@ -32,7 +32,6 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
-require_once("rrd.inc");
 
 /**
  * check if gateway_item can be deleted
@@ -100,23 +99,23 @@ function delete_gateway_item($id, $a_gateways)
             mwexec("/sbin/route delete -inet6 " . escapeshellarg($a_gateways[$id]['monitor']));
         }
     }
-
-    if ($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway'] == $a_gateways[$id]['name']) {
-        unset($config['interfaces'][$a_gateways[$id]['friendlyiface']]['gateway']);
+    if (!empty($config['interfaces'][$a_gateways[$id]['interface']])) {
+        if ($config['interfaces'][$a_gateways[$id]['interface']]['gateway'] == $a_gateways[$id]['name']) {
+            unset($config['interfaces'][$a_gateways[$id]['interface']]['gateway']);
+        }
     }
     unset($config['gateways']['gateway_item'][$a_gateways[$id]['attribute']]);
+    if (empty($config['gateways']['gateway_item'])) {
+        // make sure we don't leave a stray gateway_item
+        unset($config['gateways']['gateway_item']);
+    }
 }
 
-// fetch gateways and let's pretend the order is safe to use...
-$a_gateways = return_gateways_array(true, false, true);
-$a_gateways_arr = array();
-foreach ($a_gateways as $gname => $gw) {
-    /* not sure why this is rewrapped, so retain the key for status here instead */
-    $gw['gname'] = $gname;
-    $a_gateways_arr[] = $gw;
-}
-$a_gateways = $a_gateways_arr;
-
+// fetch gateway list including active default for IPv4/IPv6
+$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+$default_gwv4 = $gateways->getDefaultGW(return_down_gateways(), "inet");
+$default_gwv6 = $gateways->getDefaultGW(return_down_gateways(), "inet6");
+$a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
 $gateways_status = return_gateways_status();
 
 // form processing
@@ -131,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // apply changes, reconfigure
         system_routing_configure();
         clear_subsystem_dirty('staticroutes');
-        setup_gateways_monitor();
+        plugins_configure('monitor');
         filter_configure();
         header(url_safe('Location: /system_gateways.php?displaysave=true'));
         exit;
@@ -288,12 +287,14 @@ $( document ).ready(function() {
             <form method="post"  name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed">
                 <thead>
                   <tr>
                     <th colspan="2">&nbsp;</th>
                     <th><?=gettext("Name"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Interface"); ?></th>
+                    <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Protocol"); ?></th>
+                    <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Priority"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Gateway"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Monitor IP"); ?></th>
                     <th class="text-nowrap hidden-xs"><?= gettext('RTT') ?></th>
@@ -336,10 +337,18 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <?=$gateway['name'];?>
-                        <?=isset($gateway['defaultgw']) ? "<strong>(default)</strong>" : "";?>
+                        <?=!empty($default_gwv4) && $gateway['name'] == $default_gwv4['name'] ? "<strong>(active)</strong>" : "";?>
+                        <?=!empty($default_gwv6) && $gateway['name'] == $default_gwv6['name'] ? "<strong>(active)</strong>" : "";?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
-                        <?=convert_friendly_interface_to_friendly_descr($gateway['friendlyiface']);?>
+                        <?=convert_friendly_interface_to_friendly_descr($gateway['interface']);?>
+                      </td>
+                      <td class="hidden-xs hidden-sm hidden-md">
+                        <?=$gateway['ipprotocol'] == "inet" ?  "IPv4 " :  "IPv6 ";?>
+                      </td>
+                      <td class="hidden-xs hidden-sm hidden-md">
+                        <?=empty($gateway['defunct']) ? $gateway['priority'] : gettext("defunct");?>
+                        <small><?=!empty($gateway['defaultgw']) ? gettext("(upstream)") : "";?></small>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=$gateway['gateway'];?>
@@ -348,20 +357,20 @@ $( document ).ready(function() {
                         <?=$gateway['monitor'];?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['delay'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['delay'] : "~" ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['stddev'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['stddev'] : "~" ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
-                        <?= !empty($gateways_status[$gateway['gname']]) ? $gateways_status[$gateway['gname']]['loss'] : gettext("Pending") ?>
+                        <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['loss'] : "~" ?>
                       </td>
                       <td>
   <?php
                       $online = gettext('Pending');
                       $gateway_label_class = 'default';
-                      if ($gateways_status[$gateway['gname']]) {
-                          $status = $gateways_status[$gateway['gname']];
+                      if ($gateways_status[$gateway['name']]) {
+                          $status = $gateways_status[$gateway['name']];
                           if (stristr($status['status'], 'force_down')) {
                               $online = gettext('Offline (forced)');
                               $gateway_label_class = 'danger';
@@ -378,13 +387,12 @@ $( document ).ready(function() {
                               $online = gettext('Online');
                               $gateway_label_class = 'success';
                           }
-                      } elseif (isset($gateway['monitor_disable'])) {
+                      } elseif (!isset($gateway['disabled']) && isset($gateway['monitor_disable'])) {
                           $online = gettext('Online');
                           $gateway_label_class = 'success';
                       }
   ?>
                         <div class="label label-<?= $gateway_label_class ?>">
-                          <i class="fa fa-globe"></i>
                           <?=$online;?>
                         </div>
                       </td>
@@ -413,9 +421,13 @@ $( document ).ready(function() {
 <?php
                     $i++;
                   endforeach;?>
+                </tbody>
+                <thead>
                     <tr>
                       <td colspan="2"></td>
                       <td></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
@@ -436,7 +448,7 @@ $( document ).ready(function() {
                       endif;?>
                       </td>
                     </tr>
-                </tbody>
+                </thead>
               </table>
             </form>
           </div>

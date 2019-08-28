@@ -67,17 +67,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     del:'/api/trafficshaper/settings/delRule/',
                     toggle:'/api/trafficshaper/settings/toggleRule/',
                     options: {
-                        converters: {
-                            notprefixable: {
-                                to: function (value) {
-                                    if (value.not) {
-                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
-                                    } else {
-                                        return value.val;
-                                    }
-                                }
-                            }
-                        },
                         responseHandler: function (response) {
                             // concatenate fields for not.
                             if ('rows' in response) {
@@ -165,7 +154,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="tab-content content-box">
     <div id="pipes" class="tab-pane fade in active">
         <!-- tab page "pipes" -->
-        <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPipe">
+        <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPipe" data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
@@ -195,7 +184,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="queues" class="tab-pane fade in">
         <!-- tab page "queues" -->
-        <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogQueue">
+        <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogQueue"  data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
@@ -223,7 +212,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="rules" class="tab-pane fade in">
         <!-- tab page "rules" -->
-        <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+        <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule"  data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
@@ -253,6 +242,9 @@ POSSIBILITY OF SUCH DAMAGE.
         </table>
     </div>
     <div class="col-md-12">
+        <div id="shaperChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
         <hr/>
         <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
         <button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._('Reset') }}</b> <i id="flushAct_progress" class=""></i></button>

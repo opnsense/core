@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -67,6 +67,23 @@ function isvalidpid($pidfile)
     }
 
     return false;
+}
+
+function waitforpid($pidfile, $timeout = -1)
+{
+    $msec = $timeout * 1000;
+
+    while (!isvalidpid($pidfile)) {
+        usleep(200 * 1000);
+        if ($timeout != -1) {
+            $msec -= 200;
+            if ($msec < 0) {
+                return 0;
+            }
+        }
+    }
+
+    return trim(file_get_contents($pidfile));
 }
 
 function is_process_running($process)
@@ -197,7 +214,8 @@ function gen_subnetv6($ipaddr, $bits)
 }
 
 /* return the highest (broadcast) address in the subnet given a host address and a subnet bit count */
-function gen_subnet_max($ipaddr, $bits) {
+function gen_subnet_max($ipaddr, $bits)
+{
     if (!is_ipaddr($ipaddr) || !is_numeric($bits)) {
         return '';
     }
@@ -213,12 +231,12 @@ function gen_subnetv6_max($ipaddr, $bits)
         return false;
     }
 
-    set_error_handler (
+    set_error_handler(
         function () {
             return;
         }
     );
-    $mask = Net_IPv6::getNetmask('FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF',$bits);
+    $mask = Net_IPv6::getNetmask('FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF', $bits);
     $inet_ip = (binary)inet_pton($ipaddr);
     if ($inet_ip) {
         $inet_mask = (binary)inet_pton($mask);
@@ -324,7 +342,7 @@ function find_smallest_cidr($number)
 {
     $smallest = 1;
     for ($b=32; $b > 0; $b--) {
-        $smallest = ($number <= pow(2,$b)) ? $b : $smallest;
+        $smallest = ($number <= pow(2, $b)) ? $b : $smallest;
     }
     return (32-$smallest);
 }
@@ -589,7 +607,7 @@ function is_domain($domain)
 }
 
 /* returns true if $macaddr is a valid MAC address */
-function is_macaddr($macaddr, $partial=false)
+function is_macaddr($macaddr, $partial = false)
 {
     $repeat = ($partial) ? '1,5' : '5';
     return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){'.$repeat.'}$/i', $macaddr) == 1 ? true : false;
@@ -657,7 +675,7 @@ function is_portoralias($port)
 /* returns true if $test is in the range between $start and $end */
 function is_inrange_v4($test, $start, $end)
 {
-    if ( (ip2ulong($test) <= ip2ulong($end)) && (ip2ulong($test) >= ip2ulong($start)) ) {
+    if ((ip2ulong($test) <= ip2ulong($end)) && (ip2ulong($test) >= ip2ulong($start))) {
         return true;
     } else {
         return false;
@@ -667,7 +685,7 @@ function is_inrange_v4($test, $start, $end)
 /* returns true if $test is in the range between $start and $end */
 function is_inrange_v6($test, $start, $end)
 {
-    if ( (inet_pton($test) <= inet_pton($end)) && (inet_pton($test) >= inet_pton($start)) ) {
+    if ((inet_pton($test) <= inet_pton($end)) && (inet_pton($test) >= inet_pton($start))) {
         return true;
     } else {
         return false;
@@ -675,7 +693,8 @@ function is_inrange_v6($test, $start, $end)
 }
 
 /* returns true if $test is in the range between $start and $end */
-function is_inrange($test, $start, $end) {
+function is_inrange($test, $start, $end)
+{
     return is_ipaddrv6($test) ? is_inrange_v6($test, $start, $end) : is_inrange_v4($test, $start, $end);
 }
 
@@ -1033,7 +1052,7 @@ function ipcmp($a, $b)
 }
 
 /* return true if $addr is in $subnet, false if not */
-function ip_in_subnet($addr,$subnet)
+function ip_in_subnet($addr, $subnet)
 {
     if (is_ipaddrv6($addr)) {
         return (Net_IPv6::isInNetmask($addr, $subnet));
@@ -1049,8 +1068,8 @@ function ip_in_subnet($addr,$subnet)
 
 function is_private_ip($iptocheck)
 {
-    foreach(array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
-        if (ip_in_subnet($iptocheck,$private)==true) {
+    foreach (array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
+        if (ip_in_subnet($iptocheck, $private)==true) {
             return true;
         }
     }
@@ -1236,8 +1255,8 @@ function prefer_ipv4_or_ipv6()
     global $config;
 
     mwexecf(
-      '/etc/rc.d/ip6addrctl %s',
-      isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
+        '/etc/rc.d/ip6addrctl %s',
+        isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
     );
 }
 
@@ -1324,4 +1343,57 @@ function dhcp6c_duid_clear()
     @unlink('/var/db/dhcp6c_duid');
     /* clear the backup so that it will not be restored: */
     @unlink('/conf/dhcp6c_duid');
+}
+
+function get_dyndns_ip($int, $ipver = 4)
+{
+    global $config;
+
+    $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
+    if (empty($ip_address)) {
+        log_error("Aborted IPv{$ipver} detection: no address for {$int}");
+        return 'down';
+    }
+
+    $gateways_status = return_gateways_status();
+
+    /*
+     * If the gateway for this interface is down, then the external
+     * check cannot work. Avoid the long wait for the external check
+     * to timeout.
+     */
+    if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
+        stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+        log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
+        return 'down';
+    }
+
+    if ($ipver != 6 && is_private_ip($ip_address)) {
+        /* Chinese alternative is http://ip.3322.net/ */
+        $hosttocheck = 'http://checkip.dyndns.org';
+        $ip_ch = curl_init($hosttocheck);
+        curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
+        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        $ip_result = curl_exec($ip_ch);
+        if ($ip_result !== false) {
+            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
+            $ip_address = trim($matches[1]);
+        } else {
+            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
+            $ip_address = '';
+        }
+        curl_close($ip_ch);
+    } elseif ($ipver == 6 && is_linklocal($ip_address)) {
+        log_error('Aborted IPv6 detection: cannot bind to link-local address');
+        $ip_address = '';
+    }
+
+    if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
+        return 'down';
+    }
+
+    return $ip_address;
 }

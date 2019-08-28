@@ -719,14 +719,16 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license');
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license', 'repository', 'origin');
         $backend = new Backend();
         $response = array();
 
-        /* allows us to select UI features based on product state */
-        list ($response['product_name'], $response['product_version']) =
-            explode(' ', trim(shell_exec('opnsense-version -nv')));
+        $version = explode(' ', trim(shell_exec('opnsense-version -nv')));
+        foreach (array('product_name' => 0, 'product_version' => 1) as $result => $index) {
+            $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
+        }
 
+        /* allows us to select UI features based on product state */
         $devel = explode('-', $response['product_name']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
 
@@ -762,6 +764,7 @@ class FirmwareController extends ApiControllerBase
                     /* local iteration, mark package provided */
                     $translated['provided'] = '1';
                 }
+                $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
                 $packages[$translated['name']] = $translated;
 
                 /* figure out local and remote plugins */

@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/proxy</mount>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <description>
         (squid) proxy settings
     </description>
@@ -199,6 +199,22 @@
                         </check001>
                     </Constraints>
                 </host>
+                <enableauth type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enableauth>
+                <user type="TextField">
+                    <default>username</default>
+                    <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\._\-]){1,32}$/u</mask>
+                    <ValidationMessage>Username can be up to 32 signs long. Alphanumeric characters and also dot, dash and underscore allowed.</ValidationMessage>
+                </user>
+                <password type="TextField">
+                    <default>password</default>
+                    <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\._\-]){1,32}$/u</mask>
+                    <ValidationMessage>Password can be up to 32 signs long. Alphanumeric characters and also dot, dash and underscore allowed.</ValidationMessage>
+                </password>
                 <port type="PortField">
                     <Required>N</Required>
                     <Constraints>
@@ -246,6 +262,15 @@
             <sslbump type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
+		    <Constraints>
+		        <check001>
+		        <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
+		            <type>DependConstraint</type>
+		            <addFields>
+                                <field1>sslurlonly</field1>
+                            </addFields>
+		        </check001>
+                    </Constraints>
             </sslbump>
             <sslurlonly type="BooleanField">
                 <default>0</default>
@@ -466,6 +491,10 @@
                     <Required>N</Required>
                     <multiple>Y</multiple>
                 </method>
+                <authEnforceGroup type="AuthGroupField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                </authEnforceGroup>
                 <realm type="TextField">
                     <default>OPNsense proxy authentication</default>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
@@ -515,7 +544,7 @@
               </url>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
           </proxy>
           <match type="ArrayField">
@@ -531,7 +560,7 @@
               </name>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <negate type="BooleanField">
                   <default>0</default>
@@ -654,7 +683,7 @@
               </enabled>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <matches type="ModelRelationField">
                   <Model>
@@ -682,6 +711,7 @@
                   </OptionValues>
               </match_type>
               <proxies type="ModelRelationField">
+                  <Sorted>Y</Sorted>
                   <Model>
                       <queues>
                           <source>OPNsense.Proxy.Proxy</source>

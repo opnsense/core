@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
     Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
@@ -29,27 +29,38 @@
     returns the contents of a pf table (optional as a json container)
     usage : list_table.py [tablename] [optional|json]
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
-    result = []
+    result = dict()
     if len(sys.argv) > 1:
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'show'],
-                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            for line in output_stream.read().strip().split('\n'):
-                if line.strip() != "":
-                    result.append(line.strip())
+        sp = subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-vT', 'show'], capture_output=True, text=True)
+        prev_entry=''
+        statistics=dict()
+        for line in sp.stdout.split('\n') + []:
+            if not line.startswith('\t'):
+                this_entry = line.strip()
+                if len(prev_entry) > 0:
+                    result[prev_entry] = statistics
+                prev_entry = this_entry
+                statistics=dict()
+            else:
+                parts = line.split()
+                if len(parts) > 6:
+                    if parts[3].isdigit() and parts[5].isdigit():
+                        pkts=int(parts[3])
+                        bytes=int(parts[5])
+                        topic = parts[0].lower().replace('/', '_').replace(':', '')
+                        if pkts > 0:
+                            statistics['%s_p' % topic] = pkts
+                            statistics['%s_b' % topic] = bytes
 
     # handle command line argument (type selection)
     if len(sys.argv) > 2 and sys.argv[2] == 'json':
         print(ujson.dumps(result))
     else:
-        # output plain
+        # output plain, simple no statistics
         for table in result:
             print (table)

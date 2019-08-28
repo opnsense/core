@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ *  Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  *  Copyright (C) 2014-2016 Deciso B.V.
  *  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  *  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
@@ -32,7 +32,13 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
+function val_int_in_range($value, $min, $max) {
+    return (((string)(int)$value) == $value) && $value >= $min && $value < $max;
+}
+
+$advanced_options = array('AdvDefaultLifetime', 'AdvValidLifetime', 'AdvPreferredLifetime', 'AdvRDNSSLifetime', 'AdvDNSSLLifetime', 'AdvRouteLifetime');
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
         $if = $_GET['if'];
@@ -44,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig = array();
     $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist');
+    $config_copy_fieldsnames = array_merge($advanced_options, $config_copy_fieldsnames);
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if][$fieldname];
@@ -53,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
-    $pconfig['rasend'] = empty($config['dhcpdv6'][$if]['ranosend']) ? true : null;
     $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
 
     // defaults
@@ -107,27 +113,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!is_numericint($pconfig['ramaxinterval']) || $pconfig['ramaxinterval'] < 4 || $pconfig['ramaxinterval'] > 1800) {
+    if (!val_int_in_range($pconfig['ramaxinterval'], 4, 1800)) {
         $input_errors[] = sprintf(gettext('Maximum interval must be between %s and %s seconds.'), 4, 1800);
-    // chain this validation, we use the former value for calculation */
-    } elseif (!is_numericint($pconfig['ramininterval']) || $pconfig['ramininterval'] < 3 || $pconfig['ramininterval'] > intval($pconfig['ramaxinterval'] * 0.75)) {
-        $input_errors[] = sprintf(gettext('Minimum interval must be between %s and %s seconds.'), 3, intval($pconfig['ramaxinterval'] * 0.75));
+    } else {
+        if (!val_int_in_range($pconfig['ramininterval'], 3, intval($pconfig['ramaxinterval'] * 0.75))) {
+            $input_errors[] = sprintf(gettext('Minimum interval must be between %s and %s seconds.'), 3, intval($pconfig['ramaxinterval'] * 0.75));
+        }
+        if (!empty($pconfig['AdvDefaultLifetime']) && !val_int_in_range($pconfig['AdvDefaultLifetime'], $pconfig['ramaxinterval'], 9000)) {
+            $input_errors[] = sprintf(gettext('AdvDefaultLifetime must be between %s and %s seconds.'), $pconfig['ramaxinterval'], 9000);
+        }
+        if (!empty($pconfig['AdvValidLifetime']) && !val_int_in_range($pconfig['AdvValidLifetime'], 1, 4294967295)) {
+            $input_errors[] = sprintf(gettext('AdvValidLifetime must be between %s and %s seconds.'),  1, 4294967295);
+        }
+        if (!empty($pconfig['AdvPreferredLifetime']) && !val_int_in_range($pconfig['AdvPreferredLifetime'], 1, 4294967295)) {
+            $input_errors[] = sprintf(gettext('AdvPreferredLifetime must be between %s and %s seconds.'),  1, 4294967295);
+        }
+        if (!empty($pconfig['AdvRDNSSLifetime']) && !val_int_in_range($pconfig['AdvRDNSSLifetime'], $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2)) {
+            $input_errors[] = sprintf(gettext('AdvRDNSSLifetime must be between %s and %s seconds.'),  $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2);
+        }
+        if (!empty($pconfig['AdvDNSSLLifetime']) && !val_int_in_range($pconfig['AdvDNSSLLifetime'], $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2)) {
+            $input_errors[] = sprintf(gettext('AdvDNSSLLifetime must be between %s and %s seconds.'),  $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2);
+        }
+        if (!empty($pconfig['AdvRouteLifetime']) && !val_int_in_range($pconfig['AdvRouteLifetime'], 1, 4294967295)) {
+            $input_errors[] = sprintf(gettext('AdvRouteLifetime must be between %s and %s seconds.'),  1, 4294967295);
+        }
     }
+
+
 
     if (count($input_errors) == 0) {
         config_read_array('dhcpdv6', $if);
 
         $config['dhcpdv6'][$if]['ramode'] = $pconfig['ramode'];
         $config['dhcpdv6'][$if]['rapriority'] = $pconfig['rapriority'];
-        $config['dhcpdv6'][$if]['rainterface'] = $pconfig['rainterface'];
         $config['dhcpdv6'][$if]['ramininterval'] = $pconfig['ramininterval'];
         $config['dhcpdv6'][$if]['ramaxinterval'] = $pconfig['ramaxinterval'];
 
-        # flipped in GUI on purpose
-        if (empty($pconfig['rasend'])) {
-            $config['dhcpdv6'][$if]['ranosend'] = true;
-        } elseif (isset($config['dhcpdv6'][$if]['ranosend'])) {
-            unset($config['dhcpdv6'][$if]['ranosend']);
+        if (!empty($pconfig['rainterface'])) {
+            $config['dhcpdv6'][$if]['rainterface'] = $pconfig['rainterface'];
+        } elseif (isset($config['dhcpdv6'][$if]['rainterface'])) {
+            unset($config['dhcpdv6'][$if]['rainterface']);
         }
 
         # flipped in GUI on purpose
@@ -153,8 +178,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['dhcpdv6'][$if]['raroutes']);
         }
 
+        foreach ($advanced_options as $advopt) {
+            if (isset($pconfig[$advopt]) && $pconfig[$advopt] != "") {
+                $config['dhcpdv6'][$if][$advopt] = $pconfig[$advopt];
+            } elseif (isset($config['dhcpdv6'][$if][$advopt])) {
+                unset($config['dhcpdv6'][$if][$advopt]);
+            }
+        }
+
         write_config();
-        services_radvd_configure();
+        dhcpd_radvd_configure();
         $savemsg = get_std_save_message();
     }
 }
@@ -196,6 +229,14 @@ include("head.inc");
     }
     $(".act-removerow").click(removeRow);
     $(".act-addrow").click(addRow);
+    if ($("#has_advanced").val() != "" ) {
+       $(".advanced_opt").show();
+    }
+    $("#show_advanced_opt").click(function(e){
+        e.preventDefault();
+        $(".advanced_opt").show();
+        $(this).closest('tr').hide();
+    });
 });
 </script>
 
@@ -262,9 +303,9 @@ include("head.inc");
 <?php
                     $carplist = get_configured_carp_interface_list();
                     $carplistif = array();
-                    if(count($carplist) > 0) {
-                      foreach($carplist as $ifname => $vip) {
-                        if((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
+                    if (count($carplist) > 0) {
+                      foreach ($carplist as $ifname => $vip) {
+                        if ((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
                           $carplistif[$ifname] = $vip;
                       }
                     }
@@ -273,12 +314,10 @@ include("head.inc");
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?=empty($pconfig['rainterface'])  ? "selected=\"selected\"" : ""; ?> > <?=strtoupper($if); ?></option>
-<?php
-                      foreach($carplistif as $ifname => $vip): ?>
-                        <option value="<?=$ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo "selected=\"selected\""; ?> > <?="$ifname - $vip"; ?></option>
-<?php
-                      endforeach;?>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) ?></option>
+<?php foreach ($carplistif as $ifname => $vip): ?>
+                        <option value="<?= $ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo 'selected="selected"' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
+<?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
                         <?= sprintf(gettext("Select the Interface for the Router Advertisement (RA) Daemon."))?>
@@ -307,7 +346,7 @@ include("head.inc");
                         <tbody>
 <?php
                         $pconfig['raroutes'][] = '';
-                        foreach($pconfig['raroutes'] as $item):
+                        foreach ($pconfig['raroutes'] as $item):
                           $parts = explode('/', $item);
                           if (count($parts) > 1) {
                               $sn_bits = intval($parts[1]);
@@ -318,31 +357,26 @@ include("head.inc");
                           ?>
                           <tr>
                             <td>
-<?php
-                          if (!empty($item)): ?>
+<?php if (!empty($item)): ?>
                               <label class="act-removerow btn btn-default btn-xs">
                                 <span class="fa fa-minus"></span>
                                 <span class="sr-only"><?= gettext('Remove') ?></span>
                               </label>
-<?php
-                          else: ?>
+<?php else: ?>
                               <label class="act-addrow btn btn-default btn-xs">
                                 <span class="fa fa-plus"></span>
                                 <span class="sr-only"><?= gettext('Add') ?></span>
                               </label>
-<?php
-                          endif ?>
+<?php endif ?>
                             </td>
                             <td>
                               <input name="route_address[]" type="text" value="<?=$sn_address;?>" />
                             </td>
                             <td>
                               <select name="route_bits[]">
-<?php
-                              for ($i = 128; $i >= 0; $i -= 1): ?>
+<?php for ($i = 128; $i >= 0; $i -= 1): ?>
                                 <option value="<?= $i ?>" <?= $sn_bits === $i ? 'selected="selected"' : '' ?>><?= $i ?></option>
-<?php
-                              endfor ?>
+<?php endfor ?>
                               </select>
                             </td>
                           </tr>
@@ -378,15 +412,6 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rasend" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('RA Sending') ?></td>
-                    <td>
-                      <input id="rasend" name="rasend" type="checkbox" value="yes" <?= !empty($pconfig['rasend']) ? 'checked="checked"' : '' ?>/>
-                      <div class="hidden" data-for="help_for_rasend">
-                        <?= gettext('Enable the periodic sending of router advertisements and responding to router solicitations.') ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
                     <td><a id="help_for_ramininterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum Interval') ?></td>
                     <td>
                       <input name="ramininterval" type="text" id="ramininterval" size="28" value="<?=$pconfig['ramininterval'];?>" />
@@ -404,9 +429,31 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
+<?php
+                  $has_advanced = false;
+                  foreach ($advanced_options as $advopt):
+                      $has_advanced = ($has_advanced || !empty($pconfig[$advopt]));?>
+                  <tr style="display:none;" class="advanced_opt">
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=$advopt;?></td>
+                    <td>
+                      <input name="<?=$advopt;?>" type="text" id="<?=$advopt;?>" value="<?=!empty($pconfig[$advopt]) ? $pconfig[$advopt] :"" ;?>" />
+                    </td>
+                  </tr>
+<?php
+                  endforeach;
+                  if (!$has_advanced):?>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                    <td>
+                      <button id="show_advanced_opt" class="btn btn-xs btn-default"><?= gettext('Show advanced options') ?></button>
+                    </td>
+                  </tr>
+<?php
+                  endif;?>
                   <tr>
                     <td>&nbsp;</td>
                     <td>
+                      <input id="has_advanced" type="hidden" value="<?=$has_advanced ? "X": "";?>">
                       <input name="if" type="hidden" value="<?=$if;?>" />
                       <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
                     </td>

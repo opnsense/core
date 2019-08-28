@@ -66,6 +66,7 @@
                     {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}
                     data-width="{{width|default("334px")}}"
                     data-allownew="{{allownew|default("false")}}"
+                    data-sortable="{{sortable|default("false")}}"
                     data-live-search="true"
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
             ></select>{% if style|default('selectpicker') != "tokenize" %}<br />{% endif %}

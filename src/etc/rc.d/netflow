@@ -89,6 +89,7 @@ setup_interface()
        name	$interface:lower netflow_$interface
        connect $interface: netflow_$interface: upper	out$ifIndex
        mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp
+       msg netflow_$interface: settimeouts { inactive=$netflow_inactive_timeout active=$netflow_active_timeout }
        msg netflow_$interface: setconfig {iface=$ifIndex conf=$conf}
        msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
 SEQ
@@ -96,16 +97,22 @@ SEQ
 
 netflow_start()
 {
-    is_running=`ngctl list | grep netflow_ | wc -l`
+    is_running=$(ngctl list | grep netflow_ | wc -l)
+
     if [ $is_running -ne 0 ]; then
         echo "already running"
         return
     fi
+
+    if ! kldstat -qm ng_ether; then
+        kldload ng_ether
+    fi
+
     # configure interfaces
-    for interface in $netflow_interfaces
-    do
-          setup_interface "$interface"
+    for interface in $netflow_interfaces; do
+        setup_interface "$interface"
     done
+
     # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
     if [ "$netflow_destinations" != "" ]; then
         netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`

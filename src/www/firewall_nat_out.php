@@ -414,16 +414,16 @@ include("head.inc");
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?= isset($natent['destination']['not']) ? '!' : '' ?>
-<?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars($natent['destination']['address']);?>&nbsp;
+<?php                 if (isset($natent['destination']['network']) && is_alias($natent['destination']['network'])): ?>
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['network']));?>" data-toggle="tooltip"  data-html="true">
+                          <?=htmlspecialchars($natent['destination']['network']);?>&nbsp;
                         </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['network']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
-<?php                 elseif (is_specialnet($natent['destination']['address'])):?>
-                        <?=htmlspecialchars(get_specialnets()[$natent['destination']['address']]); ?>
+<?php                 elseif (is_specialnet($natent['destination']['network'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['destination']['network']]); ?>
 <?php                 else: ?>
                         <?=isset($natent['destination']['any']) ? "*" : htmlspecialchars($natent['destination']['address']);?>
 <?php                 endif; ?>

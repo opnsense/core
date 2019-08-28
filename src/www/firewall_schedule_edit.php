@@ -100,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['descr'] = $a_schedules[$configId]['descr'];
     $pconfig['timerange'] = isset($a_schedules[$configId]['timerange']) ? $a_schedules[$configId]['timerange'] : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (isset($_POST['id']) && isset($a_schedules[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -587,7 +588,7 @@ function addTimeRange(){
     + stoptimemin;
 
     //get description for time range
-    tempdescr = document.getElementById("timerangedescr").value;
+    tempdescr = escape(document.getElementById("timerangedescr").value);
 
     if (nonrepeatingfound){
       nrtempTime += nrtempID;
@@ -715,7 +716,7 @@ function editRow(incTime, el) {
 
     days = tempArray[0];
     hours = tempArray[1];
-    descr = tempArray[2];
+    descr = escape(tempArray[2]);
 
     var tempdayArray = days.split(",");
     var temphourArray = hours.split("-");
@@ -991,8 +992,8 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                       <tr>
                         <td>&nbsp;</td>
                         <td>
-                          <input type="button" value="<?=gettext("Add Time");?>"  class="btn btn-default"  onclick="javascript:processEntries();" />&nbsp;&nbsp;&nbsp;
-                          <input type="button" value="<?=gettext("Clear Selection");?>" class="btn btn-default" onclick="javascript:clearCalendar(); clearTime(); clearDescr();" />
+                          <input type="button" value="<?= html_safe(gettext('Add Time')) ?>" class="btn btn-default" onclick="javascript:processEntries();" />&nbsp;&nbsp;&nbsp;
+                          <input type="button" value="<?= html_safe(gettext('Clear Selection')) ?>" class="btn btn-default" onclick="javascript:clearCalendar(); clearTime(); clearDescr();" />
                         </td>
                       </tr>
                       <tr>

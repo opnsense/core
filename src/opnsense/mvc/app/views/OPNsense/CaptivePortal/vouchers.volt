@@ -153,7 +153,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             dlg.close();
                         }
                     }, {
-                        label: 'Close',
+                        label: '{{ lang._('Close') }}',
                         action: function(dlg){
                             dlg.close();
                         }
@@ -219,13 +219,12 @@ POSSIBILITY OF SUCH DAMAGE.
                                 .appendTo('body');
 
                         $('#downloadFile').ready(function() {
-							if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-								var blob = new Blob( [ output_data ], { type: "text/csv" } );
-								navigator.msSaveOrOpenBlob( blob, voucher_groupname.toLowerCase() + '.csv' );
-							}
-							else {
-								$('#downloadFile').get(0).click();
-							}
+                            if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+                                var blob = new Blob( [ output_data ], { type: "text/csv" } );
+                                navigator.msSaveOrOpenBlob( blob, voucher_groupname.toLowerCase() + '.csv' );
+                            } else {
+                                $('#downloadFile').get(0).click();
+                            }
                         });
 
                         $("#generateVouchers").modal('hide');

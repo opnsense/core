@@ -31,11 +31,10 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("system.inc");
 require_once("services.inc");
-require_once("rrd.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 $gateways_status = return_gateways_status();
-$a_gateways = return_gateways_array();
+$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {
@@ -46,27 +45,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             unset($a_gateway_groups[$_POST['id']]);
+            mark_subsystem_dirty('gwgroups');
             write_config();
-            mark_subsystem_dirty('staticroutes');
             header(url_safe('Location: /system_gateway_groups.php'));
             exit;
         }
     } elseif (isset($_POST['apply'])) {
-        system_routing_configure();
-        clear_subsystem_dirty('staticroutes');
-        setup_gateways_monitor();
-
+        plugins_configure('monitor');
         configd_run('dyndns reload');
-        configd_run('rfc2136 reload');
         configd_run('filter reload');
 
-        foreach ($a_gateway_groups as $gateway_group) {
-            $gw_subsystem = 'gwgroup.' . $gateway_group['name'];
-            if (is_subsystem_dirty($gw_subsystem)) {
-                openvpn_configure_gwgroup($gateway_group['name']);
-                clear_subsystem_dirty($gw_subsystem);
-            }
-        }
+        clear_subsystem_dirty('gwgroups');
 
         header(url_safe('Location: /system_gateway_groups.php'));
         exit;
@@ -117,7 +106,7 @@ $( document ).ready(function() {
     <div class="container-fluid">
       <div class="row">
 <?php
-      if (is_subsystem_dirty('staticroutes')) {
+      if (is_subsystem_dirty('gwgroups')) {
          print_info_box_apply(sprintf(gettext("The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));
       }
 ?>
@@ -128,7 +117,7 @@ $( document ).ready(function() {
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped table-condensed">
                   <thead>
                     <tr>
                       <td><?= gettext('Name') ?></td>
@@ -190,7 +179,6 @@ $( document ).ready(function() {
                               }
 ?>
                                 <div class="label label-<?= $gateway_label_class ?>" style="margin-right:4px">
-                                  <i class="fa fa-globe"></i>
                                   <?=$gateway['name'];?>, <?=$online;?>
                                 </div>
 <?php

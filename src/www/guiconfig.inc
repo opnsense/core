@@ -165,18 +165,20 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
         }
     }
 
-    for ($i = 0; $i < count($reqdfields); $i++) {
-        $fields = explode(',', $reqdfields[$i]);
-        $found = false;
+    if (!empty($reqdfields)) {
+        for ($i = 0; $i < count($reqdfields); $i++) {
+            $fields = explode(',', $reqdfields[$i]);
+            $found = false;
 
-        foreach ($fields as $field) {
-            if (!empty($postdata[$field])) {
-                $found = true;
+            foreach ($fields as $field) {
+                if (!empty($postdata[$field])) {
+                    $found = true;
+                }
             }
-        }
 
-        if (!$found) {
-            $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
+            if (!$found) {
+                $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
+            }
         }
     }
 }
@@ -217,7 +219,7 @@ function print_content_box($msg)
 EOFnp;
 }
 
-function print_info_box_apply($msg)
+function print_info_box_apply($msg, $alert = 'info')
 {
     $iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
     $label = gettext('Apply changes');
@@ -240,7 +242,7 @@ function print_info_box_apply($msg)
     }
     $savebutton .= '</form>';
 
-    print_alert_box($msg, 'info', $savebutton);
+    print_alert_box($msg, $alert, $savebutton);
 }
 
 function print_info_box($msg)
@@ -281,14 +283,24 @@ function print_service_banner($service)
     }
 }
 
-function get_std_save_message($raw = false)
+function get_std_save_message($plain = false)
 {
-    if ($raw == true) {
-        return 'The changes have been applied successfully.';
-    }
+    global $config;
 
     /* we need this wrapped in gettext at least once */
-    return gettext('The changes have been applied successfully.');
+    if (!empty($config['hasync']['synchronizetoip'])) {
+        if (!$plain) {
+            $lnk_start = '<a href="status_habackup.php">';
+            $lnk_end = '</a>';
+        }
+        return sprintf(
+            gettext("The changes have been applied successfully, ".
+                    "remember to update your backup server in %sSystem: High availablity: status%s"),
+            $lnk_start, $lnk_end
+        );
+    } else {
+        return gettext('The changes have been applied successfully.');
+    }
 }
 
 function get_specialnets($only_enabled=false)
@@ -461,6 +473,10 @@ date_default_timezone_set($timezone);
 
 function get_crash_report($pedantic = false)
 {
+    if (!userIsAdmin($_SESSION['Username'])) {
+        return;
+    }
+
     $savemsg = sprintf(
         gettext('A problem was detected. Click %shere%s for more information.'),
         '<a href="/crash_reporter.php">',

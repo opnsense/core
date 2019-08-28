@@ -161,6 +161,11 @@
                     $("#alias\\.proto").selectpicker('hide');
                     break;
             }
+            if ($(this).val() === 'port') {
+                $("#row_alias\\.counters").hide();
+            } else {
+                $("#row_alias\\.counters").show();
+            }
         });
 
         /**
@@ -211,6 +216,121 @@
         });
 
         /**
+         * export all configured aliases to json
+         */
+        $("#exportbtn").click(function(){
+            ajaxGet("/api/firewall/alias/export", {}, function(data, status){
+                if (data.aliases) {
+                  let output_data = JSON.stringify(data, null, 2);
+                  let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
+                      .attr('download','aliases.json').appendTo('body');
+
+                  a_tag.ready(function() {
+                      if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+                          var blob = new Blob( [ output_data ], { type: "text/csv" } );
+                          navigator.msSaveOrOpenBlob( blob, 'aliases.json' );
+                      } else {
+                          a_tag.get(0).click();
+                      }
+                  });
+                }
+            });
+        });
+
+        /**
+         * import aliases from json file
+         */
+        $("#importbtn").click(function(){
+            let $msg = $("<div/>");
+            let $imp_file = $("<input type='file' id='import_filename' />");
+            let $table = $("<table class='table table-condensed'/>");
+            let $tbody = $("<tbody/>");
+            $table.append(
+              $("<thead/>").append(
+                $("<tr>").append(
+                  $("<th/>").text("{{ lang._('source')}}")
+                ).append(
+                  $("<th/>").text("{{ lang._('message')}}")
+                )
+              )
+            );
+            $table.append($tbody);
+            $table.append(
+              $("<tfoot/>").append(
+                $("<tr/>").append($("<td colspan='2'/>").text(
+                  "{{ lang._('Please note that none of the aliases provided are imported due to the errors above')}}"
+                ))
+              )
+            );
+
+            $imp_file.click(function(){
+                // make sure upload resets when new file is provided (bug in some browsers)
+                this.value = null;
+            });
+            $msg.append($imp_file);
+            $msg.append($("<hr/>"));
+            $msg.append($table);
+            $table.hide();
+
+
+            BootstrapDialog.show({
+              title: "{{ lang._('Import aliases') }}",
+              message: $msg,
+              type: BootstrapDialog.TYPE_INFO,
+              draggable: true,
+              buttons: [{
+                  label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
+                  action: function(sender){
+                      $table.hide();
+                      $tbody.empty();
+                      if ($imp_file[0].files[0] !== undefined) {
+                          const reader = new FileReader();
+                          reader.readAsBinaryString($imp_file[0].files[0]);
+                          reader.onload = function(readerEvt) {
+                              let import_data = null;
+                              try {
+                                  import_data = JSON.parse(readerEvt.target.result);
+                              } catch (error) {
+                                  $tbody.append(
+                                    $("<tr/>").append(
+                                      $("<td>").text("*")
+                                    ).append(
+                                      $("<td>").text(error)
+                                    )
+                                  );
+                                  $table.show();
+                              }
+                              if (import_data !== null) {
+                                  ajaxCall("/api/firewall/alias/import", {'data': import_data}, function(data,status) {
+                                      if (data.validations !== undefined) {
+                                          Object.keys(data.validations).forEach(function(key) {
+                                              $tbody.append(
+                                                $("<tr/>").append(
+                                                  $("<td>").text(key)
+                                                ).append(
+                                                  $("<td>").text(data.validations[key])
+                                                )
+                                              );
+                                          });
+                                          $table.show();
+                                      } else {
+                                          sender.close();
+                                      }
+                                  });
+                              }
+                          }
+                      }
+                  }
+              },{
+                 label:  "{{ lang._('Close') }}",
+                 action: function(sender){
+                    sender.close();
+                 }
+               }]
+            });
+        });
+
+        /**
          * reconfigure
          */
         $("#reconfigureAct").click(function(){
@@ -229,7 +349,7 @@
         <div class="row">
             <section class="col-xs-12">
                 <div class="content-box">
-                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias">
+                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage" data-store-selection="true">
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -251,9 +371,19 @@
                                 <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
                             </td>
                         </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button id="exportbtn" data-toggle="tooltip" title="{{ lang._('download')}}" type="button" class="btn btn-xs btn-default"> <span class="fa fa-cloud-download"></span></button>
+                                <button id="importbtn" data-toggle="tooltip" title="{{ lang._('upload')}}" type="button" class="btn btn-xs btn-default"> <span class="fa fa-cloud-upload"></span></button>
+                            </td>
+                        </tr>
                         </tfoot>
                     </table>
                     <div class="col-md-12">
+                        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+                        </div>
                         <hr/>
                         <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
                         <br/><br/>
@@ -267,6 +397,7 @@
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel" aria-hidden="true">
+    <div class="modal-backdrop fade in"></div>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -297,13 +428,13 @@
                                     <td>
                                         <div class="control-label" id="control_label_alias.enabled">
                                             <a id="help_for_alias.enabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-                                            <b>enabled</b>
+                                            <b>{{lang._('Enabled')}}</b>
                                         </div>
                                     </td>
                                     <td>
                                         <input type="checkbox" id="alias.enabled">
                                         <div class="hidden" data-for="help_for_alias.enabled">
-                                            <small>enable this alias</small>
+                                            <small>{{lang._('Enable this alias')}}</small>
                                         </div>
                                     </td>
                                     <td>
@@ -394,8 +525,8 @@
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
                                             <thead>
                                             <tr>
-                                                <th>region</th>
-                                                <th>countries</th>
+                                                <th>{{lang._('Region')}}</th>
+                                                <th>{{lang._('Countries')}}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -407,6 +538,23 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.counters">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.counters">
+                                            <a id="help_for_alias.counters" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Statistics')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="alias.counters">
+                                        <div class="hidden" data-for="help_for_alias.counters">
+                                            <small>{{lang._('Maintain a set of counters for each table entry')}}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.enabled"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.description">
@@ -432,8 +580,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Close') }}</button>
-                <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save changes') }}
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Cancel') }}</button>
+                <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save') }}
                     <i id="btn_formDialogAlias_save_progress" class=""></i></button>
             </div>
         </div>

@@ -263,7 +263,7 @@
             <tr>
                <td>
                   <button class="btn btn-primary" id="btnSaveGeneral" type="button">
-                     <b>{{ lang._('Save changes') }}</b><i id="btnSaveGeneralProgress"></i>
+                     <b>{{ lang._('Save') }}</b> <i id="btnSaveGeneralProgress"></i>
                   </button>
                </td>
             </tr>
@@ -276,7 +276,7 @@
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="recipient" data-width="12em" data-type="string">{{ lang._('Recipient') }}</th>
-                <th data-column-id="noton" data-width="2em" data-type="string" data-align="right" data-formatter="boolean"></th>
+                <th data-column-id="noton" data-width="6em" data-type="string" data-formatter="boolean">{{ lang._('Not on') }}</th>
                 <th data-column-id="events" data-type="string">{{ lang._('Events') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>

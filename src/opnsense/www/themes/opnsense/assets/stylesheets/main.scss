@@ -1,5 +1,5 @@
 $colors: (
-  orange: #EA7105,
+  orange: #D94F00,
   lightgrey: #F7F7F7,
   lightergrey: #FBFBFB,
   darkgrey: #3C3C3B,
@@ -118,6 +118,7 @@ $zindex: (
 html, body{
   height: 100%;
   font-family: 'SourceSansProRegular';
+  background-color: #FFF;
 }
 
 body{
@@ -219,6 +220,14 @@ body{
   padding-bottom: 15px;
   padding-top: 15px;
   }
+}
+
+div.content-box.wizard {
+    div {
+        img {
+            filter:invert(25%);
+        }
+    }
 }
 
 .tab-content{
@@ -365,8 +374,8 @@ main.page-content.col-lg-12 {
 
 #navigation.col-sidebar-left {
   width: 70px;
-  background-color: transparent !important;
   overflow: hidden;
+  background-color: transparent !important;
   border: none !important;
   > div {
     &.row {
@@ -670,7 +679,7 @@ table{
     }
 
     &:before{
-        background: #EA7105;
+        background: #D94F00;
         content: "";
         height: 42px;
         min-height: 100%;

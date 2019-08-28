@@ -86,6 +86,16 @@ function generate_new_duid($duid_type)
                 }
             }
             break;
+        case '4': //EN - Using Opnsense PEN!!!
+            $type = "\x00\x02\x00\x00\xD2\x6D".openssl_random_pseudo_bytes(8);
+            for ($count = 0; $count < strlen($type); ) {
+                $new_duid .= bin2hex( $type[$count]);
+                $count++;
+                if ($count < strlen($type)) {
+                    $new_duid .= ':';
+                }
+            }
+            break;
         default:
             $new_duid = 'XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX';
             break;
@@ -174,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6_duid_llt_value'] = generate_new_duid('1');
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
+    $pconfig['ipv6_duid_en_value'] = generate_new_duid('4');
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -325,10 +336,12 @@ include("head.inc");
                   <input name="ipv6_duid_llt_value" type="hidden" value="<?= html_safe($pconfig['ipv6_duid_llt_value']) ?>">
                   <input name="ipv6_duid_ll_value" type="hidden" value="<?= html_safe($pconfig['ipv6_duid_ll_value']) ?>">
                   <input name="ipv6_duid_uuid_value" type="hidden" value="<?= html_safe($pconfig['ipv6_duid_uuid_value']) ?>">
+                  <input name="ipv6_duid_en_value" type="hidden" value="<?= html_safe($pconfig['ipv6_duid_en_value']) ?>">
                   <a onclick="$('#ipv6duid').val('<?= html_safe($duid) ?>');" href="#"><?= gettext('Insert the existing DUID') ?></a><br/>
                   <a onclick="$('#ipv6duid').val('<?= html_safe($pconfig['ipv6_duid_llt_value']) ?>');" href="#"><?= gettext('Insert a new LLT DUID') ?></a><br/>
                   <a onclick="$('#ipv6duid').val('<?= html_safe($pconfig['ipv6_duid_ll_value']) ?>');" href="#"><?= gettext('Insert a new LL DUID') ?></a><br/>
                   <a onclick="$('#ipv6duid').val('<?= html_safe($pconfig['ipv6_duid_uuid_value']) ?>');" href="#"><?= gettext('Insert a new UUID DUID') ?></a><br/>
+                  <a onclick="$('#ipv6duid').val('<?= html_safe($pconfig['ipv6_duid_en_value']) ?>');" href="#"><?= gettext('Insert a new EN DUID') ?></a><br/>
                   <a onclick="$('#ipv6duid').val('');" href="#"><?= gettext('Clear the existing DUID') ?></a><br/>
                   <div class="hidden" data-for="help_for_persistent_duid">
                     <?= gettext('This field can be used to enter an explicit DUID for use by IPv6 DHCP clients.') ?><br/>

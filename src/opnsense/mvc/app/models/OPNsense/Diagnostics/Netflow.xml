@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Netflow</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
         OPNsense Netflow
     </description>
@@ -42,5 +42,19 @@
                 <Required>Y</Required>
             </enable>
         </collect>
+        <activeTimeout type="IntegerField">
+            <default>1800</default>
+            <Required>Y</Required>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Active timeout needs to be an integer value between 1 and 86400</ValidationMessage>
+         </activeTimeout>
+         <inactiveTimeout type="IntegerField">
+            <default>15</default>
+            <Required>Y</Required>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Inactive timeout needs to be an integer value between 1 and 86400</ValidationMessage>
+         </inactiveTimeout>
     </items>
 </model>

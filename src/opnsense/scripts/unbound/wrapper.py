@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
     Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
@@ -35,12 +35,10 @@ import argparse
 import json
 
 def unbound_control_reader(action):
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
-                        stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream:
-            yield line
+    sp = subprocess.run(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
+                        capture_output=True, text=True)
+    for line in sp.stdout.strip().split("\n"):
+        yield line
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -95,7 +93,10 @@ elif args.stats:
                     ptr[key] = value.strip()
                 elif key not in ptr:
                     ptr[key] = dict()
+                elif type(ptr[key]) != dict:
+                    ptr[key] = {'__value__': ptr[key]}
                 ptr = ptr[key]
+
 elif args.list_local_zones:
     output = list()
     for line in unbound_control_reader('list_local_zones'):

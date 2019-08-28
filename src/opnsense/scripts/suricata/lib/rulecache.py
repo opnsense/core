@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ import glob
 import sqlite3
 import shlex
 import fcntl
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from lib import rule_source_directory
 
 
@@ -79,51 +79,51 @@ class RuleCache(object):
         :param filename:
         :return:
         """
-        data = open(filename)
-        for rule in data.read().split('\n'):
-            rule_info_record = {'rule': rule, 'metadata': None}
-            if rule.find('msg:') != -1:
-                # define basic record
-                record = {'enabled': True, 'source': filename.split('/')[-1]}
-                if rule.strip()[0] == '#':
-                    record['enabled'] = False
-                    record['action'] = rule.strip()[1:].split(' ')[0].replace('#', '')
-                else:
-                    record['action'] = rule.strip().split(' ')[0]
+        with open(filename, 'r') as f_in:
+            for rule in f_in:
+                rule_info_record = {'rule': rule.strip(), 'metadata': None}
+                if rule.find('msg:') != -1:
+                    # define basic record
+                    record = {'enabled': True, 'source': filename.split('/')[-1]}
+                    if rule.strip()[0] == '#':
+                        record['enabled'] = False
+                        record['action'] = rule.strip()[1:].split(' ')[0].replace('#', '')
+                    else:
+                        record['action'] = rule.strip().split(' ')[0]
 
-                rule_metadata = rule[rule.find('msg:'):-1]
-                for field in rule_metadata.split(';'):
-                    fieldname = field[0:field.find(':')].strip()
-                    fieldcontent = field[field.find(':') + 1:].strip()
-                    if fieldname in self._rule_fields:
-                        if fieldcontent[0] == '"':
-                            content = fieldcontent[1:-1]
-                        else:
-                            content = fieldcontent
+                    rule_metadata = rule[rule.find('msg:'):-1]
+                    for field in rule_metadata.split(';'):
+                        fieldname = field[0:field.find(':')].strip()
+                        fieldcontent = field[field.find(':') + 1:].strip()
+                        if fieldname in self._rule_fields:
+                            if fieldcontent[0] == '"':
+                                content = fieldcontent[1:-1]
+                            else:
+                                content = fieldcontent
 
-                        if fieldname in record:
-                            # if same field repeats, put items in list
-                            if type(record[fieldname]) != list:
-                                record[fieldname] = [record[fieldname]]
-                            record[fieldname].append(content)
-                        else:
-                            record[fieldname] = content
+                            if fieldname in record:
+                                # if same field repeats, put items in list
+                                if type(record[fieldname]) != list:
+                                    record[fieldname] = [record[fieldname]]
+                                record[fieldname].append(content)
+                            else:
+                                record[fieldname] = content
 
-                for rule_field in self._rule_fields:
-                    if rule_field not in record:
-                        if rule_field in self._rule_defaults:
-                            record[rule_field] = self._rule_defaults[rule_field]
-                        else:
-                            record[rule_field] = None
+                    for rule_field in self._rule_fields:
+                        if rule_field not in record:
+                            if rule_field in self._rule_defaults:
+                                record[rule_field] = self._rule_defaults[rule_field]
+                            else:
+                                record[rule_field] = None
 
-                # perform type conversions
-                for fieldname in record:
-                    if type(record[fieldname]) == list:
-                        record[fieldname] = '\n'.join(record[fieldname])
+                    # perform type conversions
+                    for fieldname in record:
+                        if type(record[fieldname]) == list:
+                            record[fieldname] = '\n'.join(record[fieldname])
 
-                rule_info_record['metadata'] = record
+                    rule_info_record['metadata'] = record
 
-            yield rule_info_record
+                yield rule_info_record
 
     def is_changed(self):
         """ check if rules on disk are probably different from rules in cache
@@ -170,7 +170,7 @@ class RuleCache(object):
             os.remove(self.cachefile)
 
         db = sqlite3.connect(self.cachefile)
-        db.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
+        db.text_factory = lambda x: str(x, 'utf-8', 'ignore')
         cur = db.cursor()
 
         cur.execute("create table stats (timestamp number, files number)")
@@ -257,7 +257,7 @@ class RuleCache(object):
                     sql += ' and ( '
                 else:
                     sql += ' where ( '
-                for fieldname in map(lambda x: x.lower().strip(), fieldnames.split(',')):
+                for fieldname in [x.lower().strip() for x in fieldnames.split(',')]:
                     if fieldname in self._rule_fields or fieldname in additional_search_fields:
                         if fieldname != fieldnames.split(',')[0].strip():
                             sql += ' or '

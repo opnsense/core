@@ -53,6 +53,7 @@ function lagg_inuse($lagg_intf)
 $a_laggs = &config_read_array('laggs', 'lagg');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($a_laggs[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -61,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (lagg_inuse($a_laggs[$id]['laggif'])) {
             $input_errors[] = gettext("This LAGG interface cannot be deleted because it is still being used.");
         } else {
-            mwexec_bg("/sbin/ifconfig " . escapeshellarg($a_laggs[$id]['laggif']) . " destroy");
+            mwexecf('/sbin/ifconfig %s destroy', $a_laggs[$id]['laggif']);
             unset($a_laggs[$id]);
             write_config();
             header(url_safe('Location: /interfaces_lagg.php'));

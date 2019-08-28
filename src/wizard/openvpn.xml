@@ -920,14 +920,6 @@
                 <description>A Windows Internet Name Service (WINS) server to provide for connecting clients, which allows them to browse Windows shares. This is typically an Active Directory Domain Controller, designated WINS server, or Samba server.</description>
             </field>
             <field>
-                <name>Advanced</name>
-                <type>textarea</type>
-                <cols>30</cols>
-                <rows>5</rows>
-                <description>Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon. EXAMPLE: push "route 10.0.0.0 255.255.255.0"</description>
-                <bindstofield>wizardtemp->step10->advanced</bindstofield>
-            </field>
-            <field>
                 <name>Next</name>
                 <type>submit</type>
             </field>

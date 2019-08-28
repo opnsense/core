@@ -391,9 +391,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig['chkNewCert'])) {
                 header(url_safe('Location: /system_certmanager.php?act=new&userid=%d', array(isset($id) ? $id : count($a_user) - 1)));
             } elseif (isset($pconfig['save_close'])) {
-                header(url_safe('Location: /system_usermanager.php?savemsg=%s', array(get_std_save_message())));
+                header(url_safe('Location: /system_usermanager.php?savemsg=%s', array(get_std_save_message(true))));
             } else {
-                header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array(isset($id) ? $id : count($a_user) - 1, get_std_save_message())));
+                header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array(isset($id) ? $id : count($a_user) - 1, get_std_save_message(true))));
             }
             exit;
         }
@@ -626,7 +626,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_fullname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Full name");?></td>
                     <td>
-                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
+                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" ? "readonly=\"readonly\"" : "";?> />
                       <div class="hidden" data-for="help_for_fullname">
                         <?=gettext("User's full name, for your own information only");?>
                       </div>
@@ -998,7 +998,7 @@ $( document ).ready(function() {
 <?php
                         if (isset($userent['disabled'])) {
                             $usrimg = 'text-muted';
-                        } elseif (userHasPrivilege($userent, 'page-all')) {
+                        } elseif (userIsAdmin($userent['name'])) {
                             $usrimg = 'text-danger';
                         } else {
                             $usrimg = 'text-info';

@@ -28,9 +28,12 @@
 
 function rrd_create($rrdcreatecmd)
 {
+    @mkdir('/var/db/rrd', 0775);
+    @chown('/var/db/rrd', 'nobody');
+
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
-    $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
+    exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
     if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
         log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
@@ -100,7 +103,7 @@ function rrd_configure($verbose = false)
     $downstream = 2500000000;
     $upstream = 2500000000;
 
-    if (isset ($config['rrd']['enable'])) {
+    if (isset($config['rrd']['enable'])) {
         /* create directory if needed */
         if (!is_dir($rrddbpath)) {
             mkdir($rrddbpath, 0775);
@@ -119,13 +122,12 @@ function rrd_configure($verbose = false)
         $rrdupdatesh .= "do\n";
         $rrdupdatesh .= "";
 
-        $i = 0;
         $ifdescrs = get_configured_interface_with_descr();
         /* IPsec counters */
         $ifdescrs['ipsec'] = "IPsec";
         /* OpenVPN server counters */
         if (isset($config['openvpn']['openvpn-server'])) {
-            foreach($config['openvpn']['openvpn-server'] as $server) {
+            foreach ($config['openvpn']['openvpn-server'] as $server) {
                 $serverid = "ovpns" . $server['vpnid'];
                 $ifdescrs[$serverid] = "{$server['description']}";
             }
@@ -251,7 +253,7 @@ function rrd_configure($verbose = false)
                 }
 
                 if (isset($config['openvpn']['openvpn-server'])) {
-                    foreach($config['openvpn']['openvpn-server'] as $server) {
+                    foreach ($config['openvpn']['openvpn-server'] as $server) {
                         if ("ovpns{$server['vpnid']}" == $ifname) {
                             $port = $server['local_port'];
                             $vpnid = $server['vpnid'];
@@ -271,7 +273,7 @@ function rrd_configure($verbose = false)
             }
 
             /* 3G interfaces */
-            if (preg_match("/ppp[0-9]+/i", $realif))  {
+            if (preg_match("/ppp[0-9]+/i", $realif)) {
                 if (!file_exists("$rrddbpath$ifname$cellular")) {
                     $rrdcreate = "$rrdtool create $rrddbpath$ifname$cellular --step $rrdcellularinterval ";
                     $rrdcreate .= "DS:rssi:GAUGE:$cellularvalid:0:100 ";
@@ -296,7 +298,6 @@ function rrd_configure($verbose = false)
                 $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cellular N:\"\$GSTATS\"";
             }
         }
-        $i++;
 
         /* System only statistics */
         $ifname = "system";
@@ -583,7 +584,7 @@ EOD;
     }
 
     $databases = glob("{$rrddbpath}/*.rrd");
-    foreach($databases as $database) {
+    foreach ($databases as $database) {
         chown($database, "nobody");
     }
 

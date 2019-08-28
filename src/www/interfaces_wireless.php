@@ -45,6 +45,7 @@ function clone_inuse($cloneif)
 $a_clones = &config_read_array('wireless', 'clone');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($_POST['action']) && $_POST['action'] == "del" && !empty($a_clones[$_POST['id']])) {
         if (clone_inuse($a_clones[$_POST['id']]['cloneif'])) {
             /* check if still in use */

@@ -79,6 +79,7 @@ class AuthGroupField extends BaseField
                 foreach ($cnf->system->group as $group) {
                     self::$internalOptionList[(string)$group->gid] = (string)$group->name;
                 }
+                natcasesort(self::$internalOptionList);
             }
         }
     }
@@ -91,7 +92,7 @@ class AuthGroupField extends BaseField
     {
         $result = array ();
         // if certificate is not required, add empty option
-        if (!$this->internalIsRequired) {
+        if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = array("value" => gettext("none"), "selected" => ($this->internalValue == "") ? 1 : 0);
         }
 
@@ -104,7 +105,6 @@ class AuthGroupField extends BaseField
             }
             $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
-
         return $result;
     }
 

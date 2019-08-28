@@ -1,36 +1,36 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
-require_once("plugins.inc.d/openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/openvpn.inc");
 
 $a_server = &config_read_array('openvpn', 'openvpn-server');
 
@@ -327,6 +327,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (isset($pconfig['reneg-sec']) && $pconfig['reneg-sec'] != "" && (string)((int)$pconfig['reneg-sec']) != $pconfig['reneg-sec']) {
             $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
+        }
+
+        // When server certificate is set, check type.
+        if (!empty($pconfig['certref'])) {
+            foreach ($config['cert'] as $cert) {
+                if ($cert['refid'] == $pconfig['certref']) {
+                    if (cert_get_purpose($cert['crt'])['server'] == 'No') {
+                        $input_errors[] = gettext(
+                            sprintf("certificate %s is not intended for server use", $cert['descr'])
+                        );
+                    }
+                }
+            }
+        }
+        $prev_opt = (isset($id) && !empty($a_server[$id])) ? $a_server[$id]['custom_options'] : "";
+        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+            $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
         }
 
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
@@ -746,7 +763,7 @@ $( document ).ready(function() {
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface"); ?></td>
                       <td>
-                        <select name="interface" class="selectpicker">
+                        <select name="interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $interfaces = get_configured_interface_with_descr();
                         $carplist = get_configured_carp_interface_list();
@@ -756,18 +773,6 @@ $( document ).ready(function() {
                                                     $aliaslist = get_configured_ip_aliases_list();
                         foreach ($aliaslist as $aliasip => $aliasif) {
                             $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-                        }
-                                                    $grouplist = return_gateway_groups_array();
-                        foreach ($grouplist as $name => $group) {
-                            if ($group['ipprotocol'] != "inet") {
-                                continue;
-                            }
-                            if ($group[0]['vip'] != '') {
-                                $vipif = $group[0]['vip'];
-                            } else {
-                                $vipif = $group[0]['int'];
-                            }
-                            $interfaces[$name] = "GW Group {$name}";
                         }
                         $interfaces['lo0'] = "Localhost";
                         $interfaces['any'] = "any";
@@ -826,7 +831,7 @@ endif; ?>
                         <td>
 <?php
                         if (isset($config['ca'])) :?>
-                          <select name='caref' class="selectpicker">
+                          <select name='caref' class="selectpicker" data-size="5" data-live-search="true">
 <?php
                           foreach ($config['ca'] as $ca) :
                               $selected = "";
@@ -853,7 +858,7 @@ endif; ?>
                       <td>
 <?php
                         if (isset($config['crl'])) :?>
-                        <select name='crlref' class="selectpicker">
+                        <select name='crlref' class="selectpicker" data-size="5" data-live-search="true">
                           <option value="">None</option>
 <?php
                           foreach ($config['crl'] as $crl) :
@@ -881,13 +886,16 @@ endif; ?>
                       <td>
 <?php
                       if (isset($config['cert'])) :?>
-                        <select name='certref' class="selectpicker">
+                        <select name='certref' class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         foreach ($config['cert'] as $cert) :
                             $selected = "";
                             $caname = "";
                             $inuse = "";
                             $revoked = "";
+                            if (!isset($cert['prv'])) {
+                                continue;
+                            }
                             if (isset($cert['caref'])) {
                                 $ca = lookup_ca($cert['caref']);
                                 if (!empty($ca)) {
@@ -975,7 +983,7 @@ endif; ?>
                     <tr>
                       <td><a id="help_for_digest" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auth Digest Algorithm"); ?></td>
                       <td>
-                        <select name="digest" class="selectpicker">
+                        <select name="digest" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $digestlist = openvpn_get_digestlist();
                         foreach ($digestlist as $name => $desc) :
@@ -998,7 +1006,7 @@ endif; ?>
                     <tr id="engine">
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
                       <td>
-                        <select name="engine" class="selectpicker">
+                        <select name="engine" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $engines = openvpn_get_engines();
                         foreach ($engines as $name => $desc) :
@@ -1119,7 +1127,7 @@ endif; ?>
                     <tr class="dev_mode dev_mode_tap">
                       <td style="width:22%"><a id="help_for_serverbridge_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bridge Interface"); ?></td>
                       <td>
-                        <select id="serverbridge_interface" name="serverbridge_interface" class="selectpicker">
+                        <select id="serverbridge_interface" name="serverbridge_interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $serverbridge_interface['none'] = "none";
                         $serverbridge_interface = array_merge($serverbridge_interface, get_configured_interface_with_descr());
@@ -1543,6 +1551,7 @@ endif; ?>
                       <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
                       <td>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+                        <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
                         <div class="hidden" data-for="help_for_custom_options">
                           <?=gettext("Enter any additional options you would like to add to the configuration file here."); ?>
                         </div>

@@ -102,7 +102,7 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
       <div class="table-responsive">
-        <form method="post" action="<?=$_SERVER['REQUEST_URI'];?>">
+        <form method="post">
           <table class="table table-striped">
             <thead>
               <tr>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,11 @@ function plugins_services()
     $services = array();
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
@@ -88,7 +92,11 @@ function plugins_cron()
     $jobs = array();
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_cron', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
@@ -105,7 +113,11 @@ function plugins_syslog()
     $syslogs = array();
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_syslog', $name);
         if (function_exists($func)) {
             foreach ($func() as $plugin_syslog => $plugin_details) {
@@ -139,7 +151,11 @@ function plugins_interfaces()
 
     // register / update interfaces
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_interfaces', $name);
         if (function_exists($func)) {
             foreach ($func() as $intf_ref => $intf_data) {
@@ -177,7 +193,11 @@ function plugins_interfaces()
 function plugins_firewall($fw)
 {
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_firewall', $name);
         if (function_exists($func)) {
             $func($fw);
@@ -192,7 +212,11 @@ function plugins_configure($hook, $verbose = false, $args = array())
     array_unshift($args, $verbose);
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
             foreach ($func() as $when => $worker) {
@@ -218,11 +242,51 @@ function plugins_configure($hook, $verbose = false, $args = array())
     }
 }
 
+function plugins_run($hook, $verbose = false, $args = array())
+{
+    array_unshift($args, $verbose);
+    $ret = [];
+
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
+        $func = sprintf('%s_run', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $when => $task) {
+                if ($hook == $when) {
+                    /*
+                     * An optional argument count parameter can be
+                     * given by the plugin, which allows to securely
+                     * pull more info from the configure call spot.
+                     */
+                    list($argf, $argc) = explode(':', $task);
+                    if (empty($argc) || !is_numeric($argc)) {
+                        $argc = 1;
+                    }
+                    if ($argc > count($args)) {
+                        $argc = count($args);
+                    }
+                    $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                }
+            }
+        }
+    }
+
+    return $ret;
+}
+
 function plugins_xmlrpc_sync()
 {
     $sync_settings = array();
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_xmlrpc_sync', $name);
         if (function_exists($func)) {
             foreach ($func() as $helper) {

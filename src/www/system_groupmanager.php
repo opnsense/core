@@ -316,16 +316,29 @@ $( document ).ready(function() {
                 <td>
                   <table class="table table-hover table-condensed">
                     <tr>
+                      <td><b><?=gettext("Type");?></b></td>
                       <td><b><?=gettext("Name");?></b></td>
-                      <td><b><?=gettext("Description");?></b></td>
                     </tr>
 <?php
                     if (isset($pconfig['priv']) && is_array($pconfig['priv'])) :
                         foreach ($pconfig['priv'] as $priv) :
                     ?>
                     <tr>
+                      <td>
+<?php
+                             switch (substr($priv, 0, 5)) {
+                                 case 'page-':
+                                     echo gettext('GUI');
+                                     break;
+                                 case 'user-':
+                                     echo gettext('User');
+                                     break;
+                                 default:
+                                     echo gettext('N/A');
+                                     break;
+                             } ?>
+                        </td>
                       <td><?=$priv_list[$priv]['name'];?></td>
-                      <td><?=$priv_list[$priv]['descr'];?></td>
                     </tr>
 <?php
                         endforeach;
@@ -385,8 +398,8 @@ $( document ).ready(function() {
                     <span class="fa fa-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
                     <?=$group['name']; ?>
                   </td>
-                  <td><?= count($group['member']) ?></td>
-                  <td ><?=$group['description'];?></td>
+                  <td><?=!empty($group['member']) ? count($group['member']) : 0; ?></td>
+                  <td><?=$group['description'];?></td>
                   <td class="text-nowrap">
                     <a href="system_groupmanager.php?act=edit&groupid=<?=$i?>"
                        class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">

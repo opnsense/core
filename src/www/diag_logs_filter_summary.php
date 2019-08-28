@@ -391,7 +391,7 @@ include("head.inc"); ?>
                   <td>
                     <form method="post">
                       <div class="pull-right">
-                        <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+                        <input name="clear" type="submit" class="btn" value="<?= html_safe(gettext('Clear log')) ?>" />
                       </div>
                     </form>
                   </td>

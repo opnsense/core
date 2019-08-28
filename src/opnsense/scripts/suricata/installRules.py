@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
 
     Install suricata ruleset into opnsense.rules directory
 """
+import os
+import glob
 import os.path
 import lib.rulecache
 from lib import rule_source_directory
@@ -81,12 +83,17 @@ if __name__ == '__main__':
 
         # write data to file
         all_installed_files.append(filename.split('/')[-1])
-        open('%s/%s' % (rule_target_dir, filename.split('/')[-1]), 'wb').write('\n'.join(output_data))
+        open('%s/%s' % (rule_target_dir, filename.split('/')[-1]), 'w').write('\n'.join(output_data))
 
     # flush all written rule filenames into yaml file
-    with open(rule_yaml_list, 'wb') as f_out:
+    with open(rule_yaml_list, 'w') as f_out:
         f_out.write('%YAML 1.1\n')
         f_out.write('---\n')
         f_out.write('rule-files:\n')
         for installed_file in all_installed_files:
             f_out.write(' - %s\n' % installed_file)
+
+    # cleanup unused files in rule_target_dir, since it's only meant for staging.
+    for filename in glob.glob("%s/*.rules" % rule_target_dir):
+        if os.path.basename(filename) not in  all_installed_files:
+            os.remove(filename)

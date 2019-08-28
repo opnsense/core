@@ -246,8 +246,14 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     }
 
     // self sign the certificate
-    $res_crt = openssl_csr_sign($res_csr, $ca_res_crt, $ca_res_key, $lifetime,
-           $args, $ca_serial);
+    $res_crt = openssl_csr_sign(
+        $res_csr,
+        $ca_res_crt,
+        $ca_res_key,
+        $lifetime,
+        $args,
+        $ca_serial
+    );
     if (!$res_crt) {
         return false;
     }
@@ -262,6 +268,51 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     $cert['caref'] = $caref;
     $cert['crt'] = base64_encode($str_crt);
     $cert['prv'] = base64_encode($str_key);
+
+    // remove tempfile (template)
+    unlink($config_filename);
+
+    return true;
+}
+
+function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
+{
+    $ca = &lookup_ca($caref);
+    if (!$ca) {
+        return false;
+    }
+
+    $ca_str_crt = base64_decode($ca['crt']);
+    $ca_str_key = base64_decode($ca['prv']);
+    $ca_res_crt = openssl_x509_read($ca_str_crt);
+    $ca_res_key = openssl_pkey_get_private(array(0 => $ca_str_key, 1 => ""));
+    if (!$ca_res_key) {
+        return false;
+    }
+    $ca_serial = ++$ca['serial'];
+
+    // handle parameters which can only be set via the configuration file
+    $config_filename = create_temp_openssl_config($dn);
+
+    $args = array(
+        'config' => $config_filename,
+        'digest_alg' => $digest_alg,
+        'x509_extensions' => 'sign_csr',
+    );
+
+    $res_crt = openssl_csr_sign($csr, $ca_res_crt, $ca_res_key, $lifetime, $args, $ca_serial);
+    if ($res_crt === false) {
+        return false;
+    }
+
+    // export our certificate data
+    if (!openssl_x509_export($res_crt, $str_crt)) {
+        return false;
+    }
+
+    // return our certificate information
+    $cert['caref'] = $caref;
+    $cert['crt'] = base64_encode($str_crt);
 
     // remove tempfile (template)
     unlink($config_filename);
@@ -335,7 +386,7 @@ function cert_get_subject_array($crt)
 
     $subject_array = array();
 
-    foreach($components as $a => $v) {
+    foreach ($components as $a => $v) {
         $subject_array[] = array('a' => $a, 'v' => $v);
     }
 
@@ -442,7 +493,7 @@ function cert_get_serial($str_crt, $decode = true)
     if (isset($crt_details['serialNumber']) && !empty($crt_details['serialNumber'])) {
         return $crt_details['serialNumber'];
     } else {
-        return NULL;
+        return null;
     }
 }
 
@@ -524,7 +575,8 @@ function is_webgui_cert($certref)
     return $config['system']['webgui']['ssl-certref'] == $certref && $config['system']['webgui']['protocol'] != 'http';
 }
 
-function cert_in_use($certref) {
+function cert_in_use($certref)
+{
     return (is_webgui_cert($certref) ||
       is_user_cert($certref) ||
       is_openvpn_server_cert($certref) ||
@@ -556,7 +608,7 @@ function crl_update(& $crl)
     return $crl_res;
 }
 
-function cert_revoke($cert, & $crl, $reason=OCSP_REVOKED_STATUS_UNSPECIFIED)
+function cert_revoke($cert, & $crl, $reason = OCSP_REVOKED_STATUS_UNSPECIFIED)
 {
     if (is_cert_revoked($cert, $crl['refid'])) {
         return true;
@@ -574,7 +626,8 @@ function cert_revoke($cert, & $crl, $reason=OCSP_REVOKED_STATUS_UNSPECIFIED)
 
 
 /* Compare two certificates to see if they match. */
-function cert_compare($cert1, $cert2) {
+function cert_compare($cert1, $cert2)
+{
     /* Ensure two certs are identical by first checking that their issuers match, then
       subjects, then serial numbers, and finally the moduli. Anything less strict
       could accidentally count two similar, but different, certificates as
@@ -680,12 +733,11 @@ function create_temp_openssl_config(&$dn)
 
     $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
 
-    foreach (['subjectAltName'] as $dnTag) {
+    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $dnTag) {
         if (isset($dn[$dnTag])) {
-            $template_dn = $dnTag . ' = ' . $dn[$dnTag];
+            $template_dn = $dnTag . ' = ' . str_replace(array("\r", "\n"), '', $dn[$dnTag]);
             // Overwrite the placeholders for this property
             $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
-            unset($dn[$dnTag]);
         }
     }
     file_put_contents($configFilename, $template);

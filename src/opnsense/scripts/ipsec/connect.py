@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -53,5 +53,4 @@ for conns in s.list_conns():
 
 # setup connection if found
 for conn_id in conns_found:
-    devnull = open(os.devnull, 'w')
-    subprocess.call(['/usr/local/sbin/ipsec', 'up', conn_id], stdin=devnull, stdout=devnull, stderr=devnull)
+    subprocess.run(['/usr/local/sbin/ipsec', 'up', conn_id], capture_output=True)

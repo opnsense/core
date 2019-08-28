@@ -58,10 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['aliases']['item'] = array();
         foreach ($pconfig['aliases_host'] as $opt_seq => $opt_host) {
             if (!empty($opt_host)) {
-                $pconfig['aliases']['item'][] = array('host' => $opt_host,
-                                                      'domain' => $pconfig['aliases_domain'][$opt_seq],
-                                                      'description' => $pconfig['aliases_description'][$opt_seq]
-                                                      );
+                $pconfig['aliases']['item'][] = array(
+                    'description' => $pconfig['aliases_description'][$opt_seq],
+                    'domain' => $pconfig['aliases_domain'][$opt_seq],
+                    'host' => $opt_host,
+                );
             }
         }
     }
@@ -82,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['ip']) && !is_ipaddr($pconfig['ip'])) {
         $input_errors[] = gettext("A valid IP address must be specified.");
     }
-
 
     /* validate aliases */
     foreach ($pconfig['aliases']['item'] as $idx => $alias) {

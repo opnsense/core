@@ -1,7 +1,5 @@
-#!/usr/local/bin/python2.7
-
 """
-    Copyright (c) 2016-2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -59,7 +57,7 @@ def download_geolite():
                 if 'GeoLite2-Country-Locations-en.csv' in file_handles:
                     country_codes = dict()
                     # parse geoname_id to country code map
-                    for line in zf.open(file_handles['GeoLite2-Country-Locations-en.csv']).read().split('\n'):
+                    for line in zf.open(file_handles['GeoLite2-Country-Locations-en.csv']).read().decode().split('\n'):
                         parts = line.split(',')
                         if len(parts) > 4 and len(parts[4]) >= 1 and len(parts[4]) <= 3:
                             country_codes[parts[0]] = parts[4]
@@ -67,7 +65,8 @@ def download_geolite():
                     for proto in ['IPv4', 'IPv6']:
                         if 'GeoLite2-Country-Blocks-%s.csv' % proto in file_handles:
                             output_handles = dict()
-                            for line in zf.open(file_handles['GeoLite2-Country-Blocks-%s.csv' % proto]).read().split('\n'):
+                            country_blocks = zf.open(file_handles['GeoLite2-Country-Blocks-%s.csv' % proto]).read()
+                            for line in country_blocks.decode().split('\n'):
                                 parts = line.split(',')
                                 if len(parts) > 3 and parts[1] in country_codes:
                                     country_code = country_codes[parts[1]]

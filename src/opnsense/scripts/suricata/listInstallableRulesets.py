@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -42,12 +42,13 @@ if __name__ == '__main__':
     # (filenames should be unique)
     items = dict()
     for rule in md.list_rules():
-        items[rule['filename']] = rule
-        rule_filename = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
-        if os.path.exists(rule_filename):
-            items[rule['filename']]['modified_local'] = os.stat(rule_filename).st_mtime
-        else:
-            items[rule['filename']]['modified_local'] = None
+        if not rule['required']:
+            items[rule['filename']] = rule
+            rule_filename = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
+            if os.path.exists(rule_filename):
+                items[rule['filename']]['modified_local'] = os.stat(rule_filename).st_mtime
+            else:
+                items[rule['filename']]['modified_local'] = None
     result = {'items': items, 'count': len(items)}
     result['properties'] = md.list_rule_properties()
-    print (ujson.dumps(result))
+    print(ujson.dumps(result))

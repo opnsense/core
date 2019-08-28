@@ -105,6 +105,7 @@ class ACL
                     $this->userDatabase[(string)$node->name] = array();
                     $this->userDatabase[(string)$node->name]['uid'] = (string)$node->uid;
                     $this->userDatabase[(string)$node->name]['groups'] = array();
+                    $this->userDatabase[(string)$node->name]['gids'] = array();
                     $this->userDatabase[(string)$node->name]['priv'] = array();
                     if (!empty($node->landing_page)) {
                         $this->userDatabase[(string)$node->name]['landing_page'] = (string)$node->landing_page;
@@ -128,6 +129,7 @@ class ACL
                     foreach ($this->userDatabase as $username => $userinfo) {
                         if ($this->userDatabase[$username]["uid"] == (string)$node) {
                             $this->userDatabase[$username]["groups"][] = $groupkey;
+                            $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
                         }
                     }
                 } elseif ($node->getName() == "priv") {
@@ -181,7 +183,7 @@ class ACL
      * @param string $urlmask regex mask
      * @return bool url matches mask
      */
-    private function urlMatch($url, $urlmask)
+    public function urlMatch($url, $urlmask)
     {
         /* "." and "?" have no effect on match, but "*" is a wildcard */
         $match = str_replace(array('.', '*','?'), array('\.', '.*','\?'), $urlmask);
@@ -242,6 +244,14 @@ class ACL
                 }
             }
         }
+
+        /*
+         * Always allow logout and menu, should be yielded as final items
+         * to prevent redirect to the logout page in case unauthorised
+         * pages are tried.
+         */
+        yield 'index.php?logout';
+        yield 'api/core/menu/*';
     }
 
     /**
@@ -252,10 +262,7 @@ class ACL
      */
     public function isPageAccessible($username, $url)
     {
-        if ($url == '/index.php?logout' || strpos($url, 'api/core/menu/') !== false) {
-            // always allow logout and menu, could use better structuring...
-            return true;
-        } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+        if (!empty($_SESSION['user_shouldChangePassword'])) {
             // when a password change is enforced, lock all other endpoints
             return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
         }
@@ -265,6 +272,67 @@ class ACL
             }
         }
 
+        return false;
+    }
+
+    /**
+     * test if a user has a certain privilege set.
+     * (transition method, should be replaced by group membership)
+     * @param string $username user name
+     * @param string $reqpriv privilege name
+     * @return bool
+     */
+    public function hasPrivilege($username, $reqpriv)
+    {
+        $uid = null;
+        $privs = array();
+        $groups = array();
+        $config = Config::getInstance()->object();
+        if ($config->system->count() > 0) {
+            foreach ($config->system->children() as $key => $node) {
+                if ($key == 'user' && (string)$node->name == $username) {
+                    foreach ($node->priv as $priv) {
+                        $privs[] = (string)$priv;
+                    }
+                    $uid = (string)$node->uid;
+                }
+            }
+            foreach ($config->system->children() as $key => $groupNode) {
+                if ($key == 'group') {
+                    $group_privs = array();
+                    $userInGrp = false;
+                    foreach ($groupNode->children() as $itemKey => $node) {
+                        if ($node->getName() == "member" && (string)$node == $uid) {
+                            $userInGrp = true;
+                        } elseif ($node->getName() == "priv") {
+                            $group_privs[] = (string)$node;
+                        }
+                    }
+                    if ($userInGrp) {
+                        $privs = array_merge($privs, $group_privs);
+                    }
+                }
+            }
+        }
+        return in_array($reqpriv, $privs);
+    }
+
+    /**
+     * check if user has group membership
+     * @param string $username user name
+     * @param string $groupname group name
+     * @param boolean $byname query by name (or gid)
+     * @return bool|null|string|string[]
+     */
+    public function inGroup($username, $groupname, $byname = true)
+    {
+        if (!empty($this->userDatabase[$username])) {
+            if ($byname) {
+                return in_array($groupname, $this->userDatabase[$username]['groups']);
+            } else {
+                return in_array($groupname, $this->userDatabase[$username]['gids']);
+            }
+        }
         return false;
     }
 

@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 require_once("config.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
 function adjust_utc($dt)
 {
@@ -59,7 +60,7 @@ function remove_duplicate($array, $field)
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-$leasesfile = services_dhcpd_leasesfile();
+$leasesfile = dhcpd_dhcpv4_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";
@@ -68,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* We then split the leases file by } */
     $splitpattern = "'BEGIN { RS=\"}\";} {for (i=1; i<=NF; i++) printf \"%s \", \$i; printf \"}\\n\";}'";
 
-    /* stuff the leases file in a proper format into a array by line */
+    /* stuff the leases file in a proper format into an array by line */
     exec("/bin/cat {$leasesfile} | {$awk} {$cleanpattern} | {$awk} {$splitpattern}", $leases_content);
     $leases_count = count($leases_content);
     exec("/usr/sbin/arp -an", $rawdata);
@@ -211,6 +212,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
+    $macs = [];
+    foreach ($leases as $i => $this_lease) {
+        if (!empty($this_lease['mac'])) {
+            $macs[$this_lease['mac']] = $i;
+        }
+    }
     foreach ($interfaces as $ifname => $ifarr) {
         if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
@@ -220,11 +227,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $slease['mac'] = $static['mac'];
                 $slease['start'] = '';
                 $slease['end'] = '';
-                $slease['hostname'] = htmlentities($static['hostname']);
-                $slease['descr'] = htmlentities($static['descr']);
+                $slease['hostname'] = $static['hostname'];
+                $slease['descr'] = $static['descr'];
                 $slease['act'] = "static";
                 $slease['online'] = in_array(strtolower($slease['mac']), $arpdata_mac) ? 'online' : 'offline';
-                $leases[] = $slease;
+                if (isset($macs[$slease['mac']])) {
+                    // update lease with static data
+                    foreach ($slease as $key => $value) {
+                        if (!empty($value)) {
+                            $leases[$macs[$slease['mac']]][$key] = $slease[$key];
+                        }
+                    }
+                } else {
+                    $leases[] = $slease;
+                }
             }
         }
     }
@@ -270,8 +286,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             fclose($fout);
             @unlink($leasesfile);
             @rename($leasesfile.".new", $leasesfile);
-            /* Restart DHCP Service */
-            services_dhcpd_configure();
+
+            dhcpd_dhcp_configure(false, 'inet');
         }
     }
     exit;
@@ -291,6 +307,7 @@ foreach ($leases as $data) {
 }
 
 $gentitle_suffix = " ($leases_count)";
+legacy_html_escape_form_data($leases);
 
 ?>
 <body>
@@ -374,7 +391,6 @@ $gentitle_suffix = " ($leases_count)";
 <?php
               // Load MAC-Manufacturer table
               $mac_man = json_decode(configd_run("interface list macdb json"), true);
-              legacy_html_escape_form_data($leases);
               foreach ($leases as $data):
                   if (!($data['act'] == "active" || $data['act'] == "static" || $_GET['all'] == 1)) {
                       continue;
@@ -385,31 +401,13 @@ $gentitle_suffix = " ($leases_count)";
                   }
 
                   $lip = ip2ulong($data['ip']);
-                  if ($data['act'] == "static") {
-                      foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if (isset($dhcpifconf['staticmap']) && is_array($dhcpifconf['staticmap'])) {
-                              foreach ($dhcpifconf['staticmap'] as $staticent) {
-                                  if ($data['ip'] == $staticent['ipaddr']) {
-                                      $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
-                                      $data['if'] = $dhcpif;
-                                      break;
-                                  }
-                              }
-                          }
-                          /* exit as soon as we have an interface */
-                          if ($data['if'] != '') {
-                              break;
-                          }
-                      }
-                  } else {
-                      foreach ($dhcpd as $dhcpif => $dhcpifconf) {
-                          if (empty($dhcpifconf['range'])) {
-                              continue;
-                          }
-                          if (!empty($dhcpifconf["enable"]) && $lip >= ip2ulong($dhcpifconf['range']['from']) && $lip <= ip2ulong($dhcpifconf['range']['to'])) {
+                  foreach ($dhcpd as $dhcpif => $dhcpifconf) {
+                      if (!empty($interfaces[$dhcpif]['ipaddr'])) {
+                          $ip_min = gen_subnet($interfaces[$dhcpif]['ipaddr'], $interfaces[$dhcpif]['subnet']);
+                          $ip_max = gen_subnet_max($interfaces[$dhcpif]['ipaddr'], $interfaces[$dhcpif]['subnet']);
+                          if ($lip >= ip2ulong($ip_min) && $lip <= ip2ulong($ip_max)) {
                               $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
                               $data['if'] = $dhcpif;
-                              break;
                           }
                       }
                   }
@@ -457,19 +455,17 @@ $gentitle_suffix = " ($leases_count)";
 <?php
         if (!empty($_GET['all'])): ?>
         <input type="hidden" name="all" value="0" />
-        <input type="submit" class="btn btn-default" value="<?=gettext("Show active and static leases only"); ?>" />
+        <input type="submit" class="btn btn-default" value="<?= html_safe(gettext('Show active and static leases only')) ?>" />
 <?php
         else: ?>
         <input type="hidden" name="all" value="1" />
-        <input type="submit" class="btn btn-default" value="<?=gettext("Show all configured leases"); ?>" />
+        <input type="submit" class="btn btn-default" value="<?= html_safe(gettext('Show all configured leases')) ?>" />
 <?php
         endif; ?>
         </form>
-<?php
-        if ($leases == 0): ?>
-        <p><strong><?=gettext("No leases file found. Is the DHCP server active"); ?>?</strong></p>
-<?php
-        endif; ?>
+<?php if ($leases == 0): ?>
+        <p><?=gettext("No leases file found. Is the DHCP server active?") ?></p>
+<?php endif ?>
       </section>
     </div>
   </div>

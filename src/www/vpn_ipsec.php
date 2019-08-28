@@ -1,39 +1,39 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("filter.inc");
-require_once("plugins.inc.d/ipsec.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/ipsec.inc");
 
 /*
  *  Return phase2 idinfo in text format
@@ -206,7 +206,18 @@ $dhgroups = array(
     28 => '28 (Brainpool EC 256 bits)',
     29 => '29 (Brainpool EC 384 bits)',
     30 => '30 (Brainpool EC 512 bits)',
+    31 => '31 (Elliptic Curve 25519)',
 );
+
+$p2_protos = array(
+    'esp' => 'ESP',
+    'ah' => 'AH'
+);
+
+$p1_ealgos = ipsec_p1_ealgos();
+$p2_ealgos = ipsec_p2_ealgos();
+$p1_authentication_methods = ipsec_p1_authentication_methods();
+$p2_halgos = ipsec_p2_halgos();
 
 ?>
 <body>
@@ -384,16 +395,6 @@ $( document ).ready(function() {
                             foreach ($aliaslist as $aliasip => $aliasif) {
                                 $iflabels[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                             }
-
-                            $grouplist = return_gateway_groups_array();
-                            foreach ($grouplist as $name => $group) {
-                                if ($group[0]['vip'] != '') {
-                                    $vipif = $group[0]['vip'];
-                                } else {
-                                    $vipif = $group[0]['int'];
-                                }
-                                $iflabels[$name] = "GW Group {$name}";
-                            }
                             $if = $iflabels[$ph1ent['interface']];
                         } else {
                             $if = "WAN";
@@ -503,7 +504,7 @@ $( document ).ready(function() {
                                 </td>
                                 <td class="hidden-xs">
                                   <?=$p2_protos[$ph2ent['protocol']];?>
-                                  <?=isset($ph2ent['mode']) ? array_search($ph2ent['mode'], array("IPv4 tunnel" => "tunnel", "IPv6 tunnel" => "tunnel6", "transport" => "transport")) : ""; ?>
+                                  <?=isset($ph2ent['mode']) ? array_search($ph2ent['mode'], array("IPv4 tunnel" => "tunnel", "IPv6 tunnel" => "tunnel6", "transport" => "transport", "Route-based" => "route-based")) : ""; ?>
                                 </td>
 <?php
                                 if (($ph2ent['mode'] == "tunnel") || ($ph2ent['mode'] == "tunnel6")) :?>
@@ -513,6 +514,10 @@ $( document ).ready(function() {
                                 <td>
                                   <?=ipsec_idinfo_to_text($ph2ent['remoteid']); ?>
                                 </td>
+<?php
+                                elseif ($ph2ent['mode'] == "route-based"):?>
+                                <td><?=$ph2ent['tunnel_local'];?></td>
+                                <td><?=$ph2ent['tunnel_remote'];?></td>
 <?php
                                 else :?>
                                 <td>&nbsp;</td>

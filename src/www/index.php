@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     usort($widgetCollection, function ($item1, $item2) {
       return strcmp(strtolower($item1['sortKey']), strtolower($item2['sortKey']));
     });
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['origin']) && $_POST['origin'] == 'dashboard') {
     if (!empty($_POST['sequence'])) {
         $config['widgets']['sequence'] = $_POST['sequence'];
     } elseif (isset($config['widgets']['sequence'])) {
@@ -122,9 +122,13 @@ include("fbegin.inc");?>
     <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
       <div class="row">
         <section class="col-xs-12">
-          <div class="content-box" style="padding: 20px;">
+          <div class="content-box wizard" style="padding: 20px;">
             <div class="table-responsive">
-              <img src="/ui/themes/<?=$themename;?>/build/images/default-logo.<?=file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg") ? "svg" : "png";?>" border="0" alt="logo" style="max-width:380px;" />
+<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php else: ?>
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php endif ?>
               <br />
               <div class="content-box-main" style="padding-bottom:0px;">
                 <?php
@@ -322,6 +326,7 @@ include("fbegin.inc");?>
 
 <section class="page-content-main">
   <form method="post" id="iform">
+    <input type="hidden" value="dashboard" name="origin" id="origin" />
     <input type="hidden" value="" name="sequence" id="sequence" />
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
   </form>
@@ -331,7 +336,7 @@ include("fbegin.inc");?>
 <?php
           print_service_banner('livecd');
           $crash_report = get_crash_report();
-          if ($crash_report != '') {
+          if (!empty($crash_report)) {
               print_info_box($crash_report);
           }?>
         </div>

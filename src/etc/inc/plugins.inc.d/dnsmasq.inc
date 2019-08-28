@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -68,7 +68,7 @@ function dnsmasq_syslog()
 {
     $logfacilities = array();
 
-    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'), 'remote' => 'dns');
+    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'));
 
     return $logfacilities;
 }
@@ -182,10 +182,12 @@ function dnsmasq_configure_do($verbose = false)
 
     if (!empty($config['dnsmasq']['custom_options'])) {
         foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
-            $args .= " " . escapeshellarg("--{$c}");
-            $p = explode('=', $c);
-            if (array_key_exists($p[0], $standard_args)) {
-                unset($standard_args[$p[0]]);
+            if (!empty($c)) {
+                $args .= " " . escapeshellarg("--{$c}");
+                $p = explode('=', $c);
+                if (array_key_exists($p[0], $standard_args)) {
+                    unset($standard_args[$p[0]]);
+                }
             }
         }
     }
@@ -293,7 +295,8 @@ function _dnsmasq_dhcpleases_start()
 {
     global $config;
 
-    $leases = services_dhcpd_leasesfile();
+    require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
+    $leases = dhcpd_dhcpv4_leasesfile();
 
     if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
         $domain = $config['system']['domain'];

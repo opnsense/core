@@ -32,8 +32,6 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("gwlb.inc");
-require_once("rrd.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -235,7 +233,11 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 ?>
-
+<script>
+    $( document ).ready(function() {
+        window_highlight_table_option();
+    });
+</script>
 <body>
 <?php include("fbegin.inc"); ?>
   <!-- row -->
@@ -424,7 +426,7 @@ include("head.inc");
                   <div class="hidden" data-for="help_pf_disable_force_gw">
                     <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
                                 'will normally use the specified gateway for that interface. ' .
-                                'When this option is set, the default routing rules apply (automatic rules will be disabled).') ?>
+                                'When this option is set the route will be selected by the system routing table instead.') ?>
                   </div>
                 </td>
               </tr>

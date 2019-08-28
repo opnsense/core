@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 """
     Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
@@ -70,6 +70,7 @@ def aggregate_flowd(config, do_vacuum=False):
             # commit data on receive timestamp change or last record
             for stream_agg_object in stream_agg_objects:
                 stream_agg_object.commit()
+                commit_record_count = 0
             metadata.update_sync_time(prev_recv)
         if flow_record is not None:
             # send to aggregator
@@ -146,6 +147,7 @@ class Main(object):
         vacuum_countdown = None
         syslog.syslog(syslog.LOG_NOTICE, 'start watching flowd')
         while self.running:
+            loop_start = time.time()
             # should we perform a vacuum
             if not vacuum_countdown or vacuum_countdown < time.time():
                 vacuum_countdown = time.time() + vacuum_interval
@@ -160,7 +162,8 @@ class Main(object):
                     syslog.syslog(syslog.LOG_NOTICE, 'vacuum done')
             except:
                 syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
-                return
+                raise
+
             # rotate if needed
             check_rotate(self.config.flowd_source)
 
@@ -168,7 +171,10 @@ class Main(object):
             if Main.config.single_pass:
                 break
             else:
-                for i in range(30):
+                # calculate time to wait in between parses. since tailing flowd.log is quite time consuming
+                # its better to wait a bit longer. max 120 x 0.5 seconds.
+                wait_time = max(120 - int(time.time() - loop_start), 0)
+                for i in range(wait_time):
                     if self.running:
                         time.sleep(0.5)
                     else:
@@ -213,7 +219,7 @@ if __name__ == '__main__':
             sortby = 'cumulative'
             ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
             ps.print_stats()
-            print s.getvalue()
+            print (s.getvalue())
         else:
             Main()
     elif cmd_args.repair:

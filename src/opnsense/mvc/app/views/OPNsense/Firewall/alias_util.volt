@@ -14,7 +14,7 @@
                     let grid = $('#alias_content').UIBootgrid({
                         search: '/api/firewall/alias_util/list/' + $(this).val(),
                         options: {
-                            rowCount: 20,
+                            rowCount: [20, 50, 100, 200, -1],
                             formatters: {
                                 commands: function (column, row) {
                                     return '<button type="button" class="btn btn-xs btn-default delete-ip" data-row-id="' + row.ip + '"><span class="fa fa-trash-o"></span></button>';
@@ -31,6 +31,12 @@
                                     std_bootgrid_reload('alias_content')
                                 });
                         });
+                        // header labels
+                        $("span.fa-long-arrow-right").attr('title', "{{lang._('in')}}").tooltip();
+                        $("span.fa-long-arrow-left").attr('title', "{{lang._('out')}}").tooltip();
+                        $("span.fa-times").attr('title', "{{lang._('block')}}").tooltip();
+                        $("span.fa-play").attr('title', "{{lang._('pass')}}").tooltip();
+
                     });
                 });
                 $('#tablename').change();
@@ -80,8 +86,8 @@
         $('#find_references').on('click', function (event) {
             BootstrapDialog.show({
                 type: BootstrapDialog.TYPE_DEFAULT,
-                title: '{{ lang._("Find references") }}',
-                message: '<p>{{ lang._("Enter an IP address to show in which aliases it's used.") }}</p>' +
+                title: '{{ lang._('Find references') }}',
+                message: '<p>{{ lang._('Enter an IP address to show in which aliases it is used.') }}</p>' +
                          '<div class="input-group" style="display: block;">' +
                              '<input id="ip" type="text" class="form-control"/>' +
                              '<span class="input-group-btn">' +
@@ -90,7 +96,7 @@
                          '</div>' +
                          '<div id="ip-results" style="margin-top: 15px;"></div>',
                 buttons: [{
-                    label: '{{ lang._("Close") }}',
+                    label: '{{ lang._('Close') }}',
                     cssClass: 'btn-primary',
                     action: function(dialogRef) {
                         dialogRef.close();
@@ -100,17 +106,22 @@
                     // Remove all pre-existing event listeners, just to be sure.
                     $('#ip-search').off();
                     $('#ip-search').on('click', function(event) {
+                        if (!$("#ip-search > span").hasClass('fa-search')) {
+                            // already searching
+                            return;
+                        }
                         let ip = $('#ip').val();
+                        $("#ip-search > span").removeClass('fa-search').addClass("fa-spinner fa-pulse");
                         ajaxCall('/api/firewall/alias_util/find_references', {'ip': ip}, function(data, status) {
                             if (status !== 'success' || data['status'] !== 'ok') {
                                 $('#ip-results').html(
                                     '<div class="alert alert-warning">' +
-                                    '{{ lang._("Error while fetching matching aliases:") }}' + ' ' + data['status'] +
+                                    '{{ lang._('Error while fetching matching aliases:') }}' + ' ' + data['status'] +
                                     '</div>');
                             } else if (data.matches === null || data.matches.length === 0) {
                                 $('#ip-results').html(
                                     '<div class="alert alert-info">' +
-                                    '{{ lang._("No matches for this IP.") }}' +
+                                    '{{ lang._('No matches for this IP.') }}' +
                                     '</div>');
                             } else {
                                 $('#ip-results').html('<div id="ip-results-list" class="list-group"></div>');
@@ -126,6 +137,7 @@
                                     $('#ip-results-list').append(item);
                                 });
                             }
+                            $("#ip-search > span").removeClass('fa-spinner fa-pulse').addClass("fa-search");
                         });
                     });
                 }
@@ -154,6 +166,10 @@
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
     }
+    .btn.pull-right {
+        margin-left: 3px;
+    }
+
 </style>
 
 <section class="page-content-main">
@@ -194,10 +210,42 @@
             <section class="col-xs-12">
                 <div class="content-box">
                     <div class="table-responsive">
-                        <table class="table table-striped" id="alias_content">
+                        <table class="table table-striped" id="alias_content" data-store-selection="true">
                             <thead>
                                 <tr>
                                     <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
+                                    <th data-column-id="in_block_p" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="in_block_b" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
+                                    <th data-column-id="in_pass_p" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="in_pass_b" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
+                                    <th data-column-id="out_block_p" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="out_block_b" data-type="numeric" data-visible="false">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
+                                    <th data-column-id="out_pass_p" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('packets')}}</small>
+                                    </th>
+                                    <th data-column-id="out_pass_b" data-type="numeric">
+                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
+                                      <br/><small>{{lang._('bytes')}}</small>
+                                    </th>
                                     <th data-column-id="commands" data-formatter="commands"></th>
                                 </tr>
                             </thead>

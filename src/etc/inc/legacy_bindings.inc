@@ -76,7 +76,7 @@ function legacy_html_escape_form_data(&$settings)
             if (is_array($dataValue)) {
                 legacy_html_escape_form_data($dataValue);
             } else {
-                $settings[$dataKey] = htmlspecialchars($dataValue);
+                $settings[$dataKey] = htmlspecialchars($dataValue, ENT_QUOTES | ENT_HTML401);
             }
         }
     }
@@ -109,13 +109,14 @@ function legacy_list_aliases($type)
  *  @param array $items item numbers to move
  *  @return array new constructed list
  */
-function legacy_move_config_list_items($source, $id, $items) {
+function legacy_move_config_list_items($source, $id, $items)
+{
     $new_config = array();
 
     if (!is_array($source)) {
         // input of wrong type, return empty array
         return array();
-    } elseif ( !is_array($items) || !is_numericint($id)) {
+    } elseif (!is_array($items) || !is_numericint($id)) {
         // selected items isn't an array or selected item isn't an int, return input
         return $source;
     } else {
@@ -129,9 +130,9 @@ function legacy_move_config_list_items($source, $id, $items) {
 
         // next copy all selected rules (=before $id)
         for ($i = 0; $i < count($source); $i++) {
-          if ($i != $id && in_array($i, $items)) {
-              $new_config[] = $source[$i];
-          }
+            if ($i != $id && in_array($i, $items)) {
+                $new_config[] = $source[$i];
+            }
         }
 
         // copy $id rule
@@ -158,4 +159,37 @@ function legacy_move_config_list_items($source, $id, $items) {
 function get_alias_description($name)
 {
     return OPNsense\Firewall\Util::aliasDescription($name);
+}
+
+function return_gateways_status()
+{
+    /* XXX quick and dirty compat layer */
+    $result = plugins_run('return_gateways_status');
+
+    if (!empty($result['dpinger'])) {
+        return $result['dpinger'];
+    }
+
+    return [];
+}
+
+function return_down_gateways()
+{
+    $result = array();
+    foreach (return_gateways_status() as $gwname => $stat) {
+        if (strpos($stat['status'], 'down') !== false) {
+            $result[] = $gwname;
+        }
+    }
+    return $result;
+}
+
+/*
+ * Return an array with all gateway groups with name as key
+ * All gateway groups will be processed before returning the array.
+ */
+function return_gateway_groups_array()
+{
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    return $gateways->getGroups(return_gateways_status());
 }

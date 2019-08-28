@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -36,46 +36,43 @@ import ujson
 
 if __name__ == '__main__':
     result = dict()
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-vvsI'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        data = output_stream.read().strip()
-        intf = None
-        for line in data.split('\n'):
-            if line.find('[') == -1  and line[0] not in (' ', '\t'):
-                intf = line.strip()
-                result[intf] = {'inbytespass': 0, 'outbytespass': 0, 'inpktspass': 0, 'outpktspass': 0,
-                                'inbytesblock': 0, 'outbytesblock': 0, 'inpktsblock': 0, 'outpktsblock': 0,
-                                'inpkts':0, 'inbytes': 0, 'outpkts': 0, 'outbytes': 0}
-            if intf is  not None and line.find('[') > -1:
-                packets = int(line.split(' Packets:')[-1].strip().split()[0])
-                bytes = int(line.split(' Bytes:')[-1].strip().split()[0])
-                if line.find('In4/Pass:') > -1 or line.find('In6/Pass:') > -1:
-                    result[intf]['inpktspass'] += packets
-                    result[intf]['inbytespass'] += bytes
-                    result[intf]['inpkts'] += packets
-                    result[intf]['inbytes'] += bytes
-                elif line.find('In4/Block:') > -1 or line.find('In6/Block:') > -1:
-                    result[intf]['inbytesblock'] += packets
-                    result[intf]['inpktsblock'] += bytes
-                    result[intf]['inpkts'] += packets
-                    result[intf]['inbytes'] += bytes
-                elif line.find('Out4/Pass:') > -1 or line.find('Out6/Pass:') > -1:
-                    result[intf]['outpktspass'] += packets
-                    result[intf]['outbytespass'] += bytes
-                    result[intf]['outpkts'] += packets
-                    result[intf]['outbytes'] += bytes
-                elif line.find('Out4/Block:') > -1 or line.find('Out6/Block:') > -1:
-                    result[intf]['outpktsblock'] += packets
-                    result[intf]['outbytesblock'] += bytes
-                    result[intf]['outpkts'] += packets
-                    result[intf]['outbytes'] += bytes
+    sp = subprocess.run(['/sbin/pfctl', '-vvsI'], capture_output=True, text=True)
+    intf = None
+    for line in sp.stdout.strip().split('\n'):
+        if line.find('[') == -1  and line[0] not in (' ', '\t'):
+            intf = line.strip()
+            result[intf] = {'inbytespass': 0, 'outbytespass': 0, 'inpktspass': 0, 'outpktspass': 0,
+                            'inbytesblock': 0, 'outbytesblock': 0, 'inpktsblock': 0, 'outpktsblock': 0,
+                            'inpkts':0, 'inbytes': 0, 'outpkts': 0, 'outbytes': 0}
+        if intf is  not None and line.find('[') > -1:
+            packets = int(line.split(' Packets:')[-1].strip().split()[0])
+            bytes = int(line.split(' Bytes:')[-1].strip().split()[0])
+            if line.find('In4/Pass:') > -1 or line.find('In6/Pass:') > -1:
+                result[intf]['inpktspass'] += packets
+                result[intf]['inbytespass'] += bytes
+                result[intf]['inpkts'] += packets
+                result[intf]['inbytes'] += bytes
+            elif line.find('In4/Block:') > -1 or line.find('In6/Block:') > -1:
+                result[intf]['inbytesblock'] += packets
+                result[intf]['inpktsblock'] += bytes
+                result[intf]['inpkts'] += packets
+                result[intf]['inbytes'] += bytes
+            elif line.find('Out4/Pass:') > -1 or line.find('Out6/Pass:') > -1:
+                result[intf]['outpktspass'] += packets
+                result[intf]['outbytespass'] += bytes
+                result[intf]['outpkts'] += packets
+                result[intf]['outbytes'] += bytes
+            elif line.find('Out4/Block:') > -1 or line.find('Out6/Block:') > -1:
+                result[intf]['outpktsblock'] += packets
+                result[intf]['outbytesblock'] += bytes
+                result[intf]['outpkts'] += packets
+                result[intf]['outbytes'] += bytes
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
         print(ujson.dumps(result))
     else:
         # output plain
-        print ('------------------------- COUNTERS -------------------------')
+        print('------------------------- COUNTERS -------------------------')
         for intf in result:
-            print ('[%s] %s' % (intf, unicode(result[intf])))
+            print('[%s] %s' % (intf, result[intf]))

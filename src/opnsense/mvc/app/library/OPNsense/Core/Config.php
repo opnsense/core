@@ -288,12 +288,18 @@ class Config extends Singleton
             if (count($backups) > 0) {
                 // load last backup
                 $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
-                $this->restoreBackup($backups[0]);
-            } else {
-                // in case there are no backups, restore defaults.
-                $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
-                $this->restoreBackup('/usr/local/etc/config.xml');
+                foreach ($backups as $backup) {
+                    try {
+                        $this->restoreBackup($backup);
+                        return;
+                    } catch (ConfigException $e) {
+                        $logger->error("failed restoring " . $backup);
+                    }
+                }
             }
+            // in case there are no backups, restore defaults.
+            $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
+            $this->restoreBackup('/usr/local/etc/config.xml');
         }
     }
 
@@ -351,7 +357,12 @@ class Config extends Singleton
         }
 
         if (!is_resource($this->config_file_handle)) {
-            $this->config_file_handle = fopen($this->config_file, "r+");
+            if (is_writable($this->config_file)) {
+                $this->config_file_handle = fopen($this->config_file, "r+");
+            } else {
+                // open in read-only mode
+                $this->config_file_handle = fopen($this->config_file, "r");
+            }
         }
 
         $this->simplexml = $this->loadFromStream($this->config_file_handle);
@@ -526,6 +537,27 @@ class Config extends Singleton
     }
 
     /**
+     * remove old backups
+     */
+    private function cleanupBackups()
+    {
+        if ($this->statusIsValid && isset($this->simplexml->system->backupcount)
+                && intval($this->simplexml->system->backupcount) >= 0) {
+            $revisions = intval($this->simplexml->system->backupcount);
+        } else {
+            $revisions = 60;
+        }
+
+        $cnt = 1;
+        foreach ($this->getBackups() as $filename) {
+            if ($cnt > $revisions) {
+                @unlink($filename);
+            }
+            ++$cnt;
+        }
+    }
+
+    /**
      * save config to filesystem
      * @param array|null $revision revision tag (associative array)
      * @param bool $backup do not backup current config
@@ -557,6 +589,9 @@ class Config extends Singleton
                 throw new ConfigException("Unable to lock config");
             }
         }
+
+        /* cleanup backups */
+        $this->cleanupBackups();
     }
 
     /**

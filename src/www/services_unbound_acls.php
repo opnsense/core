@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['apply'])) {
         unbound_configure_do();
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         clear_subsystem_dirty('unbound');
         header(url_safe('Location: /services_unbound_acls.php'));
         exit;
@@ -326,8 +326,8 @@ if (!isset($_GET['act'])) {
                   <td>&nbsp;</td>
                   <td>
                       &nbsp;<br />&nbsp;
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_unbound_acls.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>" />
+                      <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Cancel')) ?>" onclick="window.location.href='/services_unbound_acls.php'" />
                   </td>
                 </tr>
               </table>

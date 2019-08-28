@@ -30,14 +30,11 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dpinger.inc");
 
-$a_gateways = return_gateways_array(true, false, true);
-$a_gateways_arr = array();
-foreach ($a_gateways as $gw) {
-    $a_gateways_arr[] = $gw;
-}
-$a_gateways = $a_gateways_arr;
-$dpinger_default = return_dpinger_defaults();
+$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+$a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
+$dpinger_default = dpinger_defaults();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -70,6 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("A valid gateway IP address must be specified.");
     }
 
+    $vips = [];
+
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($pconfig['interface'] == $vip['interface']) {
+            $vips[] = $vip;
+        }
+    }
+
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
             list ($parent_ip, $parent_sn) = explode('/', find_interface_network(get_real_interface($pconfig['interface']), false));
@@ -79,17 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $input_errors[] = gettext("Cannot add IPv4 Gateway Address because no IPv4 address could be found on the interface.");
             } else {
                 $subnets = array(gen_subnet($parent_ip, $parent_sn) . "/" . $parent_sn);
-                $vips = link_interface_to_vips($pconfig['interface']);
-                if (is_array($vips)) {
-                    foreach ($vips as $vip) {
-                        if (!is_ipaddrv4($vip['subnet'])) {
-                            continue;
-                        }
-                        $subnets[] = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
+                foreach ($vips as $vip) {
+                    if (!is_ipaddrv4($vip['subnet'])) {
+                        continue;
                     }
+                    $subnets[] = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
                 }
 
                 $found = false;
+
                 foreach ($subnets as $subnet) {
                     if (ip_in_subnet($pconfig['gateway'], $subnet)) {
                         $found = true;
@@ -111,14 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $input_errors[] = gettext("Cannot add IPv6 Gateway Address because no IPv6 address could be found on the interface.");
                 } else {
                     $subnets = array(gen_subnetv6($parent_ip, $parent_sn) . "/" . $parent_sn);
-                    $vips = link_interface_to_vips($pconfig['interface']);
-                    if (is_array($vips)) {
-                        foreach ($vips as $vip) {
-                            if (!is_ipaddrv6($vip['subnet'])) {
-                                continue;
-                            }
-                            $subnets[] = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
+                    foreach ($vips as $vip) {
+                        if (!is_ipaddrv6($vip['subnet'])) {
+                            continue;
                         }
+                        $subnets[] = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
                     }
 
                     $found = false;
@@ -274,6 +274,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if (!empty($pconfig['priority']) && !is_numeric($pconfig['priority'])) {
+        $input_errors[] = gettext("Priority needs to be a numeric value.");
+    }
+
     if (!empty($pconfig['alert_interval'])) {
         if (!is_numeric($pconfig['alert_interval'])) {
             $input_errors[] = gettext("The alert interval needs to be a numeric value.");
@@ -311,17 +315,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $reloadif = "";
         $gateway = array();
 
-        if (empty($pconfig['interface'])) {
-            $gateway['interface'] = $pconfig['friendlyiface'];
-        } else {
-            $gateway['interface'] = $pconfig['interface'];
-        }
+        $gateway['interface'] = $pconfig['interface'];
         if (is_ipaddr($pconfig['gateway'])) {
             $gateway['gateway'] = $pconfig['gateway'];
         } else {
             $gateway['gateway'] = "dynamic";
         }
         $gateway['name'] = $pconfig['name'];
+        $gateway['priority'] = $pconfig['priority'];
         $gateway['weight'] = $pconfig['weight'];
         $gateway['ipprotocol'] = $pconfig['ipprotocol'];
         $gateway['interval'] = $pconfig['interval'];
@@ -347,20 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on") {
-            $i = 0;
-            /* remove the default gateway bits for all gateways with the same address family */
-            foreach ($a_gateway_item as $gw) {
-                if ($gateway['ipprotocol'] == $gw['ipprotocol']) {
-                    unset($config['gateways']['gateway_item'][$i]['defaultgw']);
-                    if ($gw['interface'] != $pconfig['interface'] && $gw['defaultgw']) {
-                        $reloadif = $gw['interface'];
-                    }
-                }
-                $i++;
-            }
-            $gateway['defaultgw'] = true;
-        }
+        $gateway['defaultgw'] = ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on");
 
         foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -407,10 +395,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo implode("\n\n", $input_errors);
             exit;
         }
-
-        if (!empty($pconfig['interface'])) {
-            $pconfig['friendlyiface'] = $pconfig['interface'];
-        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // retrieve form data
@@ -433,7 +417,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'dynamic',
         'fargw',
         'force_down',
-        'friendlyiface',
         'gateway',
         'interface',
         'interval',
@@ -449,6 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'alert_interval',
         'time_period',
         'loss_interval',
+        'priority'
     );
     foreach ($copy_fields as $fieldname) {
         if (isset($configId) && isset($a_gateways[$configId][$fieldname])) {
@@ -504,7 +488,6 @@ $( document ).ready(function() {
               <input type='hidden' name='attribute' id='attribute' value="<?=$pconfig['attribute'];?>"/>
 <?php
             endif;?>
-              <input type='hidden' name='friendlyiface' id='friendlyiface' value="<?=$pconfig['friendlyiface'];?>"/>
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td style="width:22%"><?=gettext("Edit gateway");?></td>
@@ -539,8 +522,8 @@ $( document ).ready(function() {
                   <td>
                     <select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
-                    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $iface => $ifcfg):?>
-                      <option value="<?=$iface;?>" <?=$iface == $pconfig['friendlyiface'] ? "selected='selected'" : "";?>>
+                    foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+                      <option value="<?=$iface;?>" <?=$iface == $pconfig['interface'] ? "selected='selected'" : "";?>>
                         <?= $ifcfg['descr'] ?>
                       </option>
 <?php
@@ -574,11 +557,11 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default Gateway"); ?></td>
+                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Upstream Gateway"); ?></td>
                   <td>
                     <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_defaultgw">
-                      <?= gettext('This will select the above gateway as the default gateway.') ?>
+                      <?= gettext('This will select the above gateway as a default gateway candidate.') ?>
                     </div>
                   </td>
                 </tr>
@@ -620,10 +603,33 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+
+
+                <tr>
+                  <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                  <td>
+                    <select id="priority" name="priority" class="selectpicker"  data-live-search="true" data-size="5">
+<?php
+                    for ($prio=255; $prio >= 1; --$prio):?>
+                        <option value="<?=$prio;?>" <?=$pconfig['priority'] == $prio ? "selected=selected" : "";?> >
+                            <?=$prio;?>
+                        </option>
+<?php
+                    endfor;?>
+                    </select>
+                    <div class="hidden" data-for="help_for_priority">
+                      <?= gettext('Influences sort order when selecting a (default) gateway, lower means more important.') ?>
+                    </div>
+                  </td>
+                </tr>
+
+
+
+
                 <tr class="advanced visible">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
-                    <input type="button" id="btn_advanced" value="Advanced" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
+                    <input type="button" id="btn_advanced" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
@@ -737,9 +743,9 @@ $( document ).ready(function() {
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
-                           onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateways.php';?>'" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>" />
+                    <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Cancel')) ?>"
+                           onclick="window.location.href = '/system_gateways.php';" />
 <?php
                     if (isset($id)) :?>
                     <input name="id" type="hidden" value="<?=$id;?>" />

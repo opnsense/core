@@ -115,7 +115,8 @@
 <div class="tab-content content-box">
     <div id="jobs" class="tab-pane fade in active">
         <!-- tab page "cron items" -->
-        <table id="grid-jobs" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+        <table id="grid-jobs" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit"
+                 {% if (selected_uuid|default("") == "") %} data-editAlert="cronChangeMessage" {% endif %} >
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
@@ -145,6 +146,9 @@
         </table>
     </div>
     <div class="col-md-12">
+        <div id="cronChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
         <hr/>
         <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
 	<br/><br/>

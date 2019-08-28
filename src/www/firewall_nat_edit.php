@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['protocol'] = "tcp";
     $pconfig['srcbeginport'] = "any";
     $pconfig['srcendport'] = "any";
-    $pconfig['interface'] = "wan";
+    $pconfig['interface'] = ["wan"];
     $pconfig['dstbeginport'] = 80 ;
     $pconfig['dstendport'] = 80 ;
     $pconfig['local-port'] = 80;
@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // fields with some kind of logic.
         $pconfig['disabled'] = isset($a_nat[$configId]['disabled']);
         $pconfig['nordr'] = isset($a_nat[$configId]['nordr']);
+        $pconfig['interface'] = explode(",", $pconfig['interface']);
         address_to_pconfig($a_nat[$configId]['source'], $pconfig['src'],
           $pconfig['srcmask'], $pconfig['srcnot'],
           $pconfig['srcbeginport'], $pconfig['srcendport']);
@@ -84,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
     } elseif (isset($_GET['template']) && $_GET['template'] == 'transparent_proxy') {
         // new rule for transparent proxy reflection, to use as sample
-        $pconfig['interface'] = "lan";
+        $pconfig['interface'] = ["lan"];
         $pconfig['src'] = "lan";
         $pconfig['dst'] = "any";
         $pconfig['ipprotocol'] = "inet";
@@ -210,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['protocol'] != 'any') {
             $natent['protocol'] = $pconfig['protocol'];
         }
-        $natent['interface'] = $pconfig['interface'];
+        $natent['interface'] = implode(",", $pconfig['interface']);
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
         $natent['descr'] = $pconfig['descr'];
         $natent['tag'] = $pconfig['tag'];
@@ -297,6 +298,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $filterent['destination'] = array();
             }
             $filterent['destination']['address'] = $pconfig['target'];
+            if (count($pconfig['interface']) > 1) {
+                $filterent['floating'] = true;
+                $filterent['quick'] = "yes";
+            } else {
+                unset($filterent['floating']);
+                unset($filterent['quick']);
+            }
 
             if (!empty($pconfig['log'])) {
                 $filterent['log'] = true;
@@ -317,11 +325,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $filterent['destination']['port'] = $pconfig['local-port'];
             }
 
-            /*
-             * Our firewall filter description may be no longer than
-             * 63 characters, so don't let it be.
-             */
-            $filterent['descr'] = substr("NAT " . $pconfig['descr'], 0, 62);
+            $filterent['descr'] = $pconfig['descr'];
 
             // If this is a new rule, create an ID and add the rule
             if (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass') {
@@ -532,10 +536,10 @@ $( document ).ready(function() {
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <div class="input-group">
-                      <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
+                      <select name="interface[]" class="selectpicker" data-width="auto" data-live-search="true" multiple="multiple">
 <?php
                         foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
-                        <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
                         <?php endforeach; ?>
@@ -569,12 +573,11 @@ $( document ).ready(function() {
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php                foreach (get_protocols() as $proto):
-?>
-              <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
-                          <?=$proto;?>
+<?php foreach (get_protocols() as $proto): ?>
+                        <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
+                          <?= $proto ?>
                         </option>
-<?php                endforeach; ?>
+<?php endforeach ?>
               </select>
                     </div>
                     <div class="hidden" data-for="help_for_proto">
@@ -586,7 +589,7 @@ $( document ).ready(function() {
                 <tr class="advanced_opt_src visible">
                   <td><?=gettext("Source"); ?></td>
                   <td>
-                    <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="showadvancedboxsrc" />
+                    <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Advanced')) ?>" id="showadvancedboxsrc" />
                     <div class="hidden" data-for="help_for_source">
                       <?=gettext("Show source address and port range"); ?>
                     </div>

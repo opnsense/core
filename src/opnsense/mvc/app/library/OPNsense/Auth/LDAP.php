@@ -94,7 +94,7 @@ class LDAP extends Base implements IAuthConnector
     /**
      * @var null|string certificate reference (in /var/run/certs/)
      */
-     private $ldapCAcert = null;
+    private $ldapCAcert = null;
 
     /**
      * @var array list of already known usernames vs distinguished names
@@ -110,6 +110,16 @@ class LDAP extends Base implements IAuthConnector
      * when set, $lastAuthProperties will contain the authenticated user properties
      */
     private $ldapReadProperties = false;
+
+    /**
+     * when set, synchronize groups defined in memberOf attribute to local database
+     */
+    private $ldapSyncMemberOf = false;
+
+    /**
+     * limit the groups which will be considered for sync, empty means all
+     */
+    private $ldapSyncMemberOfLimit = null;
 
     /**
      * @var array internal list of authentication properties (returned by radius auth)
@@ -217,8 +227,11 @@ class LDAP extends Base implements IAuthConnector
         $this->ldapVersion = $ldapVersion;
         $this->baseSearchDN = $baseSearchDN;
         // setup ldap general search list, list gets updated by requested data
-        $this->addSearchAttribute("dn");
+        // Note that the "dn" is always returned irrespective of which attributes types are requested
+        $this->addSearchAttribute("displayName");
+        $this->addSearchAttribute("cn");
         $this->addSearchAttribute("name");
+        $this->addSearchAttribute("mail");
     }
 
     /**
@@ -236,7 +249,9 @@ class LDAP extends Base implements IAuthConnector
             "ldap_authcn" => "ldapAuthcontainers",
             "ldap_scope" => "ldapScope",
             "local_users" => "userDNmap",
-            "ldap_read_properties" => "ldapReadProperties"
+            "ldap_read_properties" => "ldapReadProperties",
+            "ldap_sync_memberof" => "ldapSyncMemberOf",
+            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit"
         );
 
         // map properties 1-on-1
@@ -321,11 +336,11 @@ class LDAP extends Base implements IAuthConnector
 
         // Note: All TLS options must be set before ldap_connect is called
         if (!empty($this->ldapCAcert)) {
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
+            ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
         } else {
-            ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
+            ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
         }
         $this->ldapHandle = @ldap_connect($bind_url);
 
@@ -383,12 +398,25 @@ class LDAP extends Base implements IAuthConnector
                     // fetch distinguished name and most likely username (try the search field first)
                     foreach (array($userNameAttribute, "name") as $ldapAttr) {
                         if (isset($searchResults[$i][$ldapAttr]) && $searchResults[$i][$ldapAttr]['count'] > 0) {
-                            $result[] = array(
+                            $user = array(
                                 'name' => $searchResults[$i][$ldapAttr][0],
-                                'fullname' => !empty($searchResults[$i]['name'][0]) ?
-                                    $searchResults[$i]['name'][0] : "",
                                 'dn' => $searchResults[$i]['dn']
                             );
+                            if (!empty($searchResults[$i]['displayName'][0])) {
+                                $user['fullname'] = $searchResults[$i]['displayName'][0];
+                            } elseif (!empty($searchResults[$i]['cn'][0])) {
+                                $user['fullname'] = $searchResults[$i]['cn'][0];
+                            } elseif (!empty($searchResults[$i]['name'][0])) {
+                                $user['fullname'] = $searchResults[$i]['name'][0];
+                            } else {
+                                $user['fullname'] = '';
+                            }
+                            if (!empty($searchResults[$i]['mail'][0])) {
+                                $user['email'] = $searchResults[$i]['mail'][0];
+                            } else {
+                                $user['email'] = '';
+                            }
+                            $result[] = $user;
                             break;
                         }
                     }
@@ -430,6 +458,85 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
+     * update user group policies when configured
+     * @param string $username authenticated username
+     */
+    private function updatePolicies($username)
+    {
+        if ($this->ldapSyncMemberOf && !empty($this->lastAuthProperties['memberof'])) {
+            $user = $this->getUser($username);
+            // gather known and user configured groups to be able to compare the results from ldap
+            $user_groups = array();
+            $known_groups = array();
+            $cnf = Config::getInstance()->object();
+            if (isset($cnf->system->group)) {
+                foreach ($cnf->system->group as $group) {
+                    $known_groups[] = (string)$group->name;
+                    // when user is known, collect current groups
+                    if ($user != null && in_array((string)$user->uid, (array)$group->member)) {
+                        $user_groups[] = (string)$group->name;
+                    }
+                }
+            }
+            // collect all groups from the memberof attribute, store full object path for logging
+            // first cn= defines our local groupname
+            $ldap_groups = array();
+            foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
+                if (stripos($member, "cn=") === 0) {
+                    $ldap_groups[explode(",", substr($member, 3))[0]] = $member;
+                }
+            }
+            // list of enabled groups (all when empty), so we can ignore some local groups if needed
+            if (!empty($this->ldapSyncMemberOfLimit)) {
+                $sync_groups = explode(",", $this->ldapSyncMemberOfLimit);
+            } else {
+                $sync_groups = $known_groups;
+            }
+            //
+            // sort groups and intersect with $sync_groups to determine difference.
+            natcasesort($sync_groups);
+            natcasesort($user_groups);
+            natcasesort($ldap_groups);
+            $diff_ugrp = array_intersect($sync_groups, $user_groups);
+            $diff_lgrp = array_intersect($sync_groups, array_keys($ldap_groups));
+            if ($diff_lgrp != $diff_ugrp) {
+                // update when changed
+                if ($user == null) {
+                    // user creation not supported (yet)
+                    // XXX: we might consider this in the future, since legacy code is involved in creating users
+                    return;
+                }
+                // Lock our configuration while updating, remove now unassigned groups and add new ones
+                // if returned by ldap.
+                $cnf = Config::getInstance()->lock(true)->object();
+                foreach ($cnf->system->group as $group) {
+                    if (in_array((string)$group->name, $sync_groups)) {
+                        if (in_array((string)$user->uid, (array)$group->member)
+                              && empty($ldap_groups[(string)$group->name])) {
+                            unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
+                            syslog(LOG_NOTICE, sprintf(
+                                'User: policy change for %s unlink group %s',
+                                $username,
+                                (string)$group->name
+                            ));
+                        } elseif (!in_array((string)$user->uid, (array)$group->member)
+                              && !empty($ldap_groups[(string)$group->name])) {
+                            syslog(LOG_NOTICE, sprintf(
+                                'User: policy change for %s link group %s [%s]',
+                                $username,
+                                (string)$group->name,
+                                $ldap_groups[(string)$group->name]
+                            ));
+                            $group->addChild('member', (string)$user->uid);
+                        }
+                    }
+                }
+                Config::getInstance()->save();
+            }
+        }
+    }
+
+    /**
      * authenticate user against ldap server
      * @param string $username username to authenticate
      * @param string $password user password
@@ -464,7 +571,6 @@ class LDAP extends Base implements IAuthConnector
                 $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)');
                 $info = @ldap_get_entries($this->ldapHandle, $sr);
                 if ($info['count'] != 0) {
-                    // $this->lastAuthProperties['info'] = $info[0];
                     foreach ($info[0] as $ldap_key => $ldap_value) {
                         if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
                             if (isset($ldap_value['count'])) {
@@ -475,6 +581,8 @@ class LDAP extends Base implements IAuthConnector
                             }
                         }
                     }
+                    // update group policies when applicable
+                    $this->updatePolicies($username);
                 }
             }
         }

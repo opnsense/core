@@ -79,7 +79,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
-        const field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'rdr': 'fa-exchange'};
+        const field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'rdr': 'fa-exchange', 'nat': 'fa-exchange'};
 
         var interface_descriptions = {};
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {

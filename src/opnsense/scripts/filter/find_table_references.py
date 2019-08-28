@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2018 Deciso B.V.
+    Copyright (c) 2018-2019 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,23 +45,17 @@ if __name__ == '__main__':
             tables = []
 
             # Fetch tables
-            with tempfile.NamedTemporaryFile() as output_stream:
-                subprocess.call(['/sbin/pfctl', '-sT'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-                output_stream.seek(0)
-                for line in output_stream.read().strip().split('\n'):
-                    tables.append(line.strip())
+            sp = subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True)
+            for line in sp.stdout.strip().split('\n'):
+                tables.append(line.strip())
 
             # Fetch IP ranges in this table and check if they match
             for table in tables:
-                with tempfile.NamedTemporaryFile() as output_stream:
-                    subprocess.call(['/sbin/pfctl', '-t', table, '-T', 'show'],
-                                    stdout=output_stream, stderr=open(os.devnull, 'wb'))
-                    output_stream.seek(0)
-                    for line in output_stream.read().strip().split('\n'):
-                        if line.strip() != "":
-                            if ip in IPNetwork(line.strip()):
-                                result['matches'].append(table)
-
+                sp = subprocess.run(['/sbin/pfctl', '-t', table, '-T', 'show'], capture_output=True, text=True)
+                for line in sp.stdout.strip().split('\n'):
+                    if line.strip() != "":
+                        if ip in IPNetwork(line.strip()):
+                            result['matches'].append(table)
             print(ujson.dumps(result))
 
         except AddrFormatError:

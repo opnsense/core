@@ -32,77 +32,6 @@ function core_services()
 
     $services = array();
 
-    if (is_radvd_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = "radvd";
-        $pconfig['description'] = gettext("Router Advertisement Daemon");
-        $pconfig['php']['restart'] = array('services_radvd_configure');
-        $pconfig['php']['start'] = array('services_radvd_configure');
-        $pconfig['pidfile'] = '/var/run/radvd.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['dhcrelay']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay";
-        $pconfig['description'] = gettext("DHCPv4 Relay");
-        $pconfig['php']['restart'] = array('services_dhcrelay_configure');
-        $pconfig['php']['start'] = array('services_dhcrelay_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['dhcrelay6']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay6";
-        $pconfig['description'] = gettext("DHCPv6 Relay");
-        $pconfig['php']['restart'] = array('services_dhcrelay6_configure');
-        $pconfig['php']['start'] = array('services_dhcrelay6_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
-        $services[] = $pconfig;
-    }
-
-    if (is_dhcpv4_server_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = 'dhcpd';
-        $pconfig['description'] = gettext("DHCPv4 Server");
-        $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
-        $pconfig['php']['start'] = array('services_dhcpdv4_configure');
-        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
-        $services[] = $pconfig;
-    }
-
-    if (is_dhcpv6_server_enabled()) {
-        $pconfig = array();
-        $pconfig['name'] = 'dhcpd6';
-        $pconfig['description'] = gettext("DHCPv6 Server");
-        $pconfig['php']['restart'] = array('services_dhcpdv6_configure');
-        $pconfig['php']['start'] = array('services_dhcpdv6_configure');
-        $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
-        $services[] = $pconfig;
-    }
-
-    if (is_dpinger_enabled()) {
-        $gateways_arr_all = return_gateways_array(true);
-
-        foreach ($gateways_arr_all as $name => $gateway) {
-            if (isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
-            $pconfig = array();
-            $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
-            $pconfig['php']['restart'] = array('setup_gateways_monitor');
-            $pconfig['php']['start'] = array('setup_gateways_monitor');
-            $pconfig['pidfile'] = "/var/run/dpinger_{$name}.pid";
-            $pconfig['php']['args'] = array('verbose', 'id');
-            $pconfig['name'] = 'dpinger';
-            $pconfig['verbose'] = false;
-            $pconfig['id'] = $name;
-            $services[] = $pconfig;
-        }
-    }
-
     if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
         $enabled = false;
         if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {
@@ -153,11 +82,23 @@ function core_services()
     $services[] = array(
         'description' => gettext('Local Syslog'),
         'php' => array(
+            "stop" => array('system_syslogd_stop'),
             "start" => array('system_syslogd_start'),
             "restart" => array('system_syslogd_start')
         ),
         'pidfile' => '/var/run/syslog.pid',
-        'name' => 'syslog',
+        'name' => 'syslogd',
+    );
+
+    $services[] = array(
+        'description' => gettext('Remote Syslog'),
+        'php' => array(
+            "stop" => array('system_syslogd_stop'),
+            "start" => array('system_syslogd_start'),
+            "restart" => array('system_syslogd_start')
+        ),
+        'pidfile' => '/var/run/syslog-ng.pid',
+        'name' => 'syslog-ng',
     );
 
     return $services;
@@ -222,7 +163,33 @@ function core_cron()
         }
     }
 
-    $jobs[]['autocron'] = array('configctl system remote backup', 0, 1);
+    foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
+        if ($provider['handle']->isEnabled()) {
+            $jobs[]['autocron'] = array('configctl system remote backup', 0, 1);
+            break;
+        }
+    }
 
     return $jobs;
+}
+
+function core_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['configd'] = array('facility' => array('configd.py'));
+    $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $logfacilities['filter'] = array('facility' => array('filterlog'));
+    $logfacilities['gateways'] = array('facility' => array('dpinger'));
+    $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
+    $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
+    $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
+    $logfacilities['ppps'] = array('facility' => array('ppp'));
+    $logfacilities['resolver'] = array('facility' => array('unbound'));
+    $logfacilities['routing'] = array('facility' => array(
+          'radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
+    ));
+    $logfacilities['wireless'] = array('facility' => array('hostapd'));
+
+    return $logfacilities;
 }

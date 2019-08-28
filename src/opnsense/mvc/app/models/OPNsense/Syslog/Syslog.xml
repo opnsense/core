@@ -1,0 +1,93 @@
+<model>
+    <mount>//OPNsense/Syslog</mount>
+    <version>1.0.0</version>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+              <default>1</default>
+              <Required>Y</Required>
+            </enabled>
+        </general>
+        <destinations>
+            <destination type="ArrayField">
+                <enabled type="BooleanField">
+                  <default>1</default>
+                  <Required>Y</Required>
+                </enabled>
+                <transport type="OptionField">
+                  <Required>Y</Required>
+                  <default>udp</default>
+                  <OptionValues>
+                      <udp4>UDP(4)</udp4>
+                      <tcp4>TCP(4)</tcp4>
+                      <udp6>UDP(6)</udp6>
+                      <tcp6>TCP(6)</tcp6>
+                  </OptionValues>
+                </transport>
+                <program type="JsonKeyValueStoreField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                  <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
+                  <SourceFile>/tmp/syslog_applications.json</SourceFile>
+                  <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+                  <SortByValue>Y</SortByValue>
+                  <ValidationMessage>Specify valid source applications.</ValidationMessage>
+                </program>
+                <level type="OptionField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                  <OptionValues>
+                      <debug>debug</debug>
+                      <info>info</info>
+                      <notice>notice</notice>
+                      <warn>warn</warn>
+                      <err>error</err>
+                      <crit>critical</crit>
+                      <alert>alert</alert>
+                      <emerg>emergency</emerg>
+                  </OptionValues>
+                  <default>info,notice,warn,err,crit,alert,emerg</default>
+                </level>
+                <facility type="OptionField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                  <OptionValues>
+                      <kern>kernel messages</kern>
+                      <user>user-level messages</user>
+                      <mail>mail system</mail>
+                      <daemon>system daemons</daemon>
+                      <auth>security/authorization messages</auth>
+                      <syslog>messages generated internally by syslogd</syslog>
+                      <lpr>line printer subsystem</lpr>
+                      <news>network news subsystem</news>
+                      <uucp>UUCP subsystem</uucp>
+                      <cron>clock daemon</cron>
+                      <authpriv>security/authorization messages</authpriv>
+                      <ftp>FTP daemon</ftp>
+                      <ntp>NTP subsystem</ntp>
+                      <security>log audit</security>
+                      <console>log alert</console>
+                      <local0>locally used (0)</local0>
+                      <local1>locally used (1)</local1>
+                      <local2>locally used (2)</local2>
+                      <local3>locally used (3)</local3>
+                      <local4>locally used (4)</local4>
+                      <local5>locally used (5)</local5>
+                      <local6>locally used (6)</local6>
+                      <local7>locally used (7)</local7>
+                  </OptionValues>
+                </facility>
+                <hostname type="HostnameField">
+                    <Required>Y</Required>
+                </hostname>
+                <port type="PortField">
+                    <Required>Y</Required>
+                    <default>514</default>
+                </port>
+                <description type="TextField">
+                  <Required>N</Required>
+                </description>
+            </destination>
+        </destinations>
+    </items>
+</model>

@@ -32,6 +32,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dhcpd.inc");
 
 /*
  * This function will remove entries from dhcpd.leases that would otherwise
@@ -42,7 +43,7 @@ function dhcp_clean_leases()
 {
     global $config;
 
-    $leasesfile = services_dhcpd_leasesfile();
+    $leasesfile = dhcpd_dhcpv4_leasesfile();
     if (!file_exists($leasesfile)) {
         return;
     }
@@ -80,9 +81,6 @@ function validate_partial_mac_list($maclist) {
     return true;
 }
 
-/**
- * restart dhcp service
- */
 function reconfigure_dhcpd()
 {
     /* Stop DHCP so we can cleanup leases */
@@ -90,15 +88,15 @@ function reconfigure_dhcpd()
     dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    services_dhcpd_configure();
+    dhcpd_dhcp_configure(false, 'inet');
     clear_subsystem_dirty('staticmaps');
 }
 
-$config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcpleaseinlocaltime','descr',
+$config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
-  'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow', 'mac_deny', 'tftp', 'ldap',
-  'netboot', 'nextserver', 'filename', 'filename32', 'filename64', 'rootpath', 'netmask', 'numberoptions',
-  'interface_mtu', 'wpad');
+  'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
+  'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
+  'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -230,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['ddnsdomain']) && !is_domain($pconfig['ddnsdomain']))) {
             $input_errors[] = gettext("A valid domain name must be specified for the dynamic DNS registration.");
         }
-        if ((!empty($pconfig['ddnsdomain']) && !is_ipaddrv4($pconfig['ddnsdomainprimary']))) {
+        if ((!empty($pconfig['ddnsdomainprimary']) && !is_ipaddrv4($pconfig['ddnsdomainprimary']))) {
             $input_errors[] = gettext("A valid primary domain name server IP address must be specified for the dynamic domain name.");
         }
         if (!empty($pconfig['ddnsdomainkey']) && base64_encode(base64_decode($pconfig['ddnsdomainkey'], true)) !== $pconfig['ddnsdomainkey']) {
@@ -304,6 +302,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           (string)((int)$pconfig['interface_mtu']) != $pconfig['interface_mtu'] || $pconfig['interface_mtu'] < 68 || $pconfig['interface_mtu'] > 65535)
         ) {
             $input_errors[] = gettext("A valid MTU value must be specified.");
+        }
+        if ($pconfig['failover_split'] != "" && (
+            (string)((int)$pconfig['failover_split']) != $pconfig['failover_split'] || $pconfig['failover_split'] < 0 || $pconfig['failover_split'] > 256)
+        ) {
+            $input_errors[] = gettext("Failover split must be a number between 0 and 256.");
         }
 
         if (is_array($pconfig['numberoptions']['item'])) {
@@ -389,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdconf = array();
             // simple 1-on-1 copy
             foreach ($config_copy_fieldsnames as $fieldname) {
-                if (!empty($pconfig[$fieldname])) {
+                if (!empty($pconfig[$fieldname]) || $pconfig[$fieldname] === "0") {
                     $dhcpdconf[$fieldname] = $pconfig[$fieldname];
                 }
             }
@@ -613,6 +616,8 @@ include("head.inc");
               }]
       });
     });
+
+    window_highlight_table_option();
   });
 </script>
 
@@ -784,7 +789,8 @@ include("head.inc");
                       <td>
                         <input name="gateway" type="text" class="form-control host" value="<?=$pconfig['gateway'];?>" />
                         <div class="hidden" data-for="help_for_gateway">
-                          <?=gettext('The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment.');?>
+                          <?=gettext('The default is to use the IP on this interface of the firewall as the gateway, if a valid (online) gateway has been configured under System->Gateways. '.
+                                     'Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment.');?>
                         </div>
                       </td>
                     </tr>
@@ -842,10 +848,23 @@ include("head.inc");
                       <td>
                         <input name="failover_peerip" type="text" class="form-control host" id="failover_peerip" value="<?=$pconfig['failover_peerip'];?>" />
                         <div class="hidden" data-for="help_for_failover_peerip">
-                          <?=gettext("Leave blank to disable. Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
+                          <?=gettext("Leave blank to disable. Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20). Note that changing this value will delete the current leases-database!");?>
                         </div>
                       </td>
                     </tr>
+                    <td><a id="help_for_failover_split" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Failover split:");?></td>
+                      <td>
+                        <input name="failover_split" type="text" class="form-control host" id="failover_split" value="<?=$pconfig['failover_split'];?>" />
+                        <div class="hidden" data-for="help_for_failover_split">
+                          <?=gettext("Leave blank to use default (128) which should be fine for most cases. ".
+                                     "Enter a number (0-256) to specify the load-balancing split between the failover peers, ".
+                                     "the default of 128 means both peers will handle approximately 50% of the clients, ".
+                                     "256 will make the primary handle all the clients. This value is only used on the primary peer, ".
+                                     "leave blank on the secondary.");?>
+                        </div>
+                      </td>
+                    </tr>
+
                     <tr>
                       <td><a id="help_for_failover_staticarp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static ARP");?></td>
                       <td>
@@ -875,7 +894,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
                     <td>
                       <div id="showddnsbox">
-                        <input type="button" onclick="show_ddns_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
+                        <input type="button" onclick="show_ddns_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Dynamic DNS");?>
                       </div>
                       <div id="showddns" style="display:none">
                         <input type="checkbox" value="yes" name="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? " checked=\"checked\"" :""; ?> />
@@ -910,7 +929,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("MAC Address Control");?></td>
                       <td>
                         <div id="showmaccontrolbox">
-                          <input type="button" onclick="show_maccontrol_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show MAC Address Control");?>
+                          <input type="button" onclick="show_maccontrol_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show MAC Address Control");?>
                         </div>
                         <div id="showmaccontrol" style="display:none">
                           <?= sprintf(gettext("Enter a list of partial MAC addresses to allow, comma-separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
@@ -924,7 +943,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
                       <td>
                         <div id="showntpbox">
-                          <input type="button" onclick="show_ntp_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show NTP configuration");?>
+                          <input type="button" onclick="show_ntp_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show NTP configuration");?>
                         </div>
                         <div id="showntp" style="display:none">
                           <input name="ntp1" type="text" id="ntp1" value="<?=$pconfig['ntp1'];?>" /><br />
@@ -936,11 +955,14 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TFTP server");?></td>
                       <td>
                         <div id="showtftpbox">
-                          <input type="button" onclick="show_tftp_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show TFTP configuration");?>
+                          <input type="button" onclick="show_tftp_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show TFTP configuration");?>
                         </div>
                         <div id="showtftp" style="display:none">
-                          <input name="tftp" type="text" size="50" value="<?=$pconfig['tftp'];?>" />
-                          <?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server.");?>
+                          <?=gettext("Set TFTP hostname");?>
+                          <input name="tftp" type="text" size="50" value="<?=$pconfig['tftp'];?>" /><br />
+                          <?=gettext("Set Bootfile");?>
+                          <input name="bootfilename" type="text" value="<?=$pconfig['bootfilename'];?>" /><br />
+                          <?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server and optionally a full path for a bootfile.");?>
                         </div>
                       </td>
                     </tr>
@@ -948,7 +970,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("LDAP URI");?></td>
                       <td>
                         <div id="showldapbox">
-                          <input type="button" onclick="show_ldap_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show LDAP configuration");?>
+                          <input type="button" onclick="show_ldap_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show LDAP configuration");?>
                         </div>
                         <div id="showldap" style="display:none">
                           <input name="ldap" type="text" id="ldap" size="80" value="<?=$pconfig['ldap'];?>" /><br />
@@ -960,7 +982,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
                       <td>
                         <div id="shownetbootbox">
-                          <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Network booting");?>
+                          <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
                           <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
@@ -987,7 +1009,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
                       <td>
                         <div id="showwpadbox">
-                          <input type="button" onclick="show_wpad_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show WPAD");?>
+                          <input type="button" onclick="show_wpad_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show WPAD");?>
                         </div>
                         <div id="showwpad" style="display:none">
                           <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
@@ -1001,7 +1023,7 @@ include("head.inc");
                       <td><a id="help_for_numberoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Additional Options");?></td>
                       <td>
                         <div id="shownumbervaluebox">
-                          <input type="button" onclick="show_shownumbervalue()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
+                          <input type="button" onclick="show_shownumbervalue()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
                         </div>
                         <div id="shownumbervalue" style="display:none">
                           <table class="table table-striped table-condensed" id="numberoptions_table">

@@ -48,7 +48,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function supportedOptions()
     {
-        return array("plain_config", "random_local_port");
+        return array("plain_config", "random_local_port", "auth_nocache", "cryptoapi");
     }
 
     /**
@@ -130,8 +130,14 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
                 $conf[] = "remote-cert-tls server";
             }
         }
+        if (!empty($this->config['cryptoapi'])) {
+            $conf[] = "cryptoapicert \"SUBJ:{$this->config['client_cn']}\"";
+        }
         if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {
             $conf[] = "auth-user-pass";
+            if (!empty($this->config['auth_nocache'])) {
+                $conf[] = "auth-nocache";
+            }
         }
 
         if (!empty($this->config['compression'])) {
@@ -145,7 +151,6 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
                 }
             }
         }
-
         return $conf;
     }
 
@@ -163,7 +168,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             }
             $conf[] = "</ca>";
         }
-        if ($this->config['mode'] !== "server_user") {
+        if ($this->config['mode'] !== "server_user" && empty($this->config['cryptoapi'])) {
             $conf[] = "<cert>";
             $conf = array_merge($conf, explode("\n", trim($this->config['client_crt'])));
             $conf[] = "</cert>";

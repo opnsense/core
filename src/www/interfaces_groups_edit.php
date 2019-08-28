@@ -1,35 +1,36 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2009 Ermal Luçi
-    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2009 Ermal Luçi
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
 
 $a_ifgroups = &config_read_array('ifgroups', 'ifgroupentry');
 
@@ -57,8 +58,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
-    if (preg_match("/([^a-zA-Z])+/", $pconfig['ifname'], $match) || empty($pconfig['ifname'])) {
-        $input_errors[] = gettext("Only letters A-Z are allowed as the group name.");
+
+    if (empty($pconfig['ifname']) || preg_match('/[^a-zA-Z0-9_]+/', $pconfig['ifname'], $match)) {
+        $input_errors[] = gettext('Only letters, digits and underscores are allowed as the group name.');
+    }
+
+    if (!empty($pconfig['ifname'])) {
+        if (strlen($pconfig['ifname']) > 15) {
+            $input_errors[] = gettext('The group name shall not be longer than 15 characters.');
+        }
+
+        if (preg_match('/[0-9]$/', $pconfig['ifname'], $match)) {
+            $input_errors[] = gettext('The group name shall not end in a digit.');
+        }
     }
 
     foreach (get_configured_interface_with_descr() as $gif => $gdescr) {
@@ -101,22 +113,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       }
                   }
               }
+              mark_subsystem_dirty('filter');
           }
+          $old_ifname = isset($id) ? $a_ifgroups[$id]['ifname'] : $pconfig['ifname'];
           // remove group members
           foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
-              if (!in_array($old_member, $pconfig['members'])) {
-                  $realif = get_real_interface($old_member);
-                  if (!empty($realif)) {
-                      mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
-                  }
+              if (!in_array($old_member, $pconfig['members']) || $old_ifname != $pconfig['ifname']) {
+                  mwexecf('/sbin/ifconfig %s -group %s', array(get_real_interface($old_member), $a_ifgroups[$id]['ifname']));
               }
           }
           // update item
           $a_ifgroups[$id] = $ifgroupentry;
       } else {
+          mark_subsystem_dirty('filter');
           // add new item
           $a_ifgroups[] = $ifgroupentry;
       }
+      usort($a_ifgroups, function($a, $b) {
+          return strnatcmp($a['ifname'], $b['ifname']);
+      });
+      filter_rules_sort();
       write_config();
       interface_group_setup($ifgroupentry);
       header(url_safe('Location: /interfaces_groups.php'));

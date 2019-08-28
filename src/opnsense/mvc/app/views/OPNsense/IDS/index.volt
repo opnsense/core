@@ -198,22 +198,33 @@ POSSIBILITY OF SUCH DAMAGE.
                 var base = $.when({});
                 var keyset = [];
                 $.each(rows, function(key, uuid){
-                    keyset.push(uuid);
-                    if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
-                        var call_url = url + keyset.join(',') +'/'+url_suffix;
-                        base = base.then(function() {
-                            var defer = $.Deferred();
-                            ajaxCall(call_url, {}, function(){
-                                defer.resolve();
+                    // only perform action in visible items
+                    if ($("#"+gridId).find("tr[data-row-id='"+uuid+"']").is(':visible')) {
+                        keyset.push(uuid);
+                        if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
+                            var call_url = url + keyset.join(',') +'/'+url_suffix;
+                            base = base.then(function() {
+                                var defer = $.Deferred();
+                                ajaxCall(call_url, {}, function(){
+                                    defer.resolve();
+                                });
+                                return defer.promise();
                             });
-                            return defer.promise();
-                        });
-                        keyset = [];
+                            keyset = [];
+                        }
                     }
                 });
                 // last action in the list, reload grid and release this promise
                 base.then(function(){
                     $("#"+gridId).bootgrid("reload");
+                    let changemsg = $("#"+gridId).data("editalert");
+                    if (changemsg !== undefined) {
+                        $("#"+changemsg).slideDown(1000, function(){
+                            setTimeout(function(){
+                                $("#"+changemsg).slideUp(2000);
+                            }, 2000);
+                        });
+                    }
                     defer_toggle.resolve();
                 });
             } else {
@@ -291,6 +302,21 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 });
+                /**
+                 * disable/enable[with optional filter] selected rulesets
+                 */
+                $("#disableSelectedRuleSets").unbind('click').click(function(){
+                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
+                });
+                $("#enableSelectedRuleSets").unbind('click').click(function(){
+                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
+                });
+                $("#enabledropSelectedRuleSets").unbind('click').click(function(){
+                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', "drop", 20);
+                });
+                $("#enableclearSelectedRuleSets").click(function(){
+                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', "clear", 20);
+                });
             } else if (e.target.id == 'rule_tab'){
                 //
                 // activate rule tab page
@@ -325,6 +351,35 @@ POSSIBILITY OF SUCH DAMAGE.
                             toggle:'/api/ids/settings/toggleRule/'
                         }
                 );
+                /**
+                 * disable/enable [+action] selected rules
+                 */
+                $("#disableSelectedRules").unbind('click').click(function(event){
+                    event.preventDefault();
+                    $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
+                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
+                        $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                        $("#disableSelectedRules > span").addClass("fa-square-o");
+                    });
+                });
+                $("#enableSelectedRules").unbind('click').click(function(){
+                    $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
+                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
+                        $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+                    });
+                });
+                $("#alertSelectedRules").unbind('click').click(function(){
+                    $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
+                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
+                        $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                    });
+                });
+                $("#dropSelectedRules").unbind('click').click(function(){
+                    $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
+                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
+                        $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                    });
+                });
             } else if (e.target.id == 'alert_tab') {
                 updateAlertLogs();
                 /**
@@ -424,7 +479,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                         });
 
                                         if (rule_data.action != undefined) {
-                                            var alert_select = $('<select class="selectpicker"/>');
+                                            var alert_select = $('<select/>');
                                             var alert_enabled = $('<input type="checkbox"/>');
                                             if (rule_data.enabled == '1') {
                                                 alert_enabled.prop('checked', true);
@@ -440,7 +495,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                               $("<tr/>").append(
                                                 $("<td/>").text("{{ lang._('Configured action') }}"),
                                                 $("<td id='alert_sid_action'/>").append(
-                                                  alert_enabled, $("<span/>").html("&nbsp; <strong>{{ lang._('Enabled')}}</strong>"), alert_select
+                                                  alert_enabled, $("<span/>").html("&nbsp; <strong>{{lang._('Enabled')}}</strong><br/>"), alert_select, $("<br/>")
                                                 )
                                               )
                                             );
@@ -476,6 +531,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                                         tbl.append(tbl_tbody);
                                         stdDialogInform("{{ lang._('Alert info') }}", tbl, "{{ lang._('Close') }}", undefined, "info", 'suricata-alert');
+                                        alert_select.selectpicker('refresh');
                                   });
                                 }
                             });
@@ -529,6 +585,11 @@ POSSIBILITY OF SUCH DAMAGE.
             });
             ajaxCall("/api/ids/settings/setRulesetproperties", {'properties': settings}, function(data,status) {
                 $("#updateSettings_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#rulesetChangeMessage").slideDown(1000, function(){
+                    setTimeout(function(){
+                        $("#rulesetChangeMessage").slideUp(2000);
+                    }, 2000);
+                });
             });
         });
 
@@ -553,53 +614,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#grid-rule-files').bootgrid('reload');
                 updateStatus();
                 $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
-            });
-        });
-
-        /**
-         * disable selected rulesets
-         */
-        $("#disableSelectedRuleSets").click(function(){
-            var gridId = 'grid-rule-files';
-            var url = '/api/ids/settings/toggleRuleset/';
-            actionToggleSelected(gridId, url, 0, 20);
-        });
-
-        /**
-         * enable selected rulesets
-         */
-        $("#enableSelectedRuleSets").click(function(){
-            var gridId = 'grid-rule-files';
-            var url = '/api/ids/settings/toggleRuleset/';
-            actionToggleSelected(gridId, url, 1, 20);
-        });
-
-        /**
-         * disable selected rules
-         */
-        $("#disableSelectedRules").click(function(event){
-            event.preventDefault();
-            var gridId = 'grid-installedrules';
-            var url = '/api/ids/settings/toggleRule/';
-            $("#disableSelectedRules > span").removeClass("fa-square-o");
-            $("#disableSelectedRules > span").addClass("fa-spinner fa-pulse");
-            actionToggleSelected(gridId, url, 0, 100).done(function(){
-                $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                $("#disableSelectedRules > span").addClass("fa-square-o");
-            });
-        });
-
-        /**
-         * enable selected rules
-         */
-        $("#enableSelectedRules").unbind('click').click(function(){
-            var gridId = 'grid-installedrules';
-            var url = '/api/ids/settings/toggleRule/';
-            $("#enableSelectedRules > span").removeClass("fa-check-square-o");
-            $("#enableSelectedRules > span").addClass("fa-spinner fa-pulse");
-            actionToggleSelected(gridId, url, 1, 100).done(function(){
-                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                $("#enableSelectedRules > span").addClass("fa-check-square-o");
             });
         });
 
@@ -714,8 +728,20 @@ POSSIBILITY OF SUCH DAMAGE.
                       <td>
                         <div class="row">
                           <div class="col-xs-9">
-                            <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Enable selected') }}</button>
-                            <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">{{ lang._('Disable selected') }}</button>
+                            <div>
+                              <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">
+                                  {{ lang._('Enable selected') }}
+                              </button>
+                              <button data-toggle="tooltip" id="enabledropSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">
+                                  {{ lang._('Enable (drop filter)') }}
+                              </button>
+                              <button data-toggle="tooltip" id="enableclearSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">
+                                  {{ lang._('Enable (clear filter)') }}
+                              </button>
+                              <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">
+                                  {{ lang._('Disable selected') }}
+                              </button>
+                            </div>
                           </div>
                           <div class="col-xs-3" style="padding-top:0px;">
                             <input type="text" placeholder="{{ lang._('Search') }}" id="grid-rule-files-search" value=""/>
@@ -725,7 +751,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </tr>
                   </table>
                   <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
-                    <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
+                    <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="rulesetChangeMessage" data-editDialog="DialogRuleset">
                         <thead>
                         <tr>
                             <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
@@ -758,11 +784,13 @@ POSSIBILITY OF SUCH DAMAGE.
           </tbody>
       </table>
       <div class="col-md-12">
+          <div id="rulesetChangeMessage" class="alert alert-info" style="display: none" role="alert">
+              {{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }}
+          </div>
           <hr/>
           <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b> <i id="updateSettings_progress" class=""></i></button>
           <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b> <i id="updateRulesAct_progress" class=""></i></button>
-          <br/>
-          <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>
+          <br/><br/>
       </div>
     </div>
     <div id="rules" class="tab-pane fade in">
@@ -783,7 +811,7 @@ POSSIBILITY OF SUCH DAMAGE.
         </div>
 
         <!-- tab page "installed rules" -->
-        <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+        <table id="grid-installedrules" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="ruleChangeMessage" data-editDialog="DialogRule">
             <thead>
             <tr>
                 <th data-column-id="sid" data-type="numeric" data-visible="true" data-identifier="true" data-width="6em">{{ lang._('sid') }}</th>
@@ -799,14 +827,19 @@ POSSIBILITY OF SUCH DAMAGE.
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o"></span></button>
-                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o"></span></button>
+                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o"></span></button>
+                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o"></span></button>
+                    <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('alert') }}</button>
+                    <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('drop') }}</button>
                 </td>
                 <td></td>
             </tr>
             </tfoot>
         </table>
         <div class="col-md-12">
+            <div id="ruleChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them with the button below') }}
+            </div>
             <hr/>
             <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Apply') }}</b> <i class="act_update_progress"></i></button>
             <br/>
@@ -815,7 +848,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="userrules" class="tab-pane fade in">
         <!-- tab page "userrules" -->
-        <table id="grid-userrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUserDefined">
+        <table id="grid-userrules" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="userdefineChangeMessage" data-editDialog="DialogUserDefined">
             <thead>
                 <tr>
                     <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
@@ -838,6 +871,9 @@ POSSIBILITY OF SUCH DAMAGE.
             </tfoot>
         </table>
         <div class="col-md-12">
+            <div id="userdefineChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them with the button below') }}
+            </div>
             <hr/>
             <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Apply') }}</b> <i class="act_update_progress"></i></button>
             <br/>
@@ -846,7 +882,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="alerts" class="tab-pane fade in">
         <!-- tab page "alerts" -->
-        <div class="bootgrid-header container-fluid">
+        <div id="grid-alerts-header" class="bootgrid-header container-fluid">
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
@@ -869,10 +905,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 </div>
             </div>
         </div>
-        <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive">
+        <table id="grid-alerts" data-store-selection="true" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
               <tr>
                   <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
+                  <th data-column-id="alert_sid" data-type="string" data-sortable="false"  data-width="70px">{{ lang._('SID') }}</th>
                   <th data-column-id="alert_action" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Action') }}</th>
                   <th data-column-id="in_iface" data-type="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
                   <th data-column-id="src_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Source') }}</th>

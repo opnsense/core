@@ -33,7 +33,6 @@ require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 function link_interface_to_vlans($int)
 {
@@ -179,7 +178,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (isset($config['dhcpd'][$id])) {
                 unset($config['dhcpd'][$id]);
-                services_dhcpd_configure();
+                plugins_configure('dhcp', false, array('inet'));
+            }
+            if (isset($config['dhcpdv6'][$id])) {
+                unset($config['dhcpdv6'][$id]);
+                plugins_configure('dhcp', false, array('inet6'));
             }
             if (isset($config['filter']['rule'])) {
                 foreach ($config['filter']['rule'] as $x => $rule) {
@@ -276,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
                   }
 
-                  if (substr($ifport, 0, 3) == 'gre' || substr($ifport, 0, 3) == 'gif') {
+                  if (strstr($ifport, 'gre') || strstr($ifport, 'gif') || strstr($ifport, 'ovpn') || strstr($ifport, 'ipsec')) {
                       unset($config['interfaces'][$ifname]['ipaddr']);
                       unset($config['interfaces'][$ifname]['subnet']);
                       unset($config['interfaces'][$ifname]['ipaddrv6']);
