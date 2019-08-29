@@ -130,7 +130,7 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())]]></descr>
+      <descr><![CDATA[Randomize PIDs (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())]]></descr>
       <tunable>kern.randompid</tunable>
       <value>default</value>
     </item>
