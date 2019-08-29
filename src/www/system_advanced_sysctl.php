@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 /* translate hidden strings before HTML escape */
-foreach ($a_tunable as $tunable) {
+foreach ($a_tunable as &$tunable) {
     if (!empty($tunable['descr'])) {
         $tunable['descr'] = gettext($tunable['descr']);
     }
