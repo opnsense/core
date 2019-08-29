@@ -136,8 +136,7 @@ include("head.inc"); ?>
                       <a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
                       <p>
                       <?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
-                      <a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?=$ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
-                      <a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?=$ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
+                      <a target="_blank" href="https://tools.dnsstuff.com/#whois|type=ipv4&&value=<?=$ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
                       </p>
                     </td>
                   </tr>
