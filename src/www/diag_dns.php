@@ -127,17 +127,7 @@ include("head.inc"); ?>
                     </td>
                   </tr>
 <?php
-                  endif;
-                  if (!empty($ipaddr)):?>
-                  <tr>
-                    <td><?=gettext("More Information:");?></td>
-                    <td>
-                      <a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
-                      <a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
-                    </td>
-                  </tr>
-<?php
-                  endif; ?>
+                  endif;?>
                 </tbody>
                 <tfoot>
                   <tr>
