@@ -602,7 +602,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 system_routing_configure();
                 plugins_configure('monitor');
                 filter_configure();
-                plugins_configure('newwanip');
+                foreach ($toapplylist as $ifapply => $ifcfgo) {
+                    plugins_configure('newwanip', false, array($ifapply));
+                }
                 rrd_configure();
             }
         }
