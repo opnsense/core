@@ -151,6 +151,7 @@
                 case 'geoip':
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
+                    $("#row_alias\\.updatefreq").show();                
                     break;
                 case 'external':
                     break;
