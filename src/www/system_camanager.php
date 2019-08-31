@@ -482,6 +482,7 @@ $main_buttons = array(
     $("#keytype").change(function(){
         $("#EC").addClass("hidden");
         $("#RSA").addClass("hidden");
+        $("#blank").addClass("hidden");
         if ($(this).val() == "Elliptic Curve") {
             $("#EC").removeClass("hidden");
         } else {
@@ -634,6 +635,7 @@ $main_buttons = array(
                     </select>
                   </td>
                 </tr>
+                <tr id='blank'><td></td></tr>
                 <tr id='EC'>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
                   <td style="width:78%">

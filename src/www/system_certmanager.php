@@ -1152,6 +1152,7 @@ if (empty($act)) {
 $("#keytype").change(function(){
         $("#EC").addClass("hidden");
         $("#RSA").addClass("hidden");
+        $("#blank").addClass("hidden");
         if ($(this).val() == "Elliptic Curve") {
             $("#EC").removeClass("hidden");
         } else {
@@ -1164,6 +1165,7 @@ $("#keytype").change();
 $("#csr_keytype").change(function(){
         $("#csr_EC").addClass("hidden");
         $("#csr_RSA").addClass("hidden");
+        $("#csr_blank").addClass("hidden");
         if ($(this).val() == "Elliptic Curve") {
             $("#csr_EC").removeClass("hidden");
         } else {
@@ -1553,6 +1555,7 @@ $( document ).ready(function() {
                   </select>
                 </td>
               </tr>
+              <tr id='blank'><td></td></tr>
               <tr id='EC'>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
                   <td style="width:78%">
@@ -1774,6 +1777,7 @@ $( document ).ready(function() {
                     </select>
                 </td>
               </tr>
+              <tr id='csr_blank'><td></td></tr>
               <tr id='csr_EC'>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
                   <td style="width:78%">
