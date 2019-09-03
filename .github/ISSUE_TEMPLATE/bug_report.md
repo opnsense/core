@@ -15,7 +15,7 @@ Before you add a new report, we ask you kindly to acknowledge the following:
 [-] I have searched the existing issues and I'm convinced that mine is new.
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug is, including last known working version (if any). 
 
 **To Reproduce**
 Steps to reproduce the behavior:
