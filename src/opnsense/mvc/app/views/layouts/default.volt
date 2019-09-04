@@ -303,10 +303,14 @@
     <script src="{{ cache_safe('/ui/js/bootstrap-select.min.js') }}"></script>
     <script>
         /* patch translations into selectpicker library */
-        jQuery.fn.selectpicker.Constructor.DEFAULTS.noneSelectedText = "{{ lang._('Nothing selected') }}";
-        jQuery.fn.selectpicker.Constructor.DEFAULTS.noneResultsText = "{{ lang._('No results matched {0}') }}";
-        jQuery.fn.selectpicker.Constructor.DEFAULTS.selectAllText = "{{ lang._('Select All') }}";
-        jQuery.fn.selectpicker.Constructor.DEFAULTS.deselectAllText = "{{ lang._('Deselect All') }}";
+        Object.assign(jQuery.fn.selectpicker.Constructor.DEFAULTS,
+            {
+                'noneSelectedText': "{{ lang._('Nothing selected') }}",
+                'noneResultsText':  "{{ lang._('No results matched {0}') }}",
+                'selectAllText': "{{ lang._('Select All') }}",
+                'deselectAllText':  "{{ lang._('Deselect All') }}"
+            }
+        )
     </script>
     <!-- bootstrap dialog -->
     <script src="{{ cache_safe('/ui/js/bootstrap-dialog.min.js') }}"></script>
