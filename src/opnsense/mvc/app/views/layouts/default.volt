@@ -192,7 +192,7 @@
                 'refresh': "{{ lang._('Refresh') }}",
                 'search': "{{ lang._('Search') }}"
             }
-        )
+        );
         </script>
 
         <!-- Bootstrap type ahead -->
@@ -202,7 +202,26 @@
         <script src="{{ cache_safe('/ui/js/opnsense.js') }}"></script>
         <script src="{{ cache_safe('/ui/js/opnsense_theme.js') }}"></script>
         <script src="{{ cache_safe('/ui/js/opnsense_ui.js') }}"></script>
+        <script>
+            /* patch translations into opnsense_ui library */
+            Object.assign(stdDialogRemoveItem.defaults,
+                {
+                    'title': "{{ lang._('Remove') }}",
+                    'accept': "{{ lang._('Yes') }}",
+                    'decline': "{{ lang._('Cancel') }}"
+                }
+            )
+        </script>
         <script src="{{ cache_safe('/ui/js/opnsense_bootgrid_plugin.js') }}"></script>
+        <script>
+            /* patch translations into opnsense_ui library */
+            Object.assign(jQuery.fn.UIBootgrid.defaults,
+                {
+                    'removeWarningText': "{{ lang._('Remove selected item?') }}"
+                }
+            )
+        </script>
+
         <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
   </head>
   <body>

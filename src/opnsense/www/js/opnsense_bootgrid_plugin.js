@@ -278,7 +278,7 @@ $.fn.UIBootgrid = function (params) {
     this.command_delete = function(event) {
         let uuid=$(this).data("row-id");
         // XXX must be replaced, cannot translate
-        stdDialogRemoveItem('Remove selected item?',function() {
+        stdDialogRemoveItem($.fn.UIBootgrid.defaults.removeWarningText,function() {
             ajaxCall(params['del'] + uuid, {},function(data,status){
                 // reload grid after delete
                 std_bootgrid_reload(this_grid.attr('id'));
@@ -291,7 +291,7 @@ $.fn.UIBootgrid = function (params) {
      */
     this.command_delete_selected = function(event) {
         // XXX must be replaced, cannot translate
-        stdDialogRemoveItem("Remove selected items?",function(){
+        stdDialogRemoveItem($.fn.UIBootgrid.defaults.removeWarningText,function(){
             const rows = $("#" + this_grid.attr('id')).bootgrid('getSelectedRows');
             if (rows !== undefined){
                 const deferreds = [];
@@ -455,3 +455,8 @@ $.fn.UIBootgrid = function (params) {
         }
     }));
 };
+
+$.fn.UIBootgrid.defaults =
+    {
+        'removeWarningText': "Remove selected items?"
+    };

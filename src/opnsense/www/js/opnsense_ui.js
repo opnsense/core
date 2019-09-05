@@ -459,5 +459,11 @@ function stdDialogConfirm(title, message, accept, decline, callback, type) {
  * wrapper for backwards compatibility (do not use)
  */
 function stdDialogRemoveItem(message, callback) {
-    stdDialogConfirm('Remove', message, 'Yes', 'Cancel', callback);
+    stdDialogConfirm(stdDialogRemoveItem.defaults.title, message, stdDialogRemoveItem.defaults.accept, stdDialogRemoveItem.defaults.decline, callback);
 }
+
+stdDialogRemoveItem.defaults = {
+    'title': 'Remove',
+    'accept': 'Yes',
+    'decline': 'Cancel'
+};
