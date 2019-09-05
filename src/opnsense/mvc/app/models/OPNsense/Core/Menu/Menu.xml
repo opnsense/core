@@ -169,7 +169,7 @@
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
             </Settings>
             <Status url="/carp_status.php">
-                <All url="/carp_status.php*"/>
+                <All url="/carp_status.php*" visibility="hidden"/>
             </Status>
         </VIP>
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
