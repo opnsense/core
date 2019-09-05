@@ -181,7 +181,7 @@ class Alias(object):
             :return: iterator
         """
         for item in self._items:
-            if item not in self._known_aliases:
+            if item not in self._known_aliases or self.get_name() == item:
                 yield item
 
     def uniqueid(self):
