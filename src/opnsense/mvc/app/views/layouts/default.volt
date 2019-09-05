@@ -210,7 +210,7 @@
                     'accept': "{{ lang._('Yes') }}",
                     'decline': "{{ lang._('Cancel') }}"
                 }
-            )
+            );
         </script>
         <script src="{{ cache_safe('/ui/js/opnsense_bootgrid_plugin.js') }}"></script>
         <script>
@@ -219,7 +219,7 @@
                 {
                     'removeWarningText': "{{ lang._('Remove selected item?') }}"
                 }
-            )
+            );
         </script>
 
         <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
@@ -329,7 +329,7 @@
                 'selectAllText': "{{ lang._('Select All') }}",
                 'deselectAllText':  "{{ lang._('Deselect All') }}"
             }
-        )
+        );
     </script>
     <!-- bootstrap dialog -->
     <script src="{{ cache_safe('/ui/js/bootstrap-dialog.min.js') }}"></script>
