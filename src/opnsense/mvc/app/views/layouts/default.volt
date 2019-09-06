@@ -46,7 +46,8 @@
     <link rel="stylesheet" href="{{ cache_safe('/ui/css/font-awesome.min.css') }}">
 
     <!-- JQuery -->
-    <script src="/ui/js/jquery-3.4.1.min.js"></script>
+    <script src="/ui/js/jquery-3.2.1.min.js"></script>
+    <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
     <script>
             // setup default scripting after page loading.
             $( document ).ready(function() {
