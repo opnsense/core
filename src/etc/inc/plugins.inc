@@ -211,7 +211,7 @@ function plugins_configure($hook, $verbose = false, $args = array())
 {
     array_unshift($args, $verbose);
 
-    syslog(LOG_NOTICE, sprintf("plugins_configure %s (%s)", $hook,  implode(",", $args)));
+    syslog(LOG_NOTICE, sprintf("plugins_configure %s (%s)", $hook, implode(",", $args)));
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
