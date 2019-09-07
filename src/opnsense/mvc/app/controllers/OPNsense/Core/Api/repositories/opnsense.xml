@@ -33,10 +33,6 @@
             <description>FourDots (HTTPS, Belgrade, RS)</description>
         </mirror>
         <mirror>
-            <url>https://mirror.homelab.no/opnsense</url>
-            <description>Homelab.no (HTTPS, Horten, Norway)</description>
-        </mirror>
-        <mirror>
             <url>http://mirror.as24220.net/opnsense</url>
             <description>Hostcentral (HTTP, Melbourne, Australia)</description>
         </mirror>
@@ -75,6 +71,10 @@
         <mirror>
             <url>https://mirror.ragenetwork.de/opnsense</url>
             <description>RageNetwork (HTTPS, Munich, DE)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.terrahost.no/opnsense</url>
+            <description>TerraHost (HTTP, Sandefjord, Norway)</description>
         </mirror>
         <mirror>
             <url>http://mirror.upb.edu.co/opnsense</url>
