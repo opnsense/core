@@ -140,14 +140,28 @@ if __name__ == '__main__':
         else:
             alias_content_txt = ""
 
-        alias_pf_content = list()
-        sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
-        for line in sp.stdout.strip().split('\n'):
-            line = line.strip()
-            if line:
-                alias_pf_content.append(line)
+        if alias.get_type() not in ['url', 'urltable', 'geoip']:
+            alias_pf_content = list()
+            sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
+            for line in sp.stdout.strip().split('\n'):
+                line = line.strip()
+                if line:
+                    alias_pf_content.append(line)
+            if len(alias_content) != len(alias_pf_content):
+                alias_changed_or_expired = True
+        # Need to check that the url, urltable, or geoip tables are currently loaded. If not loaded for any reason
+        # this should flag the alias_changed_or_expired to cause them to load.
+        else:   
+            loaded_tables = list()
+            sp = subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True)
+            for line in sp.stdout.strip().split('\n'):
+                line = line.strip()
+                if line:
+                    loaded_tables.append(line)
+            if alias_name not in loaded_tables:
+                alias_changed_or_expired = True
 
-        if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired) and alias.get_parser():
+        if (alias_changed_or_expired) and alias.get_parser():
             # if the alias is changed, expired or the one in memory has a different number of items, load table
             # (but only if we know how to handle this alias type)
             if len(alias_content) == 0:
