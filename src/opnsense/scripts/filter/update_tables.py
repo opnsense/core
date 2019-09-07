@@ -149,8 +149,6 @@ if __name__ == '__main__':
                     alias_pf_content.append(line)
             if len(alias_content) != len(alias_pf_content):
                 alias_changed_or_expired = True
-        # Need to check that the url, urltable, or geoip tables are currently loaded. If not loaded for any reason
-        # this should flag the alias_changed_or_expired to cause them to load.
         else:   
             loaded_tables = list()
             sp = subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True)
