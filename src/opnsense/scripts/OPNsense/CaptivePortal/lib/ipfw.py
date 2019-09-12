@@ -75,7 +75,6 @@ class IPFW(object):
         :param address: ip address or net to add to table
         :return:
         """
-        subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'add', address], capture_output=True)
         ipfw_tbl = self.list_table(table_number)
         rule_number = str(self._add_accounting(address))
         if address not in ipfw_tbl:
