@@ -1,0 +1,30 @@
+<model>
+    <mount>//OPNsense/IPsec</mount>
+    <description>
+        OPNsense IPsec
+    </description>
+    <items>
+        <keyPairs>
+            <keyPair type="ArrayField">
+                <name type="TextField">
+                    <Required>Y</Required>
+                </name>
+                <keyType type="OptionField">
+                    <Required>Y</Required>
+                    <default>rsa</default>
+                    <OptionValues>
+                        <rsa>RSA</rsa>
+                    </OptionValues>
+                </keyType>
+                <publicKey type="TextField">
+                    <Required>Y</Required>
+                </publicKey>
+                <privateKey type="TextField">
+                    <Required>N</Required>
+                </privateKey>
+                <keySize type="IntegerField"/>
+                <keyFingerprint type="TextField"/>
+            </keyPair>
+        </keyPairs>
+    </items>
+</model>
