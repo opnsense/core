@@ -91,33 +91,34 @@ POSSIBILITY OF SUCH DAMAGE.
         {{ lang._('You must apply the changes in order for them to take effect.') }}
     </div>
 </div>
-
-<table id="grid-key-pairs" class="table table-condensed table-hover table-striped" data-editDialog="DialogKeyPair">
-    <thead>
-    <tr>
-        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-        <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-        <th data-column-id="keyType" data-width="20em" data-type="string">{{ lang._('Key Type') }}</th>
-        <th data-column-id="keySize" data-width="20em" data-type="number">{{ lang._('Key Size') }}</th>
-        <th data-column-id="keyFingerprint" data-type="string">{{ lang._('Key Fingerprint') }}</th>
-        <th data-column-id="commands" data-width="7em" data-formatter="commands"
-            data-sortable="false">{{ lang._('Commands') }}</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-    <tr>
-        <td></td>
-        <td>
-            <button data-action="add" type="button" class="btn btn-xs btn-default">
-                <span class="fa fa-plus"></span>
-            </button>
-            <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default">
-                <span class="fa fa-trash-o"></span>
-            </button>
-        </td>
-    </tr>
-    </tfoot>
-</table>
+<div class="content-box">
+    <table id="grid-key-pairs" class="table table-condensed table-hover table-striped" data-editDialog="DialogKeyPair">
+        <thead>
+        <tr>
+            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+            <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+            <th data-column-id="keyType" data-width="20em" data-type="string">{{ lang._('Key Type') }}</th>
+            <th data-column-id="keySize" data-width="20em" data-type="number">{{ lang._('Key Size') }}</th>
+            <th data-column-id="keyFingerprint" data-type="string">{{ lang._('Key Fingerprint') }}</th>
+            <th data-column-id="commands" data-width="7em" data-formatter="commands"
+                data-sortable="false">{{ lang._('Commands') }}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td>
+                <button data-action="add" type="button" class="btn btn-xs btn-default">
+                    <span class="fa fa-plus"></span>
+                </button>
+                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default">
+                    <span class="fa fa-trash-o"></span>
+                </button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogKeyPair,'id':'DialogKeyPair','label':lang._('Edit key pair')]) }}
