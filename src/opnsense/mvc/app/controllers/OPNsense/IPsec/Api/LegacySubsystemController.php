@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * All rights reserved.
