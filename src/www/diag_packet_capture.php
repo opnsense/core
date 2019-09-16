@@ -160,7 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 header("Content-Type: application/octet-stream");
                 header("Content-Disposition: attachment; filename={$bfilename}");
                 header("Content-Length: ".filesize($filename));
-                $file = fopen($filename, "r");
+                header('Content-Transfer-Encoding: binary');
+                $file = fopen($filename, 'rb');
                 while(!feof($file)) {
                     print(fread($file, 32 * 1024));
                     ob_flush();
