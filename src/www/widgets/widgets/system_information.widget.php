@@ -102,19 +102,27 @@ require_once("system.inc");
 
 
       // swap usage
-      if (data['disk']['swap']['used'] != "") {
-          var swap_perc = parseInt(data['disk']['swap']['used'] / data['disk']['swap']['total']*100);
-          $("#system_information_widget_swap .progress-bar").css("width",  swap_perc + "%").attr("aria-valuenow", swap_perc + "%");
-          var swap_text = swap_perc + " % " + "( " + parseInt(data['disk']['swap']['used']/1024) + "/";
-          swap_text += parseInt(data['disk']['swap']['total']/1024) + " MB )";
-          $("#system_information_widget_swap .state_text").html(swap_text);
-          $("#system_information_widget_swap").show();
+      let counter = 0;
+      $("#system_information_widget_swap .swap_devices").html("");
+      data['disk']['swap'].map(function(swap) {
+          var html = $("#system_information_widget_swap .swap_template").html();
+          html = html.replace('swap_id_sequence', 'system_information_widget_swap_'+counter);
+          $("#system_information_widget_swap .swap_devices").html($("#system_information_widget_swap .swap_devices").html() + html);
+          var swap_perc = parseInt(swap['used'] * 100 / swap['total']);
+          $("#system_information_widget_swap_"+counter+' .progress-bar').css("width",  swap_perc + "%").attr("aria-valuenow", swap_perc + "%");
+          var swap_text = swap_perc + " % " + "( " + parseInt(swap['used']/1024) + "/";
+          swap_text += parseInt(swap['total']/1024) + " MB )";
+          $("#system_information_widget_swap_"+counter+" .state_text").html(swap_text);
+          counter += 1;
+      });
+      if (counter != 0) {
+          $("#system_information_widget_swap_info").show();
       } else {
-          $("#system_information_widget_swap").hide();
+          $("#system_information_widget_swap_info").hide();
       }
 
       // disk usage
-      let counter = 0;
+      counter = 0;
       $("#system_information_widget_disk .disk_devices").html("");
       data['disk']['devices'].map(function(device) {
           var html = $("#system_information_widget_disk .disk_template").html();
@@ -126,7 +134,11 @@ require_once("system.inc");
           $("#system_information_widget_disk_"+counter+" .state_text").html(disk_text);
           counter += 1;
       });
-
+      if (counter != 0) {
+          $("#system_information_widget_disk_info").show();
+      } else {
+          $("#system_information_widget_disk_info").hide();
+      }
    }
 
   /**
@@ -223,16 +235,24 @@ require_once("system.inc");
         </div>
       </td>
     </tr>
-    <tr id="system_information_widget_swap">
+    <tr id="system_information_widget_swap_info">
       <td><?=gettext("SWAP usage");?></td>
-      <td>
-        <div class="progress" style="text-align:center;">
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
-          <span class="state_text" style="position:absolute;right:0;left:0;"></span>
-        </div>
+      <td id="system_information_widget_swap">
+          <div style="display:none" class="swap_template">
+            <!-- template -->
+            <div id="swap_id_sequence" class="progress" style="text-align:center;">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+              <span class="state_text" style="position:absolute;right:0;left:0;"></span>
+            </div>
+            <div style="height:1px;">
+            </div>
+          </div>
+          <div class="swap_devices">
+          </div>
+        </DIV>
       </td>
     </tr>
-    <tr>
+    <tr id="system_information_widget_disk_info">
       <td><?=gettext("Disk usage");?></td>
       <td id="system_information_widget_disk">
           <div style="display:none" class="disk_template">
