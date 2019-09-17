@@ -442,6 +442,7 @@ $( document ).ready(function() {
   $(".act_toggle").click(function(event){
       event.preventDefault();
       let target = $(this);
+      target.removeClass('fa-play').addClass('fa-spinner fa-pulse');
       let id = target.attr("id").split('_').pop(-1);
       $.ajax("firewall_rules.php",{
           type: 'post',
@@ -450,14 +451,18 @@ $( document ).ready(function() {
           data: {'act': 'toggle', 'id': id},
           success: function(response) {
               target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
+              target.removeClass('fa-spinner fa-pulse').addClass('fa-play');
               if (response['new_state']) {
-                  target.find('span').removeClass('text-muted').addClass('text-success');
+                  target.removeClass('text-muted').addClass('text-success');
               } else {
-                  target.find('span').removeClass('text-success').addClass('text-muted');
+                  target.removeClass('text-success').addClass('text-muted');
               }
               $("#fw-alert-box").removeClass("hidden");
               $(".fw-alert-messages").addClass("hidden");
               $("#fw-alert-changes").removeClass("hidden");
+          },
+          error: function () {
+              target.removeClass('fa-spinner fa-pulse').addClass('fa-play');
           }
       });
   });
@@ -466,6 +471,7 @@ $( document ).ready(function() {
   $(".act_log").click(function(event){
       event.preventDefault();
       let target = $(this);
+      target.removeClass('fa-info-circle').addClass('fa-spinner fa-pulse');
       let id = target.attr("id").split('_').pop(-1);
       $.ajax("firewall_rules.php",{
           type: 'post',
@@ -474,14 +480,18 @@ $( document ).ready(function() {
           data: {'act': 'log', 'id': id},
           success: function(response) {
               target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
+              target.removeClass('fa-spinner fa-pulse').addClass('fa-info-circle');
               if (response['new_state']) {
-                  target.find('i').removeClass('text-muted').addClass('text-info');
+                  target.removeClass('text-muted').addClass('text-info');
               } else {
-                  target.find('i').removeClass('text-info').addClass('text-muted');
+                  target.removeClass('text-info').addClass('text-muted');
               }
               $("#fw-alert-box").removeClass("hidden");
               $(".fw-alert-messages").addClass("hidden");
               $("#fw-alert-changes").removeClass("hidden");
+          },
+          error: function () {
+              target.removeClass('fa-spinner fa-pulse').addClass('fa-info-circle');
           }
       });
   });
@@ -785,13 +795,9 @@ $( document ).ready(function() {
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("Disable Rule") : gettext("Enable Rule");?>">
-                        <span class="<?=firewall_rule_item_action($filterent);?>"></span>
-                      </a>
+                      <i class="act_toggle <?=firewall_rule_item_action($filterent);?>" style="cursor: pointer;" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(empty($filterent['disabled']) ? gettext('Disable rule') : gettext('Enable rule')) ?>"></i>
                       <?=firewall_rule_item_icons($filterent);?>
-                      <a href="#" class="act_log" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['log'])) ? gettext("Enable Log") : gettext("Disable Log");?>">
-                        <i class="<?=firewall_rule_item_log($filterent);?>"></i>
-                      </a>
+                      <i class="act_log <?= firewall_rule_item_log($filterent) ?>" style="cursor: pointer;" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(empty($filterent['log']) ? gettext('Enable logging') : gettext('Disable logging')) ?>"></i>
                     </td>
                     <td class="view-info">
                         <?=firewall_rule_item_proto($filterent);?>
