@@ -555,7 +555,7 @@
         </patterns>
     </page-status-systemlogs-ipsecvpn>
     <page-status-systemlogs-ppp>
-        <name>Status: System logs: IPsec VPN</name>
+        <name>Status: System logs: PPP</name>
         <patterns>
             <pattern>diag_logs_ppp.php*</pattern>
         </patterns>
