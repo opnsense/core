@@ -27,6 +27,7 @@
     flowd log parser
 """
 import struct
+import syslog
 from socket import inet_ntop, AF_INET, AF_INET6, ntohl
 
 
@@ -113,11 +114,15 @@ class FlowParser:
                         raw_record[fieldname] = raw_data[raw_data_idx:raw_data_idx + fsize]
                     else:
                         fsize = self.calculate_size(self.field_definition[fieldname])
-                        content = struct.unpack(
-                            self.field_definition[fieldname],
-                            raw_data[raw_data_idx:raw_data_idx + fsize]
-                        )
-                        raw_record[fieldname] = content[0] if len(content) == 1 else content
+                        try:
+                            content = struct.unpack(
+                                self.field_definition[fieldname],
+                                raw_data[raw_data_idx:raw_data_idx + fsize]
+                            )
+                            raw_record[fieldname] = content[0] if len(content) == 1 else content
+                        except struct.error as e:
+                            # the flowd record doesn't appear to be as expected, log for now.
+                            syslog.syslog(syslog.LOG_NOTICE, "flowparser failed to unpack %s (%s)" % (fieldname, e))
                     raw_data_idx += fsize
 
         return raw_record
