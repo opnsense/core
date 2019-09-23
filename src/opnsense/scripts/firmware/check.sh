@@ -101,8 +101,7 @@ if [ -z "${pkg_running}" ]; then
           repository="untrusted"
           connection="ok"
           timer=0
-        # XXX two space typo here in pkg:
-        elif grep -q 'At least one of the [ ]*certificates has been revoked' ${outfile}; then
+        elif grep -q 'At least one of the certificates has been revoked' ${outfile}; then
           # fingerprint mismatch
           repository="revoked"
           connection="ok"
