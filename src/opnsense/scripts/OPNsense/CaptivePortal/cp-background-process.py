@@ -150,6 +150,7 @@ class CPBackgroundProcess(object):
 
                     # session accounting
                     if db_client['acc_session_timeout'] is not None \
+                            and type(db_client['acc_session_timeout']) in (int, float) \
                             and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                 elif db_client['authenticated_via'] == '---mac---':
