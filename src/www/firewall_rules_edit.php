@@ -623,6 +623,12 @@ include("head.inc");
             $("#"+field).selectpicker('refresh');
             $("#"+field).change();
           });
+          if ($("#proto").val() == 'tcp') {
+              $(".input_tcpflags_any,.input_flags").prop('disabled', false);
+          } else {
+              $(".input_tcpflags_any,.input_flags").prop('disabled', true);
+          }
+
       });
 
       // IPv4/IPv6 select
