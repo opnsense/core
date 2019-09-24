@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['iketype'] = "ikev2";
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany
-    ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
+    ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
@@ -223,6 +223,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ((!empty($pconfig['lifetime']) && !is_numeric($pconfig['lifetime']))) {
         $input_errors[] = gettext("The P1 lifetime must be an integer.");
     }
+    if (!empty($pconfig['margintime'])) {
+        if (!is_numericint($pconfig['margintime'])) {
+            $input_errors[] = gettext("The margintime must be an integer.");
+        } else {
+            $rekeyfuzz = empty($pconfig['rekeyfuzz']) || !is_numeric($pconfig['rekeyfuzz']) ? 100 : $pconfig['rekeyfuzz'];
+            if (((int)$pconfig['margintime'] * 2) * ($rekeyfuzz / 100.0) > (int)$pconfig['lifetime']) {
+                $input_errors[] = gettext("The value margin... + margin... * rekeyfuzz must not exceed the original lifetime limit.");
+            }
+        }
+    }
+    if (!empty($pconfig['rekeyfuzz']) && !is_numericint($pconfig['rekeyfuzz'])) {
+        $input_errors[] = gettext("Rekeyfuzz must be an integer.");
+    }
 
     if (!empty($pconfig['remote-gateway'])) {
         if (!is_ipaddr($pconfig['remote-gateway']) && !is_domain($pconfig['remote-gateway'])) {
@@ -349,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
-        ,peerid_type,peerid_data,encryption-algorithm,
+        ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr
         ,nat_traversal,auto,mobike";
 
@@ -1085,6 +1098,24 @@ endforeach; ?>
                         <div class="hidden" data-for="help_for_dpd_enable">
                           <?=gettext("Number of consecutive failures allowed before disconnect."); ?>
                         </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_margintime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Margintime"); ?></td>
+                    <td>
+                      <input name="margintime" type="text" id="margintime" value="<?=$pconfig['margintime'];?>" />
+                      <div class="hidden" data-for="help_for_margintime">
+                        <?=gettext("Time before SA expiry the rekeying should start. (seconds)"); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_rekeyfuzz" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Rekeyfuzz"); ?></td>
+                    <td>
+                      <input name="rekeyfuzz" type="text" id="rekeyfuzz" value="<?=$pconfig['rekeyfuzz'];?>" />
+                      <div class="hidden" data-for="help_for_rekeyfuzz">
+                        <?=gettext("Percentage by which margintime is randomly increased (may exceed 100%). Randomization may be disabled by setting rekeyfuzz=0%."); ?>
                       </div>
                     </td>
                   </tr>
