@@ -113,7 +113,7 @@ core_check()
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
-	for DEP in $( (echo pkg; echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
+	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking core packages: ." >> ${PKG_PROGRESS_FILE}
 			PROGRESS=1
