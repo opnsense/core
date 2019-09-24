@@ -113,7 +113,7 @@ core_check()
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
-	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort); do
+	for DEP in $( (echo pkg; echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking core packages: ." >> ${PKG_PROGRESS_FILE}
 			PROGRESS=1
@@ -148,7 +148,33 @@ EOF
 			PROGRESS=
 		fi
 
-		# XXX check AUTO and VITA
+		AUTOEXPECT=1
+		AUTOSET="not set"
+		VITAEXPECT=0
+		VITASET="set"
+
+		if [ ${DEP} = ${CORE} ]; then
+			AUTOEXPECT=0
+			AUTOSET="set"
+			VITAEXPECT=1
+			VITASET="not set"
+		fi
+
+		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		fi
+
+		if [ "${VITA}" != ${VITAEXPECT} ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} is ${VITASET} to vital" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		fi
 	done
 
 	if [ -n "${PROGRESS}" ]; then
