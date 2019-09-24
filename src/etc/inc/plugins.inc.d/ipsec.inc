@@ -1395,6 +1395,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $rekey = "rekey = no";
                 } else {
                     $rekey = "rekey = yes";
+                    if (!empty($ph1ent['margintime'])) {
+                        $rekey .= "\n\tmargintime = {$ph1ent['margintime']}s";
+                    }
+                    if (!empty($ph1ent['rekeyfuzz'])) {
+                        $rekey .= "\n\trekeyfuzz = {$ph1ent['rekeyfuzz']}%";
+                    }
                 }
 
                 $forceencaps = 'forceencaps = no';
