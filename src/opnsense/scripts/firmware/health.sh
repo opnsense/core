@@ -83,6 +83,12 @@ set_check()
 		return
 	fi
 
+	if [ ! -f ${FILE}.sig ]; then
+		echo "Cannot verify ${SET}: missing ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
+	elif ! opnsense-verify -q ${FILE}; then
+		echo "Cannot verify ${SET}: invalid ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
+	fi
+
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
 	MTREE_OUT=$(${MTREE} -X ${TMPFILE} < ${FILE} 2>&1)
