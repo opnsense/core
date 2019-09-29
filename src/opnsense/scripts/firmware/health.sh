@@ -74,8 +74,6 @@ set_check()
 		echo "Version ${VER} is correct." >> ${PKG_PROGRESS_FILE}
 	fi
 
-	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
-
 	FILE=/usr/local/opnsense/version/${SET}.mtree
 
 	if [ ! -f ${FILE} ]; then
@@ -88,6 +86,8 @@ set_check()
 	elif ! opnsense-verify -q ${FILE}; then
 		echo "Cannot verify ${SET}: invalid ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
 	fi
+
+	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
