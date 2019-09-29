@@ -937,6 +937,9 @@ include("head.inc");
                           <?= sprintf(gettext("Enter a list of partial MAC addresses to deny access, comma-separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
                           <input name="mac_deny" type="text" id="mac_deny" value="<?= $pconfig['mac_deny'] ?>" /><br />
                         </div>
+                          //unhide advanced feature if fields are filled                          
+<?php
+                          if ((! empty($pconfig['mac_allow']) || (! empty($pconfig['mac_deny'])) show_maccontrol_config();?>
                       </td>
                     </tr>
                     <tr>
