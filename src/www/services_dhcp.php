@@ -929,7 +929,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("MAC Address Control");?></td>
                       <td>
 <?php
-                        if ((empty($pconfig['mac_allow']) && (empty($pconfig['mac_deny'])) {;?>
+                        if ((empty($pconfig['mac_allow']) && (empty($pconfig['mac_deny'])) {?>
                         <div id="showmaccontrolbox">
                           <input type="button" onclick="show_maccontrol_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show MAC Address Control");?>
                         </div>
