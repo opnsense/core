@@ -928,18 +928,20 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("MAC Address Control");?></td>
                       <td>
+<?php
+                        if ((empty($pconfig['mac_allow']) && (empty($pconfig['mac_deny'])) {;?>
                         <div id="showmaccontrolbox">
                           <input type="button" onclick="show_maccontrol_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show MAC Address Control");?>
                         </div>
                         <div id="showmaccontrol" style="display:none">
+<?php                   } else { ?>
+                        <div id="showmaccontrol">
+<?php                   } ?>
                           <?= sprintf(gettext("Enter a list of partial MAC addresses to allow, comma-separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
                           <input name="mac_allow" type="text" id="mac_allow" value="<?= $pconfig['mac_allow'] ?>" />
                           <?= sprintf(gettext("Enter a list of partial MAC addresses to deny access, comma-separated, no spaces, such as %s"), '00:00:00,01:E5:FF') ?>
                           <input name="mac_deny" type="text" id="mac_deny" value="<?= $pconfig['mac_deny'] ?>" /><br />
                         </div>
-                          //unhide advanced feature if fields are filled                          
-<?php
-                          if ((! empty($pconfig['mac_allow']) || (! empty($pconfig['mac_deny'])) show_maccontrol_config();?>
                       </td>
                     </tr>
                     <tr>
