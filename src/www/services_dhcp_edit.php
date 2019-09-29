@@ -353,7 +353,8 @@ include("head.inc");
                   <td>
                     <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
                     <div class="hidden" data-for="help_for_hostname">
-                      <?=gettext("Name of the host, without domain part. If no IP address is given above, hostname will not be resolved by Unbound DNS.");?>
+                      <?=gettext("Name of the host, without domain part.");?>
+                      <?=gettext("If no IP address is given above, hostname will not be visiable to DNS services with lease registration enabled.");?>
                     </div>
                   </td>
                 </tr>
