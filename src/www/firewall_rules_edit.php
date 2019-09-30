@@ -825,10 +825,8 @@ include("head.inc");
                       endforeach; ?>
                       </select>
                       <div class="hidden" data-for="help_for_direction">
-                        <?=gettext("Direction of the traffic, our default policy is to filter inbound traffic, ".
-                                   "which sets the policy to the interface originally receiving the traffic. ".
-                                   "If you are not sure, you best leave this setting as is. ".
-                                   "There are some remarks when using outbound (egress) filtering.");?>
+                        <?=gettext("Direction of the traffic. The default policy is to filter inbound traffic, ".
+                                   "which sets the policy to the interface originally receiving the traffic.") ?>
                       </div>
                     </td>
                   <tr>
