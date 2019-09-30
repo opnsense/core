@@ -55,7 +55,7 @@ if (isset($opts['h'])) {
     // no arguments, list plugins of selected type
     $results = [];
     if (isset($opts['s'])) {
-        foreach (services_get() as $service) {
+        foreach (plugins_services() as $service) {
             $results[$service['name']] = 1;
         }
     } else {

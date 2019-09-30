@@ -50,8 +50,7 @@ if (!empty($_POST['service'])) {
     exit;
 }
 
-
-$services = services_get();
+$services = plugins_services();
 
 include("head.inc");
 

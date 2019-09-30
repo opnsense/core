@@ -33,14 +33,9 @@ require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
 
 /* XXX remove this file, merging it into system.inc */
 
-function services_get()
-{
-    return plugins_services();
-}
-
 function service_by_name($name, $filter = array())
 {
-    $services = services_get();
+    $services = plugin_services();
 
     foreach ($services as $service) {
         if ($service['name'] != $name) {
