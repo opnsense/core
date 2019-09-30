@@ -31,24 +31,9 @@
 
 /* XXX remove this file, merging it into system.inc */
 
-function services_get()
-{
-    $services = array();
-
-    foreach (plugins_services() as $service) {
-        $services[] = $service;
-    }
-
-    uasort($services, function ($a, $b) {
-        return strcasecmp($a['name'], $b['name']);
-    });
-
-    return $services;
-}
-
 function service_by_name($name, $filter = array())
 {
-    $services = services_get();
+    $services = plugin_services();
 
     foreach ($services as $service) {
         if ($service['name'] != $name) {

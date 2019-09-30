@@ -52,7 +52,7 @@ function xmlrpc_publishable_service()
  */
 function list_services_xmlrpc()
 {
-    $services = services_get();
+    $services = plugins_services();
 
     foreach ($services as &$service) {
         $service['status'] = service_status($service);
