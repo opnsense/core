@@ -29,8 +29,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
-
 /* XXX remove this file, merging it into system.inc */
 
 function services_get()
