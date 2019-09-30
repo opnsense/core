@@ -35,7 +35,7 @@ require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
 
 function service_by_name($name, $filter = array())
 {
-    $services = plugin_services();
+    $services = plugins_services();
 
     foreach ($services as $service) {
         if ($service['name'] != $name) {
