@@ -159,7 +159,7 @@ function service_control_start($name, $extras)
         return sprintf(gettext("Could not start service `%s'"), htmlspecialchars($name));
     }
 
-    return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been started."), htmlspecialchars($name));
 }
 
 function service_control_stop($name, $extras)
@@ -194,7 +194,7 @@ function service_control_stop($name, $extras)
         killbyname($service['name']);
     }
 
-    return sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been stopped."), htmlspecialchars($name));
 }
 
 function service_control_restart($name, $extras)
@@ -232,5 +232,5 @@ function service_control_restart($name, $extras)
         return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars($name));
     }
 
-    return sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars($name));
 }
