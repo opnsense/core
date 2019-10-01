@@ -84,6 +84,10 @@ function plugins_services()
         }
     }
 
+    uasort($services, function ($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
+
     return $services;
 }
 

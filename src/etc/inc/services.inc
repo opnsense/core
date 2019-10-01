@@ -35,17 +35,7 @@ require_once 'plugins.inc.d/dhcpd.inc'; /* XXX remove me */
 
 function services_get()
 {
-    $services = array();
-
-    foreach (plugins_services() as $service) {
-        $services[] = $service;
-    }
-
-    uasort($services, function ($a, $b) {
-        return strcasecmp($a['name'], $b['name']);
-    });
-
-    return $services;
+    return plugins_services();
 }
 
 function service_by_name($name, $filter = array())
