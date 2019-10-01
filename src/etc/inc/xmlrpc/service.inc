@@ -26,7 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("services.inc");
 require_once("system.inc");
 require_once('util.inc');
 require_once("filter.inc");

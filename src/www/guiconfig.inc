@@ -1,8 +1,10 @@
 <?php
 
 /*
- * Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2010 Ermal Luçi
+ * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -82,7 +84,6 @@ function get_themed_filename($url)
     return $url; // not found, return source
 }
 
-
 require_once("authgui.inc");
 
 /* Reserved table names to avoid colision */
@@ -94,7 +95,6 @@ $reserved_table_names = array(
     "virusprot",
     "webConfiguratorlockout"
 );
-
 
 $netbios_nodetypes = array(
     '0' => "none",
@@ -561,4 +561,62 @@ function get_menu_messages()
     }
 
     return $menu_messages;
+}
+
+function service_control_icon($service, $xs = false)
+{
+    $output = '';
+
+    if (service_status($service)) {
+        $output .= '<span class="label label-opnsense label-opnsense-%s label-success"><i class="fa fa-play fa-fw"></i></span>' . PHP_EOL;
+    } else {
+        $output .= '<span class="label label-opnsense label-opnsense-%s label-danger"><i class="fa fa-stop fa-fw"></i></span>' . PHP_EOL;
+    }
+
+    return sprintf($output, $xs ? 'xs' : 'sm');
+}
+
+function service_control_links($service, $xs = false)
+{
+    $service_id = isset($service['id']) ? $service['id'] : '';
+
+    $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
+    $template .= 'class="btn btn-%s btn-default %s"><i class="%s"></i></span>' . PHP_EOL;
+
+    $output = '';
+
+    if (service_status($service)) {
+        $output .= sprintf(
+            $template,
+            $service_id,
+            'restart',
+            $service['name'],
+            $xs ? 'xs' : 'sm',
+            'srv_status_act',
+            'fa fa-refresh fa-fw'
+        );
+        if (empty($service['nocheck'])) {
+            $output .= sprintf(
+                $template,
+                $service_id,
+                'stop',
+                $service['name'],
+                $xs ? 'xs' : 'sm',
+                'srv_status_act',
+                'fa fa-stop fa-fw'
+            );
+        }
+    } else {
+        $output .= sprintf(
+            $template,
+            $service_id,
+            'start',
+            $service['name'],
+            $xs ? 'xs' : 'sm',
+            'srv_status_act',
+            'fa fa-play fa-fw'
+        );
+    }
+
+    return $output;
 }

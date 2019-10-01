@@ -31,7 +31,6 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable'] = isset($config['dhcrelay6']['enable']);
