@@ -49,7 +49,7 @@ CORE_PYTHON?=	37
 CORE_RADVD?=	1
 CORE_SQUID?=	# empty
 CORE_SURICATA?=	# empty
-CORE_SYSLOGNG?=	3.22
+CORE_SYSLOGNG?=	3.23
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
@@ -141,7 +141,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			suricata${CORE_SURICATA} \
-			syslog-ng \
+			syslog-ng${CORE_SYSLOGNG:S/.//g} \
 			syslogd \
 			unbound \
 			wpa_supplicant \
