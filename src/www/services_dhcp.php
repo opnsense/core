@@ -893,10 +893,16 @@ include("head.inc");
                     <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
                     <td>
+<?php
+                      if (empty($pconfig['ddnsupdate'])): ?>
                       <div id="showddnsbox">
                         <input type="button" onclick="show_ddns_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Dynamic DNS");?>
                       </div>
-                      <div id="showddns" style="display:none">
+                        <div id="showddns" style="display:none">
+<?php                   else: ?>
+                        <div id="showddns">
+<?php
+                         endif; ?>
                         <input type="checkbox" value="yes" name="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? " checked=\"checked\"" :""; ?> />
                         <strong><?=gettext("Enable registration of DHCP client names in DNS.");?></strong><br />
                         <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
@@ -948,10 +954,16 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
                       <td>
+ <?php
+                      if (empty($pconfig['ntp1']) && empty($pconfig['ntp2'])): ?>
                         <div id="showntpbox">
                           <input type="button" onclick="show_ntp_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show NTP configuration");?>
                         </div>
                         <div id="showntp" style="display:none">
+<?php                   else: ?>
+                        <div id="showntp">
+<?php
+                         endif; ?>
                           <input name="ntp1" type="text" id="ntp1" value="<?=$pconfig['ntp1'];?>" /><br />
                           <input name="ntp2" type="text" id="ntp2" value="<?=$pconfig['ntp2'];?>" />
                         </div>
@@ -960,10 +972,16 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TFTP server");?></td>
                       <td>
-                        <div id="showtftpbox">
+<?php
+                      if (empty($pconfig['tftp']) && empty($pconfig['bootfilename'])): ?>
+                          <div id="showtftpbox">
                           <input type="button" onclick="show_tftp_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show TFTP configuration");?>
                         </div>
                         <div id="showtftp" style="display:none">
+<?php                   else: ?>
+                        <div id="showtftp">
+<?php
+                         endif; ?>
                           <?=gettext("Set TFTP hostname");?>
                           <input name="tftp" type="text" size="50" value="<?=$pconfig['tftp'];?>" /><br />
                           <?=gettext("Set Bootfile");?>
@@ -975,11 +993,18 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("LDAP URI");?></td>
                       <td>
-                        <div id="showldapbox">
+<?php
+                      if (empty($pconfig['ldap'])): ?>
+                          <div id="showldapbox">
                           <input type="button" onclick="show_ldap_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show LDAP configuration");?>
                         </div>
                         <div id="showldap" style="display:none">
-                          <input name="ldap" type="text" id="ldap" size="80" value="<?=$pconfig['ldap'];?>" /><br />
+<?php                   else: ?>
+                        <div id="showldap">
+<?php
+                         endif; ?>
+
+                            <input name="ldap" type="text" id="ldap" size="80" value="<?=$pconfig['ldap'];?>" /><br />
                           <?=sprintf(gettext("Leave blank to disable. Enter a full URI for the LDAP server in the form %s"),'ldap://ldap.example.com/dc=example,dc=com')?>
                         </div>
                       </td>
@@ -987,10 +1012,16 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
                       <td>
-                        <div id="shownetbootbox">
+<?php
+                      if (empty($pconfig['netboot'])): ?>
+                          <div id="shownetbootbox">
                           <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
+<?php                   else: ?>
+                        <div id="shownetboot">
+<?php
+                         endif; ?>
                           <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
                           <strong><?=gettext("Enables network booting.");?></strong>
                           <br/><br/>
@@ -1014,10 +1045,16 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
                       <td>
-                        <div id="showwpadbox">
+<?php
+                      if (empty($pconfig['wpad'])): ?>
+                          <div id="showwpadbox">
                           <input type="button" onclick="show_wpad_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show WPAD");?>
                         </div>
                         <div id="showwpad" style="display:none">
+<?php                   else: ?>
+                        <div id="showwpad">
+<?php
+                         endif; ?>
                           <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
                           <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
                         </div>
