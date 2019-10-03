@@ -61,6 +61,10 @@
             <description>LeaseWeb (HTTP, Washington, D.C., US)</description>
         </mirror>
         <mirror>
+            <url>http://mirror.marwan.ma/opnsense/</url>
+            <description>MARWAN (HTTP, Rabat, MA)</description>
+        </mirror>
+        <mirror>
             <url>http://mirrors.nycbug.org/pub/opnsense</url>
             <description>NYC*BUG (HTTP, New York, US)</description>
         </mirror>
