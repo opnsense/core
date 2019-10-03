@@ -21,6 +21,10 @@
                 </check001>
             </Constraints>
         </url>
+        <ssl_self_signed type="BooleanField">
+          <default>0</default>
+          <Required>N</Required>
+        </ssl_self_signed>
         <user type="TextField">
             <Constraints>
                 <check001>
