@@ -59,6 +59,12 @@ class Nextcloud extends Base implements IBackupProvider
                 "value" => null
             ),
             array(
+                "name" => "ssl_self_signed",
+                "type" => "checkbox",
+                "label" => gettext("Allow self signed"),
+                "value" => null,
+            ),
+            array(
                 "name" => "user",
                 "type" => "text",
                 "label" => gettext("User Name"),
@@ -132,6 +138,7 @@ class Nextcloud extends Base implements IBackupProvider
         if ($cnf->isValid() && !empty((string)$nextcloud->enabled)) {
             $config = $cnf->object();
             $url = (string)$nextcloud->url;
+            $ssl_self_signed = (string)$nextcloud->ssl_self_signed;
             $username = (string)$nextcloud->user;
             $password = (string)$nextcloud->password;
             $backupdir = (string)$nextcloud->backupdir;
@@ -144,12 +151,13 @@ class Nextcloud extends Base implements IBackupProvider
                 $confdata = $this->encrypt($confdata, $crypto_password);
             }
             try {
-                $directories = $this->listFiles($url, $username, $password, '/');
+                $directories = $this->listFiles($url, $ssl_self_signed, $username, $password, '/');
                 if (!in_array("/$backupdir/", $directories)) {
-                    $this->create_directory($url, $username, $password, $backupdir);
+                    $this->create_directory($url, $ssl_self_signed, $username, $password, $backupdir);
                 }
                 $this->upload_file_content(
                     $url,
+                    $ssl_self_signed,
                     $username,
                     $password,
                     $backupdir,
@@ -158,7 +166,7 @@ class Nextcloud extends Base implements IBackupProvider
                 );
                 // do not list directories
                 return array_filter(
-                    $this->listFiles($url, $username, $password, "/$backupdir/", false),
+                    $this->listFiles($url, $ssl_self_signed, $username, $password, "/$backupdir/", false),
                     function ($filename) {
                         return (substr($filename, -1) !== '/');
                     }
@@ -172,6 +180,7 @@ class Nextcloud extends Base implements IBackupProvider
     /**
      * dir listing
      * @param string $url remote location
+     * @param string $ssl_self_signed allow self signed certificate boolean
      * @param string $username username
      * @param string $password password to use
      * @param string $directory location to list
@@ -179,10 +188,11 @@ class Nextcloud extends Base implements IBackupProvider
      * @return array
      * @throws \Exception
      */
-    public function listFiles($url, $username, $password, $directory = '/', $only_dirs = true)
+    public function listFiles($url, $ssl_self_signed, $username, $password, $directory = '/', $only_dirs = true)
     {
         $result = $this->curl_request(
             "$url/remote.php/dav/files/$username$directory",
+            $ssl_self_signed,
             $username,
             $password,
             'PROPFIND',
@@ -211,6 +221,7 @@ class Nextcloud extends Base implements IBackupProvider
     /**
      * upload file
      * @param string $url remote location
+     * @param string $ssl_self_signed allow self signed certificate boolean
      * @param string $username remote user
      * @param string $password password to use
      * @param string $backupdir remote directory
@@ -218,10 +229,11 @@ class Nextcloud extends Base implements IBackupProvider
      * @param string $local_file_content contents to save
      * @throws \Exception when upload fails
      */
-    public function upload_file_content($url, $username, $password, $backupdir, $filename, $local_file_content)
+    public function upload_file_content($url, $ssl_self_signed, $username, $password, $backupdir, $filename, $local_file_content)
     {
         $this->curl_request(
             $url . "/remote.php/dav/files/$username/$backupdir/$filename",
+            $ssl_self_signed,
             $username,
             $password,
             'PUT',
@@ -233,15 +245,17 @@ class Nextcloud extends Base implements IBackupProvider
     /**
      * create new remote directory
      * @param string $url remote location
+     * @param string $ssl_self_signed allow self signed certificate boolean
      * @param string $username remote user
      * @param string $password password to use
      * @param string $backupdir remote directory
      * @throws \Exception when create dir fails
      */
-    public function create_directory($url, $username, $password, $backupdir)
+    public function create_directory($url, $ssl_self_signed, $username, $password, $backupdir)
     {
         $this->curl_request(
             $url . "/remote.php/dav/files/$username/$backupdir",
+            $ssl_self_signed,
             $username,
             $password,
             'MKCOL',
@@ -251,6 +265,7 @@ class Nextcloud extends Base implements IBackupProvider
 
     /**
      * @param string $url remote location
+     * @param string $ssl_self_signed allow self signed certificate boolean
      * @param string $username remote user
      * @param string $password password to use
      * @param string $method http method, PUT, GET, ...
@@ -259,7 +274,7 @@ class Nextcloud extends Base implements IBackupProvider
      * @return array response status
      * @throws \Exception when request fails
      */
-    public function curl_request($url, $username, $password, $method, $error_message, $postdata = null)
+    public function curl_request($url, $ssl_self_signed, $username, $password, $method, $error_message, $postdata = null)
     {
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -275,6 +290,9 @@ class Nextcloud extends Base implements IBackupProvider
                 "User-Agent: OPNsense Firewall"
             )
         ));
+        if ($ssl_self_signed == 1) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        }
         if ($postdata != null) {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
         }
