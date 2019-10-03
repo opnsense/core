@@ -90,7 +90,19 @@ class Backend
         }
 
         $resp = '';
-        $stream = @stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
+        while (true) {
+            try {
+                $stream = @stream_socket_client('unix://' . $this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
+                break;
+            } catch (\Exception $ex) {
+                sleep(1);
+                $timeout_wait -= 1;
+                if ($timeout_wait <= 0) {
+                    $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
+                    return null;
+                }
+            }
+        }
         if ($stream === false) {
             $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
             return null;
@@ -98,16 +110,45 @@ class Backend
 
         stream_set_timeout($stream, $poll_timeout);
         // send command
-        if ($detach) {
-            fwrite($stream, '&' . $event);
-        } else {
-            fwrite($stream, $event);
+        while (true) {
+            try {
+                if ($stream === false) {
+                    $stream = @stream_socket_client('unix://' . $this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
+                }
+                if ($detach) {
+                    fwrite($stream, '&' . $event);
+                } else {
+                    fwrite($stream, $event);
+                }
+                break;
+            } catch (\Exception $ex) {
+                sleep(1);
+                $timeout_wait -= 1;
+                if ($timeout_wait <= 0) {
+                    $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
+                    return null;
+                }
+                $stream = false;
+            }
         }
 
         // read response data
         $starttime = time();
         while (true) {
-            $resp = $resp . stream_get_contents($stream);
+            try {
+                if ($stream === false) {
+                    $stream = @stream_socket_client('unix://' . $this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
+                }
+                $resp = $resp . stream_get_contents($stream);
+            } catch (\Exception $ex) {
+                sleep(1);
+                $timeout_wait -= 1;
+                if ($timeout_wait <= 0) {
+                    $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
+                    return null;
+                }
+                $stream = false;
+            }
 
             if (strpos($resp, $endOfStream) !== false) {
                 // end of stream detected, exit
