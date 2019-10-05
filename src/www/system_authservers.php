@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['ldap_sync_memberof']);
-              $server['ldap_sync_memberof_groups'] = implode(",", $pconfig['ldap_sync_memberof_groups']);
+              $server['ldap_sync_memberof_groups'] = !empty($pconfig['ldap_sync_memberof_groups']) ? implode(",", $pconfig['ldap_sync_memberof_groups']) : array();
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
