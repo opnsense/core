@@ -61,7 +61,7 @@ while getopts AaefHNnsvw OPT; do
 		OUTPUT="${OUTPUT} \${product_website}"
 		;;
 	*)
-		echo "Usage: man opnsense-version" >&2
+		echo "Usage: man ${0##*/}" >&2
 		exit 1
 		;;
 	esac
