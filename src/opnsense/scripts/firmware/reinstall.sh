@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -26,13 +26,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
+PACKAGE=${1}
 REBOOT=
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO REINSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO REINSTALL: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
@@ -55,7 +55,7 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 		opnsense-update -k >> ${PKG_PROGRESS_FILE} 2>&1
 	fi
 else
-	pkg install -yf $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
+	opnsense-revert ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 	pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
 fi
 
