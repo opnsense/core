@@ -198,7 +198,7 @@ function parse_filter_line($line, $interface_names = array())
         $flent['class'] = $rule_data[$field++];
         $flent['flowlabel'] = $rule_data[$field++];
         $flent['hlim'] = $rule_data[$field++];
-        $flent['proto'] = $rule_data[$field++];
+        $flent['proto'] = strtoupper($rule_data[$field++]);
         $flent['protoid'] = $rule_data[$field++];
     }
 
