@@ -865,17 +865,19 @@ if (empty($act)) {
                 }, {
                     label: '<i class="fa fa-download fa-fw"></i> <?=html_safe(gettext("Download"));?>',
                     action: function(dialogRef) {
-                        $.post('system_certmanager.php', {'id': id, 'act': 'p12', 'password': password_input.val()}, function (data) {
-                            var link = $('<a></a>')
-                                .attr('href','data:application/octet-stream;base64,' + data.content)
-                                .attr('download', data.filename)
-                                .appendTo('body');
-                            link.ready(function() {
-                                link.get(0).click();
-                                link.empty();
+                        if (confirm_input.val() === password_input.val()) {
+                            $.post('system_certmanager.php', {'id': id, 'act': 'p12', 'password': password_input.val()}, function (data) {
+                                var link = $('<a></a>')
+                                    .attr('href','data:application/octet-stream;base64,' + data.content)
+                                    .attr('download', data.filename)
+                                    .appendTo('body');
+                                link.ready(function() {
+                                    link.get(0).click();
+                                    link.empty();
+                                });
                             });
-                        });
-                        dialogRef.close();
+                            dialogRef.close();
+                        }
                     }
                 }
             ]
