@@ -91,6 +91,12 @@ class SNatRule extends Rule
                     $this->log('SNAT / pool type not round-robin');
                     $rule['disabled'] = true;
                 }
+            } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $rule['target'], $matches)) {
+                $rule['target'] = "({$this->interfaceMapping["{$matches[1]}"]['if']}:0)";
+                if (empty($this->interfaceMapping["{$matches[1]}"])) {
+                    $this->log("SNAT / target missing");
+                    $rule['disabled'] = true;
+                }
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
