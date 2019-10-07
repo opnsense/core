@@ -55,7 +55,7 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 		opnsense-update -k >> ${PKG_PROGRESS_FILE} 2>&1
 	fi
 else
-	opnsense-revert ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+	opnsense-revert -l ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 	pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
 fi
 
