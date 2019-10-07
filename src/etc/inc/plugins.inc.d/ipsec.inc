@@ -1304,6 +1304,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $dpdline .= "\n\tdpddelay = {$ph1ent['dpd_delay']}s";
                     $dpdtimeout = $ph1ent['dpd_delay'] * ($ph1ent['dpd_maxfail'] + 1);
                     $dpdline .= "\n\tdpdtimeout = {$dpdtimeout}s";
+                } else {
+                    $dpdline = '';
                 }
 
                 if (!empty($ph1ent['lifetime'])) {
