@@ -162,7 +162,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 header("Content-Length: ".filesize($filename));
                 header('Content-Transfer-Encoding: binary');
                 $file = fopen($filename, 'rb');
-                fpassthru($file);
+                while(!feof($file)) {
+                    print(fread($file, 32 * 1024));
+                    ob_flush();
+                }
+                fclose($file);
                 break;
             }
         }
