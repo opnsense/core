@@ -45,12 +45,11 @@ $opts = getopt('csh', array(), $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "usage: pluginctl [-h] -[c] [-s] [arguments]\n\n";
-    echo "optional arguments:\n\n";
+    echo "Usage: pluginctl [-h] -[c] [-s] [...]\n\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-s service mode (e.g. myservice restart)\n\n";
-    echo "\t without arguments, a list of plugins of the requested type is shown\n\n";
+    echo "Without arguments, a list of plugins of the requested type is shown.\n";
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];
