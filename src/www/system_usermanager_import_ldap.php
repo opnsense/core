@@ -72,6 +72,15 @@ foreach ($servers as $server) {
     if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
         $authName = $server;
         $ldap_server = $authcfg;
+        if (strstr($ldap_server['ldap_urltype'], "Standard") || strstr($ldap_server['ldap_urltype'], "StartTLS")) {
+            $ldap_server['ldap_full_url'] = "ldap://";
+        } else {
+            $ldap_server['ldap_full_url'] = "ldaps://";
+        }
+        $ldap_server['ldap_full_url'] .= is_ipaddrv6($authcfg['host']) ? "[{$authcfg['host']}]" : $authcfg['host'];
+        if (!empty($ldap_server['ldap_port'])) {
+            $ldap_server['ldap_full_url'] .= ":{$authcfg['ldap_port']}";
+        }
         break;
     }
 }
