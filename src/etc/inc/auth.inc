@@ -723,16 +723,6 @@ function auth_get_authserver($name)
         foreach ($config['system']['authserver'] as $authcfg) {
             if ($authcfg['name'] == $name) {
                 if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-                    // let's try to avoid regenerating the ldap url in every function.
-                    if (strstr($authcfg['ldap_urltype'], "Standard")) {
-                        $authcfg['ldap_full_url'] = "ldap://";
-                    } else {
-                        $authcfg['ldap_full_url'] = "ldaps://";
-                    }
-                    $authcfg['ldap_full_url'] .= is_ipaddrv6($authcfg['host']) ? "[{$authcfg['host']}]" : $authcfg['host'];
-                    if (!empty($authcfg['ldap_port'])) {
-                        $authcfg['ldap_full_url'] .= ":{$authcfg['ldap_port']}";
-                    }
                     // make sure a user and password entry exists and are null for anonymous usage
                     if (empty($authcfg['ldap_binddn'])) {
                         $authcfg['ldap_binddn'] = null;
