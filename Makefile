@@ -48,7 +48,7 @@ CORE_PHP?=	72
 CORE_PYTHON?=	37
 CORE_RADVD?=	1
 CORE_SQUID?=	# empty
-CORE_SURICATA?= -devel
+CORE_SURICATA?=	-devel
 CORE_SYSLOGNG?=	3.23
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
