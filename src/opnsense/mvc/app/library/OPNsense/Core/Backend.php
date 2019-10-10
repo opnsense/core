@@ -80,21 +80,24 @@ class Backend
 
         // wait until socket exist for a maximum of $connect_timeout
         $timeout_wait = $connect_timeout;
-        while (!file_exists($this->configdSocket)) {
+        while (
+            !file_exists($this->configdSocket) ||
+            ($stream = @stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout)) === false
+        ) {
             sleep(1);
             $timeout_wait -= 1;
             if ($timeout_wait <= 0) {
-                $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
+                if (file_exists($this->configdSocket)) {
+                    $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
+                    return null;
+                } else {
+                    $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
+                }
                 return null;
             }
         }
 
         $resp = '';
-        $stream = @stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
-        if ($stream === false) {
-            $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
-            return null;
-        }
 
         stream_set_timeout($stream, $poll_timeout);
         // send command
@@ -117,6 +120,9 @@ class Backend
             // handle timeouts
             if ((time() - $starttime) > $timeout) {
                 $this->getLogger()->error("Timeout (".$timeout.") executing : ".$event);
+                return null;
+            } elseif (feof($stream)) {
+                $this->getLogger()->error("Configd disconnected while executing : ".$event);
                 return null;
             }
         }
