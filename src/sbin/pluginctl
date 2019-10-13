@@ -41,14 +41,15 @@ require_once 'auth.inc';
  * -c is configure mode
  * -s is service mode
  */
-$opts = getopt('csh', array(), $optind);
+$opts = getopt('cshr', array(), $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
     echo "Usage: pluginctl [-h] -[c] [-s] [...]\n\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
-    echo "\t-s service mode (e.g. myservice restart)\n\n";
+    echo "\t-s service mode (e.g. myservice restart)\n";
+    echo "\t-r run mode (e.g. command)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
@@ -99,6 +100,14 @@ if (isset($opts['h'])) {
             break;
     }
     exit (0);
+} elseif (isset($opts['r'])) {
+   $cmd = array_shift($args);
+   $result = plugins_run($cmd, false, $args);
+   if (!empty($result)) {
+      $response = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+      echo $response;
+   }
+   exit (0);
 } else {
     /* second argument is hook */
     $hook = array_shift($args);
