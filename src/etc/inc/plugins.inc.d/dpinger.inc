@@ -293,11 +293,13 @@ function dpinger_run()
 function dpinger_status($verbose = false)
 {
     $status = array();
+    $gateways_arr = array();
 
     foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
         if (isset($gwitem['disabled'])) {
             continue;
         }
+        $gateways_arr[$gwitem['name']] = $gwitem;
 
         $gwstatus = isset($gwitem['monitor_disable']) ? 'none' : 'down';
 
