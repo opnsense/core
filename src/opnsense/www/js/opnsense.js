@@ -136,12 +136,6 @@ function setFormData(parent,data) {
                     if (targetNode.is("select")) {
                         // handle select boxes
                         targetNode.empty(); // flush
-                        if (targetNode.hasClass("tokenize")) {
-                            // when setting the same content twice to a widget, tokenize2 sorting mixes up.
-                            // Ideally formatTokenizersUI() or tokenize2 should handle this better, but for now
-                            // this seems like the only fix that actually works.
-                            targetNode.tokenize2().trigger('tokenize:clear');
-                        }
                         $.each(node[keypart],function(indxItem, keyItem){
                             var opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
                             if (keyItem["selected"] != "0") {
