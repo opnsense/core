@@ -380,6 +380,7 @@ function dpinger_status($verbose = false)
                 'stddev' => sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1)),
                 'loss' => sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1)),
                 'status' => $r['status'],
+                'details' => array_merge($r, $settings),
                 'name' => $gwname,
             );
         }
