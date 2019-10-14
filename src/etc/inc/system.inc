@@ -74,8 +74,8 @@ function get_default_sysctl_value($id)
 {
     $sysctls = array(
         'debug.pfftpproxy' => '0',
-        'hw.syscons.kbd_reboot' => '0',
         'hw.ibrs_disable' => '0',
+        'hw.syscons.kbd_reboot' => '0',
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
         'net.inet.icmp.drop_redirect' => '0',

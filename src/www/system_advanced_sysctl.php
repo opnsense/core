@@ -200,8 +200,7 @@ $( document ).ready(function() {
       </form>
       <section class="col-xs-12">
         <div class="table-responsive content-box tab-content" style="overflow: auto;">
-<?php
-        if ($act != "edit") :?>
+<?php if ($act != 'edit'): ?>
           <table class="table table-striped">
             <tr>
               <th><?=gettext("Tunable Name"); ?></th>
@@ -209,9 +208,7 @@ $( document ).ready(function() {
               <th><?=gettext("Value"); ?></th>
               <th class="text-nowrap"></th>
             </tr>
-<?php
-              $i = 0;
-              foreach ($a_tunable as $tunable) :?>
+<?php foreach ($a_tunable as $i => &$tunable): ?>
               <tr>
                 <td><?=$tunable['tunable']; ?></td>
                 <td><?=$tunable['descr']; ?></td>
@@ -228,11 +225,9 @@ $( document ).ready(function() {
                   </a>
                 </td>
               </tr>
-<?php
-              $i++; endforeach; ?>
+<?php endforeach ?>
             </table>
-<?php
-            else : ?>
+<?php else: ?>
             <form method="post">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
@@ -262,18 +257,14 @@ $( document ).ready(function() {
                   <td>
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                     <input type="button" class="btn btn-default" value="<?=html_safe(gettext("Cancel"));?>" onclick="window.location.href='/system_advanced_sysctl.php'" />
-
-<?php
-                    if (isset($id)) :?>
+<?php if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />
-<?php
-                    endif; ?>
+<?php endif ?>
                   </td>
                 </tr>
               </table>
             </form>
-<?php
-            endif; ?>
+<?php endif ?>
           </div>
         </section>
       </div>
