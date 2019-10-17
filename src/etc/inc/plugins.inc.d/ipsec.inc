@@ -60,6 +60,25 @@ const IPSEC_LOG_LEVELS = [
     4 => 'Highest',
 ];
 
+function ipsec_get_key_type($f) {
+    $keytype="RSA";
+    if ($k = openssl_pkey_get_private("file://".$f)) {
+          if ($d = openssl_pkey_get_details($k)) {
+              switch ($d['type']) {
+                  case OPENSSL_KEYTYPE_RSA:
+                      $keytype = "RSA";
+                      break;
+                  case OPENSSL_KEYTYPE_EC:
+                      $keytype = "ECDSA";
+                      break;
+              }
+        }
+    }
+
+    return $keytype;
+}
+
+
 function ipsec_p1_ealgos()
 {
     return array(
@@ -1121,7 +1140,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 @chmod($ph1certfile, 0600);
 
                 /* XXX" Traffic selectors? */
-                $pskconf .= " : RSA {$ph1keyfile}\n";
+                $pskconf .= " : ".ipsec_get_key_type($ph1keyfile)." {$ph1keyfile}\n";
             } elseif (!empty($ph1ent['pre-shared-key'])) {
                 $myid = isset($ph1ent['mobile']) ? trim(ipsec_find_id($ph1ent, "local")) : "";
                 $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer");
@@ -1163,7 +1182,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 }
                 @chmod($ph1privatekeyfile, 0600);
 
-                $pskconf .= " : RSA {$ph1privatekeyfile}\n";
+                $pskconf .= " : ".ipsec_get_key_type($ph1privatekeyfile)." {$ph1privatekeyfile}\n";
             }
 
             if (!empty($ph1ent['peer-kpref'])) {
