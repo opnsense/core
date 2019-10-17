@@ -29,7 +29,7 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Randomize the ID field in IP packets (default is 0: sequential IP IDs)]]></descr>
+      <descr><![CDATA[Randomize the ID field in IP packets]]></descr>
       <tunable>net.inet.ip.random_id</tunable>
       <value>default</value>
     </item>
