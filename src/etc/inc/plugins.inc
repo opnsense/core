@@ -240,6 +240,10 @@ function plugins_configure($hook, $verbose = false, $args = array())
                         if ($argc > count($args)) {
                             $argc = count($args);
                         }
+                        syslog(LOG_NOTICE, sprintf(
+                            'plugins_configure %s (execute task : %s(%s))',
+                            $hook, $argf, implode(',', array_slice($args, 0, $argc))
+                        ));
                         call_user_func_array($argf, array_slice($args, 0, $argc));
                     }
                 }
@@ -252,6 +256,8 @@ function plugins_run($hook, $verbose = false, $args = array())
 {
     array_unshift($args, $verbose);
     $ret = [];
+
+    syslog(LOG_NOTICE, sprintf('plugins_run %s (%s)', $hook, implode(',', $args)));
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -275,6 +281,9 @@ function plugins_run($hook, $verbose = false, $args = array())
                     if ($argc > count($args)) {
                         $argc = count($args);
                     }
+                    syslog(LOG_NOTICE, sprintf(
+                        'plugins_run %s (execute task : %s(%s))', $hook, $argf, implode(',', array_slice($args, 0, $argc))
+                    ));
                     $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
                 }
             }
