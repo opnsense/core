@@ -63,6 +63,9 @@ class Drive
     public function login($client_id, $privateKeyB64)
     {
         openssl_pkcs12_read(base64_decode($privateKeyB64), $certinfo, "notasecret");
+        if (empty($certinfo)) {
+            throw new \Exception("Invalid P12 key, openssl_pkcs12_read() failed");
+        }
         $this->client = new \Google_Client();
 
         $service_account = [
