@@ -52,7 +52,7 @@ class Drive
     public function __construct()
     {
         // hook in Google's autoloader
-        require_once("google-api-php-client/vendor/autoload.php");
+        require_once("/usr/local/share/google-api-php-client/vendor/autoload.php");
     }
 
     /**
