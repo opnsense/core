@@ -46,7 +46,8 @@ function pf_services()
             'description' => gettext('Interface groups'),
             'nocheck' => true,
             'php' => array(
-                'start' => 'interfaces_group_setup'
+                'start' => 'interfaces_group_setup',
+                'restart' => 'interfaces_group_setup',
             ),
             'name' => 'ifgroups',
         );
