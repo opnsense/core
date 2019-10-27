@@ -43,7 +43,7 @@ extra_commands="status"
 [ -z "$netflow_egress_only" ] && netflow_egress_only=""
 
 # netflow_node_error (interface, message)
-# - shutdown the netflow node on error to avoid connection problems 
+# - shutdown the netflow node on error to avoid connection problems
 #   with unassigned hooks
 netflow_node_error()
 {
