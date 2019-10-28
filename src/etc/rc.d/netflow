@@ -69,8 +69,7 @@ netflow_setup_interface()
     # determine (snmp) ifIndex
     ifIndex=0
     found=0
-    for item in `/sbin/ifconfig -l`
-    do
+    for item in $(/sbin/ifconfig -l); do
        let ifIndex = ifIndex + 1  > /dev/null 2>&1
        if [ "$item" = "$interface" ]; then
            found=1
@@ -85,7 +84,7 @@ netflow_setup_interface()
 
     # disable ingress (traffic to this host) for selected interfaces
     # avoids counting traffic going through this firewall double when using nat
-    if [ ! -z "`echo " $netflow_egress_only " | grep " $interface "`" ]; then
+    if [ -n "$(echo " $netflow_egress_only " | grep " $interface ")" ]; then
         conf="10"
         echo "setup $interface [egress only]"
     else
@@ -161,8 +160,8 @@ netflow_start()
 
     # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
     if [ "$netflow_destinations" != "" ]; then
-        netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`
-        destinations=`echo $netflow_destinations | /usr/bin/sed 's/:/\//g'`
+        netflow_port=$(echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}')
+        destinations=$(echo $netflow_destinations | /usr/bin/sed 's/:/\//g')
         /usr/sbin/daemon -p /var/run/netflow_samplicate.pid -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
     fi
 
@@ -173,12 +172,11 @@ netflow_stop()
 {
     # kill all samplicate process
     if [ -f /var/run/netflow_samplicate.pid ]; then
-        kill -9 `cat /var/run/netflow_samplicate.pid`
+        kill -9 $(cat /var/run/netflow_samplicate.pid)
     fi
 
     # cleanup netflow processes
-    for netflow_node in `/usr/sbin/ngctl list | grep "Type: netflow" | awk '{print $2;}'`
-    do
+    for netflow_node in $(/usr/sbin/ngctl list | grep "Type: netflow" | awk '{print $2;}'); do
         /usr/sbin/ngctl shutdown  $netflow_node:
     done
 }
@@ -186,7 +184,7 @@ netflow_stop()
 # netflow status
 netflow_status()
 {
-    flows=`/usr/sbin/ngctl list | grep netflow_ | wc -l | /usr/bin/awk '{print $1}'`
+    flows=$(/usr/sbin/ngctl list | grep netflow_ | wc -l | /usr/bin/awk '{print $1}')
     if [ $flows -eq 0 ]; then
         echo "netflow is not active"
     else
