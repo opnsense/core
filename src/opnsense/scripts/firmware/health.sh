@@ -164,6 +164,9 @@ EOF
 			AUTOSET="set"
 			VITAEXPECT=1
 			VITASET="not set"
+		elif [ ${DEP} = "pkg" ]; then
+			AUTOEXPECT=0
+			AUTOSET="set"
 		fi
 
 		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
