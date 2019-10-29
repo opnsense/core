@@ -77,7 +77,10 @@ CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2019
 
-CORE_DEPENDS_amd64?=	beep bsdinstaller
+CORE_DEPENDS_amd64?=	beep \
+			bsdinstaller \
+			suricata${CORE_SURICATA}
+
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
@@ -140,7 +143,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			sshlockout_pf \
 			strongswan \
 			sudo \
-			suricata${CORE_SURICATA} \
 			syslog-ng${CORE_SYSLOGNG:S/.//g} \
 			syslogd \
 			unbound \
