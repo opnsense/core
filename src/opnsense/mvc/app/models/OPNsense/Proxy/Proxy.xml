@@ -268,7 +268,7 @@
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                    <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
+                        <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
                         <type>DependConstraint</type>
                         <addFields>
                             <field1>sslbump</field1>
