@@ -287,6 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $filesInBackup = $provider['handle']->backup();
                 } catch (Exception $e) {
                     $filesInBackup = array();
+                    $input_errors[] = $e->getMessage();
                 }
 
                 if (count($filesInBackup) == 0) {
