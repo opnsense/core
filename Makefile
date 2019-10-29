@@ -111,6 +111,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-dom \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
+			php${CORE_PHP}-google-api-php-client \
 			php${CORE_PHP}-hash \
 			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
