@@ -32,7 +32,7 @@
      */
     function updateStatusPrepare(rerun) {
         if (rerun === false) {
-            $('#update_status').hide();
+            $('#update_status_container').hide();
             $('#updatelist').show();
         }
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
@@ -70,7 +70,7 @@
                 $("#audit_all").attr("style","display:none");
 
                 // show upgrade list
-                $('#update_status').hide();
+                $('#update_status_container').hide();
                 $('#updatelist').show();
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
@@ -95,7 +95,7 @@
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
             } else {
-                $('#update_status').hide();
+                $('#update_status_container').hide();
                 $('#updatelist').show();
                 $("#upgrade").attr("style","display:none");
                 $("#audit_all").attr("style","");
@@ -123,7 +123,7 @@
     function upgrade() {
         $('#updatelist').hide();
         $('#update_status').html('');
-        $('#update_status').show();
+        $('#update_status_container').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
         $("#audit_all").attr("style","display:none");
@@ -147,7 +147,7 @@
         $.upgrade_action = 'audit';
         $('#updatelist').hide();
         $('#update_status').html('');
-        $('#update_status').show();
+        $('#update_status_container').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
         $("#audit_all").attr("style","");
@@ -250,7 +250,7 @@
     {
         $('#updatelist').hide();
         $('#update_status').html('');
-        $('#update_status').show();
+        $('#update_status_container').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
@@ -382,7 +382,7 @@
                     $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
                 });
 
-                $('#update_status').show();
+                $('#update_status_container').show();
                 $('#updatelist').hide();
             }
 
@@ -748,6 +748,13 @@
             });
         });
 
+        $("#btn_update_status_copy").click(function(){
+            $("#update_status").select();
+            document.execCommand("copy");
+            document.getSelection().removeAllRanges();
+            $(this).toggleClass("fa-flip-horizontal");
+        });
+
         // update history on tab state and implement navigation
         if(window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click()
@@ -760,7 +767,13 @@
         });
     });
 </script>
-
+<style>
+  .copy-logo {
+      position: absolute;
+      bottom: 5px;
+      right: 35px;
+  }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div id="minor-upgrade" class="alert alert-info" role="alert" style="min-height:65px;">
@@ -790,7 +803,7 @@
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
+                <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a> </li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
@@ -802,7 +815,10 @@
                         <thead></thead>
                         <tbody></tbody>
                     </table>
-                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
+                    <div id="update_status_container">
+                      <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
+                      <i id="btn_update_status_copy" class="copy-logo fa fa-clipboard fa-2x" data-toggle="tooltip" title="{{lang._('Copy to clipboard')}}"  style="padding: 5px 5px 5px 5px; cursor: pointer;"></i>
+                    </div>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
