@@ -63,6 +63,11 @@ if (!empty($auth_data['user']) && isset($auth_data['password'])) {
     $authFactory = new \OPNsense\Auth\AuthenticationFactory();
     $is_authenticated = $authFactory->authenticate($auth_data['service'], $auth_data['user'], $auth_data['password']);
     if ($is_authenticated) {
+        $authProps = $authFactory->getLastAuthProperties();
+        if (!empty($authProps)) {
+            // dump authentication response data to stdout
+            echo json_encode($authProps, JSON_INVALID_UTF8_IGNORE) ."\n";
+        }
         $exit_status = 0;
     } else {
         if (getUserEntry($auth_data['user']) === false) {
