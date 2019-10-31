@@ -16,7 +16,7 @@
             </interfaces>
             <egress_only type="InterfaceField">
                 <Required>N</Required>
-                <default>wan</default>
+                <default></default>
                 <multiple>Y</multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
