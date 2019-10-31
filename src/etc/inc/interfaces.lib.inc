@@ -337,6 +337,17 @@ function legacy_interfaces_details($intf = null)
                 "advbase" => $line_parts[5],
                 "advskew" => $line_parts[7]
             );
+        } elseif (strpos($line, "\tvxlan") !== false) {
+            if (empty($result[$current_interface]["vxlan"])) {
+                $result[$current_interface]["vxlan"] = array();
+            }
+            $result[$current_interface]["vxlan"]["vni"] = $line_parts[2];
+            $result[$current_interface]["vxlan"]["local"] = $line_parts[4];
+            if ($line_parts[5] == "group") {
+                $result[$current_interface]["vxlan"]["group"] = $line_parts[6];
+            } else {
+                $result[$current_interface]["vxlan"]["remote"] = $line_parts[6];
+            }
         }
     }
 
