@@ -98,7 +98,8 @@ function webgui_configure_do($verbose = false, $interface = '')
             $cert['descr'] = 'Web GUI SSL certificate';
             mwexec(
                 /* XXX ought to be replaced by PHP calls */
-                '/usr/local/bin/openssl req -new ' .
+                '/usr/local/bin/openssl req -new -extensions server_cert ' .
+                '-config /usr/local/etc/ssl/opnsense.cnf ' .
                 '-newkey rsa:4096 -sha256 -days 365 -nodes -x509 ' .
                 '-subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense" ' .
                 '-keyout /tmp/ssl.key -out /tmp/ssl.crt'
