@@ -86,22 +86,26 @@ class NetworkValidator extends Validator implements ValidatorInterface
 
             // split network
             if (strpos($value, "/") !== false) {
-                $parts = explode("/", $value);
-                if (count($parts) > 2 || !ctype_digit($parts[1])) {
-                    // more parts then expected or second part is not numeric
+                if ($this->getOption('netMaskAllowed') === false) {
                     $result = false;
                 } else {
-                    $mask = $parts[1];
-                    $value = $parts[0];
-                    if (strpos($parts[0], ".")) {
-                        // most likely ipv4 address, mask must be between 0..32
-                        if ($mask < 0 || $mask > 32) {
-                            $result = false;
-                        }
+                    $parts = explode("/", $value);
+                    if (count($parts) > 2 || !ctype_digit($parts[1])) {
+                        // more parts then expected or second part is not numeric
+                        $result = false;
                     } else {
-                        // probably ipv6, mask must be between 0..128
-                        if ($mask < 0 || $mask > 128) {
-                            $result = false;
+                        $mask = $parts[1];
+                        $value = $parts[0];
+                        if (strpos($parts[0], ".")) {
+                            // most likely ipv4 address, mask must be between 0..32
+                            if ($mask < 0 || $mask > 32) {
+                                $result = false;
+                            }
+                        } else {
+                            // probably ipv6, mask must be between 0..128
+                            if ($mask < 0 || $mask > 128) {
+                                $result = false;
+                            }
                         }
                     }
                 }
