@@ -52,6 +52,11 @@ class NetworkField extends BaseField
     protected $internalNetMaskRequired = false;
 
     /**
+     * @var bool marks if net mask is (dis)allowed
+     */
+    protected $internalNetMaskAllowed = true;
+
+    /**
      * @var null when multiple values could be provided at once, specify the split character
      */
     protected $internalFieldSeparator = null;
@@ -91,6 +96,15 @@ class NetworkField extends BaseField
         } else {
             $this->internalNetMaskRequired = false;
         }
+    }
+
+    /**
+     * setter for net mask required
+     * @param integer $value
+     */
+    public function setNetMaskAllowed($value)
+    {
+        $this->internalNetMaskAllowed = (trim(strtoupper($value)) == "Y");
     }
 
     /**
@@ -170,6 +184,7 @@ class NetworkField extends BaseField
                     'message' => $this->internalValidationMessage,
                     'split' => $this->internalFieldSeparator,
                     'netMaskRequired' => $this->internalNetMaskRequired,
+                    'netMaskAllowed' => $this->internalNetMaskAllowed,
                     'version' => $this->internalAddressFamily
                     ));
             }
