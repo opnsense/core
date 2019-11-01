@@ -104,6 +104,35 @@ function core_services()
     return $services;
 }
 
+function core_devices()
+{
+    $devices = array();
+
+    # XXX is a plugin collection...
+    $devices[] = array('pattern' => '^bridge', 'critical' => false);
+    $devices[] = array('pattern' => '^cua', 'critical' => false);
+    $devices[] = array('pattern' => '^enc', 'critical' => false);
+    $devices[] = array('pattern' => '^gif', 'critical' => false);
+    $devices[] = array('pattern' => '^gre', 'critical' => false);
+    $devices[] = array('pattern' => '^ipsec', 'critical' => false);
+    $devices[] = array('pattern' => '^l2tp', 'critical' => false);
+    $devices[] = array('pattern' => '^lagg', 'critical' => false);
+    $devices[] = array('pattern' => '^ocvpn', 'critical' => false);
+    $devices[] = array('pattern' => '^ovpn', 'critical' => false);
+    $devices[] = array('pattern' => '^ppp', 'critical' => false);
+    $devices[] = array('pattern' => '^pptp', 'critical' => false);
+    $devices[] = array('pattern' => '^tinc', 'critical' => false);
+    $devices[] = array('pattern' => '^tun|^tap', 'critical' => false);
+    $devices[] = array('pattern' => '^ue', 'critical' => false);
+    $devices[] = array('pattern' => '^wg', 'critical' => false);
+    $devices[] = array('pattern' => '^zt', 'critical' => false);
+    $devices[] = array('pattern' => '_stf', 'critical' => false);
+    $devices[] = array('pattern' => '_wlan', 'critical' => false);
+    $devices[] = array('pattern' => 'vlan', 'critical' => false);
+
+    return $devices;
+}
+
 function core_cron()
 {
     global $config;

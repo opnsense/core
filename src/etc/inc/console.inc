@@ -53,14 +53,24 @@ function timeout($timer = 5)
 
 function is_interface_mismatch()
 {
+    $patterns = array('^impossiblecontrolmatch$'); /* XXX */
     $mismatch = false;
 
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
+    foreach (plugins_devices() as $device) {
+        if (!$device['critical']) {
+            $patterns[] = "({$device['pattern']})";
+        }
+    }
+
+    /* XXX we can match known devices names, much easier as soon as it is provided */
+    $regex = '/' . implode('|', $patterns) . '/';
+
+    foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $ifcfg) {
         if (!empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
             $mismatch = false;
             break;
-        } elseif (preg_match('/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^ocvpn|^tinc|^wg|^zt|^ue|^gif|^gre|^lagg|^bridge|^ipsec|vlan|_wlan|_stf/i', $ifcfg['if'])) {
+        } elseif (preg_match($regex, $ifcfg['if'])) {
             /* Do not check these interfaces */
             continue;
         } elseif (does_interface_exist($ifcfg['if']) == false) {
