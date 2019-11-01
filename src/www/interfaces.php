@@ -667,8 +667,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
-            if (strstr($pconfig['if'], 'gre') || strstr($pconfig['if'], 'gif') || strstr($pconfig['if'], 'ovpn') || strstr($pconfig['if'], 'ipsec')) {
-                $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+            foreach (plugins_devices() as $device) {
+                if (!isset($device['configurable']) || $device['configurable'] == true) {
+                  continue;
+                }
+                if (preg_match('/' . $device['pattern'] . '/', $ifport)) {
+                    $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+                }
             }
         }
 

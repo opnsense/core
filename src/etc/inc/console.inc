@@ -57,7 +57,7 @@ function is_interface_mismatch()
     $mismatch = false;
 
     foreach (plugins_devices() as $device) {
-        if (!$device['critical']) {
+        if (!empty($device['volatile'])) {
             $patterns[] = "({$device['pattern']})";
         }
     }

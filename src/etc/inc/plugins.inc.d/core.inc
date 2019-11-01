@@ -109,26 +109,26 @@ function core_devices()
     $devices = array();
 
     # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^bridge', 'critical' => false);
-    $devices[] = array('pattern' => '^cua', 'critical' => false);
-    $devices[] = array('pattern' => '^enc', 'critical' => false);
-    $devices[] = array('pattern' => '^gif', 'critical' => false);
-    $devices[] = array('pattern' => '^gre', 'critical' => false);
-    $devices[] = array('pattern' => '^ipsec', 'critical' => false);
-    $devices[] = array('pattern' => '^l2tp', 'critical' => false);
-    $devices[] = array('pattern' => '^lagg', 'critical' => false);
-    $devices[] = array('pattern' => '^ocvpn', 'critical' => false);
-    $devices[] = array('pattern' => '^ovpn', 'critical' => false);
-    $devices[] = array('pattern' => '^ppp', 'critical' => false);
-    $devices[] = array('pattern' => '^pptp', 'critical' => false);
-    $devices[] = array('pattern' => '^tinc', 'critical' => false);
-    $devices[] = array('pattern' => '^tun|^tap', 'critical' => false);
-    $devices[] = array('pattern' => '^ue', 'critical' => false);
-    $devices[] = array('pattern' => '^wg', 'critical' => false);
-    $devices[] = array('pattern' => '^zt', 'critical' => false);
-    $devices[] = array('pattern' => '_stf', 'critical' => false);
-    $devices[] = array('pattern' => '_wlan', 'critical' => false);
-    $devices[] = array('pattern' => 'vlan', 'critical' => false);
+    $devices[] = array('pattern' => '^bridge', 'volatile' => true);
+    $devices[] = array('pattern' => '^cua', 'volatile' => true);
+    $devices[] = array('pattern' => '^enc', 'volatile' => true);
+    $devices[] = array('pattern' => '^gif', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^gre', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
+    $devices[] = array('pattern' => '^lagg', 'volatile' => true);
+    $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
+    $devices[] = array('pattern' => '^ovpn', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^ppp', 'volatile' => true);
+    $devices[] = array('pattern' => '^pptp', 'volatile' => true);
+    $devices[] = array('pattern' => '^tinc', 'volatile' => true);
+    $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);
+    $devices[] = array('pattern' => '^ue', 'volatile' => true);
+    $devices[] = array('pattern' => '^wg', 'volatile' => true);
+    $devices[] = array('pattern' => '^zt', 'volatile' => true);
+    $devices[] = array('pattern' => '_stf', 'volatile' => true);
+    $devices[] = array('pattern' => '_wlan', 'volatile' => true);
+    $devices[] = array('pattern' => 'vlan', 'volatile' => true);
 
     return $devices;
 }
