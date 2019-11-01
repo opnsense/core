@@ -885,7 +885,6 @@ function interfaces_configure($verbose = false)
 
     /* XXX temporary plugin spot */
     plugins_configure('openvpn_prepare', $verbose);
-    plugins_configure('vxlan_prepare', $verbose);
 
     /*
      * Queues are set up to order interfaces according to their
@@ -959,6 +958,8 @@ function interfaces_configure($verbose = false)
 
     /* XXX temporary plugin spot */
     plugins_configure('ipsec_prepare', $verbose);
+    /* XXX local interface should be bound, unfortunately we can't query ifconfig to check if it's valid */
+    plugins_configure('vxlan_prepare', $verbose);
 
     interfaces_group_setup();
 }
