@@ -5,5 +5,5 @@
             <pattern>ui/interfaces/vxlan</pattern>
             <pattern>api/interfaces/vxlan</pattern>
         </patterns>
-    </page-interfaces-gif>
+    </page-interfaces-vxlan>
 </acl>
