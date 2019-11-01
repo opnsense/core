@@ -29,7 +29,8 @@
  function vxlan_configure()
  {
      return array(
-         'vxlan_prepare' => array('vxlan_configure_interface')
+         'vxlan_prepare' => array('vxlan_configure_interface'),
+         'newwanip' => array('vxlan_configure_interface'),
      );
  }
 
@@ -37,24 +38,52 @@
 function vxlan_configure_interface($verbose=false)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
-    $interface_details = legacy_interfaces_details();
+    $interfaces_details = legacy_interfaces_details();
     $configured_devices = array();
+    $changed_devices = array();
     $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlans->vxlan->iterateItems());
     if ($verbose && !empty($vxlans)) {
         echo 'Configuring VXLAN interfaces...';
         flush();
     }
+    $all_addresses = array();
+    $known_addresses = array();
+    foreach ($interfaces_details as $intf) {
+        foreach (['ipv4', 'ipv6'] as $ipproto) {
+            if (!empty($intf[$ipproto])) {
+                foreach ($intf[$ipproto] as $net) {
+                    $known_addresses[] = $net['ipaddr'];
+                }
+            }
+        }
+    }
 
     // (re)configure vxlan devices
     foreach ($vxlans as $vxlan) {
+        if (!in_array((string)$vxlan->vxlanlocal, $known_addresses)) {
+            // skip when interface address is not assigned (yet)
+            continue;
+        }
         $device_name = "vxlan.{$vxlan->deviceId}" ;
         $configured_devices[] = $device_name;
-        if (empty($interface_details[$device_name])) {
+        $current_settings = array(
+            "vxlanid" => null,
+            "vxlanlocal" => null,
+            "vxlanremote" => null,
+            "vxlangroup" => null
+        );
+        if (empty($interfaces_details[$device_name])) {
             // new device
             mwexecf('/sbin/ifconfig vxlan create name %s', array($device_name));
+            $isChanged = true;
+        } else {
+            $isChanged = false;
+            $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
+            $current_settings['vxlanlocal'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[0];
+            $current_settings['vxlanremote'] = explode(":", $interfaces_details[$device_name]['vxlan']['remote'])[0];
+            $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
         }
-        // gather settings
-        // XXX: it might be necessary to compare with current settings to avoid a reconfigure
+        // gather settings, detect changes
         $ifcnfcmd = '/sbin/ifconfig %s';
         $ifcnfcmdp = array($device_name);
         foreach (array('vxlanid', 'vxlanlocal', 'vxlanremote', 'vxlangroup', 'vxlandev') as $param) {
@@ -71,11 +100,17 @@ function vxlan_configure_interface($verbose=false)
                 $ifcnfcmd .= " {$param} %s ";
                 $ifcnfcmdp[] = $value;
             }
+            if (isset($current_settings[$param]) && $current_settings[$param] != $value) {
+                $isChanged = true;
+            }
         }
-        mwexecf($ifcnfcmd, $ifcnfcmdp);
+        if ($isChanged) {
+            mwexecf($ifcnfcmd, $ifcnfcmdp);
+            $changed_devices[] = $device_name;
+        }
     }
     // destroy non existing interfaces
-    foreach ($interface_details as $intf => $data) {
+    foreach ($interfaces_details as $intf => $data) {
         if (strpos($intf, "vxlan.") === 0) {
             if (!in_array($intf, $configured_devices)) {
                 mwexecf('/sbin/ifconfig %s destroy', array($intf));
@@ -84,5 +119,12 @@ function vxlan_configure_interface($verbose=false)
     }
     if ($verbose && !empty($vxlans)) {
         echo "done.\n";
+    }
+    // configure interface when device has changed
+    foreach ($changed_devices as $device_name) {
+        $friendly_if = convert_real_interface_to_friendly_interface_name($device_name);
+        if (!empty($friendly_if)) {
+            interface_configure($verbose, $friendly_if);
+        }
     }
 }

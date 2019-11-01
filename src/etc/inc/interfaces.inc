@@ -900,9 +900,12 @@ function interfaces_configure($verbose = false)
     $dhcp6c = [];
 
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
-        if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn') || strstr($ifcfg['if'], 'vxlan.')) {
+        if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
             /* special interfaces on top of newly generated devices */
             $special[] = $if;
+            continue;
+        } elseif (strstr($ifcfg['if'], 'vxlan.')) {
+            // XXX device configuration is responsible for interface setup too when trying to init all.
             continue;
         }
 
@@ -950,9 +953,6 @@ function interfaces_configure($verbose = false)
     interfaces_gif_configure($verbose, 2);
     interfaces_bridge_configure($verbose, 2);
 
-    /* XXX temporary plugin spot, vxlan needs the interface it tries to bind to configured first  */
-    plugins_configure('vxlan_prepare', $verbose);
-
     foreach ([$special, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $if) {
             interface_configure($verbose, $if);
@@ -961,6 +961,7 @@ function interfaces_configure($verbose = false)
 
     /* XXX temporary plugin spot */
     plugins_configure('ipsec_prepare', $verbose);
+    plugins_configure('vxlan_prepare', $verbose);
 
     interfaces_group_setup();
 }
