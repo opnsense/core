@@ -904,6 +904,9 @@ function interfaces_configure($verbose = false)
             /* special interfaces on top of newly generated devices */
             $special[] = $if;
             continue;
+        } elseif (strstr($ifcfg['if'], 'vxlan.')) {
+            // XXX device configuration is responsible for interface setup too when trying to init all.
+            continue;
         }
 
         $is_track6 = !empty($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == 'track6';
@@ -958,6 +961,7 @@ function interfaces_configure($verbose = false)
 
     /* XXX temporary plugin spot */
     plugins_configure('ipsec_prepare', $verbose);
+    plugins_configure('vxlan_prepare', $verbose);
 
     interfaces_group_setup();
 }
