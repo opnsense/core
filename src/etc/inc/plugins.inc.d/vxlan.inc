@@ -34,14 +34,19 @@
  }
 
 
-function vxlan_configure_interface()
+function vxlan_configure_interface($verbose=false)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
     $interface_details = legacy_interfaces_details();
     $configured_devices = array();
+    $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlans->vxlan->iterateItems());
+    if ($verbose && !empty($vxlans)) {
+        echo 'Configuring VXLAN interfaces...';
+        flush();
+    }
 
     // (re)configure vxlan devices
-    foreach ((new \OPNsense\Interfaces\VxLan())->vxlans->vxlan->iterateItems() as $vxlan) {
+    foreach ($vxlans as $vxlan) {
         $device_name = "vxlan.{$vxlan->deviceId}" ;
         $configured_devices[] = $device_name;
         if (empty($interface_details[$device_name])) {
@@ -76,5 +81,8 @@ function vxlan_configure_interface()
                 mwexecf('/sbin/ifconfig %s destroy', array($intf));
             }
         }
+    }
+    if ($verbose && !empty($vxlans)) {
+        echo "done.\n";
     }
 }
