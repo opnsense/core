@@ -44,6 +44,7 @@ MTREE_PATTERNS="
 ./etc/pwd.db
 ./etc/rc
 ./etc/rc.shutdown
+./etc/remote
 ./etc/shells
 ./etc/spwd.db
 ./etc/ttys
