@@ -1,34 +1,8 @@
-<script>
-    $( document ).ready(function() {
-        $("#grid-addresses").UIBootgrid(
-            {   search:'/api/interfaces/vxlan_settings/searchItem/',
-                get:'/api/interfaces/vxlan_settings/getItem/',
-                set:'/api/interfaces/vxlan_settings/setItem/',
-                add:'/api/interfaces/vxlan_settings/addItem/',
-                del:'/api/interfaces/vxlan_settings/delItem/'
-            }
-        );
-
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/interfaces/vxlan_settings/reconfigure", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring vxlan') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
-
-    });
-</script>
 <div class="tab-content content-box">
-  <table id="grid-addresses" class="table table-condensed table-hover table-striped" data-editDialog="DialogVxlan" data-editAlert="VxLanChangeMessage">
+  <table id="grid-addresses" is="os-bootgrid-table" class="table table-condensed table-hover table-striped"
+         data-editDialog="DialogVxlan" data-editAlert="VxLanChangeMessage"
+         data-search="searchItem/" data-get="getItem/" data-set="setItem/" data-add="addItem/" data-del="delItem/"
+         data-base="/api/interfaces/vxlan_settings/">
       <thead>
           <tr>
               <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
@@ -55,7 +29,7 @@
           {{ lang._('After changing settings, please remember to apply them with the button below') }}
       </div>
       <hr/>
-      <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+      <os-reload-btn data-reconfigure="/api/interfaces/vxlan_settings/reconfigure" data-warningtitle="Error reconfiguring vxlan"><b>{{ lang._('Apply') }}</b></os-reload-btn>
       <br/><br/>
   </div>
 </div>

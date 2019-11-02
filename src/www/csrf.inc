@@ -96,13 +96,11 @@ class LegacyCSRF
             // csrf token for Ajax type requests
             $script = "
             <script>
-              $( document ).ready(function() {
-                  $.ajaxSetup({
+                $.ajaxSetup({
                   'beforeSend': function(xhr) {
                       xhr.setRequestHeader(\"X-CSRFToken\", \"{$csrf['token']}\" );
                   }
                 });
-              });
             </script>
             ";
             $buffer = str_ireplace('</head>', $script.'</head>', $buffer);

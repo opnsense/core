@@ -455,6 +455,106 @@ function stdDialogConfirm(title, message, accept, decline, callback, type) {
     });
 }
 
+
+class OPNsenseReloadServiceButton extends HTMLElement {
+    /**
+     * constructor - create a new spinner for the button
+     */
+    constructor() {
+        super();
+
+        this.spinner = document.createElement("i");
+        this.$spinner = $(this.spinner);
+    }
+
+    /**
+     * connected callback - will be called when the element is injected into the DOM
+     */
+    connectedCallback() {
+        const that = this;
+        if (this.childNodes.length > 0)
+            this.insertBefore(this.spinner, this.childNodes[0]);
+        else
+            this.append(this.spinner);
+
+        this.classList.add('btn');
+        this.classList.add('btn-primary');
+        this.addEventListener('click', function() {
+            that.performClick();
+        });
+    }
+
+    /**
+     * When the user clicks on the button, this callback will be called.
+     * This callback calls the backend.
+     */
+    performClick() {
+        this.startSpinner();
+        let that = this;
+        let reloadData = this.dataset.reload;
+        let reconfigureData = this.dataset.reconfigure;
+        if (!reconfigureData) {
+            return;
+        }
+        ajaxCall(reconfigureData, {}, function(data,status) {
+            if (!reloadData) {
+                that.stopSpinner();
+            }
+            if (OPNsenseReloadServiceButton.isError(status, data)) {
+                that.showWarning(data);
+                that.stopSpinner();
+            } else {
+                ajaxCall(reloadData, {}, function(data,status) {
+                    that.stopSpinner();
+                    if (OPNsenseReloadServiceButton.isError(status, data)) {
+                        that.showWarning(data)
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * this method checks if the response is an error
+     * @param status status of the XHR
+     * @param data body of the XHR
+     * @returns {boolean} if the response is successful
+     */
+    static isError(status, data) {
+        return status !== "success" || data['status'] !== 'ok';
+    }
+
+    showWarning(data) {
+        let warning = this.dataset.warningtitle;
+        if (warning) {
+            BootstrapDialog.show({
+                type: BootstrapDialog.TYPE_WARNING,
+                title: warning,
+                message: data['status'],
+                draggable: true
+            });
+        }
+    }
+
+    /**
+     * lets the spinner spin and disables the button
+     */
+    startSpinner() {
+        this.disabled = true;
+        this.$spinner.addClass("fa fa-spinner fa-pulse");
+    }
+
+    /**
+     * stops the spinner and reenables the button
+     */
+    stopSpinner() {
+        this.disabled = false;
+        this.$spinner.removeClass("fa fa-spinner fa-pulse");
+    }
+}
+customElements.define('os-reload-btn', OPNsenseReloadServiceButton);
+
+
 /**
  * wrapper for backwards compatibility (do not use)
  */

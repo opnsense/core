@@ -455,3 +455,32 @@ $.fn.UIBootgrid = function (params) {
         }
     }));
 };
+
+class OPNsenseBasicBootGridTable extends HTMLTableElement {
+
+    /**
+     * constructor - create a new spinner for the button
+     */
+    constructor() {
+        super();
+    }
+
+    /**
+     * connected callback - will be called when the element is injected into the DOM
+     */
+    connectedCallback() {
+
+        const base = this.dataset.base || "";
+        const opts = {};
+        const that = this;
+        ['search', 'get', 'set', 'add', 'del', 'toggle', 'info'].forEach(function (value) {
+            let val = that.dataset[value];
+            if (val) {
+                opts[value] = base + val;
+            }
+        });
+        $(this).UIBootgrid(opts);
+    }
+}
+
+customElements.define('os-bootgrid-table', OPNsenseBasicBootGridTable, {"extends": 'table'});

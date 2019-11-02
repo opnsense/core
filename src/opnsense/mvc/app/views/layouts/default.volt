@@ -49,14 +49,14 @@
     <script src="/ui/js/jquery-3.2.1.min.js"></script>
     <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
     <script>
+            // hook into jquery ajax requests to ensure csrf handling.
+            $.ajaxSetup({
+                'beforeSend': function(xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}" );
+                }
+            });
             // setup default scripting after page loading.
-            $( document ).ready(function() {
-                // hook into jquery ajax requests to ensure csrf handling.
-                $.ajaxSetup({
-                    'beforeSend': function(xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}" );
-                    }
-                });
+            $(function() {
                 // propagate ajax error messages
                 $( document ).ajaxError(function( event, request ) {
                     if (request.responseJSON != undefined && request.responseJSON.errorMessage != undefined) {
