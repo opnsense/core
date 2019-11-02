@@ -1,7 +1,8 @@
 <model>
     <mount>//OPNsense/Interfaces</mount>
+    <version>1.0.0</version>
     <description>
-        the OPNsense "GridExample" application
+        VXLAN configuration
     </description>
     <items>
         <vxlans>
