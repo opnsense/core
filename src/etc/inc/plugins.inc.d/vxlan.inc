@@ -34,6 +34,14 @@
      );
  }
 
+function vxlan_devices()
+{
+    $devices = array();
+
+    $devices[] = array('pattern' => '^vxlan', 'volatile' => true, 'configurable' => false);
+
+    return $devices;
+}
 
 function vxlan_configure_interface($verbose=false)
 {
@@ -64,7 +72,7 @@ function vxlan_configure_interface($verbose=false)
             // skip when interface address is not assigned (yet)
             continue;
         }
-        $device_name = "vxlan.{$vxlan->deviceId}" ;
+        $device_name = "vxlan{$vxlan->deviceId}";
         $configured_devices[] = $device_name;
         $current_settings = array(
             "vxlanid" => null,
