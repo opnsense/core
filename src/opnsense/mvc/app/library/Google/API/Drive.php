@@ -47,17 +47,12 @@ class Drive
     private $client = null;
 
     /**
-     * @var null|Google_Auth_AssertionCredentials credential object
-     */
-    private $cred = null;
-
-    /**
      * construct a new Drive object
      */
     public function __construct()
     {
         // hook in Google's autoloader
-        require_once("google-api-php-client/Google/autoload.php");
+        require_once("/usr/local/share/google-api-php-client/vendor/autoload.php");
     }
 
     /**
@@ -67,15 +62,24 @@ class Drive
      */
     public function login($client_id, $privateKeyB64)
     {
+        openssl_pkcs12_read(base64_decode($privateKeyB64), $certinfo, "notasecret");
+        if (empty($certinfo)) {
+            throw new \Exception("Invalid P12 key, openssl_pkcs12_read() failed");
+        }
         $this->client = new \Google_Client();
-        $key = base64_decode($privateKeyB64);
 
-        $this->cred = new \Google_Auth_AssertionCredentials(
-            $client_id,
-            array('https://www.googleapis.com/auth/drive'),
-            $key
-        );
-        $this->client->setAssertionCredentials($this->cred);
+        $service_account = [
+            "type" => "service_account",
+            "private_key" => $certinfo['pkey'],
+            "client_email" => $client_id,
+            "client_id" => $client_id,
+            "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
+            "token_uri" => "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs"
+        ];
+
+        $this->client->setAuthConfig($service_account);
+        $this->client->addScope("https://www.googleapis.com/auth/drive");
         $this->client->setApplicationName("OPNsense");
 
         $this->service = new \Google_Service_Drive($this->client);
@@ -104,16 +108,8 @@ class Drive
      */
     public function download($fileHandle)
     {
-        $sUrl = $fileHandle->getDownloadUrl();
-        $request = new \Google_Http_Request($sUrl, 'GET', null, null);
-        $httpRequest = $this->client->getAuth()->authenticatedRequest($request);
-
-        if ($httpRequest->getResponseHttpCode() == 200) {
-            return $httpRequest->getResponseBody();
-        } else {
-            // Error, no content fetched
-            return null;
-        }
+        $response = $this->service->files->get($fileHandle->id, array('alt' => 'media'));
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -127,16 +123,13 @@ class Drive
     public function upload($directoryId, $filename, $content, $mimetype = 'text/plain')
     {
 
-        $parent = new \Google_Service_Drive_ParentReference();
-        $parent->setId($directoryId);
-
         $file = new \Google_Service_Drive_DriveFile();
-        $file->setTitle($filename);
+        $file->setName($filename);
         $file->setDescription($filename);
         $file->setMimeType('text/plain');
-        $file->setParents(array($parent));
+        $file->setParents(array($directoryId));
 
-        $createdFile = $this->service->files->insert($file, array(
+        $createdFile = $this->service->files->create($file, array(
             'data' => $content,
             'mimeType' => $mimetype,
             'uploadType' => 'media',

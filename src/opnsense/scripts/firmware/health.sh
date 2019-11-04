@@ -44,6 +44,7 @@ MTREE_PATTERNS="
 ./etc/pwd.db
 ./etc/rc
 ./etc/rc.shutdown
+./etc/remote
 ./etc/shells
 ./etc/spwd.db
 ./etc/ttys
@@ -164,6 +165,9 @@ EOF
 			AUTOSET="set"
 			VITAEXPECT=1
 			VITASET="not set"
+		elif [ ${DEP} = "pkg" ]; then
+			AUTOEXPECT=0
+			AUTOSET="set"
 		fi
 
 		if [ "${AUTO}" != ${AUTOEXPECT} ]; then

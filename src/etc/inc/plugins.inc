@@ -91,6 +91,27 @@ function plugins_services()
     return $services;
 }
 
+function plugins_devices()
+{
+    $devices = array();
+
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
+        $func = sprintf('%s_devices', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $work) {
+                $devices[] = $work;
+            }
+        }
+    }
+
+    return $devices;
+}
+
 function plugins_cron()
 {
     $jobs = array();

@@ -1,0 +1,7 @@
+<menu>
+    <Interfaces>
+        <Types>
+            <VXLAN url="/ui/interfaces/vxlan"/>
+        </Types>
+    </Interfaces>
+</menu>

@@ -42,6 +42,15 @@ function pf_services()
             'nocheck' => true,
             'name' => 'pf',
         );
+        $services[] = array(
+            'description' => gettext('Interface groups'),
+            'nocheck' => true,
+            'php' => array(
+                'start' => array('interfaces_group_setup'),
+                'restart' => array('interfaces_group_setup'),
+            ),
+            'name' => 'ifgroups',
+        );
     }
 
     return $services;
@@ -166,4 +175,17 @@ function pf_firewall($fw)
             }
         }
     }
+}
+
+function pf_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Firewall Groups'),
+        'section' => 'ifgroups.ifgroupentry',
+        'id' => 'ifgroups',
+    );
+
+    return $result;
 }

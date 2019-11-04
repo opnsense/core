@@ -1,0 +1,9 @@
+<acl>
+    <page-interfaces-vxlan>
+        <name>Interfaces: VXLAN</name>
+        <patterns>
+            <pattern>ui/interfaces/vxlan</pattern>
+            <pattern>api/interfaces/vxlan</pattern>
+        </patterns>
+    </page-interfaces-vxlan>
+</acl>

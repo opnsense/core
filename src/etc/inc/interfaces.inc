@@ -883,9 +883,6 @@ function interfaces_configure($verbose = false)
     interfaces_lagg_configure($verbose);
     interfaces_vlan_configure($verbose);
 
-    /* XXX temporary plugin spot */
-    plugins_configure('openvpn_prepare', $verbose);
-
     /*
      * Queues are set up to order interfaces according to their
      * dependencies / requirements of devices or other interfaces.
@@ -903,6 +900,9 @@ function interfaces_configure($verbose = false)
         if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
             /* special interfaces on top of newly generated devices */
             $special[] = $if;
+            continue;
+        } elseif (strstr($ifcfg['if'], 'vxlan.')) {
+            // XXX device configuration is responsible for interface setup too when trying to init all.
             continue;
         }
 
@@ -956,8 +956,10 @@ function interfaces_configure($verbose = false)
         }
     }
 
-    /* XXX temporary plugin spot */
+    /* XXX temporary plugin spot for device creation, see plugins_devices() */
     plugins_configure('ipsec_prepare', $verbose);
+    plugins_configure('openvpn_prepare', $verbose);
+    plugins_configure('vxlan_prepare', $verbose);
 
     interfaces_group_setup();
 }
@@ -2938,9 +2940,8 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         )
     );
 
-    if (isset($wancfg['dhcp6sendsolicit'])) {
-        mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
-    }
+    /* unconditional trigger for hybrid approach, reloads without advertisements */
+    mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
 }
 
 function interface_dhcpv6_prepare($interface = 'wan', $wancfg)

@@ -104,6 +104,35 @@ function core_services()
     return $services;
 }
 
+function core_devices()
+{
+    $devices = array();
+
+    # XXX is a plugin collection...
+    $devices[] = array('pattern' => '^bridge', 'volatile' => true);
+    $devices[] = array('pattern' => '^cua', 'volatile' => true);
+    $devices[] = array('pattern' => '^enc', 'volatile' => true);
+    $devices[] = array('pattern' => '^gif', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^gre', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
+    $devices[] = array('pattern' => '^lagg', 'volatile' => true);
+    $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
+    $devices[] = array('pattern' => '^ovpn', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^ppp', 'volatile' => true);
+    $devices[] = array('pattern' => '^pptp', 'volatile' => true);
+    $devices[] = array('pattern' => '^tinc', 'volatile' => true);
+    $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);
+    $devices[] = array('pattern' => '^ue', 'volatile' => true);
+    $devices[] = array('pattern' => '^wg', 'volatile' => true);
+    $devices[] = array('pattern' => '^zt', 'volatile' => true);
+    $devices[] = array('pattern' => '_stf', 'volatile' => true);
+    $devices[] = array('pattern' => '_wlan', 'volatile' => true);
+    $devices[] = array('pattern' => 'vlan', 'volatile' => true);
+
+    return $devices;
+}
+
 function core_cron()
 {
     global $config;

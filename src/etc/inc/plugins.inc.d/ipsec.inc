@@ -60,16 +60,18 @@ const IPSEC_LOG_LEVELS = [
     4 => 'Highest',
 ];
 
-function ipsec_get_key_type($f) {
-    $keytype="RSA";
-    if ($k = openssl_pkey_get_private("file://".$f)) {
+function ipsec_get_key_type($f)
+{
+    $keytype = 'RSA';
+
+    if ($k = openssl_pkey_get_private('file://' . $f)) {
           if ($d = openssl_pkey_get_details($k)) {
               switch ($d['type']) {
                   case OPENSSL_KEYTYPE_RSA:
-                      $keytype = "RSA";
+                      $keytype = 'RSA';
                       break;
                   case OPENSSL_KEYTYPE_EC:
-                      $keytype = "ECDSA";
+                      $keytype = 'ECDSA';
                       break;
               }
         }
@@ -77,7 +79,6 @@ function ipsec_get_key_type($f) {
 
     return $keytype;
 }
-
 
 function ipsec_p1_ealgos()
 {

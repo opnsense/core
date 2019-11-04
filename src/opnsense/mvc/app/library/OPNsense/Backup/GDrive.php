@@ -211,8 +211,8 @@ class Gdrive extends Base implements IBackupProvider
 
                 $configfiles = array();
                 foreach ($files as $file) {
-                    if (fnmatch("{$fileprefix}*.xml", $file['title'])) {
-                        $configfiles[$file['title']] = $file;
+                    if (fnmatch("{$fileprefix}*.xml", $file['name'])) {
+                        $configfiles[$file['name']] = $file;
                     }
                 }
                 krsort($configfiles);
