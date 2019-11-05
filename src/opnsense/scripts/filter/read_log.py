@@ -89,7 +89,7 @@ def fetch_rule_details():
             if line.startswith('@'):
                 line_id = line.split()[0][1:]
                 if line.find(' label ') > -1:
-                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:-1]
+                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
                     if rid in rule_map:
                         result[line_id] = {'rid': rid, 'label': rule_map[rid]}
                     else:
