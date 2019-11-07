@@ -45,7 +45,7 @@ using the plugin framework:
 
 https://github.com/opnsense/plugins/issues
 
-Stale issues are timed out after several months of inactivity.  Please
+Stale issues are timed out after 180 days inactivity.  Please
 note that this includes non-support issues such as feature requests
 that are not picked up by a contributor, which means it is highly
 unlikely the feature will be implemented in the first place unless a
