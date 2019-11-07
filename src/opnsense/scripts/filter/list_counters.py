@@ -39,7 +39,7 @@ if __name__ == '__main__':
     sp = subprocess.run(['/sbin/pfctl', '-vvsI'], capture_output=True, text=True)
     intf = None
     for line in sp.stdout.strip().split('\n'):
-        if line.find('[') == -1  and line[0] not in (' ', '\t'):
+        if line.find('[') == -1  and len(line) > 0 and line[0] not in (' ', '\t'):
             intf = line.strip()
             result[intf] = {'inbytespass': 0, 'outbytespass': 0, 'inpktspass': 0, 'outpktspass': 0,
                             'inbytesblock': 0, 'outbytesblock': 0, 'inpktsblock': 0, 'outpktsblock': 0,
