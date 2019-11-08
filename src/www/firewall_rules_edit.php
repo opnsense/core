@@ -40,8 +40,9 @@ $ostypes = json_decode(configd_run('filter list osfp json'));
 if ($ostypes == null) {
     $ostypes = array();
 }
+$ipprotocols = array('inet', 'inet6', 'inet46');
 $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-
+$interfaces = legacy_config_get_interfaces(array("enable" => true));
 
 /**
  * check if advanced options are set on selected element
@@ -74,9 +75,10 @@ function is_posnumericint($arg) {
     return (is_numericint($arg) && $arg[0] != '0' && $arg > 0);
 }
 
-
 $a_filter = &config_read_array('filter', 'rule');
 
+// Whether POST or GET, the URL should still have a valid $_GET['id'] field controlling the interface edited
+$interface_from_url = (empty($_GET['if']) || !is_string($_GET['if'])) ? "" : $_GET['if'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // input record id, if valid
@@ -153,13 +155,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         /* defaults */
-        if (isset($_GET['if'])) {
-            if ($_GET['if'] == "FloatingRules" ) {
-                $pconfig['floating'] = true;
-                $pconfig['quick'] = true;
-            } else {
-                $pconfig['interface'] = $_GET['if'];
-            }
+        if ($interface_from_url == "FloatingRules" ) {
+            $pconfig['floating'] = true;
+            $pconfig['quick'] = true;
+        } elseif (!empty($interface_from_url)) {
+            $pconfig['interface'] = $interface_from_url;
         }
         $pconfig['src'] = "any";
         $pconfig['dst'] = "any";
@@ -216,6 +216,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+        // Validate interfaces and convert to always be an array if not already one
+
+        // if interface data is a string containing a single interface, convert to a single-item array
+        if (is_string($pconfig['interface']) && $pconfig['interface'] != "") {
+            $pconfig['interface'] = array($pconfig['interface']);
+        } elseif (!is_array($pconfig['interface'])) {
+            $pconfig['interface'] = array();
+        }
+        // check that interface list contains one or more values, and they are all valid interfaces
+        if (count($pconfig['interface']) ==  0) {
+            $input_errors[] = gettext('At least one interface must be selected.');
+        } else {
+            foreach ($pconfig['interface'] as $v) {
+                if (!array_key_exists($v, $interfaces)) {
+                    $input_errors[] = gettext('An invalid interface is selected.');
+                    break;
+                }
+            }
+        }
+
+        // check that interface list is consistent with the interface selected for edit in the URL
+        if ($interface_from_url != "FloatingRules" && !(count($pconfig['interface']) == 1 && $interface_from_url == $pconfig['interface'][0])) {
+            // Note that the last condition inherently checks $interface_from_url is a valid interface.
+            $input_errors[] = gettext("The interface selected has been modified and the page must be reloaded. Please click 'cancel', and re-open this page.");
+        }
+        if ($interface_from_url == "FloatingRules" xor empty($pconfig['floating'])) {
+            // 'if=FloatingRules' in the URL isn't consistent with the 'floating' field in $_POST. Should both be present or both absent.
+            $input_errors[] = gettext("The interface selected has been modified and the page must be reloaded. Please click 'cancel', and re-open this page.");
+        }
+
+        // Validate ipprotocol
+        if (!in_array($ipprotocol, $ipprotocols)) {
+            $input_errors[] = gettext('A valid IP Protocol must be selected.');
+        }
 
     if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['gateway'])) {
         $input_errors[] = gettext("You can not assign a gateway to a rule that applies to IPv4 and IPv6");
@@ -778,38 +813,36 @@ include("head.inc");
                     </td>
                   </tr>
 <?php
-                  endif; ?>
-                  <tr>
-                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
-                    <td>
+                  endif;
+                  if (!empty($pconfig['floating'])): ?>
+                      <tr>
+                        <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
+                        <td>
+                          <select name="interface[]" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+<?php    
+                        foreach ($interfaces as $iface => $ifdetail): ?>
+                            <option value="<?=$iface;?>"
+                                <?= !empty($pconfig['interface']) && (
+                                      $iface == $pconfig['interface'] ||
+                                      // match floating / multiple interfaces
+                                      (!is_array($pconfig['interface']) && in_array($iface, explode(',', $pconfig['interface']))) ||
+                                      (is_array($pconfig['interface']) && in_array($iface, $pconfig['interface']))
+                                    ) ? 'selected="selected"' : ''; ?>>
+                              <?= htmlspecialchars($ifdetail['descr']) ?>
+                            </option>
 <?php
-                    if (!empty($pconfig['floating'])): ?>
-                      <select name="interface[]" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                        endforeach; ?>
+                            </select>
+                            <div class="hidden" data-for="help_for_interface">
+                              <?=gettext("Choose on which interface packets must come in to match this rule.");?>
+                            </div>
+                        </td>
+                      </tr>
 <?php
-                    else: ?>
-                      <select name="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                  else: ?>
+                        <input type='hidden' name="interface" value="<?=$interface_from_url?>" />
 <?php
-                    endif;
-
-                    foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
-                        <option value="<?=$iface;?>"
-                            <?= !empty($pconfig['interface']) && (
-                                  $iface == $pconfig['interface'] ||
-                                  // match floating / multiple interfaces
-                                  (!is_array($pconfig['interface']) && in_array($iface, explode(',', $pconfig['interface']))) ||
-                                  (is_array($pconfig['interface']) && in_array($iface, $pconfig['interface']))
-                                ) ? 'selected="selected"' : ''; ?>>
-                          <?= htmlspecialchars($ifdetail['descr']) ?>
-                        </option>
-<?php
-                    endforeach; ?>
-                        </select>
-                        <div class="hidden" data-for="help_for_interface">
-                          <?=gettext("Choose on which interface packets must come in to match this rule.");?>
-                        </div>
-                    </td>
-                  </tr>
-<?php
+                  endif;
                   // XXX: for legacy compatibility we keep supporting "any" on floating rules, regular rules should choose
                   $direction_options = !empty($pconfig['floating']) ? array('in','out', 'any') : array('in','out');?>
                   <tr>
