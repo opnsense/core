@@ -33,9 +33,11 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\CountryField;
+use \OPNsense\Base\FieldTypes\InterfaceField;
+use \Phalcon\DI\FactoryDefault;
+use OPNsense\Core\Config;
 
-class CountryFieldTest extends Field_Framework_TestCase
+class InterfaceFieldTest extends Field_Framework_TestCase
 {
 
     /**
@@ -43,59 +45,67 @@ class CountryFieldTest extends Field_Framework_TestCase
      */
     public function testCanBeCreated()
     {
-        $this->assertInstanceOf('\OPNsense\Base\FieldTypes\CountryField', new CountryField());
+        $this->assertInstanceOf('\OPNsense\Base\FieldTypes\InterfaceField', new InterfaceField());
+        // switch config to test set for this type
+        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/InterfaceFieldTest/';
+        Config::getInstance()->forceReload();
     }
 
     /**
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage PresenceOf
+     *
+     * @depends testCanBeCreated
      */
-    public function testRequiredEmpty()
+    public function testConfigItemsExists()
     {
-        $field = new CountryField();
+        // init field
+        $field = new InterfaceField();
         $field->eventPostLoading();
-        $field->setRequired("Y");
-        $field->setValue("");
+
+        $this->assertContains('lan', array_keys($field->getNodeData()));
+        $this->assertContains('wan', array_keys($field->getNodeData()));
+    }
+
+    /**
+     * @depends testCanBeCreated
+     * @expectedException \Phalcon\Validation\Exception
+     * @expectedExceptionMessage InclusionIn
+     */
+    public function testSelectHasNoParents()
+    {
+        // init field
+        $field = new InterfaceField();
+        $field->eventPostLoading();
+        $field->setValue("if006");
         $this->validateThrow($field);
     }
 
     /**
-     * required not empty
+     * @depends testCanBeCreated
      */
-    public function testRequiredNotEmpty()
+    public function testSelectHasParents()
     {
-        $field = new CountryField();
+        // init field
+        $field = new InterfaceField();
+        $field->setAddParentDevices("Y");
         $field->eventPostLoading();
-        $field->setRequired("Y");
-        $field->setValue("NL");
-        $this->assertEmpty($this->validate($field));
+        $this->assertContains('if006', array_keys($field->getNodeData()));
     }
 
     /**
-     * required not empty
+     * @depends testCanBeCreated
      */
-    public function testValidValues()
+    public function testFilters()
     {
-        $field = new CountryField();
+        // init field
+        $field = new InterfaceField();
+        $field->setFilters(["ipaddr" => "/^((?!dhcp).)*$/", "enable" => "/^(?!0).*$/"]);
         $field->eventPostLoading();
-        foreach (array("NL", "DE") as $value) {
-            $field->setValue($value);
-            $this->assertEmpty($this->validate($field));
-        }
+        $this->assertContains('lan', array_keys($field->getNodeData()));
+        $this->assertContains('opt1', array_keys($field->getNodeData()));
+        $this->assertFalse(!empty($field->getNodeData()['wan']));
     }
 
-    /**
-     * required not empty
-     */
-    public function testInValidValues()
-    {
-        $field = new CountryField();
-        $field->eventPostLoading();
-        foreach (array("XX", "YY") as $value) {
-            $field->setValue($value);
-            $this->assertNotEmpty($this->validate($field));
-        }
-    }
+
     /**
      * @depends testCanBeCreated
      * @expectedException \Phalcon\Validation\Exception
@@ -104,10 +114,10 @@ class CountryFieldTest extends Field_Framework_TestCase
     public function testSelectSetWithUnknownValue()
     {
         // init field
-        $field = new CountryField();
+        $field = new InterfaceField();
         $field->eventPostLoading();
         $field->setMultiple("Y");
-        $field->setValue('NL,DE,ZZ');
+        $field->setValue('lan,wan,opt99');
         $this->validateThrow($field);
     }
 
@@ -118,10 +128,10 @@ class CountryFieldTest extends Field_Framework_TestCase
     public function testSelectSetWithoutUnknownValue()
     {
         // init field
-        $field = new CountryField();
+        $field = new InterfaceField();
         $field->eventPostLoading();
         $field->setMultiple("Y");
-        $field->setValue('NL,DE');
+        $field->setValue('lan,opt1');
         $this->assertEmpty($this->validate($field));
     }
 
@@ -133,19 +143,33 @@ class CountryFieldTest extends Field_Framework_TestCase
     public function testSelectSetOnSingleValue()
     {
         // init field
-        $field = new CountryField();
+        $field = new InterfaceField();
         $field->eventPostLoading();
         $field->setMultiple("N");
-        $field->setValue("NL,DE");
+        $field->setValue("lan,opt1");
         $this->validateThrow($field);
     }
+
+    /**
+     * @depends testCanBeCreated
+     */
+    public function testSelectSingleValue()
+    {
+        // init field
+        $field = new InterfaceField();
+        $field->eventPostLoading();
+        $field->setMultiple("N");
+        $field->setValue('lan');
+        $this->assertEmpty($this->validate($field));
+    }
+
 
     /**
      * type is not a container
      */
     public function testIsContainer()
     {
-        $field = new CountryField();
+        $field = new InterfaceField();
         $this->assertFalse($field->isContainer());
     }
 }
