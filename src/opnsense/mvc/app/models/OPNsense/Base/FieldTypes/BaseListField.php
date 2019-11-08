@@ -59,6 +59,11 @@ abstract class BaseListField extends BaseField
     private $internalMultiSelect = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "option not in list";
+
+    /**
      * select if multiple interfaces may be selected at once
      * @param $value boolean value 0/1
      */
