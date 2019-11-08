@@ -60,7 +60,6 @@ class CertificateFieldTest extends Field_Framework_TestCase
         // init field
         $field = new CertificateField();
         $field->eventPostLoading();
-        print_r(array_keys($field->getNodeData()));
         $this->assertContains('5537f364ba123', array_keys($field->getNodeData()));
     }
 
