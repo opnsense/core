@@ -242,13 +242,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Note that the last condition inherently checks $interface_from_url is a valid interface.
             $input_errors[] = gettext("The interface selected has been modified and the page must be reloaded. Please click 'cancel', and re-open this page.");
         }
-        if ($interface_from_url == "FloatingRules" xor empty($pconfig['floating'])) {
+        if ($interface_from_url == "FloatingRules" xor !empty($pconfig['floating'])) {
             // 'if=FloatingRules' in the URL isn't consistent with the 'floating' field in $_POST. Should both be present or both absent.
             $input_errors[] = gettext("The interface selected has been modified and the page must be reloaded. Please click 'cancel', and re-open this page.");
         }
 
         // Validate ipprotocol
-        if (!in_array($ipprotocol, $ipprotocols)) {
+        if (!in_array($pconfig['ipprotocol'], $ipprotocols)) {
             $input_errors[] = gettext('A valid IP Protocol must be selected.');
         }
 
