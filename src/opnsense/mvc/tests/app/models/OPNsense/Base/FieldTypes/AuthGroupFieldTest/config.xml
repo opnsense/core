@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<opnsense>
+    <system>
+        <group>
+            <gid>100</gid>
+            <name>group 1</name>
+        </group>
+        <group>
+            <gid>101</gid>
+            <name>group 2</name>
+        </group>
+        <group>
+            <gid>102</gid>
+            <name>group 3</name>
+        </group>
+    </system>
+</opnsense>
