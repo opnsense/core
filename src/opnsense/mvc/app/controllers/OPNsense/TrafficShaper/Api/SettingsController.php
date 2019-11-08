@@ -40,6 +40,7 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'ts';
     protected static $internalModelClass = '\OPNsense\TrafficShaper\TrafficShaper';
+    protected static $internalModelUseSafeDelete = true;
 
     /**
      * Retrieve pipe settings or return defaults
