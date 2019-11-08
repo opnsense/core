@@ -30,7 +30,6 @@
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\Backend;
-use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * Class ConfigdActionsField list configurable configd actions

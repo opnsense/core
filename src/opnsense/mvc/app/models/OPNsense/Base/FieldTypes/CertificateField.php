@@ -29,8 +29,6 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\InclusionIn;
-use OPNsense\Base\Validators\CsvListValidator;
 use OPNsense\Core\Config;
 
 /**
