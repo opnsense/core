@@ -122,14 +122,15 @@ abstract class BaseListField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
+            $domain = array_map('strval', array_keys($this->internalOptionList));
             if ($this->internalMultiSelect) {
                 // field may contain more than one option
                 $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys($this->internalOptionList)));
+                    'domain'=>$domain));
             } else {
                 // single option selection
                 $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys($this->internalOptionList)));
+                    'domain'=>$domain));
             }
         }
         return $validators;
