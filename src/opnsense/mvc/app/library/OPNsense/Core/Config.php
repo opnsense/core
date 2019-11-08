@@ -308,6 +308,10 @@ class Config extends Singleton
      */
     public function forceReload()
     {
+        if ($this->config_file_handle !== null) {
+            fclose($this->config_file_handle);
+            $this->config_file_handle = null;
+        }
         $this->init();
     }
 
