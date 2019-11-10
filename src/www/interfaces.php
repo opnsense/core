@@ -1442,8 +1442,10 @@ include("head.inc");
       function toggle_allcfg() {
           if ($("#enable").prop('checked')) {
               $("#allcfg").show();
+              $("#hidecfg").hide();
           } else {
               $("#allcfg").hide();
+              $("#hidecfg").show();
           }
       }
       // when disabled, hide settings.
@@ -1818,11 +1820,20 @@ include("head.inc");
                           <strong><?= gettext('Prevent interface removal') ?></strong>
                         </td>
                       </tr>
+                      <tr>
+                        <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                        <td style="width:78%">
+                          <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
+                          <div class="hidden" data-for="help_for_descr">
+                            <?= gettext("Enter a description (name) for the interface here."); ?>
+                          </div>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-              <div id="allcfg" style="display:none">
+              <div><!-- unused div -->
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
                     <!-- Section : All -->
@@ -1832,16 +1843,13 @@ include("head.inc");
                           <th colspan="2"><?=gettext("General configuration"); ?></th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody id="hidecfg">
                         <tr>
-                          <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                          <td style="width:78%">
-                            <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                            <div class="hidden" data-for="help_for_descr">
-                              <?= gettext("Enter a description (name) for the interface here."); ?>
-                            </div>
-                          </td>
+                          <td style="width:22%"></td>
+                          <td style="width:78%"><?=gettext("The interface must be enabled to configure detailed settings"); ?></td>
                         </tr>
+                      </tbody>
+                      <tbody id="allcfg" style="display:none">
                         <tr>
                           <td style="width:22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
                           <td style="width:78%">
@@ -1855,8 +1863,8 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_blockbogons" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block bogon networks"); ?></td>
-                          <td>
+                          <td style="width:22%"><a id="help_for_blockbogons" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block bogon networks"); ?></td>
+                          <td style="width:78%">
                             <input name="blockbogons" type="checkbox" id="blockbogons" value="yes" <?=!empty($pconfig['blockbogons']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" data-for="help_for_blockbogons">
                               <?=gettext("When set, this option blocks traffic from IP addresses that are reserved " .
@@ -1867,8 +1875,8 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
-                          <td>
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
+                          <td style="width:78%">
                           <select name="type" class="selectpicker" data-style="btn-default" id="type">
 <?php
                             $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
@@ -3553,8 +3561,7 @@ include("head.inc");
                 </div>
 <?php
                 endif; ?>
-              <!-- End "allcfg" div -->
-              </div>
+              </div><!-- unused div -->
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                     <table class="table table-striped opnsense_standard_table_form">
