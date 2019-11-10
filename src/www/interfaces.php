@@ -3561,7 +3561,7 @@ include("head.inc");
                 </div>
 <?php
                 endif; ?>
-              </div><!-- unused div -->
+              </div>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                     <table class="table table-striped opnsense_standard_table_form">
