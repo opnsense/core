@@ -1027,6 +1027,9 @@ $( document ).ready(function() {
                   <tr>
                     <td colspan="2"></td>
                     <td colspan="2" class="view-info"></td>
+<?php if ($selected_if == "FloatingRules"): ?>
+                    <td class="view-fullinfo"></td>
+<?php endif; ?>
                     <td colspan="5" class="view-info hidden-xs hidden-sm"></td>
                     <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
                     <td colspan="2" class="view-stats"></td>
