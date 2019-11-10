@@ -35,6 +35,30 @@ require_once("system.inc");
 /***********************************************************************************************************
  * format functions for this page
  ***********************************************************************************************************/
+function firewall_rule_item_interfaces($filterent)
+{
+    // construct line interfaces for detailed view
+    if (empty($filterent['interface'])) {
+        return "<span class='text-info' data-toggle='tooltip' title='All'>*</span>";
+    }
+    $interfaces = legacy_config_get_interfaces();
+    $iflist = explode(',', $filterent['interface']);
+    $out = array();
+    foreach ($iflist as $if) {
+        if (!empty($interfaces[$if])) {
+            $ifdata = $interfaces[$if];
+            $name = !empty($ifdata['descr']) ? $ifdata['descr'] : $if;
+            $phy = $ifdata['if'];
+            $hover = $phy . (strcasecmp($if, $name) ? ' (' . $if . ')' : "");
+        } else {
+            $name = $if;
+            $hover = "No details";
+        }
+        $out[] = sprintf("<span class='text-info' data-toggle='tooltip' title='%s'>%s</span>", htmlspecialchars($hover), strtoupper(htmlspecialchars($name)));
+    }
+    return implode(', ', $out);
+}
+
 function firewall_rule_item_proto($filterent)
 {
     // construct line ipprotocol
@@ -556,19 +580,52 @@ $( document ).ready(function() {
   $("#category_block").detach().appendTo($(".page-content-head > .container-fluid > .list-inline"));
   $("#category_block").addClass("pull-right");
 
-  $("#btn_inspect").click(function(){
+  function update_table_layout()
+  {
+    let infomode = $("#btn_detail").data('mode');
+    let statsmode = $("#btn_stats").data('mode');
+    if (statsmode === 'stats') {
+      $(".view-stats").show();
+      $(".view-info").hide();
+      $(".view-fullinfo").hide();
+      $(".view-simpleinfo-only").hide();
+    } else {
+      $(".view-stats").hide();
+      $(".view-info").show();
+      if (infomode === 'fullinfo') {
+        $(".view-simpleinfo-only").hide();
+        $(".view-fullinfo").show();
+      } else {
+        $(".view-simpleinfo-only").show();
+        $(".view-fullinfo").hide();
+      }
+    }
+  }
+
+  $("#btn_detail").click(function(){
+      let mode = $(this).data('mode');
+      if (mode === 'fullinfo') {
+            $(this).removeClass('active');
+            $(this).data('mode', 'simple');
+      } else {
+            $(this).addClass('active');
+            $(this).data('mode', 'fullinfo');
+      }
+      update_table_layout();
+      $(this).blur();
+  });
+
+
+  $("#btn_stats").click(function(){
       let mode = $(this).data('mode');
       if (mode === 'stats') {
-            $(".view-stats").hide();
-            $(".view-info").show();
             $(this).removeClass('active');
             $(this).data('mode', 'info');
       } else {
-            $(".view-stats").show();
-            $(".view-info").hide();
             $(this).addClass('active');
             $(this).data('mode', 'stats');
       }
+      update_table_layout();
       $(this).blur();
   });
 
@@ -608,6 +665,9 @@ $( document ).ready(function() {
     .view-stats {
         display: none;
     }
+    .view-fullinfo {
+        display: none;
+    }
     .button-th {
         width: 150px;
     }
@@ -634,9 +694,13 @@ $( document ).ready(function() {
 <?php
             endforeach;?>
         </select>
-        <button id="btn_inspect" class="btn btn-default hidden-xs">
+        <button id="btn_detail" class="btn btn-default hidden-xs">
           <i class="fa fa-eye" aria-hidden="true"></i>
-          <?=gettext("Inspect");?>
+          <?=gettext("Detail");?>
+        </button>
+        <button id="btn_stats" class="btn btn-default hidden-xs">
+          <i class="fa fa-eye" aria-hidden="true"></i>
+          <?=gettext("Statistics");?>
         </button>
     </div>
   </div>
@@ -690,6 +754,11 @@ $( document ).ready(function() {
                     <tr>
                       <td><input type="checkbox" id="selectAll"></td>
                       <td>&nbsp;</td>
+<?php if ($selected_if == "FloatingRules"): ?>
+                      <td class="view-fullinfo">
+                        <strong><?= gettext('Interfaces') ?></strong>
+                      </td>
+<?php endif; ?>
                       <td class="view-info"><strong><?= gettext('Protocol') ?></strong></td>
                       <td class="view-info"><strong><?= gettext('Source') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Port') ?></strong></td>
@@ -710,6 +779,10 @@ $( document ).ready(function() {
                   <tr id="expand-internal-rules" style="display: none;">
                       <td><i class="fa fa-folder-o text-muted"></i></td>
                       <td></td>
+<?php if ($selected_if == "FloatingRules"): ?>
+                      <td class="view-fullinfo">
+                      </td>
+<?php endif; ?>
                       <td class="view-info" colspan="2"> </td>
                       <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
                       <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
@@ -744,6 +817,11 @@ $( document ).ready(function() {
                           <?=firewall_rule_item_icons($filterent);?>
                           <i class="<?=firewall_rule_item_log($filterent);?>"></i>
                       </td>
+<?php if ($selected_if == "FloatingRules"): ?>
+                      <td class="view-fullinfo">
+                        <?=firewall_rule_item_interfaces($filterent);?>
+                      </td>
+<?php endif; ?>
                       <td class="view-info">
                           <?=firewall_rule_item_proto($filterent);?>
                       </td>
@@ -799,6 +877,11 @@ $( document ).ready(function() {
                       <?=firewall_rule_item_icons($filterent);?>
                       <i class="act_log <?= firewall_rule_item_log($filterent) ?>" style="cursor: pointer;" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(empty($filterent['log']) ? gettext('Enable logging') : gettext('Disable logging')) ?>"></i>
                     </td>
+<?php if ($selected_if == "FloatingRules"): ?>
+                      <td class="view-fullinfo">
+                        <?=firewall_rule_item_interfaces($filterent);?>
+                      </td>
+<?php endif; ?>
                     <td class="view-info">
                         <?=firewall_rule_item_proto($filterent);?>
                     </td>
