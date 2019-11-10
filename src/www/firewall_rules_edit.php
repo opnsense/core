@@ -78,6 +78,7 @@ function is_posnumericint($arg) {
 $a_filter = &config_read_array('filter', 'rule');
 
 // Whether POST or GET, the URL should still have a valid $_GET['id'] field controlling the interface edited
+// It's only validated on POST, but that's safe because only the initial page load is a GET and config only updates upon POST
 $interface_from_url = (empty($_GET['if']) || !is_string($_GET['if'])) ? "" : $_GET['if'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
