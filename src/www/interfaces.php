@@ -1442,16 +1442,15 @@ include("head.inc");
       function toggle_allcfg() {
           if ($("#enable").prop('checked')) {
               $("#allcfg").show();
-              $("#hidecfg").hide();
           } else {
               $("#allcfg").hide();
-              $("#hidecfg").show();
           }
       }
       // when disabled, hide settings.
       $("#enable").click(toggle_allcfg);
       toggle_allcfg();
 
+      //
       $("#type").change(function(){
           $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide();
           $("#rfc3118").hide();
@@ -1806,33 +1805,24 @@ include("head.inc");
                     </thead>
                     <tbody>
                       <tr>
-                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?= gettext('Enable') ?></td>
-                        <td style="width:78%">
+                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Enable') ?></td>
+                        <td>
                           <input id="enable" name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '' ?>/>
                           <strong><?= gettext('Enable Interface') ?></strong>
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?= gettext('Lock') ?></td>
-                        <td style="width:78%">
+                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Lock') ?></td>
+                        <td>
                           <input id="lock" name="lock" type="checkbox" value="yes" <?=!empty($pconfig['lock']) ? 'checked="checked"' : '' ?>/>
                           <strong><?= gettext('Prevent interface removal') ?></strong>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                        <td style="width:78%">
-                          <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                          <div class="hidden" data-for="help_for_descr">
-                            <?= gettext("Enter a description (name) for the interface here."); ?>
-                          </div>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-              <div>            
+              <div id="allcfg" style="display:none">
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
                     <!-- Section : All -->
@@ -1842,13 +1832,16 @@ include("head.inc");
                           <th colspan="2"><?=gettext("General configuration"); ?></th>
                         </tr>
                       </thead>
-                      <tbody name="hidecfg">
+                      <tbody>
                         <tr>
-                          <td style="width:22%"></td>
-                          <td style="width:78%"><?=gettext("The interface must be enabled to configure detailed settings"); ?></td>
+                          <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                          <td style="width:78%">
+                            <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
+                            <div class="hidden" data-for="help_for_descr">
+                              <?= gettext("Enter a description (name) for the interface here."); ?>
+                            </div>
+                          </td>
                         </tr>
-                      </tbody>
-                      <tbody name="showcfg" style="display:none">
                         <tr>
                           <td style="width:22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
                           <td style="width:78%">
@@ -3554,14 +3547,14 @@ include("head.inc");
                             <input name="rsn_preauth" id="rsn_preauth" type="checkbox" value="yes" <?=!empty($pconfig['rsn_preauth']) ? "checked=\"checked\"" : ""; ?> />
                           </td>
                         </tr>
-                        <!-- End "showcfg" -->
                       </tbody>
                     </table>
                   </div>
                 </div>
-              </div>
 <?php
                 endif; ?>
+              <!-- End "allcfg" div -->
+              </div>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                     <table class="table table-striped opnsense_standard_table_form">
