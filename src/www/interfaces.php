@@ -1833,7 +1833,7 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-              <div><!-- unused div -->
+              <div>
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
                     <!-- Section : All -->
