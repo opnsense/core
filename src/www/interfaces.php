@@ -1439,18 +1439,18 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-      function toggle_showcfg() {
+      function toggle_allfg() {
           if ($("#enable").prop('checked')) {
-              $(".showcfg").show();
-              $(".hidecfg").hide();
+              $("#allcfg").show();
+              $("#hidecfg").hide();
           } else {
-              $(".showcfg").hide();
-              $(".hidecfg").show();
+              $("#allcfg").hide();
+              $("#hidecfg").show();
           }
       }
       // when disabled, hide settings.
-      $("#enable").click(toggle_showcfg);
-      toggle_showcfg();
+      $("#enable").click(toggle_allcfg);
+      toggle_allcfg();
 
       $("#type").change(function(){
           $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide();
@@ -1842,13 +1842,13 @@ include("head.inc");
                           <th colspan="2"><?=gettext("General configuration"); ?></th>
                         </tr>
                       </thead>
-                      <tbody class="hidecfg">
+                      <tbody name="hidecfg">
                         <tr>
                           <td style="width:22%"></td>
                           <td style="width:78%"><?=gettext("The interface must be enabled to configure detailed settings"); ?></td>
                         </tr>
                       </tbody>
-                      <tbody class="showcfg" style="display:none">
+                      <tbody name="showcfg" style="display:none">
                         <tr>
                           <td style="width:22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
                           <td style="width:78%">
