@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<opnsense>
+    <cert>
+        <refid>5537f364ba123</refid>
+        <descr>cert 1</descr>
+    </cert>
+    <cert>
+        <refid>55c382ee6020f</refid>
+        <descr>cert 2</descr>
+    </cert>
+    <ca>
+        <refid>1537f364ba123</refid>
+        <descr>ca 1</descr>
+    </ca>
+    <ca>
+        <refid>15c382ee6020f</refid>
+        <descr>ca 2</descr>
+    </ca>
+</opnsense>
