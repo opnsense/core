@@ -73,9 +73,7 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 		FS_DEV=$(glabel status -as | grep ${FS_DEV} | awk 'match($3, /^[a-z]+[0-9]+/) { print substr( $3, RSTART, RLENGTH )}')
 		if [ "${FS_MNT}" = "/" -a -f ${GROWFS_MARKER} ]; then
 			# hammertime!
-			gpart recover ${FS_DEV}
-			gpart resize -i 1 ${FS_DEV}
-			growfs -y ${FS_MNT}
+			/etc/rc.d/growfs onestart
 		fi
 	fi
 	if [ -z "${FS_DEV}" ]; then
