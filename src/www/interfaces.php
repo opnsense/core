@@ -1439,18 +1439,6 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-      function toggle_allcfg() {
-          if ($("#enable").prop('checked')) {
-              $("#allcfg").show();
-          } else {
-              $("#allcfg").hide();
-          }
-      }
-      // when disabled, hide settings.
-      $("#enable").click(toggle_allcfg);
-      toggle_allcfg();
-
-      //
       $("#type").change(function(){
           $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide();
           $("#rfc3118").hide();
@@ -1822,7 +1810,7 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-              <div id="allcfg" style="display:none">
+              <div id="allcfg">
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
                     <!-- Section : All -->
