@@ -1439,7 +1439,7 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-      function toggle_allfg() {
+      function toggle_allcfg() {
           if ($("#enable").prop('checked')) {
               $("#allcfg").show();
               $("#hidecfg").hide();
