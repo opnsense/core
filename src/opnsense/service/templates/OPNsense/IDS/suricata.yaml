@@ -134,8 +134,8 @@ outputs:
       types:
         - alert:
 {%     if not helpers.empty('OPNsense.IDS.general.LogPayload') %}
-             payload: yes
-             payload-buffer-size: 100kb
+             payload: no
+             payload-buffer-size: 4kb
              payload-printable: yes
 {%     endif %}
              http: yes
