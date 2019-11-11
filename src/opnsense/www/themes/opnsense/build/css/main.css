@@ -7567,3 +7567,9 @@ div[data-for*=help_for] {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+.volt_section_title {
+  font-size:110%;
+  padding-top:13px;
+  padding-bottom:9px;  
+}
