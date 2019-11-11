@@ -28,6 +28,15 @@
  # Handle input table row, usage the following parameters (as associative array):
  #
  # id          :   unique id of the attribute
+ # type        :   type of input or field. Valid types are:
+ #                   text               single line of text
+ #                   password           password field for sensitive input. The contents will not be displayed.
+ #                   textbox            multiline text box
+ #                   checkbox           checkbox
+ #                   dropdown           single item selection from dropdown
+ #                   select_multiple    multiple item select from dropdown
+ #                   hidden             hidden fields not for user interaction
+ #                   info               static text (help icon, no input or editing)
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
