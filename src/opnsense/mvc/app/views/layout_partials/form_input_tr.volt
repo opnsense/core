@@ -28,6 +28,16 @@
  # Handle input table row, usage the following parameters (as associative array):
  #
  # id          :   unique id of the attribute
+ # type        :   type of input or field. Valid types are:
+ #                   text               single line of text
+ #                   password           password field for sensitive input. The contents will not be displayed.
+ #                   textbox            multiline text box
+ #                   checkbox           checkbox
+ #                   dropdown           single item selection from dropdown
+ #                   select_multiple    multiple item select from dropdown
+ #                   hidden             hidden fields not for user interaction
+ #                   info               static text (help icon, no input or editing)
+ #                   section_title      label demarcating groups of fields (no help icon, no syntactic significance to mvc)
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
@@ -42,10 +52,14 @@
 
 <tr id="row_{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
     <td>
-        <div class="control-label" id="control_label_{{ id }}">
+            {% if type == "section_title" %}
+                <div class="control-label volt_section_title" id="control_label_{{ id }}">
+            {% else %}
+                <div class="control-label" id="control_label_{{ id }}">
+            {% endif %}
             {% if help|default(false) %}
                 <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-            {% elseif help|default(false) == false %}
+            {% elseif help|default(false) == false and type != "section_title" %}
                 <i class="fa fa-info-circle text-muted"></i>
             {% endif %}
             <b>{{label}}</b>
@@ -77,7 +91,7 @@
             <input type="password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }}></textarea>
-        {% elseif type == "info" %}
+        {% elseif type == "info" or type == "section_title" %}
             <span  class="{style|default('')}}" id="{{ id }}"></span>
         {% endif %}
         {% if help|default(false) %}
