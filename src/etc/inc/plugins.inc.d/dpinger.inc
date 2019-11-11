@@ -274,8 +274,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
 
         $params .= exec_safe('%s ', $gateway['monitor']);
 
-        /* stdout to /dev/null because hangs otherwise */
-        mwexec("/usr/local/bin/dpinger {$params} > /dev/null");
+        /* foreground mode in background to deal with tentative connectivity */
+        mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
     if ($verbose) {
