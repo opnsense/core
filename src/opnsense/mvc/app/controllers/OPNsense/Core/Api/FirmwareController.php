@@ -90,6 +90,14 @@ class FirmwareController extends ApiControllerBase
         switch ($action) {
             case 'install':
             case 'reinstall':
+	        /* find the development/stable equivalent */
+                $other = preg_replace('/-devel$/', '', $name);
+                if ($other == $name) {
+                    $other = "$name-devel";
+                }
+                if (isset($plugins[$other])) {
+                    unset($plugins[$other]);
+                }
                 $plugins[$name] = 'hello';
                 break;
             case 'remove':
