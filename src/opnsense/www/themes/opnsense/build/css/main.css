@@ -1776,6 +1776,10 @@ pre code {
 
       It's currently only relevant to base_form.volt and base_dialog.volt, and can be
       removed from CSS if no longer used in the code.
+
+      Leaving this comment here because ultimately, this is a good fix rather than an ideal solution.
+      See discussion about colgroups/msgzone_width at:  https://forum.opnsense.org/index.php?topic=14958.0 (2019-11-12)
+      Tl;dr it's easier to create col-md-0 for a zero width 3rd colgroup, than to modify entire codebase removing 3rd col.
 */
 
 .col-md-0 {
