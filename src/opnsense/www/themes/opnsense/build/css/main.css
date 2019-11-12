@@ -1770,6 +1770,19 @@ pre code {
   padding-right: 20px;
 }
 
+/*    .col-md-0 is defined separately from, and not just included in, the above list
+      because it's used at the right side of dialogs to indicate "no 3rd column".
+      So it doesn't need the padding-left/right that non-zero .col-md-* are styled with, in the list.
+
+      It's currently only relevant to base_form.volt and base_dialog.volt, and can be
+      removed from CSS if no longer used in the code.
+*/
+
+.col-md-0 {
+  position: relative;
+  min-height: 1px;
+}
+
 .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
   float: left;
 }
@@ -2188,10 +2201,16 @@ pre code {
   }
 }
 @media (min-width: 992px) {
-  .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+  .col-md-0, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
     float: left;
   }
 
+  .col-md-0 {
+    width: 0;
+  }
+  /* See above note around line 1773: col-md-0 is in effect added, to allow removal of the right hand of 3 colgroups 
+     in base_form.volt and base_dialog.volt. */
+  
   .col-md-1 {
     width: 8.3333333333%;
   }
