@@ -67,10 +67,15 @@
                 <form id="frm_{{base_dialog_id}}">
                   <div class="table-responsive">
                     <table class="table table-striped table-condensed">
+                        {# See discussion about colgroups/msgzone_width at:                                   #}
+                         # https://forum.opnsense.org/index.php?topic=14958.0 (2019-11-12)                    #}
+                         # Tl;dr it's easier to default 3rd colgroup -> 0 cols, than to modify entire codebase removing 3rd col.
+                         # Also reversible/settable if ever needed. 
+                         # If modified in future, the same code below, and also base_form.volt, will also need updating. #}
                         <colgroup>
                             <col class="col-md-3"/>
-                            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
-                            <col class="col-md-{{ msgzone_width|default(5) }}"/>
+                            <col class="col-md-{{ 12-3-msgzone_width|default(0) }}"/>
+                            <col class="col-md-{{ msgzone_width|default(0) }}"/>
                         </colgroup>
                         <tbody>
                         {%  if base_dialog_advanced|default(false) or base_dialog_help|default(false) %}
@@ -100,10 +105,11 @@
   </div>
   <div class="table-responsive {{field['style']|default('')}}">
     <table class="table table-striped table-condensed">
+        {# See important note above, if  colgroups/msgzone_width definitions change in future. #}
         <colgroup>
             <col class="col-md-3"/>
-            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
-            <col class="col-md-{{ msgzone_width|default(5) }}"/>
+            <col class="col-md-{{ 12-3-msgzone_width|default(0) }}"/>
+            <col class="col-md-{{ msgzone_width|default(0) }}"/>
         </colgroup>
         <thead>
           <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
