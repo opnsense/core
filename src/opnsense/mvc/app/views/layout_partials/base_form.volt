@@ -53,10 +53,15 @@
 <form id="{{base_form_id}}" class="form-inline" data-title="{{data_title|default('')}}">
   <div class="table-responsive">
     <table class="table table-striped table-condensed">
+        {# See discussion about colgroups/msgzone_width at:                                   #}
+         # https://forum.opnsense.org/index.php?topic=14958.0 (2019-11-12)                    #}
+         # Tl;dr it's easier to default 3rd colgroup -> 0 cols, than to modify entire codebase removing 3rd col.
+         # Also reversible/settable if ever needed. 
+         # If modified in future, the same code below, and also base_dialog.volt, will also need updating. #}
         <colgroup>
             <col class="col-md-3"/>
-            <col class="col-md-4"/>
-            <col class="col-md-5"/>
+            <col class="col-md-9"/>
+            <col class="col-md-0"/>
         </colgroup>
         <tbody>
 {% if advanced|default(false) or help|default(false) %}
@@ -77,10 +82,11 @@
   </div>
   <div class="table-responsive {{field['style']|default('')}}">
     <table class="table table-striped table-condensed table-responsive">
+        {# See important note above, if  colgroups/msgzone_width definitions change in future. #}
         <colgroup>
             <col class="col-md-3"/>
-            <col class="col-md-4"/>
-            <col class="col-md-5"/>
+            <col class="col-md-9"/>
+            <col class="col-md-0"/>
         </colgroup>
         <thead>
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
