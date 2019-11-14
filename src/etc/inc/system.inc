@@ -132,14 +132,13 @@ function system_sysctl_get()
         'net.local.dgram.maxdgram' => 'default',
     );
 
-    if (isset($config['sysctl']['item'])) {
-        foreach ($config['sysctl']['item'] as $tunable) {
-            if ($tunable['value'] == 'default') {
-                $value = get_default_sysctl_value($tunable['tunable']);
-            } else {
-                $value = $tunable['value'];
-            }
-            $sysctls[$tunable['tunable']] = $value;
+    foreach (config_read_array('sysctl', 'item') as $tunable) {
+        $sysctls[$tunable['tunable']] = $tunable['value'];
+    }
+
+    foreach ($sysctls as $key => &$value) {
+        if ($value == 'default') {
+            $value = get_default_sysctl_value($key);
         }
     }
 
