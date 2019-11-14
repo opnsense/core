@@ -106,6 +106,7 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_member' => '1',
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
+        'net.local.dgram.maxdgram' => '8192',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
@@ -128,6 +129,7 @@ function system_sysctl_get()
         'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
         'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
         'net.enc.out.ipsec_filter_mask' => '1', /* before processing */
+        'net.local.dgram.maxdgram' => 'default',
     );
 
     if (isset($config['sysctl']['item'])) {

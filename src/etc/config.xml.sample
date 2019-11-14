@@ -208,7 +208,7 @@
     <item>
       <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
       <tunable>net.local.dgram.maxdgram</tunable>
-      <value>8192</value>
+      <value>default</value>
     </item>
   </sysctl>
   <system>
