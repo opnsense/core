@@ -205,6 +205,11 @@
       <tunable>net.inet.icmp.drop_redirect</tunable>
       <value>1</value>
     </item>
+    <item>
+      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
+      <tunable>net.local.dgram.maxdgram</tunable>
+      <value>8192</value>
+    </item>
   </sysctl>
   <system>
     <optimization>normal</optimization>
