@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 
-$data_tabs = array("info", "memory", "timeouts", "interfaces", "rules");
+$data_tabs = array("info" => gettext("info"), "memory" => gettext("memory"), "timeouts" => gettext("timeouts"), "interfaces" => gettext("interfaces"), "rules" => gettext("rules"));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['getactivity'])) {
@@ -74,10 +74,10 @@ $( document ).ready(function() {
         <section class="col-xs-12">
           <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
 <?php
-             foreach($data_tabs as $i => $tabname):?>
+             foreach(array_keys($data_tabs) as $i => $tabname):?>
             <li <?= $i == 0 ? 'class="active"' : '';?>>
               <a data-toggle="tab" href="#<?=$tabname;?>" id="<?=$tabname;?>_tab">
-                <?=ucfirst($tabname);?>
+                <?=ucfirst($data_tabs[$tabname]);?>
               </a>
             </li>
 <?php
@@ -85,7 +85,7 @@ $( document ).ready(function() {
           </ul>
           <div class="tab-content content-box">
 <?php
-             foreach($data_tabs as $i => $tabname):?>
+             foreach(array_keys($data_tabs) as $i => $tabname):?>
             <div id="<?=$tabname;?>" class="tab-pane fade in <?= $i == 0 ? 'active' : '';?>">
               <br/>
               <div class="container-fluid">
