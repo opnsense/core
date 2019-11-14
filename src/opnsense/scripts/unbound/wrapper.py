@@ -52,6 +52,12 @@ parser.add_argument('-f', '--format', help='output format', action='store', choi
 args = parser.parse_args()
 
 #
+try:
+    os.kill(int(open("/var/run/unbound.pid").read().strip()), 0)
+except:
+    # unbound not active
+    sys.exit(1)
+
 output = None
 if args.cache:
     output = list()
