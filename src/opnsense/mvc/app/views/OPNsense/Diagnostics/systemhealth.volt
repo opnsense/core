@@ -66,10 +66,6 @@
     var zoom_buttons;
     var rrd="";
 
-    // Load data when document is ready
-    $(document).ready(function () {
-        getRRDlist();
-    });
 
     // create our chart
     nv.addGraph(function () {
@@ -177,6 +173,11 @@
     function getRRDlist() {
         ajaxGet("/api/diagnostics/systemhealth/getRRDlist/", {}, function (data, status) {
             if (status == "success") {
+                if (data.data.length == 0 ) {
+                    $(".page-content-head").removeClass("hidden");
+                    $('#info_tab').toggleClass('active');
+                    return;
+                }
                 var category;
                 var tabs="";
                 var subitem="";
@@ -325,13 +326,10 @@
 
                 // if we have a focus area then change the x-scale to reflect current view
                 if (visable_time >= (86400*7)) { // one week
-                    console.log('a');
                     dtformat = '\'%y w%U%';
                 } else if (visable_time >= (3600*48)) { // 48 hours
-                    console.log('b');
                     dtformat = '\'%y d%j%';
                 } else if (visable_time >= (60*maxitems)) { // max minutes
-                    console.log('c');
                     dtformat = '%H:%M';
                 }
 
@@ -553,7 +551,6 @@
             data: csvData
         });
         if (csv == null) return;
-        console.log(csv);
         filename = args.filename || 'export.csv';
 
         if (!csv.match(/^data:text\/csv/i)) {
@@ -573,11 +570,26 @@
         $("#options").collapse('show');
         // hide title row
         $(".page-content-head").addClass("hidden");
+        // Load data when document is ready
+        getRRDlist();
     });
 
 </script>
 
 <div class="tab-content">
+    <div id="info_tab" class="tab-pane fade in">
+      <div class="panel panel-primary">
+          <div class="panel-heading">
+              <h3 class="panel-title">
+                  <b>{{ lang._('Information') }}</b>
+              </h3>
+          </div>
+          <div class="panel-body">
+            {{ lang._('Local data collection is not enabled at the moment') }}
+            <a href="/reporting_settings.php">{{ lang._('Go to reporting settings') }} </a>
+          </div>
+      </div>
+    </div>
     <div id="tab_1" class="tab-pane fade in">
         <div class="panel panel-primary">
             <div class="panel-heading panel-heading-sm">
