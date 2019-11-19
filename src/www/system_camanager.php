@@ -107,7 +107,7 @@ function ca_inter_create(&$ca, $keylen_curve, $lifetime, $dn, $caref, $digest_al
         );
     }
 
-    // generate a new key pair   
+    // generate a new key pair
     $res_key = openssl_pkey_new($args);
     if (!$res_key) {
         return false;
@@ -334,10 +334,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($pconfig["keytype"] != ("RSA" || "Elliptic Curve")) {
                 $input_errors[] = gettext("Please select a valid Key Type.");
             }
-            if ((!in_array($pconfig['keylen'], $ca_keylens)) && ($pconfig["keytype"] == ("RSA"))){
+            if ((!in_array($pconfig['keylen'], $ca_keylens)) && ($pconfig["keytype"] == ("RSA"))) {
                 $input_errors[] = gettext("Please select a valid Key Length.");
             }
-            if ((!in_array($pconfig['curve'], $ca_curves)) && ($pconfig["keytype"] == ("Elliptic Curve"))){
+            if ((!in_array($pconfig['curve'], $ca_curves)) && ($pconfig["keytype"] == ("Elliptic Curve"))) {
                 $input_errors[] = gettext("Please select a valid Curve.");
             }
             if (!in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
@@ -380,8 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warnings directly to a page screwing menu tab */
                 if ($pconfig['keytype'] == "Elliptic Curve") {
                     $pconfig['keylen_curve'] = $pconfig['curve'];
-                }
-                else {
+                } else {
                     $pconfig['keylen_curve'] = (int)$pconfig['keylen'];
                 }
                 if ($pconfig['camethod'] == "existing") {

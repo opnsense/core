@@ -236,7 +236,7 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
     $config_filename = create_temp_openssl_config($dn);
 
     if (is_string($keylen_curve)) {
-    $args = array(
+        $args = array(
         'config' => $config_filename,
         'private_key_type' => OPENSSL_KEYTYPE_EC,
         'curve_name' => $keylen_curve,
@@ -245,7 +245,7 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
         'encrypt_key' => false
     );
     } else {
-    $args = array(
+        $args = array(
         'config' => $config_filename,
         'private_key_type' => OPENSSL_KEYTYPE_RSA,
         'private_key_bits' => (int)$keylen_curve,
