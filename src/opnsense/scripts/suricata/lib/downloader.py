@@ -226,6 +226,9 @@ class Downloader(object):
             except IOError:
                 syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                 return None
+            except UnicodeDecodeError:
+                syslog.syslog(syslog.LOG_ERR, 'unable to read %s from %s (decode error)' % (target_filename, fetch_result['filename']))
+                return None
             if not fetch_result['cached']:
                 syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)
 
