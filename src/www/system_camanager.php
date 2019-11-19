@@ -87,24 +87,18 @@ function ca_inter_create(&$ca, $keylen_curve, $lifetime, $dn, $caref, $digest_al
     }
     $signing_ca_serial = ++$signing_ca['serial'];
 
-    if (is_string($keylen_curve)) {
-        $args = array(
-            'config' => '/usr/local/etc/ssl/opnsense.cnf',
-            'private_key_type' => OPENSSL_KEYTYPE_EC,
-            'curve_name' => $keylen_curve,
-            'x509_extensions' => 'v3_ca',
-            'digest_alg' => $digest_alg,
-            'encrypt_key' => false
-        );
+    $args = array(
+        'config' => '/usr/local/etc/ssl/opnsense.cnf',
+        'x509_extensions' => 'v3_ca',
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+    if (is_numeric($keylen_curve)) {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+        $args['private_key_bits'] = (int)$keylen_curve;
     } else {
-        $args = array(
-            'config' => '/usr/local/etc/ssl/opnsense.cnf',
-            'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            'private_key_bits' => (int)$keylen_curve,
-            'x509_extensions' => 'v3_ca',
-            'digest_alg' => $digest_alg,
-            'encrypt_key' => false
-        );
+        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+        $args['curve_name'] = $keylen_curve;
     }
 
     // generate a new key pair
@@ -331,13 +325,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
-            if ($pconfig["keytype"] != ("RSA" || "Elliptic Curve")) {
+            if (!in_array($pconfig["keytype"], array("RSA", "Elliptic Curve"))) {
                 $input_errors[] = gettext("Please select a valid Key Type.");
             }
-            if ((!in_array($pconfig['keylen'], $ca_keylens)) && ($pconfig["keytype"] == ("RSA"))) {
+            if (!in_array($pconfig['keylen'], $ca_keylens) && $pconfig["keytype"] == "RSA") {
                 $input_errors[] = gettext("Please select a valid Key Length.");
             }
-            if ((!in_array($pconfig['curve'], $ca_curves)) && ($pconfig["keytype"] == ("Elliptic Curve"))) {
+            if (!in_array($pconfig['curve'], $ca_curves) && $pconfig["keytype"] == "Elliptic Curve") {
                 $input_errors[] = gettext("Please select a valid Curve.");
             }
             if (!in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
@@ -381,7 +375,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['keytype'] == "Elliptic Curve") {
                     $pconfig['keylen_curve'] = $pconfig['curve'];
                 } else {
-                    $pconfig['keylen_curve'] = (int)$pconfig['keylen'];
+                    $pconfig['keylen_curve'] = $pconfig['keylen'];
                 }
                 if ($pconfig['camethod'] == "existing") {
                     ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);

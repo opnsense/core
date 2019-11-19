@@ -40,24 +40,19 @@ function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg)
 {
     $configFilename = create_temp_openssl_config($dn);
 
-    if (is_string($keylen_curve)) {
-        $args = array(
-            'config' => $configFilename,
-            'private_key_type' => OPENSSL_KEYTYPE_EC,
-            'curve_name' => $keylen_curve,
-            'req_extensions' => 'v3_req',
-            'digest_alg' => $digest_alg,
-            'encrypt_key' => false
-        );
+
+    $args = array(
+        'config' => $configFilename,
+        'req_extensions' => 'v3_req',
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+    if (is_numeric($keylen_curve)) {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+        $args['private_key_bits'] = (int)$keylen_curve;
     } else {
-        $args = array(
-            'config' => $configFilename,
-            'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            'private_key_bits' => (int)$keylen_curve,
-            'req_extensions' => 'v3_req',
-            'digest_alg' => $digest_alg,
-            'encrypt_key' => false
-        );
+        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+        $args['curve_name'] = $keylen_curve;
     }
 
     // generate a new key pair
@@ -70,7 +65,7 @@ function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg)
     $res_csr = openssl_csr_new($dn, $res_key, $args);
     if (!$res_csr) {
         return false;
-    }    
+    }
 
     // export our request data
     if (!openssl_pkey_export($res_key, $str_key) ||
@@ -584,28 +579,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
-            if ($pconfig['certmethod'] != "external" && ($pconfig["keytype"] != ("RSA" || "Elliptic Curve"))) {
+            if ($pconfig['certmethod'] != "external" && !in_array($pconfig["keytype"], array("RSA", "Elliptic Curve"))) {
                 $input_errors[] = gettext("Please select a valid Key Type.");
             }
             if ($pconfig['certmethod'] == "internal" && !in_array($pconfig["cert_type"], $cert_types)) {
                 $input_errors[] = gettext("Please select a valid Type.");
             }
-            if ($pconfig['certmethod'] != "external" && isset($pconfig["keylen"]) && ($pconfig["keytype"] == "RSA") && !in_array($pconfig["keylen"], $cert_keylens)) {
+            if ($pconfig['certmethod'] != "external" && isset($pconfig["keylen"]) && $pconfig["keytype"] == "RSA" && !in_array($pconfig["keylen"], $cert_keylens)) {
                 $input_errors[] = gettext("Please select a valid Key Length.");
             }
-            if ($pconfig['certmethod'] != "external" && isset($pconfig["curve"]) && ($pconfig["keytype"] == "Elliptic Curve") && !in_array($pconfig["curve"], $cert_curves)) {
+            if ($pconfig['certmethod'] != "external" && isset($pconfig["curve"]) && $pconfig["keytype"] == "Elliptic Curve" && !in_array($pconfig["curve"], $cert_curves)) {
                 $input_errors[] = gettext("Please select a valid Curve.");
             }
             if ($pconfig['certmethod'] != "external" && !in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
                 $input_errors[] = gettext("Please select a valid Digest Algorithm.");
             }
-            if ($pconfig['certmethod'] == "external" && ($pconfig["csr_keytype"] != ("RSA" || "Elliptic Curve"))) {
+            if ($pconfig['certmethod'] == "external" && !in_array($pconfig["keytype"], array("RSA", "Elliptic Curve"))) {
                 $input_errors[] = gettext("Please select a valid Key Type.");
             }
-            if ($pconfig['certmethod'] == "external" && isset($pconfig["csr_keylen"]) && ($pconfig["keytype"] == "RSA") && !in_array($pconfig["csr_keylen"], $cert_keylens)) {
+            if ($pconfig['certmethod'] == "external" && isset($pconfig["csr_keylen"]) && $pconfig["keytype"] == "RSA" && !in_array($pconfig["csr_keylen"], $cert_keylens)) {
                 $input_errors[] = gettext("Please select a valid Key Length.");
             }
-            if ($pconfig['certmethod'] == "external" && isset($pconfig["csr_curve"]) && ($pconfig["keytype"] == "Elliptic Curve") && !in_array($pconfig["csr_curve"], $cert_curves)) {
+            if ($pconfig['certmethod'] == "external" && isset($pconfig["csr_curve"]) && $pconfig["keytype"] == "Elliptic Curve" && !in_array($pconfig["csr_curve"], $cert_curves)) {
                 $input_errors[] = gettext("Please select a valid Curve.");
             }
             if ($pconfig['certmethod'] == "external" && !in_array($pconfig["csr_digest_alg"], $openssl_digest_algs)) {
@@ -700,12 +695,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['keytype'] == "Elliptic Curve") {
                     $pconfig['keylen_curve'] = $pconfig['curve'];
                 } else {
-                    $pconfig['keylen_curve'] = (int)$pconfig['keylen'];
+                    $pconfig['keylen_curve'] = $pconfig['keylen'];
                 }
                 if ($pconfig['csr_keytype'] == "Elliptic Curve") {
                     $pconfig['csr_keylen_curve'] = $pconfig['csr_curve'];
                 } else {
-                    $pconfig['csr_keylen_curve'] = (int)$pconfig['csr_keylen'];
+                    $pconfig['csr_keylen_curve'] = $pconfig['csr_keylen'];
                 }
                 if ($pconfig['certmethod'] == "import") {
                     cert_import($cert, $pconfig['cert'], $pconfig['key']);
