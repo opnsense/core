@@ -515,6 +515,7 @@ function step10_submitphpaction()
 function step12_submitphpaction()
 {
     global $config;
+    $keytype = "RSA";
 
     $pconfig = $config['wizardtemp'];
 
@@ -582,7 +583,7 @@ function step12_submitphpaction()
           'emailAddress' => $pconfig['step6']['email'],
           'commonName' => $pconfig['step6']['certca']);
 
-        ca_create($ca, $pconfig['step6']['keylength'], $pconfig['step6']['lifetime'], $dn, "sha256");
+        ca_create($ca, (int)$pconfig['step6']['keylength'], $pconfig['step6']['lifetime'], $dn, "sha256");
 
         $a_ca = &config_read_array('ca');
         $a_ca[] = $ca;
@@ -612,7 +613,7 @@ function step12_submitphpaction()
         cert_create(
             $cert,
             $ca['refid'],
-            $pconfig['step9']['keylength'],
+            (int)$pconfig['step9']['keylength'],
             $pconfig['step9']['lifetime'],
             $dn,
             'sha256',
