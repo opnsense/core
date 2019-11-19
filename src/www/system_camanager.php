@@ -72,7 +72,7 @@ function ca_import(& $ca, $str, $key="", $serial=0)
     return true;
 }
 
-function ca_inter_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $caref, $digest_alg)
+function ca_inter_create(&$ca, $keylen_curve, $lifetime, $dn, $caref, $digest_alg = 'sha256')
 {
     // Create Intermediate Certificate Authority
     $signing_ca = &lookup_ca($caref);
@@ -87,11 +87,11 @@ function ca_inter_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $caref
     }
     $signing_ca_serial = ++$signing_ca['serial'];
 
-    if ($keytype == "Elliptic Curve") {
+    if (is_string($keylen_curve)) {
         $args = array(
             'config' => '/usr/local/etc/ssl/opnsense.cnf',
             'private_key_type' => OPENSSL_KEYTYPE_EC,
-            'curve_name' => $curve,
+            'curve_name' => $keylen_curve,
             'x509_extensions' => 'v3_ca',
             'digest_alg' => $digest_alg,
             'encrypt_key' => false
@@ -100,7 +100,7 @@ function ca_inter_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $caref
         $args = array(
             'config' => '/usr/local/etc/ssl/opnsense.cnf',
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            'private_key_bits' => (int)$keylen,
+            'private_key_bits' => (int)$keylen_curve,
             'x509_extensions' => 'v3_ca',
             'digest_alg' => $digest_alg,
             'encrypt_key' => false
@@ -141,7 +141,7 @@ function ca_inter_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $caref
 }
 
 $ca_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
-$ec_curves = array( "prime256v1", "secp384r1", "secp521r1");
+$ca_curves = array( "prime256v1", "secp384r1", "secp521r1");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 $a_ca = &config_read_array('ca');
 $a_cert = &config_read_array('cert');
@@ -334,10 +334,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($pconfig["keytype"] != ("RSA" || "Elliptic Curve")) {
                 $input_errors[] = gettext("Please select a valid Key Type.");
             }
-            if (!in_array($pconfig["keylen"], $ca_keylens)) {
+            if ((!in_array($pconfig['keylen'], $ca_keylens)) && ($pconfig["keytype"] == ("RSA"))){
                 $input_errors[] = gettext("Please select a valid Key Length.");
             }
-            if (!in_array($pconfig["curve"], $ec_curves)) {
+            if ((!in_array($pconfig['curve'], $ca_curves)) && ($pconfig["keytype"] == ("Elliptic Curve"))){
                 $input_errors[] = gettext("Please select a valid Curve.");
             }
             if (!in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
@@ -378,6 +378,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             } else {
                 $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warnings directly to a page screwing menu tab */
+                if ($pconfig['keytype'] == "Elliptic Curve") {
+                    $pconfig['keylen_curve'] = $pconfig['curve'];
+                }
+                else {
+                    $pconfig['keylen_curve'] = (int)$pconfig['keylen'];
+                }
                 if ($pconfig['camethod'] == "existing") {
                     ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);
                 } elseif ($pconfig['camethod'] == "internal") {
@@ -388,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['dn_organization'],
                         'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
-                    if (!ca_create($ca, $pconfig['keytype'], $pconfig['keylen'], $pconfig['curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
+                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
@@ -402,7 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['dn_organization'],
                         'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
-                    if (!ca_inter_create($ca, $pconfig['keytype'], $pconfig['keylen'], $pconfig['curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
+                    if (!ca_inter_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
@@ -628,7 +634,7 @@ $main_buttons = array(
                   <td style="width:78%">
                     <select name='keylen' id='keylen' class="selectpicker">
 <?php
-                    foreach ($ca_keylens as $len) :?>
+                        foreach ($ca_keylens as $len) :?>
                       <option value="<?=$len;?>" <?=isset($pconfig['keylen']) && $pconfig['keylen'] == $len ? "selected=\"selected\"" : "";?>><?=$len;?></option>
 <?php
                     endforeach; ?>
@@ -641,7 +647,7 @@ $main_buttons = array(
                   <td style="width:78%">
                     <select name='curve' id='curve' class="selectpicker">
 <?php
-                    foreach ($ec_curves as $curve) :?>
+                    foreach ($ca_curves as $curve) :?>
                       <option value="<?=$curve;?>" <?=isset($pconfig['curve']) && $pconfig['curve'] == $curve ? "selected=\"selected\"" : "";?>><?=$curve;?></option>
 <?php
                     endforeach; ?>

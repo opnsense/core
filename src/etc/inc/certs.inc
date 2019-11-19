@@ -144,26 +144,26 @@ function ca_chain(&$cert)
     return str_replace("\n\n", "\n", str_replace("\r", "", $ca));
 }
 
-function ca_create(&$ca, $keytype, $keylen, $curve, $lifetime, $dn, $digest_alg)
+function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg)
 {
-    if ($keytype == "Elliptic Curve") {
-    $args = array(
-        'config' => '/usr/local/etc/ssl/opnsense.cnf',
-        'private_key_type' => OPENSSL_KEYTYPE_EC,
-        'curve_name' => $curve,
-        'x509_extensions' => 'v3_ca',
-        'digest_alg' => $digest_alg,
-        'encrypt_key' => false
-    );
+    if (is_string($keylen_curve)) {
+        $args = array(
+            'config' => '/usr/local/etc/ssl/opnsense.cnf',
+            'private_key_type' => OPENSSL_KEYTYPE_EC,
+            'curve_name' => $keylen_curve,
+            'x509_extensions' => 'v3_ca',
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        );
     } else {
-    $args = array(
-        'config' => '/usr/local/etc/ssl/opnsense.cnf',
-        'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        'private_key_bits' => (int)$keylen,
-        'x509_extensions' => 'v3_ca',
-        'digest_alg' => $digest_alg,
-        'encrypt_key' => false
-    );
+        $args = array(
+            'config' => '/usr/local/etc/ssl/opnsense.cnf',
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+            'private_key_bits' => (int)$keylen_curve,
+            'x509_extensions' => 'v3_ca',
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        );
     }
 
     // generate a new key pair
@@ -216,7 +216,7 @@ function cert_import(& $cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keytype, $keylen, $curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert')
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert')
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -235,11 +235,11 @@ function cert_create(&$cert, $caref, $keytype, $keylen, $curve, $lifetime, $dn, 
     // handle parameters which can only be set via the configuration file
     $config_filename = create_temp_openssl_config($dn);
 
-    if ($keytype == "Elliptic Curve") {
+    if (is_string($keylen_curve)) {
     $args = array(
         'config' => $config_filename,
         'private_key_type' => OPENSSL_KEYTYPE_EC,
-        'curve_name' => $curve,
+        'curve_name' => $keylen_curve,
         'x509_extensions' => $x509_extensions,
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
@@ -248,7 +248,7 @@ function cert_create(&$cert, $caref, $keytype, $keylen, $curve, $lifetime, $dn, 
     $args = array(
         'config' => $config_filename,
         'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        'private_key_bits' => (int)$keylen,
+        'private_key_bits' => (int)$keylen_curve,
         'x509_extensions' => $x509_extensions,
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
