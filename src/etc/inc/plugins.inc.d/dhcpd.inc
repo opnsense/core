@@ -1404,7 +1404,7 @@ EOD;
         }
 
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
-            $dnscfgv6 .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
+            $dnscfgv6 .= "  option dhcp6.domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
         }
 
         $newzone = array();
