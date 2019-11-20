@@ -144,16 +144,21 @@ function ca_chain(&$cert)
     return str_replace("\n\n", "\n", str_replace("\r", "", $ca));
 }
 
-function ca_create(&$ca, $keylen, $lifetime, $dn, $digest_alg = 'sha256')
+function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg)
 {
     $args = array(
         'config' => '/usr/local/etc/ssl/opnsense.cnf',
-        'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        'private_key_bits' => (int)$keylen,
         'x509_extensions' => 'v3_ca',
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
     );
+    if (is_numeric($keylen_curve)) {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+        $args['private_key_bits'] = (int)$keylen_curve;
+    } else {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+        $args['curve_name'] = $keylen_curve;
+    }
 
     // generate a new key pair
     $res_key = openssl_pkey_new($args);
@@ -205,7 +210,7 @@ function cert_import(& $cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256', $x509_extensions = 'usr_cert')
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert')
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -226,12 +231,17 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 
     $args = array(
         'config' => $config_filename,
-        'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        'private_key_bits' => (int)$keylen,
         'x509_extensions' => $x509_extensions,
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
     );
+    if (is_numeric($keylen_curve)) {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+        $args['private_key_bits'] = (int)$keylen_curve;
+    } else {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+        $args['curve_name'] = $keylen_curve;
+    }
 
     // generate a new key pair
     $res_key = openssl_pkey_new($args);
