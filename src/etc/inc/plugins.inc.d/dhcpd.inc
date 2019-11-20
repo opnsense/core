@@ -1511,7 +1511,7 @@ EOD;
                 }
 
                 if (!empty($sm['domainsearchlist']) && ($sm['domainsearchlist'] != $dhcpv6ifconf['domainsearchlist'])) {
-                    $dhcpdv6conf .= "  option dhcp6.domain-search \"{$sm['domainsearchlist']}\";\n";
+                    $dhcpdv6conf .= "  option dhcp6.domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $sm['domainsearchlist'])) . "\";\n";
                 }
 
                 $dhcpdv6conf .= "}\n";
