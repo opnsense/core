@@ -148,7 +148,6 @@ function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg)
 {
     $args = array(
         'config' => '/usr/local/etc/ssl/opnsense.cnf',
-        'private_key_bits' => (int)$keylen_curve,
         'x509_extensions' => 'v3_ca',
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
