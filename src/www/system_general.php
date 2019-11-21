@@ -43,6 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
+    if (!empty($config['system']['dnsallowoverride_exclude'])) {
+        $pconfig['dnsallowoverride_exclude'] = explode(",", $config['system']['dnsallowoverride_exclude']);
+    } else {
+        $pconfig['dnsallowoverride_exclude'] = array();
+    }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
@@ -146,8 +151,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($pconfig['dnsallowoverride'])) {
             $config['system']['dnsallowoverride'] = true;
+            $config['system']['dnsallowoverride_exclude'] = implode(",", $pconfig['dnsallowoverride_exclude']);
         } elseif (isset($config['system']['dnsallowoverride'])) {
             unset($config['system']['dnsallowoverride']);
+            if (isset($config['system']['dnsallowoverride_exclude'])) {
+                unset($config['system']['dnsallowoverride_exclude']);
+            }
         }
 
         if ($pconfig['dnslocalhost'] == 'yes') {
@@ -223,6 +232,22 @@ include("head.inc");
 <body>
     <?php include("fbegin.inc"); ?>
 
+<script>
+//<![CDATA[
+$( document ).ready(function() {
+    // unhide advanced
+    $("#dnsallowoverride").change(function(event){
+        event.preventDefault();
+        if ($("#dnsallowoverride").is(':checked')) {
+            $("#dnsallowoverride_exclude").show();
+        } else {
+            $("#dnsallowoverride_exclude").hide();
+        }
+    });
+    $("#dnsallowoverride").change();
+});
+//]]>
+</script>
 <!-- row -->
 <section class="page-content-main">
   <div class="container-fluid">
@@ -389,14 +414,29 @@ include("head.inc");
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
+                <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
                 <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
                   "for their own purposes (including the DNS services). " .
-                  "However, they will not be assigned to DHCP and PPTP " .
-                  "VPN clients.") ?>
+                  "However, they will not be assigned to DHCP clients. " .
+                  "Since this option concerns all interfaces retrieving dynamic dns entries, you can exclude " .
+                  "items from the list below.") ?>
+                </div>
+                <div id="dnsallowoverride_exclude" style="display:none">
+                  <hr/>
+                  <strong><?=gettext("Exclude interfaces");?></strong>
+                  <br/>
+                  <select name="dnsallowoverride_exclude[]" class="selectpicker" data-style="btn-default" data-live-search="true"  multiple="multiple">
+<?php
+                  foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+                    <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['dnsallowoverride_exclude']) ? "selected='selected'" : "";?>>
+                      <?= $ifcfg['descr'] ?>
+                    </option>
+<?php
+                  endforeach;?>
+                  </select>
                 </div>
               </td>
             </tr>
