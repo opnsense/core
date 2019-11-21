@@ -1795,7 +1795,7 @@ include("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <thead>
                       <tr>
-                        <td style="width:22%"><strong><?=gettext("General configuration"); ?></strong></td>
+                        <td style="width:22%"><strong><?=gettext("Basic configuration"); ?></strong></td>
                         <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -1818,6 +1818,15 @@ include("head.inc");
                           <strong><?= gettext('Prevent interface removal') ?></strong>
                         </td>
                       </tr>
+                      <tr>
+                        <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                        <td style="width:78%">
+                          <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
+                          <div class="hidden" data-for="help_for_descr">
+                            <?= gettext("Enter a description (name) for the interface here."); ?>
+                          </div>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -1829,19 +1838,10 @@ include("head.inc");
                     <table class="table table-striped opnsense_standard_table_form">
                       <thead>
                         <tr>
-                          <th colspan="2"><?=gettext("General configuration"); ?></th>
+                          <th colspan="2"><?=gettext("Generic configuration"); ?></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                          <td style="width:78%">
-                            <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                            <div class="hidden" data-for="help_for_descr">
-                              <?= gettext("Enter a description (name) for the interface here."); ?>
-                            </div>
-                          </td>
-                        </tr>
                         <tr>
                           <td style="width:22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
                           <td style="width:78%">
