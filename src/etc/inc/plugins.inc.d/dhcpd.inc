@@ -1380,7 +1380,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
     }
 
     $dhcpdv6conf = <<<EOD
-option domain-name "{$config['system']['domain']}";
+option dhcp6.domain-search "{$config['system']['domain']}";
 {$custoptionsv6}
 default-lease-time 7200;
 max-lease-time 86400;
@@ -1417,9 +1417,6 @@ EOD;
         }
 
         $dnscfgv6 = "";
-        if (!empty($dhcpv6ifconf['domain'])) {
-            $dnscfgv6 .= "  option domain-name \"{$dhcpv6ifconf['domain']}\";\n";
-        }
 
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
             $dnscfgv6 .= "  option dhcp6.domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
@@ -1529,8 +1526,8 @@ EOD;
                     $dhcpdv6conf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
-                if (!empty($sm['domain']) && ($sm['domain'] != $dhcpv6ifconf['domain'])) {
-                    $dhcpdv6conf .= "  option domain-name \"{$sm['domain']}\";\n";
+                if (!empty($sm['domainsearchlist']) && ($sm['domainsearchlist'] != $dhcpv6ifconf['domainsearchlist'])) {
+                    $dhcpdv6conf .= "  option dhcp6.domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $sm['domainsearchlist'])) . "\";\n";
                 }
 
                 $dhcpdv6conf .= "}\n";

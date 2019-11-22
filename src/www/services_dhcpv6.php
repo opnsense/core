@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['prefixrange_to'] = $config['dhcpdv6'][$if]['prefixrange']['to'];
         $pconfig['prefixrange_length'] = $config['dhcpdv6'][$if]['prefixrange']['prefixlength'];
     }
-    $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domain', 'domainsearchlist', 'ddnsdomain',
+    $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domainsearchlist', 'ddnsdomain',
         'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url', 'netmask',
         'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap');
     foreach ($config_copy_fieldsnames as $fieldname) {
@@ -177,9 +177,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['ntp1']) && !is_ipaddrv6($pconfig['ntp1'])) || (!empty($pconfig['ntp2']) && !is_ipaddrv6($pconfig['ntp2']))) {
             $input_errors[] = gettext("A valid IPv6 address must be specified for the primary/secondary NTP servers.");
         }
-        if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
-            $input_errors[] = gettext("A valid domain name must be specified for the DNS domain.");
-        }
         if (!empty($pconfig['bootfile_url']) && !is_URL($pconfig['bootfile_url'])) {
             $input_errors[] = gettext("A valid URL must be specified for the network bootfile.");
         }
@@ -238,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdconf = array();
 
             // simple 1-on-1 copy
-            $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domain', 'domainsearchlist',
+            $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domainsearchlist',
               'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url',
               'dhcpv6leaseinlocaltime');
             foreach ($config_copy_fieldsnames as $fieldname) {
@@ -558,20 +555,11 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
-                      <td>
-                        <input name="domain" type="text" id="domain" value="<?=$pconfig['domain'];?>" />
-                        <div class="hidden" data-for="help_for_domain">
-                          <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
-                        </div>
-                     </td>
-                    </tr>
-                    <tr>
                       <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" />
                         <div class="hidden" data-for="help_for_domainsearchlist">
-                          <?=gettext("The DHCP server can optionally provide a domain search list. Use the semicolon character as separator.");?>
+                          <?=gettext("The default is to use the domain name of this system as the domain search list option provided by DHCPv6. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.");?>
                         </div>
                       </td>
                     </tr>

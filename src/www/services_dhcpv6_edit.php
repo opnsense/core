@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // read form data
     $pconfig = array();
-    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domain');
+    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domainsearchlist');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if]['staticmap'][$id][$fieldname];
@@ -89,6 +89,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (empty($pconfig['duid']) || preg_match('/^([a-fA-F0-9]{2}[:])*([a-fA-F0-9]{2}){1}$/', $pconfig['duid']) !== 1) {
         $input_errors[] = gettext("A valid DUID Identifier must be specified.");
     }
+    if (!empty($pconfig['domainsearchlist'])) {
+        $domain_array=preg_split("/[ ;]+/",$pconfig['domainsearchlist']);
+        foreach ($domain_array as $curdomain) {
+            if (!is_domain($curdomain)) {
+                $input_errors[] = gettext("A valid domain search list must be specified.");
+                break;
+            }
+        }
+    }
 
     /* check for overlaps */
     $a_maps = &config_read_array('dhcpdv6', $if, 'staticmap');
@@ -103,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (count($input_errors) == 0) {
         $mapent = array();
-        $config_copy_fieldnames = array('duid', 'ipaddrv6', 'hostname', 'descr', 'filename', 'rootpath', 'domain');
+        $config_copy_fieldnames = array('duid', 'ipaddrv6', 'hostname', 'descr', 'filename', 'rootpath', 'domainsearchlist');
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $mapent[$fieldname] = $pconfig[$fieldname];
@@ -194,11 +203,11 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
+                    <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                     <td>
-                      <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                      <div class="hidden" data-for="help_for_domain">
-                        <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
+                      <input name="domainsearchlist" type="text" value="<?=$pconfig['domainsearchlist'];?>" />
+                      <div class="hidden" data-for="help_for_domainsearchlist">
+                        <?=gettext("The default is to use the domain name of this system as the domain search list option provided by DHCPv6. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.");?>
                       </div>
                     </td>
                   </tr>
