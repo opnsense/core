@@ -35,7 +35,7 @@ require_once("interfaces.inc");
 require_once("plugins.inc.d/dhcpd.inc");
 
 function val_int_in_range($value, $min, $max) {
-    return (((string)(int)$value) == $value) && $value >= $min && $value < $max;
+    return (((string)(int)$value) == $value) && $value >= $min && $value <= $max;
 }
 
 $advanced_options = array('AdvDefaultLifetime', 'AdvValidLifetime', 'AdvPreferredLifetime', 'AdvRDNSSLifetime', 'AdvDNSSLLifetime', 'AdvRouteLifetime');
