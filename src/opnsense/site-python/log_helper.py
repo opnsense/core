@@ -85,6 +85,8 @@ def fetch_clog(input_log):
         mm = mmap.mmap(fd.fileno(), 0)
         # unpack clog information struct
         clog_footer = struct.unpack('iiii', mm[-16:])  # cf_magic, cf_wrap, cf_next, cf_max, cf_lock
+        if mm[-20:-16] != b'CLOG':
+            raise Exception('not a valid clog file')
         # concat log file into new output stream, start at current wrap position
         output_stream = StringIO(mm[clog_footer[1]:-20].decode() + mm[:clog_footer[1]].decode())
         output_stream.seek(0)
