@@ -61,8 +61,6 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
         data = input_stream.read(block_size) + data
         # split stream using begin of line (bol) and end of line (eol)
         bol = data.rfind('\n')
-        if bol == -1:
-            bol = data.rfind('\u0000')
         eol = len(data)
 
         while bol > -1:
@@ -70,12 +68,12 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
             line = data[bol:eol]
             eol = bol
             bol = data.rfind('\n', 0, eol)
-            yield {'line': line.strip(), 'pos': line_end}
+            yield {'line': line.strip().strip('\u0000'), 'pos': line_end}
 
         data = data[:eol] if bol == -1 else ''
 
         if file_byte_start == 0 and bol == -1:
-            yield {'line': data.strip(), 'pos': len(data)}
+            yield {'line': data.strip().strip('\u0000'), 'pos': len(data)}
 
 def fetch_clog(input_log):
     """ fetch clog file (circular log)
