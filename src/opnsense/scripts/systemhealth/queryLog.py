@@ -40,6 +40,7 @@ sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
 import argparse
 squid_ext_timeformat = r'.*(\[\d{1,2}/[A-Za-z]{3}/\d{4}:\d{1,2}:\d{1,2}:\d{1,2} \+\d{4}\]).*'
+squid_timeformat = r'^(\d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}).*'
 
 if __name__ == '__main__':
     # handle parameters
@@ -111,6 +112,12 @@ if __name__ == '__main__':
                             record['timestamp'] = ts.isoformat()
                             # strip timestamp
                             record['line'] = record['line'].replace(grp, '')
+                        elif re.match(squid_timeformat, record['line']):
+                            tmp = re.match(squid_timeformat, record['line'])
+                            grp = tmp.group(1)
+                            ts = datetime.datetime.strptime(grp, "%Y/%m/%d %H:%M:%S")
+                            record['timestamp'] = ts.isoformat()
+                            record['line'] = record['line'][19:].strip()
                         result['rows'].append(record)
                     elif result['total_rows'] > offset + limit:
                         # do not fetch data until end of file...
