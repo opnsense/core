@@ -64,7 +64,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="content-box-main">
         <div class="table-responsive">
             <div  class="col-sm-12">
-                <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive">
+                <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive" data-store-selection="true">
                     <thead>
                     <tr>
                         <th data-column-id="pos" data-type="numeric" data-identifier="true"  data-visible="false">#</th>
