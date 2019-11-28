@@ -31,7 +31,8 @@ POSSIBILITY OF SUCH DAMAGE.
           options:{
               sorting:false,
               rowSelect: false,
-              selection: false
+              selection: false,
+              rowCount:[20,50,100,-1],
           },
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
       });
