@@ -74,8 +74,8 @@
     <page-status-systemlogs-ipsecvpn>
         <name>Status: System logs: IPsec VPN</name>
         <patterns>
-            <pattern>ui/diagnostics/log/ipsec/*</pattern>
-            <pattern>api/diagnostics/log/ipsec/*</pattern>
+            <pattern>ui/diagnostics/log/core/ipsec/*</pattern>
+            <pattern>api/diagnostics/log/core/ipsec/*</pattern>
         </patterns>
     </page-status-systemlogs-ipsecvpn>
 </acl>

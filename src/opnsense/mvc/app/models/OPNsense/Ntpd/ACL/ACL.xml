@@ -26,8 +26,8 @@
     <page-status-systemlogs-ntpd>
         <name>Status: System logs: NTP</name>
         <patterns>
-            <pattern>ui/diagnostics/log/ntpd/*</pattern>
-            <pattern>api/diagnostics/log/ntpd/*</pattern>
+            <pattern>ui/diagnostics/log/core/ntpd/*</pattern>
+            <pattern>api/diagnostics/log/core/ntpd/*</pattern>
         </patterns>
     </page-status-systemlogs-ntpd>
 </acl>
