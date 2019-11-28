@@ -901,7 +901,7 @@ function interfaces_configure($verbose = false)
             /* special interfaces on top of newly generated devices */
             $special[] = $if;
             continue;
-        } elseif (strstr($ifcfg['if'], 'vxlan.')) {
+        } elseif (strstr($ifcfg['if'], 'vxlan')) {
             // XXX device configuration is responsible for interface setup too when trying to init all.
             continue;
         }
