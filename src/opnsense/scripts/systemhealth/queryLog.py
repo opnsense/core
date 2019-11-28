@@ -35,22 +35,37 @@ import os.path
 import re
 import sre_constants
 import ujson
+import datetime
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
-from params import update_params
+import argparse
+squid_ext_timeformat = r'.*(\[\d{1,2}/[A-Za-z]{3}/\d{4}:\d{1,2}:\d{1,2}:\d{1,2} \+\d{4}\]).*'
 
 if __name__ == '__main__':
     # handle parameters
-    parameters = {'limit': '0', 'offset': '0', 'filter': '', 'filename': ''}
-    update_params(parameters)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', help='output type [json/text]', default='json')
+    parser.add_argument('--filter', help='filter results', default='')
+    parser.add_argument('--limit', help='limit number of results', default='')
+    parser.add_argument('--offset', help='begin at row number', default='')
+    parser.add_argument('--filename', help='log file name (excluding .log extension)', default='')
+    parser.add_argument('--module', help='module', default='core')
+    inputargs = parser.parse_args()
 
-    result = {'filters': filter, 'rows': [], 'total_rows': 0, 'origin': parameters['filename'].split('/')[-1]}
-    if parameters['filename'] != "":
-        log_filename = "/var/log/%s.log"  % os.path.basename(parameters['filename'])
-        limit = int(parameters['limit']) if parameters['limit'].isdigit()  else 0
-        offset = int(parameters['offset']) if parameters['offset'].isdigit() else 0
+    result = {'filters': filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
+    if inputargs.filename != "":
+        startup_timestamp = datetime.datetime.now()
+        if inputargs.module == 'core':
+            log_filename = "/var/log/%s.log"  % os.path.basename(inputargs.filename)
+        else:
+            log_filename = "/var/log/%s/%s.log"  % (
+                os.path.basename(inputargs.module), os.path.basename(inputargs.filename)
+            )
+
+        limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
+        offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
         try:
-            filter = parameters['filter'].replace('*', '.*').lower()
+            filter = inputargs.filter.replace('*', '.*').lower()
             if filter.find('*') == -1:
                 # no wildcard operator, assume partial match
                 filter =  ".*%s.*" % filter
@@ -68,6 +83,34 @@ if __name__ == '__main__':
                 if record['line'] != "" and filter_regexp.match(('%s' % record['line']).lower()):
                     result['total_rows'] += 1
                     if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
+                        record['timestamp'] = None
+                        if len(record['line']) > 15 and \
+                                re.match(r'(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)', record['line'][7:15]):
+                            # syslog format, strip timestamp and return actual log data
+                            ts = datetime.datetime.strptime(record['line'][0:15], "%b %d %H:%M:%S")
+                            ts = ts.replace(year=startup_timestamp.year)
+                            if (startup_timestamp - ts).days < 0:
+                                # likely previous year, (month for this year not reached yet)
+                                ts = ts.replace(year=ts.year - 1)
+                            record['timestamp'] = ts.isoformat()
+                            # strip timestamp from log line
+                            record['line'] = record['line'][16:]
+                            # strip hostname from log line
+                            record['line'] = record['line'][record['line'].find(' ')+1:].strip()
+                        elif len(record['line']) > 15 and record['line'][0:10].isdigit() and \
+                                record['line'][10] == '.' and record['line'][11:13].isdigit():
+                            # looks like an epoch
+                            ts = datetime.datetime.fromtimestamp(float(record['line'][0:13]))
+                            record['timestamp'] = ts.isoformat()
+                            # strip timestamp
+                            record['line'] = record['line'][14:].strip()
+                        elif re.match(squid_ext_timeformat, record['line']):
+                            tmp = re.match(squid_ext_timeformat, record['line'])
+                            grp = tmp.group(1)
+                            ts = datetime.datetime.strptime(grp[1:].split()[0], "%d/%b/%Y:%H:%M:%S")
+                            record['timestamp'] = ts.isoformat()
+                            # strip timestamp
+                            record['line'] = record['line'].replace(grp, '')
                         result['rows'].append(record)
                     elif result['total_rows'] > offset + limit:
                         # do not fetch data until end of file...

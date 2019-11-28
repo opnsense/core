@@ -40,31 +40,40 @@ class LogController extends ApiControllerBase
 {
     public function __call($name, $arguments)
     {
+        $module = substr($name, 0, strlen($name)-6);
+        $scope = count($arguments) > 0 ? $arguments[0] : "";
+        $action = count($arguments) > 1 ? $arguments[1] : "";
         if ($this->request->isPost() && substr($name, -6) == 'Action') {
             $this->sessionClose();
-            // create filter to sanitize input data
-            $filter = new Filter();
-            $filter->add('query', new QueryFilter());
-
-            // fetch query parameters (limit results to prevent out of memory issues)
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-
-            if ($this->request->getPost('searchPhrase', 'string', '') != "") {
-                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-            } else {
-                $searchPhrase = '';
-            }
-
             $backend = new Backend();
-            $response = $backend->configdpRun("system diag log", array($itemsPerPage,
-                ($currentPage-1)*$itemsPerPage, $searchPhrase, substr($name,0, strlen($name)-6)));
-            $result = json_decode($response, true);
-            if ($result != null) {
-                $result['rowCount'] = count($result['rows']);
-                $result['total'] = $result['total_rows'];
-                $result['current'] = (int)$currentPage;
-                return $result;
+            if ($action == "clear") {
+                $backend->configdpRun("system clear log", array($module, $scope));
+                return ["status" => "ok"];
+            } else {
+                // create filter to sanitize input data
+                $filter = new Filter();
+                $filter->add('query', new QueryFilter());
+
+                // fetch query parameters (limit results to prevent out of memory issues)
+                $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+                $currentPage = $this->request->getPost('current', 'int', 1);
+
+                if ($this->request->getPost('searchPhrase', 'string', '') != "") {
+                    $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
+                } else {
+                    $searchPhrase = '';
+                }
+
+                $response = $backend->configdpRun("system diag log", array($itemsPerPage,
+                    ($currentPage-1)*$itemsPerPage, $searchPhrase, $module, $scope)
+                );
+                $result = json_decode($response, true);
+                if ($result != null) {
+                    $result['rowCount'] = count($result['rows']);
+                    $result['total'] = $result['total_rows'];
+                    $result['current'] = (int)$currentPage;
+                    return $result;
+                }
             }
         }
         return array();

@@ -29,7 +29,36 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script>
     $( document ).ready(function() {
-      $("#grid-log").UIBootgrid({search:'/api/diagnostics/log/{{scope}}'});
+      $("#grid-log").UIBootgrid({
+          options:{
+              sorting:false,
+              rowSelect: false,
+              selection: false
+          },
+          search:'/api/diagnostics/log/{{module}}/{{scope}}'
+      });
+
+      $("#flushlog").on('click', function(event){
+        event.preventDefault();
+        BootstrapDialog.show({
+          type: BootstrapDialog.TYPE_DANGER,
+          title: "{{ lang._('Log') }}",
+          message: "{{ lang._('Do you really want to flush this log?') }}",
+          buttons: [{
+            label: "{{ lang._('No') }}",
+            action: function(dialogRef) {
+              dialogRef.close();
+            }}, {
+              label: "{{ lang._('Yes') }}",
+              action: function(dialogRef) {
+                  ajaxCall("/api/diagnostics/log/{{module}}/{{scope}}/clear", {}, function(){
+                      dialogRef.close();
+                      $('#grid-log').bootgrid('reload');
+                  });
+              }
+            }]
+        });
+      });
     });
 </script>
 
@@ -41,6 +70,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <thead>
                     <tr>
                         <th data-column-id="pos" data-type="numeric" data-identifier="true"  data-visible="false">#</th>
+                        <th data-column-id="timestamp" data-type="string">{{ lang._('Date') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
                     </tr>
                     </thead>
@@ -48,6 +78,17 @@ POSSIBILITY OF SUCH DAMAGE.
                     </tbody>
                     <tfoot>
                     </tfoot>
+                </table>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                              <button class="btn btn-primary pull-right" id="flushlog">
+                                  {{ lang._('Clear log') }}
+                              </button>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

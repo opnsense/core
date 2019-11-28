@@ -37,16 +37,19 @@ use OPNsense\Base\IndexController;
  */
 class LogController extends IndexController
 {
-    public function indexAction($scope)
+    public function renderPage($module, $scope)
     {
         $this->view->pick('OPNsense/Diagnostics/log');
+        $this->view->module = $module;
         $this->view->scope = $scope;
     }
 
     public function __call($name, $arguments)
     {
         if (substr($name, -6) == 'Action') {
-            return $this->indexAction(substr($name,0, strlen($name)-6));
+            $scope = count($arguments) > 0 ? $arguments[0] : "core";
+            $module = substr($name,0, strlen($name)-6);
+            return $this->renderPage($module, $scope);
         }
     }
 }
