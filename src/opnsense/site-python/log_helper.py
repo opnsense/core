@@ -61,6 +61,8 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
         data = input_stream.read(block_size) + data
         # split stream using begin of line (bol) and end of line (eol)
         bol = data.rfind('\n')
+        if bol == -1:
+            bol = data.rfind('\u0000')
         eol = len(data)
 
         while bol > -1:
