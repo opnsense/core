@@ -5,7 +5,7 @@
             <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
             <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
           </Settings>
-          <LogFile VisibleName="Log File" order="50" url="/diag_logs_dnsmasq.php"/>
+          <LogFile VisibleName="Log File" order="50" url="/ui/diagnostics/log/core/dnsmasq"/>
         </Dnsmasq>
     </Services>
 </menu>

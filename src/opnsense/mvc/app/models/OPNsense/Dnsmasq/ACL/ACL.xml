@@ -20,7 +20,8 @@
     <page-diagnostics-logs-dnsmasq>
         <name>Services: Dnsmasq DNS: Log File</name>
         <patterns>
-            <pattern>diag_logs_dnsmasq.php*</pattern>
+            <pattern>ui/diagnostics/log/dnsmasq/*</pattern>
+            <pattern>api/diagnostics/log/dnsmasq/*</pattern>
         </patterns>
     </page-diagnostics-logs-dnsmasq>
 </acl>

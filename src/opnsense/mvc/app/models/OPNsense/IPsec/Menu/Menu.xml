@@ -19,7 +19,7 @@
             <Leases order="70" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
             <SAD order="80" VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
             <SPD order="90" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
-            <LogFile order="100" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
+            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/ipsec"/>
         </IPsec>
     </VPN>
 </menu>

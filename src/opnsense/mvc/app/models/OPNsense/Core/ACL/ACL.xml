@@ -89,13 +89,15 @@
     <page-diagnostics-logs-dhcp>
         <name>Diagnostics: Logs: DHCP</name>
         <patterns>
-            <pattern>diag_logs_dhcp.php*</pattern>
+            <pattern>ui/diagnostics/log/core/dhcp/*</pattern>
+            <pattern>api/diagnostics/log/core/dhcp/*</pattern>
         </patterns>
     </page-diagnostics-logs-dhcp>
     <page-diagnostics-logs-gateways>
         <name>Diagnostics: Logs: Gateways</name>
         <patterns>
-            <pattern>diag_logs_gateways.php*</pattern>
+            <pattern>ui/diagnostics/log/core/gateways/*</pattern>
+            <pattern>api/diagnostics/log/core/gateways/*</pattern>
         </patterns>
     </page-diagnostics-logs-gateways>
     <page-diagnostics-logs-settings>
@@ -107,9 +109,12 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
-            <pattern>configd_logs.php</pattern>
-            <pattern>diag_logs.php</pattern>
-            <pattern>httpd_logs.php</pattern>
+            <pattern>ui/diagnostics/log/core/configd/*</pattern>
+            <pattern>api/diagnostics/log/core/configd/*</pattern>
+            <pattern>ui/diagnostics/log/core/system/*</pattern>
+            <pattern>api/diagnostics/log/core/system/*</pattern>
+            <pattern>ui/diagnostics/log/core/lighttpd/*</pattern>
+            <pattern>api/diagnostics/log/core/lighttpd/*</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
@@ -296,7 +301,8 @@
     <page-diagnostics-logs-firewall-plain>
         <name>Diagnostics: Logs: Firewall: Plain View</name>
         <patterns>
-            <pattern>diag_logs_filter_plain.php*</pattern>
+            <pattern>ui/diagnostics/log/core/filter/*</pattern>
+            <pattern>api/diagnostics/log/core/filter/*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-plain>
     <page-diagnostics-logs-firewall-dynamic>
@@ -521,31 +527,36 @@
     <page-status-systemlogs-portalauth>
         <name>Status: System logs: Captive portal</name>
         <patterns>
-            <pattern>diag_logs_auth.php*</pattern>
+            <pattern>ui/diagnostics/log/core/portalauth/*</pattern>
+            <pattern>api/diagnostics/log/core/portalauth/*</pattern>
         </patterns>
     </page-status-systemlogs-portalauth>
     <page-status-systemlogs-ppp>
         <name>Status: System logs: PPP</name>
         <patterns>
-            <pattern>diag_logs_ppp.php*</pattern>
+            <pattern>ui/diagnostics/log/core/ppp/*</pattern>
+            <pattern>api/diagnostics/log/core/ppp/*</pattern>
         </patterns>
     </page-status-systemlogs-ppp>
     <page-status-systemlogs-openvpn>
         <name>Status: System logs: OpenVPN</name>
         <patterns>
-            <pattern>diag_logs_openvpn.php*</pattern>
+            <pattern>ui/diagnostics/log/core/openvpn/*</pattern>
+            <pattern>api/diagnostics/log/core/openvpn/*</pattern>
         </patterns>
     </page-status-systemlogs-openvpn>
     <page-status-systemlogs-routing>
         <name>Status: System logs: Routing</name>
         <patterns>
-            <pattern>diag_logs_routing.php*</pattern>
+            <pattern>ui/diagnostics/log/core/routing/*</pattern>
+            <pattern>api/diagnostics/log/core/routing/*</pattern>
         </patterns>
     </page-status-systemlogs-routing>
     <page-status-systemlogs-wireless>
         <name>Status: System logs: Wireless</name>
         <patterns>
-            <pattern>diag_logs_wireless.php*</pattern>
+            <pattern>ui/diagnostics/log/core/wireless/*</pattern>
+            <pattern>api/diagnostics/log/core/wireless/*</pattern>
         </patterns>
     </page-status-systemlogs-wireless>
     <page-status-trafficgraph>
@@ -620,7 +631,8 @@
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>
-            <pattern>diag_logs_pkg.php</pattern>
+            <pattern>ui/diagnostics/log/core/pkg/*</pattern>
+            <pattern>api/diagnostics/log/core/pkg/*</pattern>
         </patterns>
     </page-system-firmware-manualupdate>
     <page-system-gatewaygroups>

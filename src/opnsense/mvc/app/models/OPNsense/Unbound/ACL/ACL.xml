@@ -34,7 +34,8 @@
     <page-diagnostics-logs-resolver>
         <name>Services: Unbound DNS: Log File</name>
         <patterns>
-            <pattern>diag_logs_resolver.php*</pattern>
+            <pattern>ui/diagnostics/log/resolver/*</pattern>
+            <pattern>api/diagnostics/log/resolver/*</pattern>
         </patterns>
     </page-diagnostics-logs-resolver>
 </acl>
