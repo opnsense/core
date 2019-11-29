@@ -882,6 +882,8 @@ function interfaces_configure($verbose = false)
     interfaces_create_wireless_clones($verbose);
     interfaces_lagg_configure($verbose);
     interfaces_vlan_configure($verbose);
+    // XXX: temporary plugin spot for device creation (independent of other devices)
+    plugins_configure('loopback_prepare', $verbose);
 
     /*
      * Queues are set up to order interfaces according to their
@@ -960,7 +962,6 @@ function interfaces_configure($verbose = false)
     plugins_configure('ipsec_prepare', $verbose);
     plugins_configure('openvpn_prepare', $verbose);
     plugins_configure('vxlan_prepare', $verbose);
-    plugins_configure('loopback_prepare', $verbose);
 
     interfaces_group_setup();
 }
