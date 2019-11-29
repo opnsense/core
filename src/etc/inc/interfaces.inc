@@ -960,6 +960,7 @@ function interfaces_configure($verbose = false)
     plugins_configure('ipsec_prepare', $verbose);
     plugins_configure('openvpn_prepare', $verbose);
     plugins_configure('vxlan_prepare', $verbose);
+    plugins_configure('loopback_prepare', $verbose);
 
     interfaces_group_setup();
 }

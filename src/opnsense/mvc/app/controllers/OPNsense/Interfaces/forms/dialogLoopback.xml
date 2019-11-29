@@ -1,0 +1,12 @@
+<form>
+    <field>
+        <id>loopback.deviceId</id>
+        <label>deviceId</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>loopback.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>
