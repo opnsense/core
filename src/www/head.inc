@@ -25,7 +25,7 @@ if (isset($extraBreadcrumb)) {
 
 $themename = html_safe(get_current_theme());
 
-$pagetitle = gentitle(array_reverse($menuBreadcrumbs), ' | ');
+$pagetitle = html_safe(gentitle(array_reverse($menuBreadcrumbs), ' | '));
 $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
 ?><!doctype html>
