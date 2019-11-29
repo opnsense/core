@@ -64,11 +64,6 @@ class VxlanSettingsController extends ApiMutableModelControllerBase
         return $this->delBase("vxlan", $uuid);
     }
 
-    public function toggleItemAction($uuid, $enabled = null)
-    {
-        return $this->toggleBase("vxlan", $uuid, $enabled);
-    }
-
     public function reconfigureAction()
     {
         $result = array("status" => "failed");
