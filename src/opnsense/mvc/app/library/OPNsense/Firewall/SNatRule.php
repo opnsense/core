@@ -85,7 +85,7 @@ class SNatRule extends Rule
             } elseif ($rule['target'] == "other-subnet") {
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
             } elseif (!empty($rule['target']) && Util::isAlias($rule['target'])) {
-                $rule['target'] = "$".$rule['target'];
+                $rule['target'] = "$" . $rule['target'];
                 if (!empty($rule['poolopts']) && substr($rule['poolopts'], 0, 11) != 'round-robin') {
                     // wrong pool type on alias, disable rule
                     $this->log('SNAT / pool type not round-robin');
@@ -102,10 +102,10 @@ class SNatRule extends Rule
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
                     if (!Util::isAlias($rule[$fieldname], true)) {
                         // unable to map port
-                        $this->log("SNAT / unable to map port ". $rule[$fieldname]. ", empty?");
+                        $this->log("SNAT / unable to map port " . $rule[$fieldname] . ", empty?");
                         $rule['disabled'] = true;
                     }
-                    $rule[$fieldname] = "$".$rule[$fieldname];
+                    $rule[$fieldname] = "$" . $rule[$fieldname];
                 }
             }
             if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash") {
@@ -128,7 +128,7 @@ class SNatRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseNatRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder, $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder, $rule) . "\n";
         }
         return $ruleTxt;
     }

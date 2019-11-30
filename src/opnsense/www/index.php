@@ -71,10 +71,12 @@ try {
 
     echo $application->handle()->getContent();
 } catch (\Exception $e) {
-    if (isset($application) || (
+    if (
+        isset($application) || (
           stripos($e->getMessage(), ' handler class cannot be loaded') !== false ||
           stripos($e->getMessage(), ' was not found on handler ') !== false
-    )) {
+        )
+    ) {
         // Render default UI page when controller or action wasn't found
         echo $application->handle('/ui/')->getContent();
     } else {

@@ -144,14 +144,15 @@ class Radius extends Base implements IAuthConnector
             $radius = radius_auth_open();
 
             $error = null;
-            if (!radius_add_server(
-                $radius,
-                $this->radiusHost,
-                $this->acctPort,
-                $this->sharedSecret,
-                $this->timeout,
-                $this->maxRetries
-            )
+            if (
+                !radius_add_server(
+                    $radius,
+                    $this->radiusHost,
+                    $this->acctPort,
+                    $this->sharedSecret,
+                    $this->timeout,
+                    $this->maxRetries
+                )
             ) {
                 $error = radius_strerror($radius);
             } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
@@ -211,14 +212,15 @@ class Radius extends Base implements IAuthConnector
             $radius = radius_auth_open();
 
             $error = null;
-            if (!radius_add_server(
-                $radius,
-                $this->radiusHost,
-                $this->acctPort,
-                $this->sharedSecret,
-                $this->timeout,
-                $this->maxRetries
-            )
+            if (
+                !radius_add_server(
+                    $radius,
+                    $this->radiusHost,
+                    $this->acctPort,
+                    $this->sharedSecret,
+                    $this->timeout,
+                    $this->maxRetries
+                )
             ) {
                 $error = radius_strerror($radius);
             } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
@@ -291,14 +293,15 @@ class Radius extends Base implements IAuthConnector
             }
 
             $error = null;
-            if (!radius_add_server(
-                $radius,
-                $this->radiusHost,
-                $this->acctPort,
-                $this->sharedSecret,
-                $this->timeout,
-                $this->maxRetries
-            )
+            if (
+                !radius_add_server(
+                    $radius,
+                    $this->radiusHost,
+                    $this->acctPort,
+                    $this->sharedSecret,
+                    $this->timeout,
+                    $this->maxRetries
+                )
             ) {
                 $error = radius_strerror($radius);
             } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
@@ -362,14 +365,16 @@ class Radius extends Base implements IAuthConnector
         $radius = radius_auth_open();
 
         $error = null;
-        if (!radius_add_server(
-            $radius,
-            $this->radiusHost,
-            $this->authPort,
-            $this->sharedSecret,
-            $this->timeout,
-            $this->maxRetries
-        )) {
+        if (
+            !radius_add_server(
+                $radius,
+                $this->radiusHost,
+                $this->authPort,
+                $this->sharedSecret,
+                $this->timeout,
+                $this->maxRetries
+            )
+        ) {
             $error = radius_strerror($radius);
         } elseif (!radius_create_request($radius, RADIUS_ACCESS_REQUEST)) {
             $error = radius_strerror($radius);
@@ -395,7 +400,7 @@ class Radius extends Base implements IAuthConnector
                     }
                     break;
                 default:
-                    syslog(LOG_ERR, 'Unsupported protocol '.$this->protocol);
+                    syslog(LOG_ERR, 'Unsupported protocol ' . $this->protocol);
                     return false;
             }
         }

@@ -89,17 +89,17 @@ trait TOTP
     private function calculateToken($moment, $secret)
     {
         // calculate binary 8 character time for provided window
-        $binary_time = pack("N", (int)($moment/$this->timeWindow));
+        $binary_time = pack("N", (int)($moment / $this->timeWindow));
         $binary_time = str_pad($binary_time, 8, chr(0), STR_PAD_LEFT);
 
         // Generate the hash using the SHA1 algorithm
         $hash = hash_hmac('sha1', $binary_time, $secret, true);
         $offset = ord($hash[19]) & 0xf;
         $otp = (
-                ((ord($hash[$offset+0]) & 0x7f) << 24 ) |
-                ((ord($hash[$offset+1]) & 0xff) << 16 ) |
-                ((ord($hash[$offset+2]) & 0xff) << 8 ) |
-                (ord($hash[$offset+3]) & 0xff)
+                ((ord($hash[$offset + 0]) & 0x7f) << 24 ) |
+                ((ord($hash[$offset + 1]) & 0xff) << 16 ) |
+                ((ord($hash[$offset + 2]) & 0xff) << 8 ) |
+                (ord($hash[$offset + 3]) & 0xff)
             ) % pow(10, $this->otpLength);
 
 
@@ -229,7 +229,7 @@ trait TOTP
         $fields["timeWindow"]["name"] = gettext("Time window");
         $fields["timeWindow"]["type"] = "text";
         $fields["timeWindow"]["default"] = null;
-        $fields["timeWindow"]["help"] = gettext("The time period in which the token will be valid,".
+        $fields["timeWindow"]["help"] = gettext("The time period in which the token will be valid," .
             " default is 30 seconds.");
         $fields["timeWindow"]["validate"] = function ($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
@@ -242,7 +242,7 @@ trait TOTP
         $fields["graceperiod"]["name"] = gettext("Grace period");
         $fields["graceperiod"]["type"] = "text";
         $fields["graceperiod"]["default"] = null;
-        $fields["graceperiod"]["help"] = gettext("Time in seconds in which this server and the token may differ,".
+        $fields["graceperiod"]["help"] = gettext("Time in seconds in which this server and the token may differ," .
             " default is 10 seconds. Set higher for a less secure easier match.");
         $fields["graceperiod"]["validate"] = function ($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2017 Fabian Franz
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Unbound\Api;
 
 use \OPNsense\Base\ApiControllerBase;

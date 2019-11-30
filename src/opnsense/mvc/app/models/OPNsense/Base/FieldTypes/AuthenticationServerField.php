@@ -27,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 /**
@@ -65,7 +66,7 @@ class AuthenticationServerField extends BaseListField
         if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
             self::$internalStaticOptionList[$this->internalCacheKey] = array();
 
-            $authFactory = new \OPNsense\Auth\AuthenticationFactory;
+            $authFactory = new \OPNsense\Auth\AuthenticationFactory();
             $allAuthServers = $authFactory->listServers();
 
             foreach ($allAuthServers as $key => $value) {

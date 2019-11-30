@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,7 +27,6 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
 
 namespace OPNsense\Base\FieldTypes;
 
@@ -308,7 +308,7 @@ abstract class BaseField
         if (isset($this->internalChildnodes[$name])) {
             $this->internalChildnodes[$name]->setValue($value);
         } else {
-            throw new \InvalidArgumentException($name." not an attribute of ". $this->internalReference);
+            throw new \InvalidArgumentException($name . " not an attribute of " . $this->internalReference);
         }
     }
 
@@ -426,7 +426,7 @@ abstract class BaseField
             $constraint = $this->internalConstraints[$name];
             if (!empty($constraint['type'])) {
                 try {
-                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\'.$constraint['type']);
+                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\' . $constraint['type']);
                     if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
                         $constraint['name'] = $name;
                         $constraint['node'] = $this;
@@ -709,6 +709,6 @@ abstract class BaseField
     public function getObjectType()
     {
         $parts = explode("\\", get_class($this));
-        return $parts[count($parts)-1];
+        return $parts[count($parts) - 1];
     }
 }

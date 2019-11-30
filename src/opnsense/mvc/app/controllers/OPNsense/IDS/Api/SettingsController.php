@@ -92,14 +92,14 @@ class SettingsController extends ApiMutableModelControllerBase
                     if ($sortStr != '') {
                         $sortStr .= ',';
                     }
-                    $sortStr .= $filter->sanitize($sortKey, "query") . ' '. $sortOrd . ' ';
+                    $sortStr .= $filter->sanitize($sortKey, "query") . ' ' . $sortOrd . ' ';
                 }
             } else {
                 $sortStr = 'sid';
             }
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                $searchPhrase = 'msg,source,sid/"*'.$searchTag.'"';
+                $searchPhrase = 'msg,source,sid/"*' . $searchTag . '"';
             } else {
                 $searchPhrase = '';
             }
@@ -107,19 +107,19 @@ class SettingsController extends ApiMutableModelControllerBase
             // add filter for classtype
             if ($this->request->getPost("classtype", "string", '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('classtype'), "query");
-                $searchPhrase .= " classtype/".$searchTag.' ';
+                $searchPhrase .= " classtype/" . $searchTag . ' ';
             }
 
             // add filter for action
             if ($this->request->getPost("action", "string", '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('action'), "query");
-                $searchPhrase .= " installed_action/".$searchTag.' ';
+                $searchPhrase .= " installed_action/" . $searchTag . ' ';
             }
 
             // request list of installed rules
             $backend = new Backend();
             $response = $backend->configdpRun("ids query rules", array($itemsPerPage,
-                ($currentPage-1)*$itemsPerPage,
+                ($currentPage - 1) * $itemsPerPage,
                 $searchPhrase, $sortStr));
 
             $data = json_decode($response, true);
@@ -160,7 +160,7 @@ class SettingsController extends ApiMutableModelControllerBase
         if (!empty($sid)) {
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/'.$sid));
+            $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/' . $sid));
             $data = json_decode($response, true);
         } else {
             $data = null;
@@ -181,31 +181,31 @@ class SettingsController extends ApiMutableModelControllerBase
                     $ref = trim($ref);
                     $item_html = '<small><a href="%url%" target="_blank">%ref%</a></small>';
                     if (substr($ref, 0, 4) == 'url,') {
-                        $item_html = str_replace("%url%", 'http://'.substr($ref, 4), $item_html);
+                        $item_html = str_replace("%url%", 'http://' . substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
                     } elseif (substr($ref, 0, 7) == "system,") {
                         $item_html = str_replace("%url%", substr($ref, 7), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 7), $item_html);
                     } elseif (substr($ref, 0, 8) == "bugtraq,") {
-                        $item_html = str_replace("%url%", "http://www.securityfocus.com/bid/".
+                        $item_html = str_replace("%url%", "http://www.securityfocus.com/bid/" .
                             substr($ref, 8), $item_html);
-                        $item_html = str_replace("%ref%", "bugtraq ".substr($ref, 8), $item_html);
+                        $item_html = str_replace("%ref%", "bugtraq " . substr($ref, 8), $item_html);
                     } elseif (substr($ref, 0, 4) == "cve,") {
-                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=".
+                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
                             substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
                     } elseif (substr($ref, 0, 7) == "nessus,") {
-                        $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=".
+                        $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=" .
                             substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", 'nessus '.substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", 'nessus ' . substr($ref, 7), $item_html);
                     } elseif (substr($ref, 0, 7) == "mcafee,") {
-                        $item_html = str_replace("%url%", "http://vil.nai.com/vil/dispVirus.asp?virus_k=".
+                        $item_html = str_replace("%url%", "http://vil.nai.com/vil/dispVirus.asp?virus_k=" .
                             substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", 'macafee '.substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", 'macafee ' . substr($ref, 7), $item_html);
                     } else {
                         continue;
                     }
-                    $row['reference_html'] .= $item_html.'<br/>';
+                    $row['reference_html'] .= $item_html . '<br/>';
                 }
             }
             return $row;
@@ -252,7 +252,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $item['filename'] = $fileinfo['filename'];
                 $item['documentation_url'] = $fileinfo['documentation_url'];
                 if (!empty($fileinfo['documentation_url'])) {
-                    $item['documentation'] = "<a href='".$item['documentation_url']."' target='_new'>";
+                    $item['documentation'] = "<a href='" . $item['documentation_url'] . "' target='_new'>";
                     $item['documentation'] .= $item['documentation_url'];
                     $item['documentation'] .= '</a>';
                 } else {
@@ -554,9 +554,10 @@ class SettingsController extends ApiMutableModelControllerBase
             $newAction = $this->request->getPost("action", "striptags", null);
             if (!empty($ruleinfo)) {
                 $mdlIDS = $this->getModel();
-                if ($ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
+                if (
+                    $ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
                     $ruleinfo['action_default'] == $newAction
-                    ) {
+                ) {
                     // if we're switching back to default, remove alter rule
                     $mdlIDS->removeRule($sid);
                 } else {

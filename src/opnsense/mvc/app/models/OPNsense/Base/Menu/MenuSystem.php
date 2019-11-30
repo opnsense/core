@@ -62,14 +62,14 @@ class MenuSystem
     {
         // load and validate menu xml
         if (!file_exists($filename)) {
-            throw new MenuInitException('Menu xml '.$filename.' missing');
+            throw new MenuInitException('Menu xml ' . $filename . ' missing');
         }
         $menuXml = simplexml_load_file($filename);
         if ($menuXml === false) {
-            throw new MenuInitException('Menu xml '.$filename.' not valid');
+            throw new MenuInitException('Menu xml ' . $filename . ' not valid');
         }
         if ($menuXml->getName() != "menu") {
-            throw new MenuInitException('Menu xml '.$filename.' seems to be of wrong type');
+            throw new MenuInitException('Menu xml ' . $filename . ' seems to be of wrong type');
         }
 
         return $menuXml;
@@ -129,8 +129,8 @@ class MenuSystem
         // crawl all vendors and modules and add menu definitions
         foreach ($modelDirs as $modelDir) {
             foreach (glob(preg_replace('#/+#', '/', "{$modelDir}/*")) as $vendor) {
-                foreach (glob($vendor.'/*') as $module) {
-                    $menu_cfg_xml = $module.'/Menu/Menu.xml';
+                foreach (glob($vendor . '/*') as $module) {
+                    $menu_cfg_xml = $module . '/Menu/Menu.xml';
                     if (file_exists($menu_cfg_xml)) {
                         $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
                         $domNode = $root->ownerDocument->importNode($domNode, true);
@@ -174,7 +174,7 @@ class MenuSystem
     public function __construct()
     {
         // set cache location
-        $this->menuCacheFilename = sys_get_temp_dir(). "/opnsense_menu_cache.xml";
+        $this->menuCacheFilename = sys_get_temp_dir() . "/opnsense_menu_cache.xml";
 
         // load menu xml's
         $menuxml = null;
@@ -231,7 +231,7 @@ class MenuSystem
         $ordid = 0;
         foreach ($iftargets['if'] as $key => $descr) {
             $this->appendItem('Interfaces', $key, array(
-                'url' => '/interfaces.php?if='. $key,
+                'url' => '/interfaces.php?if=' . $key,
                 'visiblename' => '[' . $descr . ']',
                 'cssclass' => 'fa fa-sitemap',
                 'order' => $ordid++,
@@ -242,7 +242,7 @@ class MenuSystem
         foreach ($iftargets['wl'] as $key => $descr) {
             $this->appendItem('Interfaces.Wireless', $key, array(
                 'visiblename' => sprintf(gettext('%s Status'), $descr),
-                'url' => '/status_wireless.php?if='. $key,
+                'url' => '/status_wireless.php?if=' . $key,
                 'order' => $ordid++,
             ));
         }
@@ -252,12 +252,12 @@ class MenuSystem
         $ordid = 0;
         foreach ($iftargets['fw'] as $key => $descr) {
             $this->appendItem('Firewall.Rules', $key, array(
-                'url' => '/firewall_rules.php?if='. $key,
+                'url' => '/firewall_rules.php?if=' . $key,
                 'visiblename' => $descr,
                 'order' => $ordid++,
             ));
             $this->appendItem('Firewall.Rules.' . $key, 'Select' . $key, array(
-                'url' => '/firewall_rules.php?if='. $key. '&*',
+                'url' => '/firewall_rules.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
             if ($key == 'FloatingRules') {
@@ -267,7 +267,7 @@ class MenuSystem
                 ));
             }
             $this->appendItem('Firewall.Rules.' . $key, 'Add' . $key, array(
-                'url' => '/firewall_rules_edit.php?if='. $key,
+                'url' => '/firewall_rules_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
             $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, array(
@@ -280,40 +280,40 @@ class MenuSystem
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
             $this->appendItem('Services.DHCPv4', $key, array(
-                'url' => '/services_dhcp.php?if='. $key,
+                'url' => '/services_dhcp.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
             $this->appendItem('Services.DHCPv4.' . $key, 'Edit' . $key, array(
-                'url' => '/services_dhcp.php?if='. $key . '&*',
+                'url' => '/services_dhcp.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
             $this->appendItem('Services.DHCPv4.' . $key, 'AddStatic' . $key, array(
-                'url' => '/services_dhcp_edit.php?if='. $key,
+                'url' => '/services_dhcp_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
             $this->appendItem('Services.DHCPv4.' . $key, 'EditStatic' . $key, array(
-                'url' => '/services_dhcp_edit.php?if='. $key . '&*',
+                'url' => '/services_dhcp_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
             $this->appendItem('Services.DHCPv6', $key, array(
-                'url' => '/services_dhcpv6.php?if='. $key,
+                'url' => '/services_dhcpv6.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
             $this->appendItem('Services.DHCPv6.' . $key, 'Add' . $key, array(
-                'url' => '/services_dhcpv6_edit.php?if='. $key,
+                'url' => '/services_dhcpv6_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
             $this->appendItem('Services.DHCPv6.' . $key, 'Edit' . $key, array(
-                'url' => '/services_dhcpv6_edit.php?if='. $key . '&*',
+                'url' => '/services_dhcpv6_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
             $this->appendItem('Services.RouterAdv', $key, array(
-                'url' => '/services_router_advertisements.php?if='. $key,
+                'url' => '/services_router_advertisements.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));

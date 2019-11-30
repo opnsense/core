@@ -57,17 +57,20 @@ class LegacySubsystemController extends ApiControllerBase
     public function applyConfigAction()
     {
         try {
-            if (!$this->request->isPost())
+            if (!$this->request->isPost()) {
                 throw new \Exception(gettext('Request method not allowed, expected POST'));
+            }
 
             $backend = new Backend();
             $bckresult = trim($backend->configdRun('ipsec reconfigure'));
-            if ($bckresult !== 'OK')
+            if ($bckresult !== 'OK') {
                 throw new \Exception($bckresult);
+            }
 
             // clear_subsystem_dirty('ipsec')
-            if (!@unlink('/tmp/ipsec.dirty'))
+            if (!@unlink('/tmp/ipsec.dirty')) {
                 throw new \Exception(gettext('Could not remove /tmp/ipsec.dirty to mark subsystem as clean'));
+            }
 
             return ['message' => gettext('The changes have been applied successfully.')];
         } catch (\Exception $e) {

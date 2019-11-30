@@ -111,7 +111,8 @@ class AliasUtilController extends ApiControllerBase
             });
         }
 
-        if ($this->request->hasPost('sort') &&
+        if (
+            $this->request->hasPost('sort') &&
             is_array($this->request->getPost('sort')) &&
             array_key_exists('ip', $this->request->getPost('sort')) &&
             $this->request->getPost('sort')['ip'] === 'desc'

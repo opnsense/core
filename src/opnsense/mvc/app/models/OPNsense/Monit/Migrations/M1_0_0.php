@@ -68,8 +68,10 @@ class M1_0_0 extends BaseModelMigration
         if (!empty($cfgObj->notifications->smtp->password)) {
             $model->general->password = $cfgObj->notifications->smtp->password;
         }
-        if ((!empty($cfgObj->notifications->smtp->tls) && $cfgObj->notifications->smtp->tls == 1)  ||
-            (!empty($cfgObj->notifications->smtp->ssl) && $cfgObj->notifications->smtp->ssl == 1)) {
+        if (
+            (!empty($cfgObj->notifications->smtp->tls) && $cfgObj->notifications->smtp->tls == 1)  ||
+            (!empty($cfgObj->notifications->smtp->ssl) && $cfgObj->notifications->smtp->ssl == 1)
+        ) {
             $model->general->ssl = 1;
         }
 
@@ -116,10 +118,12 @@ class M1_0_0 extends BaseModelMigration
         foreach ($defaultTests as $defaultTest) {
             $testNode = $model->test->add();
             $testNode->setNodes($defaultTest);
-            if ($defaultTest['name'] == 'MemoryUsage' ||
+            if (
+                $defaultTest['name'] == 'MemoryUsage' ||
                 $defaultTest['name'] == 'CPUUsage' ||
                 $defaultTest['name'] == 'LoadAvg1' ||
-                $defaultTest['name'] == 'LoadAvg5' ) {
+                $defaultTest['name'] == 'LoadAvg5'
+            ) {
                 $systemService['tests'] .= $testNode->getAttributes()['uuid'] . ',';
             }
             if ($defaultTest['name'] == 'SpaceUsage') {

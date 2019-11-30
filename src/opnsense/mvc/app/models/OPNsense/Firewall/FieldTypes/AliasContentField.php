@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
@@ -71,7 +73,7 @@ class AliasContentField extends BaseField
         $result = array ();
         $selectlist = explode($this->separatorchar, (string)$this);
         foreach ($selectlist as $optKey) {
-            $result[$optKey] = array("value"=>$optKey, "selected" => 1);
+            $result[$optKey] = array("value" => $optKey, "selected" => 1);
         }
         return $result;
     }
@@ -174,8 +176,10 @@ class AliasContentField extends BaseField
                     $domain_alias_count++;
                 }
             }
-            if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
-                    !($ipaddr_count == 2 && $domain_alias_count == 0)) {
+            if (
+                !Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
+                    !($ipaddr_count == 2 && $domain_alias_count == 0)
+            ) {
                 $messages[] = sprintf(
                     gettext('Entry "%s" is not a valid hostname or IP address.'),
                     $network

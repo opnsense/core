@@ -148,8 +148,8 @@ class ACL
     private function mergePluggableACLs()
     {
         // crawl all vendors and modules and add acl definitions
-        foreach (glob(__DIR__.'/../../*') as $vendor) {
-            foreach (glob($vendor.'/*') as $module) {
+        foreach (glob(__DIR__ . '/../../*') as $vendor) {
+            foreach (glob($vendor . '/*') as $module) {
                 // probe for ACL implementation, which should derive from OPNsense\Core\ACL\ACL
                 $tmp = explode("/", $module);
                 $module_name = array_pop($tmp);
@@ -165,7 +165,7 @@ class ACL
                         $check_derived = $check_derived->getParentClass();
                     }
                     if ($check_derived === false) {
-                        throw new \Exception('ACL class '.$classname.' seems to be of wrong type');
+                        throw new \Exception('ACL class ' . $classname . ' seems to be of wrong type');
                     }
                 } else {
                     $acl_rfcls = new \ReflectionClass('OPNsense\Core\ACL\ACL');
@@ -206,7 +206,7 @@ class ACL
     public function __construct()
     {
         // set cache location
-        $this->aclCacheFilename = sys_get_temp_dir(). "/opnsense_acl_cache.json";
+        $this->aclCacheFilename = sys_get_temp_dir() . "/opnsense_acl_cache.json";
 
         // load module ACL's
         if (!$this->isExpired()) {

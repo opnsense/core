@@ -28,7 +28,6 @@
  *
  */
 
-
 namespace OPNsense\Diagnostics\Api;
 
 use \OPNsense\Base\ApiControllerBase;
@@ -106,7 +105,7 @@ class NetworkinsightController extends ApiControllerBase
                             $measure_val = $payload['packets'] / $payload['resolution'];
                         }
                         // add to timeseries
-                        $timeseries[$timeserie_key][] = array((int)$timeserie*1000, $measure_val);
+                        $timeseries[$timeserie_key][] = array((int)$timeserie * 1000, $measure_val);
                     }
                 }
                 foreach ($timeseries as $timeserie_key => $data) {
@@ -148,13 +147,13 @@ class NetworkinsightController extends ApiControllerBase
             if ($this->request->get("filter_field") != null && $this->request->get("filter_value") != null) {
                 $filter_fields = explode(',', $this->request->get("filter_field"));
                 $filter_values = explode(',', $this->request->get("filter_value"));
-                $data_filter="";
+                $data_filter = "";
                 foreach ($filter_fields as $field_indx => $filter_field) {
                     if ($data_filter != '') {
                         $data_filter .= ',';
                     }
                     if (isset($filter_values[$field_indx])) {
-                        $data_filter .= $filter_field.'='.$filter_values[$field_indx];
+                        $data_filter .= $filter_field . '=' . $filter_values[$field_indx];
                     }
                 }
                 $data_filter = "'{$data_filter}'";
@@ -259,7 +258,7 @@ class NetworkinsightController extends ApiControllerBase
         $resolution = null
     ) {
         $this->response->setRawHeader("Content-Type: application/octet-stream");
-        $this->response->setRawHeader("Content-Disposition: attachment; filename=".$provider.".csv");
+        $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $provider . ".csv");
         if ($this->request->isGet() && $provider != null && $resolution != null) {
             $backend = new Backend();
             $configd_cmd = "netflow aggregate export {$provider} {$from_date} {$to_date} {$resolution}";

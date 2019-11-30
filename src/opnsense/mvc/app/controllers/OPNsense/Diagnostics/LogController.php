@@ -48,7 +48,7 @@ class LogController extends IndexController
     {
         if (substr($name, -6) == 'Action') {
             $scope = count($arguments) > 0 ? $arguments[0] : "core";
-            $module = substr($name,0, strlen($name)-6);
+            $module = substr($name, 0, strlen($name) - 6);
             return $this->renderPage($module, $scope);
         }
     }

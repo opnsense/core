@@ -127,15 +127,17 @@ class ControllerRoot extends Controller
         } else {
             $session_timeout = 14400;
         }
-        $redirect_uri = "/?url=".$_SERVER['REQUEST_URI'];
+        $redirect_uri = "/?url=" . $_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
             // user unknown
             $this->getLogger()->error("no active session, user not found");
             $this->response->redirect($redirect_uri, true);
             $this->setLang();
             return false;
-        } elseif ($this->session->has("last_access")
-            && $this->session->get("last_access") < (time() - $session_timeout)) {
+        } elseif (
+            $this->session->has("last_access")
+            && $this->session->get("last_access") < (time() - $session_timeout)
+        ) {
             // session expired / cleanup session data
             $this->getLogger()->error("session expired");
             $this->session->remove("Username");
@@ -152,8 +154,8 @@ class ControllerRoot extends Controller
         // Authorization using legacy acl structure
         $acl = new ACL();
         if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
-            $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
-                " not accessible for user ".$this->session->get("Username"));
+            $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
+                " not accessible for user " . $this->session->get("Username"));
             $this->response->redirect("/", true);
             return false;
         }

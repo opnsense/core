@@ -137,7 +137,7 @@ class ViscosityVisz extends PlainOpenVPN
 
         // cleanup
         unlink($outputFilename);
-        foreach (glob($content_dir."/*") as $filename) {
+        foreach (glob($content_dir . "/*") as $filename) {
             unlink($filename);
         }
         rmdir($content_dir);

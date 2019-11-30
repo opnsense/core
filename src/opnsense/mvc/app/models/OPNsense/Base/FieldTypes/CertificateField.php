@@ -27,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\Config;
@@ -79,5 +80,4 @@ class CertificateField extends BaseListField
         }
         $this->internalOptionList = self::$internalStaticOptionList[$this->certificateType];
     }
-
 }

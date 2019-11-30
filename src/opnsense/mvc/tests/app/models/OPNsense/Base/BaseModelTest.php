@@ -39,9 +39,11 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testResetConfig()
     {
         // reset version, force migrations
-        if (!empty(Config::getInstance()->object()->tests) &&
+        if (
+            !empty(Config::getInstance()->object()->tests) &&
             !empty(Config::getInstance()->object()->tests->OPNsense) &&
-            !empty(Config::getInstance()->object()->tests->OPNsense->TestModel)) {
+            !empty(Config::getInstance()->object()->tests->OPNsense->TestModel)
+        ) {
             Config::getInstance()->object()->tests->OPNsense->TestModel['version'] = '0.0.0';
             Config::getInstance()->object()->tests->OPNsense->TestModel->general->FromEmail = "sample@example.com";
         }

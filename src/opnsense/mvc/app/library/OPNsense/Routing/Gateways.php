@@ -133,7 +133,7 @@ class Gateways
             $definedIntf = $this->getDefinedInterfaces();
             $dynamic_gw = array();
             $gatewaySeq = 1;
-            $i=0; // sequence used in legacy edit form (item in the list)
+            $i = 0; // sequence used in legacy edit form (item in the list)
             $reservednames = array();
 
             // add loopback, lowest priority
@@ -233,8 +233,8 @@ class Gateways
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         // if name is already taken, don't try to add a new (virtual) entry
                         null;
-                    } elseif (file_exists("/tmp/{$ifcfg['if']}_router".$fsuffix)) {
-                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router".$fsuffix));
+                    } elseif (file_exists("/tmp/{$ifcfg['if']}_router" . $fsuffix)) {
+                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router" . $fsuffix));
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
@@ -246,8 +246,10 @@ class Gateways
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif ($ipproto == 'inet6'
-                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))) {
+                    } elseif (
+                        $ipproto == 'inet6'
+                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))
+                    ) {
                         // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty

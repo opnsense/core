@@ -136,7 +136,7 @@ class Nextcloud extends Base implements IBackupProvider
             $password = (string)$nextcloud->password;
             $backupdir = (string)$nextcloud->backupdir;
             $crypto_password = (string)$nextcloud->password_encryption;
-            $hostname = $config->system->hostname . '.' .$config->system->domain;
+            $hostname = $config->system->hostname . '.' . $config->system->domain;
             $configname = 'config-' . $hostname . '-' .  date("Y-m-d_H:i:s") . '.xml';
             // backup source data to local strings (plain/encrypted)
             $confdata = file_get_contents('/conf/config.xml');
@@ -196,9 +196,11 @@ class Nextcloud extends Base implements IBackupProvider
             if ($response->getName() == 'response') {
                 $fileurl =  (string)$response->href;
                 $dirname = explode("/remote.php/dav/files/$username", $fileurl, 2)[1];
-                if ($response->propstat->prop->resourcetype->children()->count() > 0 &&
+                if (
+                    $response->propstat->prop->resourcetype->children()->count() > 0 &&
                     $response->propstat->prop->resourcetype->children()[0]->getName() == 'collection' &&
-                    $only_dirs) {
+                    $only_dirs
+                ) {
                     $ret[] = $dirname;
                 } elseif (!$only_dirs) {
                     $ret[] = $dirname;

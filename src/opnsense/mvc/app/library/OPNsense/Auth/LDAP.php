@@ -484,16 +484,20 @@ class LDAP extends Base implements IAuthConnector
                 $cnf = Config::getInstance()->lock(true)->object();
                 foreach ($cnf->system->group as $group) {
                     if (in_array((string)$group->name, $sync_groups)) {
-                        if (in_array((string)$user->uid, (array)$group->member)
-                              && empty($ldap_groups[(string)$group->name])) {
+                        if (
+                            in_array((string)$user->uid, (array)$group->member)
+                              && empty($ldap_groups[(string)$group->name])
+                        ) {
                             unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
                             syslog(LOG_NOTICE, sprintf(
                                 'User: policy change for %s unlink group %s',
                                 $username,
                                 (string)$group->name
                             ));
-                        } elseif (!in_array((string)$user->uid, (array)$group->member)
-                              && !empty($ldap_groups[(string)$group->name])) {
+                        } elseif (
+                            !in_array((string)$user->uid, (array)$group->member)
+                              && !empty($ldap_groups[(string)$group->name])
+                        ) {
                             syslog(LOG_NOTICE, sprintf(
                                 'User: policy change for %s link group %s [%s]',
                                 $username,

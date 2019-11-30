@@ -101,13 +101,13 @@ class ControllerBase extends ControllerRoot
     public function getForm($formname)
     {
         $class_info = new \ReflectionClass($this);
-        $filename = dirname($class_info->getFileName()) . "/forms/".$formname.".xml";
+        $filename = dirname($class_info->getFileName()) . "/forms/" . $formname . ".xml";
         if (!file_exists($filename)) {
-            throw new \Exception('form xml '.$filename.' missing');
+            throw new \Exception('form xml ' . $filename . ' missing');
         }
         $formXml = simplexml_load_file($filename);
         if ($formXml === false) {
-            throw new \Exception('form xml '.$filename.' not valid');
+            throw new \Exception('form xml ' . $filename . ' not valid');
         }
 
         return $this->parseFormNode($formXml);
@@ -147,11 +147,13 @@ class ControllerBase extends ControllerRoot
 
             // REST type calls should be implemented by inheriting ApiControllerBase.
             // because we don't check for csrf on these methods, we want to make sure these aren't used.
-            if ($this->request->isHead() ||
+            if (
+                $this->request->isHead() ||
                 $this->request->isPut() ||
                 $this->request->isDelete() ||
                 $this->request->isPatch() ||
-                $this->request->isOptions()) {
+                $this->request->isOptions()
+            ) {
                 throw new \Exception('request type not supported');
             }
         }
@@ -181,9 +183,10 @@ class ControllerBase extends ControllerRoot
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
-        if ($cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
+        if (
+            $cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
             (
-                is_dir('/usr/local/opnsense/www/themes/'.(string)$cnf->object()->theme) ||
+                is_dir('/usr/local/opnsense/www/themes/' . (string)$cnf->object()->theme) ||
                 !is_dir('/usr/local/opnsense/www/themes')
             )
         ) {
@@ -191,8 +194,8 @@ class ControllerBase extends ControllerRoot
         }
 
         // parse product properties, use template (.in) when not found
-        $firmware_product_fn =  __DIR__.'/../../../../../version/core';
-        $firmware_product_fn = !is_file($firmware_product_fn) ? $firmware_product_fn .".in" : $firmware_product_fn;
+        $firmware_product_fn =  __DIR__ . '/../../../../../version/core';
+        $firmware_product_fn = !is_file($firmware_product_fn) ? $firmware_product_fn . ".in" : $firmware_product_fn;
         $product_vars = json_decode(file_get_contents($firmware_product_fn), true);
         foreach ($product_vars as $product_key => $product_var) {
             $this->view->$product_key = $product_var;

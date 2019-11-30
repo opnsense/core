@@ -56,7 +56,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         // transform stats data to recordset
         $destinations = array();
         foreach ($this->getModel()->destinations->destination->iterateItems() as $destid => $dest) {
-            $destinations["d_".str_replace('-', '', (string)$destid)] = array(
+            $destinations["d_" . str_replace('-', '', (string)$destid)] = array(
                 "uuid" => $destid,
                 "description" => (string)$dest->description
             );
@@ -72,7 +72,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 }
             } else {
                 $record = array('Description' => '');
-                for ($i=0; $i < count($fieldnames); $i++) {
+                for ($i = 0; $i < count($fieldnames); $i++) {
                     $record[$fieldnames[$i]] = $parts[$i];
                 }
                 if (!empty($record['SourceId'])) {

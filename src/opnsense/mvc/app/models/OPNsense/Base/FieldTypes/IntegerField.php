@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Base\Validators\MinMaxValidator;
@@ -67,7 +69,7 @@ class IntegerField extends BaseField
     public function __construct($ref = null, $tagname = null)
     {
         parent:: __construct($ref, $tagname);
-        $this->minimum_value = PHP_INT_MAX*-1;
+        $this->minimum_value = PHP_INT_MAX * -1;
         $this->maximum_value = PHP_INT_MAX;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -26,7 +27,6 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
 
 namespace OPNsense\Firewall;
 

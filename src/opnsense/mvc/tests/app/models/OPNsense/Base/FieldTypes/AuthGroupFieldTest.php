@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2019 Deciso B.V.
  *
@@ -47,7 +48,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\AuthGroupField', new AuthGroupField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/AuthGroupFieldTest/';
+        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/AuthGroupFieldTest/';
         Config::getInstance()->forceReload();
     }
 

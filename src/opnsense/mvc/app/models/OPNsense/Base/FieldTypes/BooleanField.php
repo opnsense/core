@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\Regex;
@@ -58,7 +60,7 @@ class BooleanField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $validators[] = new Regex(array('message' => $this->internalValidationMessage,
-                'pattern'=>trim($regex_mask)));
+                'pattern' => trim($regex_mask)));
         }
         return $validators;
     }

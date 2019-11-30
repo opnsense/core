@@ -40,7 +40,7 @@ class LogController extends ApiControllerBase
 {
     public function __call($name, $arguments)
     {
-        $module = substr($name, 0, strlen($name)-6);
+        $module = substr($name, 0, strlen($name) - 6);
         $scope = count($arguments) > 0 ? $arguments[0] : "";
         $action = count($arguments) > 1 ? $arguments[1] : "";
         if ($this->request->isPost() && substr($name, -6) == 'Action') {
@@ -65,8 +65,7 @@ class LogController extends ApiControllerBase
                 }
 
                 $response = $backend->configdpRun("system diag log", array($itemsPerPage,
-                    ($currentPage-1)*$itemsPerPage, $searchPhrase, $module, $scope)
-                );
+                    ($currentPage - 1) * $itemsPerPage, $searchPhrase, $module, $scope));
                 $result = json_decode($response, true);
                 if ($result != null) {
                     $result['rowCount'] = count($result['rows']);

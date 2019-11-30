@@ -128,7 +128,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 foreach ($usages as $usage) {
                     $message .= sprintf(
                         gettext("%s - %s {%s}"),
-                        $usage['module'], $usage['description'], $usage['reference']
+                        $usage['module'],
+                        $usage['description'],
+                        $usage['reference']
                     ) . "\n";
                 }
                 throw new UserException($message, gettext("Item in use by"));
@@ -204,7 +206,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function validate($node = null, $prefix = null)
     {
-        $result = array("result"=>"");
+        $result = array("result" => "");
         $resultPrefix = empty($prefix) ? static::$internalModelName : $prefix;
         // perform validation
         $valMsgs = $this->getModel()->performValidation();
@@ -217,7 +219,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             if ($node != null) {
                 $fieldnm = str_replace($node->__reference, $resultPrefix, $msg->getField());
             } else {
-                $fieldnm = $resultPrefix.".".$msg->getField();
+                $fieldnm = $resultPrefix . "." . $msg->getField();
             }
             $msgText = $msg->getMessage();
             if (empty($result["validations"][$fieldnm])) {
@@ -247,7 +249,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             $this->getModel()->serializeToConfig();
             Config::getInstance()->save();
-            return array("result"=>"saved");
+            return array("result" => "saved");
         } else {
             // XXX remove user-config-readonly in some future release
             throw new UserException(
@@ -276,7 +278,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function setAction()
     {
-        $result = array("result"=>"failed");
+        $result = array("result" => "failed");
         if ($this->request->isPost()) {
             // load model and update with provided data
             $mdl = $this->getModel();

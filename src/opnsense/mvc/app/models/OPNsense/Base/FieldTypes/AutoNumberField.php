@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Base\Validators\MinMaxValidator;
@@ -69,7 +71,7 @@ class AutoNumberField extends BaseField
     {
         parent:: __construct($ref, $tagname);
         $this->minimum_value = 0;
-        $this->maximum_value = PHP_INT_MAX-1;
+        $this->maximum_value = PHP_INT_MAX - 1;
     }
 
     /**
@@ -91,7 +93,7 @@ class AutoNumberField extends BaseField
         }
 
         // find first unused sequence
-        for ($newId=$this->minimum_value; $newId <= $this->maximum_value+1; ++$newId) {
+        for ($newId = $this->minimum_value; $newId <= $this->maximum_value + 1; ++$newId) {
             if (!in_array($newId, $allIds)) {
                 break;
             }

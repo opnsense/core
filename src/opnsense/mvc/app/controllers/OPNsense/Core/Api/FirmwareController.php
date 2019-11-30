@@ -90,7 +90,7 @@ class FirmwareController extends ApiControllerBase
         switch ($action) {
             case 'install':
             case 'reinstall':
-	        /* find the development/stable equivalent */
+            /* find the development/stable equivalent */
                 $other = preg_replace('/-devel$/', '', $name);
                 if ($other == $name) {
                     $other = "$name-devel";
@@ -183,8 +183,10 @@ class FirmwareController extends ApiControllerBase
 
             $sorted = array();
 
-            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages',
-                'downgrade_packages', 'remove_packages') as $pkg_type) {
+            foreach (
+                array('new_packages', 'reinstall_packages', 'upgrade_packages',
+                'downgrade_packages', 'remove_packages') as $pkg_type
+            ) {
                 if (isset($response[$pkg_type])) {
                     foreach ($response[$pkg_type] as $value) {
                         switch ($pkg_type) {
@@ -277,8 +279,10 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
-            } elseif (array_key_exists(0, $response['upgrade_packages']) &&
-                $response['upgrade_packages'][0]['name'] == 'pkg') {
+            } elseif (
+                array_key_exists(0, $response['upgrade_packages']) &&
+                $response['upgrade_packages'][0]['name'] == 'pkg'
+            ) {
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
@@ -779,8 +783,10 @@ class FirmwareController extends ApiControllerBase
                 $plugin = explode('-', $translated['name']);
                 if (count($plugin)) {
                     if ($plugin[0] == 'os') {
-                        if ($type == 'local' || ($type == 'remote' &&
-                            ($devel || end($plugin) != 'devel'))) {
+                        if (
+                            $type == 'local' || ($type == 'remote' &&
+                            ($devel || end($plugin) != 'devel'))
+                        ) {
                             $plugins[$translated['name']] = $translated;
                         }
                     }
@@ -852,10 +858,10 @@ class FirmwareController extends ApiControllerBase
         $has_subscription = array();
         $allow_custom = false;
         // parse firmware options
-        foreach (glob(__DIR__. "/repositories/*.xml") as $xml) {
+        foreach (glob(__DIR__ . "/repositories/*.xml") as $xml) {
             $repositoryXml = simplexml_load_file($xml);
             if ($repositoryXml === false || $repositoryXml->getName() != 'firmware') {
-                syslog(LOG_ERR, 'unable to parse firmware file '. $xml);
+                syslog(LOG_ERR, 'unable to parse firmware file ' . $xml);
             } else {
                 if (isset($repositoryXml->mirrors->mirror)) {
                     if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
@@ -905,16 +911,16 @@ class FirmwareController extends ApiControllerBase
             // custom options allowed, skip validations
             return true;
         } elseif (!isset($validOptions['flavours'][$selectedFlavour])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware flavour '. $selectedFlavour);
+            syslog(LOG_ERR, 'unable to set invalid firmware flavour ' . $selectedFlavour);
             return false;
         } elseif (!isset($validOptions['families'][$selectedType])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware release type '. $selectedFlavour);
+            syslog(LOG_ERR, 'unable to set invalid firmware release type ' . $selectedFlavour);
             return false;
         } elseif (!isset($validOptions['mirrors'][$selectedMirror])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware mirror '. $selectedMirror);
+            syslog(LOG_ERR, 'unable to set invalid firmware mirror ' . $selectedMirror);
             return false;
         } elseif (!empty($selSubscription) && !in_array($selectedMirror, $validOptions['has_subscription'])) {
-            syslog(LOG_ERR, 'unable to set subscription for firmware mirror '. $selectedMirror);
+            syslog(LOG_ERR, 'unable to set subscription for firmware mirror ' . $selectedMirror);
             return false;
         }
         return true;

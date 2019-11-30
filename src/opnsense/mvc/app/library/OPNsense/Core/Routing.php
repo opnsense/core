@@ -27,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core;
 
 use \Phalcon\Mvc\Router;
@@ -103,9 +104,9 @@ class Routing
         $registered_modules = array();
         $rootDirs = is_object($this->rootDir) || is_array($this->rootDir) ? $this->rootDir : array($this->rootDir);
         foreach ($rootDirs as $rootDir) {
-            foreach (glob($rootDir."*", GLOB_ONLYDIR) as $namespace_base) {
-                foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
-                    if (is_dir($module_base.$this->suffix)) {
+            foreach (glob($rootDir . "*", GLOB_ONLYDIR) as $namespace_base) {
+                foreach (glob($namespace_base . "/*", GLOB_ONLYDIR) as $module_base) {
+                    if (is_dir($module_base . $this->suffix)) {
                         $basename = strtolower(basename($module_base));
                         $api_base = $module_base . $this->suffix;
                         $namespace_name = str_replace('/', '\\', str_replace($rootDir, '', $api_base));
@@ -144,7 +145,7 @@ class Routing
             ));
 
 
-            $this->router->add("/{$this->type}/".$module_name."/:controller/:action/:params", array(
+            $this->router->add("/{$this->type}/" . $module_name . "/:controller/:action/:params", array(
                 "namespace" => $namespace,
                 "controller" => 1,
                 "action" => 2,
@@ -155,7 +156,7 @@ class Routing
             // This can normally only happens with 3rd party plugins hooking into standard functionality
             if (count($module_configs) > 0) {
                 foreach ($module_configs as $module_config) {
-                    foreach (glob($module_config['path']."/*.php") as $filename) {
+                    foreach (glob($module_config['path'] . "/*.php") as $filename) {
                         // extract controller name and bind static in routing table
                         $controller = strtolower(str_replace('Controller.php', '', basename($filename)));
                         $this->router->add("/{$this->type}/{$module_name}/{$controller}/:action", array(
