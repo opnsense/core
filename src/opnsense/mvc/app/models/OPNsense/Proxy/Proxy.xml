@@ -262,19 +262,24 @@
             <sslbump type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
-		    <Constraints>
-		        <check001>
-		        <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
-		            <type>DependConstraint</type>
-		            <addFields>
-                                <field1>sslurlonly</field1>
-                            </addFields>
-		        </check001>
-                    </Constraints>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
+                        <type>DependConstraint</type>
+                        <addFields>
+                            <field1>sslurlonly</field1>
+                        </addFields>
+                    </check001>
+                </Constraints>
             </sslbump>
             <sslurlonly type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>sslbump.check001</reference>
+                    </check001>
+                </Constraints>
             </sslurlonly>
             <sslcertificate type="CertificateField">
                 <Required>N</Required>
@@ -491,6 +496,10 @@
                     <Required>N</Required>
                     <multiple>Y</multiple>
                 </method>
+                <authEnforceGroup type="AuthGroupField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                </authEnforceGroup>
                 <realm type="TextField">
                     <default>OPNsense proxy authentication</default>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>

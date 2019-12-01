@@ -42,6 +42,7 @@ if (count($argv) > 1 && is_numeric($argv[1])) {
 }
 
 system_firmware_configure(true);
+system_trust_configure(true);
 system_login_configure(true);
 system_cron_configure(true);
 system_timezone_configure(true);

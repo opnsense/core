@@ -97,13 +97,13 @@ function filter_rules_sort()
 
 function filter_pflog_start($verbose = false)
 {
-    if (isvalidpid('/var/run/filterlog.pid')) {
-        return;
-    }
-
     if ($verbose) {
         echo 'Starting PFLOG...';
         flush();
+    }
+
+    if (isvalidpid('/var/run/filterlog.pid')) {
+        killbypid('/var/run/filterlog.pid', 'TERM', true);
     }
 
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
@@ -151,8 +151,12 @@ function filter_delete_states_for_down_gateways()
 function filter_configure_sync($verbose = false, $flush_states = false, $load_aliases = true)
 {
     global $config;
-
     $sched_kill_states = array(); // kill states for schedules
+
+    if ($verbose) {
+        echo 'Configuring firewall.';
+        flush();
+    }
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
@@ -209,7 +213,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     }
 
     // manual outbound nat rules
-    if (in_array($config['nat']['outbound']['mode'], array("advanced", "hybrid"))) {
+    if (!empty($config['nat']['outbound']['mode']) &&
+          in_array($config['nat']['outbound']['mode'], array("advanced", "hybrid"))) {
         if (!empty($config['nat']['outbound']['rule'])) {
             foreach ($config['nat']['outbound']['rule'] as $rule) {
                 $fw->registerSNatRule(100, $rule);
@@ -217,7 +222,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         }
     }
 
-    if (in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))) {
+    if (empty($config['nat']['outbound']['mode']) ||
+          in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))) {
         // generate standard outbound rules when mode is automatic ot hybrid
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
@@ -279,13 +285,6 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         foreach ($config['nat']['rule'] as $rule) {
             $fw->registerForwardRule(600, $rule);
         }
-    }
-
-    filter_pflog_start($verbose);
-
-    if ($verbose) {
-        echo 'Configuring firewall.';
-        flush();
     }
 
     if (isset($config['system']['gw_switch_default'])) {
@@ -513,6 +512,8 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     if ($verbose) {
         echo "done.\n";
     }
+
+    filter_pflog_start($verbose);
 
     unlock($filterlck);
 }

@@ -54,6 +54,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected static $internalModelClass = null;
 
     /**
+     * @var bool use safe delete, search for references before allowing deletion
+     */
+    protected static $internalModelUseSafeDelete = false;
+
+    /**
      * @var null|BaseModel model object to work on
      */
     private $modelHandle = null;
@@ -70,6 +75,66 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         }
         if (empty(static::$internalModelName)) {
             throw new \Exception('cannot instantiate without internalModelName defined.');
+        }
+    }
+
+    /**
+     * Check if item can be safely deleted if $internalModelUseSafeDelete is enabled.
+     * Throws a user exception when the $uuid seems to be used in some other config section.
+     * @param $uuid string uuid to check
+     * @throws UserException containing additional information
+     */
+    private function checkAndThrowSafeDelete($uuid)
+    {
+        if (static::$internalModelUseSafeDelete) {
+            $configObj = Config::getInstance()->object();
+            $usages = array();
+            // find uuid's in our config.xml
+            foreach ($configObj->xpath("//text()[.='{$uuid}']") as $node) {
+                $referring_node = $node->xpath("..")[0];
+                if (!empty($referring_node->attributes()['uuid'])) {
+                    // this looks like a model node, try to find module name (first tag with version attribute)
+                    $item_path = array($referring_node->getName());
+                    $item_uuid = $referring_node->attributes()['uuid'];
+                    $parent_node = $referring_node;
+                    do {
+                        $parent_node = $parent_node->xpath("..");
+                        $parent_node = $parent_node != null ? $parent_node[0] : null;
+                        if ($parent_node != null) {
+                            $item_path[] = $parent_node->getName();
+                        }
+                    } while ($parent_node != null && !isset($parent_node->attributes()['version']));
+                    if ($parent_node != null) {
+                        // construct usage info and add to usages if this looks like a model
+                        $item_path = array_reverse($item_path);
+                        $item_description = "";
+                        foreach (["description", "descr", "name"] as $key) {
+                            if (!empty($referring_node->$key)) {
+                                $item_description = (string)$referring_node->$key;
+                                break;
+                            }
+                        }
+                        $usages[] = array(
+                            "reference" =>  implode(".", $item_path) . "." . $item_uuid,
+                            "module" => $item_path[0],
+                            "description" => $item_description
+                        );
+                    }
+                }
+            }
+            if (!empty($usages)) {
+                // render exception message
+                $message = "";
+                foreach ($usages as $usage) {
+                    $message .= sprintf(
+                        gettext("%s - %s {%s}"),
+                        $usage['module'],
+                        $usage['description'],
+                        $usage['reference']
+                    ) . "\n";
+                }
+                throw new UserException($message, gettext("Item in use by"));
+            }
         }
     }
 
@@ -141,7 +206,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function validate($node = null, $prefix = null)
     {
-        $result = array("result"=>"");
+        $result = array("result" => "");
         $resultPrefix = empty($prefix) ? static::$internalModelName : $prefix;
         // perform validation
         $valMsgs = $this->getModel()->performValidation();
@@ -154,7 +219,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             if ($node != null) {
                 $fieldnm = str_replace($node->__reference, $resultPrefix, $msg->getField());
             } else {
-                $fieldnm = $resultPrefix.".".$msg->getField();
+                $fieldnm = $resultPrefix . "." . $msg->getField();
             }
             $msgText = $msg->getMessage();
             if (empty($result["validations"][$fieldnm])) {
@@ -184,7 +249,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             $this->getModel()->serializeToConfig();
             Config::getInstance()->save();
-            return array("result"=>"saved");
+            return array("result" => "saved");
         } else {
             // XXX remove user-config-readonly in some future release
             throw new UserException(
@@ -213,7 +278,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function setAction()
     {
-        $result = array("result"=>"failed");
+        $result = array("result" => "failed");
         if ($this->request->isPost()) {
             // load model and update with provided data
             $mdl = $this->getModel();
@@ -337,6 +402,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
+            $this->checkAndThrowSafeDelete($uuid);
             Config::getInstance()->lock();
             $mdl = $this->getModel();
             if ($uuid != null) {

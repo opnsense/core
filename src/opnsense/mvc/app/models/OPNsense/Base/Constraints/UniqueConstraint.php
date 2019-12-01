@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\Constraints;
 
 /**
@@ -51,8 +53,10 @@ class UniqueConstraint extends BaseConstraint
             $parentNode = $node->getParentNode();
             $level = 0;
             // dive into parent
-            while ($containerNode != null &&
-                get_class($containerNode) != 'OPNsense\Base\FieldTypes\ArrayField') {
+            while (
+                $containerNode != null &&
+                get_class($containerNode) != 'OPNsense\Base\FieldTypes\ArrayField'
+            ) {
                 $containerNode = $containerNode->getParentNode();
                 $level++;
             }

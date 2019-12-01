@@ -194,14 +194,15 @@ class Util
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
-            if (!getservbyname($port, "tcp") && !getservbyname($port, "udp")
+            if (
+                !getservbyname($port, "tcp") && !getservbyname($port, "udp")
                 && (filter_var($port, FILTER_VALIDATE_INT, array(
-                    "options" => array("min_range"=>1, "max_range"=>65535))) === false || !ctype_digit($port))
+                    "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port))
             ) {
                 return false;
             }
         }
-        if (($allow_range && count($tmp) <=2) || count($tmp) == 1) {
+        if (($allow_range && count($tmp) <= 2) || count($tmp) == 1) {
             return true;
         }
         return false;

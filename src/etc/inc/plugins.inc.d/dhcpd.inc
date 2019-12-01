@@ -264,6 +264,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
+        if (!empty($dhcpv6ifconf['AdvDefaultLifetime'])) {
+            $radvdconf .= sprintf("\tAdvDefaultLifetime %s;\n", $dhcpv6ifconf['AdvDefaultLifetime']);
+        }
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
 
         switch ($dhcpv6ifconf['rapriority']) {
@@ -337,6 +340,12 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 default:
                     break;
             }
+            if (!empty($dhcpv6ifconf['AdvValidLifetime'])) {
+                $radvdconf .= sprintf("\t\tAdvValidLifetime %s;\n", $dhcpv6ifconf['AdvValidLifetime']);
+            }
+            if (!empty($dhcpv6ifconf['AdvPreferredLifetime'])) {
+                $radvdconf .= sprintf("\t\tAdvPreferredLifetime %s;\n", $dhcpv6ifconf['AdvPreferredLifetime']);
+            }
             $radvdconf .= "\t};\n";
         }
 
@@ -351,6 +360,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 $radvdconf .= "\troute {$raroute} {\n";
                 if (!empty($dhcpv6ifconf['rainterface'])) {
                     $radvdconf .= "\t\tRemoveRoute off;\n";
+                }
+                if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {
+                    $radvdconf .= "\t\tAdvRouteLifetime {$dhcpv6ifconf['AdvRouteLifetime']};\n";
                 }
                 $radvdconf .= "\t};\n";
             }
@@ -380,14 +392,28 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         if (count($dnslist) > 0) {
-            $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
+            $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " {\n";
+            if (!empty($dhcpv6ifconf['AdvRDNSSLifetime'])) {
+                $radvdconf .= "\t\tAdvRDNSSLifetime {$dhcpv6ifconf['AdvRDNSSLifetime']};\n";
+            }
+            $radvdconf .= "\t};\n";
         }
+
         if (!empty($dhcpv6ifconf['radomainsearchlist'])) {
             $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
-            $radvdconf .= "\tDNSSL {$dnssl} { };\n";
         } elseif (!empty($config['system']['domain'])) {
-            $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
+            $dnssl = $config['system']['domain'];
+        } else {
+            $dnssl = null;
         }
+        if (!empty($dnssl)) {
+            $radvdconf .= "\tDNSSL {$dnssl} {\n";
+            if (!empty($dhcpv6ifconf['AdvDNSSLLifetime'])) {
+                $radvdconf .= "\t\tAdvDNSSLLifetime {$dhcpv6ifconf['AdvDNSSLLifetime']};\n";
+            }
+            $radvdconf .= "\t};\n";
+        }
+
         $radvdconf .= "};\n";
     }
 
@@ -556,6 +582,7 @@ function dhcpd_dhcp4_configure($verbose = false)
     }
 
     $custoptions = "";
+    $ifconfig_details = legacy_interfaces_details();
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (isset($dhcpifconf['numberoptions']['item'])) {
             foreach ($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
@@ -590,13 +617,15 @@ EOD;
      *    failover peer "bleh" entries
      */
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-        interfaces_staticarp_configure($dhcpif);
         if (!isset($dhcpifconf['enable'])) {
             continue;
         }
+        if (!empty($config['dhcpd'][$dhcpif]['staticmap'])) {
+            interfaces_staticarp_configure($dhcpif);
+        }
 
         if (!empty($dhcpifconf['failover_peerip'])) {
-            $intip = get_interface_ip($dhcpif);
+            $intip = get_interface_ip($dhcpif, $ifconfig_details);
             /*
              *    yep, failover peer is defined.
              *    does it match up to a defined vip?
@@ -654,13 +683,14 @@ EOPP;
     }
 
     $iflist = get_configured_interface_with_descr();
+    $gwObject = new \OPNsense\Routing\Gateways($ifconfig_details);
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
             continue;
         }
 
-        list ($ifcfgip, $ifcfgsn) = explode('/', find_interface_network(get_real_interface($dhcpif), false));
+        list ($ifcfgip, $ifcfgsn) = explode('/', find_interface_network(get_real_interface($dhcpif), false, $ifconfig_details));
 
         $subnet = gen_subnet($ifcfgip, $ifcfgsn);
         $subnetmask = gen_subnet_mask($ifcfgsn);
@@ -887,7 +917,7 @@ EOPP;
 
         if (!empty($dhcpifconf['gateway'])) {
             $routers = $dhcpifconf['gateway'] != "none" ? $dhcpifconf['gateway'] : null;
-        } elseif ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->hasGateways("inet")) {
+        } elseif ($gwObject->hasGateways("inet")) {
             // by default, add interface address in "option routers"
             $routers = $ifcfgip;
         } else {
@@ -1181,6 +1211,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
     }
 
     $iflist = get_configured_interface_with_descr();
+    $ifconfig_details = legacy_interfaces_details();
     $dhcpdv6cfg = config_read_array('dhcpdv6');
 
     /* Only consider DNS servers with IPv6 addresses for the IPv6 DHCP server. */
@@ -1205,7 +1236,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $ifcfgipv6 = get_interface_ipv6($ifname);
+            $ifcfgipv6 = get_interface_ipv6($ifname, $ifconfig_details);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
@@ -1331,7 +1362,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
     }
 
     $dhcpdv6conf = <<<EOD
-option domain-name "{$config['system']['domain']}";
+option dhcp6.domain-search "{$config['system']['domain']}";
 {$custoptionsv6}
 default-lease-time 7200;
 max-lease-time 86400;
@@ -1359,8 +1390,8 @@ EOD;
 
         $realif = get_real_interface($dhcpv6if, 'inet6');
 
-        $ifcfgipv6 = find_interface_ipv6($realif);
-        $networkv6 = find_interface_networkv6($realif);
+        $ifcfgipv6 = find_interface_ipv6($realif, $ifconfig_details);
+        $networkv6 = find_interface_networkv6($realif, true, $ifconfig_details);
 
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
@@ -1368,12 +1399,9 @@ EOD;
         }
 
         $dnscfgv6 = "";
-        if (!empty($dhcpv6ifconf['domain'])) {
-            $dnscfgv6 .= "  option domain-name \"{$dhcpv6ifconf['domain']}\";\n";
-        }
 
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
-            $dnscfgv6 .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
+            $dnscfgv6 .= "  option dhcp6.domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
         }
 
         $newzone = array();
@@ -1482,8 +1510,8 @@ EOD;
                     $dhcpdv6conf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
-                if (!empty($sm['domain']) && ($sm['domain'] != $dhcpv6ifconf['domain'])) {
-                    $dhcpdv6conf .= "  option domain-name \"{$sm['domain']}\";\n";
+                if (!empty($sm['domainsearchlist']) && ($sm['domainsearchlist'] != $dhcpv6ifconf['domainsearchlist'])) {
+                    $dhcpdv6conf .= "  option dhcp6.domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $sm['domainsearchlist'])) . "\";\n";
                 }
 
                 $dhcpdv6conf .= "}\n";
@@ -1574,14 +1602,15 @@ function dhcpd_dhcrelay4_configure($verbose = false)
     }
 
     $iflist = get_configured_interface_with_descr();
-    $a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true);
+    $ifconfig_details = legacy_interfaces_details();
+    $a_gateways = (new \OPNsense\Routing\Gateways($ifconfig_details))->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
             continue;
         }
 
-        if (is_ipaddr(get_interface_ip($dhcrelayif))) {
+        if (is_ipaddr(get_interface_ip($dhcrelayif, $ifconfig_details))) {
             $dhcrelayifs[] = get_real_interface($dhcrelayif);
         }
     }
@@ -1596,8 +1625,8 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
-            $realif = get_real_interface($ifname);
-            $subnet = find_interface_network($realif);
+            $realif = get_real_interface($ifname, $ifconfig_details);
+            $subnet = find_interface_network($realif, true, $ifconfig_details);
             if (!is_subnetv4($subnet)) {
                 continue;
             }
@@ -1609,7 +1638,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         if (!isset($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = $a_gateways[$rtent['gateway']]['interface'];
+                    $destif = get_real_interface($a_gateways[$rtent['gateway']]['interface']);
                     break;
                 }
             }
@@ -1694,14 +1723,15 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     }
 
     $iflist = get_configured_interface_with_descr();
-    $a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true);
+    $ifconfig_details = legacy_interfaces_details();
+    $a_gateways = (new \OPNsense\Routing\Gateways($ifconfig_details))->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
             continue;
         }
 
-        if (is_ipaddrv6(get_interface_ipv6($dhcrelayif))) {
+        if (is_ipaddrv6(get_interface_ipv6($dhcrelayif, $ifconfig_details))) {
             $dhcrelayifs[] = get_real_interface($dhcrelayif);
         }
     }
@@ -1719,7 +1749,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
             $realif = get_real_interface($ifname, 'inet6');
-            $subnet = find_interface_networkv6($realif);
+            $subnet = find_interface_networkv6($realif, true, $ifconfig_details);
             if (!is_subnetv6($subnet)) {
                 continue;
             }

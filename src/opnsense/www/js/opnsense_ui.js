@@ -1,32 +1,31 @@
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- *    User interface shared components, requires opnsense.js for supporting functions.
+ * User interface shared components, requires opnsense.js for supporting functions.
  */
 
  /**
@@ -52,14 +51,16 @@
  * @param formid parent id to grep input data from
  * @param callback_ok
  * @param disable_dialog don't show input validation message box on failure
+ * @param callback_fail
  */
-function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
+function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_fail)
+{
     disable_dialog = disable_dialog || false;
     const data = getFormData(formid);
-    ajaxCall(url,data,function(data,status){
-        if ( status === "success") {
+    ajaxCall(url, data, function (data, status) {
+        if ( status === "success" ) {
             // update field validation
-            handleFormValidation(formid,data['validations']);
+            handleFormValidation(formid, data['validations']);
 
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] !== undefined) {
@@ -87,8 +88,12 @@ function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
                             $("#"+detailsid + " > pre").html(JSON.stringify(data, null, 2));
                         }
                     });
-
                 }
+
+                if ( callback_fail !== undefined ) {
+                    // execute callback function
+                    callback_fail(data);
+		}
             } else if ( callback_ok !== undefined ) {
                 // execute callback function
                 callback_ok(data);
@@ -362,7 +367,8 @@ function initFormAdvancedUI() {
         elements.toggleClass("text-success text-danger");
     } else {
         $('[data-advanced*="true"]').hide(function(){
-            $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>"); // the table row is added to keep correct table striping
+            // the table row is added to keep correct table striping
+            $(this).after("<tr data-advanced='hidden_row'></tr>");
         });
     }
 

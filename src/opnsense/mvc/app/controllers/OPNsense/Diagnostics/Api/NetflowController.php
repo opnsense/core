@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -26,7 +27,6 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
 
 namespace OPNsense\Diagnostics\Api;
 
@@ -78,7 +78,7 @@ class NetflowController extends ApiControllerBase
      */
     public function setconfigAction()
     {
-        $result = array("result"=>"failed");
+        $result = array("result" => "failed");
         if ($this->request->hasPost("netflow")) {
             // load model and update with provided data
             $mdlNetflow = new Netflow();
@@ -101,7 +101,7 @@ class NetflowController extends ApiControllerBase
             if (count($validations)) {
                 $result['validations'] = array();
                 foreach ($validations as $valkey => $validation) {
-                    $result['validations']['netflow.'.$valkey] = $validation;
+                    $result['validations']['netflow.' . $valkey] = $validation;
                 }
             } else {
                 // serialize model to config and save

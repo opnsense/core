@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2019 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -27,11 +27,8 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\InclusionIn;
-use OPNsense\Auth;
-use OPNsense\Base\Validators\CsvListValidator;
+namespace OPNsense\Base\FieldTypes;
 
 /**
  * Class AuthenticationServerField field type to select usable authentication servers,
@@ -39,17 +36,12 @@ use OPNsense\Base\Validators\CsvListValidator;
  * The concept of authentication servers is not likely to change in the near future.
  * @package OPNsense\Base\FieldTypes
  */
-class AuthenticationServerField extends BaseField
+class AuthenticationServerField extends BaseListField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
     /**
      * @var array collected options
      */
-    private static $internalOptionList = array();
+    private static $internalStaticOptionList = array();
 
     /**
      * @var array filters to use on the authservers list
@@ -62,11 +54,6 @@ class AuthenticationServerField extends BaseField
     private $internalCacheKey = '*';
 
     /**
-     * @var bool field may contain multiple servers at once
-     */
-    private $internalMultiSelect = false;
-
-    /**
      * @var string default validation message string
      */
     protected $internalValidationMessage = "please specify a valid authentication server";
@@ -76,10 +63,10 @@ class AuthenticationServerField extends BaseField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
-            self::$internalOptionList[$this->internalCacheKey] = array();
+        if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
+            self::$internalStaticOptionList[$this->internalCacheKey] = array();
 
-            $authFactory = new \OPNsense\Auth\AuthenticationFactory;
+            $authFactory = new \OPNsense\Auth\AuthenticationFactory();
             $allAuthServers = $authFactory->listServers();
 
             foreach ($allAuthServers as $key => $value) {
@@ -98,11 +85,12 @@ class AuthenticationServerField extends BaseField
                     }
                 }
                 if ($isMatched) {
-                    self::$internalOptionList[$this->internalCacheKey][$key] = $key;
+                    self::$internalStaticOptionList[$this->internalCacheKey][$key] = $key;
                 }
             }
-            natcasesort(self::$internalOptionList[$this->internalCacheKey]);
+            natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
         }
+        $this->internalOptionList = self::$internalStaticOptionList[$this->internalCacheKey];
     }
 
     /**
@@ -116,66 +104,5 @@ class AuthenticationServerField extends BaseField
             $this->internalFilters = $filters;
             $this->internalCacheKey = md5(serialize($this->internalFilters));
         }
-    }
-
-    /**
-     * select if multiple authentication servers may be selected at once
-     * @param $value boolean value Y/N
-     */
-    public function setMultiple($value)
-    {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalMultiSelect = true;
-        } else {
-            $this->internalMultiSelect = false;
-        }
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        $result = array();
-        // if authentication server is not required and single, add empty option
-        if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-            $result[""] = array("value"=>gettext("none"), "selected" => 0);
-        }
-
-        // explode authentication servers
-        $authservers = explode(',', $this->internalValue);
-        foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
-            if (in_array($optKey, $authservers)) {
-                $selected = 1;
-            } else {
-                $selected = 0;
-            }
-            $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
-        }
-
-        return $result;
-    }
-
-    /**
-     * retrieve field validators for this field type
-     * @return array returns Text/regex validator
-     */
-    public function getValidators()
-    {
-        $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            if ($this->internalMultiSelect) {
-                // field may contain more than one authentication server
-                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
-            } else {
-                // single authentication server selection
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
-            }
-        }
-
-        return $validators;
     }
 }

@@ -26,7 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("services.inc");
 require_once("system.inc");
 require_once('util.inc');
 require_once("filter.inc");
@@ -52,7 +51,7 @@ function xmlrpc_publishable_service()
  */
 function list_services_xmlrpc()
 {
-    $services = services_get();
+    $services = plugins_services();
 
     foreach ($services as &$service) {
         $service['status'] = service_status($service);

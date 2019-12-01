@@ -68,12 +68,12 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
             line = data[bol:eol]
             eol = bol
             bol = data.rfind('\n', 0, eol)
-            yield {'line': line.strip(), 'pos': line_end}
+            yield {'line': line.strip().strip('\u0000'), 'pos': line_end}
 
         data = data[:eol] if bol == -1 else ''
 
         if file_byte_start == 0 and bol == -1:
-            yield {'line': data.strip(), 'pos': len(data)}
+            yield {'line': data.strip().strip('\u0000'), 'pos': len(data)}
 
 def fetch_clog(input_log):
     """ fetch clog file (circular log)
@@ -85,6 +85,8 @@ def fetch_clog(input_log):
         mm = mmap.mmap(fd.fileno(), 0)
         # unpack clog information struct
         clog_footer = struct.unpack('iiii', mm[-16:])  # cf_magic, cf_wrap, cf_next, cf_max, cf_lock
+        if mm[-20:-16] != b'CLOG':
+            raise Exception('not a valid clog file')
         # concat log file into new output stream, start at current wrap position
         output_stream = StringIO(mm[clog_footer[1]:-20].decode() + mm[:clog_footer[1]].decode())
         output_stream.seek(0)

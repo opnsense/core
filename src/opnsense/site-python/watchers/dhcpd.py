@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,20 +39,17 @@ class DHCPDLease(object):
         self._section_data = []
         self._fhandle = None
         self._last_pos = None
-        self._open()
 
     def _open(self):
         """ (re)open watched file
-        :return: watcher object
+        :return: None
         """
         try:
             self._fhandle = open(self.watch_file, 'r')
             self._last_pos = None
             self._section_data = []
-            return True
         except IOError:
             self._fhandle = None
-            return False
 
     @staticmethod
     def parse_lease(lines):
@@ -86,25 +83,28 @@ class DHCPDLease(object):
         """ watch file, return lease dictionaries
         :return: iterator for leases
         """
-        if self._fhandle is None or os.fstat(self._fhandle.fileno()).st_nlink == 0:
+        if self._fhandle is None:
             # nothing to watch, try to (re)open return when failed
-            if not self._open():
-                return
+            self._open()
+        elif os.fstat(self._fhandle.fileno()).st_ino != os.stat(self.watch_file).st_ino:
+            # file rotation, inode changed
+            self._open()
         elif self._last_pos is not None:
             self._fhandle.seek(self._last_pos)
 
-        while True:
-            line = self._fhandle.readline()
-            if line:
-                if len(line) > 5 and line[0:5] == 'lease':
-                    self._section_data.append(line)
-                elif len(line) > 1 and line[0] == '}' and len(self._section_data) > 0:
-                    self._section_data.append(line)
-                    yield self.parse_lease(self._section_data)
-                    self._section_data = []
-                elif len(self._section_data) > 0:
-                    self._section_data.append(line)
-            else:
-                break
+        if self._fhandle is not None:
+            while True:
+                line = self._fhandle.readline()
+                if line:
+                    if len(line) > 5 and line[0:5] == 'lease':
+                        self._section_data.append(line)
+                    elif len(line) > 1 and line[0] == '}' and len(self._section_data) > 0:
+                        self._section_data.append(line)
+                        yield self.parse_lease(self._section_data)
+                        self._section_data = []
+                    elif len(self._section_data) > 0:
+                        self._section_data.append(line)
+                else:
+                    break
 
-        self._last_pos = self._fhandle.tell()
+            self._last_pos = self._fhandle.tell()

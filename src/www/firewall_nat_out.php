@@ -455,6 +455,8 @@ include("head.inc");
                           $nat_address = '<I>NO NAT</I>';
                       } elseif (empty($natent['target'])) {
                           $nat_address = gettext("Interface address");
+                      } elseif (is_specialnet($natent['target'])) {
+                          $nat_address = htmlspecialchars(get_specialnets()[$natent['target']]);
                       } elseif ($natent['target'] == "other-subnet") {
                           $nat_address = $natent['targetip'] . '/' . $natent['targetip_subnet'];
                       } else {

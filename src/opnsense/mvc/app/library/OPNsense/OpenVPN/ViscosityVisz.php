@@ -119,7 +119,7 @@ class ViscosityVisz extends PlainOpenVPN
 
             file_put_contents("{$content_dir}/pkcs.p12", $p12);
             $conf[] = "pkcs12 pkcs.p12";
-        }  else {
+        } else {
             // use internal Windows store, only flush ca (when available)
             if (!empty($this->config['server_ca_chain'])) {
                 file_put_contents("{$content_dir}/ca.crt", implode("\n", $this->config['server_ca_chain']));
@@ -137,7 +137,7 @@ class ViscosityVisz extends PlainOpenVPN
 
         // cleanup
         unlink($outputFilename);
-        foreach (glob($content_dir."/*") as $filename) {
+        foreach (glob($content_dir . "/*") as $filename) {
             unlink($filename);
         }
         rmdir($content_dir);

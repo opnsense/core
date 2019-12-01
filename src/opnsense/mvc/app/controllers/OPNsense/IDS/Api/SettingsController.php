@@ -92,14 +92,14 @@ class SettingsController extends ApiMutableModelControllerBase
                     if ($sortStr != '') {
                         $sortStr .= ',';
                     }
-                    $sortStr .= $filter->sanitize($sortKey, "query") . ' '. $sortOrd . ' ';
+                    $sortStr .= $filter->sanitize($sortKey, "query") . ' ' . $sortOrd . ' ';
                 }
             } else {
                 $sortStr = 'sid';
             }
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                $searchPhrase = 'msg,source,sid/"*'.$searchTag.'"';
+                $searchPhrase = 'msg,source,sid/"*' . $searchTag . '"';
             } else {
                 $searchPhrase = '';
             }
@@ -107,19 +107,19 @@ class SettingsController extends ApiMutableModelControllerBase
             // add filter for classtype
             if ($this->request->getPost("classtype", "string", '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('classtype'), "query");
-                $searchPhrase .= " classtype/".$searchTag.' ';
+                $searchPhrase .= " classtype/" . $searchTag . ' ';
             }
 
             // add filter for action
             if ($this->request->getPost("action", "string", '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('action'), "query");
-                $searchPhrase .= " installed_action/".$searchTag.' ';
+                $searchPhrase .= " installed_action/" . $searchTag . ' ';
             }
 
             // request list of installed rules
             $backend = new Backend();
             $response = $backend->configdpRun("ids query rules", array($itemsPerPage,
-                ($currentPage-1)*$itemsPerPage,
+                ($currentPage - 1) * $itemsPerPage,
                 $searchPhrase, $sortStr));
 
             $data = json_decode($response, true);
@@ -134,7 +134,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
                 }
 
-                $result['rowCount'] = empty($result['rows']) ? 0 : count($result['rows']);
+                $result['rowCount'] = empty($result['rows']) || !is_array($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
                 $result['parameters'] = $data['parameters'];
                 $result['current'] = (int)$currentPage;
@@ -160,7 +160,7 @@ class SettingsController extends ApiMutableModelControllerBase
         if (!empty($sid)) {
             $this->sessionClose();
             $backend = new Backend();
-            $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/'.$sid));
+            $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/' . $sid));
             $data = json_decode($response, true);
         } else {
             $data = null;
@@ -181,31 +181,31 @@ class SettingsController extends ApiMutableModelControllerBase
                     $ref = trim($ref);
                     $item_html = '<small><a href="%url%" target="_blank">%ref%</a></small>';
                     if (substr($ref, 0, 4) == 'url,') {
-                        $item_html = str_replace("%url%", 'http://'.substr($ref, 4), $item_html);
+                        $item_html = str_replace("%url%", 'http://' . substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
                     } elseif (substr($ref, 0, 7) == "system,") {
                         $item_html = str_replace("%url%", substr($ref, 7), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 7), $item_html);
                     } elseif (substr($ref, 0, 8) == "bugtraq,") {
-                        $item_html = str_replace("%url%", "http://www.securityfocus.com/bid/".
+                        $item_html = str_replace("%url%", "http://www.securityfocus.com/bid/" .
                             substr($ref, 8), $item_html);
-                        $item_html = str_replace("%ref%", "bugtraq ".substr($ref, 8), $item_html);
+                        $item_html = str_replace("%ref%", "bugtraq " . substr($ref, 8), $item_html);
                     } elseif (substr($ref, 0, 4) == "cve,") {
-                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=".
+                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
                             substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
                     } elseif (substr($ref, 0, 7) == "nessus,") {
-                        $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=".
+                        $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=" .
                             substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", 'nessus '.substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", 'nessus ' . substr($ref, 7), $item_html);
                     } elseif (substr($ref, 0, 7) == "mcafee,") {
-                        $item_html = str_replace("%url%", "http://vil.nai.com/vil/dispVirus.asp?virus_k=".
+                        $item_html = str_replace("%url%", "http://vil.nai.com/vil/dispVirus.asp?virus_k=" .
                             substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", 'macafee '.substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", 'macafee ' . substr($ref, 7), $item_html);
                     } else {
                         continue;
                     }
-                    $row['reference_html'] .= $item_html.'<br/>';
+                    $row['reference_html'] .= $item_html . '<br/>';
                 }
             }
             return $row;
@@ -252,7 +252,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $item['filename'] = $fileinfo['filename'];
                 $item['documentation_url'] = $fileinfo['documentation_url'];
                 if (!empty($fileinfo['documentation_url'])) {
-                    $item['documentation'] = "<a href='".$item['documentation_url']."' target='_new'>";
+                    $item['documentation'] = "<a href='" . $item['documentation_url'] . "' target='_new'>";
                     $item['documentation'] .= $item['documentation_url'];
                     $item['documentation'] .= '</a>';
                 } else {
@@ -448,6 +448,12 @@ class SettingsController extends ApiMutableModelControllerBase
                     $node = $this->getModel()->getFileNode($filename);
                     if ($enabled == "0" || $enabled == "1") {
                         $node->enabled = (string)$enabled;
+                    } elseif ($enabled == "drop") {
+                        $node->enabled = "1";
+                        $node->filter = "drop";
+                    } elseif ($enabled == "clear") {
+                        $node->enabled = "1";
+                        $node->filter = "";
                     } elseif ((string)$node->enabled == "1") {
                         $node->enabled = "0";
                     } else {
@@ -485,6 +491,12 @@ class SettingsController extends ApiMutableModelControllerBase
             $update_count = 0;
             foreach (explode(",", $sids) as $sid) {
                 $ruleinfo = $this->getRuleInfoAction($sid);
+                $current_action = null;
+                foreach ($ruleinfo['action'] as $key => $act) {
+                    if (!empty($act['selected'])) {
+                        $current_action = $key;
+                    }
+                }
                 if (!empty($ruleinfo)) {
                     if ($enabled == null) {
                         // toggle state
@@ -495,20 +507,22 @@ class SettingsController extends ApiMutableModelControllerBase
                         }
                     } elseif ($enabled == 1) {
                         $new_state = 1;
+                    } elseif ($enabled == "alert") {
+                        $current_action = "alert";
+                        $new_state = 1;
+                    } elseif ($enabled == "drop") {
+                        $current_action = "drop";
+                        $new_state = 1;
                     } else {
                         $new_state = 0;
                     }
-
-                    if ($ruleinfo['enabled_default'] == $new_state &&
-                        array_key_exists($ruleinfo['action_default'], $ruleinfo['action']) &&
-                        $ruleinfo['action'][$ruleinfo['action_default']]['selected'] == 1
-                        ) {
+                    if ($ruleinfo['enabled_default'] == $new_state && $current_action == $ruleinfo['action_default']) {
                         // if we're switching back to default, remove alter rule
                         $this->getModel()->removeRule($sid);
                     } elseif ($new_state == 1) {
-                        $this->getModel()->enableRule($sid);
+                        $this->getModel()->enableRule($sid)->action = $current_action;
                     } else {
-                        $this->getModel()->disableRule($sid);
+                        $this->getModel()->disableRule($sid)->action = $current_action;
                     }
                     $update_count++;
                 }
@@ -540,9 +554,10 @@ class SettingsController extends ApiMutableModelControllerBase
             $newAction = $this->request->getPost("action", "striptags", null);
             if (!empty($ruleinfo)) {
                 $mdlIDS = $this->getModel();
-                if ($ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
+                if (
+                    $ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
                     $ruleinfo['action_default'] == $newAction
-                    ) {
+                ) {
                     // if we're switching back to default, remove alter rule
                     $mdlIDS->removeRule($sid);
                 } else {

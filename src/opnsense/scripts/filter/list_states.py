@@ -28,9 +28,7 @@
     --------------------------------------------------------------------------------------
     list pf states
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 import argparse
@@ -62,47 +60,45 @@ if __name__ == '__main__':
     inputargs = parser.parse_args()
 
     result = {'details': [], 'total_entries': 0}
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-s', 'state'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        data = output_stream.read().decode().strip()
-        if data.count('\n') > 2:
-            for line in data.split('\n'):
-                parts = line.split()
-                if len(parts) >= 6:
-                    # count total number of state table entries
-                    result['total_entries'] += 1
-                    # apply filter when provided
-                    if inputargs.filter != "" and line.lower().find(inputargs.filter) == -1:
-                        continue
-                    # limit results
-                    if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
-                        continue
-                    record = dict()
-                    record['nat_addr'] = None
-                    record['nat_port'] = None
-                    record['iface'] = parts[0]
-                    record['proto'] = parts[1]
-                    record['src_addr'] = parse_address(parts[2])['addr']
-                    record['src_port'] = parse_address(parts[2])['port']
-                    record['ipproto'] = parse_address(parts[2])['ipproto']
+    sp = subprocess.run(['/sbin/pfctl', '-s', 'state'], capture_output=True, text=True)
+    data = sp.stdout.strip()
+    if data.count('\n') > 2:
+        for line in data.split('\n'):
+            parts = line.split()
+            if len(parts) >= 6:
+                # count total number of state table entries
+                result['total_entries'] += 1
+                # apply filter when provided
+                if inputargs.filter != "" and line.lower().find(inputargs.filter) == -1:
+                    continue
+                # limit results
+                if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
+                    continue
+                record = dict()
+                record['nat_addr'] = None
+                record['nat_port'] = None
+                record['iface'] = parts[0]
+                record['proto'] = parts[1]
+                record['src_addr'] = parse_address(parts[2])['addr']
+                record['src_port'] = parse_address(parts[2])['port']
+                record['ipproto'] = parse_address(parts[2])['ipproto']
 
-                    if parts[3].find('(') > -1:
-                        # NAT enabled
-                        record['nat_addr'] = parts[3][1:].split(':')[0]
-                        record['nat_port'] = parts[3].split(':')[1][:-1]
+                if parts[3].find('(') > -1:
+                    # NAT enabled
+                    record['nat_addr'] = parts[3][1:].split(':')[0]
+                    record['nat_port'] = parts[3].split(':')[1][:-1]
 
-                    record['dst_addr'] = parse_address(parts[-2])['addr']
-                    record['dst_port'] = parse_address(parts[-2])['port']
+                record['dst_addr'] = parse_address(parts[-2])['addr']
+                record['dst_port'] = parse_address(parts[-2])['port']
 
-                    if parts[-3] == '->':
-                        record['direction'] = 'out'
-                    else:
-                        record['direction'] = 'in'
+                if parts[-3] == '->':
+                    record['direction'] = 'out'
+                else:
+                    record['direction'] = 'in'
 
-                    record['state'] = parts[-1]
+                record['state'] = parts[-1]
 
-                    result['details'].append(record)
+                result['details'].append(record)
 
     result['total'] = len(result['details'])
 

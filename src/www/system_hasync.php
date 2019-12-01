@@ -45,6 +45,7 @@ $checkbox_names = array(
     'synchronizestaticroutes',
     'synchronizeusers',
     'synchronizevirtualip',
+    'synchronizewidgets',
 );
 
 $syncplugins = plugins_xmlrpc_sync();
@@ -242,6 +243,15 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_synchronizewidgets" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dashboard') ?></td>
+                  <td>
+                    <input type="checkbox" name="synchronizewidgets" value="on" <?=!empty($pconfig['synchronizewidgets']) ? "checked=\"checked\"" : "";?> />
+                    <div class="hidden" data-for="help_for_synchronizewidgets">
+                      <?=gettext('Synchronize dashboard widgets.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_synchronizeusers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Users and Groups') ?></td>
                   <td>
                     <input type="checkbox" name="synchronizeusers" value="on" <?=!empty($pconfig['synchronizeusers']) ? "checked=\"checked\"" : "";?> />
@@ -318,7 +328,7 @@ include("head.inc");
                   <td>
                     <input type="checkbox" name="synchronizestaticroutes" value="on" <?=!empty($pconfig['synchronizestaticroutes']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_synchronizestaticroutes">
-                      <?=gettext('Synchronize the Static Route configuration to the other HA host.') ?>
+                      <?=gettext('Synchronize the Static Route configuration and Gateways to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>

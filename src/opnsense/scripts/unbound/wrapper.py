@@ -35,12 +35,10 @@ import argparse
 import json
 
 def unbound_control_reader(action):
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
-                        stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream:
-            yield line.decode()
+    sp = subprocess.run(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
+                        capture_output=True, text=True)
+    for line in sp.stdout.strip().split("\n"):
+        yield line
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -54,6 +52,12 @@ parser.add_argument('-f', '--format', help='output format', action='store', choi
 args = parser.parse_args()
 
 #
+try:
+    os.kill(int(open("/var/run/unbound.pid").read().strip()), 0)
+except:
+    # unbound not active
+    sys.exit(1)
+
 output = None
 if args.cache:
     output = list()

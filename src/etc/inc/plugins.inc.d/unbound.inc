@@ -171,15 +171,16 @@ EOF;
     }
 
     $outgoingints = '';
+    $ifconfig_details = legacy_interfaces_details();
     if (!empty($config['unbound']['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
         foreach ($outgoing_interfaces as $outif) {
-            $outip = get_interface_ip($outif);
+            $outip = get_interface_ip($outif, $ifconfig_details);
             if (!empty($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
             }
-            $outip = get_interface_ipv6($outif);
+            $outip = get_interface_ipv6($outif, $ifconfig_details);
             if (!empty($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
             }
@@ -281,7 +282,7 @@ chroot: /var/unbound
 username: unbound
 directory: /var/unbound
 pidfile: /var/run/unbound.pid
-root-hints: /root.hints
+root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
 verbosity: {$verbosity}
@@ -338,6 +339,9 @@ include: /var/unbound/host_entries.conf
 # Domain overrides
 include: /var/unbound/domainoverrides.conf
 
+# Custom includes (plugins)
+include: /var/unbound/etc/*.conf
+
 {$custom_options}
 
 {$forward_conf}
@@ -353,7 +357,6 @@ remote-control:
 
 EOD;
 
-    copy('/usr/local/etc/inc/plugins.inc.d/unbound/root.min.hints', '/var/unbound/root.hints');
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 }
 
@@ -438,6 +441,7 @@ function unbound_configure_do($verbose = false, $interface = '')
     }
 
     unbound_generate_config();
+    configd_run("template reload OPNsense/Unbound/*");
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
@@ -522,7 +526,7 @@ function unbound_add_host_entries()
     } else {
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
-
+    $ifconfig_details = legacy_interfaces_details();
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
@@ -531,7 +535,7 @@ function unbound_add_host_entries()
         $realifv4 = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
 
-        $laddr = find_interface_ip($realifv4);
+        $laddr = find_interface_ip($realifv4, $ifconfig_details);
         if (is_ipaddrv4($laddr)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
@@ -541,7 +545,7 @@ function unbound_add_host_entries()
             $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
         }
-        $laddr6 = find_interface_ipv6($realifv6);
+        $laddr6 = find_interface_ipv6($realifv6, $ifconfig_details);
         if (is_ipaddrv6($laddr6)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
@@ -552,7 +556,7 @@ function unbound_add_host_entries()
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
         }
         if (empty($config['unbound']['noreglladdr6'])) {
-            $lladdr6 = find_interface_ipv6_ll($realifv6);
+            $lladdr6 = find_interface_ipv6_ll($realifv6, $ifconfig_details);
             if (is_ipaddrv6($lladdr6)) {
                 $domain = $config['system']['domain'];
                 if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {

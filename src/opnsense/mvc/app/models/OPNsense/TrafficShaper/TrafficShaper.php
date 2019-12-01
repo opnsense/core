@@ -45,9 +45,9 @@ class TrafficShaper extends BaseModel
     private function generateNewId($startAt, $allIds)
     {
         $newId = $startAt;
-        for ($i=0; $i < count($allIds); ++$i) {
-            if ($allIds[$i] > $newId && isset($allIds[$i+1])) {
-                if ($allIds[$i+1] - $allIds[$i] > 1) {
+        for ($i = 0; $i < count($allIds); ++$i) {
+            if ($allIds[$i] > $newId && isset($allIds[$i + 1])) {
+                if ($allIds[$i + 1] - $allIds[$i] > 1) {
                     // gap found
                     $newId = $allIds[$i] + 1;
                     break;

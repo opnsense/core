@@ -33,7 +33,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 
@@ -287,6 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $filesInBackup = $provider['handle']->backup();
                 } catch (Exception $e) {
                     $filesInBackup = array();
+                    $input_errors[] = $e->getMessage();
                 }
 
                 if (count($filesInBackup) == 0) {

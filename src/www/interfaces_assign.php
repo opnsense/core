@@ -279,11 +279,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
                   }
 
-                  if (strstr($ifport, 'gre') || strstr($ifport, 'gif') || strstr($ifport, 'ovpn') || strstr($ifport, 'ipsec')) {
-                      unset($config['interfaces'][$ifname]['ipaddr']);
-                      unset($config['interfaces'][$ifname]['subnet']);
-                      unset($config['interfaces'][$ifname]['ipaddrv6']);
-                      unset($config['interfaces'][$ifname]['subnetv6']);
+                  foreach (plugins_devices() as $device) {
+                      if (!isset($device['configurable']) || $device['configurable'] == true) {
+                          continue;
+                      }
+                      if (preg_match('/' . $device['pattern'] . '/', $ifport)) {
+                          unset($config['interfaces'][$ifname]['ipaddr']);
+                          unset($config['interfaces'][$ifname]['subnet']);
+                          unset($config['interfaces'][$ifname]['ipaddrv6']);
+                          unset($config['interfaces'][$ifname]['subnetv6']);
+                      }
                   }
 
                   /* check for wireless interfaces, set or clear ['wireless'] */

@@ -40,16 +40,16 @@ CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
-CORE_ABI?=	19.1
+CORE_ABI?=	19.7
 CORE_ARCH?=	${ARCH}
 CORE_FLAVOUR=	${FLAVOUR}
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	72
-CORE_PYTHON2?=	27
-CORE_PYTHON?=	36
+CORE_PYTHON?=	37
 CORE_RADVD?=	1
 CORE_SQUID?=	# empty
-CORE_SURICATA?=	# empty
+CORE_SURICATA?=	-devel
+CORE_SYSLOGNG?=	3.24
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
@@ -77,7 +77,10 @@ CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2019
 
-CORE_DEPENDS_amd64?=	beep bsdinstaller
+CORE_DEPENDS_amd64?=	beep \
+			bsdinstaller \
+			suricata${CORE_SURICATA}
+
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
@@ -111,6 +114,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-dom \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
+			php${CORE_PHP}-google-api-php-client \
 			php${CORE_PHP}-hash \
 			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
@@ -125,13 +129,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
-			py${CORE_PYTHON2}-Jinja2 \
-			py${CORE_PYTHON2}-dnspython \
-			py${CORE_PYTHON2}-ipaddress \
-			py${CORE_PYTHON2}-netaddr \
-			py${CORE_PYTHON2}-requests \
-			py${CORE_PYTHON2}-sqlite3 \
-			py${CORE_PYTHON2}-ujson \
+			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
 			py${CORE_PYTHON}-netaddr \
@@ -146,8 +144,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			sshlockout_pf \
 			strongswan \
 			sudo \
-			suricata${CORE_SURICATA} \
-			syslog-ng \
+			syslog-ng${CORE_SYSLOGNG:S/.//g} \
 			syslogd \
 			unbound \
 			wpa_supplicant \
@@ -236,6 +233,10 @@ scripts:
 install:
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
+.if exists(${LOCALBASE}/opnsense/www/index.php)
+	# try to update the current system if it looks like one
+	@touch ${LOCALBASE}/opnsense/www/index.php
+.endif
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -303,7 +304,6 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.${PKG_FORMAT}
-	@touch ${LOCALBASE}/opnsense/www/index.php
 	@pluginctl webgui
 
 lint-shell:
@@ -317,7 +317,7 @@ lint-xml:
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
 lint-exec:
-.for DIR in ${.CURDIR}/src/etc/rc.d ${SCRIPTDIRS}
+.for DIR in ${.CURDIR}/src/etc/rc.d ${.CURDIR}/src/etc/rc.syshook.d ${SCRIPTDIRS}
 .if exists(${DIR})
 	@find ${DIR} -path '**/htdocs_default' -prune -o -type f \
 	    ! -name "*.xml" ! -name "*.csv" ! -name "*.sql" -print0 | \
@@ -355,7 +355,7 @@ sweep:
 STYLEDIRS?=	src/etc/inc src/opnsense
 
 style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle --ignore=E501 ${.CURDIR}/src || true
+	@pycodestyle-${CORE_PYTHON:C/./&./1} --ignore=E501 ${.CURDIR}/src || true
 
 style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out

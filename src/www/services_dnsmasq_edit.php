@@ -29,7 +29,6 @@
  */
 
 require_once("guiconfig.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
 
 $a_hosts = &config_read_array('dnsmasq', 'hosts');

@@ -43,6 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
+    if (!empty($config['system']['dnsallowoverride_exclude'])) {
+        $pconfig['dnsallowoverride_exclude'] = explode(",", $config['system']['dnsallowoverride_exclude']);
+    } else {
+        $pconfig['dnsallowoverride_exclude'] = array();
+    }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
@@ -146,8 +151,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($pconfig['dnsallowoverride'])) {
             $config['system']['dnsallowoverride'] = true;
+            $config['system']['dnsallowoverride_exclude'] = implode(",", $pconfig['dnsallowoverride_exclude']);
         } elseif (isset($config['system']['dnsallowoverride'])) {
             unset($config['system']['dnsallowoverride']);
+            if (isset($config['system']['dnsallowoverride_exclude'])) {
+                unset($config['system']['dnsallowoverride_exclude']);
+            }
         }
 
         if ($pconfig['dnslocalhost'] == 'yes') {
@@ -170,34 +179,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dnsname="dns{$dnscounter}";
             $dnsgwname="dns{$dnscounter}gw";
             $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
+            $thisdnsgwname = $pconfig[$dnsgwname];
 
             if (!empty($pconfig[$dnsname])) {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
             }
-
-            $thisdnsgwname = $pconfig[$dnsgwname];
-
-            // "Blank" out the settings for this index, then we set them below using the "outdnscounter" index.
             $config['system'][$dnsgwname] = "none";
-            $pconfig[$dnsgwname] = "none";
-            $pconfig[$dnsname] = "";
-
-            if (!empty($pconfig[$dnsname])) {
-                // Only the non-blank DNS servers were put into the config above.
-                // So we similarly only add the corresponding gateways sequentially to the config (and to pconfig), as we find non-blank DNS servers.
-                // This keeps the DNS server IP and corresponding gateway "lined up" when the user blanks out a DNS server IP in the middle of the list.
+            if (!empty($pconfig[$dnsgwname])) {
+                // The indexes used to save the item don't have to correspond to the ones in the config, but since
+                // we always redirect after save, the configuration content is read after a successfull change.
                 $outdnscounter++;
-                $outdnsname="dns{$outdnscounter}";
                 $outdnsgwname="dns{$outdnscounter}gw";
-                $pconfig[$outdnsname] = $pconfig[$dnsname];
-                if (!empty($pconfig[$dnsgwname])) {
-                    $config['system'][$outdnsgwname] = $thisdnsgwname;
-                    $pconfig[$outdnsgwname] = $thisdnsgwname;
-                } else {
-                    // Note: when no DNS GW name is chosen, the entry is set to "none", so actually this case never happens.
-                    unset($config['system'][$outdnsgwname]);
-                    $pconfig[$outdnsgwname] = "";
-                }
+                $config['system'][$outdnsgwname] = $thisdnsgwname;
             }
             if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $pconfig[$dnsname])) {
                 // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
@@ -217,7 +210,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* time zone change first */
         system_timezone_configure();
 
-        filter_pflog_start();
         prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
@@ -240,6 +232,22 @@ include("head.inc");
 <body>
     <?php include("fbegin.inc"); ?>
 
+<script>
+//<![CDATA[
+$( document ).ready(function() {
+    // unhide advanced
+    $("#dnsallowoverride").change(function(event){
+        event.preventDefault();
+        if ($("#dnsallowoverride").is(':checked')) {
+            $("#dnsallowoverride_exclude").show();
+        } else {
+            $("#dnsallowoverride_exclude").hide();
+        }
+    });
+    $("#dnsallowoverride").change();
+});
+//]]>
+</script>
 <!-- row -->
 <section class="page-content-main">
   <div class="container-fluid">
@@ -406,14 +414,29 @@ include("head.inc");
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
+                <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
                 <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
                   "for their own purposes (including the DNS services). " .
-                  "However, they will not be assigned to DHCP and PPTP " .
-                  "VPN clients.") ?>
+                  "However, they will not be assigned to DHCP clients. " .
+                  "Since this option concerns all interfaces retrieving dynamic dns entries, you can exclude " .
+                  "items from the list below.") ?>
+                </div>
+                <div id="dnsallowoverride_exclude" style="display:none">
+                  <hr/>
+                  <strong><?=gettext("Exclude interfaces");?></strong>
+                  <br/>
+                  <select name="dnsallowoverride_exclude[]" class="selectpicker" data-style="btn-default" data-live-search="true"  multiple="multiple">
+<?php
+                  foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+                    <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['dnsallowoverride_exclude']) ? "selected='selected'" : "";?>>
+                      <?= $ifcfg['descr'] ?>
+                    </option>
+<?php
+                  endforeach;?>
+                  </select>
                 </div>
               </td>
             </tr>

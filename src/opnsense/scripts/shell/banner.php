@@ -39,6 +39,7 @@ $version = trim(shell_exec('opnsense-version'));
 echo "\n*** {$config['system']['hostname']}.{$config['system']['domain']}: {$version} ***\n";
 
 $iflist = legacy_config_get_interfaces(array('enable' => true, 'virtual' => false));
+$ifdetails = legacy_interfaces_details();
 
 if (!count($iflist)) {
     echo "\n\tNo network interfaces are assigned.\n";
@@ -83,10 +84,17 @@ foreach ($iflist as $ifname => $ifcfg) {
             break;
     }
 
+
     $realif = get_real_interface($ifname);
     $realifv6 = get_real_interface($ifname, 'inet6');
-    $network = find_interface_network($realif, false);
-    $network6 = find_interface_networkv6($realifv6, false);
+    $network = null;
+    $network6 = null;
+    if (!empty($ifdetails[$realif]['ipv4'][0])) {
+        $network = $ifdetails[$realif]['ipv4'][0]['ipaddr'] . "/" .  $ifdetails[$realif]['ipv4'][0]['subnetbits'];
+    }
+    if (!empty($ifdetails[$realifv6]['ipv6'][0]) && empty($ifdetails[$realifv6]['ipv6'][0]['link-local'])) {
+        $network6 = $ifdetails[$realifv6]['ipv6'][0]['ipaddr'] . "/" .  $ifdetails[$realif]['ipv6'][0]['subnetbits'];
+    }
     $tobanner = "{$ifcfg['descr']} ({$realif})";
 
     printf("\n %-15s -> ", $tobanner);

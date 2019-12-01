@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015-2017 Deciso B.V.
+ *    Copyright (C) 2015-2019 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -27,105 +27,32 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\InclusionIn;
-use OPNsense\Base\Validators\CsvListValidator;
 use OPNsense\Core\Config;
 
-class AuthGroupField extends BaseField
+class AuthGroupField extends BaseListField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
-    /**
-     * @var bool field may contain multiple groups at once
-     */
-    private $internalMultiSelect = false;
-
-    /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "option not in list";
-
     /**
      * @var array collected options
      */
-    private static $internalOptionList = array();
-
-    /**
-     * select if multiple groups may be selected at once
-     * @param $value boolean value Y/N
-     */
-    public function setMultiple($value)
-    {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalMultiSelect = true;
-        } else {
-            $this->internalMultiSelect = false;
-        }
-    }
+    private static $internalStaticOptionList = array();
 
     /**
      * generate validation data (list of certificates)
      */
     protected function actionPostLoadingEvent()
     {
-        if (empty(self::$internalOptionList)) {
+        if (empty(self::$internalStaticOptionList)) {
             $cnf = Config::getInstance()->object();
             if (isset($cnf->system->group)) {
                 foreach ($cnf->system->group as $group) {
-                    self::$internalOptionList[(string)$group->gid] = (string)$group->name;
+                    self::$internalStaticOptionList[(string)$group->gid] = (string)$group->name;
                 }
-                natcasesort(self::$internalOptionList);
+                natcasesort(self::$internalStaticOptionList);
             }
         }
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        $result = array ();
-        // if certificate is not required, add empty option
-        if (!$this->internalIsRequired) {
-            $result[""] = array("value" => gettext("none"), "selected" => ($this->internalValue == "") ? 1 : 0);
-        }
-
-        $groups = explode(',', $this->internalValue);
-        foreach (self::$internalOptionList as $optKey => $optValue) {
-            if (in_array($optKey, $groups)) {
-                $selected = 1;
-            } else {
-                $selected = 0;
-            }
-            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
-        }
-        return $result;
-    }
-
-    /**
-     * retrieve field validators for this field type
-     * @return array returns InclusionIn validator
-     */
-    public function getValidators()
-    {
-        $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            if ($this->internalMultiSelect) {
-                // field may contain more than one cert
-                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys(self::$internalOptionList)));
-            } else {
-                // single group selection
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys(self::$internalOptionList)));
-            }
-        }
-        return $validators;
+        $this->internalOptionList = self::$internalStaticOptionList;
     }
 }

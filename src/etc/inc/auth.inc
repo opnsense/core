@@ -192,12 +192,6 @@ $userindex = index_users();
 function isAuthLocalIP($http_host)
 {
     global $config;
-    $interface_list_ips = get_configured_ip_addresses();
-    foreach ($interface_list_ips as $ilips => $ifname) {
-        if (strcasecmp($http_host, $ilips) == 0) {
-            return true;
-        }
-    }
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($vip['subnet'] == $http_host) {
@@ -205,7 +199,23 @@ function isAuthLocalIP($http_host)
             }
         }
     }
-    return false;
+    $address_in_list = function ($interface_list_ips, $http_host) {
+        foreach ($interface_list_ips as $ilips => $ifname) {
+            if (strcasecmp($http_host, $ilips) == 0) {
+                return true;
+            }
+        }
+    };
+    // try using cached addresses
+    $interface_list_ips = get_cached_json_content("/tmp/isAuthLocalIP.cache.json");
+    if (!empty($interface_list_ips) && $address_in_list($interface_list_ips, $http_host)) {
+        return true;
+    }
+    // fetch addresses and store in cache
+    $interface_list_ips = get_configured_ip_addresses();
+    file_put_contents("/tmp/isAuthLocalIP.cache.json", json_encode($interface_list_ips));
+
+    return $address_in_list($interface_list_ips, $http_host);
 }
 
 function index_groups()
@@ -410,7 +420,7 @@ function local_sync_accounts()
             if (count($line) < 3 || !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
                 continue;
             }
-            mwexecf('/usr/sbin/pw groupdel %s', $line[2]);
+            mwexecf('/usr/sbin/pw groupdel -g %s', $line[2]);
         }
         pclose($fd);
     }
@@ -713,16 +723,6 @@ function auth_get_authserver($name)
         foreach ($config['system']['authserver'] as $authcfg) {
             if ($authcfg['name'] == $name) {
                 if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-                    // let's try to avoid regenerating the ldap url in every function.
-                    if (strstr($authcfg['ldap_urltype'], "Standard")) {
-                        $authcfg['ldap_full_url'] = "ldap://";
-                    } else {
-                        $authcfg['ldap_full_url'] = "ldaps://";
-                    }
-                    $authcfg['ldap_full_url'] .= is_ipaddrv6($authcfg['host']) ? "[{$authcfg['host']}]" : $authcfg['host'];
-                    if (!empty($authcfg['ldap_port'])) {
-                        $authcfg['ldap_full_url'] .= ":{$authcfg['ldap_port']}";
-                    }
                     // make sure a user and password entry exists and are null for anonymous usage
                     if (empty($authcfg['ldap_binddn'])) {
                         $authcfg['ldap_binddn'] = null;

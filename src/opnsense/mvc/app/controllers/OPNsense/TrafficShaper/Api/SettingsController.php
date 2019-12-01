@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015-2017 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\TrafficShaper\Api;
 
 use \OPNsense\Base\ApiMutableModelControllerBase;
@@ -40,6 +42,7 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'ts';
     protected static $internalModelClass = '\OPNsense\TrafficShaper\TrafficShaper';
+    protected static $internalModelUseSafeDelete = true;
 
     /**
      * Retrieve pipe settings or return defaults

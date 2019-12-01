@@ -28,7 +28,6 @@
     --------------------------------------------------------------------------------------
     return all available ciphers
 """
-import tempfile
 import subprocess
 import os
 import sys
@@ -45,18 +44,16 @@ if __name__ == '__main__':
                 rfc5246[row[0]] = {'description': row[1]}
 
     result = {}
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/local/bin/openssl', 'ciphers', '-V'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream:
-            parts = line.decode().strip().split()
-            if len(parts) > 1:
-                cipher_id = parts[0]
-                cipher_key = parts[2]
-                item = {'version': parts[3], 'id': cipher_id, 'description': ''}
-                for part in parts[4:]:
-                    item[part.split('=')[0]] = part.split('=')[-1]
-                if cipher_id in rfc5246:
-                    item['description'] = rfc5246[cipher_id]['description']
-                result[cipher_key] = item
+    sp = subprocess.run(['/usr/local/bin/openssl', 'ciphers', '-V'], capture_output=True, text=True)
+    for line in sp.stdout.split("\n"):
+        parts = line.strip().split()
+        if len(parts) > 1:
+            cipher_id = parts[0]
+            cipher_key = parts[2]
+            item = {'version': parts[3], 'id': cipher_id, 'description': ''}
+            for part in parts[4:]:
+                item[part.split('=')[0]] = part.split('=')[-1]
+            if cipher_id in rfc5246:
+                item['description'] = rfc5246[cipher_id]['description']
+            result[cipher_key] = item
     print (ujson.dumps(result))

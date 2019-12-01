@@ -27,6 +27,7 @@
 MTREE="mtree -e -p /"
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 TMPFILE=/tmp/pkg_check.exclude
+UPSTREAM="OPNsense"
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
@@ -43,6 +44,7 @@ MTREE_PATTERNS="
 ./etc/pwd.db
 ./etc/rc
 ./etc/rc.shutdown
+./etc/remote
 ./etc/shells
 ./etc/spwd.db
 ./etc/ttys
@@ -73,14 +75,20 @@ set_check()
 		echo "Version ${VER} is correct." >> ${PKG_PROGRESS_FILE}
 	fi
 
-	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
-
 	FILE=/usr/local/opnsense/version/${SET}.mtree
 
 	if [ ! -f ${FILE} ]; then
 		echo "Cannot verify ${SET}: missing ${FILE}" >> ${PKG_PROGRESS_FILE}
 		return
 	fi
+
+	if [ ! -f ${FILE}.sig ]; then
+		echo "Cannot verify ${SET}: missing ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
+	elif ! opnsense-verify -q ${FILE}; then
+		echo "Cannot verify ${SET}: invalid ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
+	fi
+
+	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
@@ -92,24 +100,109 @@ set_check()
 
 	if [ ${MTREE_RET} -eq 0 ]; then
 		if [ "${MTREE_MIA}" = "0" ]; then
-			echo "No problems detected." >> ${PKG_PROGRESS_FILE} 2>&1
+			echo "No problems detected." >> ${PKG_PROGRESS_FILE}
 		else
-			echo "Missing files: ${MTREE_MIA}" >> ${PKG_PROGRESS_FILE} 2>&1
-			echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE} 2>&1
+			echo "Missing files: ${MTREE_MIA}" >> ${PKG_PROGRESS_FILE}
+			echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE}
 		fi
 	else
-		echo "Error ${MTREE_RET} ocurred." >> ${PKG_PROGRESS_FILE} 2>&1
-		echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE} 2>&1
+		echo "Error ${MTREE_RET} ocurred." >> ${PKG_PROGRESS_FILE}
+		echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE}
 	fi
 
 	rm ${TMPFILE}
 }
 
+core_check()
+{
+	echo ">>> Check for core packages consistency" >> ${PKG_PROGRESS_FILE}
+
+	CORE=$(opnsense-version -n)
+	PROGRESS=
+
+	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
+		if [ -z "${PROGRESS}" ]; then
+			echo -n "Checking core packages: ." >> ${PKG_PROGRESS_FILE}
+			PROGRESS=1
+		else
+			echo -n "." >> ${PKG_PROGRESS_FILE}
+		fi
+
+		read REPO LVER AUTO VITA << EOF
+$(pkg query "%R %v %a %V" ${DEP})
+EOF
+
+		if [ "${REPO}" != ${UPSTREAM} ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} repository mismatch: ${REPO}" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		fi
+
+		RVER=$(pkg rquery -r ${UPSTREAM} %v ${DEP})
+		if [ -z "${RVER}" ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} has no upstream equivalent" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		elif [ "${RVER}" != "${LVER}" ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} version mismatch, expected ${RVER}" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		fi
+
+		AUTOEXPECT=1
+		AUTOSET="not set"
+		VITAEXPECT=0
+		VITASET="set"
+
+		if [ ${DEP} = ${CORE} ]; then
+			AUTOEXPECT=0
+			AUTOSET="set"
+			VITAEXPECT=1
+			VITASET="not set"
+		elif [ ${DEP} = "pkg" ]; then
+			AUTOEXPECT=0
+			AUTOSET="set"
+		fi
+
+		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		fi
+
+		if [ "${VITA}" != ${VITAEXPECT} ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo >> ${PKG_PROGRESS_FILE}
+			fi
+			echo "${DEP}-${LVER} is ${VITASET} to vital" >> ${PKG_PROGRESS_FILE}
+			PROGRESS=
+		fi
+	done
+
+	if [ -n "${PROGRESS}" ]; then
+		echo " done" >> ${PKG_PROGRESS_FILE}
+	fi
+}
+
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
+
 set_check kernel
 set_check base
+
 echo ">>> Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -da >> ${PKG_PROGRESS_FILE} 2>&1
+
 echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}
 pkg check -sa >> ${PKG_PROGRESS_FILE} 2>&1
+
+core_check
+
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}

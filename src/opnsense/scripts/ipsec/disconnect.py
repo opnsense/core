@@ -49,5 +49,4 @@ for sas in s.list_sas():
 
 # terminate connection if found
 if conn_found:
-    devnull = open(os.devnull, 'w')
-    subprocess.call(['/usr/local/sbin/ipsec', 'down', conn_id], stdin=devnull, stdout=devnull, stderr=devnull)
+    subprocess.run(['/usr/local/sbin/ipsec', 'down', conn_id], capture_output=True)

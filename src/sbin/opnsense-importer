@@ -83,7 +83,7 @@ while getopts bpz OPT; do
 		DO_ZFS="-z"
 		;;
 	*)
-		echo "Usage: man opnsense-importer" >&2
+		echo "Usage: man ${0##*/}" >&2
 		exit 1
 		;;
 	esac

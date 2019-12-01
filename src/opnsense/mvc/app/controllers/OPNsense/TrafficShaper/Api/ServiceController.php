@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015-2016 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\TrafficShaper\Api;
 
 use \OPNsense\Base\ApiControllerBase;
@@ -53,7 +55,7 @@ class ServiceController extends ApiControllerBase
             if ($bckresult == "OK") {
                 $status = "ok";
             } else {
-                $status = "error reloading shaper (".$bckresult.")";
+                $status = "error reloading shaper (" . $bckresult . ")";
             }
 
             return array("status" => $status);

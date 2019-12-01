@@ -118,7 +118,7 @@ class PortField extends BaseField
                 self::$internalOptionList = array("any") + self::$wellknownservices;
             }
 
-            for ($port=1; $port <= 65535; $port++) {
+            for ($port = 1; $port <= 65535; $port++) {
                 self::$internalOptionList[] = (string)$port;
             }
         }
@@ -174,19 +174,23 @@ class PortField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
-        if (($this->internalIsRequired == true || $this->internalValue != null) &&
-            count(self::$internalOptionList) > 0) {
+        if (
+            ($this->internalIsRequired == true || $this->internalValue != null) &&
+            count(self::$internalOptionList) > 0
+        ) {
             if (count(explode("-", $this->internalValue)) == 2 && $this->enableRanges) {
                 // range validation
                 $validators[] = new CallbackValidator(["callback" => function ($data) {
                     $messages = [];
                     $tmp = explode('-', $data);
                     foreach ($tmp as $port) {
-                        if (filter_var(
-                            $port,
-                            FILTER_VALIDATE_INT,
-                            array('options' => array('min_range' => 1, 'max_range' => 65535))
-                        ) === false) {
+                        if (
+                            filter_var(
+                                $port,
+                                FILTER_VALIDATE_INT,
+                                array('options' => array('min_range' => 1, 'max_range' => 65535))
+                            ) === false
+                        ) {
                             $messages[] = $this->getValidationMessage();
                             break;
                         }
@@ -195,7 +199,7 @@ class PortField extends BaseField
                 }]);
             } else {
                 $validators[] = new InclusionIn(array('message' => $this->getValidationMessage(),
-                                                      'domain'=>self::$internalOptionList));
+                                                      'domain' => self::$internalOptionList));
             }
         }
         return $validators;

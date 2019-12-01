@@ -30,11 +30,10 @@
  */
 
 require_once("guiconfig.inc");
-require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$services = services_get();
+$services = plugins_services();
 
 if (isset($_POST['servicestatusfilter'])) {
     $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);

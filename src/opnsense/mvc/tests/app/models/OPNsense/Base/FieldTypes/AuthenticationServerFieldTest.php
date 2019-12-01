@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -47,7 +48,7 @@ class AuthenticationServerFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\AuthenticationServerField', new AuthenticationServerField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/AuthenticationServerFieldTest/';
+        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/AuthenticationServerFieldTest/';
         Config::getInstance()->forceReload();
     }
 

@@ -27,7 +27,7 @@ fi
 
 # create ssl certificate store, in case sslbump is enabled we need this
 if [ ! -d /var/squid/ssl_crtd ]; then
-    /usr/local/libexec/squid/ssl_crtd -c -s /var/squid/ssl_crtd > /dev/null 2>&1
+    /usr/local/libexec/squid/security_file_certgen -c -s /var/squid/ssl_crtd -M 10 > /dev/null 2>&1
     chown -R squid:squid /var/squid/ssl_crtd
     chmod -R 750 /var/squid/ssl_crtd
     if [ -f /usr/local/etc/squid/ca.pem.id ]; then

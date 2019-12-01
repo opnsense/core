@@ -61,7 +61,7 @@ include("head.inc");
           <div class="container-fluid tab-content">
             <div class="tab-pane active" id="system">
               <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-              <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+              <form method="post">
                 <br/>
                 <input name="statetable" type="checkbox" id="statetable" value="yes" checked="checked" />
                 <?= gettext("Firewall state table"); ?><br/><br/>

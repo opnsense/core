@@ -84,7 +84,32 @@ function plugins_services()
         }
     }
 
+    uasort($services, function ($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
+
     return $services;
+}
+
+function plugins_devices()
+{
+    $devices = array();
+
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
+        $func = sprintf('%s_devices', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $work) {
+                $devices[] = $work;
+            }
+        }
+    }
+
+    return $devices;
 }
 
 function plugins_cron()
@@ -211,6 +236,8 @@ function plugins_configure($hook, $verbose = false, $args = array())
 {
     array_unshift($args, $verbose);
 
+    syslog(LOG_NOTICE, sprintf('plugins_configure %s (%s)', $hook, implode(',', $args)));
+
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
@@ -234,6 +261,10 @@ function plugins_configure($hook, $verbose = false, $args = array())
                         if ($argc > count($args)) {
                             $argc = count($args);
                         }
+                        syslog(LOG_NOTICE, sprintf(
+                            'plugins_configure %s (execute task : %s(%s))',
+                            $hook, $argf, implode(',', array_slice($args, 0, $argc))
+                        ));
                         call_user_func_array($argf, array_slice($args, 0, $argc));
                     }
                 }
@@ -246,6 +277,8 @@ function plugins_run($hook, $verbose = false, $args = array())
 {
     array_unshift($args, $verbose);
     $ret = [];
+
+    syslog(LOG_NOTICE, sprintf('plugins_run %s (%s)', $hook, implode(',', $args)));
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -269,6 +302,9 @@ function plugins_run($hook, $verbose = false, $args = array())
                     if ($argc > count($args)) {
                         $argc = count($args);
                     }
+                    syslog(LOG_NOTICE, sprintf(
+                        'plugins_run %s (execute task : %s(%s))', $hook, $argf, implode(',', array_slice($args, 0, $argc))
+                    ));
                     $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
                 }
             }

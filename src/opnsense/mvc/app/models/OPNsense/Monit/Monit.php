@@ -168,11 +168,17 @@ class Monit extends BaseModel
                         switch ($node->getInternalXMLTagName()) {
                             case 'type':
                                 $testUuid = $parentNode->getAttribute('uuid');
-                                if (strcmp((string)$node, 'Custom') != 0 &&
+                                if (
+                                    strcmp((string)$node, 'Custom') != 0 &&
                                     $node->isFieldChanged() &&
-                                    $this->isTestServiceRelated($testUuid)) {
+                                    $this->isTestServiceRelated($testUuid)
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                        gettext("Cannot change the type. Test is linked to a service."),
+                                        sprintf(
+                                            gettext("Cannot change the test type to '%s'. Test '%s' is linked to a service."),
+                                            (string)$node,
+                                            (string)$this->getNodeByReference('test.' . $parentNode->getAttribute('uuid'))->name
+                                        ),
                                         $key
                                     ));
                                 }
@@ -181,11 +187,17 @@ class Monit extends BaseModel
                                 // only 'Custom' or the same test type (see $conditionPatterns)
                                 // are allowed if test is linked to a service
                                 $type = $this->getTestType((string)$node);
-                                if (strcmp($type, 'Custom') != 0 &&
+                                if (
+                                    strcmp($type, 'Custom') != 0 &&
                                     strcmp((string)$parentNode->type, $type) != 0 &&
-                                    $this->isTestServiceRelated($parentNode->getAttribute('uuid'))) {
+                                    $this->isTestServiceRelated($parentNode->getAttribute('uuid'))
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
-                                        gettext("Condition would change the type of the test but it is linked to a service."),
+                                        sprintf(
+                                            gettext("Condition '%s' would change the type of the test '%s' but it is linked to a service."),
+                                            (string)$node,
+                                            (string)$this->getNodeByReference('test.' . $parentNode->getAttribute('uuid'))->name
+                                        ),
                                         $key
                                     ));
                                 } else {
@@ -220,8 +232,10 @@ class Monit extends BaseModel
                                 }
                                 break;
                             case 'pidfile':
-                                if (empty((string)$node) && (string)$parentNode->type == 'process'
-                                      && empty((string)$parentNode->match)) {
+                                if (
+                                    empty((string)$node) && (string)$parentNode->type == 'process'
+                                      && empty((string)$parentNode->match)
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Please set at least one of Pidfile or Match."),
                                         $key
@@ -229,8 +243,10 @@ class Monit extends BaseModel
                                 }
                                 break;
                             case 'match':
-                                if (empty((string)$node) && (string)$parentNode->type == 'process'
-                                      && empty((string)$parentNode->pidfile)) {
+                                if (
+                                    empty((string)$node) && (string)$parentNode->type == 'process'
+                                      && empty((string)$parentNode->pidfile)
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Please set at least one of Pidfile or Match."),
                                         $key
@@ -243,8 +259,10 @@ class Monit extends BaseModel
                                         gettext("Address is mandatory for 'Remote Host' checks."),
                                         $key
                                     ));
-                                } elseif (empty((string)$node) && (string)$parentNode->type == 'network'
-                                      && empty((string)$parentNode->interface) ) {
+                                } elseif (
+                                    empty((string)$node) && (string)$parentNode->type == 'network'
+                                      && empty((string)$parentNode->interface)
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Please set at least one of Address or Interface."),
                                         $key
@@ -252,8 +270,10 @@ class Monit extends BaseModel
                                 }
                                 break;
                             case 'interface':
-                                if (empty((string)$node) && (string)$parentNode->type == 'network'
-                                      && empty((string)$parentNode->address) ) {
+                                if (
+                                    empty((string)$node) && (string)$parentNode->type == 'network'
+                                      && empty((string)$parentNode->address)
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Please set at least one of Address or Interface."),
                                         $key
@@ -261,10 +281,12 @@ class Monit extends BaseModel
                                 }
                                 break;
                             case 'path':
-                                if (empty((string)$node) && in_array(
-                                    (string)$parentNode->type,
-                                    ['file', 'fifo', 'filesystem', 'directory']
-                                )) {
+                                if (
+                                    empty((string)$node) && in_array(
+                                        (string)$parentNode->type,
+                                        ['file', 'fifo', 'filesystem', 'directory']
+                                    )
+                                ) {
                                     $messages->appendMessage(new \Phalcon\Validation\Message(
                                         gettext("Path is mandatory."),
                                         $key
@@ -340,8 +362,10 @@ class Monit extends BaseModel
             // find the operand for this condition using the longest match
             foreach ($operandList as $operand) {
                 $operandLength = strlen($operand);
-                if (!strncmp($condition, $operand, $operandLength) &&
-                    $operandLength > $keyLength) {
+                if (
+                    !strncmp($condition, $operand, $operandLength) &&
+                    $operandLength > $keyLength
+                ) {
                     $keyLength = $operandLength;
                     $foundOperand = $operand;
                     $foundTestType = $testType;

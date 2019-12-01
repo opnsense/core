@@ -36,40 +36,37 @@ import subprocess
 if __name__ == '__main__':
     results = dict()
     hex_digits = set("0123456789abcdef")
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-sr', '-v'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.write(b'\n') # always make sure we have a final line-ending
-        output_stream.seek(0)
-        stats = dict()
-        prev_line = ''
-        for rline in output_stream:
-            line = rline.decode().strip()
-            if len(line) == 0 or line[0] != '[':
-                if prev_line.find(' label ') > -1:
-                    lbl = prev_line.split(' label ')[-1]
-                    if lbl.count('"') >= 2:
-                        rule_md5 = lbl.split('"')[1]
-                        if len(rule_md5) == 32 and set(rule_md5).issubset(hex_digits):
-                            if rule_md5 in results:
-                                # aggregate raw pf rules (a single rule in out ruleset could be expanded)
-                                for key in stats:
-                                    if key in results[rule_md5]:
-                                        if key == 'pf_rules':
-                                            results[rule_md5][key] += 1
-                                        else:
-                                            results[rule_md5][key] += stats[key]
+    sp = subprocess.run(['/sbin/pfctl', '-sr', '-v'], capture_output=True, text=True)
+    stats = dict()
+    prev_line = ''
+    for rline in sp.stdout.split('\n') + []:
+        line = rline.strip()
+        if len(line) == 0 or line[0] != '[':
+            if prev_line.find(' label ') > -1:
+                lbl = prev_line.split(' label ')[-1]
+                if lbl.count('"') >= 2:
+                    rule_md5 = lbl.split('"')[1]
+                    if len(rule_md5) == 32 and set(rule_md5).issubset(hex_digits):
+                        if rule_md5 in results:
+                            # aggregate raw pf rules (a single rule in out ruleset could be expanded)
+                            for key in stats:
+                                if key in results[rule_md5]:
+                                    if key == 'pf_rules':
+                                        results[rule_md5][key] += 1
                                     else:
-                                        results[rule_md5][key] = stats[key]
-                            else:
-                                results[rule_md5] = stats
-                # reset for next rule
-                prev_line = line
-                stats = {'pf_rules': 1}
-            elif line[0] == '['  and line.find('Evaluations') > 0:
-                parts = line.strip('[ ]').replace(':', ' ').split()
-                for i in range(0, len(parts)-1, 2):
-                    if parts[i+1].isdigit():
-                        stats[parts[i].lower()] = int(parts[i+1])
+                                        results[rule_md5][key] += stats[key]
+                                else:
+                                    results[rule_md5][key] = stats[key]
+                        else:
+                            results[rule_md5] = stats
+            # reset for next rule
+            prev_line = line
+            stats = {'pf_rules': 1}
+        elif line[0] == '['  and line.find('Evaluations') > 0:
+            parts = line.strip('[ ]').replace(':', ' ').split()
+            for i in range(0, len(parts)-1, 2):
+                if parts[i+1].isdigit():
+                    stats[parts[i].lower()] = int(parts[i+1])
 
     # output
     print (ujson.dumps(results))

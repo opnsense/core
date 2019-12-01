@@ -92,9 +92,9 @@ class LDAP extends Base implements IAuthConnector
     private $ldapScope = 'subtree';
 
     /**
-     * @var null|string certificate reference (in /var/run/certs/)
+     * @var null|string url type (standard, startTLS, SSL)
      */
-    private $ldapCAcert = null;
+    private $ldapURLType = null;
 
     /**
      * @var array list of already known usernames vs distinguished names
@@ -265,45 +265,19 @@ class LDAP extends Base implements IAuthConnector
         // Encryption types: Standard ( none ), StartTLS and SSL
         if (strstr($config['ldap_urltype'], "Standard")) {
             $this->ldapBindURL = "ldap://";
+            $this->ldapURLType = "standard";
         } elseif (strstr($config['ldap_urltype'], "StartTLS")) {
             $this->ldapBindURL = "ldap://";
             $this->useStartTLS = true;
+            $this->ldapURLType = "StartTLS";
         } else {
             $this->ldapBindURL = "ldaps://";
+            $this->ldapURLType = "SSL";
         }
 
         $this->ldapBindURL .= strpos($config['host'], "::") !== false ? "[{$config['host']}]" : $config['host'];
         if (!empty($config['ldap_port'])) {
             $this->ldapBindURL .= ":{$config['ldap_port']}";
-        }
-
-        // setup environment
-        if (!empty($config['ldap_caref']) && stristr($config['ldap_urltype'], "standard") === false) {
-            $this->setupCaEnv($config['ldap_caref']);
-        }
-    }
-
-    /**
-     * setup certificate environment
-     * @param string $caref ca reference
-     */
-    public function setupCaEnv($caref)
-    {
-        $this->ldapCAcert = null;
-        if (isset(Config::getInstance()->object()->ca)) {
-            foreach (Config::getInstance()->object()->ca as $cert) {
-                if (isset($cert->refid) && (string)$caref == $cert->refid) {
-                    $this->ldapCAcert = (string)$cert->refid;
-                    @mkdir("/var/run/certs");
-                    @unlink("/var/run/certs/{$this->ldapCAcert}.ca");
-                    file_put_contents("/var/run/certs/{$this->ldapCAcert}.ca", base64_decode((string)$cert->crt));
-                    @chmod("/var/run/certs/{$this->ldapCAcert}.ca", 0644);
-                    break;
-                }
-            }
-        }
-        if (empty($this->ldapCAcert)) {
-            syslog(LOG_ERR, sprintf('LDAP: Could not lookup CA by reference for host %s.', $caref));
         }
     }
 
@@ -335,10 +309,9 @@ class LDAP extends Base implements IAuthConnector
         $this->closeLDAPHandle();
 
         // Note: All TLS options must be set before ldap_connect is called
-        if (!empty($this->ldapCAcert)) {
+        if ($this->ldapURLType != "standard") {
             ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
-            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTDIR, '/var/run/certs');
-            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, "/var/run/certs/{$this->ldapCAcert}.ca");
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, "/etc/ssl/cert.pem");
         } else {
             ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
         }
@@ -511,16 +484,20 @@ class LDAP extends Base implements IAuthConnector
                 $cnf = Config::getInstance()->lock(true)->object();
                 foreach ($cnf->system->group as $group) {
                     if (in_array((string)$group->name, $sync_groups)) {
-                        if (in_array((string)$user->uid, (array)$group->member)
-                              && empty($ldap_groups[(string)$group->name])) {
+                        if (
+                            in_array((string)$user->uid, (array)$group->member)
+                              && empty($ldap_groups[(string)$group->name])
+                        ) {
                             unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
                             syslog(LOG_NOTICE, sprintf(
                                 'User: policy change for %s unlink group %s',
                                 $username,
                                 (string)$group->name
                             ));
-                        } elseif (!in_array((string)$user->uid, (array)$group->member)
-                              && !empty($ldap_groups[(string)$group->name])) {
+                        } elseif (
+                            !in_array((string)$user->uid, (array)$group->member)
+                              && !empty($ldap_groups[(string)$group->name])
+                        ) {
                             syslog(LOG_NOTICE, sprintf(
                                 'User: policy change for %s link group %s [%s]',
                                 $username,

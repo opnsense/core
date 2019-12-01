@@ -74,8 +74,8 @@ function get_default_sysctl_value($id)
 {
     $sysctls = array(
         'debug.pfftpproxy' => '0',
-        'hw.syscons.kbd_reboot' => '0',
         'hw.ibrs_disable' => '0',
+        'hw.syscons.kbd_reboot' => '0',
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
         'net.inet.icmp.drop_redirect' => '0',
@@ -106,6 +106,7 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_member' => '1',
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
+        'net.local.dgram.maxdgram' => '8192',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
@@ -128,16 +129,16 @@ function system_sysctl_get()
         'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
         'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
         'net.enc.out.ipsec_filter_mask' => '1', /* before processing */
+        'net.local.dgram.maxdgram' => 'default',
     );
 
-    if (isset($config['sysctl']['item'])) {
-        foreach ($config['sysctl']['item'] as $tunable) {
-            if ($tunable['value'] == 'default') {
-                $value = get_default_sysctl_value($tunable['tunable']);
-            } else {
-                $value = $tunable['value'];
-            }
-            $sysctls[$tunable['tunable']] = $value;
+    foreach (config_read_array('sysctl', 'item') as $tunable) {
+        $sysctls[$tunable['tunable']] = $tunable['value'];
+    }
+
+    foreach ($sysctls as $key => &$value) {
+        if ($value == 'default') {
+            $value = get_default_sysctl_value($key);
         }
     }
 
@@ -290,9 +291,11 @@ function get_searchdomains()
 
 function get_nameservers($interface = null)
 {
+    global $config;
     $master_list = array();
 
     $dns_lists = glob('/var/etc/nameserver_*');
+    $exclude_interfaces = array();
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
@@ -304,7 +307,21 @@ function get_nameservers($interface = null)
         );
     }
 
+    if (isset($config['system']['dnsallowoverride_exclude'])) {
+        foreach (explode(",", $config['system']['dnsallowoverride_exclude']) as $intf) {
+            if (isset($config['interfaces'][$intf])) {
+                $exclude_interfaces[] = $config['interfaces'][$intf]['if'];
+            }
+        }
+    }
+
     foreach ($dns_lists as $fdns) {
+        $intf = explode("_", $fdns)[1];
+        $intf = strpos($intf, "v6") === 0 ? substr($intf, 2) : $intf;
+        if (in_array($intf, $exclude_interfaces)) {
+            continue;
+        }
+
         $contents = @file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!is_array($contents)) {
             continue;
@@ -558,24 +575,6 @@ function system_syslogd_fixup_server($server)
     }
 }
 
-function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*")
-{
-    // Rather than repeatedly use the same code, use this function to build a list of remote servers.
-    $facility .= " ".
-    $remote_servers = "";
-    $pad_to  = 56;
-    $padding = ceil(($pad_to - strlen($facility))/8)+1;
-    if (!empty($syslogcfg['remoteserver'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
-    }
-    if (!empty($syslogcfg['remoteserver2'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
-    }
-    if (!empty($syslogcfg['remoteserver3'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
-    }
-    return $remote_servers;
-}
 
 function system_syslogd_extra_local($logsocket)
 {
@@ -612,23 +611,6 @@ function system_syslogd_start($verbose = false, $restart = false)
         $syslogconfs[$plugin_name] = $plugin_details;
     }
 
-    /*
-     * XXX Standard syslog configs overwrite plugins, but we can
-     * get rid of this behaviour by wrapping this local array using
-     * the key as a "name" entry in the array...
-     */
-    $syslogconfs['configd'] = array('facility' => array('configd.py'));
-    $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'), 'local' => '/var/dhcpd/var/run/log', 'remote' => 'dhcp');
-    $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-    $syslogconfs['gateways'] = array('facility' => array('dpinger'), 'remote' => 'apinger');
-    $syslogconfs['lighttpd'] = array('facility' => array('lighttpd'));
-    $syslogconfs['pkg'] = array('facility' => array('pkg', 'pkg-static'));
-    $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
-    $syslogconfs['ppps'] = array('facility' => array('ppp'));
-    $syslogconfs['resolver'] = array('facility' => array('unbound'), 'local' => '/var/unbound/var/run/log', 'remote' => 'dns');
-    $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
-    $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
-
     $separatelogfacilities = array();
     foreach ($syslogconfs as $logTopic => $logConfig) {
         $syslogconf .= "!".implode(',', $logConfig['facility'])."\n";
@@ -636,13 +618,11 @@ function system_syslogd_start($verbose = false, $restart = false)
         if (!isset($syslogcfg['disablelocallogging'])) {
             $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
         }
-        if (!empty($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-        }
         if (!empty($logConfig['local'])) {
             $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
         }
     }
+    $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
 
     asort($separatelogfacilities);
     $facilitylist = implode(',', array_unique($separatelogfacilities));
@@ -663,34 +643,8 @@ auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
 
 EOD;
     }
-    if (!empty($syslogcfg['enable'])) {
-        /* XXX most remote facilities are already sent to remote using the 'remote' keyword */
-        if (isset($syslogcfg['system'])) {
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.notice;kern.debug;lpr.info;mail.crit;daemon.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'news.err;local0.none;local3.none;local4.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'local7.none');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'security.*');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, 'auth.info;authpriv.info;daemon.info');
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.emerg');
-        }
-        if (isset($syslogcfg['logall'])) {
-            // Make everything mean everything, including facilities excluded above.
-            $syslogconf .= "!*\n";
-            $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, '*.*');
-        }
-    }
 
     file_put_contents('/var/etc/syslog.conf', $syslogconf);
-
-    if (!empty($syslogcfg['sourceip'])) {
-        $ifaddr = $syslogcfg['ipproto'] == 'ipv6' ?
-            get_interface_ipv6($syslogcfg['sourceip']) :
-            get_interface_ip($syslogcfg['sourceip']);
-        if (is_ipaddr($ifaddr)) {
-            $syslogd_extra .= exec_safe('-b %s ', $ifaddr);
-        }
-    }
-
     $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
 
     // setup log files for all facilities including default
@@ -707,14 +661,30 @@ EOD;
 
     if (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
+        if (isvalidpid('/var/run/syslog-ng.pid')) {
+            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
+        } else {
+            mwexecf("/usr/sbin/service syslog-ng restart");
+        }
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
+        mwexecf("/usr/sbin/service syslog-ng stop");
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
+        mwexecf("/usr/sbin/service syslog-ng start");
     }
 
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+/**
+ * stop syslog + syslog-ng
+ */
+function system_syslogd_stop()
+{
+    killbypid('/var/run/syslog.pid', 'TERM', true);
+    mwexecf("/usr/sbin/service syslog-ng stop");
 }
 
 function system_clear_log($logfile, $restart_syslogd = true)
@@ -801,6 +771,18 @@ function system_firmware_configure($verbose = false)
                 strpos($config['system']['firmware']['flavour'], '/') === false ? "${g['product_abi']}/" : ''
             ))
         );
+    }
+
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
+function system_trust_configure($verbose = false)
+{
+    if ($verbose) {
+        echo 'Writing trust files...';
+        flush();
     }
 
     $ca_root_nss = '/usr/local/share/certs/ca-root-nss.crt';

@@ -150,6 +150,7 @@ class CPBackgroundProcess(object):
 
                     # session accounting
                     if db_client['acc_session_timeout'] is not None \
+                            and type(db_client['acc_session_timeout']) in (int, float) \
                             and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                 elif db_client['authenticated_via'] == '---mac---':
@@ -161,17 +162,12 @@ class CPBackgroundProcess(object):
                             self.ipfw.delete(zoneid, db_client['ipAddress'])
                         self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
                         self.ipfw.add_to_table(zoneid, current_ip)
-                        self.ipfw.add_accounting(current_ip)
 
                 # check session, if it should be active, validate its properties
                 if drop_session_reason is None:
-                    # registered client, but not active according to ipfw (after reboot)
-                    if cpnet not in registered_addresses:
+                    # registered client, but not active or missing accounting according to ipfw (after reboot)
+                    if cpnet not in registered_addresses or cpnet not in registered_addr_accounting:
                         self.ipfw.add_to_table(zoneid, cpnet)
-
-                    # is accounting rule still available? need to reapply after reload / reboot
-                    if cpnet not in registered_addr_accounting:
-                        self.ipfw.add_accounting(cpnet)
                 else:
                     # remove session
                     syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
@@ -226,7 +222,10 @@ def main():
 
             # process accounting messages (uses php script, for reuse of Auth classes)
             try:
-                subprocess.call(['/usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php'])
+                subprocess.run(
+                    ['/usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php'],
+                    capture_output=True
+                )
             except OSError:
                 # if accounting script crashes don't exit backgroung process
                 pass

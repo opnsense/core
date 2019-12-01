@@ -43,7 +43,7 @@
                     <Required>Y</Required>
                     <default>none</default>
                     <OptionValues>
-                        <none></none>
+                        <none>(none)</none>
                         <src-ip>source</src-ip>
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
@@ -169,7 +169,7 @@
                     <Required>Y</Required>
                     <default>none</default>
                     <OptionValues>
-                        <none></none>
+                        <none>(none)</none>
                         <src-ip>source</src-ip>
                         <dst-ip>destination</dst-ip>
                     </OptionValues>

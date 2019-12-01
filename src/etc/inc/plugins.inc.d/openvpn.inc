@@ -35,9 +35,9 @@ function openvpn_configure()
 {
     return array(
         'crl' => array('openvpn_refresh_crls:0'),
-        'openvpn_reload' => array('openvpn_configure_do:2'),
-        'openvpn_prepare' => array('openvpn_prepare_all'),
+        'openvpn_prepare' => array('openvpn_prepare:2'),
         'remote' => array('openvpn_configure_do'),
+        'openvpn' => array('openvpn_configure_do:2'),
         'vpn' => array('openvpn_configure_do:2'),
     );
 }
@@ -45,12 +45,7 @@ function openvpn_configure()
 function openvpn_syslog()
 {
     $logfacilities = array();
-
-    $logfacilities['openvpn'] = array(
-        'facility' => array('openvpn'),
-        'remote' => 'vpn',
-    );
-
+    $logfacilities['openvpn'] = array('facility' => array('openvpn'));
     return $logfacilities;
 }
 
@@ -1142,7 +1137,7 @@ function openvpn_fetch_csc_list()
     return $result;
 }
 
-function openvpn_prepare_all($verbose = false)
+function openvpn_prepare($verbose = false, $interface = null)
 {
     global $config;
 
@@ -1158,7 +1153,9 @@ function openvpn_prepare_all($verbose = false)
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
-                openvpn_reconfigure($mode, $settings, true);
+                if (empty($interface) || $interface == "ovpn${mode[0]}{$settings['vpnid']}") {
+                    openvpn_reconfigure($mode, $settings, true);
+                }
             }
         }
     }
@@ -1197,12 +1194,6 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
     }
 
     if (!empty($interface)) {
-        /* protect reload by ignoring unassociated devices */
-        $realif = get_real_interface($interface);
-        if (!strstr($realif, 'ovpn') && !strstr($realif, '_vip')) {
-            return;
-        }
-
         log_error(sprintf(
             'Resyncing OpenVPN instances for interface %s.',
             convert_friendly_interface_to_friendly_descr($interface)

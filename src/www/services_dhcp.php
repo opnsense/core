@@ -29,7 +29,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/dhcpd.inc");
@@ -228,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['ddnsdomain']) && !is_domain($pconfig['ddnsdomain']))) {
             $input_errors[] = gettext("A valid domain name must be specified for the dynamic DNS registration.");
         }
-        if ((!empty($pconfig['ddnsdomain']) && !is_ipaddrv4($pconfig['ddnsdomainprimary']))) {
+        if ((!empty($pconfig['ddnsdomainprimary']) && !is_ipaddrv4($pconfig['ddnsdomainprimary']))) {
             $input_errors[] = gettext("A valid primary domain name server IP address must be specified for the dynamic domain name.");
         }
         if (!empty($pconfig['ddnsdomainkey']) && base64_encode(base64_decode($pconfig['ddnsdomainkey'], true)) !== $pconfig['ddnsdomainkey']) {
@@ -789,7 +788,8 @@ include("head.inc");
                       <td>
                         <input name="gateway" type="text" class="form-control host" value="<?=$pconfig['gateway'];?>" />
                         <div class="hidden" data-for="help_for_gateway">
-                          <?=gettext('The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment.');?>
+                          <?=gettext('The default is to use the IP on this interface of the firewall as the gateway, if a valid (online) gateway has been configured under System->Gateways. '.
+                                     'Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment.');?>
                         </div>
                       </td>
                     </tr>

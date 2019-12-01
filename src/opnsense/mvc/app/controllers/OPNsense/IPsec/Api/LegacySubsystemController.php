@@ -1,0 +1,83 @@
+<?php
+
+/*
+ * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+namespace OPNsense\IPsec\Api;
+
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+
+/**
+ * Class LegacySubsystemController
+ * @package OPNsense\IPsec\Api
+ */
+class LegacySubsystemController extends ApiControllerBase
+{
+    /**
+     * Returns the status of the legacy subsystem, which currently only includes a boolean specifying if the subsystem
+     * is marked as dirty, which means that there are pending changes.
+     * @return array
+     */
+    public function statusAction()
+    {
+        return [
+            'isDirty' => file_exists('/tmp/ipsec.dirty') // is_subsystem_dirty('ipsec')
+        ];
+    }
+
+    /**
+     * Apply the IPsec configuration using the legacy subsystem and return a message describing the result
+     * @return array
+     * @throws \Exception
+     */
+    public function applyConfigAction()
+    {
+        try {
+            if (!$this->request->isPost()) {
+                throw new \Exception(gettext('Request method not allowed, expected POST'));
+            }
+
+            $backend = new Backend();
+            $bckresult = trim($backend->configdRun('ipsec reconfigure'));
+            if ($bckresult !== 'OK') {
+                throw new \Exception($bckresult);
+            }
+
+            // clear_subsystem_dirty('ipsec')
+            if (!@unlink('/tmp/ipsec.dirty')) {
+                throw new \Exception(gettext('Could not remove /tmp/ipsec.dirty to mark subsystem as clean'));
+            }
+
+            return ['message' => gettext('The changes have been applied successfully.')];
+        } catch (\Exception $e) {
+            throw new \Exception(sprintf(
+                gettext('Unable to apply IPsec subsystem configuration: %s'),
+                $e->getMessage()
+            ));
+        }
+    }
+}

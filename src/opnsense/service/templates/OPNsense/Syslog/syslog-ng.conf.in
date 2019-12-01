@@ -1,0 +1,27 @@
+@version:%%CORE_SYSLOGNG%%
+@include "scl.conf"
+
+#
+# options
+#
+options {
+    keep_hostname(yes);
+    use_fqdn(yes);
+    chain_hostnames(off);
+    flush_lines(0);
+    threaded(yes);
+    create_dirs(yes);
+};
+
+source s_all {
+{#
+    merge all source configurations
+#}
+{%  for sfilename in helpers.glob("OPNsense/Syslog/sources/*.conf") %}{%
+        include sfilename without context
+%}
+{%  endfor %}
+
+};
+
+@include "/usr/local/etc/syslog-ng.conf.d/*.conf"

@@ -29,7 +29,6 @@
  */
 
 require_once("guiconfig.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

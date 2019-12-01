@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -53,7 +54,7 @@ class AliasController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "aliases.alias",
             array('enabled', 'name', 'description', 'type', 'content'),
-            "description"
+            "name"
         );
     }
 
@@ -66,7 +67,7 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
-        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
         $old_name = $node != null ? (string)$node->name : null;
         if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("alias")) {
             $new_name = $this->request->getPost("alias")['name'];
@@ -103,7 +104,7 @@ class AliasController extends ApiMutableModelControllerBase
         foreach ($this->getModel()->aliasIterator() as $alias) {
             if (!in_array($alias['name'], $selected_aliases)) {
                 $response['alias']['content'][$alias['name']] = array(
-                  "selected" => 0, "value" =>$alias['name']
+                  "selected" => 0, "value" => $alias['name']
                 );
             }
         }
@@ -138,7 +139,7 @@ class AliasController extends ApiMutableModelControllerBase
     public function delItemAction($uuid)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
         if ($node != null) {
             $uses = $this->getModel()->whereUsed((string)$node->name);
             if (!empty($uses)) {
@@ -260,9 +261,12 @@ class AliasController extends ApiMutableModelControllerBase
             $this->sessionClose();
             $result = array("existing" => 0, "new" => 0, "status" => "failed");
             $data = $this->request->getPost("data");
-            if (is_array($data) && !empty($data['aliases'])
-                    && !empty($data['aliases']['alias']) && is_array($data['aliases']['alias'])) {
+            if (
+                is_array($data) && !empty($data['aliases'])
+                    && !empty($data['aliases']['alias']) && is_array($data['aliases']['alias'])
+            ) {
                 Config::getInstance()->lock();
+
                 // save into model
                 $uuid_mapping = array();
                 foreach ($data['aliases']['alias'] as $uuid => $content) {
@@ -280,17 +284,22 @@ class AliasController extends ApiMutableModelControllerBase
                         $uuid_mapping[$node->getAttribute('uuid')] = $uuid;
                     }
                 }
-                // perform validation, record details
+                // attach this alias to util class, to avoid recursion issues (aliases used in aliases).
+                \OPNsense\Firewall\Util::attachAliasObject($this->getModel());
+
+                // perform validation, record details.
                 foreach ($this->getModel()->performValidation() as $msg) {
                     if (empty($result['validations'])) {
                         $result['validations'] = array();
                     }
                     $parts = explode('.', $msg->getField());
-                    $uuid = $parts[count($parts)-2];
-                    $fieldname = $parts[count($parts)-1];
+                    $uuid = $parts[count($parts) - 2];
+                    $fieldname = $parts[count($parts) - 1];
                     $result['validations'][$uuid_mapping[$uuid] . "." . $fieldname] = $msg->getMessage();
                 }
-                // only persist changes
+
+
+                // only persist when valid import
                 if (empty($result['validations'])) {
                     $result['status'] = "ok";
                     $this->save();

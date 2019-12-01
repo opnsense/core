@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2019 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -27,26 +27,21 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\Backend;
-use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * Class ConfigdActionsField list configurable configd actions
  * @package OPNsense\Base\FieldTypes
  */
-class ConfigdActionsField extends BaseField
+class ConfigdActionsField extends BaseListField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
     /**
      * @var array collected options
      */
-    private static $internalOptionList = array();
+    private static $internalStaticOptionList = array();
 
     /**
      * @var string default validation message string
@@ -68,8 +63,8 @@ class ConfigdActionsField extends BaseField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
-            self::$internalOptionList[$this->internalCacheKey] = array();
+        if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
+            self::$internalStaticOptionList[$this->internalCacheKey] = array();
 
             $backend = new Backend();
             $service_tempfile = "/tmp/configdmodelfield.data";
@@ -90,7 +85,6 @@ class ConfigdActionsField extends BaseField
                 }
             }
 
-
             foreach ($actions as $key => $value) {
                 // use filters to determine relevance
                 $isMatched = true;
@@ -104,14 +98,15 @@ class ConfigdActionsField extends BaseField
                 }
                 if ($isMatched) {
                     if (!isset($value['description']) || $value['description'] == '') {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = $key;
+                        self::$internalStaticOptionList[$this->internalCacheKey][$key] = $key;
                     } else {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = $value['description'];
+                        self::$internalStaticOptionList[$this->internalCacheKey][$key] = $value['description'];
                     }
                 }
             }
-            natcasesort(self::$internalOptionList[$this->internalCacheKey]);
+            natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
         }
+        $this->internalOptionList = self::$internalStaticOptionList[$this->internalCacheKey];
     }
 
     /**
@@ -125,45 +120,5 @@ class ConfigdActionsField extends BaseField
             $this->internalFilters = $filters;
             $this->internalCacheKey = md5(serialize($this->internalFilters));
         }
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        $result = array();
-        // if interface is not required, add empty option
-        if (!$this->internalIsRequired) {
-            $result[""] = array("value" => gettext("none"), "selected" => 0);
-        }
-
-        foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
-            if ($optKey == $this->internalValue) {
-                $selected = 1;
-            } else {
-                $selected = 0;
-            }
-            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
-        }
-
-
-
-        return $result;
-    }
-
-    /**
-     * retrieve field validators for this field type
-     * @return array returns Text/regex validator
-     */
-    public function getValidators()
-    {
-        $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
-        }
-        return $validators;
     }
 }

@@ -39,10 +39,8 @@ function formTranslateAddresses() {
     $retval = array();
 
     // add this hosts ips
-    foreach ($config['interfaces'] as $intf => $intfdata) {
-        if (isset($intfdata['ipaddr']) && $intfdata['ipaddr'] != 'dhcp') {
-            $retval[$intfdata['ipaddr']] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
-        }
+    foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+        $retval[$intf."ip"] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
     }
 
     // add VIPs's
@@ -188,7 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Negating destination address of \"any\" is invalid.");
     }
 
-    if (!empty($pconfig['targetip']) && !is_ipaddr($pconfig['targetip']) && !is_subnet($pconfig['targetip']) && !is_alias($pconfig['targetip']) && empty($pconfig['nonat'])) {
+    if (!empty($pconfig['targetip']) && !is_ipaddr($pconfig['targetip']) && !is_subnet($pconfig['targetip'])
+          && !is_specialnet($pconfig['targetip']) && !is_alias($pconfig['targetip']) && empty($pconfig['nonat'])) {
         $input_errors[] = gettext("A valid target IP address must be specified.");
     }
     /* Verify Pool Options */

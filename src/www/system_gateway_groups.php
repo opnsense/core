@@ -30,7 +30,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("system.inc");
-require_once("services.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
 $gateways_status = return_gateways_status();
@@ -117,7 +116,7 @@ $( document ).ready(function() {
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped table-condensed">
                   <thead>
                     <tr>
                       <td><?= gettext('Name') ?></td>

@@ -27,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Base\Validators\NetworkValidator;
@@ -50,6 +51,11 @@ class NetworkField extends BaseField
      * @var bool marks if net mask is required
      */
     protected $internalNetMaskRequired = false;
+
+    /**
+     * @var bool marks if net mask is (dis)allowed
+     */
+    protected $internalNetMaskAllowed = true;
 
     /**
      * @var null when multiple values could be provided at once, specify the split character
@@ -91,6 +97,15 @@ class NetworkField extends BaseField
         } else {
             $this->internalNetMaskRequired = false;
         }
+    }
+
+    /**
+     * setter for net mask required
+     * @param integer $value
+     */
+    public function setNetMaskAllowed($value)
+    {
+        $this->internalNetMaskAllowed = (trim(strtoupper($value)) == "Y");
     }
 
     /**
@@ -170,6 +185,7 @@ class NetworkField extends BaseField
                     'message' => $this->internalValidationMessage,
                     'split' => $this->internalFieldSeparator,
                     'netMaskRequired' => $this->internalNetMaskRequired,
+                    'netMaskAllowed' => $this->internalNetMaskAllowed,
                     'version' => $this->internalAddressFamily
                     ));
             }

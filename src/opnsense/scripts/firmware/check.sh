@@ -101,8 +101,7 @@ if [ -z "${pkg_running}" ]; then
           repository="untrusted"
           connection="ok"
           timer=0
-        # XXX two space typo here in pkg:
-        elif grep -q 'At least one of the [ ]*certificates has been revoked' ${outfile}; then
+        elif grep -q 'At least one of the certificates has been revoked' ${outfile}; then
           # fingerprint mismatch
           repository="revoked"
           connection="ok"
@@ -124,7 +123,7 @@ if [ -z "${pkg_running}" ]; then
         else
             # fetch before install lets us know more,
             # although not as fast as it should be...
-            pkg fetch -qy "${pkg_selected}"
+            pkg fetch -y "${pkg_selected}" > /dev/null 2>&1
             daemon -p ${pidfile} -o ${outfile} pkg install -n "${pkg_selected}"
 	fi
 

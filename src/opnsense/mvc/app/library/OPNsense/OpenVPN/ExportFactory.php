@@ -42,15 +42,17 @@ class ExportFactory
     public function listProviders()
     {
         $providers = array();
-        foreach (glob(__DIR__."/*.php") as $filename) {
+        foreach (glob(__DIR__ . "/*.php") as $filename) {
             $pathParts = explode('/', $filename);
-            $vendor = $pathParts[count($pathParts)-3];
-            $module = $pathParts[count($pathParts)-2];
-            $classname = explode('.php', $pathParts[count($pathParts)-1])[0];
+            $vendor = $pathParts[count($pathParts) - 3];
+            $module = $pathParts[count($pathParts) - 2];
+            $classname = explode('.php', $pathParts[count($pathParts) - 1])[0];
             try {
                 $reflClass = new \ReflectionClass("{$vendor}\\{$module}\\{$classname}");
-                if ($reflClass->implementsInterface('OPNsense\\OpenVPN\\IExportProvider')
-                        && !$reflClass->isInterface()) {
+                if (
+                    $reflClass->implementsInterface('OPNsense\\OpenVPN\\IExportProvider')
+                        && !$reflClass->isInterface()
+                ) {
                     $providers[$classname] = array(
                         "class" => "{$vendor}\\{$module}\\{$classname}",
                         "handle" => $reflClass->newInstance()

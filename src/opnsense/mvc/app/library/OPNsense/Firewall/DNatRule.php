@@ -76,8 +76,10 @@ class DNatRule extends Rule
     {
         $result = array();
         foreach ($this->interfaceMapping as $intfk => $intf) {
-            if (empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
-              && !in_array($intf['if'], $result) && $intfk != 'loopback') {
+            if (
+                empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
+                && !in_array($intf['if'], $result) && $intfk != 'loopback'
+            ) {
                 $result[] = $intfk;
             }
         }
@@ -104,7 +106,7 @@ class DNatRule extends Rule
                     $rule['disabled'] = true;
                     $this->log("Invalid address {$rule['external']}");
                 } elseif (strpos($rule['external'], '/') === false && strpos($rule['from'], '/') !== false) {
-                    $rule['external'] .= "/".explode('/', $rule['from'])[1];
+                    $rule['external'] .= "/" . explode('/', $rule['from'])[1];
                 }
             }
             yield $rule;
@@ -115,7 +117,8 @@ class DNatRule extends Rule
             if (!$rule['disabled'] && $rule['natreflection'] == "enable") {
                 foreach ($reflinterf as $interf) {
                     $is_ipv4 = $this->isIpV4($rule);
-                    if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                    if (
+                        ($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
                         (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                     ) {
                         $rule['rule_type'] = "nat_rdr";
@@ -131,7 +134,8 @@ class DNatRule extends Rule
                 foreach ($reflinterf as $interf) {
                     if (!empty($this->interfaceMapping[$interf])) {
                         $is_ipv4 = $this->isIpV4($rule);
-                        if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                        if (
+                            ($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
                             (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                         ) {
                             // we don't seem to know the ip protocol here, make sure our ruleset contains one
@@ -156,7 +160,7 @@ class DNatRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseNatRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule) . "\n";
         }
         return $ruleTxt;
     }

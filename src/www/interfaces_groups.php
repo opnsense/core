@@ -30,6 +30,8 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
+require_once("system.inc");
 
 $a_ifgroups = &config_read_array('ifgroups', 'ifgroupentry');
 
@@ -38,7 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $_POST['id'];
     }
 
-    if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
+    if (isset($_POST['apply'])) {
+        system_cron_configure();
+        filter_configure();
+        clear_subsystem_dirty('filter');
+        $savemsg = gettext('The settings have been applied and the rules are now reloading in the background.');
+    } elseif (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
         $members = explode(" ", $a_ifgroups[$id]['members']);
         foreach ($members as $ifs) {
             mwexecf('/sbin/ifconfig %s -group %s', array(get_real_interface($ifs), $a_ifgroups[$id]['ifname']));
@@ -92,6 +99,11 @@ $main_buttons = array(
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php print_service_banner('firewall'); ?>
+        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+        <?php if (is_subsystem_dirty('filter')): ?><p>
+        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
+        <?php endif; ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
             <form  method="post" name="iform" id="iform">

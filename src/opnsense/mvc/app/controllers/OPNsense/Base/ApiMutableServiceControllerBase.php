@@ -172,8 +172,10 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             $model = $this->getModel();
             $backend = new Backend();
 
-            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) != '1' ||
-                $this->reconfigureForceRestart()) {
+            if (
+                (string)$model->getNodeByReference(static::$internalServiceEnabled) != '1' ||
+                $this->reconfigureForceRestart()
+            ) {
                 $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
             }
 

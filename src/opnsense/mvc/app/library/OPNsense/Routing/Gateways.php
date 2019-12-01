@@ -133,7 +133,8 @@ class Gateways
             $definedIntf = $this->getDefinedInterfaces();
             $dynamic_gw = array();
             $gatewaySeq = 1;
-            $i=0; // sequence used in legacy edit form (item in the list)
+            $i = 0; // sequence used in legacy edit form (item in the list)
+            $reservednames = array();
 
             // add loopback, lowest priority
             $this->cached_gateways[$this->newKey(255)] = [
@@ -158,6 +159,7 @@ class Gateways
             if (!empty($this->configHandle->gateways)) {
                 foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
                     if ($tag == "gateway_item") {
+                        $reservednames[] = (string)$gateway->name;
                         $gw_arr = array();
                         foreach ($gateway as $key => $value) {
                             $gw_arr[(string)$key] = (string)$value;
@@ -179,6 +181,7 @@ class Gateways
                             if (empty($dynamic_gw[(string)$gateway->interface])) {
                                 $dynamic_gw[(string)$gateway->interface] = array();
                             }
+                            $gw_arr['dynamic'] =  true;
                             $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
                         }
                     }
@@ -198,7 +201,6 @@ class Gateways
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
                     $thisconf = [
-                        "priority" => 255,
                         "interface" => $ifname,
                         "weight" => 1,
                         "ipprotocol" => $ipproto,
@@ -207,20 +209,32 @@ class Gateways
                         "monitor_disable" => true, // disable monitoring by default
                         "if" => $ifcfg['if'],
                         "dynamic" => true,
+                        "virtual" => true
                     ];
+                    // set default priority
+                    if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
+                        // consider tunnel type interfaces least attractive by default
+                        $thisconf['priority'] = 255;
+                    } else {
+                        $thisconf['priority'] = 254;
+                    }
                     // locate interface gateway settings
                     if (!empty($dynamic_gw[$ifname])) {
-                        foreach ($dynamic_gw[$ifname] as $gw_arr) {
+                        foreach ($dynamic_gw[$ifname] as $gwidx => $gw_arr) {
                             if ($gw_arr['ipprotocol'] == $ipproto) {
                                 // dynamic gateway for this ip protocol found, use config
+                                unset($dynamic_gw[$ifname][$gwidx]);
                                 $thisconf = $gw_arr;
                                 break;
                             }
                         }
                     }
                     // dynamic gateways dump their address in /tmp/[IF]_router[FSUFFIX]
-                    if (file_exists("/tmp/{$ifcfg['if']}_router".$fsuffix)) {
-                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router".$fsuffix));
+                    if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
+                        // if name is already taken, don't try to add a new (virtual) entry
+                        null;
+                    } elseif (file_exists("/tmp/{$ifcfg['if']}_router" . $fsuffix)) {
+                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router" . $fsuffix));
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
@@ -232,16 +246,34 @@ class Gateways
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (empty($thisconf['dynamic'])) {
+                    } elseif (
+                        $ipproto == 'inet6'
+                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))
+                    ) {
+                        // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $this->cached_gateways[$gwkey] = $thisconf;
+                    } elseif (empty($thisconf['virtual'])) {
+                        // skipped dynamic gateway from config, add to $dynamic_gw to handle defunct
+                        $dynamic_gw[$ifname][] = $thisconf;
                     }
                 }
             }
             // sort by priority
             krsort($this->cached_gateways);
+            // entries left in $dynamic_gw are defunct,  add them in in disabled state
+            foreach ($dynamic_gw as $intfgws) {
+                foreach ($intfgws as $gw_arr) {
+                    if (!empty($gw_arr)) {
+                        $gw_arr['disabled'] = true;
+                        $gw_arr['defunct'] = true;
+                        unset($gw_arr['gateway']);
+                        $this->cached_gateways[] = $gw_arr;
+                    }
+                }
+            }
         }
         return $this->cached_gateways;
     }
@@ -259,9 +291,9 @@ class Gateways
             if ($gateway['ipprotocol'] == $ipproto) {
                 if (is_array($skip) && in_array($gateway['name'], $skip)) {
                     continue;
-                } elseif (!empty($gateway['disabled']) || !empty($gateway['is_loopback'])) {
+                } elseif (!empty($gateway['disabled']) || !empty($gateway['is_loopback']) || !empty($gateway['force_down'])) {
                     continue;
-                } elseif (!empty($gateway['gateway'])) {
+                } else {
                     return $gateway;
                 }
             }
@@ -358,9 +390,10 @@ class Gateways
     /**
      * @param string $interface interface name
      * @param string $ipproto inet/inet6
+     * @param boolean $only_configured only return configured in interface or dynamic gateways
      * @return string|null gateway address
      */
-    public function getInterfaceGateway($interface, $ipproto = "inet")
+    public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured = false)
     {
         foreach ($this->getGateways() as $gateway) {
             if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
@@ -368,9 +401,20 @@ class Gateways
             } elseif (!empty($gateway['is_loopback']) || empty($gateway['gateway'])) {
                 continue;
             }
+            // The interface might have a gateway configured
+            if (isset($this->configHandle->interfaces->$interface)) {
+                $intf_gateway = $this->configHandle->interfaces->$interface->gateway;
+            } else {
+                $intf_gateway = null;
+            }
 
             if (!empty($gateway['interface']) && $gateway['interface'] == $interface) {
-                return $gateway['gateway'];
+                // XXX: $only_configured mimics the pre 19.7 behaviour, which means static non linked interfaces
+                //      are not returned as valid gateway address (automatic outbound nat rules).
+                //      An alternative setup option would be practical here, less fuzzy.
+                if (!$only_configured || $intf_gateway == $gateway['name'] || !empty($gateway['dynamic'])) {
+                    return $gateway['gateway'];
+                }
             }
         }
         return null;
@@ -383,11 +427,11 @@ class Gateways
      */
     public function getGroups($status_info)
     {
-          $all_gateways = $this->gatewaysIndexedByName();
-          $result = array();
+        $all_gateways = $this->gatewaysIndexedByName();
+        $result = array();
         if (isset($this->configHandle->gateways)) {
             foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
-                if ($tag == "gateway_group") {
+                if ($tag == "gateway_group" && !empty($gw_group)) {
                     $tiers = array();
                     if (isset($gw_group->item)) {
                         foreach ($gw_group->item as $item) {
@@ -447,7 +491,7 @@ class Gateways
                 }
             }
         }
-          return $result;
+        return $result;
     }
 
     /**

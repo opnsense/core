@@ -130,22 +130,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The idle timeout value must be an integer.");
     }
 
-    foreach($pconfig['ports'] as $iface_idx => $iface){
+    foreach ($pconfig['ports'] as $iface_idx => $iface) {
         if (!empty($pconfig['localip'][$iface_idx]) && !is_ipaddr($pconfig['localip'][$iface_idx])) {
-            $input_errors[] = sprintf(gettext("A valid local IP address must be specified for %s."),$iface);
+            $input_errors[] = sprintf(gettext("A valid local IP address must be specified for %s."), $iface);
         }
-        if (!empty($pconfig['gateway'][$iface_idx]) && !is_ipaddr($pconfig['gateway'][$iface_idx]) && !is_hostname($pconfig['gateway'][$iface_idx])) {
-            $input_errors[] = sprintf(gettext("A valid gateway IP address OR hostname must be specified for %s."),$iface);
+        if (!empty($pconfig['gateway'][$iface_idx]) && !is_ipaddr($pconfig['gateway'][$iface_idx])) {
+            $input_errors[] = sprintf(gettext("A valid gateway IP address must be specified for %s."), $iface);
         }
         if (!empty($pconfig['bandwidth'][$iface_idx]) && !is_numericint($pconfig['bandwidth'][$iface_idx])) {
-            $input_errors[] = sprintf(gettext("The bandwidth value for %s must be an integer."),$iface);
+            $input_errors[] = sprintf(gettext("The bandwidth value for %s must be an integer."), $iface);
         }
 
         if (!empty($pconfig['mtu'][$iface_idx]) && $pconfig['mtu'][$iface_idx] < 576) {
-            $input_errors[] = sprintf(gettext("The MTU for %s must be greater than 576 bytes."),$iface);
+            $input_errors[] = sprintf(gettext("The MTU for %s must be greater than 576 bytes."), $iface);
         }
         if (!empty($pconfig['mru'][$iface_idx]) && $pconfig['mru'][$iface_idx] < 576) {
-            $input_errors[] = sprintf(gettext("The MRU for %s must be greater than 576 bytes."),$iface);
+            $input_errors[] = sprintf(gettext("The MRU for %s must be greater than 576 bytes."), $iface);
         }
     }
 
@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $ppp['ptpid'] = $pconfig['ptpid'];
         $ppp['type'] = $pconfig['type'];
         $ppp['if'] = $ppp['type'].$ppp['ptpid'];
-        $ppp['ports'] = implode(',',$pconfig['ports']);
+        $ppp['ports'] = implode(',', $pconfig['ports']);
         $ppp['username'] = $pconfig['username'];
         $ppp['password'] = base64_encode($pconfig['password']);
         $ppp['ondemand'] = !empty($pconfig['ondemand']);
@@ -169,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Loop through fields associated with a individual link/port and make an array of the data
         $port_fields = array("localip", "gateway", "subnet", "bandwidth", "mtu", "mru", "mrru");
         $port_data = array();
-        foreach($pconfig['ports'] as $iface_idx => $iface){
-            foreach($port_fields as $field_label){
+        foreach ($pconfig['ports'] as $iface_idx => $iface) {
+            foreach ($port_fields as $field_label) {
                 if (!isset($port_data[$field_label])) {
                     $port_data[$field_label] = array();
                 }
@@ -188,13 +188,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $ppp['simpin'] = $pconfig['simpin'];
                   $ppp['pin-wait'] = $pconfig['pin-wait'];
                 }
-                if (!empty($pconfig['apn'])){
+                if (!empty($pconfig['apn'])) {
                   $ppp['apn'] = $pconfig['apn'];
                   $ppp['apnum'] = $pconfig['apnum'];
                 }
                 $ppp['phone'] = $pconfig['phone'];
-                $ppp['localip'] = implode(',',$port_data['localip']);
-                $ppp['gateway'] = implode(',',$port_data['gateway']);
+                $ppp['localip'] = implode(',', $port_data['localip']);
+                $ppp['gateway'] = implode(',', $port_data['gateway']);
                 if (!empty($pconfig['connect-timeout'])) {
                     $ppp['connect-timeout'] = $pconfig['connect-timeout'];
                 }
@@ -211,9 +211,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             case "pptp":
             case "l2tp":
-                $ppp['localip'] = implode(',',$port_data['localip']);
-                $ppp['subnet'] = implode(',',$port_data['subnet']);
-                $ppp['gateway'] = implode(',',$port_data['gateway']);
+                $ppp['localip'] = implode(',', $port_data['localip']);
+                $ppp['subnet'] = implode(',', $port_data['subnet']);
+                $ppp['gateway'] = implode(',', $port_data['gateway']);
                 break;
             default:
                 break;
@@ -256,9 +256,9 @@ include("head.inc");
 
 <body>
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // change type
-        $("#type").change(function(){
+        $("#type").change(function () {
           $('#ppp,#ppp_adv,#pppoe,#hostuniqopt,#ppp_provider,#phone_num,#apn_').hide();
           $('#ports > [data-type="serial"]').hide();
           $('#ports > [data-type="serial"]').prop('disabled', true);
@@ -300,7 +300,7 @@ include("head.inc");
         $("#type").change();
 
         // change interfaces / ports selection
-        $("#ports").change(function(){
+        $("#ports").change(function () {
             for (i=0; i <= $("#ports").children().length; ++i) {
                 if ($('#ports :selected').length > i) {
                     $(".intf_select_"+i).prop('disabled', false);
@@ -312,7 +312,7 @@ include("head.inc");
             }
             // add item text
             var i=0;
-            $('#ports :selected').each(function(){
+            $('#ports :selected').each(function () {
               $(".intf_select_txt_"+i).html('( '+ $(this).val() + ' )');
               i++;
             });
@@ -320,13 +320,13 @@ include("head.inc");
         $("#ports").change();
 
         // advanced options
-        $("#show_advanced").click(function(){
+        $("#show_advanced").click(function () {
             $(".act_show_advanced").show();
             $("#show_advanced_opt").hide();
         });
 
         // ppp -> country change
-        $("#country").change(function(){
+        $("#country").change(function () {
             $('#provider_list').children().remove();
             $('#providerplan').children().remove();
             $.ajax("getserviceproviders.php",{
@@ -578,7 +578,7 @@ include("head.inc");
                         <td style="width:78%">
                           <input name="gateway[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['gateway'][$intf_idx]) ? $pconfig['gateway'][$intf_idx] : "";?>" />
                           <div class="hidden" data-for="help_for_gateway_<?=$intf_idx;?>">
-                            <?= gettext("IP Address OR Hostname"); ?>
+                            <?= gettext("IP Address"); ?>
                           </div>
                         </td>
                       </tr>

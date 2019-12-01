@@ -28,7 +28,6 @@
  */
 
 require_once("guiconfig.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');

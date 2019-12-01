@@ -102,7 +102,7 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function delrouteAction($uuid)
     {
-        $node = (new Route())->getNodeByReference('route.'.$uuid);
+        $node = (new Route())->getNodeByReference('route.' . $uuid);
         $response = $this->delBase("route", $uuid);
         if (!empty($response['result']) && $response['result'] == 'deleted') {
             // we don't know for sure if this route was already removed, flush to disk to remove on apply

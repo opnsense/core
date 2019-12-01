@@ -82,14 +82,55 @@ function core_services()
     $services[] = array(
         'description' => gettext('Local Syslog'),
         'php' => array(
+            "stop" => array('system_syslogd_stop'),
             "start" => array('system_syslogd_start'),
             "restart" => array('system_syslogd_start')
         ),
         'pidfile' => '/var/run/syslog.pid',
-        'name' => 'syslog',
+        'name' => 'syslogd',
+    );
+
+    $services[] = array(
+        'description' => gettext('Remote Syslog'),
+        'php' => array(
+            "stop" => array('system_syslogd_stop'),
+            "start" => array('system_syslogd_start'),
+            "restart" => array('system_syslogd_start')
+        ),
+        'pidfile' => '/var/run/syslog-ng.pid',
+        'name' => 'syslog-ng',
     );
 
     return $services;
+}
+
+function core_devices()
+{
+    $devices = array();
+
+    # XXX is a plugin collection...
+    $devices[] = array('pattern' => '^bridge', 'volatile' => true);
+    $devices[] = array('pattern' => '^cua', 'volatile' => true);
+    $devices[] = array('pattern' => '^enc', 'volatile' => true);
+    $devices[] = array('pattern' => '^gif', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^gre', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
+    $devices[] = array('pattern' => '^lagg', 'volatile' => true);
+    $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
+    $devices[] = array('pattern' => '^ovpn', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^ppp', 'volatile' => true);
+    $devices[] = array('pattern' => '^pptp', 'volatile' => true);
+    $devices[] = array('pattern' => '^tinc', 'volatile' => true);
+    $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);
+    $devices[] = array('pattern' => '^ue', 'volatile' => true);
+    $devices[] = array('pattern' => '^wg', 'volatile' => true);
+    $devices[] = array('pattern' => '^zt', 'volatile' => true);
+    $devices[] = array('pattern' => '_stf', 'volatile' => true);
+    $devices[] = array('pattern' => '_wlan', 'volatile' => true);
+    $devices[] = array('pattern' => 'vlan', 'volatile' => true);
+
+    return $devices;
 }
 
 function core_cron()
@@ -159,4 +200,25 @@ function core_cron()
     }
 
     return $jobs;
+}
+
+function core_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['configd'] = array('facility' => array('configd.py'));
+    $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $logfacilities['filter'] = array('facility' => array('filterlog'));
+    $logfacilities['gateways'] = array('facility' => array('dpinger'));
+    $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
+    $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
+    $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
+    $logfacilities['ppps'] = array('facility' => array('ppp'));
+    $logfacilities['resolver'] = array('facility' => array('unbound'));
+    $logfacilities['routing'] = array('facility' => array(
+          'radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
+    ));
+    $logfacilities['wireless'] = array('facility' => array('hostapd'));
+
+    return $logfacilities;
 }

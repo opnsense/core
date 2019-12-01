@@ -30,7 +30,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("system.inc");
 
 /**
@@ -105,6 +104,10 @@ function delete_gateway_item($id, $a_gateways)
         }
     }
     unset($config['gateways']['gateway_item'][$a_gateways[$id]['attribute']]);
+    if (empty($config['gateways']['gateway_item'])) {
+        // make sure we don't leave a stray gateway_item
+        unset($config['gateways']['gateway_item']);
+    }
 }
 
 // fetch gateway list including active default for IPv4/IPv6
@@ -283,12 +286,14 @@ $( document ).ready(function() {
             <form method="post"  name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed">
                 <thead>
                   <tr>
                     <th colspan="2">&nbsp;</th>
                     <th><?=gettext("Name"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Interface"); ?></th>
+                    <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Protocol"); ?></th>
+                    <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Priority"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Gateway"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Monitor IP"); ?></th>
                     <th class="text-nowrap hidden-xs"><?= gettext('RTT') ?></th>
@@ -336,6 +341,13 @@ $( document ).ready(function() {
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=convert_friendly_interface_to_friendly_descr($gateway['interface']);?>
+                      </td>
+                      <td class="hidden-xs hidden-sm hidden-md">
+                        <?=$gateway['ipprotocol'] == "inet" ?  "IPv4 " :  "IPv6 ";?>
+                      </td>
+                      <td class="hidden-xs hidden-sm hidden-md">
+                        <?=empty($gateway['defunct']) ? $gateway['priority'] : gettext("defunct");?>
+                        <small><?=!empty($gateway['defaultgw']) ? gettext("(upstream)") : "";?></small>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
                         <?=$gateway['gateway'];?>
@@ -408,9 +420,13 @@ $( document ).ready(function() {
 <?php
                     $i++;
                   endforeach;?>
+                </tbody>
+                <thead>
                     <tr>
                       <td colspan="2"></td>
                       <td></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
+                      <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
                       <td class="hidden-xs hidden-sm hidden-md"></td>
@@ -431,7 +447,7 @@ $( document ).ready(function() {
                       endif;?>
                       </td>
                     </tr>
-                </tbody>
+                </thead>
               </table>
             </form>
           </div>

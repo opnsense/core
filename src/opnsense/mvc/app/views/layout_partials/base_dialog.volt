@@ -1,38 +1,37 @@
 {#
+ # Copyright (c) 2014-2015 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
----------------------------------------------------------------------------------------------------------------
-Generate input dialog, uses the following parameters (as associative array):
-
-fields          :   list of field type objects, see form_input_tr tag for details
-id              :   form id, used as unique id for this modal form. inner form to place data is called frm_[id]
-                    save button is identified by btn_[id]_save
-label           :   dialog label
-
-#}
+{#
+ # Generate input dialog, uses the following parameters (as associative array):
+ #
+ # fields          :   list of field type objects, see form_input_tr tag for details
+ # id              :   form id, used as unique id for this modal form. inner form to place data is called frm_[id]
+ #                     save button is identified by btn_[id]_save
+ # label           :   dialog label
+ #}
 
 {# Volt templates in php7 have issues with scope sometimes, copy input values to make them more unique #}
 {% set base_dialog_id=id %}

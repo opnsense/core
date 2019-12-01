@@ -30,7 +30,6 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 require_once("plugins.inc.d/ipsec.inc");
 
 /**
@@ -38,7 +37,7 @@ require_once("plugins.inc.d/ipsec.inc");
  */
 function pconfig_to_ealgos($pconfig)
 {
-    global $p2_ealgos;
+    $p2_ealgos = ipsec_p2_ealgos();
 
     $ealgos = array();
     if (isset($pconfig['ealgos'])) {
@@ -632,9 +631,9 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr class="opt_remoteid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address"); ?>:&nbsp;&nbsp;</td>
                   <td>
-                    <input name="remoteid_address" type="text" class="formfld unknown ipv4v6" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
+                    <input name="remoteid_address" type="text" class="formfld unknown" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
                     /
-                    <select name="remoteid_netbits" class="ipv4v6" id="remoteid_netbits">
+                    <select name="remoteid_netbits" data-network-id="remoteid_address" class="ipv4v6net" id="remoteid_netbits">
 <?php              for ($i = 128; $i >= 0; $i--) :
 ?>
                       <option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
@@ -675,7 +674,7 @@ endif; ?>
                   <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
 <?php
-                  foreach ($p2_ealgos as $algo => $algodata) :?>
+                  foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
                     <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
                       <?=$algodata['name'];?>
 <?php
@@ -710,7 +709,7 @@ endif; ?>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
-<?php foreach ($p2_halgos as $algo => $algoname): ?>
+<?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
                       <option value="<?= html_safe($algo) ?>" <?= in_array($algo, $pconfig['hash-algorithm-option']) ? 'selected="selected"' : '' ?>>
                         <?= html_safe($algoname) ?>
                       </option>

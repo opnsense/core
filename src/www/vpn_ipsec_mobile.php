@@ -30,7 +30,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("plugins.inc.d/ipsec.inc");
 
 config_read_array('ipsec', 'client');
@@ -306,7 +305,7 @@ foreach ($config['ipsec']['phase1'] as $ph1ent) {
 
 function print_legacy_box($msg, $name, $value)
 {
-  $savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
+  $savebutton = "<form method=\"post\">";
   $savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"{$name}\" value=\"{$value}\" />";
   if (!empty($_POST['if'])) {
     $savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";

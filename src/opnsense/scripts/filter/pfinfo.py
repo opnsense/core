@@ -29,19 +29,15 @@
     returns raw pf info (optional packed in a json container)
 """
 import collections
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = collections.OrderedDict()
     for stattype in ['info', 'memory', 'timeouts', 'Interfaces', 'rules']:
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/sbin/pfctl', '-vvs'+stattype], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            result[stattype] = output_stream.read().decode().strip()
+        sp = subprocess.run(['/sbin/pfctl', '-vvs'+stattype], capture_output=True, text=True)
+        result[stattype] = sp.stdout.strip()
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':

@@ -90,6 +90,7 @@ system_kernel_configure(true);
 system_sysctl_configure(true);
 system_timezone_configure(true);
 system_firmware_configure(true);
+system_trust_configure(true);
 system_hostname_configure(true);
 system_hosts_generate(true);
 system_syslogd_start(true);

@@ -44,7 +44,7 @@
             <Changelog order="40" url="/ui/core/firmware#changelog"/>
             <Settings order="50" url="/ui/core/firmware#settings"/>
             <Reporter order="60" url="/crash_reporter.php"/>
-            <LogFile order="100" VisibleName="Log File" url="/diag_logs_pkg.php"/>
+            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
             <Single order="10" url="/system_gateways.php">
@@ -55,7 +55,7 @@
                 <List url="/system_gateway_groups.php*" visibility="hidden"/>
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
             </Group>
-            <LogFile VisibleName="Log File" order="30" url="/diag_logs_gateways.php"/>
+            <LogFile VisibleName="Log File" order="30" url="/ui/diagnostics/log/core/gateways"/>
         </Gateways>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Settings order="100" url="/system_hasync.php"/>
@@ -63,7 +63,7 @@
         </HighAvailability>
         <Routes cssClass="fa fa-map-signs fa-fw">
             <Configuration order="10" url="/ui/routes" />
-            <LogFile order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
+            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/routing"/>
         </Routes>
         <Settings cssClass="fa fa-cogs fa-fw">
             <Administration url="/system_advanced_admin.php"/>
@@ -89,9 +89,9 @@
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <Backend url="/configd_logs.php"/>
-            <General url="/diag_logs.php"/>
-            <WebGUI VisibleName="Web GUI" url="/httpd_logs.php"/>
+            <Backend url="/ui/diagnostics/log/core/configd"/>
+            <General url="/ui/diagnostics/log/core/system"/>
+            <WebGUI VisibleName="Web GUI" url="/ui/diagnostics/log/core/lighttpd"/>
         </LogFiles>
         <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
             <Services url="/status_services.php">
@@ -107,13 +107,13 @@
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File" url="/diag_logs_wireless.php"/>
+            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/wireless"/>
         </Wireless>
         <PPP order="940" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File" url="/diag_logs_ppp.php"/>
+            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/ppp"/>
         </PPP>
         <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
@@ -169,7 +169,7 @@
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
             </Settings>
             <Status url="/carp_status.php">
-                <All url="/carp_status.php*"/>
+                <All url="/carp_status.php*" visibility="hidden"/>
             </Status>
         </VIP>
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
@@ -196,7 +196,7 @@
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>
             <Overview url="/diag_logs_filter_summary.php"/>
-            <Plain VisibleName="Plain View" url="/diag_logs_filter_plain.php"/>
+            <Plain VisibleName="Plain View" url="/ui/diagnostics/log/core/filter"/>
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
@@ -205,7 +205,7 @@
             <Leases order="300" url="/status_dhcp_leases.php">
                 <Details url="/status_dhcp_leases.php?*" visibility="hidden"/>
             </Leases>
-            <LogFile VisibleName="Log File" order="400" url="/diag_logs_dhcp.php"/>
+            <LogFile VisibleName="Log File" order="400" url="/ui/diagnostics/log/core/dhcpd"/>
         </DHCPv4>
         <DHCPv6 cssClass="fa fa-bullseye fa-fw">
             <Relay order="300" url="/services_dhcpv6_relay.php"/>
@@ -217,26 +217,6 @@
         <RouterAdv VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw" />
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
-        <IPsec cssClass="fa fa-lock fa-fw" order="10">
-            <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
-                <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
-                <Phase2 url="/vpn_ipsec_phase2.php*" visibility="hidden"/>
-            </Tunnels>
-            <Mobile order="20" VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php">
-                <Act url="/vpn_ipsec_mobile.php*" visibility="hidden"/>
-            </Mobile>
-            <Keys order="30" VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
-                <Edit url="/vpn_ipsec_keys_edit.php*" visibility="hidden"/>
-            </Keys>
-            <Settings order="40" VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
-            <Status order="50" VisibleName="Status Overview" url="/diag_ipsec.php">
-                <Act url="/diag_ipsec.php?*" visibility="hidden"/>
-            </Status>
-            <Leases order="60" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
-            <SAD order="70" VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
-            <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
-            <LogFile order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
-        </IPsec>
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
             <Servers order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
@@ -252,7 +232,7 @@
                 <Edit url="/ui/openvpn/export?*" visibility="hidden"/>
             </ClientExport>
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
-            <LogFile order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
+            <LogFile order="70" VisibleName="Log File" url="/ui/diagnostics/log/core/openvpn"/>
         </OpenVPN>
     </VPN>
     <Power order="70" cssClass="fa fa-plug">

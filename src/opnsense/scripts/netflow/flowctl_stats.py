@@ -28,37 +28,29 @@
     --------------------------------------------------------------------------------------
     returns the aggregated output of flowctl (netflow)
 """
-import tempfile
 import subprocess
-import os
 import sys
 import ujson
 
 if __name__ == '__main__':
     result = dict()
     netflow_nodes = list()
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/usr/sbin/ngctl', 'list'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream:
-            line = line.decode()
-            if line.find('netflow_') > -1:
-                netflow_nodes.append(line.split()[1])
+    sp = subprocess.run(['/usr/sbin/ngctl', 'list'], capture_output=True, text=True)
+    for line in sp.stdout.split("\n"):
+        if line.find('netflow_') > -1:
+            netflow_nodes.append(line.split()[1])
 
     for netflow_node in netflow_nodes:
         node_stats = {'SrcIPaddress': list(), 'DstIPaddress': list(), 'Pkts': 0}
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/usr/sbin/flowctl', '%s:' % netflow_node, 'show'],
-                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            for line in output_stream:
-                fields = line.decode().split()
-                if len(fields) >= 8 and fields[0] != 'SrcIf':
-                    node_stats['Pkts'] += int(fields[7])
-                    if fields[1] not in node_stats['SrcIPaddress']:
-                        node_stats['SrcIPaddress'].append(fields[1])
-                    if fields[3] not in node_stats['DstIPaddress']:
-                        node_stats['DstIPaddress'].append(fields[3])
+        sp = subprocess.run(['/usr/sbin/flowctl', '%s:' % netflow_node, 'show'], capture_output=True, text=True)
+        for line in sp.stdout.split("\n"):
+            fields = line.split()
+            if len(fields) >= 8 and fields[0] != 'SrcIf':
+                node_stats['Pkts'] += int(fields[7])
+                if fields[1] not in node_stats['SrcIPaddress']:
+                    node_stats['SrcIPaddress'].append(fields[1])
+                if fields[3] not in node_stats['DstIPaddress']:
+                    node_stats['DstIPaddress'].append(fields[3])
         result[netflow_node] = {'Pkts': node_stats['Pkts'],
                                 'if': netflow_node[8:],
                                 'SrcIPaddresses': len(node_stats['SrcIPaddress']),

@@ -44,6 +44,7 @@ class Plugin
     private $gatewayMapping = array();
     private $systemDefaults = array();
     private $tables = array();
+    private $ifconfigDetails = array();
 
     /**
      * init firewall plugin component
@@ -141,7 +142,7 @@ class Plugin
                     }
                 }
                 if (count($routeto) > 0) {
-                    $routetologic = "route-to {".implode(' ', $routeto)."}";
+                    $routetologic = "route-to {" . implode(' ', $routeto) . "}";
                     if (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
                     }
@@ -196,6 +197,24 @@ class Plugin
             }
         }
     }
+
+    /**
+     * link parsed ifconfig output
+     * @param array $ifconfig from legacy_interfaces_details()
+     */
+    public function setIfconfigDetails($ifconfig)
+    {
+        $this->ifconfigDetails = $ifconfig;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIfconfigDetails()
+    {
+        return $this->ifconfigDetails;
+    }
+
 
     /**
      * register anchor

@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/opendns.inc");
 
 config_read_array('opendns');
 
@@ -59,13 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($pconfig['test'])) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, sprintf( 'https://updates.opendns.com/nic/update?hostname=%s', $pconfig['host']));
-        curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', $pconfig['username'], $pconfig['password']));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        $test_results = explode("\r\n", $output);
+        $test_results = explode("\r\n", opendns_register($pconfig));
     } elseif (count($input_errors) == 0) {
         $config['opendns']['enable'] = !empty($pconfig['enable']);
         $config['opendns']['username'] = $pconfig['username'];

@@ -73,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['name'] = $a_server[$id]['name'];
 
         if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
-            $pconfig['ldap_caref'] = $a_server[$id]['ldap_caref'];
             $pconfig['ldap_host'] = $a_server[$id]['host'];
             $pconfig['ldap_port'] = $a_server[$id]['ldap_port'];
             $pconfig['ldap_urltype'] = $a_server[$id]['ldap_urltype'];
@@ -221,9 +220,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
 
           if (in_array($server['type'], array("ldap", "ldap-totp"))) {
-              if (!empty($pconfig['ldap_caref'])) {
-                  $server['ldap_caref'] = $pconfig['ldap_caref'];
-              }
               $server['host'] = $pconfig['ldap_host'];
               $server['ldap_port'] = $pconfig['ldap_port'];
               $server['ldap_urltype'] = $pconfig['ldap_urltype'];
@@ -246,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['ldap_sync_memberof']);
-              $server['ldap_sync_memberof_groups'] = implode(",", $pconfig['ldap_sync_memberof_groups']);
+              $server['ldap_sync_memberof_groups'] = !empty($pconfig['ldap_sync_memberof_groups']) ? implode(",", $pconfig['ldap_sync_memberof_groups']) : array();
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
@@ -315,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // list of all possible fields for auth item (used for form init)
 $all_authfields = array(
-    'type','name','ldap_caref','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
+    'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
     'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
     'ldap_read_properties', 'ldap_sync_memberof', 'radius_host',
     'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
@@ -436,9 +432,6 @@ $( document ).ready(function() {
             'proto': $("#ldap_protver").val(),
             'authcn': $("#ldapauthcontainers").val(),
         };
-        if ($("#ldap_caref").val() != undefined) {
-            request_data['cert'] = $("#ldap_caref").val();
-        }
         //
         if ($("#ldap_port").val() == '' || $("#ldap_host").val() == '' || $("#ldap_scope").val() == '' || $("#ldap_basedn").val() == '') {
             BootstrapDialog.show({
@@ -628,7 +621,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Transport");?></td>
+                  <td><a id="help_for_ldap_urltype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transport");?></td>
                   <td>
                     <select name="ldap_urltype" id="ldap_urltype" class="selectpicker" data-style="btn-default">
                       <option value="TCP - Standard" data-port="389" <?=$pconfig['ldap_urltype'] == "TCP - Standard" ? "selected=\"selected\"" : "";?>>
@@ -641,30 +634,9 @@ endif; ?>
                         <?=gettext("SSL - Encrypted");?>
                       </option>
                     </select>
-                  </td>
-                </tr>
-                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Peer Certificate Authority"); ?></td>
-                  <td>
-<?php
-                    if (count($config['ca'])) :?>
-                    <select id="ldap_caref" name="ldap_caref" class="selectpicker" data-style="btn-default">
-<?php
-                    foreach ($config['ca'] as $ca) :
-?>
-                      <option value="<?=$ca['refid'];?>" <?=$pconfig['ldap_caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>><?=$ca['descr'];?></option>
-<?php
-                    endforeach; ?>
-                    </select>
-                    <div class="hidden" data-for="help_for_ldap_caref">
-                      <span><?=gettext("This option is used if 'SSL Encrypted' option is choosen.");?> <br />
-                      <?=gettext("It must match with the CA in the AD otherwise problems will arise.");?></span>
+                    <div class="hidden" data-for="help_for_ldap_urltype">
+                        <?=gettext("When choosing StartTLS or SSL, please configure the required private CAs in System -> Trust");?>
                     </div>
-<?php
-                    else :?>
-                    <b><?=gettext('No Certificate Authorities defined.');?></b> <br /><?=gettext('Create one under');?> <a href="system_camanager.php"><?=gettext('System: Certificates');?></a>.
-<?php
-                    endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">

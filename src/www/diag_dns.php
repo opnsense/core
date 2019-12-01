@@ -80,7 +80,7 @@ include("head.inc"); ?>
               <table class="table table-striped">
                 <tbody>
                   <tr>
-                    <td><?=gettext("Hostname or IP");?></td>
+                    <td style="width: 22%"><?=gettext("Hostname or IP");?></td>
                     <td>
                       <input name="host" type="text" value="<?=htmlspecialchars($host);?>" />
                     </td>
@@ -127,22 +127,7 @@ include("head.inc"); ?>
                     </td>
                   </tr>
 <?php
-                  endif;
-                  if (!empty($ipaddr)):?>
-                  <tr>
-                    <td><?=gettext("More Information:");?></td>
-                    <td>
-                      <a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
-                      <a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
-                      <p>
-                      <?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
-                      <a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?=$ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
-                      <a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?=$ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
-                      </p>
-                    </td>
-                  </tr>
-<?php
-                  endif; ?>
+                  endif;?>
                 </tbody>
                 <tfoot>
                   <tr>

@@ -27,6 +27,7 @@
     flowd log parser
 """
 import struct
+import syslog
 from socket import inet_ntop, AF_INET, AF_INET6, ntohl
 
 
@@ -77,8 +78,9 @@ class FlowParser:
         'flow_engine_info': 'HHII'
     }
 
-    def __init__(self, filename):
+    def __init__(self, filename, recv_stamp=None):
         self._filename = filename
+        self._recv_stamp = recv_stamp
         # cache formatter vs byte length
         self._fmt_cache = dict()
         # pre-calculate powers of 2
@@ -112,11 +114,15 @@ class FlowParser:
                         raw_record[fieldname] = raw_data[raw_data_idx:raw_data_idx + fsize]
                     else:
                         fsize = self.calculate_size(self.field_definition[fieldname])
-                        content = struct.unpack(
-                            self.field_definition[fieldname],
-                            raw_data[raw_data_idx:raw_data_idx + fsize]
-                        )
-                        raw_record[fieldname] = content[0] if len(content) == 1 else content
+                        try:
+                            content = struct.unpack(
+                                self.field_definition[fieldname],
+                                raw_data[raw_data_idx:raw_data_idx + fsize]
+                            )
+                            raw_record[fieldname] = content[0] if len(content) == 1 else content
+                        except struct.error as e:
+                            # the flowd record doesn't appear to be as expected, log for now.
+                            syslog.syslog(syslog.LOG_NOTICE, "flowparser failed to unpack %s (%s)" % (fieldname, e))
                     raw_data_idx += fsize
 
         return raw_record
@@ -137,9 +143,18 @@ class FlowParser:
                     raw_data=flowh.read(header[1] * 4),
                     data_fields=ntohl(header[3])
                 )
+                if 'recv_time' not in record or 'agent_info' not in record:
+                    # XXX invalid (empty?) flow record.
+                    continue
+                record['recv_sec'] = record['recv_time'][0]
+                if self._recv_stamp is not None and record['recv_sec'] < self._recv_stamp:
+                    # self._recv_stamp can contain the last received timestamp, in which case
+                    # we should not return older data. The exact timestamp will be returned, so the
+                    # consumer knows it doesn't have to read other, older, flowd log files
+                    continue
+
                 record['sys_uptime_ms'] = record['agent_info'][0]
                 record['netflow_ver'] = record['agent_info'][3]
-                record['recv_sec'] = record['recv_time'][0]
                 record['recv'] = record['recv_sec']
                 record['recv_usec'] = record['recv_time'][1]
                 if 'proto_flags_tos' in record:

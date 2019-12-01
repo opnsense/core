@@ -61,7 +61,8 @@ function add_local_user($username, $userdn, $userfullname, $useremail)
 
 $ldap_is_connected = false;
 $ldap_users = array();
-$ldap_server = null;
+$ldap_server = array();
+$authName = null;
 $exit_form = false;
 
 // XXX find first LDAP GUI auth server, better select later on
@@ -69,19 +70,28 @@ $servers = explode(',', $config['system']['webgui']['authmode']);
 foreach ($servers as $server) {
     $authcfg = auth_get_authserver($server);
     if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
+        $authName = $server;
         $ldap_server = $authcfg;
+        if (strstr($ldap_server['ldap_urltype'], "Standard") || strstr($ldap_server['ldap_urltype'], "StartTLS")) {
+            $ldap_server['ldap_full_url'] = "ldap://";
+        } else {
+            $ldap_server['ldap_full_url'] = "ldaps://";
+        }
+        $ldap_server['ldap_full_url'] .= is_ipaddrv6($authcfg['host']) ? "[{$authcfg['host']}]" : $authcfg['host'];
+        if (!empty($ldap_server['ldap_port'])) {
+            $ldap_server['ldap_full_url'] .= ":{$authcfg['ldap_port']}";
+        }
         break;
     }
 }
 
-if ($ldap_server !== null) {
+if ($authName !== null) {
     // connect to ldap server
-    $ldap_auth = new OPNsense\Auth\LDAP($ldap_server['ldap_basedn'], $ldap_server['ldap_protver']);
-    if (!empty($ldap_server['ldap_caref']) && stristr($ldap_server['ldap_urltype'], "standard") === false) {
-        // setup peer ca
-        $ldap_auth->setupCaEnv($ldap_server['ldap_caref']);
-    }
-    $ldap_is_connected = $ldap_auth->connect($ldap_server['ldap_full_url'], $ldap_server['ldap_binddn'], $ldap_server['ldap_bindpw']);
+    $authenticator = (new OPNsense\Auth\AuthenticationFactory())->get($authName);
+    // search ldap
+    $ldap_is_connected = $authenticator->connect(
+        $ldap_server['ldap_full_url'], $ldap_server['ldap_binddn'], $ldap_server['ldap_bindpw']
+    );
 
     if ($ldap_is_connected) {
         // collect list of current ldap users from config
@@ -91,10 +101,8 @@ if ($ldap_server !== null) {
               $confDNs[] = trim($confUser['user_dn']);
            }
         }
-
         // search ldap
-        $result = $ldap_auth->searchUsers('*', $ldap_server['ldap_attr_user'], $ldap_server['ldap_extended_query']);
-
+        $result = $authenticator->searchUsers('*', $ldap_server['ldap_attr_user'], $ldap_server['ldap_extended_query']);
         // actual form action, either save new accounts or list missing
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           // create selected accounts

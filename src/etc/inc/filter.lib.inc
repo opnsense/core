@@ -54,19 +54,19 @@ function filter_core_bootstrap($fw)
 function filter_core_get_initialized_plugin_system()
 {
     $fw = new \OPNsense\Firewall\Plugin();
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    $cnfint = legacy_config_get_interfaces(array("enable" => true));
     $ifdetails = legacy_interfaces_details();
+    $gateways = new \OPNsense\Routing\Gateways($ifdetails);
+    $cnfint = legacy_config_get_interfaces(array("enable" => true));
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
         // setInterfaceMapping()
         if (!is_ipaddrv4($value['ipaddr']) || (!empty($value['gateway']) && $value['gateway'] != 'none')) {
-            $value['gateway'] = $gateways->getInterfaceGateway($key, "inet");
+            $value['gateway'] = $gateways->getInterfaceGateway($key, "inet", true);
         } else {
             $value['gateway'] = null;
         }
         if (!is_ipaddrv6($value['ipaddrv6']) || (!empty($value['gatewayv6']) && $value['gatewayv6'] != 'none')) {
-            $value['gatewayv6'] = $gateways->getInterfaceGateway($key, "inet6");
+            $value['gatewayv6'] = $gateways->getInterfaceGateway($key, "inet6", true);
         } else {
             $value['gatewayv6'] = null;
         }
@@ -81,6 +81,7 @@ function filter_core_get_initialized_plugin_system()
     // init interfaces and gateways
     $fw->setInterfaceMapping($cnfint);
     $fw->setGateways($gateways);
+    $fw->setIfconfigDetails($ifdetails);
     $fw->setGatewayGroups($gateways->getGroups(return_gateways_status()));
     return $fw;
 }
@@ -473,8 +474,13 @@ function filter_core_rules_system($fw, $defaults)
                 );
                 break;
             default:
-                if (isset($config['dhcpdv6'][$intf]['enable']) || isset($intfinfo['track6-interface'])
-                || (!empty($config['dhcrelay6']['interface']) && in_array($intf, explode(',', $config['dhcrelay6']['interface'])))) {
+                $dhcpdv6_enabled = isset($config['dhcpdv6'][$intf]['enable']);
+                $track6_enabled = isset($intfinfo['track6-interface']);
+                $dhcrelay6_interfaces = array();
+                if (!empty($config['dhcrelay6']['interface']) && isset($config['dhcrelay6']['enable'])) {
+                    $dhcrelay6_interfaces = explode(',', $config['dhcrelay6']['interface']);
+                }
+                if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
                         1,
                         array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',
@@ -576,7 +582,7 @@ function filter_core_rules_system($fw, $defaults)
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $intf_has_v4 = false;
                 $intf_has_v6 = false;
-                foreach (array_keys(interfaces_addresses($ifcfg['if'], true)) as $addr) {
+                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $fw->getIfconfigDetails())) as $addr) {
                     $intf_has_v4 = $intf_has_v4 || is_subnetv4($addr);
                     $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
                 }

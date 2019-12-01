@@ -182,7 +182,7 @@ class Config extends Singleton
 
         // root node
         if ($node == null) {
-            $this->simplexml = simplexml_load_string('<'.$this->simplexml[0]->getName().'/>');
+            $this->simplexml = simplexml_load_string('<' . $this->simplexml[0]->getName() . '/>');
             $node = $this->simplexml;
             // invalidate object on warnings/errors (prevent save from happening)
             set_error_handler(
@@ -193,7 +193,8 @@ class Config extends Singleton
         }
 
         foreach ($source as $itemKey => $itemValue) {
-            if ((is_bool($itemValue) && $itemValue == false) ||   // skip empty booleans
+            if (
+                (is_bool($itemValue) && $itemValue == false) ||   // skip empty booleans
                 $itemKey === null || trim($itemKey) === ""        // skip empty tag names
             ) {
                 continue;
@@ -288,12 +289,18 @@ class Config extends Singleton
             if (count($backups) > 0) {
                 // load last backup
                 $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
-                $this->restoreBackup($backups[0]);
-            } else {
-                // in case there are no backups, restore defaults.
-                $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
-                $this->restoreBackup('/usr/local/etc/config.xml');
+                foreach ($backups as $backup) {
+                    try {
+                        $this->restoreBackup($backup);
+                        return;
+                    } catch (ConfigException $e) {
+                        $logger->error("failed restoring " . $backup);
+                    }
+                }
             }
+            // in case there are no backups, restore defaults.
+            $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
+            $this->restoreBackup('/usr/local/etc/config.xml');
         }
     }
 
@@ -302,6 +309,10 @@ class Config extends Singleton
      */
     public function forceReload()
     {
+        if ($this->config_file_handle !== null) {
+            fclose($this->config_file_handle);
+            $this->config_file_handle = null;
+        }
         $this->init();
     }
 
@@ -407,7 +418,7 @@ class Config extends Singleton
                 $revision['username'] = "(system)";
             }
             if (!empty($_SERVER['REMOTE_ADDR'])) {
-                $revision['username'] .= "@".$_SERVER['REMOTE_ADDR'];
+                $revision['username'] .= "@" . $_SERVER['REMOTE_ADDR'];
             }
             if (!empty($_SERVER['REQUEST_URI'])) {
                 // when update revision is called from a controller, log the endpoint uri
@@ -448,8 +459,8 @@ class Config extends Singleton
      */
     public function backup()
     {
-        $target_dir = dirname($this->config_file)."/backup/";
-        $target_filename = "config-".microtime(true).".xml";
+        $target_dir = dirname($this->config_file) . "/backup/";
+        $target_filename = "config-" . microtime(true) . ".xml";
 
         if (!file_exists($target_dir)) {
             // create backup directory if it is missing
@@ -470,9 +481,9 @@ class Config extends Singleton
      */
     public function getBackups($fetchRevisionInfo = false)
     {
-        $target_dir = dirname($this->config_file)."/backup/";
+        $target_dir = dirname($this->config_file) . "/backup/";
         if (file_exists($target_dir)) {
-            $backups = glob($target_dir."config*.xml");
+            $backups = glob($target_dir . "config*.xml");
             // sort by date (descending)
             rsort($backups);
             if (!$fetchRevisionInfo) {
@@ -535,8 +546,10 @@ class Config extends Singleton
      */
     private function cleanupBackups()
     {
-        if ($this->statusIsValid && isset($this->simplexml->system->backupcount)
-                && intval($this->simplexml->system->backupcount) >= 0) {
+        if (
+            $this->statusIsValid && isset($this->simplexml->system->backupcount)
+                && intval($this->simplexml->system->backupcount) >= 0
+        ) {
             $revisions = intval($this->simplexml->system->backupcount);
         } else {
             $revisions = 60;

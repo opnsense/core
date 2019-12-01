@@ -115,12 +115,18 @@ class Alias(object):
                 pass
 
         # try to resolve provided address
+        could_resolve = False
         for record_type in ['A', 'AAAA']:
             try:
                 for rdata in self._dnsResolver.query(address, record_type):
                     yield str(rdata)
+                could_resolve = True
             except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers):
                 pass
+
+        if not could_resolve:
+            # log when none could be found
+            syslog.syslog(syslog.LOG_ERR, 'unable to resolve %s for alias %s' % (address, self._name))
 
     def _fetch_url(self, url):
         """ return unparsed (raw) alias entries without dependencies
@@ -181,7 +187,7 @@ class Alias(object):
             :return: iterator
         """
         for item in self._items:
-            if item not in self._known_aliases:
+            if item not in self._known_aliases or self.get_name() == item:
                 yield item
 
     def uniqueid(self):

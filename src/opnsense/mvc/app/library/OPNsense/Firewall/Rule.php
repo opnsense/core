@@ -75,7 +75,7 @@ abstract class Rule
      */
     protected function parseComment($value)
     {
-        return !empty($value) ? "# " . $value : "";
+        return !empty($value) ? "# " . preg_replace("/\r|\n/", "", $value) : "";
     }
 
     /**
@@ -223,7 +223,7 @@ abstract class Rule
             $ruleTxt .= $cmdout;
         }
         if (!empty($this->ruleDebugInfo)) {
-            $debugTxt = "#debug:". implode("|", $this->ruleDebugInfo) . "\n";
+            $debugTxt = "#debug:" . implode("|", $this->ruleDebugInfo) . "\n";
         } else {
             $debugTxt = "";
         }
@@ -258,17 +258,18 @@ abstract class Rule
                     } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
                         $rule[$target] = $rule[$tag]['network'];
                     } elseif (Util::isAlias($rule[$tag]['network'])) {
-                        $rule[$target] = '$'.$rule[$tag]['network'];
+                        $rule[$target] = '$' . $rule[$tag]['network'];
                     } elseif ($rule[$tag]['network'] == 'any') {
                         $rule[$target] = $rule[$tag]['network'];
                     }
                 } elseif (!empty($rule[$tag]['address'])) {
-                    if (Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
-                      Util::isPort($rule[$tag]['address'])
+                    if (
+                        Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
+                        Util::isPort($rule[$tag]['address'])
                     ) {
                         $rule[$target] = $rule[$tag]['address'];
                     } elseif (Util::isAlias($rule[$tag]['address'])) {
-                        $rule[$target] = '$'.$rule[$tag]['address'];
+                        $rule[$target] = '$' . $rule[$tag]['address'];
                     }
                 }
                 if (!empty($rule[$target]) && $rule[$target] != 'any' && isset($rule[$tag]['not'])) {
@@ -277,9 +278,9 @@ abstract class Rule
                 if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
                     $port = str_replace('-', ':', $rule[$tag]['port']);
                     if (Util::isPort($port)) {
-                        $rule[$target."_port"] = $port;
+                        $rule[$target . "_port"] = $port;
                     } elseif (Util::isAlias($port)) {
-                        $rule[$target."_port"] = '$'.$port;
+                        $rule[$target . "_port"] = '$' . $port;
                         if (!Util::isAlias($port, true)) {
                             // unable to map port
                             $rule['disabled'] = true;
@@ -311,7 +312,7 @@ abstract class Rule
         } elseif (empty($this->interfaceMapping[$value]['if'])) {
             return "{$prefix}##{$value}##{$suffix} ";
         } else {
-            return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
+            return "{$prefix}" . $this->interfaceMapping[$value]['if'] . "{$suffix} ";
         }
     }
 
@@ -329,8 +330,10 @@ abstract class Rule
         } else {
             // check fields which are known to contain addresses and search for an ipv4 address
             foreach (array('from', 'to', 'external', 'target') as $fieldname) {
-                if ((Util::isIpAddress($rule[$fieldname]) || Util::isSubnet($rule[$fieldname]))
-                        && strpos($rule[$fieldname], ":") === false) {
+                if (
+                    (Util::isIpAddress($rule[$fieldname]) || Util::isSubnet($rule[$fieldname]))
+                        && strpos($rule[$fieldname], ":") === false
+                ) {
                     return true;
                 }
             }

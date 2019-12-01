@@ -123,6 +123,25 @@ outputs:
                              # per flow direction. All logs each dropped pkt.
 #        - ssh
 
+{% if not helpers.empty('OPNsense.IDS.general.syslog_eve') %}
+  # Extensible Event Format (nicknamed EVE) to syslog
+  - eve-log:
+      enabled: yes
+      type: syslog
+      identity: "suricata"
+      facility: local5
+      level: Info
+      types:
+        - alert:
+{%     if not helpers.empty('OPNsense.IDS.general.LogPayload') %}
+             payload: no
+             payload-buffer-size: 4kb
+             payload-printable: yes
+{%     endif %}
+             http: yes
+             tls: yes
+{% endif %}
+
   # alert output for use with Barnyard2
   - unified2-alert:
       enabled: no

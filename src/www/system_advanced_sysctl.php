@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
@@ -107,6 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+/* translate hidden strings before HTML escape */
+foreach ($a_tunable as &$tunable) {
+    if (!empty($tunable['descr'])) {
+        $tunable['descr'] = gettext($tunable['descr']);
+    }
+}
+
 legacy_html_escape_form_data($a_tunable);
 
 if ($act != 'edit') {
@@ -183,7 +190,8 @@ $( document ).ready(function() {
             print_info_box($savemsg);
         }
         if (is_subsystem_dirty('sysctl') && ($act != "edit" )) {
-            print_info_box_apply(gettext("The firewall tunables have changed. You must apply the configuration to take affect."));
+            print_info_box_apply(gettext('The firewall tunables have changed. You must apply the configuration to take affect.'). '<br>' .gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
+                    'immediately after apply and boot settings for loader.conf which require a reboot.'));
         }
 ?>
       <form method="post" id="iform">
@@ -192,8 +200,7 @@ $( document ).ready(function() {
       </form>
       <section class="col-xs-12">
         <div class="table-responsive content-box tab-content" style="overflow: auto;">
-<?php
-        if ($act != "edit") :?>
+<?php if ($act != 'edit'): ?>
           <table class="table table-striped">
             <tr>
               <th><?=gettext("Tunable Name"); ?></th>
@@ -201,12 +208,10 @@ $( document ).ready(function() {
               <th><?=gettext("Value"); ?></th>
               <th class="text-nowrap"></th>
             </tr>
-<?php
-              $i = 0;
-              foreach ($a_tunable as $tunable) :?>
+<?php foreach ($a_tunable as $i => &$tunable): ?>
               <tr>
                 <td><?=$tunable['tunable']; ?></td>
-                <td><?=gettext($tunable['descr']); ?></td>
+                <td><?=$tunable['descr']; ?></td>
                 <td>
                   <?=$tunable['value']; ?>
                   <?=$tunable['value'] == "default" ? "(" . get_default_sysctl_value($tunable['tunable']) . ")" : "";?>
@@ -220,17 +225,9 @@ $( document ).ready(function() {
                   </a>
                 </td>
               </tr>
-<?php
-              $i++; endforeach; ?>
-              <tr>
-                <td colspan="4">
-                  <?= gettext('Tunables are composed of runtime settings for sysctl.conf which take effect ' .
-                    'immediately after apply and boot settings for loader.conf which require a reboot.') ?>
-                </td>
-              </tr>
+<?php endforeach ?>
             </table>
-<?php
-            else : ?>
+<?php else: ?>
             <form method="post">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
@@ -260,18 +257,14 @@ $( document ).ready(function() {
                   <td>
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                     <input type="button" class="btn btn-default" value="<?=html_safe(gettext("Cancel"));?>" onclick="window.location.href='/system_advanced_sysctl.php'" />
-
-<?php
-                    if (isset($id)) :?>
+<?php if (isset($id)): ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />
-<?php
-                    endif; ?>
+<?php endif ?>
                   </td>
                 </tr>
               </table>
             </form>
-<?php
-            endif; ?>
+<?php endif ?>
           </div>
         </section>
       </div>

@@ -437,7 +437,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
-    $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
@@ -602,7 +601,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 system_routing_configure();
                 plugins_configure('monitor');
                 filter_configure();
-                plugins_configure('newwanip');
+                foreach ($toapplylist as $ifapply => $ifcfgo) {
+                    plugins_configure('newwanip', false, array($ifapply));
+                }
                 rrd_configure();
             }
         }
@@ -666,8 +667,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
-            if (strstr($pconfig['if'], 'gre') || strstr($pconfig['if'], 'gif') || strstr($pconfig['if'], 'ovpn') || strstr($pconfig['if'], 'ipsec')) {
-                $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+            foreach (plugins_devices() as $device) {
+                if (!isset($device['configurable']) || $device['configurable'] == true) {
+                  continue;
+                }
+                if (preg_match('/' . $device['pattern'] . '/', $ifport)) {
+                    $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+                }
             }
         }
 
@@ -1173,9 +1179,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['dhcp6prefixonly'])) {
                         $new_config['dhcp6prefixonly'] = true;
-                    }
-                    if (!empty($pconfig['dhcp6sendsolicit'])) {
-                        $new_config['dhcp6sendsolicit'] = true;
                     }
                     if (!empty($pconfig['dhcp6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
@@ -1792,7 +1795,7 @@ include("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <thead>
                       <tr>
-                        <td style="width:22%"><strong><?=gettext("General configuration"); ?></strong></td>
+                        <td style="width:22%"><strong><?=gettext("Basic configuration"); ?></strong></td>
                         <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -1815,6 +1818,15 @@ include("head.inc");
                           <strong><?= gettext('Prevent interface removal') ?></strong>
                         </td>
                       </tr>
+                      <tr>
+                        <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                        <td style="width:78%">
+                          <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
+                          <div class="hidden" data-for="help_for_descr">
+                            <?= gettext("Enter a description (name) for the interface here."); ?>
+                          </div>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -1826,19 +1838,10 @@ include("head.inc");
                     <table class="table table-striped opnsense_standard_table_form">
                       <thead>
                         <tr>
-                          <th colspan="2"><?=gettext("General configuration"); ?></th>
+                          <th colspan="2"><?=gettext("Generic configuration"); ?></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                          <td style="width:78%">
-                            <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                            <div class="hidden" data-for="help_for_descr">
-                              <?= gettext("Enter a description (name) for the interface here."); ?>
-                            </div>
-                          </td>
-                        </tr>
                         <tr>
                           <td style="width:22%"><a id="help_for_blockpriv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Block private networks"); ?></td>
                           <td style="width:78%">
@@ -2729,15 +2732,6 @@ include("head.inc");
                             <input name="dhcp6-ia-pd-send-hint" type="checkbox" id="dhcp6-ia-pd-send-hint" value="yes" <?=!empty($pconfig['dhcp6-ia-pd-send-hint']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" data-for="help_for_dhcp6-ia-pd-send-hint">
                               <?=gettext("Send an IPv6 prefix hint to indicate the desired prefix size for delegation"); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6sendsolicit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Directly send SOLICIT'); ?></td>
-                          <td>
-                            <input name="dhcp6sendsolicit" type="checkbox" id="dhcp6sendsolicit" value="yes" <?= !empty($pconfig['dhcp6sendsolicit']) ? 'checked="checked"' : '' ?>/>
-                            <div class="hidden" data-for="help_for_dhcp6sendsolicit">
-                              <?= gettext('In case the ISP requires a SOLICIT message for authentication, select this option to prevent indefinite waiting for a router advertisement.') ?>
                             </div>
                           </td>
                         </tr>

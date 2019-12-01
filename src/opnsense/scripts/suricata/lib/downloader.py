@@ -140,7 +140,7 @@ class Downloader(object):
                         or req.headers['content-disposition'].find('filename=') == -1:
                     filename = url.strip().lower().split('?')[0]
                 else:
-                    filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0]
+                    filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0].strip('"')
 
                 if req.status_code == 200:
                     req.raw.decode_content = True
@@ -225,6 +225,11 @@ class Downloader(object):
                 open(target_filename, 'w', buffering=10240).write(save_data)
             except IOError:
                 syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
+                return None
+            except UnicodeDecodeError:
+                syslog.syslog(syslog.LOG_ERR, 'unable to read %s from %s (decode error)' % (
+                        target_filename, fetch_result['filename']
+                ))
                 return None
             if not fetch_result['cached']:
                 syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)

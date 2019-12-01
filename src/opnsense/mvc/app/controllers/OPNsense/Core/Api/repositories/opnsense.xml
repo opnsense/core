@@ -8,10 +8,6 @@
             <url>https://mirrors.dotsrc.org/opnsense</url>
             <description>Aalborg University (HTTPS, Aalborg, DK)</description>
         </mirror>
-        <mirror>
-            <url>https://opnsense.aivian.org</url>
-            <description>Aivian (HTTPS, Shaoxing, CN)</description>
-        </mirror>
         <mirror has_subscription="True">
             <url>https://opnsense-update.deciso.com</url>
             <description>Deciso (HTTPS, NL, Commercial)</description>
@@ -25,16 +21,16 @@
             <description>c0urier.net (HTTPS, Lund, SE)</description>
         </mirror>
         <mirror>
+            <url>https://mirror.cloudfence.com.br/opnsense</url>
+            <description>Cloudfence (HTTPS, Sao Paulo, Brazil)</description>
+        </mirror>
+        <mirror>
             <url>https://ftp.yzu.edu.tw/opnsense</url>
             <description>Dept. of CSE, Yuan Ze University (HTTPS, Taoyuan City, TW)</description>
         </mirror>
         <mirror>
             <url>https://fourdots.com/mirror/OPNSense</url>
             <description>FourDots (HTTPS, Belgrade, RS)</description>
-        </mirror>
-        <mirror>
-            <url>https://mirror.homelab.no/opnsense</url>
-            <description>Homelab.no (HTTPS, Horten, Norway)</description>
         </mirror>
         <mirror>
             <url>http://mirror.as24220.net/opnsense</url>
@@ -65,6 +61,10 @@
             <description>LeaseWeb (HTTP, Washington, D.C., US)</description>
         </mirror>
         <mirror>
+            <url>http://mirror.marwan.ma/opnsense/</url>
+            <description>MARWAN (HTTP, Rabat, MA)</description>
+        </mirror>
+        <mirror>
             <url>http://mirrors.nycbug.org/pub/opnsense</url>
             <description>NYC*BUG (HTTP, New York, US)</description>
         </mirror>
@@ -75,6 +75,10 @@
         <mirror>
             <url>https://mirror.ragenetwork.de/opnsense</url>
             <description>RageNetwork (HTTPS, Munich, DE)</description>
+        </mirror>
+        <mirror>
+            <url>http://mirror.terrahost.no/opnsense</url>
+            <description>TerraHost (HTTP, Sandefjord, Norway)</description>
         </mirror>
         <mirror>
             <url>http://mirror.upb.edu.co/opnsense</url>

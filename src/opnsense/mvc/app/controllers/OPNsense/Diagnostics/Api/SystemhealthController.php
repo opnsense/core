@@ -125,13 +125,15 @@ class SystemhealthController extends ApiControllerBase
             $from_timestamp = $this->getMaxRange($rra_info)["oldest_timestamp"];
             $to_timestamp = $this->getMaxRange($rra_info)["newest_timestamp"];
         }
-        $max_values = ($max_values <=0) ? 1 : $max_values;
+        $max_values = ($max_values <= 0) ? 1 : $max_values;
 
         $archives = array();
         // find archive match
         foreach ($rra_info as $key => $value) {
-            if ($from_timestamp >= $value['firstValue_timestamp'] && $to_timestamp <= ($value['last_timestamp'] +
-                    $value['full_step'])) {
+            if (
+                $from_timestamp >= $value['firstValue_timestamp'] && $to_timestamp <= ($value['last_timestamp'] +
+                    $value['full_step'])
+            ) {
                 // calculate number of rows in set
                 $rowCount = ($to_timestamp - $from_timestamp) / $value['full_step'] + 1;
 
@@ -254,12 +256,16 @@ class SystemhealthController extends ApiControllerBase
                 if ($value == "NaN") {
                     // If first or the last NaN value in series then add a value of 0 for presentation purposes
                     $nan = false;
-                    if (isset($data['archive'][$row - 1]['condensed_values'][$key]) &&
-                        (string)$data['archive'][$row - 1]['condensed_values'][$key] != "NaN") {
+                    if (
+                        isset($data['archive'][$row - 1]['condensed_values'][$key]) &&
+                        (string)$data['archive'][$row - 1]['condensed_values'][$key] != "NaN"
+                    ) {
                         // Translate NaN to 0 as d3chart can't render NaN - (first NaN item before value)
                         $value = 0;
-                    } elseif (isset($data['archive'][$row + 1]['condensed_values'][$key]) &&
-                        (string)$data['archive'][$row + 1]['condensed_values'][$key] != "NaN") {
+                    } elseif (
+                        isset($data['archive'][$row + 1]['condensed_values'][$key]) &&
+                        (string)$data['archive'][$row + 1]['condensed_values'][$key] != "NaN"
+                    ) {
                         $value = 0; // Translate NaN to 0 as d3chart can't render NaN - (last NaN item before value)
                     } else {
                         $nan = true; // suppress NaN item as we already drawn a line to 0
@@ -330,10 +336,12 @@ class SystemhealthController extends ApiControllerBase
                             if ($rowCount >= $info[$key_counter]['firstValue_rowNumber']) {
                                 $timestamp = $info[$key_counter]['first_timestamp'] +
                                     ($rowCount * $info[$key_counter]['step'] * $info[$key_counter]['pdp_per_row']);
-                                if (($timestamp >= $selection["from"] && $timestamp <= $selection["to"] &&
+                                if (
+                                    ($timestamp >= $selection["from"] && $timestamp <= $selection["to"] &&
                                         $archValue["type"] == "detail") || ($archValue["type"] == "overview" &&
                                         $timestamp <= $selection["from"]) || ($archValue["type"] == "overview" &&
-                                        $timestamp >= $selection["to"])) {
+                                        $timestamp >= $selection["to"])
+                                ) {
                                     $condense_counter++;
                                     // Find smallest step in focus area = detail
                                     if ($archValue['type'] == "detail" && $selection["full_range"] == false) {
@@ -369,15 +377,19 @@ class SystemhealthController extends ApiControllerBase
                                                     (float)$columnValue;
                                             } elseif ($calculation_type == "MINIMUM" || $condense_counter == 1) {
                                                 // For MINIMUM update value if smaller one found or first
-                                                if ($condensed_row_values[$count_values][$column_counter] >
-                                                    (float)$columnValue) {
+                                                if (
+                                                    $condensed_row_values[$count_values][$column_counter] >
+                                                    (float)$columnValue
+                                                ) {
                                                     $condensed_row_values[$count_values][$column_counter] =
                                                         (float)$columnValue;
                                                 }
                                             } elseif ($calculation_type == "MAXIMUM" || $condense_counter == 1) {
                                                 // For MAXIMUM update value if higher one found or first
-                                                if ($condensed_row_values[$count_values][$column_counter] <
-                                                    (float)$columnValue) {
+                                                if (
+                                                    $condensed_row_values[$count_values][$column_counter] <
+                                                    (float)$columnValue
+                                                ) {
                                                     $condensed_row_values[$count_values][$column_counter] =
                                                         (float)$columnValue;
                                                 }
@@ -389,8 +401,10 @@ class SystemhealthController extends ApiControllerBase
 
                                     if ($condense_counter == $condense) {
                                         foreach ($condensed_row_values[$count_values] as $crvKey => $crValue) {
-                                            if ($condensed_row_values[$count_values][$crvKey] != "NaN" &&
-                                                $calculation_type == "AVERAGE" && $archValue["type"] != "overview") {
+                                            if (
+                                                $condensed_row_values[$count_values][$crvKey] != "NaN" &&
+                                                $calculation_type == "AVERAGE" && $archValue["type"] != "overview"
+                                            ) {
                                                 // For AVERAGE we need to calculate it,
                                                 // dividing by the total number of values collected
                                                 $condensed_row_values[$count_values][$crvKey] =
@@ -454,7 +468,7 @@ class SystemhealthController extends ApiControllerBase
         // search by topic and name, return array with filename
         if (is_array($healthList)) {
             foreach ($healthList as $filename => $healthItem) {
-                if ($healthItem['itemName'] .'-' . $healthItem['topic'] == $rrd) {
+                if ($healthItem['itemName'] . '-' . $healthItem['topic'] == $rrd) {
                     $result["result"] = "ok";
                     $healthItem['filename'] = $filename;
                     $result["data"] = $healthItem;
@@ -465,7 +479,7 @@ class SystemhealthController extends ApiControllerBase
 
         // always return a valid (empty) data set
         $result["result"] = "not found";
-        $result["data"] = ["title"=>"","y-axis_label"=>"","field_units"=>[], "itemName" => "", "filename" => ""];
+        $result["data"] = ["title" => "","y-axis_label" => "","field_units" => [], "itemName" => "", "filename" => ""];
         return $result;
     }
 
@@ -525,7 +539,7 @@ class SystemhealthController extends ApiControllerBase
          * $detail = limits processing of dataSets to max given (-1 = all ; 1 = 0,1 ; 2 = 0,1,2 ; etc)
          */
 
-        $rrd_details=$this->getRRDdetails($rrd)["data"];
+        $rrd_details = $this->getRRDdetails($rrd)["data"];
         $xml = false;
         if ($rrd_details['filename'] != "") {
             $backend = new Backend();
@@ -537,7 +551,7 @@ class SystemhealthController extends ApiControllerBase
 
         if ($xml !== false) {
             // we only use the average databases in any RRD, remove the rest to avoid strange behaviour.
-            for ($count = count($xml->rra) -1; $count >= 0; $count--) {
+            for ($count = count($xml->rra) - 1; $count >= 0; $count--) {
                 if (trim((string)$xml->rra[$count]->cf) != "AVERAGE") {
                     unset($xml->rra[$count]);
                 }
@@ -569,10 +583,10 @@ class SystemhealthController extends ApiControllerBase
 
             return ["sets" => $data_sets_full,
                 "d3" => $result,
-                "title"=>$rrd_details["title"] != "" ?
+                "title" => $rrd_details["title"] != "" ?
                          $rrd_details["title"] . " | " . ucfirst($rrd_details['itemName']) :
                          ucfirst($rrd_details['itemName']),
-                "y-axis_label"=>$rrd_details["y-axis_label"]
+                "y-axis_label" => $rrd_details["y-axis_label"]
             ]; // return details and d3 data
         } else {
             return ["sets" => [], "d3" => [], "title" => "error", "y-axis_label" => ""];

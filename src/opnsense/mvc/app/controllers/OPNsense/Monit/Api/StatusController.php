@@ -62,8 +62,10 @@ class StatusController extends ApiControllerBase
 
             // get credentials if configured
             $mdlMonit = new Monit(false);
-            if ($mdlMonit->general->httpdUsername->__toString() != null && trim($mdlMonit->general->httpdUsername->__toString()) !== "" &&
-                $mdlMonit->general->httpdPassword->__toString() != null && trim($mdlMonit->general->httpdPassword->__toString()) !== "") {
+            if (
+                $mdlMonit->general->httpdUsername->__toString() != null && trim($mdlMonit->general->httpdUsername->__toString()) !== "" &&
+                $mdlMonit->general->httpdPassword->__toString() != null && trim($mdlMonit->general->httpdPassword->__toString()) !== ""
+            ) {
                     curl_setopt($ch, CURLOPT_USERPWD, $mdlMonit->general->httpdUsername->__toString() . ":" . $mdlMonit->general->httpdPassword->__toString());
             }
 

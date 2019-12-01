@@ -24,7 +24,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
-import tempfile
 import subprocess
 
 
@@ -47,31 +46,29 @@ class ARP(object):
         """
         # parse arp table
         self._arp_table = dict()
-        with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.check_call(['/usr/sbin/arp', '-an'], stdout=output_stream, stderr=subprocess.STDOUT)
-            output_stream.seek(0)
-            for line in output_stream:
-                line_parts = line.decode().split()
+        sp = subprocess.run(['/usr/sbin/arp', '-an'], capture_output=True, text=True)
+        for line in sp.stdout.split("\n"):
+            line_parts = line.split()
 
-                if len(line_parts) < 6 or line_parts[2] != 'at' or line_parts[4] != 'on':
-                    continue
-                elif len(line_parts[1]) < 2 or line_parts[1][0] != '(' or line_parts[1][-1] != ')':
-                    continue
+            if len(line_parts) < 6 or line_parts[2] != 'at' or line_parts[4] != 'on':
+                continue
+            elif len(line_parts[1]) < 2 or line_parts[1][0] != '(' or line_parts[1][-1] != ')':
+                continue
 
-                address = line_parts[1][1:-1]
-                physical_intf = line_parts[5]
-                mac = line_parts[3]
-                expires = -1
+            address = line_parts[1][1:-1]
+            physical_intf = line_parts[5]
+            mac = line_parts[3]
+            expires = -1
 
-                for index in range(len(line_parts) - 3):
-                    if line_parts[index] == 'expires' and line_parts[index + 1] == 'in':
-                        if line_parts[index + 2].isdigit():
-                            expires = int(line_parts[index + 2])
+            for index in range(len(line_parts) - 3):
+                if line_parts[index] == 'expires' and line_parts[index + 1] == 'in':
+                    if line_parts[index + 2].isdigit():
+                        expires = int(line_parts[index + 2])
 
-                if address in self._arp_table:
-                    self._arp_table[address]['intf'].append(physical_intf)
-                elif mac.find('incomplete') == -1:
-                    self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
+            if address in self._arp_table:
+                self._arp_table[address]['intf'].append(physical_intf)
+            elif mac.find('incomplete') == -1:
+                self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
 
     def list_items(self):
         """ return parsed arp list

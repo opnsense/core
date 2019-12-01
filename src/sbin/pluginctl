@@ -2,6 +2,7 @@
 <?php
 
 /*
+ * Copyright (C) 2019 Deciso B.V.
  * Copyright (C) 2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
@@ -33,20 +34,27 @@ require_once 'util.inc';
 require_once 'system.inc';
 require_once 'interfaces.inc';
 require_once 'filter.inc';
-require_once 'services.inc';
 require_once 'auth.inc';
 
 /*
  * -c is configure mode
  * -s is service mode
  */
-$opts = getopt('cs', array(), $optind);
+$opts = getopt('cshr', array(), $optind);
 $args = array_slice($argv, $optind);
 
-if (empty($args[0])) {
+if (isset($opts['h'])) {
+    echo "Usage: pluginctl [-h] -[c] [-s] [...]\n\n";
+    echo "\t-h show this help text and exit\n";
+    echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
+    echo "\t-s service mode (e.g. myservice restart)\n";
+    echo "\t-r run mode (e.g. command)\n\n";
+    echo "Without arguments, a list of plugins of the requested type is shown.\n";
+} elseif (empty($args[0])) {
+    // no arguments, list plugins of selected type
     $results = [];
     if (isset($opts['s'])) {
-        foreach (services_get() as $service) {
+        foreach (plugins_services() as $service) {
             $results[$service['name']] = 1;
         }
     } else {
@@ -73,29 +81,35 @@ if (empty($args[0])) {
     }
 
     exit(0);
-}
-
-if (isset($opts['s'])) {
+} elseif (isset($opts['s'])) {
     $name = !empty($args[0]) ? $args[0] : '';
     $act = !empty($args[1]) ? $args[1] : '';
     switch ($act) {
         case 'start':
-            service_control_start($name, array());
+            echo service_control_start($name, array()) . PHP_EOL;
             break;
         case 'stop':
-            service_control_stop($name, array());
+            echo service_control_stop($name, array()) . PHP_EOL;
             break;
         case 'restart':
-            service_control_restart($name, array());
+            echo service_control_restart($name, array()) . PHP_EOL;
             break;
         default:
             echo "Unknown command `$act'\n";
             break;
     }
     exit (0);
+} elseif (isset($opts['r'])) {
+   $cmd = array_shift($args);
+   $result = plugins_run($cmd, false, $args);
+   if (!empty($result)) {
+      $response = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+      echo $response;
+   }
+   exit (0);
+} else {
+    /* second argument is hook */
+    $hook = array_shift($args);
+    /* other arguments are passed as is */
+    plugins_configure($hook, true, $args);
 }
-
-/* second argument is hook */
-$hook = array_shift($args);
-/* other arguments are passed as is */
-plugins_configure($hook, true, $args);
