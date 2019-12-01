@@ -283,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             // router advertisement data lives in the same spot, copy
             foreach (array_keys($config['dhcpdv6'][$if]) as $fieldname) {
-                if (substr($fieldname,0 ,2) == 'ra' && !in_array($fieldname, array_keys($dhcpdconf))) {
+                if ((substr($fieldname, 0, 2) == 'ra' || substr($fieldname, 0, 3) == 'Adv') && !in_array($fieldname, array_keys($dhcpdconf))) {
                     $dhcpdconf[$fieldname] = $config['dhcpdv6'][$if][$fieldname];
                 }
             }
