@@ -1449,12 +1449,10 @@ EOD;
         $dhcpdv6conf .= "\nsubnet6 {$networkv6} {\n";
 
         if (!empty($dhcpv6ifconf['range']['from'])) {
-            $dhcpdv6conf .= <<<EOD
-  range6 {$dhcpv6ifconf['range']['from']} {$dhcpv6ifconf['range']['to']};
-$dnscfgv6
-
-EOD;
+            $dhcpdv6conf .= "  range6 {$dhcpv6ifconf['range']['from']} {$dhcpv6ifconf['range']['to']};\n";
         }
+
+        $dhcpdv6conf .= "{$dnscfgv6}\n";
 
         if (!empty($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['to'])) {
             $dhcpdv6conf .= "  prefix6 {$dhcpv6ifconf['prefixrange']['from']} {$dhcpv6ifconf['prefixrange']['to']}/{$dhcpv6ifconf['prefixrange']['prefixlength']};\n";
