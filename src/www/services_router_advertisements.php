@@ -274,10 +274,10 @@ include("head.inc");
                         </option>
                       </select>
                       <div class="hidden" data-for="help_for_ramode">
-                        <?= gettext('Select the Operating Mode for the Router Advertisement (RA) Daemon.') ?>
-                        <?= gettext('Use "Router Only" to only advertise this router, "Unmanaged" for Router Advertising with Stateless Autoconfig, ' .
-                            '"Managed" for exclusive DHCPv6 Server assignment, "Assisted" for DHCPv6 Server assignment combined with Stateless Autoconfig, ' .
-                            'or "Stateless" for Router Advertising with Statless Autoconfig and optional DHCPv6 Server queries.') ?>
+                        <?= gettext('Select which flags to set in Router Advertisements sent from this interface.') ?>
+                        <?= gettext('Use "Router Only" to disable Stateless Address Autoconfiguration (SLAAC) and DHCPv6, "Unmanaged" for SLAAC (A flag), ' .
+                            '"Managed" for Stateful DHCPv6 (M+O flags), "Assisted" for Stateful DHCPv6 and SLAAC (M+O+A flags), ' .
+                            'or "Stateless" for Stateless DHCPv6 and SLAAC (O+A flags).') ?>
                       </div>
                     </td>
                   </tr>
@@ -407,7 +407,7 @@ include("head.inc");
                     <td>
                       <input name="radomainsearchlist" type="text" id="radomainsearchlist" size="28" value="<?=$pconfig['radomainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_radomainsearchlist">
-                        <?=gettext("The RA server can optionally provide a domain search list. Use the semicolon character as separator");?>
+                        <?=gettext("The default is to use the domain name of this system as the DNSSL option in Router Advertisements. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.");?>
                       </div>
                     </td>
                   </tr>
