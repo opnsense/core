@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 $system_logfile = '/var/log/system.log';
 
 if (!$config['widgets']['systemlogfiltercount']){
-  $syslogEntriesToFetch = isset($config['syslog']['nentries']) ? $config['syslog']['nentries'] : 20;
+  $syslogEntriesToFetch = 20;
 } else {
   $syslogEntriesToFetch = $config['widgets']['systemlogfiltercount'];
 }

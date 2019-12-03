@@ -92,7 +92,6 @@ function is_valid_syslog_server($target) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['reverse'] = isset($config['syslog']['reverse']);
-    $pconfig['nentries'] = !empty($config['syslog']['nentries']) ? $config['syslog']['nentries'] : 50;
     $pconfig['remoteserver'] = !empty($config['syslog']['remoteserver']) ? $config['syslog']['remoteserver'] : null;
     $pconfig['remoteserver2'] = !empty($config['syslog']['remoteserver2']) ? $config['syslog']['remoteserver2'] : null;
     $pconfig['remoteserver3'] = !empty($config['syslog']['remoteserver3']) ? $config['syslog']['remoteserver3'] : null;
@@ -138,10 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #3.");
         }
 
-        if (($pconfig['nentries'] < 5) || ($pconfig['nentries'] > 2000)) {
-            $input_errors[] = gettext("Number of log entries to show must be between 5 and 2000.");
-        }
-
         if (!empty($pconfig['logfilesize']) && (strlen($pconfig['logfilesize']) > 0)) {
             if (!is_numeric($pconfig['logfilesize']) || ($pconfig['logfilesize'] < 5120)) {
                 $input_errors[] = gettext("Log file size must be a positive integer greater than 5120.");
@@ -149,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (count($input_errors) == 0) {
             $config['syslog']['reverse'] = !empty($pconfig['reverse']) ? true : false;
-            $config['syslog']['nentries'] = (int)$pconfig['nentries'];
             if (isset($_POST['logfilesize']) && (strlen($pconfig['logfilesize']) > 0)) {
                 $config['syslog']['logfilesize'] = (int)$pconfig['logfilesize'];
             } elseif (isset($config['syslog']['logfilesize'])) {
@@ -353,15 +347,6 @@ $(document).ready(function() {
                         <?=gettext("Show log entries in reverse order (newest entries on top)");?>
                       </div>
                     </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_nentries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('GUI Log Entries to Display') ?></td>
-                    <td>
-                      <input name="nentries" type="text" value="<?=$pconfig['nentries'];?>" /><br />
-                      <div class="hidden" data-for="help_for_nentries">
-                        <?=gettext("Hint: This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files.") ?>
-                      </div>
-                      </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_logfilesize" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log File Size (Bytes)') ?></td>
