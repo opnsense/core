@@ -31,8 +31,8 @@
   <table id="grid-addresses" class="table table-condensed table-hover table-striped" data-editDialog="DialogLoopback" data-editAlert="LoopbackChangeMessage">
       <thead>
           <tr>
-              <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
-              <th data-column-id="deviceId" data-type="string">{{ lang._('DeviceId') }}</th>
+              <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+              <th data-column-id="deviceId" data-type="string">{{ lang._('Device') }}</th>
               <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
               <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
           </tr>
