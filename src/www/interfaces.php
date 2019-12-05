@@ -1819,8 +1819,17 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                        <td style="width:22%"><a id="help_for_ifname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Device"); ?></td>
                         <td style="width:78%">
+                          <strong><?=$pconfig['if'];?></strong>
+                          <div class="hidden" data-for="help_for_ifname">
+                            <?= gettext("The real device name of this interface."); ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                        <td>
                           <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
                           <div class="hidden" data-for="help_for_descr">
                             <?= gettext("Enter a description (name) for the interface here."); ?>

@@ -100,9 +100,19 @@ function list_interfaces() {
                         }
                     }
                 }
+                $interface_item['ifdescr'] = !empty($cnf_item['descr']) ? $cnf_item['descr'] : null;
                 $interfaces[$cnf_item[$value['key']]] = $interface_item;
             }
         }
+    }
+    // XXX: get_interface_list() should probably be replaced at some point to avoid traversing through the config
+    //       for all these virtual interfaces
+    $loopbacks = iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems());
+    foreach ($loopbacks as $loopback) {
+        $interfaces["lo".(string)$loopback->deviceId] = array(
+          'descr' => sprintf("lo%s (%s)", $loopback->deviceId,  $loopback->description),
+          'ifdescr' => sprintf("%s", $loopback->description),
+          'section' => 'loopback');
     }
 
     // enforce constraints
@@ -140,8 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $newifname = 'opt' . $i;
-        $descr = 'OPT' . $i;
-
+        $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
         $config['interfaces'][$newifname] = array();
         $config['interfaces'][$newifname]['descr'] = $descr;
         $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
@@ -379,6 +388,14 @@ include("head.inc");
       });
     });
 
+    $("#if_add").change(function(event){
+        event.preventDefault();
+        let descr = $("#if_add option:selected").data('ifdescr');
+        if (descr) {
+            $("#new_entry_descr").val(descr);
+        }
+    });
+
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -407,6 +424,7 @@ include("head.inc");
                   <tbody>
 <?php
                   foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $iface):?>
+                      <?=legacy_html_escape_form_data($iface);?>
                       <tr>
                         <td>
                           <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
@@ -443,12 +461,17 @@ include("head.inc");
 <?php
                           foreach ($unused_interfaces as $portname => $portinfo): ?>
                             <option data-icon="fa fa-plug <?=$portinfo['status'] == 'no carrier' ? "text-danger": "text-success";?>"
+                                    data-ifdescr="<?=!empty($portinfo['ifdescr']) ? $portinfo['ifdescr'] : '';?>"
                                     value="<?=$portname;?>">
                                     <?=$portinfo['descr'];?>
                             </option>
 <?php
                           endforeach; ?>
                           </select>
+                          <div class="form-group">
+                            <label for="new_entry_descr"><?=gettext("Description");?></label>
+                            <input id="new_entry_descr" name="new_entry_descr" type="text" class="form-control">
+                          </form>
                         </td>
                         <td>
                           <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip">

@@ -35,9 +35,9 @@ $a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list
 $ifacelist = array();
-foreach (get_configured_interface_with_descr() as $bif => $bdescr) {
-    if (substr(get_real_interface($bif), 0, 3) != "gre") {
-        $ifacelist[$bif] = $bdescr;
+foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+    if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
+        $ifacelist[$intf] = $intfdata['descr'];
     }
 }
 
