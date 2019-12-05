@@ -318,7 +318,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
+            $radvdconf .= "\t\tDeprecatePrefix " . (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on") . ";\n";
             switch ($dhcpv6ifconf['ramode']) {
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
@@ -500,7 +500,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "\t};\n";
 
         if (count($dnslist) > 0) {
-            $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
+            $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " { };\n";
         }
         if (!empty($config['system']['domain'])) {
             $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
@@ -817,9 +817,10 @@ EOPP;
                 $dhcpdconf .= "    deny unknown-clients;\n";
             }
 
-            if (!empty($poolconf['gateway']) && $poolconf['gateway'] != "none"
-              && (empty($dhcpifconf['gateway']) || $poolconf['gateway'] != $dhcpifconf['gateway'])
-              ) {
+            if (
+                !empty($poolconf['gateway']) && $poolconf['gateway'] != "none"
+                && (empty($dhcpifconf['gateway']) || $poolconf['gateway'] != $dhcpifconf['gateway'])
+            ) {
                 $dhcpdconf .= "    option routers {$poolconf['gateway']};\n";
             }
 
@@ -828,58 +829,75 @@ EOPP;
             }
 
             $pdnscfg = "";
-            if (!empty($poolconf['domain'])
-              && (empty($dhcpifconf['domain']) || $poolconf['domain'] != $dhcpifconf['domain'])
-              ) {
+            if (
+                !empty($poolconf['domain'])
+                && (empty($dhcpifconf['domain']) || $poolconf['domain'] != $dhcpifconf['domain'])
+            ) {
                 $pdnscfg .= "    option domain-name \"{$poolconf['domain']}\";\n";
             }
 
-            if (!empty($poolconf['domainsearchlist'])
-              && (empty($dhcpifconf['domainsearchlist']) || $poolconf['domainsearchlist'] != $dhcpifconf['domainsearchlist'])) {
+            if (
+                !empty($poolconf['domainsearchlist'])
+                && (empty($dhcpifconf['domainsearchlist']) || $poolconf['domainsearchlist'] != $dhcpifconf['domainsearchlist'])
+            ) {
                 $pdnscfg .= "    option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $poolconf['domainsearchlist'])) . "\";\n";
             }
 
             if (isset($poolconf['ddnsupdate'])) {
-                if (!empty($poolconf['ddnsdomain'])
-                  && (empty($dhcpifconf['ddnsdomain']) || $poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
+                if (
+                    !empty($poolconf['ddnsdomain'])
+                    && (empty($dhcpifconf['ddnsdomain']) || $poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])
+                ) {
                     $pdnscfg .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
                 }
                 $pdnscfg .= "    ddns-update-style interim;\n";
             }
 
-            if (!empty($poolconf['dnsserver'][0])
-              && (empty($dhcpifconf['dnsserver'][0]) || $poolconf['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
+            if (
+                !empty($poolconf['dnsserver'][0])
+                && (empty($dhcpifconf['dnsserver'][0]) || $poolconf['dnsserver'][0] != $dhcpifconf['dnsserver'][0])
+            ) {
                 $pdnscfg .= "    option domain-name-servers " . join(",", $poolconf['dnsserver']) . ";\n";
             }
             $dhcpdconf .= "{$pdnscfg}";
 
             // default-lease-time
-            if (!empty($poolconf['defaultleasetime'])
-              && (empty($dhcpifconf['defaultleasetime']) || $poolconf['defaultleasetime'] != $dhcpifconf['defaultleasetime'])) {
+            if (
+                !empty($poolconf['defaultleasetime'])
+                && (empty($dhcpifconf['defaultleasetime']) || $poolconf['defaultleasetime'] != $dhcpifconf['defaultleasetime'])
+            ) {
                 $dhcpdconf .= "    default-lease-time {$poolconf['defaultleasetime']};\n";
             }
 
             // max-lease-time
-            if (!empty($poolconf['maxleasetime'])
-              && (empty($dhcpifconf['maxleasetime']) || $poolconf['maxleasetime'] != $dhcpifconf['maxleasetime'])) {
+            if (
+                !empty($poolconf['maxleasetime'])
+                && (empty($dhcpifconf['maxleasetime']) || $poolconf['maxleasetime'] != $dhcpifconf['maxleasetime'])
+            ) {
                 $dhcpdconf .= "    max-lease-time {$poolconf['maxleasetime']};\n";
             }
             // interface MTU
-            if (!empty($poolconf['interface_mtu'])
-              && (empty($dhcpifconf['interface_mtu']) || $poolconf['interface_mtu'] != $dhcpifconf['interface_mtu'])) {
+            if (
+                !empty($poolconf['interface_mtu'])
+                && (empty($dhcpifconf['interface_mtu']) || $poolconf['interface_mtu'] != $dhcpifconf['interface_mtu'])
+            ) {
                 $dhcpdconf .= "    option interface-mtu {$poolconf['interface_mtu']};\n";
             }
 
             // netbios-name*
-            if (!empty($poolconf['winsserver'][0])
-              && (empty($dhcpifconf['winsserver'][0]) || $poolconf['winsserver'][0] != $dhcpifconf['winsserver'][0])) {
+            if (
+                !empty($poolconf['winsserver'][0])
+                && (empty($dhcpifconf['winsserver'][0]) || $poolconf['winsserver'][0] != $dhcpifconf['winsserver'][0])
+            ) {
                 $dhcpdconf .= "    option netbios-name-servers " . join(",", $poolconf['winsserver']) . ";\n";
                 $dhcpdconf .= "    option netbios-node-type 8;\n";
             }
 
             // ntp-servers
-            if (!empty($poolconf['ntpserver'][0])
-              && (empty($dhcpifconf['ntpserver'][0]) || $poolconf['ntpserver'][0] != $dhcpifconf['ntpserver'][0])) {
+            if (
+                !empty($poolconf['ntpserver'][0])
+                && (empty($dhcpifconf['ntpserver'][0]) || $poolconf['ntpserver'][0] != $dhcpifconf['ntpserver'][0])
+            ) {
                 $dhcpdconf .= "    option ntp-servers " . join(",", $poolconf['ntpserver']) . ";\n";
             }
 
@@ -1322,7 +1340,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                             $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2], $len - 1, 1);
                             $pd_prefix_from_array_out[3] = sprintf("%s000", substr($pd_prefix_from_array[2], 0, 1)); // first byte from entered value
                             $len = strlen($pd_prefix_to_array[2]);
-                            $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2], $len-1, 1);
+                            $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2], $len - 1, 1);
                             $pd_prefix_to_array_out[3] = sprintf("%s000", substr($pd_prefix_to_array[2], 0, 1));
                             break;
                         case 48: // 4th byte on 2nd array

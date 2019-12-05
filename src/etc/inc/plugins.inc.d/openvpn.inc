@@ -304,7 +304,7 @@ function openvpn_get_digestlist()
         if (strstr($line, 'digest size') !== false) {
             $digest = explode(' ', $line)[0];
             $bits = explode(' ', explode('bit', $line)[0])[1];
-            $digests[$digest] = $digest . " (".$bits."-bit)";
+            $digests[$digest] = $digest . " (" . $bits . "-bit)";
         }
     }
     ksort($digests);
@@ -526,7 +526,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     openvpn_create_dirs();
 
     $vpnid = $settings['vpnid'];
-    $mode_id = $mode.$vpnid;
+    $mode_id = $mode . $vpnid;
 
     if (!isset($settings['dev_mode'])) {
         /* defaults to tun */
@@ -663,7 +663,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 //  See ticket #1417
                 if (!empty($ip) && !empty($mask) && ($cidr < 30)) {
                     $conf .= "server {$ip} {$mask}\n";
-                    $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";
+                    $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                     if (is_ipaddr($ipv6)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
@@ -695,23 +695,27 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     if (is_ipaddr($ipv6)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
-                    $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";
+                    $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                 } else {
                     if ($settings['serverbridge_dhcp']) {
-                        if (!empty($settings['serverbridge_interface']) &&
-                            strcmp($settings['serverbridge_interface'], "none")) {
+                        if (
+                            !empty($settings['serverbridge_interface']) &&
+                            strcmp($settings['serverbridge_interface'], "none")
+                        ) {
                             $realif = get_real_interface($settings['serverbridge_interface']);
                             if (strstr($settings['serverbridge_interface'], '_vip')) {
                                 list($vipif, $vhid) = explode('_vip', $settings['serverbridge_interface']);
                                 $realif = get_real_interface($vipif);
                             }
                             list ($biface_ip, $biface_sn) = explode('/', find_interface_network($realif, false));
-                            if (is_ipaddrv4($biface_ip) && is_ipaddrv4($settings['serverbridge_dhcp_start']) &&
-                                is_ipaddrv4($settings['serverbridge_dhcp_end'])) {
+                            if (
+                                is_ipaddrv4($biface_ip) && is_ipaddrv4($settings['serverbridge_dhcp_start']) &&
+                                is_ipaddrv4($settings['serverbridge_dhcp_end'])
+                            ) {
                                 $biface_sm = gen_subnet_mask($biface_sn);
                                 $conf .= "server-bridge {$biface_ip} {$biface_sm} " .
                                     "{$settings['serverbridge_dhcp_start']} {$settings['serverbridge_dhcp_end']}\n";
-                                $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";
+                                $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                             } else {
                                 $conf .= "mode server\n";
                             }
@@ -870,12 +874,16 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         }
     }
 
-    if (!empty($settings['remote_network']) &&
-        openvpn_validate_cidr($settings['remote_network'], '', true, 'ipv4') === false) {
+    if (
+        !empty($settings['remote_network']) &&
+        openvpn_validate_cidr($settings['remote_network'], '', true, 'ipv4') === false
+    ) {
         $conf .= openvpn_gen_routes($settings['remote_network'], 'ipv4', false);
     }
-    if (!empty($settings['remote_networkv6']) &&
-        openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false) {
+    if (
+        !empty($settings['remote_networkv6']) &&
+        openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false
+    ) {
         $conf .= openvpn_gen_routes($settings['remote_networkv6'], 'ipv6', false);
     }
 
@@ -967,7 +975,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 function openvpn_restart($mode, $settings, $carp_event = false)
 {
     $vpnid = $settings['vpnid'];
-    $mode_id = $mode.$vpnid;
+    $mode_id = $mode . $vpnid;
 
     if ($carp_event && $mode == 'server' && isvalidpid("/var/run/openvpn_{$mode_id}.pid")) {
         /* do not stop or restart a server if we are handling a CARP event */
@@ -980,8 +988,10 @@ function openvpn_restart($mode, $settings, $carp_event = false)
         return;
     }
 
-    if (strstr($settings['interface'], '_vip') && $mode == 'client' &&
-        get_carp_interface_status($settings['interface']) == gettext('BACKUP')) {
+    if (
+        strstr($settings['interface'], '_vip') && $mode == 'client' &&
+        get_carp_interface_status($settings['interface']) == gettext('BACKUP')
+    ) {
         /* do not restart a client if we are a CARP backup instance */
         return;
     }
@@ -1008,7 +1018,7 @@ function openvpn_restart($mode, $settings, $carp_event = false)
 function openvpn_delete($mode, &$settings)
 {
     $vpnid = $settings['vpnid'];
-    $mode_id = $mode.$vpnid;
+    $mode_id = $mode . $vpnid;
 
     if ($mode == "server") {
         $devname = "ovpns{$vpnid}";
@@ -1072,12 +1082,16 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         $conf .= openvpn_gen_routes($settings['local_networkv6'], "ipv6", true);
     }
 
-    if (!empty($settings['remote_network']) &&
-        openvpn_validate_cidr($settings['remote_network'], '', true, 'ipv4') === false) {
+    if (
+        !empty($settings['remote_network']) &&
+        openvpn_validate_cidr($settings['remote_network'], '', true, 'ipv4') === false
+    ) {
         $conf .= openvpn_gen_routes($settings['remote_network'], 'ipv4', false, true);
     }
-    if (!empty($settings['remote_networkv6']) &&
-        openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false) {
+    if (
+        !empty($settings['remote_networkv6']) &&
+        openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false
+    ) {
         $conf .= openvpn_gen_routes($settings['remote_networkv6'], 'ipv6', false, true);
     }
 
@@ -1091,7 +1105,7 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 
     $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
     if (empty($target_filename)) {
-        $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
+        $target_filename = "/var/etc/openvpn-csc/" . $vpnid . "/" . $settings['common_name'];
     }
 
     if (!empty($conf)) {
@@ -1444,7 +1458,7 @@ function openvpn_create_dirs()
     @mkdir('/var/etc/openvpn', 0750);
     foreach (openvpn_get_remote_access_servers() as $server) {
         $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
-        $csc_path = '/var/etc/openvpn-csc/'.$vpnid;
+        $csc_path = '/var/etc/openvpn-csc/' . $vpnid;
         if (is_file($csc_path)) {
             // if the vpnid exists as file, remove it first
             unlink($csc_path);
