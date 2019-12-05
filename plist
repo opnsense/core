@@ -26,6 +26,7 @@
 /usr/local/etc/inc/plugins.inc.d/dpinger.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
+/usr/local/etc/inc/plugins.inc.d/loopback.inc
 /usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
@@ -257,8 +258,11 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogKeyPair.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/SettingsController.php
@@ -427,6 +431,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
@@ -481,6 +487,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
