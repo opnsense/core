@@ -26,12 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- function loopback_configure()
- {
-     return array(
-         'loopback_prepare' => array('loopback_configure_interface')
-     );
- }
+function loopback_configure()
+{
+    return array(
+        'loopback_prepare' => array('loopback_configure_interface')
+    );
+}
 
 function loopback_devices()
 {
@@ -42,7 +42,7 @@ function loopback_devices()
     return $devices;
 }
 
-function loopback_configure_interface($verbose=false)
+function loopback_configure_interface($verbose = false)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
     $configured_interfaces = legacy_interface_listget();

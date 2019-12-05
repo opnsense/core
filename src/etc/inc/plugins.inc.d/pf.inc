@@ -132,8 +132,10 @@ function pf_firewall($fw)
      *  interface in question to avoid problems with complicated routing
      *  topologies
      */
-    if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) &&
-        count($config['staticroutes']['route'])) {
+    if (
+        isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) &&
+        count($config['staticroutes']['route'])
+    ) {
         $ifdetails = $fw->getIfconfigDetails();
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 

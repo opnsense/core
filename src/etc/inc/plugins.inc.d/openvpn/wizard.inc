@@ -87,7 +87,7 @@ function step2_submitphpaction()
 
     if (isset($_POST['next'])) {
         $_POST['uselist'] = "";
-        $stepid +=3;
+        $stepid += 3;
     }
 }
 
@@ -109,8 +109,10 @@ function step3_submitphpaction()
     }
 
     $authcfg = auth_get_authserver($_POST['name']);
-    if (empty($_POST['name']) || empty($_POST['ip']) ||empty($_POST['transport']) ||
-         empty($_POST['scope']) || empty($_POST['basedn']) || empty($_POST['authscope']) || empty($_POST['nameattr'])) {
+    if (
+        empty($_POST['name']) || empty($_POST['ip']) || empty($_POST['transport']) ||
+         empty($_POST['scope']) || empty($_POST['basedn']) || empty($_POST['authscope']) || empty($_POST['nameattr'])
+    ) {
         $input_errors[] = gettext('Please enter all information for authentication server.');
         $stepid--;
     } elseif ($authcfg !== false && !empty($authcfg)) {
@@ -201,7 +203,7 @@ function step6_stepbeforeformdisplay()
     } else {
         foreach ($config['ca'] as $ca) {
             if (!empty($ca['prv'])) {
-                $no_internal_ca=false;
+                $no_internal_ca = false;
                 break;
             }
         }
@@ -239,13 +241,17 @@ function step7_submitphpaction()
         }
     }
 
-    if (empty($_POST['descr']) || empty($_POST['keylength']) || empty($_POST['lifetime']) ||
+    if (
+        empty($_POST['descr']) || empty($_POST['keylength']) || empty($_POST['lifetime']) ||
         empty($_POST['country']) || empty($_POST['state']) || empty($_POST['city']) ||
-        empty($_POST['organization']) || empty($_POST['email'])) {
+        empty($_POST['organization']) || empty($_POST['email'])
+    ) {
         $input_errors[] = gettext('Please enter all information for the new Certificate Authority.');
         $stepid--;
-    } elseif (has_special_chars($_POST['country']) || has_special_chars($_POST['state']) ||
-        has_special_chars($_POST['city']) || has_special_chars($_POST['organization'])) {
+    } elseif (
+        has_special_chars($_POST['country']) || has_special_chars($_POST['state']) ||
+        has_special_chars($_POST['city']) || has_special_chars($_POST['organization'])
+    ) {
         $input_errors[] = gettext('Please do not use special characters in Certificate field names.');
         $stepid--;
     } elseif (in_array($_POST['descr'], $canames) || in_array($_POST['descr'], $cacns)) {
@@ -271,7 +277,7 @@ function step8_stepbeforeformdisplay()
     } else {
         foreach ($config['cert'] as $cert) {
             if (cert_get_purpose($cert['crt'])['server'] == 'Yes') {
-                $no_server_cert=false;
+                $no_server_cert = false;
                 break;
             }
         }
@@ -353,13 +359,17 @@ function step9_submitphpaction()
         }
     }
 
-    if (empty($_POST['descr']) || empty($_POST['keylength']) || empty($_POST['lifetime']) ||
+    if (
+        empty($_POST['descr']) || empty($_POST['keylength']) || empty($_POST['lifetime']) ||
         empty($_POST['country']) || empty($_POST['state']) || empty($_POST['city']) ||
-        empty($_POST['organization']) || empty($_POST['email'])) {
+        empty($_POST['organization']) || empty($_POST['email'])
+    ) {
         $input_errors[] = gettext('Please enter all information for the new certificate.');
         $stepid--;
-    } elseif (has_special_chars($_POST['country']) || has_special_chars($_POST['state']) ||
-        has_special_chars($_POST['city']) || has_special_chars($_POST['organization'])) {
+    } elseif (
+        has_special_chars($_POST['country']) || has_special_chars($_POST['state']) ||
+        has_special_chars($_POST['city']) || has_special_chars($_POST['organization'])
+    ) {
         $input_errors[] = gettext('Please do not use special characters in Certificate field names.');
         $stepid--;
     } elseif (in_array($_POST['descr'], $certnames) || in_array($_POST['descr'], $certcns)) {
@@ -466,8 +476,10 @@ function step10_submitphpaction()
     }
 
     if (!isset($_POST['generatetlskey']) && isset($_POST['tlsauthentication'])) {
-        if (!strstr($_POST['tlssharedkey'], "-----BEGIN OpenVPN Static key V1-----") ||
-          !strstr($_POST['tlssharedkey'], "-----END OpenVPN Static key V1-----")) {
+        if (
+            !strstr($_POST['tlssharedkey'], "-----BEGIN OpenVPN Static key V1-----") ||
+            !strstr($_POST['tlssharedkey'], "-----END OpenVPN Static key V1-----")
+        ) {
             $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid.");
         }
     }
@@ -520,7 +532,7 @@ function step12_submitphpaction()
 
     if (!is_array($config['wizardtemp'])) {
         $message = "No configuration found please retry again.";
-        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s'. array($message)));
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s' . array($message)));
         exit;
     }
 

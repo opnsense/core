@@ -257,7 +257,7 @@ EOF;
         }
 
         if (!empty($dnsservers)) {
-            $forward_conf .=<<<EOD
+            $forward_conf .= <<<EOD
 # Forwarding
 forward-zone:
     name: "."
@@ -637,7 +637,7 @@ function unbound_add_host_entries()
                 }
 
                 if (!empty($alias['descr']) && isset($config['unbound']['txtsupport'])) {
-                    $unbound_entries .= "local-data: '{$alias['host']}{$alias['domain']} TXT \"".addslashes($alias['descr'])."\"'\n";
+                    $unbound_entries .= "local-data: '{$alias['host']}{$alias['domain']} TXT \"" . addslashes($alias['descr']) . "\"'\n";
                 }
             }
         }
@@ -661,7 +661,7 @@ function unbound_add_host_entries()
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$domain}\"\n";
                     $unbound_entries .= "local-data: \"{$host['hostname']}.{$domain} IN A {$host['ipaddr']}\"\n";
                     if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
-                        $unbound_entries .= "local-data: '{$host['hostname']}.{$domain} TXT \"".addslashes($host['descr'])."\"'\n";
+                        $unbound_entries .= "local-data: '{$host['hostname']}.{$domain} TXT \"" . addslashes($host['descr']) . "\"'\n";
                     }
                 }
             }
@@ -686,7 +686,7 @@ function unbound_add_host_entries()
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$domain}\"\n";
                     $unbound_entries .= "local-data: \"{$host['hostname']}.{$domain} IN AAAA {$host['ipaddrv6']}\"\n";
                     if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
-                        $unbound_entries .= "local-data: '{$host['hostname']}.{$domain} TXT \"".addslashes($host['descr'])."\"'\n";
+                        $unbound_entries .= "local-data: '{$host['hostname']}.{$domain} TXT \"" . addslashes($host['descr']) . "\"'\n";
                     }
                 }
             }

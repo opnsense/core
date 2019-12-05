@@ -76,7 +76,7 @@ function ntpd_configure_gps($serialport)
 {
     global $config;
     $gps_device = '/dev/gps0';
-    $serialport = '/dev/'.$serialport;
+    $serialport = '/dev/' . $serialport;
 
     if (!file_exists($serialport)) {
         return false;
@@ -199,9 +199,11 @@ function ntpd_configure_do($verbose = false, $start_ntpd = true)
     $ntpcfg .= "\n";
 
     /* Add PPS configuration */
-    if (!empty($config['ntpd']['pps'])
-      && file_exists('/dev/'.$config['ntpd']['pps']['port'])
-      && ntpd_configure_pps($config['ntpd']['pps']['port'])) {
+    if (
+        !empty($config['ntpd']['pps'])
+        && file_exists('/dev/' . $config['ntpd']['pps']['port'])
+        && ntpd_configure_pps($config['ntpd']['pps']['port'])
+    ) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# PPS Setup\n";
         $ntpcfg .= 'server 127.127.22.0';
@@ -241,15 +243,19 @@ function ntpd_configure_do($verbose = false, $start_ntpd = true)
     /* End PPS configuration */
 
     /* Add GPS configuration */
-    if (isset($config['ntpd']['gps']['port'])
-      && file_exists('/dev/'.$config['ntpd']['gps']['port'])
-      && ntpd_configure_gps($config['ntpd']['gps']['port'])) {
+    if (
+        isset($config['ntpd']['gps']['port'])
+        && file_exists('/dev/' . $config['ntpd']['gps']['port'])
+        && ntpd_configure_gps($config['ntpd']['gps']['port'])
+    ) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# GPS Setup\n";
         $ntpcfg .= 'server 127.127.20.0 mode ';
-        if (!empty($config['ntpd']['gps']['nmea']) ||
+        if (
+            !empty($config['ntpd']['gps']['nmea']) ||
             !empty($config['ntpd']['gps']['speed']) ||
-            !empty($config['ntpd']['gps']['subsec'])) {
+            !empty($config['ntpd']['gps']['subsec'])
+        ) {
             if (!empty($config['ntpd']['gps']['nmea'])) {
                 $ntpmode = (int) $config['ntpd']['gps']['nmea'];
             }
@@ -329,9 +335,11 @@ function ntpd_configure_do($verbose = false, $start_ntpd = true)
     /* prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04 */
     $ntpcfg .= "disable monitor\n";
 
-    if (!empty($config['ntpd']['clockstats']) ||
+    if (
+        !empty($config['ntpd']['clockstats']) ||
         !empty($config['ntpd']['loopstats']) ||
-        !empty($config['ntpd']['peerstats'])) {
+        !empty($config['ntpd']['peerstats'])
+    ) {
         $ntpcfg .= "enable stats\n";
         $ntpcfg .= 'statistics';
         if (!empty($config['ntpd']['clockstats'])) {

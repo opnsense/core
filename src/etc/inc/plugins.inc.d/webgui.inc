@@ -394,7 +394,7 @@ EOD;
             );
             $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
         } else {
-            $lighty_config .= 'ssl.cipher-list = "'.$config['system']['webgui']['ssl-ciphers'].'"' . PHP_EOL;
+            $lighty_config .= 'ssl.cipher-list = "' . $config['system']['webgui']['ssl-ciphers'] . '"' . PHP_EOL;
         }
         if (!empty($config['system']['webgui']['ssl-hsts'])) {
             $lighty_config .= "setenv.add-response-header  = (\n";
@@ -451,8 +451,10 @@ expire.url = ( "" => "access 50 hours" )
 EOD;
 
     /* add HTTP to HTTPS redirect */
-    if ($config['system']['webgui']['protocol'] == 'https' &&
-        !isset($config['system']['webgui']['disablehttpredirect'])) {
+    if (
+        $config['system']['webgui']['protocol'] == 'https' &&
+        !isset($config['system']['webgui']['disablehttpredirect'])
+    ) {
         $redirectport = $lighty_port != "443" ? ":{$lighty_port}" : '';
         foreach ($listeners as $listener) {
             if (is_ipaddrv6($listener)) {

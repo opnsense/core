@@ -26,13 +26,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- function vxlan_configure()
- {
-     return array(
-         'vxlan_prepare' => array('vxlan_configure_interface'),
-         'newwanip' => array('vxlan_configure_interface'),
-     );
- }
+function vxlan_configure()
+{
+    return array(
+        'vxlan_prepare' => array('vxlan_configure_interface'),
+        'newwanip' => array('vxlan_configure_interface'),
+    );
+}
 
 function vxlan_devices()
 {
@@ -43,7 +43,7 @@ function vxlan_devices()
     return $devices;
 }
 
-function vxlan_configure_interface($verbose=false)
+function vxlan_configure_interface($verbose = false)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
     $interfaces_details = legacy_interfaces_details();

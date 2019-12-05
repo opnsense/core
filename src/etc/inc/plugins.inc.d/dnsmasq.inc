@@ -159,10 +159,10 @@ function dnsmasq_configure_do($verbose = false)
             $override['ip'] = '';
         }
 
-        $args .= ' --server='. escapeshellarg('/' . $override['domain'] . '/' . $override['ip']);
+        $args .= ' --server=' . escapeshellarg('/' . $override['domain'] . '/' . $override['ip']);
 
         if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-            $args .= ' --rebind-domain-ok=' . escapeshellarg('/'.$override['domain'].'/') . ' ';
+            $args .= ' --rebind-domain-ok=' . escapeshellarg('/' . $override['domain'] . '/') . ' ';
         }
     }
 
