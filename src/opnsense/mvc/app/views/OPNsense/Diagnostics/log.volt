@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
               sorting:false,
               rowSelect: false,
               selection: false,
-              rowCount:[20,50,100,-1],
+              rowCount:[20,50,100,200,500,1000,-1],
           },
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
       });
@@ -58,6 +58,29 @@ POSSIBILITY OF SUCH DAMAGE.
             }]
         });
       });
+      // download visible items
+      $("#exportbtn").click(function(event){
+          let records = [];
+          $("#grid-log > tbody > tr").each(function(){
+              let fields = [];
+              $(this).find("td").each(function(){fields.push($(this).text().trim())});
+              records.push(fields.join("\t"));
+          });
+          let output_data = records.join("\n");
+          $('<a></a>').attr('id','downloadFile')
+            .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
+            .attr('download','{{scope}}.log')
+            .appendTo('body');
+          $('#downloadFile').ready(function() {
+              if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+                  var blob = new Blob( [ output_data ], { type: "text/csv" } );
+                  navigator.msSaveOrOpenBlob( blob, '{{scope}}.log' );
+              } else {
+                  $('#downloadFile').get(0).click();
+              }
+          });
+      });
+
     });
 </script>
 
@@ -76,6 +99,15 @@ POSSIBILITY OF SUCH DAMAGE.
                     <tbody>
                     </tbody>
                     <tfoot>
+                      <td></td>
+                      <td>
+                        <button id="exportbtn"
+                            data-toggle="tooltip" title="" type="button"
+                            class="btn btn-xs btn-default pull-right"
+                            data-original-title="{{ lang._('download selection')}}">
+                            <span class="fa fa-cloud-download"></span>
+                        </button>
+                      </td>
                     </tfoot>
                 </table>
                 <table class="table">
