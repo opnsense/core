@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # (filenames should be unique)
     items = dict()
     for rule in md.list_rules():
-        if not rule['required']:
+        if not rule['required'] and not rule['deprecated']:
             items[rule['filename']] = rule
             rule_filename = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
             if os.path.exists(rule_filename):

@@ -97,7 +97,11 @@ class Metadata(object):
                             documentation_url = rule_xml.attrib['documentation_url']
                         else:
                             documentation_url = ""
-                        metadata_record = {'required': False, 'metadata_source': rule_xml.attrib['metadata_source']}
+                        metadata_record = {
+                            'required': False,
+                            'deprecated': False,
+                            'metadata_source': rule_xml.attrib['metadata_source']
+                        }
                         metadata_record['documentation_url'] = documentation_url
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()
@@ -126,6 +130,10 @@ class Metadata(object):
                         else:
                             metadata_record['description'] = '%s%s' % (description_prefix,
                                                                        rule_filename.text)
+                        if 'deprecated' in rule_filename.attrib \
+                                and rule_filename.attrib['deprecated'].lower().strip() == 'true':
+                            metadata_record['deprecated'] = True
+
                         if metadata_record['filename'] not in target_filenames:
                             if 'required' in rule_filename.attrib \
                                     and rule_filename.attrib['required'].lower().strip() == 'true':
