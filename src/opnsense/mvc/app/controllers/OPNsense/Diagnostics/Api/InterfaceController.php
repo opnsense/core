@@ -154,4 +154,22 @@ class InterfaceController extends ApiControllerBase
         }
         return $routingtable;
     }
+
+    /**
+     * drop route
+     * @return mixed
+     */
+    public function delRouteAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost("destination")
+              && $this->request->hasPost("gateway")) {
+            $backend = new Backend();
+            $dest = $this->request->getPost("destination", "striptags", null);
+            $gw = $this->request->getPost("gateway", "striptags", null);
+            $response = trim($backend->configdpRun("interface route del", array($dest, $gw)));
+            return array("message" => $response);
+        } else {
+            return array("message" => "error");
+        }
+    }
 }

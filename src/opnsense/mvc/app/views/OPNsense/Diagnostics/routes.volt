@@ -31,8 +31,16 @@ POSSIBILITY OF SUCH DAMAGE.
         var gridopt = {
             ajax: false,
             selection: false,
-            multiSelect: false
+            multiSelect: false,
+            formatters: {
+                "commands": function (column, row) {
+                    return "<button type=\"button\" \
+                                    class=\"btn btn-xs btn-default command-delete\" \
+                                    data-row-id=\"" + row.destination + "," + row.gateway +"\"><span class=\"fa fa-trash-o\"></span></button>";
+                }
+            }
         };
+
         $("#grid-routes").bootgrid('destroy');
         $("#grid-routes").bootgrid(gridopt);
 
@@ -61,7 +69,21 @@ POSSIBILITY OF SUCH DAMAGE.
                                 html.push(tr_str);
                             });
                             $("#grid-routes > tbody").html(html.join(''));
-                            $("#grid-routes").bootgrid(gridopt);
+                            var grid = $("#grid-routes").bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function(){
+                              grid.find(".command-delete").on("click", function(e){
+                                  let route=$(this).data("row-id").split(',');
+                                  stdDialogConfirm('{{ lang._('Remove static route') }}' + ' ('+$(this).data("row-id")+')',
+                                                   '{{ lang._('Are you sure you want to remove this route? Caution, this could potentially lead to loss of connectivity') }}',
+                                                   '{{ lang._('Yes') }}',
+                                                   '{{ lang._('No') }}',
+                                                   function() {
+                                      ajaxCall('/api/diagnostics/interface/delRoute/', {'destination': route[0], 'gateway': route[1]},function(data,status){
+                                          // reload grid after delete
+                                          $("#update").click();
+                                      });
+                                  });
+                              });
+                            });
                         }
                         $('#processing-dialog').modal('hide');
                     }
@@ -90,6 +112,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <th data-column-id="netif" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Netif') }}</th>
                             <th data-column-id="intf_description" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Netif (name)') }}</th>
                             <th data-column-id="expire" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Expire') }}</th>
+                            <th data-column-id="commands" data-width="2em" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
