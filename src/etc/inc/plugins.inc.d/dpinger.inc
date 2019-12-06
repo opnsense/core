@@ -352,9 +352,9 @@ function dpinger_status($verbose = false)
             $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
             $r['status'] = $status[$gwname]['status'];
 
-            if ($r['status'] != 'force_down') {
-                $settings = dpinger_defaults();
+            $settings = dpinger_defaults();
 
+            if ($r['status'] != 'force_down') {
                 $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
 
                 /* Replace default values by user-defined */
