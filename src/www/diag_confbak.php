@@ -316,7 +316,7 @@ include("fbegin.inc");
                     </td>
                     <td><?= date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
                     <td><?= format_bytes(filesize("/conf/config.xml")) ?></td>
-                    <td><?= "{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
+                    <td><?= html_safe($config['revision']['username'])?>: <?=html_safe($config['revision']['description']); ?></td>
                     <td class="text-nowrap"><strong><?= gettext("Current"); ?></strong></td>
                   </tr>
 <?php $last = count($confvers); $curr = 1; foreach ($confvers as $version): ?>
@@ -332,7 +332,7 @@ include("fbegin.inc");
                     </td>
                     <td><?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
                     <td><?= format_bytes($version['filesize']) ?></td>
-                    <td><?= "{$version['username']}: {$version['description']}" ?></td>
+                    <td><?= html_safe($version['username']);?>: <?=html_safe($version['description']);?></td>
                     <td class="text-nowrap">
                       <a data-id="<?= $version['time']; ?>" href="#"
                         class="act_revert btn btn-default btn-xs" data-toggle="tooltip"
