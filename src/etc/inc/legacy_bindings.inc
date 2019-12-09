@@ -141,7 +141,7 @@ function legacy_move_config_list_items($source, $id, $items)
         }
 
         /* copy all rules > $id and not selected */
-        for ($i = $id+1; $i < count($source); $i++) {
+        for ($i = $id + 1; $i < count($source); $i++) {
             if (!in_array($i, $items)) {
                 $new_config[] = $source[$i];
             }

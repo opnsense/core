@@ -157,7 +157,7 @@ function legacy_bridge_member($ifs, $member)
 
 function legacy_vlan_tag($ifs, $member, $tag, $pcp)
 {
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp '.escapeshellarg($pcp);
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp ' . escapeshellarg($pcp);
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
@@ -169,7 +169,7 @@ function legacy_interface_stats($ifs = null)
 {
     if ($ifs != null) {
         // only request data for selected interface
-        $cmd = '/usr/local/sbin/ifinfo '. escapeshellarg($ifs);
+        $cmd = '/usr/local/sbin/ifinfo ' . escapeshellarg($ifs);
     } else {
         // all interfaces
         $cmd = '/usr/local/sbin/ifinfo';
@@ -263,7 +263,7 @@ function legacy_interfaces_details($intf = null)
                 if ($line_parts[$i] == 'netmask') {
                     $mask = substr_count(base_convert(hexdec($line_parts[$i + 1]), 10, 2), '1');
                 } elseif ($line_parts[$i] == 'vhid') {
-                    $vhid = $line_parts[$i+1];
+                    $vhid = $line_parts[$i + 1];
                 }
             }
             if (isset($mask)) {
@@ -284,11 +284,11 @@ function legacy_interfaces_details($intf = null)
                 if ($line_parts[$i] == 'prefixlen') {
                     $tmp['subnetbits'] = intval($line_parts[$i + 1]);
                 } elseif ($line_parts[$i] == 'vhid') {
-                    $tmp['vhid'] = $line_parts[$i+1];
+                    $tmp['vhid'] = $line_parts[$i + 1];
                 }
                 if ($line_parts[$i] == '-->') {
                     $tmp['tunnel'] = true;
-                    $tmp['endpoint'] = $line_parts[$i+1];
+                    $tmp['endpoint'] = $line_parts[$i + 1];
                 }
             }
             if (isset($tmp['subnetbits'])) {
