@@ -47,10 +47,10 @@ class XMLRPCServer
         // load all xmlrpc published functions
         foreach (glob(__DIR__ . "/xmlrpc/*.inc") as $filename) {
             require_once($filename);
-            $publ_func = "xmlrpc_publishable_" .str_replace(".inc", "", basename($filename));
+            $publ_func = "xmlrpc_publishable_" . str_replace(".inc", "", basename($filename));
             if (function_exists($publ_func)) {
                 foreach ($publ_func() as $function) {
-                    $publish_name = $this->prefix.".".str_replace("_xmlrpc", "", $function);
+                    $publish_name = $this->prefix . "." . str_replace("_xmlrpc", "", $function);
                     $this->xmlrpc_callbacks[$publish_name] = $function;
                 }
             }

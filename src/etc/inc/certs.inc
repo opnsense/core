@@ -1,31 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
@@ -191,8 +191,7 @@ function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg)
     return true;
 }
 
-
-function cert_import(& $cert, $crt_str, $key_str)
+function cert_import(&$cert, $crt_str, $key_str)
 {
     $cert['crt'] = base64_encode($crt_str);
     $cert['prv'] = base64_encode($key_str);
@@ -269,8 +268,10 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
     }
 
     // export our certificate data
-    if (!openssl_pkey_export($res_key, $str_key) ||
-        !openssl_x509_export($res_crt, $str_crt)) {
+    if (
+        !openssl_pkey_export($res_key, $str_key) ||
+        !openssl_x509_export($res_crt, $str_crt)
+    ) {
         return false;
     }
 
@@ -465,13 +466,15 @@ function cert_get_purpose($str_crt, $decode = true)
 
     $crt_details = openssl_x509_parse($str_crt);
     $purpose = array();
-    $purpose['ca'] = (stristr($crt_details['extensions']['basicConstraints'], 'CA:TRUE') === false) ? 'No': 'Yes';
-    if (isset($crt_details['extensions']['extendedKeyUsage']) &&
+    $purpose['ca'] = (stristr($crt_details['extensions']['basicConstraints'], 'CA:TRUE') === false) ? 'No' : 'Yes';
+    if (
+        isset($crt_details['extensions']['extendedKeyUsage']) &&
         strstr($crt_details['extensions']['extendedKeyUsage'], 'TLS Web Server Authentication') !== false &&
         isset($crt_details['extensions']['keyUsage']) &&
         strpos($crt_details['extensions']['keyUsage'], 'Digital Signature') !== false &&
         (strpos($crt_details['extensions']['keyUsage'], 'Key Encipherment') !== false ||
-        strpos($crt_details['extensions']['keyUsage'], 'Key Agreement') !== false)) {
+        strpos($crt_details['extensions']['keyUsage'], 'Key Agreement') !== false)
+    ) {
         $purpose['server'] = 'Yes';
     } else {
         $purpose['server'] = 'No';
@@ -594,7 +597,7 @@ function cert_in_use($certref)
       is_ipsec_cert($certref));
 }
 
-function crl_update(& $crl)
+function crl_update(&$crl)
 {
     $ca =& lookup_ca($crl['caref']);
     if (!$ca) {
@@ -618,7 +621,7 @@ function crl_update(& $crl)
     return $crl_res;
 }
 
-function cert_revoke($cert, & $crl, $reason = OCSP_REVOKED_STATUS_UNSPECIFIED)
+function cert_revoke($cert, &$crl, $reason = OCSP_REVOKED_STATUS_UNSPECIFIED)
 {
     if (is_cert_revoked($cert, $crl['refid'])) {
         return true;
@@ -644,10 +647,12 @@ function cert_compare($cert1, $cert2)
       being identical. */
     $c1 = base64_decode($cert1['crt']);
     $c2 = base64_decode($cert2['crt']);
-    if ((cert_get_issuer($c1, false) == cert_get_issuer($c2, false))
-      && (cert_get_subject($c1, false) == cert_get_subject($c2, false))
-      && (cert_get_serial($c1, false) == cert_get_serial($c2, false))
-      && (cert_get_modulus($c1, false) == cert_get_modulus($c2, false))) {
+    if (
+        (cert_get_issuer($c1, false) == cert_get_issuer($c2, false))
+        && (cert_get_subject($c1, false) == cert_get_subject($c2, false))
+        && (cert_get_serial($c1, false) == cert_get_serial($c2, false))
+        && (cert_get_modulus($c1, false) == cert_get_modulus($c2, false))
+    ) {
         return true;
     } else {
         return false;

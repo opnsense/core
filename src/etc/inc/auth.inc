@@ -57,12 +57,16 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
         $http_host = explode(":", $_SERVER['HTTP_HOST']);
         $http_host = $http_host[0];
     }
-    if (is_ipaddr($http_host) || $_SERVER['SERVER_ADDR'] == "127.0.0.1" ||
-      strcasecmp($http_host, "localhost") == 0 or $_SERVER['SERVER_ADDR'] == "::1") {
+    if (
+        is_ipaddr($http_host) || $_SERVER['SERVER_ADDR'] == "127.0.0.1" ||
+        strcasecmp($http_host, "localhost") == 0 or $_SERVER['SERVER_ADDR'] == "::1"
+    ) {
         $found_host = true;
     }
-    if (strcasecmp($http_host, $config['system']['hostname'] . "." . $config['system']['domain']) == 0 ||
-      strcasecmp($http_host, $config['system']['hostname']) == 0) {
+    if (
+        strcasecmp($http_host, $config['system']['hostname'] . "." . $config['system']['domain']) == 0 ||
+        strcasecmp($http_host, $config['system']['hostname']) == 0
+    ) {
         $found_host = true;
     }
 
@@ -119,8 +123,10 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
         $referrer_host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
         $referrer_host = str_replace(array("[", "]"), "", $referrer_host);
         if ($referrer_host) {
-            if (strcasecmp($referrer_host, $config['system']['hostname'] . "." . $config['system']['domain']) == 0 ||
-              strcasecmp($referrer_host, $config['system']['hostname']) == 0) {
+            if (
+                strcasecmp($referrer_host, $config['system']['hostname'] . "." . $config['system']['domain']) == 0 ||
+                strcasecmp($referrer_host, $config['system']['hostname']) == 0
+            ) {
                 $found_host = true;
             }
 
@@ -380,8 +386,10 @@ function auth_get_shells($uid = 0)
         $etc_shells = explode("\n", $etc_shells);
         foreach ($etc_shells as $shell) {
             $shell = trim($shell);
-            if (!empty($shell) && strpos($shell, '#') !== 0 &&
-                strpos($shell, '/usr/local/sbin/opnsense-') !== 0) {
+            if (
+                !empty($shell) && strpos($shell, '#') !== 0 &&
+                strpos($shell, '/usr/local/sbin/opnsense-') !== 0
+            ) {
                 $shells[$shell] = $shell;
             }
         }
@@ -521,9 +529,9 @@ function local_user_set(&$user, $force_password = false)
 
     $comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
     /* add or mod pw db */
-    $cmd = "/usr/sbin/pw {$user_op} -q -u {$user_uid} -n {$user_name}".
-      " -g {$user_group} -s {$user_shell} -d {$user_home}".
-      " -c ".escapeshellarg($comment)." -H 0 2>&1";
+    $cmd = "/usr/sbin/pw {$user_op} -q -u {$user_uid} -n {$user_name}" .
+      " -g {$user_group} -s {$user_shell} -d {$user_home}" .
+      " -c " . escapeshellarg($comment) . " -H 0 2>&1";
     $fd = popen($cmd, 'w');
     fwrite($fd, $user_pass);
     pclose($fd);
@@ -773,7 +781,7 @@ function get_authenticator($authcfg = null)
         }
     }
 
-    $authFactory = new OPNsense\Auth\AuthenticationFactory;
+    $authFactory = new OPNsense\Auth\AuthenticationFactory();
     return $authFactory->get($authName);
 }
 
@@ -783,7 +791,7 @@ function authenticate_user($username, $password, $authcfg = null)
     if ($authenticator != null) {
         return $authenticator->authenticate($username, $password);
     } else {
-        log_error('Unable to retrieve authenticator for '. $username);
+        log_error('Unable to retrieve authenticator for ' . $username);
         return false;
     }
 }

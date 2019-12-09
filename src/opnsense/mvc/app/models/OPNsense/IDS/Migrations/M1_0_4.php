@@ -69,31 +69,31 @@ class M1_0_4 extends BaseModelMigration
             }
         }
         // map rulesets
-        if (!empty($csets['emerging-malware.rules']) && $csets['emerging-malware.rules']->enabled == "1"){
+        if (!empty($csets['emerging-malware.rules']) && $csets['emerging-malware.rules']->enabled == "1") {
             $nsets['emerging-adware_pup.rules']->enabled = "1";
             $nsets['emerging-adware_pup.rules']->filter = (string)$csets['emerging-malware.rules']->filter;
         }
-        if (!empty($csets['emerging-current_events.rules']) && $csets['emerging-current_events.rules']->enabled == "1"){
+        if (!empty($csets['emerging-current_events.rules']) && $csets['emerging-current_events.rules']->enabled == "1") {
             $nsets['emerging-phishing.rules']->enabled = "1";
             $nsets['emerging-phishing.rules']->filter = (string)$csets['emerging-current_events.rules']->filter;
             $nsets['emerging-exploit_kit.rules']->enabled = "1";
             $nsets['emerging-exploit_kit.rules']->filter = (string)$csets['emerging-current_events.rules']->filter;
         }
-        if (!empty($csets['emerging-trojan.rules']) && $csets['emerging-trojan.rules']->enabled == "1"){
+        if (!empty($csets['emerging-trojan.rules']) && $csets['emerging-trojan.rules']->enabled == "1") {
             $nsets['emerging-coinminer.rules']->enabled = "1";
             $nsets['emerging-coinminer.rules']->filter = (string)$csets['emerging-trojan.rules']->filter;
             $nsets['emerging-malware.rules']->enabled = "1";
             $nsets['emerging-malware.rules']->filter = (string)$csets['emerging-malware.rules']->filter;
         }
-        if (!empty($csets['emerging-info.rules']) && $csets['emerging-info.rules']->enabled == "1"){
+        if (!empty($csets['emerging-info.rules']) && $csets['emerging-info.rules']->enabled == "1") {
             $nsets['emerging-hunting.rules']->enabled = "1";
             $nsets['emerging-hunting.rules']->filter = (string)$csets['emerging-info.rules']->filter;
         }
-        if (!empty($csets['emerging-policy.rules']) && $csets['emerging-policy.rules']->enabled == "1"){
+        if (!empty($csets['emerging-policy.rules']) && $csets['emerging-policy.rules']->enabled == "1") {
             $nsets['emerging-hunting.rules']->enabled = "1";
             $nsets['emerging-hunting.rules']->filter = (string)$csets['emerging-policy.rules']->filter;
         }
-        if (!empty($csets['emerging-trojan.rules'])){
+        if (!empty($csets['emerging-trojan.rules'])) {
             // deprecated ruleset
             $model->files->file->del($csets['emerging-trojan.rules']->getAttribute('uuid'));
         }

@@ -83,10 +83,11 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
 {
     foreach ($cnf_source as $cnf_key => &$cnf_value) {
         if (is_array($cnf_value)) {
-            if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
+            if (
+                !isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key][0])) || // sequenced item
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key]['@attributes']['uuid'])) // mvc array
-                ) {
+            ) {
                 // (re)set destination array when new or containing a sequenced list of items
                 $cnf_dest[$cnf_key] = array();
             }

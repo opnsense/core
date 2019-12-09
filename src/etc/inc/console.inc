@@ -32,9 +32,9 @@ function timeout($timer = 5)
 {
     while (!isset($key)) {
         if ($timer >= 9) {
-            echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";
+            echo chr(8) . chr(8) . ($timer == 9 ? chr(32) : null)  . "{$timer}";
         } else {
-            echo chr(8). "{$timer}";
+            echo chr(8) . "{$timer}";
         }
         shell_exec('/bin/stty -icanon min 0 time 25');
         $key = shell_exec('/bin/dd count=1 status=none');
@@ -289,8 +289,8 @@ EOD;
             $ifarr = array_merge(array($lanif, $wanif), $optif);
             $again = false;
 
-            for ($k = 0; $k < (count($ifarr)-1); $k++) {
-                for ($j = ($k+1); $j < count($ifarr); $j++) {
+            for ($k = 0; $k < (count($ifarr) - 1); $k++) {
+                for ($j = ($k + 1); $j < count($ifarr); $j++) {
                     if ($ifarr[$k] == $ifarr[$j]) {
                         $again = true;
                         echo <<<EOD
@@ -318,7 +318,7 @@ EOD;
             echo "LAN  -> " . $lanif . "\n";
         }
         for ($i = 0; $i < count($optif); $i++) {
-            echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
+            echo "OPT" . ($i + 1) . " -> " . $optif[$i] . "\n";
         }
     } else {
         echo "\nNo interfaces will be assigned!\n";
@@ -423,24 +423,24 @@ EOD;
     }
 
     for ($i = 0; $i < count($optif); $i++) {
-        config_read_array('interfaces', 'opt' . ($i+1));
-        $config['interfaces']['opt' . ($i+1)]['if'] = $optif[$i];
+        config_read_array('interfaces', 'opt' . ($i + 1));
+        $config['interfaces']['opt' . ($i + 1)]['if'] = $optif[$i];
 
         if (match_wireless_interface($optif[$i])) {
-            config_read_array('interfaces', 'opt' . ($i+1), 'wireless');
-        } elseif (isset($config['interfaces']['opt' . ($i+1)]['wireless'])) {
-            unset($config['interfaces']['opt' . ($i+1)]['wireless']);
+            config_read_array('interfaces', 'opt' . ($i + 1), 'wireless');
+        } elseif (isset($config['interfaces']['opt' . ($i + 1)]['wireless'])) {
+            unset($config['interfaces']['opt' . ($i + 1)]['wireless']);
         }
 
-        if (empty($config['interfaces']['opt' . ($i+1)]['descr'])) {
-            $config['interfaces']['opt' . ($i+1)]['descr'] = "OPT" . ($i+1);
-            unset($config['interfaces']['opt' . ($i+1)]['enable']);
+        if (empty($config['interfaces']['opt' . ($i + 1)]['descr'])) {
+            $config['interfaces']['opt' . ($i + 1)]['descr'] = "OPT" . ($i + 1);
+            unset($config['interfaces']['opt' . ($i + 1)]['enable']);
         }
     }
 
     /* remove all other (old) optional interfaces */
-    for (; isset($config['interfaces']['opt' . ($i+1)]); $i++) {
-        unset($config['interfaces']['opt' . ($i+1)]);
+    for (; isset($config['interfaces']['opt' . ($i + 1)]); $i++) {
+        unset($config['interfaces']['opt' . ($i + 1)]);
     }
 
     echo "\nWriting configuration...";
