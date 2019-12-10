@@ -32,6 +32,7 @@ import os
 import glob
 import collections
 import netaddr
+import ujson
 
 
 class SortKeyHelper:
@@ -153,6 +154,27 @@ class Helpers(object):
             return self._template_in_data['__uuid__'][uuid]
         else:
             return {}
+
+    @property
+    def systemInfo(self):
+        """
+        retrieve system information
+        :return: dict
+        """
+        data = {}
+        info_path = os.path.realpath("%s/../../../version" % os.path.dirname(__file__))
+        for sfilename in glob.glob(info_path + '/*'):
+            sfilename = os.path.realpath(sfilename)
+            if sfilename.endswith('core'):
+                # special handling for core
+                with open('/usr/local/opnsense/version/core', 'r') as f:
+                    data['core'] = ujson.decode(f.read())
+            elif 'base' in sfilename or 'kernel' in sfilename:
+                pass
+            else:
+                with open(sfilename, 'r') as f:
+                    data[sfilename.split('/')[-1]] = f.read().strip()
+        return data
 
     @staticmethod
     def getIPNetwork(network):
