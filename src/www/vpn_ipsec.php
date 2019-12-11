@@ -111,34 +111,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mark_subsystem_dirty('ipsec');
         header(url_safe('Location: /vpn_ipsec.php'));
         exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "delselected" ) {
+        if (empty($_POST['id']) && isset($_POST['p2entry']) && count($_POST['p2entry'])) {
+            foreach ($_POST['p2entry'] as $p2entrydel) {
+                unset($config['ipsec']['phase2'][$p2entrydel]);
+            }
+        }
+        if (empty($_POST['id']) && isset($_POST['p1entry']) && count($_POST['p1entry'])) {
+            foreach ($_POST['p1entry'] as $p1entrydel) {
+                $ikeid = $a_phase1[$p1entrydel]['ikeid'];
+                foreach ($a_phase2 as $p2index => $ph2tmp) {
+                    if ($ph2tmp['ikeid'] == $ikeid) {
+                        unset($a_phase2[$p2index]);
+                    }
+                }
+                unset($config['ipsec']['phase1'][$p1entrydel]);
+            }
+        }
+        write_config();
+        mark_subsystem_dirty('ipsec');
+        header(url_safe('Location: /vpn_ipsec.php'));
+        exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase2" ) {
         if (isset($_POST['id']) && isset($config['ipsec']['phase2'][$_POST['id']])){
             unset($config['ipsec']['phase2'][$_POST['id']]);
-        } elseif (empty($_POST['id']) && isset($_POST['p2entry']) && count($_POST['p2entry'])) {
-            foreach ($_POST['p2entry'] as $p1entrydel) {
-                unset($config['ipsec']['phase2'][$p1entrydel]);
-            }
         }
         write_config();
         mark_subsystem_dirty('ipsec');
         header(url_safe('Location: /vpn_ipsec.php'));
         exit;
-    } elseif (!empty($_POST['act']) && $_POST['act'] == "movep1" ) {
-        // move phase 1 records
-        if (isset($_POST['p1entry']) && count($_POST['p1entry']) > 0) {
-            // if rule not set/found, move to end
-            if (!isset($_POST['id']) || !isset($a_phase1[$_POST['id']])) {
-                $id = count($a_phase1);
-            } else {
-                $id = $_POST['id'];
-            }
-            $a_phase1 = legacy_move_config_list_items($a_phase1, $id,  $_POST['p1entry']);
-        }
-        write_config();
-        mark_subsystem_dirty('ipsec');
-        header(url_safe('Location: /vpn_ipsec.php'));
-        exit;
-    } elseif (!empty($_POST['act']) && $_POST['act'] == "movep2" ) {
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "move" ) {
         // move phase 2 records
         if (isset($_POST['p2entry']) && count($_POST['p2entry']) > 0) {
             // if rule not set/found, move to end
@@ -148,6 +150,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id = $_POST['id'];
             }
             $a_phase2 = legacy_move_config_list_items($a_phase2, $id,  $_POST['p2entry']);
+        }
+        // move phase 1 records
+        if (isset($_POST['p1entry']) && count($_POST['p1entry']) > 0) {
+            // if rule not set/found, move to end
+            if (!isset($_POST['id']) || !isset($a_phase1[$_POST['id']])) {
+                $id = count($a_phase1);
+            } else {
+                $id = $_POST['id'];
+            }
+            $a_phase1 = legacy_move_config_list_items($a_phase1, $id,  $_POST['p1entry']);
         }
         write_config();
         mark_subsystem_dirty('ipsec');
@@ -235,52 +247,30 @@ $( document ).ready(function() {
     $(".act_delete_p1").click(function(event){
       event.preventDefault();
       var id = $(this).data("id");
-      if (id != 'x') {
-        // delete single
-        BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("IPSEC");?>",
-          message: "<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>",
-          buttons: [{
-                    label: "<?= gettext("No");?>",
-                    action: function(dialogRef) {
-                        dialogRef.close();
-                    }}, {
-                    label: "<?= gettext("Yes");?>",
-                    action: function(dialogRef) {
-                      $("#id").val(id);
-                      $("#action").val("delphase1");
-                      $("#iform").submit()
-                  }
-                }]
+      // delete single
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_DANGER,
+        title: "<?= gettext("IPSEC");?>",
+        message: "<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val(id);
+                    $("#action").val("delphase1");
+                    $("#iform").submit()
+                }
+              }]
       });
-      } else {
-        // delete selected
-        BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("IPSEC");?>",
-          message: "<?=gettext("Do you really want to delete the selected phase1 entries?");?>",
-          buttons: [{
-                    label: "<?= gettext("No");?>",
-                    action: function(dialogRef) {
-                        dialogRef.close();
-                    }}, {
-                    label: "<?= gettext("Yes");?>",
-                    action: function(dialogRef) {
-                      $("#id").val("");
-                      $("#action").val("delphase1");
-                      $("#iform").submit()
-                  }
-                }]
-        });
-      }
     });
 
     // link delete phase 2 buttons
     $(".act_delete_p2").click(function(event){
-      event.preventDefault();
-      var id = $(this).data("id");
-      if (id != 'x') {
+        event.preventDefault();
+        var id = $(this).data("id");
         // delete single
         BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
@@ -298,13 +288,16 @@ $( document ).ready(function() {
                       $("#iform").submit()
                   }
                 }]
-      });
-      } else {
+        });
+    });
+
+    $("#act_delete_selected").click(function(event){
+        event.preventDefault();
         // delete selected
         BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("IPSEC");?>",
-          message: "<?=gettext("Do you really want to delete the selected phase2 entries?");?>",
+          message: "<?=gettext("Do you really want to delete the selected entries?");?>",
           buttons: [{
                     label: "<?= gettext("No");?>",
                     action: function(dialogRef) {
@@ -313,23 +306,33 @@ $( document ).ready(function() {
                     label: "<?= gettext("Yes");?>",
                     action: function(dialogRef) {
                       $("#id").val("");
-                      $("#action").val("delphase2");
+                      $("#action").val("delselected");
                       $("#iform").submit()
                   }
                 }]
         });
-      }
     });
 
-    // show phase 2 entries
-    $(".act_show_p2").click(function(){
-        $("#tdph2-"+$(this).data("id")).show();
-        $("#shph2but-"+$(this).data("id")).hide();
+    $("#collapse_p2").click(function(){
+        $(".phase2_tr").toggleClass("hidden");
     });
+
 });
 </script>
 
 <?php include("fbegin.inc"); ?>
+<style>
+  tr.phase1_tr > td {
+      font-weight: bolder;
+      background-color: #FBFBFB;
+  }
+  tr.phase2_tr > td {
+      font-weight: lighter;
+      font-style: italic;
+      padding-top: 1px !important;
+      padding-bottom: 1px !important;
+  }
+</style>
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
@@ -346,25 +349,36 @@ $( document ).ready(function() {
           <input type="hidden" id="action" name="act" value="" />
            <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-condensed">
                   <thead>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td class="hidden-xs"><?=gettext("Type"); ?></td>
-                    <td><?=gettext("Remote Gateway"); ?></td>
-                    <td class="hidden-xs"><?=gettext("Mode"); ?></td>
-                    <td class="hidden-xs"><?=gettext("Phase 1 Proposal"); ?></td>
-                    <td class="hidden-xs"><?=gettext("Authentication"); ?></td>
-                    <td><?=gettext("Description"); ?></td>
-                    <td class="text-nowrap"></td>
-                  </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td><i class="fa fa-expand" id="collapse_p2" style="cursor: pointer;"  data-toggle="tooltip" title="<?=gettext("collapse/expand phase 2s");?>"></i></td>
+                      <td class="hidden-xs"><?=gettext("Type"); ?></td>
+                      <td><?=gettext("Remote Gateway"); ?></td>
+                      <td class="hidden-xs"><?=gettext("Mode"); ?></td>
+                      <td class="hidden-xs"><?=gettext("Phase 1 Proposal"); ?></td>
+                      <td class="hidden-xs"><?=gettext("Authentication"); ?></td>
+                      <td><?=gettext("Description"); ?></td>
+                      <td class="text-nowrap"></td>
+                    </tr>
+                    <tr class="phase2_tr">
+                      <td>&nbsp;</td>
+                      <td>&nbsp;</td>
+                      <td class="hidden-xs"></td>
+                      <td><?=gettext("Local Subnet"); ?></td>
+                      <td class="hidden-xs"><?=gettext("Remote Subnet"); ?></td>
+                      <td class="hidden-xs"><?=gettext("Phase 2 Proposal"); ?></td>
+                      <td class="hidden-xs"></td>
+                      <td></td>
+                      <td class="text-nowrap"></td>
+                    </tr>
                   </thead>
                   <tbody>
 <?php
                   $i = 0;
                   foreach ($a_phase1 as $ph1ent) :?>
-                    <tr>
+                    <tr class="phase1_tr">
                       <td>
                         <input type="checkbox" name="p1entry[]" value="<?=$i;?>"/>
                       </td>
@@ -431,7 +445,7 @@ $( document ).ready(function() {
                         <?= $ph1ent['descr'] ?>
                       </td>
                       <td class="text-nowrap">
-                        <button data-id="<?=$i; ?>" data-act="movep1" type="submit" class="act_move btn btn-default btn-xs"
+                        <button data-id="<?=$i; ?>" data-act="move" type="submit" class="act_move btn btn-default btn-xs"
                           title="<?=gettext("Move selected entries before this");?>" data-toggle="tooltip">
                           <i class="fa fa-arrow-left fa-fw"></i>
                         </button>
@@ -451,10 +465,12 @@ $( document ).ready(function() {
                         </a>
 <?php
                         endif ?>
+                        <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-default btn-xs"
+                          title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
                       </td>
                     </tr>
-                    <tr>
-                      <td colspan="9">
 <?php
                         $phase2count=0;
                         foreach ($a_phase2 as $ph2ent) {
@@ -463,34 +479,13 @@ $( document ).ready(function() {
                             }
                             $phase2count++;
                         }?>
-                        <div id="shph2but-<?=$i?>">
-                          <button class="act_show_p2 btn btn-xs" type="button" data-id="<?=$i?>">
-                            <i class="fa fa-plus"></i> <?= sprintf(gettext('Show %s Phase-2 entries'), $phase2count) ?>
-                          </button>
-                        </div>
-                        <div id="tdph2-<?=$i?>" style="display:none">
-                          <table class="table table-striped table-condensed">
-                            <thead>
-                              <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td class="hidden-xs"><?=gettext("Type"); ?></td>
-                                <td><?=gettext("Local Subnet"); ?></td>
-                                <td><?=gettext("Remote Subnet"); ?></td>
-                                <td class="hidden-xs"><?=gettext("Encryption Protocols"); ?></td>
-                                <td class="hidden-xs"><?=gettext("Authenticity Protocols"); ?></td>
-                                <td class="hidden-xs"><?=gettext("PFS"); ?></td>
-                                <td>&nbsp;</td>
-                              </tr>
-                            </thead>
-                            <tbody>
 <?php
                             $j = 0;
                             foreach ($a_phase2 as $ph2index => $ph2ent) :
                                 if ($ph2ent['ikeid'] != $ph1ent['ikeid']) {
                                     continue;
                                 }?>
-                              <tr>
+                              <tr class="phase2_tr">
                                 <td>
                                   <input type="checkbox" name="p2entry[]" value="<?=$ph2index;?>"/>
                                 </td>
@@ -540,8 +535,7 @@ $( document ).ready(function() {
                                       }
                                   }
                                 }?>
-                                </td>
-                                <td class="hidden-xs">
+                                +
 <?php
                                   if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
                                       foreach ($ph2ent['hash-algorithm-option'] as $k => $ph2ha) {
@@ -551,17 +545,16 @@ $( document ).ready(function() {
                                           echo $p2_halgos[$ph2ha];
                                       }
                                   }?>
+                                  +
+                                  <?=isset($ph2ent['pfsgroup']) ? $dhgroups[$ph2ent['pfsgroup']] : gettext("off"); ?>
                                 </td>
-<?php
-                                if (isset($ph2ent['pfsgroup'])): ?>
-                                <td class="hidden-xs"><?=gettext("Group"); ?> <?=$dhgroups[$ph2ent['pfsgroup']];?> </td>
-<?php
-                                else: ?>
-                                <td class="hidden-xs"><?=gettext("off"); ?></td>
-<?php
-                                endif; ?>
+                                <td class="hidden-xs">
+                                </td>
+                                <td class="hidden-xs">
+                                  <?=$ph2ent['descr'];?>
+                                </td>
                                 <td class="text-nowrap">
-                                  <button data-id="<?=$j; ?>" data-act="movep2" type="submit" class="act_move btn btn-default btn-xs"
+                                  <button data-id="<?=$j; ?>" data-act="move" type="submit" class="act_move btn btn-default btn-xs"
                                     title="<?=gettext("Move selected entries before this");?>" data-toggle="tooltip">
                                     <i class="fa fa-arrow-left fa-fw"></i>
                                   </button>
@@ -582,36 +575,7 @@ $( document ).ready(function() {
                               </tr>
 <?php
                               $j++;
-                              endforeach;?>
-                              <tr>
-                                <td colspan="4" class="hidden-xs"></td>
-                                <td colspan="4"></td>
-                                <td class="text-nowrap">
-<?php
-                                if ($j > 0) :?>
-
-                                  <button data-id="<?=$j+1; ?>" data-act="movep2" type="submit" class="act_move btn btn-default btn-xs"
-                                    title="<?=gettext("Move selected phase 2 entries to end");?>" data-toggle="tooltip">
-                                    <i class="fa fa-arrow-down fa-fw"></i>
-                                  </button>
-                                  <button data-id="x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip"
-                                    class="act_delete_p2 btn btn-default btn-xs">
-                                    <i class="fa fa-trash fa-fw"></i>
-                                  </button>
-<?php
-                                endif;?>
-                                  <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-default btn-xs"
-                                    title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
-                                    <i class="fa fa-plus fa-fw"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
-<?php
+                              endforeach;
                     $i++;
                     endforeach;?>
                     <tr>
@@ -621,17 +585,17 @@ $( document ).ready(function() {
                         <button
                           type="submit"
                           data-id="<?=$i;?>"
-                          data-act="movep1"
-                          title="<?=gettext("Move selected phase 1 entries to end");?>"
+                          data-act="move"
+                          title="<?=gettext("Move selected entries to end");?>"
                           data-toggle="tooltip"
                           class="act_move btn btn-default btn-xs">
                           <i class="fa fa-arrow-down fa-fw"></i>
                         </button>
-                          <button data-id=""
+                          <button id="act_delete_selected" data-id=""
                           type="submit"
-                          title="<?=gettext("delete selected phase 1 entries");?>"
+                          title="<?=gettext("delete selected entries");?>"
                           data-toggle="tooltip"
-                          class="act_delete_p1 btn btn-default btn-xs">
+                          class="btn btn-default btn-xs">
                           <i class="fa fa-trash fa-fw"></i>
                         </button>
                         <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
