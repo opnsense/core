@@ -478,7 +478,7 @@ function clockUpdate()
 
 
 <script>
-    $(window).load(function() {
+    $(window).on("load", function() {
         function ntp_getstatus() {
           scroll(0,0);
           var url = "/widgets/widgets/ntp_status.widget.php";
