@@ -59,7 +59,6 @@
     var current_selection_from = 0;
     var current_selection_to = 0;
     var disabled = [];
-    var brushendTimer;
     var resizeTimer;
     var current_detail = 0;
     var csvData = [];
@@ -99,39 +98,6 @@
         // dispatch when one of the streams is enabled/disabled
         chart.dispatch.on('stateChange', function (e) {
             disabled = e['disabled'];
-        });
-
-        // dispatch when the focus area has changed  - delay action with 500ms timer
-        chart.dispatch.on('brush.brushend', function (b) {
-            window.onresize = null; // clear any pending resize events
-            if (fetching_data == false) {
-                let inverse = false;
-                if ($('input:radio[name=inverse]:checked').val() == 1) {
-                    inverse = true;
-                }
-
-                var detail = $('input:radio[name=detail]:checked').val();
-                var resolution = $('input:radio[name=resolution]:checked').val();
-
-                if ((window.selmin != b.extent[0]) || (window.selmax != b.extent[1])) {
-
-                    if (current_selection_from * 1000 != b.extent[0] || current_selection_to != b.extent[1]) {
-                        if (brushendTimer) {
-                            clearTimeout(brushendTimer);
-                        }
-                        brushendTimer = setTimeout(function () {
-                            if (chart.xAxis.scale().domain()[0] == b.extent[0] && chart.xAxis.scale().domain()[1] == b.extent[1]) {
-                                getdata(rrd, 0, 0, resolution, detail);
-                            } else {
-                                getdata(rrd, Math.floor(b.extent[0] / 1000), Math.floor(b.extent[1] / 1000), resolution, detail);
-                            }
-                            brushendTimer = null;
-                        }, 500);
-                    }
-                }
-
-            }
-
         });
 
         // dispatch on window resize - delay action with 500ms timer
