@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
         $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk',
-                            'lifetime', 'otp_seed', 'email', 'shell', 'comment', 'landing_page');
+                            'otp_seed', 'email', 'shell', 'comment', 'landing_page');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
                 $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
@@ -148,7 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['groups'] = null;
             $pconfig['disabled'] = false;
             $pconfig['scope'] = "user";
-            $pconfig['lifetime'] = 365;
             $pconfig['usernamefld'] = null;
             foreach ($fieldnames as $fieldname) {
                 if (!isset($pconfig[$fieldname])) {
