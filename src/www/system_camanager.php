@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['keytype'] = "RSA";
         $pconfig['keylen'] = "2048";
         $pconfig['digest_alg'] = "sha256";
-        $pconfig['lifetime'] = "365";
+        $pconfig['lifetime'] = "825";
         $pconfig['dn_commonname'] = "internal-ca";
     } elseif ($act == "exp") {
         if (!isset($id)) {
