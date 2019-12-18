@@ -43,12 +43,14 @@ CORE_PKGVERSION=	${CORE_VERSION}
 CORE_ABI?=	19.7
 CORE_ARCH?=	${ARCH}
 CORE_FLAVOUR=	${FLAVOUR}
+
 CORE_OPENVPN?=	# empty
 CORE_PHP?=	72
 CORE_PYTHON?=	37
 CORE_RADVD?=	1
 CORE_SQUID?=	# empty
 CORE_SURICATA?=	-devel
+CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.24
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
@@ -145,7 +147,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			syslog-ng${CORE_SYSLOGNG:S/.//g} \
-			syslogd \
+			syslogd${CORE_SYSLOGD} \
 			unbound \
 			wpa_supplicant \
 			zip
