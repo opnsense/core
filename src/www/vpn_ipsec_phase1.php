@@ -342,6 +342,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_numeric($pconfig['dpd_maxfail'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD retries.");
         }
+        if (!empty($pconfig['dpd_action']) && !in_array($pconfig['dpd_action'], array("restart", "clear"))) {
+            $input_errors[] = gettext('Invalid argument for DPD action.');
+        }
     }
 
     if (!empty($pconfig['iketype']) && !in_array($pconfig['iketype'], array("ike", "ikev1", "ikev2"))) {
