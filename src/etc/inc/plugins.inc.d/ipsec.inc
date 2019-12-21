@@ -1320,10 +1320,14 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 }
 
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
-                    if (in_array($conn_auto, array('route', 'start'))) {
-                        $dpdline = "dpdaction = restart";
+                    if (empty($ph1ent['dpd_action'])) {
+                        if (in_array($conn_auto, array('route', 'start'))) {
+                            $dpdline = "dpdaction = restart";
+                        } else {
+                            $dpdline = "dpdaction = clear";
+                        }
                     } else {
-                        $dpdline = "dpdaction = clear";
+                        $dpdline = "dpdaction = {$ph1ent['dpd_action']}";
                     }
                     $dpdline .= "\n\tdpddelay = {$ph1ent['dpd_delay']}s";
                     $dpdtimeout = $ph1ent['dpd_delay'] * ($ph1ent['dpd_maxfail'] + 1);
