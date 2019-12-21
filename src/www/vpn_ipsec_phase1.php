@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['iketype'] = "ikev2";
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany
-    ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
+    ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
@@ -171,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!isset($pconfig['dpd_enable'])) {
         unset($pconfig['dpd_delay']);
         unset($pconfig['dpd_maxfail']);
+        unset($pconfig['dpd_action']);
     }
 
     /* My identity */
@@ -341,6 +342,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_numeric($pconfig['dpd_maxfail'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD retries.");
         }
+        if (!empty($pconfig['dpd_action']) && !in_array($pconfig['dpd_action'], array("restart", "clear"))) {
+            $input_errors[] = gettext('Invalid argument for DPD action.');
+        }
     }
 
     if (!empty($pconfig['iketype']) && !in_array($pconfig['iketype'], array("ike", "ikev1", "ikev2"))) {
@@ -417,6 +421,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['dpd_enable'])) {
             $ph1ent['dpd_delay'] = $pconfig['dpd_delay'];
             $ph1ent['dpd_maxfail'] = $pconfig['dpd_maxfail'];
+            $ph1ent['dpd_action'] = $pconfig['dpd_action'];
         }
 
         /* generate unique phase1 ikeid */
@@ -1159,6 +1164,16 @@ endforeach; ?>
                         <?=gettext("retries"); ?>
                         <div class="hidden" data-for="help_for_dpd_enable">
                           <?=gettext("Number of consecutive failures allowed before disconnect."); ?>
+                        </div>
+                        <br />
+                        <select name="dpd_action">
+                          <option value="" <?=empty($pconfig['dpd_action']) ?  "selected=\"selected\"" : ""; ?>><?=gettext("default");?></option>
+                          <option value="restart" <?=$pconfig['dpd_action'] == "restart" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Restart the tunnel");?></option>
+                          <option value="clear" <?=$pconfig['dpd_action'] == "clear" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Stop the tunnel");?></option>
+                        </select>
+                        <?=gettext("DPD action"); ?>
+                        <div class="hidden" data-for="help_for_dpd_enable">
+                          <?=gettext("Choose the behavior here what to do if a peer is detected to be unresponsive to DPD requests."); ?>
                         </div>
                       </div>
                     </td>
