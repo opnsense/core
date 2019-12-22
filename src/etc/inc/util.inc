@@ -489,22 +489,22 @@ function ip_range_size($startip, $endip)
 function find_smallest_cidr($number)
 {
     $smallest = 1;
-    for ($b=32; $b > 0; $b--) {
+    for ($b = 32; $b > 0; $b--) {
         $smallest = ($number <= pow(2, $b)) ? $b : $smallest;
     }
-    return (32-$smallest);
+    return (32 - $smallest);
 }
 
 /* Return the previous IP address before the given address */
 function ip_before($ip)
 {
-    return long2ip32(ip2long($ip)-1);
+    return long2ip32(ip2long($ip) - 1);
 }
 
 /* Return the next IP address after the given address */
 function ip_after($ip)
 {
-    return long2ip32(ip2long($ip)+1);
+    return long2ip32(ip2long($ip) + 1);
 }
 
 /* Return true if the first IP is 'before' the second */
@@ -758,7 +758,7 @@ function is_domain($domain)
 function is_macaddr($macaddr, $partial = false)
 {
     $repeat = ($partial) ? '1,5' : '5';
-    return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){'.$repeat.'}$/i', $macaddr) == 1 ? true : false;
+    return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){' . $repeat . '}$/i', $macaddr) == 1 ? true : false;
 }
 
 /* returns true if $name is a valid name for an alias
@@ -1217,7 +1217,7 @@ function ip_in_subnet($addr, $subnet)
 function is_private_ip($iptocheck)
 {
     foreach (array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
-        if (ip_in_subnet($iptocheck, $private)==true) {
+        if (ip_in_subnet($iptocheck, $private) == true) {
             return true;
         }
     }
@@ -1510,8 +1510,10 @@ function get_dyndns_ip($int, $ipver = 4)
      * check cannot work. Avoid the long wait for the external check
      * to timeout.
      */
-    if (!empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
-        stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')) {
+    if (
+        !empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
+        stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')
+    ) {
         log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
         return 'down';
     }
