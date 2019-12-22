@@ -45,7 +45,7 @@ class MenuController extends ApiControllerBase
      * @param array $menuItems menuitems from menu->getItems()
      * @param ACL $acl acl object reference
      */
-    private function applyACL(& $menuItems, & $acl)
+    private function applyACL(&$menuItems, &$acl)
     {
         foreach ($menuItems as &$menuItem) {
             $menuItem->isVisible = false;
@@ -72,7 +72,7 @@ class MenuController extends ApiControllerBase
      * @param array $menuItems
      * @param string $query query string
      */
-    private function search(& $menuItems, $query)
+    private function search(&$menuItems, $query)
     {
         foreach ($menuItems as &$menuItem) {
             if (stripos($menuItem->VisibleName, $query) !== false) {
@@ -103,7 +103,7 @@ class MenuController extends ApiControllerBase
     {
         // construct menu and acl and merge collected info
         $menu = new Menu\MenuSystem();
-        $acl= new ACL();
+        $acl = new ACL();
 
         // fetch menu items and apply acl
         $menu_items = $menu->getItems($selected_uri);

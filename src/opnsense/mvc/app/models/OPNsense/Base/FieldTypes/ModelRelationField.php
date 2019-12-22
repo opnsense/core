@@ -98,13 +98,15 @@ class ModelRelationField extends BaseField
                 if (!class_exists($className)) {
                     continue;
                 }
-                if ($this->getParentModel() !== null &&
-                        strcasecmp(get_class($this->getParentModel()), $className) === 0) {
+                if (
+                    $this->getParentModel() !== null &&
+                        strcasecmp(get_class($this->getParentModel()), $className) === 0
+                ) {
                     // model options from the same model, use this model in stead of creating something new
                     $modelObj = $this->getParentModel();
                     $this->internalOptionsFromThisModel = true;
                 } else {
-                    $modelObj = new $className;
+                    $modelObj = new $className();
                 }
 
                 $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
@@ -202,11 +204,13 @@ class ModelRelationField extends BaseField
     public function getNodeData()
     {
         $result = array ();
-        if (isset(self::$internalOptionList[$this->internalCacheKey]) &&
-            is_array(self::$internalOptionList[$this->internalCacheKey])) {
+        if (
+            isset(self::$internalOptionList[$this->internalCacheKey]) &&
+            is_array(self::$internalOptionList[$this->internalCacheKey])
+        ) {
             // if relation is not required, add empty option
             if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-                $result[""] = array("value"=>"none", "selected" => 0);
+                $result[""] = array("value" => "none", "selected" => 0);
             }
 
             $datanodes = explode(',', $this->internalValue);
@@ -228,7 +232,7 @@ class ModelRelationField extends BaseField
                         $selected = 0;
                     }
                     $result[$optKey] = array(
-                        "value"=>self::$internalOptionList[$this->internalCacheKey][$optKey],
+                        "value" => self::$internalOptionList[$this->internalCacheKey][$optKey],
                         "selected" => $selected
                     );
                 }

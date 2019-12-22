@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2019 Deciso B.V.
  *
@@ -47,7 +48,7 @@ class CertificateFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\CertificateField', new CertificateField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/CertificateFieldTest/';
+        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/CertificateFieldTest/';
         Config::getInstance()->forceReload();
     }
 

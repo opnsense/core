@@ -132,15 +132,19 @@ class FilterRule extends Rule
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
                 switch ($proto) {
                     case "inet6":
-                        if (!empty($this->interfaceMapping[$rule['interface']]['gatewayv6'])
-                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gatewayv6'])) {
+                        if (
+                            !empty($this->interfaceMapping[$rule['interface']]['gatewayv6'])
+                            && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gatewayv6'])
+                        ) {
                             $gw = $this->interfaceMapping[$rule['interface']]['gatewayv6'];
                             $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
                         }
                         break;
                     default:
-                        if (!empty($this->interfaceMapping[$rule['interface']]['gateway'])
-                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gateway'])) {
+                        if (
+                            !empty($this->interfaceMapping[$rule['interface']]['gateway'])
+                            && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gateway'])
+                        ) {
                             $gw = $this->interfaceMapping[$rule['interface']]['gateway'];
                             $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
                         }
@@ -163,8 +167,10 @@ class FilterRule extends Rule
             $rule['from'] = empty($rule['from']) ? "any" : $rule['from'];
             $rule['to'] = empty($rule['to']) ? "any" : $rule['to'];
             // disable rules when gateway is down and skip_rules_gw_down is set
-            if (!empty($rule['skip_rules_gw_down']) && !empty($rule['gateway']) &&
-              empty($this->gatewayMapping[$rule['gateway']])) {
+            if (
+                !empty($rule['skip_rules_gw_down']) && !empty($rule['gateway']) &&
+                empty($this->gatewayMapping[$rule['gateway']])
+            ) {
                 $rule['disabled'] = true;
                 $this->log("Gateway down");
             }
@@ -224,7 +230,7 @@ class FilterRule extends Rule
             if ($rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
                 if ($rule['ipprotocol'] == 'inet') {
                     $rule['icmp-type'] = $rule['icmptype'];
-                } elseif ($rule['ipprotocol']== 'inet6') {
+                } elseif ($rule['ipprotocol'] == 'inet6') {
                     $rule['icmp6-type'] = $rule['icmptype'];
                 }
             }
@@ -233,8 +239,10 @@ class FilterRule extends Rule
                 $rule['protocol'] = 'ipv6-icmp';
             }
             // set prio
-            if (isset($rule['set-prio']) && $rule['set-prio'] !== ""
-              && isset($rule['set-prio-low']) && $rule['set-prio-low'] !== "" ) {
+            if (
+                isset($rule['set-prio']) && $rule['set-prio'] !== ""
+                && isset($rule['set-prio-low']) && $rule['set-prio-low'] !== ""
+            ) {
                 $rule['set-prio'] = "({$rule['set-prio']}, {$rule['set-prio-low']})";
             }
             yield $rule;
@@ -261,7 +269,7 @@ class FilterRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseFilterRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder, $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder, $rule) . "\n";
         }
         return $ruleTxt;
     }

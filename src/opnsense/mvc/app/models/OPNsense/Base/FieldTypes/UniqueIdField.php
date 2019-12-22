@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
@@ -68,7 +70,7 @@ class UniqueIdField extends BaseField
         $validators = parent::getValidators();
         // unique id may not change..
         $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-            'domain'=>array($this->initialValue)));
+            'domain' => array($this->initialValue)));
         return $validators;
     }
 }

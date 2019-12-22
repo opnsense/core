@@ -135,7 +135,7 @@ abstract class BaseModel
             }
             if (!$is_derived_from_basefield) {
                 // class found, but of wrong type. raise an exception.
-                throw new ModelException("class ".$field_rfcls->name." of wrong type in model definition");
+                throw new ModelException("class " . $field_rfcls->name . " of wrong type in model definition");
             }
             self::$internalCacheReflectionClasses[$classname_idx] = $field_rfcls;
         }
@@ -174,14 +174,14 @@ abstract class BaseModel
                         $namespace = explode("\\", get_class($this));
                         array_pop($namespace);
                         $namespace = implode("\\", $namespace);
-                        $classname = str_replace(".\\", $namespace."\\FieldTypes\\", (string)$xmlNodeType);
+                        $classname = str_replace(".\\", $namespace . "\\FieldTypes\\", (string)$xmlNodeType);
                     } else {
                         $classname = (string)$xmlNodeType;
                     }
                     $field_rfcls = $this->getNewField($classname);
                 } else {
                     // standard field type
-                    $field_rfcls = $this->getNewField("OPNsense\\Base\\FieldTypes\\".$xmlNodeType);
+                    $field_rfcls = $this->getNewField("OPNsense\\Base\\FieldTypes\\" . $xmlNodeType);
                 }
             } else {
                 // no type defined, so this must be a standard container (without content)
@@ -203,7 +203,7 @@ abstract class BaseModel
                 if ($xmlNode->count() > 0) {
                     // if fieldtype contains properties, try to call the setters
                     foreach ($xmlNode->children() as $fieldMethod) {
-                        $method_name = "set".$fieldMethod->getName();
+                        $method_name = "set" . $fieldMethod->getName();
                         if ($field_rfcls->hasMethod($method_name)) {
                             $fieldObject->$method_name($this->parseOptionData($fieldMethod));
                         }
@@ -244,7 +244,7 @@ abstract class BaseModel
                     } else {
                         // There's no content in config.xml for this array node.
                         $tagUUID = $internal_data->generateUUID();
-                        $child_node = new ContainerField($fieldObject->__reference . ".".$tagUUID, $tagName);
+                        $child_node = new ContainerField($fieldObject->__reference . "." . $tagUUID, $tagName);
                         $child_node->setInternalIsVirtual();
                         $this->parseXml($xmlNode, $config_section_data, $child_node);
                         $fieldObject->addChildNode($tagUUID, $child_node);
@@ -276,16 +276,16 @@ abstract class BaseModel
         // determine our caller's filename and try to find the model definition xml
         // throw error on failure
         $class_info = new \ReflectionClass($this);
-        $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName())-3) . "xml";
+        $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName()) - 3) . "xml";
         if (!file_exists($model_filename)) {
-            throw new ModelException('model xml '.$model_filename.' missing');
+            throw new ModelException('model xml ' . $model_filename . ' missing');
         }
         $model_xml = simplexml_load_file($model_filename);
         if ($model_xml === false) {
-            throw new ModelException('model xml '.$model_filename.' not valid');
+            throw new ModelException('model xml ' . $model_filename . ' not valid');
         }
         if ($model_xml->getName() != "model") {
-            throw new ModelException('model xml '.$model_filename.' seems to be of wrong type');
+            throw new ModelException('model xml ' . $model_filename . ' seems to be of wrong type');
         }
         $this->internal_mountpoint = $model_xml->mount;
 
@@ -445,14 +445,14 @@ abstract class BaseModel
         // calculate root node from mountpoint
         $xml_root_node = "";
         $str_parts = explode("/", str_replace("//", "/", $this->internal_mountpoint));
-        for ($i=0; $i < count($str_parts); $i++) {
+        for ($i = 0; $i < count($str_parts); $i++) {
             if ($str_parts[$i] != "") {
-                $xml_root_node .= "<".$str_parts[$i].">";
+                $xml_root_node .= "<" . $str_parts[$i] . ">";
             }
         }
-        for ($i=count($str_parts)-1; $i >= 0; $i--) {
+        for ($i = count($str_parts) - 1; $i >= 0; $i--) {
             if ($str_parts[$i] != "") {
-                $xml_root_node .= "</".$str_parts[$i].">";
+                $xml_root_node .= "</" . $str_parts[$i] . ">";
             }
         }
 
@@ -485,7 +485,7 @@ abstract class BaseModel
         // find parent of mountpoint (create if it doesn't exists)
         $target_node = $config_xml;
         $str_parts = explode("/", str_replace("//", "/", $this->internal_mountpoint));
-        for ($i=0; $i < count($str_parts)-1; $i++) {
+        for ($i = 0; $i < count($str_parts) - 1; $i++) {
             if ($str_parts[$i] != "") {
                 if (count($target_node->xpath($str_parts[$i])) == 0) {
                     $target_node = $target_node->addChild($str_parts[$i]);
@@ -530,7 +530,7 @@ abstract class BaseModel
         if ($messages->count() > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
-                $exception_msg_part = "[".get_class($this).":".$msg->getField()."] ";
+                $exception_msg_part = "[" . get_class($this) . ":" . $msg->getField() . "] ";
                 $exception_msg_part .= $msg->getMessage();
                 $exception_msg .= "$exception_msg_part\n";
                 // always log validation errors
@@ -553,7 +553,7 @@ abstract class BaseModel
         $parts = explode(".", $reference);
 
         $node = $this->internalData;
-        while (count($parts)>0) {
+        while (count($parts) > 0) {
             $childName = array_shift($parts);
             if (isset($node->getChildren()[$childName])) {
                 $node = $node->getChildren()[$childName];
@@ -572,7 +572,7 @@ abstract class BaseModel
      */
     public function setNodeByReference($reference, $value)
     {
-        $node =$this->getNodeByReference($reference);
+        $node = $this->getNodeByReference($reference);
         if ($node != null) {
             $node->setValue($value);
             return true;
@@ -602,22 +602,24 @@ abstract class BaseModel
             // fetch version migrations
             $versions = array();
             // set default migration for current model version
-            $versions[$this->internal_model_version] =__DIR__."/BaseModelMigration.php";
-            foreach (glob(dirname($class_info->getFileName())."/Migrations/M*.php") as $filename) {
+            $versions[$this->internal_model_version] = __DIR__ . "/BaseModelMigration.php";
+            foreach (glob(dirname($class_info->getFileName()) . "/Migrations/M*.php") as $filename) {
                 $version = str_replace('_', '.', explode('.', substr(basename($filename), 1))[0]);
                 $versions[$version] = $filename;
             }
 
             uksort($versions, "version_compare");
             foreach ($versions as $mig_version => $filename) {
-                if (version_compare($this->internal_current_model_version, $mig_version, '<') &&
-                    version_compare($this->internal_model_version, $mig_version, '>=') ) {
+                if (
+                    version_compare($this->internal_current_model_version, $mig_version, '<') &&
+                    version_compare($this->internal_model_version, $mig_version, '>=')
+                ) {
                     // execute upgrade action
                     if (!strstr($filename, '/tests/app')) {
                         $mig_classname = explode('.', explode('/mvc/app/models', $filename)[1])[0];
                     } else {
                         // unit tests use a different namespace for their models
-                        $mig_classname = "/tests".explode('.', explode('/mvc/tests/app/models', $filename)[1])[0];
+                        $mig_classname = "/tests" . explode('.', explode('/mvc/tests/app/models', $filename)[1])[0];
                     }
                     $mig_classname = str_replace('/', '\\', $mig_classname);
                     // Phalcon's autoloader uses _ as a directory locator, we need to import these files ourselves
@@ -633,7 +635,7 @@ abstract class BaseModel
                         } catch (\Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->internal_current_model_version .
-                                " to " . $mig_version . " in ".
+                                " to " . $mig_version . " in " .
                                 $class_info->getName() .
                                 " [skipping step]");
                         }
@@ -650,7 +652,7 @@ abstract class BaseModel
                         $migobj->post($this);
                     }
                 } catch (\Exception $e) {
-                    $logger->error("Model ".$class_info->getName() ." can't be saved, skip ( " .$e . " )");
+                    $logger->error("Model " . $class_info->getName() . " can't be saved, skip ( " . $e . " )");
                     return false;
                 }
             }

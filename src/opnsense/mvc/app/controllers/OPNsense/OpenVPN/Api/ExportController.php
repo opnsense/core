@@ -259,7 +259,7 @@ class ExportController extends ApiControllerBase
      */
     public function validatePresetsAction($vpnid)
     {
-        $result = array("result"=>"");
+        $result = array("result" => "");
         if ($this->request->isPost()) {
             $result['result'] = 'ok';
             $result['changed'] = false;
@@ -319,10 +319,12 @@ class ExportController extends ApiControllerBase
             if ($server !== null) {
                 // fetch server config data
                 $config = array();
-                foreach (array('disable', 'description', 'local_port', 'protocol', 'crypto', 'digest',
+                foreach (
+                    array('disable', 'description', 'local_port', 'protocol', 'crypto', 'digest',
                              'tunnel_networkv6', 'reneg-sec', 'local_network', 'local_networkv6',
                              'tunnel_network', 'compression', 'passtos', 'shared_key', 'mode',
-                             'dev_mode', 'tls', 'client_mgmt_port') as $field) {
+                             'dev_mode', 'tls', 'client_mgmt_port') as $field
+                ) {
                     if (isset($server->$field) && $server->$field !== "") {
                         $config[$field] = (string)$server->$field;
                     } else {

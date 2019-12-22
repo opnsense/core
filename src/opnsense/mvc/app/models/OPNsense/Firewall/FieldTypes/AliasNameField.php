@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
@@ -71,12 +73,14 @@ class AliasNameField extends BaseField
                 'message' => sprintf(gettext(
                     'The name must be less than 32 characters long and may only consist of the following characters: %s'
                 ), 'a-z, A-Z, 0-9, _'),
-                'pattern'=>'/[_0-9a-zA-z]{1,31}/'));
+                'pattern' => '/[_0-9a-zA-z]{1,31}/'));
             $validators[] = new CallbackValidator(
                 [
                     "callback" => function ($value) {
-                        if (getservbyname($value, 'tcp') ||
-                            getservbyname($value, 'udp') || getprotobyname($value)) {
+                        if (
+                            getservbyname($value, 'tcp') ||
+                            getservbyname($value, 'udp') || getprotobyname($value)
+                        ) {
                             return array(gettext('Reserved protocol or service names may not be used'));
                         }
                         return array();

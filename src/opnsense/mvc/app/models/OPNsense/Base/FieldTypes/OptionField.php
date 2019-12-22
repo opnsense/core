@@ -27,8 +27,8 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Base\FieldTypes;
 
+namespace OPNsense\Base\FieldTypes;
 
 /**
  * Class OptionField

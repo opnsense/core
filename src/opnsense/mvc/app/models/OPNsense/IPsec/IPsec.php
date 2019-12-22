@@ -74,8 +74,9 @@ class IPsec extends BaseModel
     private function validateKeyPair($nodeKey, $keyPair, $messages)
     {
         $publicKey = $privateKey = null;
-        if (empty((string)$keyPair->keyType))
+        if (empty((string)$keyPair->keyType)) {
             return;
+        }
 
         // Validate public key
         if (!empty((string)$keyPair->publicKey)) {
@@ -105,7 +106,8 @@ class IPsec extends BaseModel
         if ($publicKey && $privateKey) {
             if ($publicKey['fingerprint'] !== $privateKey['fingerprint']) {
                 $messages->appendMessage(new \Phalcon\Validation\Message(
-                    gettext('This private key does not belong to the given public key.'), $nodeKey . '.privateKey'
+                    gettext('This private key does not belong to the given public key.'),
+                    $nodeKey . '.privateKey'
                 ));
             }
         }
@@ -141,7 +143,8 @@ class IPsec extends BaseModel
         if ($key === false) {
             throw new \InvalidArgumentException(sprintf(
                 gettext('Could not load potentially invalid %s key: %s'),
-                $keyType, openssl_error_string()
+                $keyType,
+                openssl_error_string()
             ));
         }
 
@@ -150,7 +153,8 @@ class IPsec extends BaseModel
         if ($keyDetails === false) {
             throw new \RuntimeException(sprintf(
                 gettext('Could not fetch details for %s key: %s'),
-                $keyType, openssl_error_string()
+                $keyType,
+                openssl_error_string()
             ));
         }
 
@@ -158,7 +162,8 @@ class IPsec extends BaseModel
         if ($keyDetails['type'] !== OPENSSL_KEYTYPE_RSA) {
             throw new \InvalidArgumentException(sprintf(
                 gettext('Unsupported OpenSSL key type [%d] for %s key, expected RSA.'),
-                $keyDetails['type'], $keyType
+                $keyDetails['type'],
+                $keyType
             ));
         }
 
@@ -167,7 +172,8 @@ class IPsec extends BaseModel
             if (!openssl_pkey_export($key, $keySanitized, null)) {
                 throw new \RuntimeException(sprintf(
                     gettext('Could not generate sanitized %s key in PEM format: %s'),
-                    $keyType, openssl_error_string()
+                    $keyType,
+                    openssl_error_string()
                 ));
             }
         } else {
@@ -177,7 +183,8 @@ class IPsec extends BaseModel
         // Calculate fingerprint for the public key (when a private key was given, its public key is calculated)
         $keyUnwrapped = trim(preg_replace('/\\+s/', '', preg_replace(
             '~^-----BEGIN(?:[A-Z]+ )? PUBLIC KEY-----([A-Za-z0-9+/=\\s]+)-----END(?:[A-Z]+ )? PUBLIC KEY-----$~m',
-            '\\1', $keyDetails['key']
+            '\\1',
+            $keyDetails['key']
         )));
         $keyFingerprint = substr(chunk_split(hash('sha1', base64_decode($keyUnwrapped)), 2, ':'), 0, -1);
 

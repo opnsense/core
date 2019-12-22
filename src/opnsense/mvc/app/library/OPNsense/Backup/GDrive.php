@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -64,7 +65,7 @@ class Gdrive extends Base implements IBackupProvider
             "type" => "file",
             "label" => gettext("P12 key"),
             "help" => sprintf(
-                gettext("You need a private key in p12 format to use Google Drive, ".
+                gettext("You need a private key in p12 format to use Google Drive, " .
                 "instructions on how to aquire one can be found here %s "),
                 "<a href='https://cloud.google.com/storage/docs/authentication#generating-a-private-key'
                         target='_blank'>
@@ -111,8 +112,10 @@ class Gdrive extends Base implements IBackupProvider
                 $fieldname = $field['name'];
                 if (isset($config->system->remotebackup->$fieldname)) {
                     $field['value'] = (string)$config->system->remotebackup->$fieldname;
-                } elseif ($fieldname == "GDrivePasswordConfirm" &&
-                        isset($config->system->remotebackup->GDrivePassword)) {
+                } elseif (
+                    $fieldname == "GDrivePasswordConfirm" &&
+                        isset($config->system->remotebackup->GDrivePassword)
+                ) {
                     $field['value'] = (string)$config->system->remotebackup->GDrivePassword;
                 }
             }
@@ -161,8 +164,10 @@ class Gdrive extends Base implements IBackupProvider
                 }
             }
             // remove private key when disabled
-            if (empty($config->system->remotebackup->GDriveEnabled) &&
-                    isset($config->system->remotebackup->GDriveP12key)) {
+            if (
+                empty($config->system->remotebackup->GDriveEnabled) &&
+                    isset($config->system->remotebackup->GDriveP12key)
+            ) {
                 unset($config->system->remotebackup->GDriveP12key);
             }
             Config::getInstance()->save();
@@ -179,8 +184,10 @@ class Gdrive extends Base implements IBackupProvider
         $cnf = Config::getInstance();
         if ($cnf->isValid()) {
             $config = $cnf->object();
-            if (isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled)
-                    && !empty($config->system->remotebackup->GDriveEnabled)) {
+            if (
+                isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled)
+                    && !empty($config->system->remotebackup->GDriveEnabled)
+            ) {
                 if (!empty($config->system->remotebackup->GDrivePrefixHostname)) {
                     $fileprefix = (string)$config->system->hostname . "." . (string)$config->system->domain . "-";
                 } else {
@@ -228,7 +235,7 @@ class Gdrive extends Base implements IBackupProvider
                             // base64 string is wrapped into tags
                             $start_at = strpos($bck_data_enc, "---\n") + 4;
                             $end_at = strpos($bck_data_enc, "\n---");
-                            $bck_data_enc = substr($bck_data_enc, $start_at, ($end_at-$start_at));
+                            $bck_data_enc = substr($bck_data_enc, $start_at, ($end_at - $start_at));
                         }
                         $bck_data = $this->decrypt(
                             $bck_data_enc,
@@ -259,8 +266,10 @@ class Gdrive extends Base implements IBackupProvider
                 }
 
                 // cleanup old files
-                if (isset($config->system->remotebackup->GDriveBackupCount)
-                        && is_numeric((string)$config->system->remotebackup->GDriveBackupCount)) {
+                if (
+                    isset($config->system->remotebackup->GDriveBackupCount)
+                        && is_numeric((string)$config->system->remotebackup->GDriveBackupCount)
+                ) {
                     $fcount = 0;
                     foreach ($configfiles as $filename => $file) {
                         if ($fcount >= (string)$config->system->remotebackup->GDriveBackupCount) {
@@ -292,7 +301,7 @@ class Gdrive extends Base implements IBackupProvider
     {
         $cnf = Config::getInstance();
         if ($cnf->isValid()) {
-            $config =$cnf->object();
+            $config = $cnf->object();
             return isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled)
                 && !empty($config->system->remotebackup->GDriveEnabled);
         }

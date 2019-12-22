@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2019 Deciso B.V.
  *
@@ -47,7 +48,7 @@ class InterfaceFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\InterfaceField', new InterfaceField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/InterfaceFieldTest/';
+        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/InterfaceFieldTest/';
         Config::getInstance()->forceReload();
     }
 

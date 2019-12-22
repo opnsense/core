@@ -83,7 +83,7 @@ class CSVListField extends BaseField
         $selectlist = explode($this->separatorchar, $this->__toString());
 
         foreach ($this->selectOptions as $optKey => $optValue) {
-            $result[$optKey] = array("value"=>$optValue, "selected"=>0);
+            $result[$optKey] = array("value" => $optValue, "selected" => 0);
         }
 
         foreach ($selectlist as $optKey) {
@@ -91,7 +91,7 @@ class CSVListField extends BaseField
                 if (isset($result[$optKey])) {
                     $result[$optKey]["selected"] = 1;
                 } else {
-                    $result[$optKey] = array("value"=>$optKey, "selected" => 1);
+                    $result[$optKey] = array("value" => $optKey, "selected" => 1);
                 }
             }
         }
@@ -134,7 +134,7 @@ class CSVListField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null && $this->internalMask != null) {
             $validators[] = new Regex(array('message' => $this->internalValidationMessage,
-                'pattern'=>trim($this->internalMask)));
+                'pattern' => trim($this->internalMask)));
         }
         return $validators;
     }

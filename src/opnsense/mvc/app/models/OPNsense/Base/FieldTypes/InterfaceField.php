@@ -27,10 +27,10 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\Config;
-
 
 /**
  * Class InterfaceField field type to select usable interfaces, currently this is kind of a backward compatibility

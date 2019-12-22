@@ -92,9 +92,9 @@ class Local extends Base implements IAuthConnector
                     // equal password is not allowed
                     $result[] = gettext("Current password equals new password");
                 }
-                if (($pwd_has_upper+$pwd_has_lower+$pwd_has_number+$pwd_has_special) < 3) {
+                if (($pwd_has_upper + $pwd_has_lower + $pwd_has_number + $pwd_has_special) < 3) {
                     // passwords should at least contain 3 of the 4 available character types
-                    $result[] = gettext("Password should contain at least 3 of the 4 different character groups".
+                    $result[] = gettext("Password should contain at least 3 of the 4 different character groups" .
                                         " (lowercase, uppercase, number, special)");
                 } elseif (strpos($new_password, $username) !== false) {
                     $result[] = gettext("The username may not be a part of the password");
@@ -122,7 +122,7 @@ class Local extends Base implements IAuthConnector
                 if ($userObject != null) {
                     $now = microtime(true);
                     $pwdChangedAt = empty($userObject->pwd_changed_at) ? 0 : $userObject->pwd_changed_at;
-                    if (abs($now - $pwdChangedAt)/60/60/24 >= $configObj->system->webgui->password_policy_duration) {
+                    if (abs($now - $pwdChangedAt) / 60 / 60 / 24 >= $configObj->system->webgui->password_policy_duration) {
                         return true;
                     }
                 }
@@ -151,8 +151,10 @@ class Local extends Base implements IAuthConnector
                 // disabled user
                 return false;
             }
-            if (!empty($userObject->expires)
-                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))) {
+            if (
+                !empty($userObject->expires)
+                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))
+            ) {
                 // expired user
                 return false;
             }

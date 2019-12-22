@@ -142,7 +142,7 @@ class Plugin
                     }
                 }
                 if (count($routeto) > 0) {
-                    $routetologic = "route-to {".implode(' ', $routeto)."}";
+                    $routetologic = "route-to {" . implode(' ', $routeto) . "}";
                     if (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
                     }

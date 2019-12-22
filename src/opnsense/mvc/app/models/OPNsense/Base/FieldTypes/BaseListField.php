@@ -27,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
@@ -97,7 +98,7 @@ abstract class BaseListField extends BaseField
         $result = array();
         // if option is not required, add empty placeholder
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-            $result[""] = array("value"=>$this->internalEmptyDescription, "selected" => 0);
+            $result[""] = array("value" => $this->internalEmptyDescription, "selected" => 0);
         }
 
         // explode options
@@ -108,7 +109,7 @@ abstract class BaseListField extends BaseField
             } else {
                 $selected = 0;
             }
-            $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
+            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
 
         return $result;
@@ -126,11 +127,11 @@ abstract class BaseListField extends BaseField
             if ($this->internalMultiSelect) {
                 // field may contain more than one option
                 $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain'=>$domain));
+                    'domain' => $domain));
             } else {
                 // single option selection
                 $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain'=>$domain));
+                    'domain' => $domain));
             }
         }
         return $validators;

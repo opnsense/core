@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\CaptivePortal\Api;
 
 use \OPNsense\Base\ApiControllerBase;
@@ -106,7 +108,7 @@ class ServiceController extends ApiControllerBase
         if ($result != null) {
             $response = $result['payload'];
             $this->response->setRawHeader("Content-Type: application/octet-stream");
-            $this->response->setRawHeader("Content-Disposition: attachment; filename=template_".$templateFileId.".zip");
+            $this->response->setRawHeader("Content-Disposition: attachment; filename=template_" . $templateFileId . ".zip");
             return base64_decode($response);
         } else {
             // return empty response on error
@@ -127,7 +129,7 @@ class ServiceController extends ApiControllerBase
             $mdlCP = new CaptivePortal();
             if ($this->request->hasPost("uuid")) {
                 $uuid = $this->request->getPost("uuid", "striptags");
-                $template = $mdlCP->getNodeByReference('templates.template.'.$uuid);
+                $template = $mdlCP->getNodeByReference('templates.template.' . $uuid);
                 if ($template == null) {
                     return array("name" => $templateName, "error" => "node not found");
                 }
@@ -136,15 +138,16 @@ class ServiceController extends ApiControllerBase
             }
 
             // cleanse input content, we only want to save changed files into our config
-            if (strlen($this->request->getPost("content", "striptags", "")) > 20
+            if (
+                strlen($this->request->getPost("content", "striptags", "")) > 20
                 || strlen((string)$template->content) == 0
             ) {
                 $temp_filename = 'cp_' . (string)$template->getAttributes()['uuid'] . '.tmp';
-                file_put_contents('/tmp/'.$temp_filename, $this->request->getPost("content", "striptags", ""));
+                file_put_contents('/tmp/' . $temp_filename, $this->request->getPost("content", "striptags", ""));
                 // strip defaults and unchanged files from template (standard js libs, etc)
                 $backend = new Backend();
                 $response = $backend->configdpRun("captiveportal strip_template", array($temp_filename));
-                unlink('/tmp/'.$temp_filename);
+                unlink('/tmp/' . $temp_filename);
                 $result = json_decode($response, true);
                 if ($result != null && !array_key_exists('error', $result)) {
                     $template->content = $result['payload'];
@@ -182,7 +185,7 @@ class ServiceController extends ApiControllerBase
      */
     public function delTemplateAction($uuid)
     {
-        $result = array("result"=>"failed");
+        $result = array("result" => "failed");
         if ($this->request->isPost()) {
             $mdlCP = new CaptivePortal();
             if ($uuid != null) {

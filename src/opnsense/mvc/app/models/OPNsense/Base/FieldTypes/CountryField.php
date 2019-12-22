@@ -27,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
@@ -63,7 +64,7 @@ class CountryField extends BaseListField
                     $name = trim(substr($line, 2, 9999));
                     self::$internalCacheOptionList[$code] = $name;
                     if ($this->internalAddInverse) {
-                        self::$internalCacheOptionList["!".$code] = $name . " (not)";
+                        self::$internalCacheOptionList["!" . $code] = $name . " (not)";
                     }
                 }
             }

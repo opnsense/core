@@ -73,7 +73,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function getFilename()
     {
-        return $this->getBaseFilename() . ".". $this->fileExtension;
+        return $this->getBaseFilename() . "." . $this->fileExtension;
     }
 
     /**

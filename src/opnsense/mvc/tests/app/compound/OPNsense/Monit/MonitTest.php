@@ -42,7 +42,7 @@ class MonitTest extends \PHPUnit\Framework\TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$setMonit = new \OPNsense\Monit\Api\SettingsController;
+        self::$setMonit = new \OPNsense\Monit\Api\SettingsController();
     }
 
     private function cleanupNodes($nodeType = null)
@@ -299,7 +299,7 @@ class MonitTest extends \PHPUnit\Framework\TestCase
     {
         self::$setMonit->mdlMonit->releaseLock();
 
-        $svcMonit = new \OPNsense\Monit\Api\ServiceController;
+        $svcMonit = new \OPNsense\Monit\Api\ServiceController();
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         // configtest
@@ -333,7 +333,7 @@ class MonitTest extends \PHPUnit\Framework\TestCase
      */
     public function testStatusController($svcMonit)
     {
-        $statMonit = new \OPNsense\Monit\Api\StatusController;
+        $statMonit = new \OPNsense\Monit\Api\StatusController();
         sleep(2);
         $response = $statMonit->getAction('xml');
         $this->assertEquals($response['result'], 'ok');

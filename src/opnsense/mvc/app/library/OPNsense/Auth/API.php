@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -112,7 +113,7 @@ class API extends Base implements IAuthConnector
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'user' && (string)$username == (string)$value->name) {
                 if (isset($value->apikeys)) {
-                    $indx=0;
+                    $indx = 0;
                     foreach ($value->apikeys->children() as $apiNodeId => $apiNode) {
                         if ($apiNodeId == 'item' && (string)$apiNode->key == $apikey) {
                             unset($value->apikeys->item[$indx]);
@@ -163,8 +164,10 @@ class API extends Base implements IAuthConnector
                 // disabled user
                 return false;
             }
-            if (!empty($userObject->expires)
-                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))) {
+            if (
+                !empty($userObject->expires)
+                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))
+            ) {
                 // expired user
                 return false;
             }

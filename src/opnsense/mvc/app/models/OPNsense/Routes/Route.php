@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2017 Fabian Franz
  *    Copyright (C) 2015-2017 Deciso B.V.
@@ -27,6 +28,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Routes;
 
 use OPNsense\Base\BaseModel;

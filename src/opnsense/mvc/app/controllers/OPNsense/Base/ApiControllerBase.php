@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
@@ -133,13 +135,13 @@ class ApiControllerBase extends ControllerRoot
                             // check ACL if user is returned by the Authenticator object
                             $acl = new ACL();
                             if (!$acl->isPageAccessible($authResult['username'], $_SERVER['REQUEST_URI'])) {
-                                $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
-                                    " not accessible for user ".$authResult['username'] . " using api key ".
+                                $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
+                                    " not accessible for user " . $authResult['username'] . " using api key " .
                                     $apiKey);
                             } else {
                                 // authentication + authorization successful.
                                 // pre validate request and communicate back to the user on errors
-                                $callMethodName = $dispatcher->getActionName().'Action';
+                                $callMethodName = $dispatcher->getActionName() . 'Action';
                                 $dispatchError = null;
                                 // check number of parameters using reflection
                                 $object_info = new \ReflectionObject($this);
@@ -173,8 +175,8 @@ class ApiControllerBase extends ControllerRoot
                             }
                         }
                     } else {
-                        $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
-                            " authentication failed for api key ". $apiKey);
+                        $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
+                            " authentication failed for api key " . $apiKey);
                     }
                 }
             }
@@ -199,7 +201,8 @@ class ApiControllerBase extends ControllerRoot
             $csrf_token = $this->request->getHeader('X_CSRFTOKEN');
             $csrf_valid = $this->security->checkToken(null, $csrf_token, false);
 
-            if (($this->request->isPost() ||
+            if (
+                ($this->request->isPost() ||
                     $this->request->isPut() ||
                     $this->request->isDelete()
                 ) && !$csrf_valid

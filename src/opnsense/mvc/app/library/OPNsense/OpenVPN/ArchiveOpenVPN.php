@@ -104,11 +104,11 @@ class ArchiveOpenVPN extends PlainOpenVPN
             . escapeshellarg("{$content_dir}.zip")
             . " " . escapeshellarg($base_filename);
         exec($command);
-        $result = file_get_contents($content_dir.".zip");
+        $result = file_get_contents($content_dir . ".zip");
 
         // cleanup
-        unlink($content_dir.".zip");
-        foreach (glob($content_dir."/*") as $filename) {
+        unlink($content_dir . ".zip");
+        foreach (glob($content_dir . "/*") as $filename) {
             unlink($filename);
         }
         rmdir($content_dir);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 /**
@@ -94,7 +96,7 @@ class ArrayField extends BaseField
 
         foreach ($new_record as $key => $node) {
             // initialize field with new internal id and defined default value
-            $node->setInternalReference($container_node->__reference.".".$key);
+            $node->setInternalReference($container_node->__reference . "." . $key);
             $node->applyDefault();
             $node->setChanged();
             $container_node->addChildNode($key, $node);
@@ -142,7 +144,7 @@ class ArrayField extends BaseField
 
 
         // collect sortable data as key/value store
-        $sortedData=array();
+        $sortedData = array();
         foreach ($this->internalChildnodes as $nodeKey => $node) {
             // populate sort key
             $sortKey = '';
@@ -150,10 +152,10 @@ class ArrayField extends BaseField
                 if (isset($node->internalChildnodes[$fieldName])) {
                     if (is_numeric((string)$node->$fieldName)) {
                         // align numeric values right for sorting, not perfect but works for integer type values
-                        $sortKey .=  sprintf("%".$MAX_KEY_LENGTH."s,", $node->$fieldName);
+                        $sortKey .=  sprintf("%" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
                     } else {
                         // normal text sorting, align left
-                        $sortKey .=  sprintf("%-".$MAX_KEY_LENGTH."s,", $node->$fieldName);
+                        $sortKey .=  sprintf("%-" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
                     }
                 }
             }

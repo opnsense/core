@@ -30,7 +30,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 
 // @CodingStandardsIgnoreStart
 require_once 'Field_Framework_TestCase.php';
-require_once __DIR__.'/../BaseModel/TestModel.php';
+require_once __DIR__ . '/../BaseModel/TestModel.php';
 // @CodingStandardsIgnoreEnd
 
 use \OPNsense\Base\FieldTypes\ModelRelationField;
@@ -41,7 +41,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
 {
     protected function setUp()
     {
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ .'/ModelRelationFieldTest/';
+        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/ModelRelationFieldTest/';
         Config::getInstance()->forceReload();
     }
 

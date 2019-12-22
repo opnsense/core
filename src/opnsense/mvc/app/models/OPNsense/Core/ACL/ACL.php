@@ -48,15 +48,15 @@ class ACL
      */
     public function __construct($module_root)
     {
-        $acl_cfg_xml = $module_root.'/ACL/ACL.xml';
+        $acl_cfg_xml = $module_root . '/ACL/ACL.xml';
         if (file_exists($acl_cfg_xml)) {
             // load ACL xml file and perform some basic validation
             $this->aclXML = simplexml_load_file($acl_cfg_xml);
             if ($this->aclXML === false) {
-                throw new \Exception('ACL xml '.$acl_cfg_xml.' not valid');
+                throw new \Exception('ACL xml ' . $acl_cfg_xml . ' not valid');
             }
             if ($this->aclXML->getName() != "acl") {
-                throw new \Exception('ACL xml '.$acl_cfg_xml.' seems to be of wrong type');
+                throw new \Exception('ACL xml ' . $acl_cfg_xml . ' seems to be of wrong type');
             }
         }
     }

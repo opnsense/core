@@ -93,9 +93,9 @@ class Drive
      */
     public function listFiles($directoryId, $filename = null)
     {
-        $query = "'".$directoryId."' in parents ";
+        $query = "'" . $directoryId . "' in parents ";
         if ($filename != null) {
-            $query .= " and title in '".$filename."'";
+            $query .= " and title in '" . $filename . "'";
         }
         return $this->service->files->listFiles(array('q' => $query));
     }

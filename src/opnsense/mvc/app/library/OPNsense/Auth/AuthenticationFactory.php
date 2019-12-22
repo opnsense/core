@@ -50,8 +50,10 @@ class AuthenticationFactory
     {
         $result = array();
         $configObj = Config::getInstance()->object();
-        if ($authserver == null || (isset($configObj->system->webgui->authmode) &&
-                (string)$configObj->system->webgui->authmode == $authserver)) {
+        if (
+            $authserver == null || (isset($configObj->system->webgui->authmode) &&
+                (string)$configObj->system->webgui->authmode == $authserver)
+        ) {
             foreach ($configObj->system->children() as $key => $value) {
                 if ($key == 'user' && !empty($value->user_dn)) {
                     $result[(string)$value->name] = (string)$value->user_dn;
@@ -68,11 +70,11 @@ class AuthenticationFactory
     private function listConnectors()
     {
         $connectors = array();
-        foreach (glob(__DIR__."/*.php") as $filename) {
+        foreach (glob(__DIR__ . "/*.php") as $filename) {
             $pathParts = explode('/', $filename);
-            $vendor = $pathParts[count($pathParts)-3];
-            $module = $pathParts[count($pathParts)-2];
-            $classname = explode('.php', $pathParts[count($pathParts)-1])[0];
+            $vendor = $pathParts[count($pathParts) - 3];
+            $module = $pathParts[count($pathParts) - 2];
+            $classname = explode('.php', $pathParts[count($pathParts) - 1])[0];
             $reflClass = new \ReflectionClass("{$vendor}\\{$module}\\{$classname}");
             if ($reflClass->implementsInterface('OPNsense\\Auth\\IAuthConnector')) {
                 if ($reflClass->hasMethod('getType')) {
@@ -154,7 +156,7 @@ class AuthenticationFactory
         $aliases = array();
         // cleanse service name
         $srv_name = strtolower(str_replace(array('-', '_'), '', $service_name));
-        foreach (glob(__DIR__."/Services/*.php") as $filename) {
+        foreach (glob(__DIR__ . "/Services/*.php") as $filename) {
             $srv_found = basename($filename, '.php');
             $reflClass = new \ReflectionClass("OPNsense\\Auth\\Services\\{$srv_found}");
             if ($reflClass->implementsInterface('OPNsense\\Auth\\IService')) {
