@@ -1,1 +1,2 @@
 filter_tables.conf:/usr/local/etc/filter_tables.conf
+filter_geoip.conf:/usr/local/etc/filter_geoip.conf

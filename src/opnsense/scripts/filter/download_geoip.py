@@ -32,4 +32,4 @@
 from lib.geoip import download_geolite
 
 # output files and lines processed
-print ('%d files written, with a total number of %d lines' % download_geolite())
+print ('%(file_count)d files written, with a total number of %(address_count)d lines' % download_geolite())

@@ -313,4 +313,26 @@ class AliasController extends ApiMutableModelControllerBase
         }
         return $result;
     }
+
+    /**
+     * get geoip settings (and stats)
+     */
+    public function getGeoIPAction()
+    {
+        $result = array();
+        if ($this->request->isGet()) {
+            $result[static::$internalModelName] = array();
+            $node = $this->getModel()->getNodeByReference('geoip');
+            if ($node != null) {
+                $result[static::$internalModelName]['geoip'] = $node->getNodes();
+            }
+            if (file_exists('/usr/local/share/GeoIP/alias.stats')) {
+                $stats = json_decode(file_get_contents('/usr/local/share/GeoIP/alias.stats'), true);
+                $result[static::$internalModelName]['geoip'] = array_merge(
+                    $result[static::$internalModelName]['geoip'], $stats
+                );
+            }
+        }
+        return $result;
+    }
 }

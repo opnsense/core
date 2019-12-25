@@ -330,22 +330,46 @@
             });
         });
 
+        let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
+        mapDataToFormUI(data_get_map).done(function(data){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
+
         /**
          * reconfigure
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/firewall/alias/reconfigure", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+            saveFormToEndpoint("/api/firewall/alias/set", 'frm_GeopIPSettings', function(){
+                ajaxCall("/api/firewall/alias/reconfigure", {}, function(data,status) {
+                    // when done, disable progress animation.
+                    $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                });
             });
+        });
+
+        // update history on tab state and implement navigation
+        if (window.location.hash != "") {
+            $('a[href="' + window.location.hash + '"]').click();
+        } else {
+            $('a[href="#aliases"]').click();
+        }
+
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            history.pushState(null, null, e.target.hash);
         });
 
     });
 </script>
 
-<section class="page-content-main">
-    <div class="container-fluid">
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li><a data-toggle="tab" href="#aliases" id="aliases_tab">{{ lang._('Aliases') }}</a></li>
+    <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeopIP settings') }}</a></li>
+</ul>
+
+<div class="tab-content content-box">
+    <div id="aliases" class="tab-pane fade in">
         <div class="row">
             <section class="col-xs-12">
                 <div class="content-box">
@@ -380,20 +404,26 @@
                         </tr>
                         </tfoot>
                     </table>
-                    <div class="col-md-12">
-                        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-                        </div>
-                        <hr/>
-                        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
-                        <br/><br/>
-                    </div>
                 </div>
             </section>
         </div>
     </div>
+    <div id="geoip" class="tab-pane fade in">
+      {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
+    </div>
+</div>
+<section class="page-content-main">
+  <div class="content-box">
+    <div class="col-md-12">
+        <br/>
+        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
+        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+        <br/><br/>
+    </div>
+  </div>
 </section>
-
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel" aria-hidden="true">

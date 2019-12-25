@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>alias.geoip.timestamp</id>
+        <label>Last updated</label>
+        <type>info</type>
+        <help><![CDATA[Last updated timestamp.]]></help>
+    </field>
+    <field>
+        <id>alias.geoip.address_count</id>
+        <label>Total number of ranges</label>
+        <type>info</type>
+        <help><![CDATA[Total number of entries in downloaded set.]]></help>
+    </field>
+    <field>
+        <id>alias.geoip.url</id>
+        <label>Url</label>
+        <type>text</type>
+        <help><![CDATA[Location to fetch geoip address ranges from.]]></help>
+    </field>
+</form>
