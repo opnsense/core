@@ -1,0 +1,141 @@
+<model>
+  <mount>//filter</mount>
+  <description>Filter Rules</description>
+  <items>
+    <rule type="ArrayField">
+      <allowopts type="BooleanField">
+      </allowopts>
+      <associated-rule-id type="TextField">
+          <!-- TODO -->
+      </associated-rule-id>
+      <category type="TextField">
+      </category>
+      <descr type="TextField">
+      </descr>
+      <direction type="OptionField">
+        <default>any</default>
+        <OptionValues>
+          <any>Any</any>
+          <in>In</in> <!-- check -->
+          <out>Out</out>
+        </OptionValues>
+      </direction>
+      <disabled type="BooleanField">
+      </disabled>
+      <disablereplyto type="BooleanField">
+      </disablereplyto>
+      <floating type="BooleanField">
+        <!-- True => yes - need to redefine -->
+      </floating>
+      <gateway type="JsonKeyValueStoreField">
+        <Required>N</Required>
+        <ConfigdPopulateAct>filter gateways list</ConfigdPopulateAct>
+        <SourceFile>/tmp/filter_gateway_list.json</SourceFile>
+        <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+        <ValidationMessage>Please specifiy a valid gateway.</ValidationMessage>
+      </gateway>
+      <icmptype/>
+      <icmp6-type/>
+      <interface type="InterfaceField">
+          <!-- TODO -->
+      </interface>
+      <ipprotocol type="OptionField">
+        <default>inet46</default>
+        <OptionValues>
+          <inet46>IPv6 + IPv4</inet46>
+          <inet6>IPv6</inet6>
+          <inet>IPv4</inet>
+        </OptionValues>
+      </ipprotocol>
+      <log type="BooleanField"/>
+      <max type="IntegerField">
+        <MinimumValue>1</MinimumValue>
+        <Required>N</Required>
+      </max>
+      <max-src-conn/>
+      <max-src-conn-rate/>
+      <max-src-conn-rates/>
+      <max-src-nodes type="IntegerField">
+        <MinimumValue>1</MinimumValue>
+        <Required>N</Required>
+      </max-src-nodes>
+      <max-src-states type="IntegerField">
+        <MinimumValue>1</MinimumValue>
+        <Required>N</Required>
+      </max-src-states>
+      <nopfsync type="BooleanField">
+      </nopfsync>
+      <nosync type="BooleanField">
+      </nosync>
+      <os type="TextField">
+        <Required>N</Required>
+        <ConfigdPopulateAct>filter list osfp json</ConfigdPopulateAct>
+        <SourceFile>/tmp/filter_osfp_list.json</SourceFile>
+        <ConfigdPopulateTTL>3600</ConfigdPopulateTTL>
+        <ValidationMessage>Please specifiy a valid operating system.</ValidationMessage>
+      </os>
+      <prio type="IntegerField"/>
+      <protocol type="FilterProtocolField">
+        <Required>N</Required>
+      </protocol>
+      <quick type="BooleanField">
+      </quick>
+      <sched type="TextField"/>
+      <set-prio type="TextField"/>
+      <set-prio-low type="TextField"/>
+      <statetimeout type="TextField"/>
+      <statetype type="OptionField">
+        <OptionValues>
+          <op0 value="keep state">keep state</op0>
+          <op1 value="sloppy state">sloppy state</op1>
+          <op2 value="modulate state">modulate state</op2>
+          <op3 value="synproxy state">synproxy state</op3>
+          <op4 value="none">none</op4>
+        </OptionValues>
+      </statetype>
+      <tag type="TextField">
+        <!-- tag packet with a new tag -->
+      </tag>
+      <tagged type="TextField">
+        <!-- match on a tag on the packet -->
+      </tagged>
+      <tcpflags1 type="OptionField">
+        <OptionValues>
+          <syn>syn</syn>
+          <ack>ack</ack>
+          <fin>fin</fin>
+          <rst>rst</rst>
+          <psh>psh</psh>
+          <urg>urg</urg>
+          <ece>ece</ece>
+          <cwr>cwr</cwr>
+        </OptionValues>
+      </tcpflags1>
+      <tcpflags2 type="OptionField">
+        <OptionValues>
+          <syn>syn</syn>
+          <ack>ack</ack>
+          <fin>fin</fin>
+          <rst>rst</rst>
+          <psh>psh</psh>
+          <urg>urg</urg>
+          <ece>ece</ece>
+          <cwr>cwr</cwr>
+        </OptionValues>
+      </tcpflags2>
+      <tcpflags_any>
+        <OptionValues>
+          <syn>syn</syn>
+          <ack>ack</ack>
+          <fin>fin</fin>
+          <rst>rst</rst>
+          <psh>psh</psh>
+          <urg>urg</urg>
+          <ece>ece</ece>
+          <cwr>cwr</cwr>
+        </OptionValues>
+      </tcpflags_any>
+      <type type="TextField" />
+    </rule>
+  </items>
+</model>

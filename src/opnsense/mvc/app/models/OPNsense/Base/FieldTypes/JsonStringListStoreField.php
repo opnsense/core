@@ -2,6 +2,7 @@
 
 /**
  *    Copyright (C) 2015-2019 Deciso B.V.
+ *    Copyright (C) 2020 Fabian Franz
  *
  *    All rights reserved.
  *
@@ -27,91 +28,14 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\FieldTypes;
+
 
 use OPNsense\Core\Backend;
 
-/**
- * Class JsonKeyValueStoreField, use a json encoded file as selection list
- * @package OPNsense\Base\FieldTypes
- */
-class JsonKeyValueStoreField extends BaseListField
+class JsonStringListStoreField extends JsonKeyValueStoreField
 {
-    /**
-     * @var null source field
-     */
-    protected $internalSourceField = null;
-
-    /**
-     * @var null source file pattern
-     */
-    protected $internalSourceFile = null;
-
-    /**
-     * @var bool automatically select all when none is selected
-     */
-    private $internalSelectAll = false;
-
-    /**
-     * @var string action to send to configd to populate the provided source
-     */
-    protected $internalConfigdPopulateAct = "";
-
-    /**
-     * @var int execute configd command only when file is older then TTL (seconds)
-     */
-    protected $internalConfigdPopulateTTL = 3600;
-
-    /**
-     * @var bool sort by value (default is by key)
-     */
-     private $internalSortByValue = false;
-
-    /**
-     * @param string $value source field, pattern for source file
-     */
-    public function setSourceField($value)
-    {
-        $this->internalSourceField = basename($this->internalParentNode->$value);
-    }
-
-    /**
-     * @param string $value optionlist content to use
-     */
-    public function setSourceFile($value)
-    {
-        $this->internalSourceFile = $value;
-    }
-
-    /**
-     * @param string $value automatically select all when none is selected
-     */
-    public function setSelectAll($value)
-    {
-        if (strtoupper(trim($value)) == 'Y') {
-            $this->internalSelectAll = true;
-        } else {
-            $this->internalSelectAll = false;
-        }
-    }
-
-    /**
-     * @param string $value configd action to run
-     */
-    public function setConfigdPopulateAct($value)
-    {
-        $this->internalConfigdPopulateAct = $value;
-    }
-
-    /**
-     * @param string $value set TTL for config action
-     */
-    public function setConfigdPopulateTTL($value)
-    {
-        if (is_numeric($value)) {
-            $this->internalConfigdPopulateTTL = $value;
-        }
-    }
 
     /**
      * populate selection data
@@ -144,43 +68,23 @@ class JsonKeyValueStoreField extends BaseListField
                 }
             }
             if (is_file($sourcefile)) {
-                $data = json_decode(file_get_contents($sourcefile), true);
+                $data = json_decode(file_get_contents($sourcefile), false);
                 if ($data != null) {
-                    $this->internalOptionList = $data;
+                    $this->internalOptionList = $this->convert_to_hash($data);
                     if ($this->internalSelectAll && $this->internalValue == "") {
-                        $this->internalValue = implode(',', array_keys($this->internalOptionList));
+                        $this->internalValue = implode(',', $data);
                     }
                 }
             }
         }
     }
 
-    /**
-     * change default sorting order (value vs key)
-     * @param $value boolean value Y/N
-     */
-    public function setSortByValue($value)
-    {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalSortByValue = true;
-        } else {
-            $this->internalSortByValue = false;
+    private function convert_to_hash($elements) {
+        $arr = array();
+        foreach ($elements as $element) {
+            $arr[$element] = $element;
         }
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        // set sorting by key (default) or value
-        if ($this->internalSortByValue) {
-            natcasesort($this->internalOptionList);
-        } else {
-            ksort($this->internalOptionList);
-        }
-        return parent::getNodeData();
+        return $arr;
     }
 
 }
