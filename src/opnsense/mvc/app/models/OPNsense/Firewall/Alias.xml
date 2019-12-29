@@ -5,6 +5,10 @@
         Firewall aliases
     </description>
     <items>
+        <geoip>
+            <url type="UrlField">
+            </url>
+        </geoip>
         <aliases>
             <alias type="ArrayField">
                 <enabled type="BooleanField">
