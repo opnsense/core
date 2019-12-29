@@ -32,4 +32,8 @@
 from lib.geoip import download_geolite
 
 # output files and lines processed
-print ('%(file_count)d files written, with a total number of %(address_count)d lines' % download_geolite())
+data = download_geolite()
+print ("%(file_count)d files written, with a total number of %(address_count)d lines" % data)
+print ("locations filename : %(locations_filename)s" % data)
+print ("IPv4 filename : %(IPv4)s" % data['address_sources'])
+print ("IPv6 filename : %(IPv6)s" % data['address_sources'])
