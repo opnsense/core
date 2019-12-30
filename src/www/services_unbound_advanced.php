@@ -358,7 +358,7 @@ include_once("head.inc");
                           <td>
                               <input name="extended_statistics" type="checkbox" id="extended_statistics" value="yes" <?= empty($pconfig['extended_statistics']) ? '' : 'checked="checked"' ?> />
                               <div class="hidden" data-for="help_for_extended_statistics">
-                                  <?= gettext('If  enabled, extended  statistics are printed. Default is off, because keeping track of more statistics takes time.') ?>
+                                  <?= gettext("If  enabled, extended  statistics are printed. Default is off, because keeping track of more statistics takes time.") ?>
                               </div>
                           </td>
                       </tr>
@@ -367,12 +367,11 @@ include_once("head.inc");
                           <td>
                               <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= empty($pconfig['log_queries']) ? '' : 'checked="checked"' ?> />
                               <div class="hidden" data-for="help_for_log_queries">
-                                  <?= gettext('Prints one line per query to the log, with the log timestamp and IP address, name, type and class.  Default is no.  Note that  it takes time to print these lines which makes the server (significantly) slower.  Odd  (nonprintable)  characters  in  names  are printed as \'?\'.') ?>
+                                  <?= gettext("Prints one line per query to the log, with the log timestamp and IP address, name, type and class.  Default is no.  Note that  it takes time to print these lines which makes the server (significantly) slower.  Odd  (nonprintable)  characters  in  names  are printed as '?'.") ?>
                               </div>
                           </td>
                       </tr>
-                      <tr>
-                        <td></td>
+                      <tr><td></td>
                         <td>
                           <button type="submit" name="Save" class="btn btn-primary" id="save" value="Save"><?= gettext("Save") ?></button>
                         </td>
