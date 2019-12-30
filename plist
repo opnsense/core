@@ -244,6 +244,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
@@ -724,6 +725,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Cron/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Cron/user.cron
 /usr/local/opnsense/service/templates/OPNsense/Filter/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Filter/filter_geoip.conf
 /usr/local/opnsense/service/templates/OPNsense/Filter/filter_tables.conf
 /usr/local/opnsense/service/templates/OPNsense/IDS/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IDS/OPNsense.rules
