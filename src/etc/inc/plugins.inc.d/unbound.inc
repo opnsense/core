@@ -225,6 +225,8 @@ EOF;
     $infra_cache_numhosts = !empty($config['unbound']['infra_cache_numhosts']) ? $config['unbound']['infra_cache_numhosts'] : "10000";
     $unwanted_reply_threshold = !empty($config['unbound']['unwanted_reply_threshold']) && is_numeric($config['unbound']['unwanted_reply_threshold']) ? $config['unbound']['unwanted_reply_threshold'] : "0";
     $verbosity = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : 1;
+    $extended_statistics = !empty($config['unbound']['extended_statistics']) ? 'yes' : 'no';
+    $log_queries = !empty($config['unbound']['log_queries']) ? 'yes' : 'no';
     $msgcachesize = !empty($config['unbound']['msgcachesize']) ? $config['unbound']['msgcachesize'] : 4;
     $rrsetcachesize = $msgcachesize * 2;
     $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
@@ -286,6 +288,8 @@ root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
 verbosity: {$verbosity}
+extended-statistics: {$extended_statistics}
+log-queries: {$log_queries}
 hide-identity: {$hide_id}
 hide-version: {$hide_version}
 harden-referral-path: no
