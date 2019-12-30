@@ -86,9 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("A valid IPv6 address must be specified.");
     }
 
-    if (empty($pconfig['duid']) || preg_match('/^([a-fA-F0-9]{2}[:])*([a-fA-F0-9]{2}){1}$/', $pconfig['duid']) !== 1) {
-        $input_errors[] = gettext("A valid DUID Identifier must be specified.");
+    if (!empty($pconfig['duid'])) {
+        $pconfig['duid'] = str_replace("-",":",$pconfig['duid']);
+        if( preg_match('/^([a-fA-F0-9]{2}[:])*([a-fA-F0-9]{2}){1}$/', $pconfig['duid']) !== 1) {
+            $input_errors[] = gettext("A valid DUID Identifier must be specified.");
+        }
     }
+
     if (!empty($pconfig['domainsearchlist'])) {
         $domain_array=preg_split("/[ ;]+/",$pconfig['domainsearchlist']);
         foreach ($domain_array as $curdomain) {
