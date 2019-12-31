@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2018 Fabian Franz
  * All rights reserved.
@@ -28,22 +27,13 @@
 
 namespace OPNsense\Base\Constraints;
 
-/**
- * validate if a field is set depening on the setting of another field
- * containing a specific value
- * Class SetIfConstraint
- * @package OPNsense\Base\Constraints
- */
-class SetIfConstraint extends BaseConstraint
+
+class FilterDependentOptionConstraint
 {
+
     /**
      * Executes validation, where the value must be set if another field is
-     * set to a specific value. Configuration example:
-     *
-     *   &lt;ValidationMessage&gt;This field must be set.&lt;/ValidationMessage&gt;
-     *   &lt;type&gt;SetIfConstraint&lt;/type&gt;
-     *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
-     *   &lt;check&gt;the value to check for as a string (for example the value of a OptionField)&lt;/check&gt;
+     * set to a specific value and this one is filtered. Configuration example
      *
      * @param \Phalcon\Validation $validator
      * @param string $attribute
@@ -53,21 +43,38 @@ class SetIfConstraint extends BaseConstraint
     {
         $node = $this->getOption('node');
         $field_name = $this->getOption('field');
-        $check = $this->getOption('check');
-        $invert = false;
-        if ('Y' == $this->getOption('invert')) {
-            $invert = true;
-        }
         if ($node) {
             $parentNode = $node->getParentNode();
-            $condition = $this->isEmpty($node) && (string)$parentNode->$field_name == $check;
-            if ($invert) {
-                $condition = !$condition;
-            }
-            if ($condition) {
-                $this->appendMessage($validator, $attribute);
+            if (!$this->isEmpty($node)) {
+                $other_value = (string)$parentNode->$field_name;
+                if (!empty($other_value)) {
+                    $other_values = explode(',', $other_value);
+                    $this_values = explode(',', (string)$node);
+                    $this->validateEntries($validator, $attribute, $this_values, $other_values);
+                }
             }
         }
         return true;
+    }
+
+    private function validateEntries(\Phalcon\Validation $validator, string $attribute, $this_values, $other_values)
+    {
+        foreach ($other_values as $other_value) {
+            $supportedOptions = $this->getOption($other_value);
+            if (empty($supportedOptions)) {
+                $supportedOptions = $this->getOption('fallbackDefaultRestriction');
+                if (empty($supportedOptions)) {
+                    continue;
+                }
+            }
+            $supportedOptions = explode(',', $supportedOptions);
+
+            foreach ($this_values as $this_value) {
+                if (!in_array($this_value, $supportedOptions)) {
+                    $this->appendMessage($validator, $attribute);
+                    return;
+                }
+            }
+        }
     }
 }

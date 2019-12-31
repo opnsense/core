@@ -29,13 +29,79 @@
       </floating>
       <gateway type="JsonKeyValueStoreField">
         <Required>N</Required>
-        <ConfigdPopulateAct>filter gateways list</ConfigdPopulateAct>
+        <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
         <SourceFile>/tmp/filter_gateway_list.json</SourceFile>
         <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
         <ValidationMessage>Please specifiy a valid gateway.</ValidationMessage>
+        <Constraints>
+          <check001>
+            <ValidationMessage>You can not assign a gateway to a rule that applies to IPv4 and IPv6</ValidationMessage>
+            <type>SetIf</type>
+            <invert>Y</invert>
+            <check>inet46</check>
+            <field>protocol</field>
+          </check001>
+        </Constraints>
       </gateway>
-      <icmptype/>
-      <icmp6-type/>
+      <icmptype type="OptionField">
+        <OptionValues>
+          <echoreq>Echo Request</echoreq>
+          <echorep>Echo Reply</echorep>
+          <unreach>Destination Unreachable</unreach>
+          <squench>Source Quench (Deprecated)</squench>
+          <redir>Redirect</redir>
+          <althost>Alternate Host Address (Deprecated)</althost>
+          <routeradv>Router Advertisement</routeradv>
+          <routersol>Router Solicitation</routersol>
+          <timex>Time Exceeded</timex>
+          <paramprob>Parameter Problem</paramprob>
+          <timereq>Timestamp</timereq>
+          <timerep>Timestamp Reply</timerep>
+          <inforeq>Information Request (Deprecated)</inforeq>
+          <inforep>Information Reply (Deprecated)</inforep>
+          <maskreq>Address Mask Request (Deprecated)</maskreq>
+          <maskrep>Address Mask Reply (Deprecated)</maskrep>
+        </OptionValues>
+        <Constraints>
+          <check001>
+            <ValidationMessage>You can not assign a gateway to a rule that applies to IPv4 and IPv6</ValidationMessage>
+            <type>SetIf</type>
+            <invert>Y</invert>
+            <check>inet46</check>
+            <field>protocol</field>
+          </check001>
+        </Constraints>
+      </icmptype>
+      <icmp6-type>
+        <OptionValues>
+          <unreach>Destination unreachable</unreach>
+          <toobig>Packet too big</toobig>
+          <timex>Time exceeded</timex>
+          <paramprob>Invalid IPv6 header</paramprob>
+          <echoreq>Echo service request</echoreq>
+          <echorep>Echo service reply</echorep>
+          <groupqry>Group membership query</groupqry>
+          <listqry>Multicast listener query</listqry>
+          <grouprep>Group membership report</grouprep>
+          <listenrep>Multicast listener report</listenrep>
+          <groupterm>Group membership termination</groupterm>
+          <listendone>Multicast listener done</listendone>
+          <routersol>Router solicitation</routersol>
+          <routeradv>Router advertisement</routeradv>
+          <neighbrsol>Neighbor solicitation</neighbrsol>
+          <neighbradv>Neighbor advertisement</neighbradv>
+          <redir>Shorter route exists</redir>
+          <routrrenum>Route renumbering</routrrenum>
+          <fqdnreq>FQDN query</fqdnreq>
+          <niqry>Node information query</niqry>
+          <wrureq>Who-are-you request</wrureq>
+          <fqdnrep>FQDN reply</fqdnrep>
+          <nirep>Node information reply</nirep>
+          <wrurep>Who-are-you reply</wrurep>
+          <mtraceresp>mtrace response</mtraceresp>
+          <mtrace>mtrace messages</mtrace>
+        </OptionValues>
+      </icmp6-type>
       <interface type="InterfaceField">
           <!-- TODO -->
       </interface>
@@ -51,17 +117,28 @@
       <max type="IntegerField">
         <MinimumValue>1</MinimumValue>
         <Required>N</Required>
+        <ValidationMessage>Maximum state entries (advanced option) must be a positive integer</ValidationMessage>
       </max>
-      <max-src-conn/>
-      <max-src-conn-rate/>
+      <max-src-conn type="IntegerField">
+        <MinimumValue>1</MinimumValue>
+        <Required>N</Required>
+        <ValidationMessage>Maximum number of established connections per host (advanced option) must be a positive integer</ValidationMessage>
+      </max-src-conn>
+      <max-src-conn-rate type="IntegerField">
+        <MinimumValue>1</MinimumValue>
+        <Required>N</Required>
+        <ValidationMessage>Maximum new connections per host / per second(s) (advanced option) must be a positive integer</ValidationMessage>
+      </max-src-conn-rate>
       <max-src-conn-rates/>
       <max-src-nodes type="IntegerField">
         <MinimumValue>1</MinimumValue>
         <Required>N</Required>
+        <ValidationMessage>Maximum number of unique source hosts (advanced option) must be a positive integer</ValidationMessage>
       </max-src-nodes>
       <max-src-states type="IntegerField">
         <MinimumValue>1</MinimumValue>
         <Required>N</Required>
+        <ValidationMessage>Maximum state entries per host (advanced option) must be a positive integer</ValidationMessage>
       </max-src-states>
       <nopfsync type="BooleanField">
       </nopfsync>
@@ -81,9 +158,23 @@
       <quick type="BooleanField">
       </quick>
       <sched type="TextField"/>
-      <set-prio type="TextField"/>
-      <set-prio-low type="TextField"/>
-      <statetimeout type="TextField"/>
+      <set-prio type="TextField">
+        <MinimumValue>0</MinimumValue>
+        <MaximumValue>7</MaximumValue>
+        <Required>N</Required>
+        <ValidationMessage>Set priority must be an integer between 0 and 7.</ValidationMessage>
+      </set-prio>
+      <set-prio-low type="IntegerField">
+        <MinimumValue>0</MinimumValue>
+        <MaximumValue>7</MaximumValue>
+        <Required>N</Required>
+        <ValidationMessage>Set priority for low latency and acknowledgements must be an integer between 0 and 7.</ValidationMessage>
+      </set-prio-low>
+      <statetimeout type="IntegerField">
+        <MinimumValue>1</MinimumValue>
+        <Required>N</Required>
+        <ValidationMessage>State timeout (advanced option) must be a positive integer</ValidationMessage>
+      </statetimeout>
       <statetype type="OptionField">
         <OptionValues>
           <op0 value="keep state">keep state</op0>
@@ -92,6 +183,22 @@
           <op3 value="synproxy state">synproxy state</op3>
           <op4 value="none">none</op4>
         </OptionValues>
+        <Constraints>
+          <check001>
+            <type>FilterDependentOptionConstraint</type>
+            <field>protocol</field>
+            <tcp>keep state,sloppy state,modulate state,synproxy state,none</tcp>
+            <fallbackDefaultRestriction>keep state,none</fallbackDefaultRestriction>
+            <!-- had to change that - there are no placehoders in the validation framework -->
+            <ValidationMessage>The state type is only valid with protocol tcp.</ValidationMessage>
+          </check001>
+          <check002>
+            <type>FieldIsEmptyConstraint</type>
+            <field>gateway</field>
+            <blacklist>synproxy state,modulate state</blacklist>
+            <ValidationMessage>The state type is only valid if the gateway is set to 'default'.</ValidationMessage>
+          </check002>
+        </Constraints>
       </statetype>
       <tag type="TextField">
         <!-- tag packet with a new tag -->
@@ -100,42 +207,42 @@
         <!-- match on a tag on the packet -->
       </tagged>
       <tcpflags1 type="OptionField">
+        <multiple>Y</multiple>
         <OptionValues>
-          <syn>syn</syn>
-          <ack>ack</ack>
-          <fin>fin</fin>
-          <rst>rst</rst>
-          <psh>psh</psh>
-          <urg>urg</urg>
-          <ece>ece</ece>
-          <cwr>cwr</cwr>
+          <syn>SYN</syn>
+          <ack>ACK</ack>
+          <fin>FIN</fin>
+          <rst>RST</rst>
+          <psh>PSH</psh>
+          <urg>URG</urg>
+          <ece>ECE</ece>
+          <cwr>CWR</cwr>
         </OptionValues>
       </tcpflags1>
       <tcpflags2 type="OptionField">
+        <multiple>Y</multiple>
         <OptionValues>
-          <syn>syn</syn>
-          <ack>ack</ack>
-          <fin>fin</fin>
-          <rst>rst</rst>
-          <psh>psh</psh>
-          <urg>urg</urg>
-          <ece>ece</ece>
-          <cwr>cwr</cwr>
+          <syn>SYN</syn>
+          <ack>ACK</ack>
+          <fin>FIN</fin>
+          <rst>RST</rst>
+          <psh>PSH</psh>
+          <urg>URG</urg>
+          <ece>ECE</ece>
+          <cwr>CWR</cwr>
         </OptionValues>
       </tcpflags2>
-      <tcpflags_any>
-        <OptionValues>
-          <syn>syn</syn>
-          <ack>ack</ack>
-          <fin>fin</fin>
-          <rst>rst</rst>
-          <psh>psh</psh>
-          <urg>urg</urg>
-          <ece>ece</ece>
-          <cwr>cwr</cwr>
-        </OptionValues>
+      <tcpflags_any type="BooleanField">
+        <Required>N</Required>
       </tcpflags_any>
-      <type type="TextField" />
+      <type type="TextField">
+        <OptionValues>
+          <pass>Pass</pass>
+          <block>Block</block>
+          <reject>Reject</reject>
+        </OptionValues>
+        <Required>Y</Required>
+      </type>
     </rule>
   </items>
 </model>
