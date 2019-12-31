@@ -5,7 +5,6 @@ $logclog = true;
 
 function clear_hook()
 {
-    killbyname('dhcpd');
     plugins_configure('dhcp');
 }
 

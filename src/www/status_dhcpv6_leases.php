@@ -315,9 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
-        // delete dhcp lease
-        /* Stop DHCPD */
-        killbyname("dhcpd");
+        killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
         $fin = @fopen($leasesfile, "r");
         $fout = @fopen($leasesfile.".new", "w");
         if ($fin) {
