@@ -78,7 +78,6 @@ function clear_all_log_files()
     }
 
     system_syslogd_start();
-    killbyname('dhcpd');
     plugins_configure('dhcp');
 }
 

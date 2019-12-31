@@ -37,10 +37,14 @@ require_once("plugins.inc.d/dhcpd.inc");
  * This function will remove entries from dhcpd.leases that would otherwise
  * overlap with static DHCP reservations. If we don't clean these out,
  * then DHCP will print a warning in the logs about a duplicate lease
+ *
+ * XXX errr: why are we doing this only on this particular page?
  */
 function dhcp_clean_leases()
 {
     global $config;
+
+    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
     $leasesfile = dhcpd_dhcpv4_leasesfile();
     if (!file_exists($leasesfile)) {
@@ -82,8 +86,6 @@ function validate_partial_mac_list($maclist) {
 
 function reconfigure_dhcpd()
 {
-    /* Stop DHCP so we can cleanup leases */
-    killbyname("dhcpd");
     dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
