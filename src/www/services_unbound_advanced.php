@@ -358,7 +358,7 @@ include_once("head.inc");
                           <td>
                               <input name="extended_statistics" type="checkbox" id="extended_statistics" value="yes" <?= empty($pconfig['extended_statistics']) ? '' : 'checked="checked"' ?> />
                               <div class="hidden" data-for="help_for_extended_statistics">
-                                  <?= gettext("If  enabled, extended  statistics are printed. Default is off, because keeping track of more statistics takes time.") ?>
+                                  <?= gettext("If enabled, extended statistics are printed.") ?>
                               </div>
                           </td>
                       </tr>
