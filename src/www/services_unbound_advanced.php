@@ -371,7 +371,8 @@ include_once("head.inc");
                               </div>
                           </td>
                       </tr>
-                      <tr><td></td>
+                      <tr>
+                        <td></td>
                         <td>
                           <button type="submit" name="Save" class="btn btn-primary" id="save" value="Save"><?= gettext("Save") ?></button>
                         </td>
