@@ -1080,7 +1080,7 @@ if (empty($act)) {
     // javascript only for edit forms
     if ($('#certmethod').length) {
         // no ca's found, display message
-        if ($("#caref  option").size() == 0) {
+        if ($("#caref option").length == 0) {
             $("#no_caref").removeClass("hidden");
             $("#caref").addClass("hidden");
         }

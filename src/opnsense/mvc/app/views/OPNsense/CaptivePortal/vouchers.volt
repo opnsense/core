@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     $.each(data, function(key, value) {
                         $('#voucher-providers').append($("<option></option>").attr("value", value).text(value));
                     });
-                    if ($('#voucher-providers option').size() > 0) {
+                    if ($('#voucher-providers option').length > 0) {
                         // link on change event
                         $('#voucher-providers').on('change', function(){
                             updateVoucherGroupList();
