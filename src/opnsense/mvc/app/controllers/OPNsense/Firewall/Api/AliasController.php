@@ -337,7 +337,8 @@ class AliasController extends ApiMutableModelControllerBase
             if (file_exists('/usr/local/share/GeoIP/alias.stats')) {
                 $stats = json_decode(file_get_contents('/usr/local/share/GeoIP/alias.stats'), true);
                 $result[static::$internalModelName]['geoip'] = array_merge(
-                    $result[static::$internalModelName]['geoip'], $stats
+                    $result[static::$internalModelName]['geoip'],
+                    $stats
                 );
             }
         }

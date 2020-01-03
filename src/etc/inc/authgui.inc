@@ -45,8 +45,10 @@ function set_language()
         $lang = $config['system']['language'];
     }
 
-    if (!empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex) &&
-        !empty($config['system']['user'][$userindex[$_SESSION['Username']]]['language'])) {
+    if (
+        !empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex) &&
+        !empty($config['system']['user'][$userindex[$_SESSION['Username']]]['language'])
+    ) {
         $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
     }
 
@@ -68,7 +70,7 @@ function session_auth(&$Login_Error)
     session_set_cookie_params(
         $currentCookieParams["lifetime"],
         $currentCookieParams["path"],
-        NULL,
+        null,
         ($config['system']['webgui']['protocol'] == "https"),
         true
     );
@@ -169,7 +171,7 @@ function session_auth(&$Login_Error)
 
         if (isset($_COOKIE[session_name()])) {
             $secure = $config['system']['webgui']['protocol'] == "https";
-            setcookie(session_name(), '', time()-42000, '/', null, $secure, true);
+            setcookie(session_name(), '', time() - 42000, '/', null, $secure, true);
         }
 
         /* and destroy it */
@@ -234,7 +236,7 @@ function display_error_form($http_code, $desc)
 {
     $themename = htmlspecialchars(get_current_theme());
 
-?><!doctype html>
+    ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
 <!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
@@ -268,7 +270,6 @@ function display_error_form($http_code, $desc)
     </div>
   </body>
 </html><?php
-
 } // end function
 
 function display_login_form($Login_Error)
@@ -297,9 +298,9 @@ function display_login_form($Login_Error)
             }
         }
     }
-    setcookie("cookie_test", time() + 3600 ,  time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
+    setcookie("cookie_test", time() + 3600, time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
-?><!doctype html>
+    ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
 <!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
@@ -320,9 +321,9 @@ function display_login_form($Login_Error)
 
     <script src="/ui/js/jquery-3.4.1.min.js"></script>
 
-<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")): ?>
+    <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")) : ?>
     <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
-<?php endif ?>
+    <?php endif ?>
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
@@ -331,19 +332,19 @@ function display_login_form($Login_Error)
 
   <div class="container">
     <?php
-        if (is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-            print_info_box(sprintf(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. %sIf you did not setup this forwarding, you may be the target of a man-in-the-middle attack."),'<br /><br />'));
-        }
-            ?>
+    if (is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
+        print_info_box(sprintf(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. %sIf you did not setup this forwarding, you may be the target of a man-in-the-middle attack."), '<br /><br />'));
+    }
+    ?>
 
     <main class="login-modal-container">
       <header class="login-modal-head" style="height:50px;">
         <div class="navbar-brand">
-<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
+    <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")) : ?>
           <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="30" alt="logo" />
-<?php else: ?>
+    <?php else : ?>
           <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" height="30" alt="logo" />
-<?php endif ?>
+    <?php endif ?>
         </div>
       </header>
 
@@ -369,7 +370,7 @@ function display_login_form($Login_Error)
       <?php if (!$have_cookies && isset($_POST['login'])) : ?>
         <br /><br />
         <span class="text-danger">
-          <?= gettext("Your browser must support cookies to login."); ?>
+            <?= gettext("Your browser must support cookies to login."); ?>
         </span>
       <?php endif; ?>
 
