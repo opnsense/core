@@ -50,8 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // build list of widgets
     $widgetSeqParts = explode(",", $pconfig['sequence']);
     foreach (glob('/usr/local/www/widgets/widgets/*.widget.php') as $php_file) {
+        $base_name = basename($php_file, '.widget.php');
+        if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Username'], "/widget/" . $base_name)) {
+            continue;
+        }
         $widgetItem = array();
-        $widgetItem['name'] = basename($php_file, '.widget.php');
+        $widgetItem['name'] = $base_name;
         $widgetItem['display_name'] = ucwords(str_replace("_", " ", $widgetItem['name']));
         $widgetItem['filename'] = $php_file;
         $widgetItem['state'] = "none";

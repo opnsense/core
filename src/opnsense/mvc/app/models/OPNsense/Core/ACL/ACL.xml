@@ -747,4 +747,106 @@
             <pattern>xmlrpc.php*</pattern>
         </patterns>
     </page-xmlrpclibrary>
+    <page-widget-carp-status>
+        <name>Widget: CARP Status</name>
+        <patterns>
+            <pattern>widget/carp_status</pattern>
+        </patterns>
+    </page-widget-carp-status>
+    <page-widget-cpu-usage>
+        <name>Widget: CPU Usage</name>
+        <patterns>
+            <pattern>widget/cpu_usage</pattern>
+        </patterns>
+    </page-widget-cpu-usage>
+    <page-widget-gateways>
+        <name>Widget: Gateways</name>
+        <patterns>
+            <pattern>widget/gateways</pattern>
+        </patterns>
+    </page-widget-gateways>
+    <page-widget-interface-list>
+        <name>Widget: Interfaces</name>
+        <patterns>
+            <pattern>widget/interface_list</pattern>
+        </patterns>
+    </page-widget-interface-list>
+    <page-widget-interface-statistics>
+        <name>Widget: Interface Statistics</name>
+        <patterns>
+            <pattern>widget/interface_statistics</pattern>
+        </patterns>
+    </page-widget-interface-statistics>
+    <page-widget-ipsec>
+        <name>Widget: IPsec</name>
+        <patterns>
+            <pattern>widget/ipsec</pattern>
+        </patterns>
+    </page-widget-ipsec>
+    <page-widget-log>
+        <name>Widget: Firewall Logs</name>
+        <patterns>
+            <pattern>widget/log</pattern>
+        </patterns>
+    </page-widget-log>
+    <page-widget-monit>
+        <name>Widget: Monit</name>
+        <patterns>
+            <pattern>widget/monit</pattern>
+        </patterns>
+    </page-widget-monit>
+    <page-widget-ntp-status>
+        <name>Widget: Network Time</name>
+        <patterns>
+            <pattern>widget/ntp_status</pattern>
+        </patterns>
+    </page-widget-ntp-status>
+    <page-widget-openvpn>
+        <name>Widget: OpenVPN</name>
+        <patterns>
+            <pattern>widget/openvpn</pattern>
+        </patterns>
+    </page-widget-openvpn>
+    <page-widget-picture>
+        <name>Widget: Picture</name>
+        <patterns>
+            <pattern>widget/picture</pattern>
+        </patterns>
+    </page-widget-picture>
+    <page-widget-rss>
+        <name>Widget: RSS</name>
+        <patterns>
+            <pattern>widget/rss</pattern>
+        </patterns>
+    </page-widget-rss>
+    <page-widget-services-status>
+        <name>Widget: Services</name>
+        <patterns>
+            <pattern>widget/services</pattern>
+        </patterns>
+    </page-widget-services-status>
+    <page-widget-system-information>
+        <name>Widget: System Information</name>
+        <patterns>
+            <pattern>widget/system_information</pattern>
+        </patterns>
+    </page-widget-system-information>
+    <page-widget-system-log>
+        <name>Widget: System Log</name>
+        <patterns>
+            <pattern>widget/system_log</pattern>
+        </patterns>
+    </page-widget-system-log>
+    <page-widget-thermal-sensors>
+        <name>Widget: Thermal Sensors</name>
+        <patterns>
+            <pattern>widget/thermal_sensors</pattern>
+        </patterns>
+    </page-widget-thermal-sensors>
+    <page-widget-traffic-graph>
+        <name>Widget: Traffic Graph</name>
+        <patterns>
+            <pattern>widget/traffic_graph</pattern>
+        </patterns>
+    </page-widget-traffic-graph>
 </acl>
