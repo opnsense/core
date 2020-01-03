@@ -1495,26 +1495,9 @@ function dhcp6c_duid_clear()
 
 function get_dyndns_ip($int, $ipver = 4)
 {
-    global $config;
-
     $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
     if (empty($ip_address)) {
         log_error("Aborted IPv{$ipver} detection: no address for {$int}");
-        return 'down';
-    }
-
-    $gateways_status = return_gateways_status();
-
-    /*
-     * If the gateway for this interface is down, then the external
-     * check cannot work. Avoid the long wait for the external check
-     * to timeout.
-     */
-    if (
-        !empty($gateways_status[$config['interfaces'][$int]['gateway']]['status']) &&
-        stristr($gateways_status[$config['interfaces'][$int]['gateway']]['status'], 'down')
-    ) {
-        log_error("Aborted IPv{$ipver} detection: gateway down for {$int}");
         return 'down';
     }
 
