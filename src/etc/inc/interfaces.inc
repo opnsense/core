@@ -235,7 +235,7 @@ function interface_vlan_configure(&$vlan)
                         legacy_interface_flags($member, $tag);
                     }
                 } elseif (in_array($tag, $selected_opts)) {
-                    legacy_interface_flags($member, '-'.$tag);
+                    legacy_interface_flags($member, '-' . $tag);
                 }
             }
         }
@@ -1395,9 +1395,9 @@ EOD;
         }
         if ($ppp['type'] == "pppoe" && $mtus[$pid] > 1500) {
             // use pppoe max-payload if mtu we're about to set > 1492
-            $mpdconf_arr[] = "set pppoe max-payload " . ($mtus[$pid]-8);
+            $mpdconf_arr[] = "set pppoe max-payload " . ($mtus[$pid] - 8);
         } else {
-            $mpdconf_arr[] = "set link mtu " . ($mtus[$pid]-8);
+            $mpdconf_arr[] = "set link mtu " . ($mtus[$pid] - 8);
         }
         $mrus = !empty($ppp['mtu']) ? explode(',', $ppp['mru']) : null;
         if (!empty($mrus[$pid])) {
@@ -1674,7 +1674,7 @@ function interface_ipalias_configure(&$vip)
     $vhid = !empty($vip['vhid']) ? 'vhid ' . escapeshellarg($vip['vhid']) : '';
     $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
 
-    mwexec("/sbin/ifconfig " . $if ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias ".$gateway. $vhid);
+    mwexec("/sbin/ifconfig " . $if . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
 }
 
 function interface_carp_configure(&$vip)
@@ -2257,7 +2257,8 @@ EOD;
              */
             if ($clone_if != $if) {
                 $friendly_if = convert_real_interface_to_friendly_interface_name($clone_if);
-                if (!empty($friendly_if)
+                if (
+                    !empty($friendly_if)
                     && $config['interfaces'][$friendly_if]['wireless']['mode'] == "bss"
                     && isset($config['interfaces'][$friendly_if]['wireless']['wpa']['enable'])
                 ) {
@@ -3111,15 +3112,18 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
         }
         $id_assoc_statement_address .= " {\n";
 
-        if (($wancfg['adv_dhcp6_id_assoc_statement_address'] != '') &&
+        if (
+            ($wancfg['adv_dhcp6_id_assoc_statement_address'] != '') &&
             (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_address_pltime']) ||
                 $wancfg['adv_dhcp6_id_assoc_statement_address_pltime'] == 'infinity')
-           ) {
+        ) {
             $id_assoc_statement_address .= "  address";
             $id_assoc_statement_address .= " {$wancfg['adv_dhcp6_id_assoc_statement_address']}";
             $id_assoc_statement_address .= " {$wancfg['adv_dhcp6_id_assoc_statement_address_pltime']}";
-            if (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_address_vltime']) ||
-              $wancfg['adv_dhcp6_id_assoc_statement_address_vltime'] == 'infinity' ) {
+            if (
+                is_numeric($wancfg['adv_dhcp6_id_assoc_statement_address_vltime']) ||
+                $wancfg['adv_dhcp6_id_assoc_statement_address_vltime'] == 'infinity'
+            ) {
                 $id_assoc_statement_address .= " {$wancfg['adv_dhcp6_id_assoc_statement_address_vltime']}";
             }
             $id_assoc_statement_address .= ";\n";
@@ -3138,15 +3142,18 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
         }
         $id_assoc_statement_prefix .= " {\n";
 
-        if (($wancfg['adv_dhcp6_id_assoc_statement_prefix'] != '') &&
+        if (
+            ($wancfg['adv_dhcp6_id_assoc_statement_prefix'] != '') &&
             (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_prefix_pltime']) ||
             $wancfg['adv_dhcp6_id_assoc_statement_prefix_pltime'] == 'infinity')
-           ) {
+        ) {
              $id_assoc_statement_prefix .= "  prefix";
              $id_assoc_statement_prefix .= " {$wancfg['adv_dhcp6_id_assoc_statement_prefix']}";
             $id_assoc_statement_prefix .= " {$wancfg['adv_dhcp6_id_assoc_statement_prefix_pltime']}";
-            if ((is_numeric($wancfg['adv_dhcp6_id_assoc_statement_prefix_vltime'])) ||
-                ($wancfg['adv_dhcp6_id_assoc_statement_prefix_vltime'] == 'infinity') ) {
+            if (
+                (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_prefix_vltime'])) ||
+                ($wancfg['adv_dhcp6_id_assoc_statement_prefix_vltime'] == 'infinity')
+            ) {
                 $id_assoc_statement_prefix .= " {$wancfg['adv_dhcp6_id_assoc_statement_prefix_vltime']}";
             }
             $id_assoc_statement_prefix .= ";\n";
@@ -3157,7 +3164,8 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
                 $trackifv6 = get_real_interface($friendly, 'inet6');
                 $id_assoc_statement_prefix .= "  prefix-interface {$trackifv6} {\n";
                 $id_assoc_statement_prefix .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
-                if (($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
+                if (
+                    ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
                     ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
                 ) {
                     $id_assoc_statement_prefix .= "    sla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
@@ -3170,8 +3178,10 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
     }
 
     $authentication_statement = "";
-    if (($wancfg['adv_dhcp6_authentication_statement_authname'] != '') &&
-        ($wancfg['adv_dhcp6_authentication_statement_protocol'] == 'delayed') ) {
+    if (
+        ($wancfg['adv_dhcp6_authentication_statement_authname'] != '') &&
+        ($wancfg['adv_dhcp6_authentication_statement_protocol'] == 'delayed')
+    ) {
         $authentication_statement .= "authentication {$wancfg['adv_dhcp6_authentication_statement_authname']} {\n";
         $authentication_statement .= "  protocol {$wancfg['adv_dhcp6_authentication_statement_protocol']};\n";
         if (preg_match("/(hmac(-)?md5)||(HMAC(-)?MD5)/", $wancfg['adv_dhcp6_authentication_statement_algorithm'])) {
@@ -3184,10 +3194,12 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
     }
 
     $key_info_statement = "";
-    if (($wancfg['adv_dhcp6_key_info_statement_keyname'] != '') &&
+    if (
+        ($wancfg['adv_dhcp6_key_info_statement_keyname'] != '') &&
         ($wancfg['adv_dhcp6_key_info_statement_realm'] != '') &&
         (is_numeric($wancfg['adv_dhcp6_key_info_statement_keyid'])) &&
-        ($wancfg['adv_dhcp6_key_info_statement_secret'] != '') ) {
+        ($wancfg['adv_dhcp6_key_info_statement_secret'] != '')
+    ) {
         $key_info_statement .= "keyinfo {$wancfg['adv_dhcp6_key_info_statement_keyname']} {\n";
         $key_info_statement .= "  realm \"{$wancfg['adv_dhcp6_key_info_statement_realm']}\";\n";
         $key_info_statement .= "  keyid {$wancfg['adv_dhcp6_key_info_statement_keyid']};\n";
@@ -3412,7 +3424,7 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
                         $dhcpclientconf_mac_hex = "";
                         $delimiter = "";
                         for ($i = 0; $i < strlen($dhcpclientconf_mac); $i++) {
-                            $dhcpclientconf_mac_hex .= $delimiter. bin2hex($dhcpclientconf_mac[$i]);
+                            $dhcpclientconf_mac_hex .= $delimiter . bin2hex($dhcpclientconf_mac[$i]);
                             $delimiter = ":";
                         }
                         $dhcpclientconf_mac = $dhcpclientconf_mac_hex;
@@ -4126,8 +4138,10 @@ function get_interfaces_info()
         $ifinfo['if'] = get_real_interface($ifdescr);
         $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
         if (!empty($all_intf_details[$ifinfo['if']])) {
-            if (isset($all_intf_details[$ifinfo['if']]['status']) &&
-                    in_array($all_intf_details[$ifinfo['if']]['status'], array('active', 'running'))) {
+            if (
+                isset($all_intf_details[$ifinfo['if']]['status']) &&
+                    in_array($all_intf_details[$ifinfo['if']]['status'], array('active', 'running'))
+            ) {
                 $all_intf_details[$ifinfo['if']]['status'] = $ifinfo['status'];
             }
             $ifinfo = array_merge($ifinfo, $all_intf_details[$ifinfo['if']]);
@@ -4287,13 +4301,13 @@ function get_interfaces_info()
 
 function convert_seconds_to_hms($sec)
 {
-    $min=$hrs=0;
+    $min = $hrs = 0;
     if ($sec != 0) {
-        $min = floor($sec/60);
+        $min = floor($sec / 60);
         $sec %= 60;
     }
     if ($min != 0) {
-        $hrs = floor($min/60);
+        $hrs = floor($min / 60);
         $min %= 60;
     }
     if ($sec < 10) {
@@ -4305,7 +4319,7 @@ function convert_seconds_to_hms($sec)
     if ($hrs < 10) {
         $hrs = "0" . $hrs;
     }
-    $result = $hrs.":".$min.":".$sec;
+    $result = $hrs . ":" . $min . ":" . $sec;
     return $result;
 }
 
@@ -4419,7 +4433,7 @@ function get_ppp_uptime($port)
     if (file_exists("/conf/{$port}.log")) {
         $saved_time = file_get_contents("/conf/{$port}.log");
         $uptime_data = explode("\n", $saved_time);
-        $sec=0;
+        $sec = 0;
         foreach ($uptime_data as $upt) {
             $sec += substr($upt, 1 + strpos($upt, " "));
         }
