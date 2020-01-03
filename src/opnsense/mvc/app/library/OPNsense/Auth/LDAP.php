@@ -470,6 +470,11 @@ class LDAP extends Base implements IAuthConnector
             natcasesort($sync_groups);
             natcasesort($user_groups);
             natcasesort($ldap_groups);
+            // convert contents of group arrays to lowercase 
+            $sync_groups = array_change_key_case($sync_groups, CASE_LOWER);
+            $user_groups = array_change_key_case($user_groups, CASE_LOWER);
+            $ldap_groups = array_change_key_case($ldap_groups, CASE_LOWER);
+            //
             $diff_ugrp = array_intersect($sync_groups, $user_groups);
             $diff_lgrp = array_intersect($sync_groups, array_keys($ldap_groups));
             if ($diff_lgrp != $diff_ugrp) {
