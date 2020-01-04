@@ -218,7 +218,7 @@ fastcgi.server = ( ".php" =>
 
 EOD;
 
-    $lighty_modules = !empty($config['system']['webgui']['httpaccesslog']) ? ', "mod_accesslog"' : "";
+    $lighty_modules = !empty($config['system']['webgui']['httpaccesslog']) ? ', "mod_accesslog", "mod_extforward"' : "";
 
 
     $lighty_config = <<<EOD
@@ -447,6 +447,15 @@ compress.filetype  = ("text/plain","text/css", "text/xml", "text/javascript" )
 {$cgi_config}
 
 expire.url = ( "" => "access 50 hours" )
+
+extforward.params = ("host" => 1, # Overwrite Host with Forwarded value
+                     "remote_user" => 1 # Set REMOTE_USER with Forwarded value
+)
+extforward.forwarder = ("127.0.0.1" => "trust")
+extforward.headers = ("X-Forwarded-For", "Forwarded-For", "X-Real-IP")
+### Acknowledge possible probable need to address HAProxy in a different manner
+# extforward.hap-PROXY = ("enable")
+
 
 EOD;
 
