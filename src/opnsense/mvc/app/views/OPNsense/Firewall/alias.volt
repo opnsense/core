@@ -334,7 +334,7 @@
             let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
             mapDataToFormUI(data_get_map).done(function(data){
                 if (data.frm_GeopIPSettings.alias.geoip.usages) {
-                    if (!data.frm_GeopIPSettings.alias.geoip.address_count) {
+                    if (!data.frm_GeopIPSettings.alias.geoip.subscription && !data.frm_GeopIPSettings.alias.geoip.address_count) {
                         let $msg = "{{ lang._('In order to use GeoIP, you need to configure a source in the GeoIP settings tab') }}";
                         BootstrapDialog.show({
                           title: "{{ lang._('GeoIP') }}",
