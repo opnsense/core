@@ -385,7 +385,7 @@
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#aliases" id="aliases_tab">{{ lang._('Aliases') }}</a></li>
-    <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeopIP settings') }}</a></li>
+    <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeoIP settings') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
