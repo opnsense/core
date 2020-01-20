@@ -41,6 +41,10 @@
             <description>HiHo (HTTPS, Zurich, CH)</description>
         </mirror>
         <mirror>
+            <url>https://mirror-opnsense.serverbase.ch</url>
+            <description>ServerBase AG (HTTPS, Zurich, CH)</description>
+        </mirror>
+        <mirror>
             <url>https://opnsense.ieji.de</url>
             <description>ieji.de (HTTPS, Frankfurt, DE)</description>
         </mirror>
