@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ruleset documentation_url="http://doc.emergingthreats.net/bin/view/Main/EmergingFAQ">
-    <location url="https://rules.emergingthreats.net/open/suricata-5.0/emerging.rules.tar.gz" prefix="ET open"/>
-    <version url="https://rules.emergingthreats.net/open/suricata-5.0/version.txt"/>
+    <location url="https://rules.emergingthreats.net/open/suricata-4.0/emerging.rules.tar.gz" prefix="ET open"/>
+    <version url="https://rules.emergingthreats.net/open/suricata-4.0/version.txt"/>
     <files>
         <file description="botcc.portgrouped" url="inline::rules/botcc.portgrouped.rules">botcc.portgrouped.rules</file>
         <file description="botcc" url="inline::rules/botcc.rules">botcc.rules</file>
@@ -10,31 +10,25 @@
         <file description="drop" url="inline::rules/drop.rules">drop.rules</file>
         <file description="dshield" url="inline::rules/dshield.rules">dshield.rules</file>
         <file description="emerging-activex" url="inline::rules/emerging-activex.rules">emerging-activex.rules</file>
-        <file description="emerging-adware_pup" url="inline::rules/emerging-adware_pup.rules">emerging-adware_pup.rules</file>
         <file description="emerging-attack_response" url="inline::rules/emerging-attack_response.rules">emerging-attack_response.rules</file>
         <file description="emerging-chat" url="inline::rules/emerging-chat.rules">emerging-chat.rules</file>
-        <file description="emerging-coinminer" url="inline::rules/emerging-coinminer.rules">emerging-coinminer.rules</file>
         <file description="emerging-current_events" url="inline::rules/emerging-current_events.rules">emerging-current_events.rules</file>
         <file description="emerging-deleted" url="inline::rules/emerging-deleted.rules">emerging-deleted.rules</file>
         <file description="emerging-dns" url="inline::rules/emerging-dns.rules">emerging-dns.rules</file>
         <file description="emerging-dos" url="inline::rules/emerging-dos.rules">emerging-dos.rules</file>
         <file description="emerging-exploit" url="inline::rules/emerging-exploit.rules">emerging-exploit.rules</file>
-        <file description="emerging-exploit_kit" url="inline::rules/emerging-exploit_kit.rules">emerging-exploit_kit.rules</file>
         <file description="emerging-ftp" url="inline::rules/emerging-ftp.rules">emerging-ftp.rules</file>
         <file description="emerging-games" url="inline::rules/emerging-games.rules">emerging-games.rules</file>
-        <file description="emerging-hunting" url="inline::rules/emerging-hunting.rules">emerging-hunting.rules</file>
         <file description="emerging-icmp" url="inline::rules/emerging-icmp.rules">emerging-icmp.rules</file>
         <file description="emerging-icmp_info" url="inline::rules/emerging-icmp_info.rules">emerging-icmp_info.rules</file>
         <file description="emerging-imap" url="inline::rules/emerging-imap.rules">emerging-imap.rules</file>
         <file description="emerging-inappropriate" url="inline::rules/emerging-inappropriate.rules">emerging-inappropriate.rules</file>
         <file description="emerging-info" url="inline::rules/emerging-info.rules">emerging-info.rules</file>
-        <file description="emerging-ja3" url="inline::rules/emerging-ja3.rules">emerging-ja3.rules</file>
         <file description="emerging-malware" url="inline::rules/emerging-malware.rules">emerging-malware.rules</file>
         <file description="emerging-misc" url="inline::rules/emerging-misc.rules">emerging-misc.rules</file>
         <file description="emerging-mobile_malware" url="inline::rules/emerging-mobile_malware.rules">emerging-mobile_malware.rules</file>
         <file description="emerging-netbios" url="inline::rules/emerging-netbios.rules">emerging-netbios.rules</file>
         <file description="emerging-p2p" url="inline::rules/emerging-p2p.rules">emerging-p2p.rules</file>
-        <file description="emerging-phishing" url="inline::rules/emerging-phishing.rules">emerging-phishing.rules</file>
         <file description="emerging-policy" url="inline::rules/emerging-policy.rules">emerging-policy.rules</file>
         <file description="emerging-pop3" url="inline::rules/emerging-pop3.rules">emerging-pop3.rules</file>
         <file description="emerging-rpc" url="inline::rules/emerging-rpc.rules">emerging-rpc.rules</file>
@@ -46,6 +40,7 @@
         <file description="emerging-sql" url="inline::rules/emerging-sql.rules">emerging-sql.rules</file>
         <file description="emerging-telnet" url="inline::rules/emerging-telnet.rules">emerging-telnet.rules</file>
         <file description="emerging-tftp" url="inline::rules/emerging-tftp.rules">emerging-tftp.rules</file>
+        <file description="emerging-trojan" url="inline::rules/emerging-trojan.rules">emerging-trojan.rules</file>
         <file description="emerging-user_agents" url="inline::rules/emerging-user_agents.rules">emerging-user_agents.rules</file>
         <file description="emerging-voip" url="inline::rules/emerging-voip.rules">emerging-voip.rules</file>
         <file description="emerging-web_client" url="inline::rules/emerging-web_client.rules">emerging-web_client.rules</file>
@@ -53,7 +48,5 @@
         <file description="emerging-web_specific_apps" url="inline::rules/emerging-web_specific_apps.rules">emerging-web_specific_apps.rules</file>
         <file description="emerging-worm" url="inline::rules/emerging-worm.rules">emerging-worm.rules</file>
         <file description="tor" url="inline::rules/tor.rules">tor.rules</file>
-        <!-- archived sets -->
-        <file description="emerging-trojan" url="inline::rules/emerging-trojan.rules" deprecated="true">emerging-trojan.rules</file>
     </files>
 </ruleset>

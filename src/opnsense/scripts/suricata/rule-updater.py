@@ -83,7 +83,7 @@ if __name__ == '__main__':
                     # file selected from the metadata package or not on disk yet.
                     if metadata_sources[rule['metadata_source']] > 0 or not os.path.isfile(full_path):
                         enabled_rulefiles[rule['filename']] = {'filter': ''}
-                if rule['filename'] not in enabled_rulefiles or rule['deprecated']:
+                if rule['filename'] not in enabled_rulefiles:
                     if not rule['required']:
                         if os.path.isfile(full_path):
                             os.remove(full_path)
