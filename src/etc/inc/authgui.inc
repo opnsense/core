@@ -298,7 +298,7 @@ function display_login_form($Login_Error)
             }
         }
     }
-    setcookie("cookie_test", time() + 3600, time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
+    setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
     ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
