@@ -23,6 +23,7 @@ CMD_RESTORE="/usr/local/opnsense/scripts/shell/restore.sh"
 CMD_SETADDR="/usr/local/opnsense/scripts/shell/setaddr.php"
 CMD_SETPORTS="/usr/local/opnsense/scripts/shell/setports.php"
 CMD_SHELL="/bin/csh"
+CMD_VTYSH="/usr/local/bin/vtysh"
 
 # rc.d may call this while being root using `su -m user -c ...'
 # and it has arguments to pass through to the shell.  It creates
@@ -125,6 +126,9 @@ echo "  3) Reset the root password            10) Firewall log"
 echo "  4) Reset to factory defaults          11) Reload all services"
 echo "  5) Power off system                   12) Update from console"
 echo "  6) Reboot system                      13) Restore a backup"
+
+[ -e ${CMD_VTYSH} ] && echo " 14) FRRouting Shell"
+
 echo
 read -p "Enter an option: " OPCODE
 echo
@@ -175,6 +179,9 @@ case ${OPCODE} in
 	;;
 13)
 	${CMD_RESTORE}
+	;;
+14)
+	[ -e ${CMD_VTYSH} ] && ${CMD_VTYSH}
 	;;
 *)
 	;;
