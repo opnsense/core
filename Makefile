@@ -51,7 +51,7 @@ CORE_RADVD?=	1
 CORE_SQUID?=	# empty
 CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
-CORE_SYSLOGNG?=	3.24
+CORE_SYSLOGNG?=	3.25
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
