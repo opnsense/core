@@ -51,7 +51,7 @@ CORE_RADVD?=	1
 CORE_SQUID?=	# empty
 CORE_SURICATA?=	# empty
 CORE_SYSLOGD?=	# empty
-CORE_SYSLOGNG?=	3.24
+CORE_SYSLOGNG?=	3.25
 
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
 CORE_REPOSITORY?=	${CORE_ABI}/latest
