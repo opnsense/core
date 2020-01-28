@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,19 +29,13 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
-use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
  * @package OPNsense\Base\FieldTypes
  */
-class PortField extends BaseField
+class PortField extends BaseListField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
     /**
      * @var array list of well known services
      */
@@ -104,23 +98,18 @@ class PortField extends BaseField
     private $enableRanges = false;
 
     /**
-     * @var array collected options
-     */
-    private static $internalOptionList = null;
-
-    /**
      * generate validation data (list of port numbers and well know ports)
      */
     protected function actionPostLoadingEvent()
     {
-        if (!is_array(self::$internalOptionList)) {
-            if ($this->enableWellKown) {
-                self::$internalOptionList = array("any") + self::$wellknownservices;
+        if ($this->enableWellKown) {
+            foreach (array("any") + self::$wellknownservices as $wellknown) {
+                $this->internalOptionList[(string)$wellknown] = $wellknown;
             }
+        }
 
-            for ($port = 1; $port <= 65535; $port++) {
-                self::$internalOptionList[] = (string)$port;
-            }
+        for ($port = 1; $port <= 65535; $port++) {
+            $this->internalOptionList[(string)$port] = (string)$port;
         }
     }
 
@@ -173,35 +162,24 @@ class PortField extends BaseField
      */
     public function getValidators()
     {
-        $validators = parent::getValidators();
-        if (
-            ($this->internalIsRequired == true || $this->internalValue != null) &&
-            count(self::$internalOptionList) > 0
-        ) {
-            if (count(explode("-", $this->internalValue)) == 2 && $this->enableRanges) {
-                // range validation
-                $validators[] = new CallbackValidator(["callback" => function ($data) {
-                    $messages = [];
+        if ($this->enableRanges) {
+            // add valid ranges to options
+            foreach (explode(",", $this->internalValue) as $data) {
+                if (strpos($data, "-") !== false) {
                     $tmp = explode('-', $data);
-                    foreach ($tmp as $port) {
-                        if (
-                            filter_var(
-                                $port,
-                                FILTER_VALIDATE_INT,
-                                array('options' => array('min_range' => 1, 'max_range' => 65535))
-                            ) === false
+                    if (count($tmp) == 2) {
+                        if (filter_var($tmp[0],FILTER_VALIDATE_INT,
+                                array('options' => array('min_range' => 1, 'max_range' => 65535))) !== false &&
+                            filter_var($tmp[1],FILTER_VALIDATE_INT,
+                                array('options' => array('min_range' => 1, 'max_range' => 65535))) !== false &&
+                            $tmp[0] < $tmp[1]
                         ) {
-                            $messages[] = $this->getValidationMessage();
-                            break;
+                            $this->internalOptionList[$data] = $data;
                         }
                     }
-                    return $messages;
-                }]);
-            } else {
-                $validators[] = new InclusionIn(array('message' => $this->getValidationMessage(),
-                                                      'domain' => self::$internalOptionList));
+                }
             }
         }
-        return $validators;
+        return parent::getValidators();
     }
 }
