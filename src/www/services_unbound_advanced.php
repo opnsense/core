@@ -59,6 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['log_verbosity'] = "1";
 
     // boolean fields
+    $pconfig['extended_statistics'] = isset($config['unbound']['extended_statistics']);
+    $pconfig['log_queries'] = isset($config['unbound']['log_queries']);
     $pconfig['hideidentity'] = isset($config['unbound']['hideidentity']);
     $pconfig['hideversion'] = isset($config['unbound']['hideversion']);
     $pconfig['prefetch'] = isset($config['unbound']['prefetch']);
@@ -84,6 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig = $_POST;
         // boolean fields
+        $config['unbound']['extended_statistics'] = !empty($pconfig['extended_statistics']);
+        $config['unbound']['log_queries'] = !empty($pconfig['log_queries']);
         $config['unbound']['hideidentity'] = !empty($pconfig['hideidentity']);
         $config['unbound']['hideversion'] = !empty($pconfig['hideversion']);
         $config['unbound']['prefetch'] = !empty($pconfig['prefetch']);
@@ -348,6 +352,24 @@ include_once("head.inc");
                             <?= gettext("Select the log verbosity. Level 0 means no verbosity, only errors. Level 1 gives operational information. Level 2 gives detailed operational information. Level 3 gives query level information, output per query. Level 4 gives algorithm level information. Level 5 logs client identification for cache misses. Default is level 1. ") ?>
                           </div>
                         </td>
+                      </tr>
+                      <tr>
+                          <td><a id="help_for_extended_statistics" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Extended statistics') ?></td>
+                          <td>
+                              <input name="extended_statistics" type="checkbox" id="extended_statistics" value="yes" <?= empty($pconfig['extended_statistics']) ? '' : 'checked="checked"' ?> />
+                              <div class="hidden" data-for="help_for_extended_statistics">
+                                  <?= gettext("If enabled, extended statistics are printed.") ?>
+                              </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td><a id="help_for_log_queries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Log Queries') ?></td>
+                          <td>
+                              <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= empty($pconfig['log_queries']) ? '' : 'checked="checked"' ?> />
+                              <div class="hidden" data-for="help_for_log_queries">
+                                  <?= gettext("If enabled, prints one line per query to the log, with the log timestamp and IP address, name, type and class.") ?>
+                              </div>
+                          </td>
                       </tr>
                       <tr>
                         <td></td>

@@ -3,7 +3,7 @@
         <id>alias.geoip.timestamp</id>
         <label>Last updated</label>
         <type>info</type>
-        <help><![CDATA[Last updated timestamp. This is the time MaxMind created the lists.]]></help>
+        <help><![CDATA[Last updated timestamp. This is the time the vendor created the lists.]]></help>
     </field>
     <field>
         <id>alias.geoip.address_count</id>
@@ -15,7 +15,7 @@
         <id>alias.geoip.url</id>
         <label>Url</label>
         <type>text</type>
-        <help><![CDATA[Location to fetch geoip address ranges from. Refer to Opnsense wiki for
+        <help><![CDATA[Location to fetch geoip address ranges from. Refer to the OPNsense documentation for
         further details]]></help>
     </field>
 </form>

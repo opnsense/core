@@ -159,11 +159,6 @@ function write_config($desc = '', $backup = true)
         return -1;
     }
 
-    /* sync carp entries to other firewalls */
-    if (isset($config['hasync']['synchronizetoip']) && trim($config['hasync']['synchronizetoip']) != "") {
-        configd_run('filter sync load');
-    }
-
     /* on succesfull save, serialize config back to global */
     $config = $cnf->toArray(listtags());
 

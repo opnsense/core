@@ -37,10 +37,14 @@ require_once("plugins.inc.d/dhcpd.inc");
  * This function will remove entries from dhcpd.leases that would otherwise
  * overlap with static DHCP reservations. If we don't clean these out,
  * then DHCP will print a warning in the logs about a duplicate lease
+ *
+ * XXX errr: why are we doing this only on this particular page?
  */
 function dhcp_clean_leases()
 {
     global $config;
+
+    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
     $leasesfile = dhcpd_dhcpv4_leasesfile();
     if (!file_exists($leasesfile)) {
@@ -82,8 +86,6 @@ function validate_partial_mac_list($maclist) {
 
 function reconfigure_dhcpd()
 {
-    /* Stop DHCP so we can cleanup leases */
-    killbyname("dhcpd");
     dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
@@ -95,7 +97,7 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'fail
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
-  'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad');
+  'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport', 'omapialgorithm', 'omapikey');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -274,6 +276,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (gen_subnet_max($config['interfaces'][$if]['ipaddr'], $config['interfaces'][$if]['subnet']) == $pconfig['range_to']) {
             $input_errors[] = gettext("You cannot use the broadcast address in the ending subnet range.");
+        }
+
+        if ($pconfig['omapi'] && (empty($pconfig['omapiport']) || !is_numeric($pconfig['omapiport']) || $pconfig['omapiport'] < 1 || $pconfig['omapiport'] > 65535)) {
+            $input_errors[] = gettext("A valid port number must be specified for the OMAPI port.");
         }
 
         // Disallow a range that includes the virtualip
@@ -537,6 +543,11 @@ include("head.inc");
     function show_netboot_config() {
         $("#shownetbootbox").html('');
         $("#shownetboot").show();
+    }
+
+    function show_omapi_config() {
+        $("#showomapibox").html('');
+        $("#showomapi").show();
     }
 //]]>
 </script>
@@ -1013,6 +1024,25 @@ include("head.inc");
                         <div id="showwpad" style="display:none">
                           <input name="wpad" id="wpad" type="checkbox" value="yes" <?=!empty($pconfig['wpad']) ? "checked=\"checked\"" : ""; ?> />
                           <strong><?= gettext("Enable Web Proxy Auto Discovery") ?></strong>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable OMAPI");?></td>
+                      <td>
+                        <div id="showomapibox">
+                          <input type="button" onclick="show_omapi_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show OMAPI configuration");?>
+                        </div>
+                        <div id="showomapi" style="display:none">
+                          <input type="checkbox" value="yes" name="omapi" id="omapi" <?=!empty($pconfig['omapi']) ? " checked=\"checked\"" : ""; ?> />
+                          <strong><?=gettext("Enables OMAPI");?></strong>
+                          <br/><br/>
+                          <?=gettext('OMAPI port');?>
+                          <input name="omapiport" type="text" id="omapiport" value="<?=$pconfig['omapiport'];?>" /><br />
+                          <?=gettext('Key algorithm');?>
+                          <input name="omapialgorithm" type="text" id="omapialgorithm" value="<?=$pconfig['omapialgorithm'];?>" /><br />
+                          <?=gettext('OMAPI key');?>
+                          <input name="omapikey" type="text" id="omapikey" value="<?=$pconfig['omapikey'];?>" /><br />
                         </div>
                       </td>
                     </tr>

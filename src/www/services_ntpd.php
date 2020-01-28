@@ -335,7 +335,7 @@ include("head.inc");
                       <input name="logsys" type="checkbox" <?=!empty($pconfig['logsys']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable logging of system messages (default: disabled)."); ?>
                       <div class="hidden" data-for="help_for_syslog">
-                        <?=gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?=gettext("Status > System Logs > NTP"); ?></a>).
+                        <?=gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="/ui/diagnostics/log/core/ntpd"><?=gettext("Status > System Logs > NTP"); ?></a>).
                       </div>
                     </td>
                   </tr>

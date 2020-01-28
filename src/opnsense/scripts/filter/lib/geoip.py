@@ -49,7 +49,13 @@ def download_geolite():
         if cnf.has_section('settings') and cnf.has_option('settings', 'url'):
             url = cnf.get('settings', 'url').strip()
 
-    result = {'address_count': 0 , 'file_count': 0, 'timestamp': None}
+    result = {
+        'address_count': 0 ,
+        'file_count': 0,
+        'timestamp': None,
+        'locations_filename': None,
+        'address_sources': {'IPv4': None, 'IPv6': None}
+    }
     if url is not None:
         # flush data from remote url to temp file and unpack from there
         with tempfile.NamedTemporaryFile() as tmp_stream:
@@ -62,22 +68,30 @@ def download_geolite():
                     file_handles = dict()
                     for item in zf.infolist():
                         if item.file_size > 0:
-                            file_handles[os.path.basename(item.filename)] = item
+                            filename = os.path.basename(item.filename)
+                            file_handles[filename] = item
+                            if filename.lower().find('locations-en.csv') > -1:
+                                result['locations_filename'] = filename
+                            elif filename.lower().find('ipv4.csv') > -1:
+                                result['address_sources']['IPv4'] = filename
+                            elif filename.lower().find('ipv6.csv') > -1:
+                                result['address_sources']['IPv6'] = filename
                     # only process geo ip data when archive contains country definitions
-                    if 'GeoLite2-Country-Locations-en.csv' in file_handles:
-                        dt = datetime.datetime(*file_handles['GeoLite2-Country-Locations-en.csv'].date_time).isoformat()
+                    if result['locations_filename'] is not None:
+                        dt = datetime.datetime(*file_handles[result['locations_filename']].date_time).isoformat()
                         result['timestamp'] = dt
                         country_codes = dict()
                         # parse geoname_id to country code map
-                        for line in zf.open(file_handles['GeoLite2-Country-Locations-en.csv']).read().decode().split('\n'):
+                        locations = zf.open(file_handles[result['locations_filename']]).read()
+                        for line in locations.decode().split('\n'):
                             parts = line.split(',')
                             if len(parts) > 4 and len(parts[4]) >= 1 and len(parts[4]) <= 3:
                                 country_codes[parts[0]] = parts[4]
                         # process all details into files per country / protocol
                         for proto in ['IPv4', 'IPv6']:
-                            if 'GeoLite2-Country-Blocks-%s.csv' % proto in file_handles:
+                            if result['address_sources'][proto] is not None:
                                 output_handles = dict()
-                                country_blocks = zf.open(file_handles['GeoLite2-Country-Blocks-%s.csv' % proto]).read()
+                                country_blocks = zf.open(file_handles[result['address_sources'][proto]]).read()
                                 for line in country_blocks.decode().split('\n'):
                                     parts = line.split(',')
                                     if len(parts) > 3 and parts[1] in country_codes:

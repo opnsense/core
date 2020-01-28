@@ -63,7 +63,6 @@ if (isset($opts['m']) && isset($opts['f'])) {
         }
         // XXX: should probably add some plugin hook for this.
         if ($fname == 'dhcpd' && $mname == 'core') {
-            killbyname('dhcpd');
             plugins_configure('dhcp');
         }
     }

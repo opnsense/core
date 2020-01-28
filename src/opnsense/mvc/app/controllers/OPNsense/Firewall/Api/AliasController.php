@@ -321,15 +321,31 @@ class AliasController extends ApiMutableModelControllerBase
     {
         $result = array();
         if ($this->request->isGet()) {
-            $result[static::$internalModelName] = array();
+            $cnf = Config::getInstance()->object();
+            $result[static::$internalModelName] = ['geoip' => array()];
             $node = $this->getModel()->getNodeByReference('geoip');
             if ($node != null) {
                 $result[static::$internalModelName]['geoip'] = $node->getNodes();
             }
+            // count aliases that depend on GeoIP data
+            $result[static::$internalModelName]['geoip']['usages'] = 0;
+            foreach ($this->getModel()->aliasIterator() as $alias) {
+                if ($alias['type'] == "geoip") {
+                    $result[static::$internalModelName]['geoip']['usages']++;
+                }
+            }
+            if (isset($cnf->system->firmware) && !empty($cnf->system->firmware->mirror)) {
+                // XXX: we might add some attribute in firmware to store subscription status, since we now only store uri
+                $result[static::$internalModelName]['geoip']['subscription'] =
+                    strpos($cnf->system->firmware->mirror, "opnsense-update.deciso.com") !== false;
+            }
+
+            $result[static::$internalModelName]['geoip']['address_count'] = 0;
             if (file_exists('/usr/local/share/GeoIP/alias.stats')) {
                 $stats = json_decode(file_get_contents('/usr/local/share/GeoIP/alias.stats'), true);
                 $result[static::$internalModelName]['geoip'] = array_merge(
-                    $result[static::$internalModelName]['geoip'], $stats
+                    $result[static::$internalModelName]['geoip'],
+                    $stats
                 );
             }
         }

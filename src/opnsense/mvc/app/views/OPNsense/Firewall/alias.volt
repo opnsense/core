@@ -2,7 +2,7 @@
 <link href="{{ cache_safe('/ui/css/flags/flag-icon.css') }}" rel="stylesheet">
 <style>
     @media (min-width: 768px) {
-        .modal-dialog {
+        #DialogAlias > .modal-dialog {
             width: 90%;
             max-width:1200px;
         }
@@ -330,11 +330,30 @@
             });
         });
 
-        let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
-        mapDataToFormUI(data_get_map).done(function(data){
-            formatTokenizersUI();
-            $('.selectpicker').selectpicker('refresh');
-        });
+        function loadSettings() {
+            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
+            mapDataToFormUI(data_get_map).done(function(data){
+                if (data.frm_GeopIPSettings.alias.geoip.usages) {
+                    if (!data.frm_GeopIPSettings.alias.geoip.subscription && !data.frm_GeopIPSettings.alias.geoip.address_count) {
+                        let $msg = "{{ lang._('In order to use GeoIP, you need to configure a source in the GeoIP settings tab') }}";
+                        BootstrapDialog.show({
+                          title: "{{ lang._('GeoIP') }}",
+                          message: $msg,
+                          type: BootstrapDialog.TYPE_INFO,
+                          buttons: [{
+                              label:  "{{ lang._('Close') }}",
+                              action: function(sender){
+                                 sender.close();
+                              }
+                          }]
+                        });
+                    }
+                }
+                formatTokenizersUI();
+                $('.selectpicker').selectpicker('refresh');
+            });
+        }
+        loadSettings();
 
         /**
          * reconfigure
@@ -345,6 +364,7 @@
                 ajaxCall("/api/firewall/alias/reconfigure", {}, function(data,status) {
                     // when done, disable progress animation.
                     $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                    loadSettings();
                 });
             });
         });
@@ -365,7 +385,7 @@
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#aliases" id="aliases_tab">{{ lang._('Aliases') }}</a></li>
-    <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeopIP settings') }}</a></li>
+    <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeoIP settings') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">

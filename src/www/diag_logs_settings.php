@@ -78,7 +78,6 @@ function clear_all_log_files()
     }
 
     system_syslogd_start();
-    killbyname('dhcpd');
     plugins_configure('dhcp');
 }
 
@@ -92,31 +91,13 @@ function is_valid_syslog_server($target) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['reverse'] = isset($config['syslog']['reverse']);
-    $pconfig['remoteserver'] = !empty($config['syslog']['remoteserver']) ? $config['syslog']['remoteserver'] : null;
-    $pconfig['remoteserver2'] = !empty($config['syslog']['remoteserver2']) ? $config['syslog']['remoteserver2'] : null;
-    $pconfig['remoteserver3'] = !empty($config['syslog']['remoteserver3']) ? $config['syslog']['remoteserver3'] : null;
-    $pconfig['sourceip'] = !empty($config['syslog']['sourceip']) ? $config['syslog']['sourceip'] : null;
-    $pconfig['ipproto'] = !empty($config['syslog']['ipproto']) ? $config['syslog']['ipproto'] : null;
-    $pconfig['filter'] = isset($config['syslog']['filter']);
-    $pconfig['dhcp'] = isset($config['syslog']['dhcp']);
-    $pconfig['portalauth'] = isset($config['syslog']['portalauth']);
-    $pconfig['mail'] = isset($config['syslog']['mail']);
-    $pconfig['vpn'] = isset($config['syslog']['vpn']);
-    $pconfig['ids'] = isset($config['syslog']['ids']);
-    $pconfig['dns'] = isset($config['syslog']['dns']);
-    $pconfig['apinger'] = isset($config['syslog']['apinger']);
-    $pconfig['relayd'] = isset($config['syslog']['relayd']);
-    $pconfig['hostapd'] = isset($config['syslog']['hostapd']);
-    $pconfig['logall'] = isset($config['syslog']['logall']);
-    $pconfig['system'] = isset($config['syslog']['system']);
-    $pconfig['enable'] = isset($config['syslog']['enable']);
+    $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
     $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
     $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
-    $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
         clear_all_log_files();
@@ -127,16 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig = $_POST;
 
         /* input validation */
-        if (!empty($pconfig['enable']) && !is_valid_syslog_server($pconfig['remoteserver'])) {
-            $input_errors[] = gettext("A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #1.");
-        }
-        if (!empty($pconfig['enable']) && !empty($pconfig['remoteserver2']) && !is_valid_syslog_server($pconfig['remoteserver2'])) {
-            $input_errors[] = gettext("A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #2.");
-        }
-        if (!empty($pconfig['enable']) && !empty($pconfig['remoteserver3']) && !is_valid_syslog_server($_POST['remoteserver3'])) {
-            $input_errors[] = gettext("A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #3.");
-        }
-
         if (!empty($pconfig['logfilesize']) && (strlen($pconfig['logfilesize']) > 0)) {
             if (!is_numeric($pconfig['logfilesize']) || ($pconfig['logfilesize'] < 5120)) {
                 $input_errors[] = gettext("Log file size must be a positive integer greater than 5120.");
@@ -149,25 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($config['syslog']['logfilesize'])) {
                 unset($config['syslog']['logfilesize']);
             }
-            $config['syslog']['remoteserver'] = $pconfig['remoteserver'];
-            $config['syslog']['remoteserver2'] = $pconfig['remoteserver2'];
-            $config['syslog']['remoteserver3'] = $pconfig['remoteserver3'];
-            $config['syslog']['sourceip'] = $pconfig['sourceip'];
-            $config['syslog']['ipproto'] = $pconfig['ipproto'];
-            $config['syslog']['filter'] = !empty($pconfig['filter']);
-            $config['syslog']['dhcp'] = !empty($pconfig['dhcp']);
-            $config['syslog']['portalauth'] = !empty($pconfig['portalauth']);
-            $config['syslog']['mail'] = !empty($pconfig['mail']);
-            $config['syslog']['vpn'] = !empty($pconfig['vpn']);
-            $config['syslog']['ids'] = !empty($pconfig['ids']);
-            $config['syslog']['dns'] = !empty($pconfig['dns']);
-            $config['syslog']['apinger'] = !empty($pconfig['apinger']);
-            $config['syslog']['relayd'] = !empty($pconfig['relayd']);
-            $config['syslog']['hostapd'] = !empty($pconfig['hostapd']);
-            $config['syslog']['logall'] = !empty($pconfig['logall']);
-            $config['syslog']['system'] = !empty($pconfig['system']);
             $config['syslog']['disablelocallogging'] = !empty($pconfig['disablelocallogging']);
-            $config['syslog']['enable'] = !empty($pconfig['enable']);
             $oldnologdefaultblock = isset($config['syslog']['nologdefaultblock']);
             $oldnologdefaultpass = isset($config['syslog']['nologdefaultpass']);
             $oldnologbogons = isset($config['syslog']['nologbogons']);
@@ -211,85 +164,7 @@ include("head.inc");
 
 <body>
 <script>
-//<![CDATA[
-function enable_change(enable_over) {
-  if (document.iform.enable.checked || enable_over) {
-    document.iform.remoteserver.disabled = 0;
-    document.iform.remoteserver2.disabled = 0;
-    document.iform.remoteserver3.disabled = 0;
-    document.iform.filter.disabled = 0;
-    document.iform.dhcp.disabled = 0;
-    document.iform.portalauth.disabled = 0;
-    document.iform.mail.disabled = 0;
-    document.iform.vpn.disabled = 0;
-    document.iform.ids.disabled = 0;
-    document.iform.dns.disabled = 0;
-    document.iform.apinger.disabled = 0;
-    document.iform.relayd.disabled = 0;
-    document.iform.hostapd.disabled = 0;
-    document.iform.system.disabled = 0;
-    document.iform.logall.disabled = 0;
-    check_everything();
-  } else {
-    document.iform.remoteserver.disabled = 1;
-    document.iform.remoteserver2.disabled = 1;
-    document.iform.remoteserver3.disabled = 1;
-    document.iform.filter.disabled = 1;
-    document.iform.dhcp.disabled = 1;
-    document.iform.portalauth.disabled = 1;
-    document.iform.mail.disabled = 1;
-    document.iform.vpn.disabled = 1;
-    document.iform.ids.disabled = 1;
-    document.iform.dns.disabled = 1;
-    document.iform.apinger.disabled = 1;
-    document.iform.relayd.disabled = 1;
-    document.iform.hostapd.disabled = 1;
-    document.iform.system.disabled = 1;
-    document.iform.logall.disabled = 1;
-  }
-}
-function check_everything() {
-  if (document.iform.logall.checked) {
-    document.iform.filter.disabled = 1;
-    document.iform.filter.checked = false;
-    document.iform.dhcp.disabled = 1;
-    document.iform.dhcp.checked = false;
-    document.iform.portalauth.disabled = 1;
-    document.iform.portalauth.checked = false;
-    document.iform.mail.disabled = 1;
-    document.iform.mail.checked = false;
-    document.iform.vpn.disabled = 1;
-    document.iform.vpn.checked = false;
-    document.iform.ids.disabled = 1;
-    document.iform.ids.checked = false;
-    document.iform.dns.disabled = 1;
-    document.iform.dns.checked = false;
-    document.iform.apinger.disabled = 1;
-    document.iform.apinger.checked = false;
-    document.iform.relayd.disabled = 1;
-    document.iform.relayd.checked = false;
-    document.iform.hostapd.disabled = 1;
-    document.iform.hostapd.checked = false;
-    document.iform.system.disabled = 1;
-    document.iform.system.checked = false;
-  } else {
-    document.iform.filter.disabled = 0;
-    document.iform.dhcp.disabled = 0;
-    document.iform.portalauth.disabled = 0;
-    document.iform.mail.disabled = 0;
-    document.iform.vpn.disabled = 0;
-    document.iform.ids.disabled = 0;
-    document.iform.dns.disabled = 0;
-    document.iform.apinger.disabled = 0;
-    document.iform.relayd.disabled = 0;
-    document.iform.hostapd.disabled = 0;
-    document.iform.system.disabled = 0;
-  }
-}
-
 $(document).ready(function() {
-    enable_change(false);
-
     // messagebox, flush all log files
     $("#resetlogs").click(function(event){
         event.preventDefault();
@@ -408,7 +283,7 @@ $(document).ready(function() {
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Local Logging') ?></td>
-                    <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?> onclick="enable_change(false)" />
+                    <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?>  />
                       <?=gettext("Disable writing log files to the local disk");?></td>
                   </tr>
                   <tr>
@@ -423,118 +298,12 @@ $(document).ready(function() {
                 </table>
               </div>
             </div>
-            <div class="tab-content content-box col-xs-12 __mb">
-              <div class="table-responsive">
-                <table class="table table-striped opnsense_standard_table_form">
-                  <tr>
-                    <td style="width:22%"><strong><?=gettext("Remote Logging Options");?></strong></td>
-                    <td style="width:78%"></td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Enable Remote Logging');?></td>
-                    <td>
-                      <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : ''; ?> onclick="enable_change(false)" />
-                      <?=gettext('Send log messages to remote syslog server');?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_sourceip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source Address"); ?></td>
-                    <td>
-                      <select name="sourceip" class="form-control">
-                        <option value=""><?= gettext('Any') ?></option>
-<?php foreach (get_configured_interface_with_descr() as $ifname => $ifdescr): ?>
-                        <option value="<?= html_safe($ifname) ?>" <?= $ifname == $pconfig['sourceip'] ? 'selected="selected"' : '' ?>>
-                          <?= html_safe($ifdescr) ?>
-                        </option>
-<?php endforeach ?>
-                      </select>
-                      <div class="hidden" data-for="help_for_sourceip">
-                        <?= gettext("This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses."); ?>
-                        <?= gettext("If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces."); ?>
-                        <br /><br />
-                        <?= gettext("NOTE: If an IP address cannot be located on the chosen interface, the daemon will bind to all addresses."); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_ipproto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Protocol"); ?></td>
-                    <td>
-                      <select name="ipproto" class="form-control">
-                        <option value="ipv4" <?=$ipproto == "ipv4" ? 'selected="selected"' : "";?>><?=gettext("IPv4");?></option>
-                        <option value="ipv6" <?=$ipproto == "ipv6" ? 'selected="selected"' : "";?>><?=gettext("IPv6");?></option>
-                      </select>
-                      <div class="hidden" data-for="help_for_ipproto">
-                        <?= gettext("This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried."); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_remoteserver" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote Syslog Servers");?></td>
-                    <td>
-                      <table class="table table-condensed opnsense_standard_table_form">
-                        <tr>
-                          <td><?=gettext("Server") . " 1";?></td>
-                          <td><input name="remoteserver" id="remoteserver" type="text" class="form-control host" size="20" value="<?=htmlspecialchars($pconfig['remoteserver']);?>" /></td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("Server") . " 2";?></td>
-                          <td><input name="remoteserver2" id="remoteserver2" type="text" class="form-control host" size="20" value="<?=htmlspecialchars($pconfig['remoteserver2']);?>" /></td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("Server") . " 3";?></td>
-                          <td><input name="remoteserver3" id="remoteserver3" type="text" class="form-control host" size="20" value="<?=htmlspecialchars($pconfig['remoteserver3']);?>" /></td>
-                        </tr>
-                      </table>
-                      <div class="hidden" data-for="help_for_remoteserver">
-                        <?=gettext("IP addresses of remote syslog servers, or an IP:port.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Syslog Contents");?></td>
-                    <td>
-                      <input name="logall" id="logall" type="checkbox" value="yes" <?=!empty($pconfig['logall']) ? "checked=\"checked\"" : ""; ?> onclick="check_everything();" />
-                      <?=gettext("Everything");?><br /><br />
-                      <input name="system" id="system" type="checkbox" value="yes" onclick="enable_change(false)" <?=!empty($pconfig['system']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("System events");?><br />
-                      <input name="filter" id="filter" type="checkbox" value="yes" <?=!empty($pconfig['filter']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Firewall events");?><br />
-                      <input name="dhcp" id="dhcp" type="checkbox" value="yes" <?=!empty($pconfig['dhcp']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("DHCP service events");?><br />
-                      <input name="dns" id="dns" type="checkbox" value="yes" <?=!empty($pconfig['dns']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("DNS service events");?><br />
-                      <input name="mail" id="mail" type="checkbox" value="yes" <?=!empty($pconfig['mail']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Mail service events");?><br />
-                      <input name="portalauth" id="portalauth" type="checkbox" value="yes" <?=!empty($pconfig['portalauth']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Portal Auth events");?><br />
-                      <input name="vpn" id="vpn" type="checkbox" value="yes" <?=!empty($pconfig['vpn']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("VPN (PPTP, IPsec, OpenVPN) events");?><br />
-                      <input name="ids" id="ids" type="checkbox" value="yes" <?=!empty($pconfig['ids']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Intrusion Detection (Suricata) events");?><br />
-                      <input name="apinger" id="apinger" type="checkbox" value="yes" <?=!empty($pconfig['apinger']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Gateway Monitor events");?><br />
-                      <input name="relayd" id="relayd" type="checkbox" value="yes" <?=!empty($pconfig['relayd']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Server Load Balancer events");?><br />
-                      <input name="hostapd" id="hostapd" type="checkbox" value="yes" <?=!empty($pconfig['hostapd']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Wireless events");?><br />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <?=gettext("Syslog sends UDP datagrams to port 514 on the specified " .
-                        "remote syslog server, unless another port is specified. Be sure to set syslogd on the " .
-                        "remote server to accept remote syslog messages.");?>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
             <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td style="width:22%"></td>
-                    <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" onclick="enable_change(true)" />
+                    <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>"/>
                     </td>
                   </tr>
                 </table>

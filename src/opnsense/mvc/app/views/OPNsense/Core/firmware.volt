@@ -863,7 +863,7 @@
                             <tr>
                                 <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Mirror') }}</td>
                                 <td>
-                                    <select class="selectpicker" id="firmware_mirror">
+                                    <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
                                     </select>
                                     <div style="display:none;" id="firmware_mirror_other">
                                         <input type="text" id="firmware_mirror_value">

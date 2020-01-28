@@ -51,7 +51,7 @@ CORE_RADVD?=	1
 CORE_SQUID?=	# empty
 CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
-CORE_SYSLOGNG?=	3.24
+CORE_SYSLOGNG?=	3.25
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
@@ -77,7 +77,7 @@ CORE_WWW?=		https://opnsense.org/
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2019
+CORE_COPYRIGHT_YEARS?=	2014-2020
 
 CORE_DEPENDS_amd64?=	beep \
 			bsdinstaller \
