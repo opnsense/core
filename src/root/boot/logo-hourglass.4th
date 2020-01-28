@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"    20.1  ``The Road Ahead''   #[m" logo+
+	s"    20.1 ``Keen Kingfisher''   #[m" logo+
 
 	2drop
 ;

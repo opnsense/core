@@ -64,7 +64,7 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
-CORE_MESSAGE?=		TBA
+CORE_MESSAGE?=		Chirp, chirp
 CORE_NAME?=		opnsense
 CORE_TYPE?=		release
 
