@@ -157,6 +157,20 @@ class PortField extends BaseListField
     }
 
     /**
+     * @return array|string|null
+     */
+    public function getNodeData()
+    {
+        // XXX: although it's not 100% clean,
+        //      when using a selector we generally would expect to return a (appendable) list of options.
+        if ($this->internalMultiSelect) {
+            return parent::getNodeData();
+        } else {
+            return $this->__toString();
+        }
+    }
+
+    /**
      * retrieve field validators for this field type
      * @return array returns InclusionIn validator
      */
