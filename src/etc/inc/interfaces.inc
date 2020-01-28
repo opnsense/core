@@ -2595,6 +2595,19 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
+    // remove VIPs from tracked interface if they are there, they'll get put back later.    
+     if (isset($config['virtualip']['vip'])) {
+        foreach ($config['virtualip']['vip'] as $vip) {
+            if ($vip['interface'] == $interface && $vip['mode'] == 'alias') {
+                /**
+                 * only disable non carp aliases, net.inet.carp.ifdown_demotion_factor should do its work
+                 * when a carp interface goes down
+                 */
+                interface_vip_bring_down($vip);
+            }
+        }
+    }
+    
     $trackcfg = $config['interfaces'][$lancfg['track6-interface']];
     if (!isset($trackcfg['enable'])) {
         log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
@@ -2635,6 +2648,16 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
                 killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
             }
             break;
+    }
+    // Put back the VIPs on the interface if needed.
+    foreach ($config['virtualip']['vip'] as $vip) {
+        if ($vip['interface'] == $interface) {
+            switch ($vip['mode']) {
+                case 'ipalias':
+                    interface_ipalias_configure($vip);
+                    break;
+            }
+        }
     }
 }
 
