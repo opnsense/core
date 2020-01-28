@@ -68,11 +68,11 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
 
     /**
      * @depends testCanBeCreated
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage CsvListValidator
      */
     public function testSelectSetWithUnknownValue()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("CsvListValidator");
         // init field
         $field = new AuthGroupField();
         $field->eventPostLoading();
@@ -97,11 +97,11 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
 
     /**
      * @depends testCanBeCreated
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage InclusionIn
      */
     public function testSelectSetOnSingleValue()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("InclusionIn");
         // init field
         $field = new AuthGroupField();
         $field->eventPostLoading();

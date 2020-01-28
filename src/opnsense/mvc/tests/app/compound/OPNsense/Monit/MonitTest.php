@@ -40,13 +40,13 @@ class MonitTest extends \PHPUnit\Framework\TestCase
     // holds the SettingsController object
     protected static $setMonit;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // XXX: Unit test has dependencies, which are not handled within the same test suite.
         $this->markTestIncomplete();
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$setMonit = new \OPNsense\Monit\Api\SettingsController();
     }

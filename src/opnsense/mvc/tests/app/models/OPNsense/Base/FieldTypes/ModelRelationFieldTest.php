@@ -39,7 +39,7 @@ use \OPNsense\Core\Config;
 
 class ModelRelationFieldTest extends Field_Framework_TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/ModelRelationFieldTest/';
         Config::getInstance()->forceReload();

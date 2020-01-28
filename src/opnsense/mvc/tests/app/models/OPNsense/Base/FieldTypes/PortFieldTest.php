@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2020 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -34,9 +34,9 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\BooleanField;
+use \OPNsense\Base\FieldTypes\PortField;
 
-class BooleanFieldTest extends Field_Framework_TestCase
+class PortFieldTest extends Field_Framework_TestCase
 {
 
     /**
@@ -44,31 +44,8 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testCanBeCreated()
     {
-        $this->assertInstanceOf('\OPNsense\Base\FieldTypes\BooleanField', new BooleanField());
+        $this->assertInstanceOf('\OPNsense\Base\FieldTypes\PortField', new PortField());
     }
-
-    /**
-     */
-    public function testShouldNotBeANumber()
-    {
-        $this->expectException(\Phalcon\Validation\Exception::class);
-        $this->expectExceptionMessage("Regex");
-        $field = new BooleanField();
-        $field->setValue("90");
-        $this->validateThrow($field);
-    }
-
-    /**
-     */
-    public function testShouldNotBeAString()
-    {
-        $this->expectException(\Phalcon\Validation\Exception::class);
-        $this->expectExceptionMessage("Regex");
-        $field = new BooleanField();
-        $field->setValue("xx");
-        $this->validateThrow($field);
-    }
-
 
     /**
      */
@@ -76,9 +53,10 @@ class BooleanFieldTest extends Field_Framework_TestCase
     {
         $this->expectException(\Phalcon\Validation\Exception::class);
         $this->expectExceptionMessage("PresenceOf");
-        $field = new BooleanField();
+        $field = new PortField();
         $field->setRequired("Y");
         $field->setValue("");
+        $field->eventPostLoading();
         $this->validateThrow($field);
     }
 
@@ -87,9 +65,10 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredNotEmpty()
     {
-        $field = new BooleanField();
+        $field = new PortField();
         $field->setRequired("Y");
-        $field->setValue("1");
+        $field->setValue("80");
+        $field->eventPostLoading();
         $this->assertEmpty($this->validate($field));
     }
 
@@ -98,10 +77,52 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testValidValues()
     {
-        $field = new BooleanField();
-        foreach (array("0", "1") as $value) {
+        $field = new PortField();
+        $field->setEnableRanges("Y");
+        $field->setEnableWellKnown("Y");
+        $field->eventPostLoading();
+        foreach (array("80", "443", "https", "80-100") as $value) {
             $field->setValue($value);
             $this->assertEmpty($this->validate($field));
+        }
+    }
+
+    /**
+     * all items valid
+     */
+    public function testValidValueList()
+    {
+        $field = new PortField();
+        $field->setEnableRanges("Y");
+        $field->setEnableWellKnown("Y");
+        $field->setMultiple("Y");
+        $field->eventPostLoading();
+        $field->setValue("80,443,https,80-100");
+        $this->assertEmpty($this->validate($field));
+    }
+
+    /**
+     * range not expected
+     */
+    public function testRangeNotExpected()
+    {
+        $field = new PortField();
+        $field->setEnableWellKnown("Y");
+        $field->setMultiple("Y");
+        $field->eventPostLoading();
+        $field->setValue("80;443;https;80-100");
+        $this->assertNotEmpty($this->validate($field));
+    }
+
+    /**
+     * required not empty
+     */
+    public function testInValidValues()
+    {
+        $field = new PortField();
+        foreach (array("x1", "x2", "999999-88888888") as $value) {
+            $field->setValue($value);
+            $this->assertNotEmpty($this->validate($field));
         }
     }
 
@@ -110,7 +131,7 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testIsContainer()
     {
-        $field = new BooleanField();
+        $field = new PortField();
         $this->assertFalse($field->isContainer());
     }
 }

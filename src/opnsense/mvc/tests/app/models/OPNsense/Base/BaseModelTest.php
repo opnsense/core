@@ -88,12 +88,12 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage FromEmailXXX not an attribute of general
      * @depends testRunMigrations
      */
     public function testCannotSetNonExistingField()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("FromEmailXXX not an attribute of general");
         BaseModelTest::$model->general->FromEmailXXX = "test@test.nl";
     }
 
@@ -167,11 +167,11 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testCanAssignArrayType
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage not a valid number
      */
     public function testValidationNOK()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("not a valid number");
         // replace all numbers
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $node->number = "XXX";
@@ -241,11 +241,11 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testGetNodes
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage number should be unique
      */
     public function testConstraintsNok()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("number should be unique");
         $count = 2;
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $count--;
@@ -285,12 +285,12 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage All fields should contain data or none of them
      * @depends testAllOrNoneInitial
      */
     public function testAllOrNoneNok()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("All fields should contain data or none of them");
         BaseModelTest::$model->AllOrNone->value1 = "";
         BaseModelTest::$model->AllOrNone->value2 = "X";
         BaseModelTest::$model->AllOrNone->value3 = "";
@@ -327,12 +327,12 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Only one option could be selected
      * @depends testSingleSelectInitial
      */
     public function testSingleSelectNok()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Only one option could be selected");
         BaseModelTest::$model->SingleSelect->value1 = "x";
         BaseModelTest::$model->SingleSelect->value2 = "x";
         BaseModelTest::$model->SingleSelect->value3 = "";
@@ -371,11 +371,11 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testDependConstraintInitial
-     * @expectedException Exception
-     * @expectedExceptionMessage when value1 is enabled value2 is required
      */
     public function testDependConstraintNok()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("when value1 is enabled value2 is required");
         BaseModelTest::$model->DependConstraint->value1 = "1";
         BaseModelTest::$model->DependConstraint->value2 = "";
         BaseModelTest::$model->serializeToConfig();
