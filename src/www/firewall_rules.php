@@ -329,6 +329,7 @@ $main_buttons = array(
     array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
 );
 
+$a_filter_raw = config_read_array('filter', 'rule');
 legacy_html_escape_form_data($a_filter);
 $all_rule_stats = json_decode(configd_run("filter rule stats"), true);
 ?>
@@ -788,7 +789,7 @@ $( document ).ready(function() {
                 ):
                   // calculate a hash so we can track these records in the ruleset, new style (mvc) code will
                   // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
-                  $rule_hash = OPNsense\Firewall\Util::calcRuleHash($filterent);
+                  $rule_hash = OPNsense\Firewall\Util::calcRuleHash($a_filter_raw[$i]);
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
