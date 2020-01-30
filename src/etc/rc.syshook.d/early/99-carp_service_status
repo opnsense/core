@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Trigger carp service status event.
-# When any of the checks in /usr/local/etc/rc.carp_service_status.d/ fails, net.inet.carp.demotion is updated
-# to prevent switching to master too early
-
-configctl interface update carp service_status
