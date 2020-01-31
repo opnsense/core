@@ -49,7 +49,6 @@
 /usr/local/etc/inc/plugins.inc.d/vxlan.inc
 /usr/local/etc/inc/plugins.inc.d/webgui.inc
 /usr/local/etc/inc/rrd.inc
-/usr/local/etc/inc/services.inc
 /usr/local/etc/inc/system.inc
 /usr/local/etc/inc/util.inc
 /usr/local/etc/inc/xmlparse.inc
