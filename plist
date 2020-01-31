@@ -1541,7 +1541,6 @@
 /usr/local/www/diag_logs_common.inc
 /usr/local/www/diag_logs_filter_summary.php
 /usr/local/www/diag_logs_settings.php
-/usr/local/www/diag_logs_template.inc
 /usr/local/www/diag_packet_capture.php
 /usr/local/www/diag_pf_info.php
 /usr/local/www/diag_ping.php
