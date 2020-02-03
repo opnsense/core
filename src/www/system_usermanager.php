@@ -476,7 +476,7 @@ $( document ).ready(function() {
 
     // expand ssh key section on click
     $("#authorizedkeys").click(function(){
-        $(this).attr('rows', '7');
+        $(this).attr('rows', '10');
     });
 
     // import ldap users
@@ -945,7 +945,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>
-                      <textarea name="authorizedkeys" id="authorizedkeys" class="form-control" cols="65" rows="1" placeholder="<?=gettext("Paste an authorized keys file here.");?>" wrap='off'><?=$pconfig['authorizedkeys'];?></textarea>
+                      <textarea name="authorizedkeys" id="authorizedkeys" style="max-width: inherit;" class="form-control" cols="65" rows="1" placeholder="<?=gettext("Paste an authorized keys file here.");?>" wrap='off'><?=$pconfig['authorizedkeys'];?></textarea>
                     </td>
                   </tr>
                   <tr id="ipsecpskrow">
