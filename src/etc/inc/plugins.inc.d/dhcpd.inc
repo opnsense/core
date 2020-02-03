@@ -1870,5 +1870,5 @@ function dhcpd_getaddr6($realif, $ifconfig_details)
         break; /* all done */
     }
 
-    return [ $ifcfgipv6, $networv6 ];
+    return [ $ifcfgipv6, $networkv6 ];
 }
