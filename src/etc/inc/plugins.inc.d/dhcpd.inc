@@ -1266,7 +1266,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $ifcfgipv6 = get_interface_ipv6($ifname, $ifconfig_details);
+            list ($ifcfgipv6) = dhcpd_getaddr6(get_real_interface($ifname, 'inet6'), $ifconfig_details);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
@@ -1419,28 +1419,8 @@ EOD;
         }
 
         $realif = get_real_interface($dhcpv6if, 'inet6');
-        $ifcfgipv6 = $networkv6 = null;
 
-        foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
-            if ($info['family'] != 'inet6' || $info['scope']) {
-                /* only care about IPv6 without a scope set */
-                continue;
-            }
-
-            $addrparts = explode('/', $tmpaddr);
-
-            foreach (config_read_array('virtualip', 'vip') as $vip) {
-                if ($vip['interface'] == $dhcpv6if && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
-                    /* do not care about alias */
-                    continue 2;
-                }
-            }
-
-            $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
-            $ifcfgipv6 = $addrparts[0];
-            break; /* all done */
-        }
-
+        list ($ifcfgipv6, $networkv6) = dhcpd_getaddr6($realif, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
             continue;
@@ -1864,4 +1844,31 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+function dhcpd_getaddr6($realif, $ifconfig_details)
+{
+    $ifcfgipv6 = $networkv6 = null;
+
+    foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
+        if ($info['family'] != 'inet6' || $info['scope']) {
+            /* only care about IPv6 without a scope set */
+            continue;
+        }
+
+        $addrparts = explode('/', $tmpaddr);
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] == $dhcpv6if && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
+                /* do not care about alias */
+                continue 2;
+            }
+        }
+
+        $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
+        $ifcfgipv6 = $addrparts[0];
+        break; /* all done */
+    }
+
+    return [ $ifcfgipv6, $networv6 ];
 }
