@@ -1071,7 +1071,7 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         if ($server['dev_mode'] == 'tun' && empty($server['topology_subnet'])) {
             $conf .= "ifconfig-ipv6-push {$ipv6_2} {$ipv6_1}\n";
         } else {
-            $conf .= "ifconfig-ipv6-push {$ipv6}/{$prefix}\n";
+            $conf .= "ifconfig-ipv6-push {$settings['tunnel_networkv6']} {$ipv6_1}\n";
         }
     }
 
