@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -1419,9 +1419,27 @@ EOD;
         }
 
         $realif = get_real_interface($dhcpv6if, 'inet6');
+        $ifcfgipv6 = $networkv6 = null;
 
-        $ifcfgipv6 = find_interface_ipv6($realif, $ifconfig_details);
-        $networkv6 = find_interface_networkv6($realif, true, $ifconfig_details);
+        foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
+            if ($info['family'] != 'inet6' || $info['scope']) {
+                /* only care about IPv6 without a scope set */
+                continue;
+            }
+
+            $addrparts = explode('/', $tmpaddr);
+
+            foreach (config_read_array('virtualip', 'vip') as $vip) {
+                if ($vip['interface'] == $dhcpv6if && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
+                    /* do not care about alias */
+                    continue 2;
+                }
+            }
+
+            $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
+            $ifcfgipv6 = $addrparts[0];
+            break; /* all done */
+        }
 
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
