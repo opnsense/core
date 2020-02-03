@@ -3044,9 +3044,9 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+        "/usr/local/sbin/dhcp6c {$wancfg['adv_dhcp6_debug']} %s -c %s -p %s %s",
         array(
-            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
+            !empty($wancfg['dhcp6norelease']) ? '-n' : '',
             "/var/etc/dhcp6c_{$interface}.conf",
             "/var/run/dhcp6c_{$wanif}.pid",
             "{$wanif}"

@@ -423,6 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
+        'adv_dhcp6_debug',
         'rfc3118_isp',
         'rfc3118_username',
         'rfc3118_password',
@@ -439,8 +440,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
-    $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
-    $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
+    $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);                                                             
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
@@ -1188,8 +1188,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
+                    }                   
+                    if (!empty($pconfig['adv_dhcp6_debug'])) {
+                        $new_config['adv_dhcp6_debug'] = $pconfig['adv_dhcp6_debug'];
+                    } else {
+                        $new_config['adv_dhcp6_debug'] = '';
                     }
-                    $new_config['adv_dhcp6_debug'] = !empty($pconfig['adv_dhcp6_debug']);
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
                     $new_config['adv_dhcp6_interface_statement_information_only_enable'] = $pconfig['adv_dhcp6_interface_statement_information_only_enable'];
@@ -2753,14 +2757,25 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                            <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable debug"); ?></td>
-                            <td>
-                              <input name="adv_dhcp6_debug" type="checkbox" id="adv_dhcp6_debug" value="yes" <?=!empty($pconfig['adv_dhcp6_debug']) ? "checked=\"checked\"" : ""; ?> />
-                              <div class="hidden" data-for="help_for_dhcp6_debug">
-                                <?=gettext("Enable debug mode for DHCPv6 client"); ?>
-                              </div>
-                            </td>
+                        <tr>                         
+                          <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Debug log level"); ?></td>
+                          <td>                             
+                            <select name="adv_dhcp6_debug" size="3" class="selectpicker"  data-style="btn-default" id="adv_dhcp6_debug"> >
+<?php                         foreach(array( 
+                               '' => 'None',
+                               '-d' => 'Level 1',
+                               '-D' => 'Level 2',                                  
+                               ) as $dhcp6cdebuglevel => $dhcp6cdebugvalue): ?>
+                                <option value="<?=$dhcp6cdebuglevel;?>" <?= "{$dhcp6cdebuglevel}" === "{$pconfig['adv_dhcp6_debug']}" ? 'selected="selected"' : '' ?>>
+                                      <?=$dhcp6cdebugvalue;?>
+                                </option>                                                   
+<?php
+                             endforeach; ?>  
+                            </select>
+                          <div class="hidden" data-for="help_for_dhcp6_debug">
+                            <?=gettext("Set debug log level for DHCPv6 client"); ?>
+                          </div>
+                        </td>
                         </tr>
                         <tr>
                           <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
