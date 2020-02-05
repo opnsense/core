@@ -483,7 +483,10 @@ endif;?>
                   <td><?=htmlentities($data['descr']);?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
-                  <td><?=$data['online'];?></td>
+                  <td class="text-nowrap">
+                    <span class="glyphicon glyphicon-<?=$data['online']=='online' ? 'signal' : 'ban-circle';?>" aria-hidden="true"></span>
+                    <?=$data['online'];?>
+                  </td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
 <?php if (!empty($data['if'])): ?>
