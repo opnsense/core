@@ -115,8 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!in_array($pconfig['proto'], $laggprotos)) {
         $input_errors[] = gettext("Protocol supplied is invalid");
     }
-    if (!empty($pconfig['mtu']) && ($pconfig['mtu'] < 576 || $pconfig['mtu'] > 9214)) {
-        $input_errors[] = sprintf(gettext("The MTU must be greater than %d bytes and less than %d."), 576, 9214);
+
+    if (!empty($pconfig['mtu'])) {
+        $mtu_low = 576;
+        $mtu_high = 9214;
+        if ($pconfig['mtu'] < $mtu_low || $pconfig['mtu'] > $mtu_high) {
+            $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
+        }
     }
 
     if (count($input_errors) == 0) {

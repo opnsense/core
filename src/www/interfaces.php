@@ -908,8 +908,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid MAC address must be specified.");
         }
         if (!empty($pconfig['mtu'])) {
-            if ($pconfig['mtu'] < 576 || $pconfig['mtu'] > 9214) {
-                $input_errors[] = sprintf(gettext("The MTU must be greater than %d bytes and less than %d."), 576, 9214);
+            $mtu_low = 576;
+            $mtu_high = 9214;
+            if ($pconfig['mtu'] < $mtu_low || $pconfig['mtu'] > $mtu_high) {
+                $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
             }
 
             if (stristr($a_interfaces[$if]['if'], "_vlan")) {
