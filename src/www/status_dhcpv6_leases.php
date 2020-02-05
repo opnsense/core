@@ -484,7 +484,7 @@ endif;?>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
                   <td class="text-nowrap">
-                    <span class="glyphicon glyphicon-<?=$data['online']=='online' ? 'signal' : 'ban-circle';?>" aria-hidden="true"></span>
+                    <i class="fa fa-<?=$data['online']=='online' ? 'signal' : 'ban';?>"></i>
                     <?=$data['online'];?>
                   </td>
                   <td><?=$data['act'];?></td>
