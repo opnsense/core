@@ -216,6 +216,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         flush();
     }
 
+    $ifconfig_details = legacy_interfaces_details();
     $radvdconf = "# Automatically generated, do not edit\n";
 
     /* Process all links which need the router advertise daemon */
@@ -457,8 +458,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $dnslist = array();
 
-        $ifcfgipv6 = find_interface_ipv6($realif);
-        $networkv6 = find_interface_networkv6($realif);
+        list ($ifcfgipv6, $networkv6) = dhcpd_getaddr6($if, $realif, $ifconfig_details);
 
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
