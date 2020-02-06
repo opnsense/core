@@ -1336,6 +1336,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $dpdline = '';
                 }
 
+                if (!empty($ph1ent['inactivity_timeout'])) {
+                    $inactivityline = "inactivity = {$ph1ent['inactivity_timeout']}s";
+                } else {
+                    $inactivityline = '';
+                }
+
                 if (!empty($ph1ent['lifetime'])) {
                     $ikelifeline = "ikelifetime = {$ph1ent['lifetime']}s";
                 } else {
@@ -1602,6 +1608,7 @@ conn con<<connectionId>>
   installpolicy = {$installpolicy}
   {$tunneltype}
   {$dpdline}
+  {$inactivityline}
   left = {$left_spec}
   right = {$right_spec}
   {$right_any}
