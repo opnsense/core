@@ -483,7 +483,9 @@ endif;?>
                   <td><?=htmlentities($data['descr']);?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
-                  <td><?=$data['online'];?></td>
+                  <td>
+                    <i class="fa fa-<?=$data['online']=='online' ? 'signal' : 'ban';?>" title="<?=$data['online'];?>" data-toggle="tooltip"></i>
+                  </td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
 <?php if (!empty($data['if'])): ?>
