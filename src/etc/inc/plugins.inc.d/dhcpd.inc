@@ -302,7 +302,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $stanzas = array();
 
-        $networkv6 = find_interface_networkv6($realif);
+        list ($ifcfgipv6, $networkv6) = dhcpd_getaddr6($dhcpv6if, $realif, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -376,9 +376,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
             $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $server = find_interface_ipv6($realif);
-            if (is_ipaddrv6($server)) {
-                $dnslist_tmp[] = $server;
+            if (is_ipaddrv6($ifcfgipv6)) {
+                $dnslist_tmp[] = $ifcfgipv6;
             } else {
                 log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
             }
