@@ -421,7 +421,9 @@ legacy_html_escape_form_data($leases);
                   <td><?=$data['descr'];?></td>
                   <td><?= !empty($data['start']) ? adjust_utc($data['start']) : '' ?></td>
                   <td><?= !empty($data['end']) ? adjust_utc($data['end']) : '' ?></td>
-                  <td><?=$data['online'];?></td>
+                  <td>
+                    <i class="fa fa-<?=$data['online']=='online' ? 'signal' : 'ban';?>" title="<?=$data['online'];?>" data-toggle="tooltip"></i>
+                  </td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
 <?php if (!empty($data['if'])): ?>
