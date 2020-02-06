@@ -1266,7 +1266,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            list ($ifcfgipv6) = dhcpd_getaddr6(get_real_interface($ifname, 'inet6'), $ifconfig_details);
+            list ($ifcfgipv6) = dhcpd_getaddr6($ifname, get_real_interface($ifname, 'inet6'), $ifconfig_details);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
@@ -1420,7 +1420,7 @@ EOD;
 
         $realif = get_real_interface($dhcpv6if, 'inet6');
 
-        list ($ifcfgipv6, $networkv6) = dhcpd_getaddr6($realif, $ifconfig_details);
+        list ($ifcfgipv6, $networkv6) = dhcpd_getaddr6($dhcpv6if, $realif, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
             continue;
@@ -1846,7 +1846,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     }
 }
 
-function dhcpd_getaddr6($realif, $ifconfig_details)
+function dhcpd_getaddr6($interface, $realif, $ifconfig_details = null)
 {
     $ifcfgipv6 = $networkv6 = null;
 
@@ -1859,7 +1859,7 @@ function dhcpd_getaddr6($realif, $ifconfig_details)
         $addrparts = explode('/', $tmpaddr);
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] == $dhcpv6if && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
+            if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
                 /* do not care about alias */
                 continue 2;
             }

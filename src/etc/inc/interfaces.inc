@@ -4570,7 +4570,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                 }
                 $result["{$address['ipaddr']}{$scope}{$suffix}"] = array(
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
-                    'scope' => !empty($scope),
+                    'scope' => !empty($address['link-local']),
                     'name' => $realif,
                 );
             }
