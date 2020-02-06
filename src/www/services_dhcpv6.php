@@ -313,7 +313,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         exit;
     }
-
 }
 
 $service_hook = 'dhcpd6';
@@ -322,7 +321,8 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-list ($wifcfgip, $wifcfgsn) = explode('/', find_interface_networkv6(get_real_interface($if, 'inet6'), false));
+list ($wifcfgip, $networkv6) = dhcpd_getaddr6($if, get_real_interface($if, 'inet6'));
+$wifcfgsn = explode('/', $networkv6)[1];
 
 if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     $prefix_array = array();
