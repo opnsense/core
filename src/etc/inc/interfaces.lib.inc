@@ -293,7 +293,11 @@ function legacy_interfaces_details($intf = null)
             }
             if (isset($tmp['subnetbits'])) {
                 $result[$current_interface]["ipv6"][] = $tmp;
-                // sort link local to bottom, leave rest of sorting as-is (primary address on top)
+                // sort link local to the top, this puts GUA addresses first leave rest of sorting as-is (primary address on top)
+                usort($result[$current_interface]["ipv6"], function ($a, $b) {
+                    return  $b['link-local'] - $a['link-local'];
+                });
+                // sort link local to the bottom, leave rest of sorting as-is (GUA primary address on top)
                 usort($result[$current_interface]["ipv6"], function ($a, $b) {
                     return $a['link-local'] - $b['link-local'];
                 });
