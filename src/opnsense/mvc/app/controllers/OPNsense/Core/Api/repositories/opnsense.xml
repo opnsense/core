@@ -65,6 +65,10 @@
             <description>LeaseWeb (HTTP, Washington, D.C., US)</description>
         </mirror>
         <mirror>
+           <url>http://quantum-mirror.hu/mirrors/pub/opnsense</url>
+           <description>Quantum Mirror (HTTP, Hungary, HU)</description>
+        </mirror>
+        <mirror>
             <url>http://mirror.marwan.ma/opnsense/</url>
             <description>MARWAN (HTTP, Rabat, MA)</description>
         </mirror>
