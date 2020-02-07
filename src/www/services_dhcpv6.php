@@ -615,14 +615,10 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                           <?=gettext("Choose the dynamic DNS domain key algorithm.");?><br />
                           <select name='ddnsdomainalgorithm' id="ddnsdomainalgorithm" class="selectpicker">
 <?php
-                          foreach (array("hmac-md5", "hmac-sha512") as $algorithm) :
-                            $selected = "";
-                            if (! empty($pconfig['ddnsdomainalgorithm'])) {
-                              if ($pconfig['ddnsdomainalgorithm'] == $algorithm) {
-                                $selected = "selected=\"selected\"";
-                              }
-                            }?>
-                            <option value="<?=$algorithm;?>" <?=$selected;?>><?=$algorithm;?></option>
+                          foreach (array("hmac-md5", "hmac-sha512") as $algorithm) :?>
+                              <option value="<?=$algorithm;?>" <?=$pconfig['ddnsdomainalgorithm'] == $algorithm ? "selected=\"selected\"" :"";?>>
+                                <?=$algorithm;?>
+                              </option>
 <?php
                           endforeach; ?>
                           </select>

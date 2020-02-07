@@ -1129,14 +1129,12 @@ EOD;
         }
 
         $dhcpdifs[] = get_real_interface($dhcpif);
-        if (!empty($newzone['domain-name'])) {
-            if (isset($dhcpifconf['ddnsupdate'])) {
-                $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
-                $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'];
-                $newzone['ddnsdomainkey'] = $dhcpifconf['ddnsdomainkey'];
-                $newzone['ddnsdomainalgorithm'] = !empty($dhcpifconf['ddnsdomainalgorithm']) ? $dhcpifconf['ddnsdomainalgorithm'] : "hmac-md5";
-                $ddns_zones[] = $newzone;
-            }
+        if (!empty($newzone['domain-name']) && isset($dhcpifconf['ddnsupdate']) && is_ipaddrv4($dhcpifconf['ddnsdomainprimary'])) {
+            $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
+            $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'];
+            $newzone['ddnsdomainkey'] = $dhcpifconf['ddnsdomainkey'];
+            $newzone['ddnsdomainalgorithm'] = !empty($dhcpifconf['ddnsdomainalgorithm']) ? $dhcpifconf['ddnsdomainalgorithm'] : "hmac-md5";
+            $ddns_zones[] = $newzone;
         }
 
         if ($dhcpifconf['omapi'] && !$omapi_added) {
@@ -1173,58 +1171,21 @@ EOD;
     }
 }
 
-function dhcpd_zones($ddns_zones, $ipv6 = false)
+function dhcpd_zones($ddns_zones, $ipproto = 'inet')
 {
     $dhcpdconf = '';
-
     if (is_array($ddns_zones)) {
         $added_zones = array();
         $added_keys = array();
         foreach ($ddns_zones as $zone) {
-            if (!is_array($zone) || empty($zone) || !is_array($zone['dns-servers'])) {
-                continue;
-            }
-
-            $primary = $zone['dns-servers'][0];
-            $secondary = empty($zone['dns-servers'][1]) ? "" : $zone['dns-servers'][1];
-
-            // Make sure we aren't using any invalid DNS servers.
-            if ($ipv6) {
-                if (!is_ipaddrv6($primary)) {
-                    if (is_ipaddrv6($secondary)) {
-                        $primary = $secondary;
-                        $secondary = "";
-                    } else {
-                        continue;
-                    }
-                }
-            } else {
-                if (!is_ipaddrv4($primary)) {
-                    if (is_ipaddrv4($secondary)) {
-                        $primary = $secondary;
-                        $secondary = "";
-                    } else {
-                        continue;
-                    }
-                }
-            }
-
+            $versionsuffix = $ipproto == "inet6" ? "6" : "";
             // We don't need to add zones multiple times.
             foreach (array($zone['domain-name'], $zone['ptr-domain']) as $domain) {
                 if (!empty($domain) && !in_array($domain, $added_zones)) {
                     /* dhcpdconf2 is injected *after* the key */
                     $dhcpdconf2 = "zone {$domain}. {\n";
-                    if ($ipv6) {
-                        $dhcpdconf2 .= "  primary6 {$primary};\n";
-                        if (is_ipaddrv6($secondary)) {
-                            $dhcpdconf2 .= "  secondary6 {$secondary};\n";
-                        }
-                    } else {
-                        $dhcpdconf2 .= "  primary {$primary};\n";
-                        if (is_ipaddrv4($secondary)) {
-                            $dhcpdconf2 .= "  secondary {$secondary};\n";
-                        }
-                    }
+                    // XXX: $zone['dns-servers'] only contains one item, ref $newzone['dns-servers']
+                    $dhcpdconf2 .= "  primary{$versionsuffix} {$zone['dns-servers'][0]};\n";
                     if (!empty($zone['ddnsdomainkeyname']) && !empty($zone['ddnsdomainkey'])) {
                         if (!in_array($zone['ddnsdomainkeyname'], $added_keys)) {
                             $dhcpdconf .= "key {$zone['ddnsdomainkeyname']} {\n";
@@ -1576,14 +1537,12 @@ EOD;
             }
         }
 
-        if (!empty($newzone['domain-name'])) {
-            if (isset($dhcpv6ifconf['ddnsupdate'])) {
-                $newzone['dns-servers'] = array($dhcpv6ifconf['ddnsdomainprimary']);
-                $newzone['ddnsdomainkeyname'] = $dhcpv6ifconf['ddnsdomainkeyname'];
-                $newzone['ddnsdomainkey'] = $dhcpv6ifconf['ddnsdomainkey'];
-                $newzone['ddnsdomainalgorithm'] = !empty($dhcpv6ifconf['ddnsdomainalgorithm']) ? $dhcpv6ifconf['ddnsdomainalgorithm'] : "hmac-md5";
-                $ddns_zones[] = $newzone;
-            }
+        if (!empty($newzone['domain-name']) && isset($dhcpv6ifconf['ddnsupdate']) && is_ipaddrv6($dhcpv6ifconf['ddnsdomainprimary'])) {
+            $newzone['dns-servers'] = array($dhcpv6ifconf['ddnsdomainprimary']);
+            $newzone['ddnsdomainkeyname'] = $dhcpv6ifconf['ddnsdomainkeyname'];
+            $newzone['ddnsdomainkey'] = $dhcpv6ifconf['ddnsdomainkey'];
+            $newzone['ddnsdomainalgorithm'] = !empty($dhcpv6ifconf['ddnsdomainalgorithm']) ? $dhcpv6ifconf['ddnsdomainalgorithm'] : "hmac-md5";
+            $ddns_zones[] = $newzone;
         }
 
         if (preg_match("/poes/si", $dhcpv6if)) {
@@ -1605,7 +1564,7 @@ EOD;
     if ($need_ddns_updates) {
         $dhcpdv6conf .= "\nddns-update-style interim;\n";
         $dhcpdv6conf .= "update-static-leases on;\n";
-        $dhcpdv6conf .= dhcpd_zones($ddns_zones, $ipv6 = true);
+        $dhcpdv6conf .= dhcpd_zones($ddns_zones, "inet6");
     } else {
         $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
