@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['prefixrange_length'] = $config['dhcpdv6'][$if]['prefixrange']['prefixlength'];
     }
     $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domainsearchlist', 'ddnsdomain',
-        'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url', 'netmask',
+        'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'bootfile_url', 'netmask',
         'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap');
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // simple 1-on-1 copy
             $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domainsearchlist',
-              'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url',
+              'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'bootfile_url',
               'dhcpv6leaseinlocaltime');
             foreach ($config_copy_fieldsnames as $fieldname) {
                 if (!empty($pconfig[$fieldname])) {
@@ -612,6 +612,20 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                           <input name="ddnsdomainkeyname" type="text" id="ddnsdomainkeyname" size="20" value="<?=$pconfig['ddnsdomainkeyname'];?>" />
                           <?=gettext("Enter the dynamic DNS domain key secret which will be used to register client names in the DNS server.");?>
                           <input name="ddnsdomainkey" type="text" id="ddnsdomainkey" size="20" value="<?=$pconfig['ddnsdomainkey'];?>" />
+                          <?=gettext("Choose the dynamic DNS domain key algorithm.");?><br />
+                          <select name='ddnsdomainalgorithm' id="ddnsdomainalgorithm" class="selectpicker">
+<?php
+                          foreach (array("hmac-md5", "hmac-sha512") as $algorithm) :
+                            $selected = "";
+                            if (! empty($pconfig['ddnsdomainalgorithm'])) {
+                              if ($pconfig['ddnsdomainalgorithm'] == $algorithm) {
+                                $selected = "selected=\"selected\"";
+                              }
+                            }?>
+                            <option value="<?=$algorithm;?>" <?=$selected;?>><?=$algorithm;?></option>
+<?php
+                          endforeach; ?>
+                          </select>
                         </div>
                       </td>
                     </tr>

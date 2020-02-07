@@ -1173,7 +1173,7 @@ EOD;
     }
 }
 
-function dhcpd_zones($ddns_zones)
+function dhcpd_zones($ddns_zones, $ipv6 = false)
 {
     $dhcpdconf = '';
 
@@ -1188,13 +1188,24 @@ function dhcpd_zones($ddns_zones)
             $primary = $zone['dns-servers'][0];
             $secondary = empty($zone['dns-servers'][1]) ? "" : $zone['dns-servers'][1];
 
-            // Make sure we aren't using any invalid or IPv6 DNS servers.
-            if (!is_ipaddrv4($primary)) {
-                if (is_ipaddrv4($secondary)) {
-                    $primary = $secondary;
-                    $secondary = "";
-                } else {
-                    continue;
+            // Make sure we aren't using any invalid DNS servers.
+            if ($ipv6) {
+                if (!is_ipaddrv6($primary)) {
+                    if (is_ipaddrv6($secondary)) {
+                        $primary = $secondary;
+                        $secondary = "";
+                    } else {
+                        continue;
+                    }
+                }
+            } else {
+                if (!is_ipaddrv4($primary)) {
+                    if (is_ipaddrv4($secondary)) {
+                        $primary = $secondary;
+                        $secondary = "";
+                    } else {
+                        continue;
+                    }
                 }
             }
 
@@ -1203,9 +1214,16 @@ function dhcpd_zones($ddns_zones)
                 if (!empty($domain) && !in_array($domain, $added_zones)) {
                     /* dhcpdconf2 is injected *after* the key */
                     $dhcpdconf2 = "zone {$domain}. {\n";
-                    $dhcpdconf2 .= "  primary {$primary};\n";
-                    if (is_ipaddrv4($secondary)) {
-                        $dhcpdconf2 .= "  secondary {$secondary};\n";
+                    if ($ipv6) {
+                        $dhcpdconf2 .= "  primary6 {$primary};\n";
+                        if (is_ipaddrv6($secondary)) {
+                            $dhcpdconf2 .= "  secondary6 {$secondary};\n";
+                        }
+                    } else {
+                        $dhcpdconf2 .= "  primary {$primary};\n";
+                        if (is_ipaddrv4($secondary)) {
+                            $dhcpdconf2 .= "  secondary {$secondary};\n";
+                        }
                     }
                     if (!empty($zone['ddnsdomainkeyname']) && !empty($zone['ddnsdomainkey'])) {
                         if (!in_array($zone['ddnsdomainkeyname'], $added_keys)) {
@@ -1406,7 +1424,7 @@ EOD;
 
     $dhcpdv6ifs = array();
     $ddns_zones = array();
-    $nsupdate = false;
+    $need_ddns_updates = false;
 
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
@@ -1434,6 +1452,7 @@ EOD;
         $newzone = array();
 
         if (isset($dhcpv6ifconf['ddnsupdate'])) {
+            $need_ddns_updates = true;
             if (!empty($dhcpv6ifconf['ddnsdomain'])) {
                 $dnscfgv6 .= "  ddns-domainname \"{$dhcpv6ifconf['ddnsdomain']}\";\n";
                 $newzone['domain-name'] = $dhcpv6ifconf['ddnsdomain'];
@@ -1441,7 +1460,20 @@ EOD;
                 $newzone['domain-name'] = $config['system']['domain'];
             }
 
-            $nsupdate = true;
+            $subnetv6 = explode("/", $networkv6)[0];
+            $addr = inet_pton($subnetv6);
+            $addr_unpack = unpack('H*hex', $addr);
+            $addr_hex = $addr_unpack['hex'];
+            $revsubnet = array_reverse(str_split($addr_hex));
+            foreach ($revsubnet as $octet) {
+                if ($octet == "0") {
+                    array_shift($revsubnet);
+                } else {
+                    break;
+                }
+            }
+
+            $newzone['ptr-domain'] = implode(".", $revsubnet) . ".ip6.arpa";
         }
 
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
@@ -1549,8 +1581,7 @@ EOD;
                 $newzone['dns-servers'] = array($dhcpv6ifconf['ddnsdomainprimary']);
                 $newzone['ddnsdomainkeyname'] = $dhcpv6ifconf['ddnsdomainkeyname'];
                 $newzone['ddnsdomainkey'] = $dhcpv6ifconf['ddnsdomainkey'];
-                /* XXX not implemented for IPv6 */
-                $newzone['ddnsdomainalgorithm'] = 'hmac-md5';
+                $newzone['ddnsdomainalgorithm'] = !empty($dhcpv6ifconf['ddnsdomainalgorithm']) ? $dhcpv6ifconf['ddnsdomainalgorithm'] : "hmac-md5";
                 $ddns_zones[] = $newzone;
             }
         }
@@ -1571,9 +1602,10 @@ EOD;
         }
     }
 
-    if ($nsupdate) {
+    if ($need_ddns_updates) {
         $dhcpdv6conf .= "\nddns-update-style interim;\n";
-        $dhcpdv6conf .= dhcpd_zones($ddns_zones);
+        $dhcpdv6conf .= "update-static-leases on;\n";
+        $dhcpdv6conf .= dhcpd_zones($ddns_zones, $ipv6 = true);
     } else {
         $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
