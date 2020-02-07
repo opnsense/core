@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['interface'] = "wan";
     $pconfig['iketype'] = "ikev2";
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
-    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany
+    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
@@ -233,6 +233,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
+    if (!empty($pconfig['inactivity_timeout']) && !is_numericint($pconfig['inactivity_timeout'])) {
+        $input_errors[] = gettext("The inactivity timeout must be an integer.");
+    }
+
     if ((!empty($pconfig['lifetime']) && !is_numeric($pconfig['lifetime']))) {
         $input_errors[] = gettext("The P1 lifetime must be an integer.");
     }
@@ -378,7 +382,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
-        ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz
+        ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
         ,nat_traversal,auto,mobike";
 
@@ -1175,6 +1179,15 @@ endforeach; ?>
                         <div class="hidden" data-for="help_for_dpd_enable">
                           <?=gettext("Choose the behavior here what to do if a peer is detected to be unresponsive to DPD requests."); ?>
                         </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_inactivity_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Inactivity timeout"); ?></td>
+                    <td>
+                      <input name="inactivity_timeout" type="text" id="inactivity_timeout" value="<?=$pconfig['inactivity_timeout'];?>" />
+                      <div class="hidden" data-for="help_for_inactivity_timeout">
+                        <?=gettext("Time before closing inactive tunnels if they don't handle any traffic. (seconds)"); ?>
                       </div>
                     </td>
                   </tr>
