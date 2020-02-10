@@ -324,19 +324,16 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
-                    $radvdconf .= "\t\tAdvRouterAddr on;\n";
                     break;
                 case 'router':
                     $radvdconf .= "\t\tAdvOnLink off;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
-                    $radvdconf .= "\t\tAdvRouterAddr on;\n";
                     break;
                 case 'assist':
                 case 'unmanaged':
                 case 'stateless':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
                     $radvdconf .= "\t\tAdvAutonomous on;\n";
-                    $radvdconf .= "\t\tAdvRouterAddr on;\n";
                     break;
                 default:
                     break;
@@ -495,7 +492,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
         $radvdconf .= "\t\tAdvOnLink on;\n";
         $radvdconf .= "\t\tAdvAutonomous on;\n";
-        $radvdconf .= "\t\tAdvRouterAddr on;\n";
         $radvdconf .= "\t};\n";
 
         if (count($dnslist) > 0) {
