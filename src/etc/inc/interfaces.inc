@@ -4153,7 +4153,7 @@ function get_interfaces_info()
         }
 
         if (!empty($ifinfo['ipv6'])) {
-            /* XXX ... so avoid intermediate breakage by using IPv4 realif for here */
+            /* XXX ... so avoid intermediate breakage by using IPv4 realif here */
             list ($primary6, $subnet6) = interfaces_primary_address6($ifdescr, $realif, $all_intf_stats);
             if (!empty($primary6)) {
                 $ifinfo['ipaddrv6'] = $primary6;
