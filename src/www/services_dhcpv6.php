@@ -321,7 +321,7 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-list ($wifcfgip, $networkv6) = dhcpd_getaddr6($if, get_real_interface($if, 'inet6'));
+list ($wifcfgip, $networkv6) = dhcpd_getaddr6($if);
 $wifcfgsn = explode('/', $networkv6)[1];
 
 if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
