@@ -4154,7 +4154,7 @@ function get_interfaces_info()
 
         if (!empty($ifinfo['ipv6'])) {
             /* XXX ... so avoid intermediate breakage by using IPv4 realif here */
-            list ($primary6, $subnet6) = interfaces_primary_address6($ifdescr, $ifinfo['if'], $all_intf_details);
+            list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $ifinfo['if'], $all_intf_details);
             if (!empty($primary6)) {
                 $ifinfo['ipaddrv6'] = $primary6;
                 $ifinfo['subnetv6'] = $subnet6;
@@ -4589,7 +4589,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
 
 function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null)
 {
-    $ifcfgipv6 = $networkv6 = null;
+    $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
     if ($realif === null) {
         $realif = get_real_interface($interface, 'inet6');
@@ -4611,9 +4611,10 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         }
 
         $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
+        $subnetbitsv6 = $addrparts[1];
         $ifcfgipv6 = $addrparts[0];
         break; /* all done */
     }
 
-    return [ $ifcfgipv6, $networkv6 ];
+    return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
 }
