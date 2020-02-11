@@ -480,16 +480,15 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
-        $radvdconf .= "\tMinRtrAdvInterval 3;\n";
-        $radvdconf .= "\tMaxRtrAdvInterval 10;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
+        $radvdconf .= "\tAdvManagedFlag on;\n";
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\tprefix {$networkv6} {\n";
         if ($autotype == 'slaac') {
             /* XXX also of interest in the future, see hardcoded prefix above */
             $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
         }
+        $radvdconf .= "\t\tDeprecatePrefix on;\n";
         $radvdconf .= "\t\tAdvOnLink on;\n";
         $radvdconf .= "\t\tAdvAutonomous on;\n";
         $radvdconf .= "\t};\n";
