@@ -273,6 +273,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $pconfig['certmethod'] = null;
         }
+        if (isset($_GET['caref'])) {
+            $pconfig['caref'] = $_GET['caref'];
+        }
         $pconfig['keytype'] = "RSA";
         $pconfig['keylen'] = "2048";
         $pconfig['digest_alg'] = "sha256";
