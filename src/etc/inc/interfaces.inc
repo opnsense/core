@@ -3043,15 +3043,26 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 
     chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
-        array(
-            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
-            "/var/etc/dhcp6c_{$interface}.conf",
-            "/var/run/dhcp6c_{$wanif}.pid",
-            "{$wanif}"
-        )
-    );
+    if(empty($wancfg['adv_dhcp6_debug']) && empty($wancfg['dhcp6norelease'])) {
+        $dhcp6ccommand = exec_safe(
+            "/usr/local/sbin/dhcp6c -c %s -p %s %s",
+            array(            
+                "/var/etc/dhcp6c_{$interface}.conf",
+                "/var/run/dhcp6c_{$wanif}.pid",
+                "{$wanif}"
+            )
+        );
+    } else {    
+        $dhcp6ccommand = exec_safe(
+            "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+            array(
+                '-' . (empty($wancfg['adv_dhcp6_debug']) ? '' : $wancfg['adv_dhcp6_debug']) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
+                "/var/etc/dhcp6c_{$interface}.conf",
+                "/var/run/dhcp6c_{$wanif}.pid",
+                "{$wanif}"
+            )
+        );
+    }
 
     $rtsoldscript = "#!/bin/sh\n";
     $rtsoldscript .= "# this file was auto-generated, do not edit\n";
