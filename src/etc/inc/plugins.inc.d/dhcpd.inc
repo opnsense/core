@@ -499,7 +499,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if ($vip['interface'] == $if && is_ipaddrv6($vip['subnet'])) {
                 $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
-                $radvdconf .= "\tprefix $subnetv6}/{$vip['subnet_bits']} {\n";
+                $radvdconf .= "\tprefix {$subnetv6}/{$vip['subnet_bits']} {\n";
                 $radvdconf .= "\t\tDeprecatePrefix on;\n";
                 $radvdconf .= "\t\tAdvOnLink on;\n";
                 $radvdconf .= "\t\tAdvAutonomous on;\n";
