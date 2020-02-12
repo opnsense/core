@@ -53,9 +53,6 @@ CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.25
 
-_FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
-FLAVOUR?=	${_FLAVOUR:[1]}
-
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
 CORE_REPOSITORY?=	${CORE_ABI}/latest
 .elif "${FLAVOUR}" == LibreSSL
