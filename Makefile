@@ -379,6 +379,8 @@ style: style-python style-php
 license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
+sync: license
+
 dhparam:
 .for BITS in 1024 2048 4096
 	${OPENSSL} dhparam -out \
