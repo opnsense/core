@@ -730,15 +730,6 @@ function unbound_acls_subnets()
         }
     }
 
-    /* expand subnet for DHCPv6 trackers */
-    foreach (array_keys($active_interfaces) as $if) {
-        if (isset($config['interfaces'][$if]['track6-interface'])) {
-            $realif = get_real_interface($if, 'inet6');
-            $active_interfaces[$realif] = [];
-            $active_interfaces[$realif]['net6'] = 64 - calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']);
-        }
-    }
-
     /* add our networks for active interfaces including localhost */
     $subnets = array('127.0.0.1/8', '::1/64');
 
