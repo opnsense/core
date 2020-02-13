@@ -150,16 +150,17 @@ function filter_core_get_antilockout()
  * @return array containing ports
  * @throws \OPNsense\Base\ModelException
  */
-function filter_core_get_port_alias($aliasname, $aliases = array())
+function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject=null)
 {
     $response = array();
     $aliases[] = $aliasname;
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $aliased) {
+    $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
+    foreach ($aliasObject->aliasIterator() as $aliased) {
         if ($aliasname == $aliased['name'] && $aliased['type'] == 'port') {
             foreach (explode("\n", $aliased['content']) as $address) {
                 if (is_alias($address)) {
                     if (!in_array($address, $aliases)) {
-                        foreach (filter_core_get_port_alias($address, $aliases) as $port) {
+                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject) as $port) {
                             if (!in_array($port, $response)) {
                                 $response[] = $port;
                             }
