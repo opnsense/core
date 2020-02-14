@@ -28,10 +28,10 @@
 
 namespace OPNsense\Firewall\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Firewall\Alias;
-use \OPNsense\Core\Config;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Firewall\Alias;
+use OPNsense\Core\Config;
 
 /**
  * @package OPNsense\Firewall

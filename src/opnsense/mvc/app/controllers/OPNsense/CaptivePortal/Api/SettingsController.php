@@ -30,7 +30,7 @@
 
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\ApiMutableModelControllerBase;
 
 /**
  * Class SettingsController Handles settings related API actions for Captive Portal

@@ -28,7 +28,7 @@
 
 namespace tests\OPNsense\Monit\Api;
 
-use \OPNsense\Core\Config;
+use OPNsense\Core\Config;
 
 class MonitTest extends \PHPUnit\Framework\TestCase
 {

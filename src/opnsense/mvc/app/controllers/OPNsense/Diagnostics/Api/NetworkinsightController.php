@@ -30,11 +30,11 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Diagnostics\Netflow;
-use \OPNsense\Core\Config;
-use \OPNsense\Core\Backend;
-use \Phalcon\Filter;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Diagnostics\Netflow;
+use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
+use Phalcon\Filter;
 
 /**
  * Class NetworkinsightController

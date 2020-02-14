@@ -30,7 +30,7 @@
 
 namespace OPNsense\Base\Filters;
 
-use \Phalcon\Filter;
+use Phalcon\Filter;
 
 /**
  * Class queryFilter sanitize query expressions (normal text + wildcard)

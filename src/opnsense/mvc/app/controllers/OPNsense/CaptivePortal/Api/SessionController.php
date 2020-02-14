@@ -30,9 +30,9 @@
 
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\CaptivePortal\CaptivePortal;
 
 /**
  * Class SessionController

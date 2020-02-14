@@ -28,10 +28,10 @@
 
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Auth\AuthenticationFactory;
-use \OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Auth\AuthenticationFactory;
+use OPNsense\CaptivePortal\CaptivePortal;
 
 /**
  * Class AccessController

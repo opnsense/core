@@ -28,7 +28,7 @@
 
 namespace OPNsense\Firewall;
 
-use \OPNsense\Core\Config;
+use OPNsense\Core\Config;
 
 /**
  * Class Plugin

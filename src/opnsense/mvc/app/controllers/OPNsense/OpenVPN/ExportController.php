@@ -28,7 +28,7 @@
 
 namespace OPNsense\OpenVPN;
 
-use \OPNsense\Base\IndexController as BaseIndexController;
+use OPNsense\Base\IndexController as BaseIndexController;
 
 /**
  * Class ExportController

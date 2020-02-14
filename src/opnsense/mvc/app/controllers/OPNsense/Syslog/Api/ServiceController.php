@@ -28,8 +28,8 @@
 
 namespace OPNsense\Syslog\Api;
 
-use \OPNsense\Base\ApiMutableServiceControllerBase;
-use \OPNsense\Core\Backend;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * {@inheritdoc}

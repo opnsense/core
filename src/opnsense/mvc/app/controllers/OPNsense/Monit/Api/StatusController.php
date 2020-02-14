@@ -30,8 +30,8 @@
 
 namespace OPNsense\Monit\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Monit\Monit;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Monit\Monit;
 
 /**
  * Class StatusController

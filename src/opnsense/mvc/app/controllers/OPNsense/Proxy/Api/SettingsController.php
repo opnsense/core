@@ -29,10 +29,10 @@
 
 namespace OPNsense\Proxy\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\Cron\Cron;
-use \OPNsense\Core\Config;
-use \OPNsense\Base\UIModelGrid;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Cron\Cron;
+use OPNsense\Core\Config;
+use OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController

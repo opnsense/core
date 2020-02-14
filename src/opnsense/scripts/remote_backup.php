@@ -1,5 +1,6 @@
 #!/usr/local/bin/php
 <?php
+
 require_once('script/load_phalcon.php');
 
 use OPNsense\Backup\BackupFactory;

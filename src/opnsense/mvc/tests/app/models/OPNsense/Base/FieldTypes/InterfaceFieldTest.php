@@ -34,8 +34,8 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\InterfaceField;
-use \Phalcon\DI\FactoryDefault;
+use OPNsense\Base\FieldTypes\InterfaceField;
+use Phalcon\DI\FactoryDefault;
 use OPNsense\Core\Config;
 
 class InterfaceFieldTest extends Field_Framework_TestCase

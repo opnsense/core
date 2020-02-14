@@ -34,7 +34,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\BooleanField;
+use OPNsense\Base\FieldTypes\BooleanField;
 
 class BooleanFieldTest extends Field_Framework_TestCase
 {

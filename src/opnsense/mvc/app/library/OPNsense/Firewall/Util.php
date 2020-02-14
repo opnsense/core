@@ -28,8 +28,8 @@
 
 namespace OPNsense\Firewall;
 
-use \OPNsense\Core\Config;
-use \OPNsense\Firewall\Alias;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Alias;
 
 /**
  * Class Util, common static firewall support functions

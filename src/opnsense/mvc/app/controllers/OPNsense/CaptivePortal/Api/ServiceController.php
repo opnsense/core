@@ -30,12 +30,12 @@
 
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\CaptivePortal\CaptivePortal;
-use \OPNsense\Core\Config;
-use \OPNsense\Base\UIModelGrid;
-use \Phalcon\Filter;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\Core\Config;
+use OPNsense\Base\UIModelGrid;
+use Phalcon\Filter;
 
 /**
  * Class ServiceController

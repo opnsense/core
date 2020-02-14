@@ -34,9 +34,9 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\AutoNumberField;
-use \OPNsense\Base\FieldTypes\ContainerField;
-use \OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Base\FieldTypes\AutoNumberField;
+use OPNsense\Base\FieldTypes\ContainerField;
+use OPNsense\Base\FieldTypes\ArrayField;
 
 class AutoNumberFieldTest extends Field_Framework_TestCase
 {

@@ -30,8 +30,8 @@
 
 namespace OPNsense\Base;
 
-use \OPNsense\Core\ACL;
-use \OPNsense\Core\Config;
+use OPNsense\Core\ACL;
+use OPNsense\Core\Config;
 
 /**
  * Class ApiMutableModelControllerBase, inherit this class to implement

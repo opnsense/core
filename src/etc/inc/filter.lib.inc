@@ -150,7 +150,7 @@ function filter_core_get_antilockout()
  * @return array containing ports
  * @throws \OPNsense\Base\ModelException
  */
-function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject=null)
+function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject = null)
 {
     $response = array();
     $aliases[] = $aliasname;

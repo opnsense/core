@@ -30,8 +30,8 @@
 
 namespace OPNsense\Monit\Api;
 
-use \OPNsense\Base\ApiMutableServiceControllerBase;
-use \OPNsense\Core\Backend;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * Class ServiceController

@@ -28,12 +28,12 @@
 
 namespace OPNsense\OpenVPN\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Base\UserException;
-use \OPNsense\Core\Config;
-use \OPNsense\Core\Backend;
-use \OPNsense\OpenVPN\Export;
-use \OPNsense\OpenVPN\ExportFactory;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
+use OPNsense\OpenVPN\Export;
+use OPNsense\OpenVPN\ExportFactory;
 
 /**
  * Class ExportController handles client export functions

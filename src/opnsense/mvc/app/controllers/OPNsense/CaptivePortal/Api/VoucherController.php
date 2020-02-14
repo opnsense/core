@@ -30,8 +30,8 @@
 
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Auth\AuthenticationFactory;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Auth\AuthenticationFactory;
 
 /**
  * Class VoucherController

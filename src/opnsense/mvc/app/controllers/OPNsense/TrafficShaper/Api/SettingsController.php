@@ -30,9 +30,9 @@
 
 namespace OPNsense\TrafficShaper\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\TrafficShaper\TrafficShaper;
-use \OPNsense\Core\Config;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\TrafficShaper\TrafficShaper;
+use OPNsense\Core\Config;
 
 /**
  * Class SettingsController Handles settings related API actions for the Traffic Shaper

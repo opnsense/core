@@ -28,7 +28,7 @@
 
 namespace tests\OPNsense\Base;
 
-use \OPNsense\Core\Config;
+use OPNsense\Core\Config;
 
 require_once 'BaseModel/TestModel.php';
 
