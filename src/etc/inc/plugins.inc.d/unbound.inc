@@ -128,7 +128,6 @@ private-address: 100.64.0.0/10
 private-address: 127.0.0.0/8     # Loopback Localhost
 private-address: 169.254.0.0/16
 private-address: 172.16.0.0/12
-private-address: 192.0.0.0/24    # IANA IPv4 special purpose net
 private-address: 192.0.2.0/24    # Documentation network TEST-NET
 private-address: 192.168.0.0/16
 private-address: 198.18.0.0/15   # Used for testing inter-network communications
