@@ -421,11 +421,15 @@ class Voucher extends Base implements IAuthConnector
                     $row['starttime'] = time();
                     $this->setStartTime($username, $row['starttime']);
                 }
-                if ($row['expirytime'] > 0 && $row['expirytime'] > time()) {
-                    $this->lastAuthProperties['session_timeout'] = $row['expirytime'] - time();
-                    return true;
-                } elseif (time() - $row['starttime'] < $row['validity']) {
-                    $this->lastAuthProperties['session_timeout'] = $row['validity'] - (time() - $row['starttime']);
+                $is_never_expire = $row['expirytime'] === 0;
+                $is_not_expired = $row['expirytime'] > 0 && $row['expirytime'] > time();
+                $is_valid = time() - $row['starttime'] < $row['validity'];
+                if (($is_never_expire || $is_not_expired) && $is_valid) {
+                    $this->lastAuthProperties['session_timeout'] = min(
+                        // use PHP_INT_MAX as "never expire" for session_timeout
+                        $row['validity'] - (time() - $row['starttime']),
+                        $row['expirytime'] > 0 ? $row['expirytime'] - time() : PHP_INT_MAX
+                    );
                     return true;
                 }
             }
