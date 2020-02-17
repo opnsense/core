@@ -55,6 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
+    if(!isset($pconfig['aliases_ptr'])) {
+        $pconfig['aliases_ptr'] = array();
+    }
+
     $pconfig['aliases'] =  array();
     if (isset($pconfig['aliases_host'])) {
         $pconfig['aliases']['item'] = array();
