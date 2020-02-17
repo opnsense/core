@@ -576,6 +576,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
+
     $input_errors = array();
     if (!empty($_POST['if']) && !empty($a_interfaces[$_POST['if']])) {
         $if = $_POST['if'];
@@ -622,6 +623,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($a_interfaces[$if]['wireless'])) {
             interface_sync_wireless_clones($a_interfaces[$if], false);
         }
+        $a_interfaces[$if]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
 
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
