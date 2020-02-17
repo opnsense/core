@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2020 Deciso B.V.
+# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,30 +25,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-check
-health
-install
-lock
-reinstall
-remove
-security
-type
-unlock
-upgrade
-confplugins
-"
+PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+PACKAGES=`/usr/local/sbin/pluginctl -g system.firmware.plugins | /usr/bin/sed 's/,/ /g'`
 
-SELECTED=${1}
-ARGUMENT=${2}
+# Truncate upgrade progress file
+: > ${PKG_PROGRESS_FILE}
 
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
-	fi
-
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
-done
+echo "***GOT REQUEST TO INSTALL: $PACKAGES***" >> ${PKG_PROGRESS_FILE}
+pkg install -y $PACKAGES >> ${PKG_PROGRESS_FILE} 2>&1
+pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
+echo '***DONE***' >> ${PKG_PROGRESS_FILE}
