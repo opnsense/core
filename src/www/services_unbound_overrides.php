@@ -152,6 +152,7 @@ include_once("head.inc");
                         <td><strong><?= gettext('Type') ?></strong></td>
                         <td><strong><?= gettext('Value') ?></strong></td>
                         <td><strong><?= gettext('Description') ?></strong></td>
+                        <td><strong><?= gettext('PTR Record') ?></strong></td>
                         <td class="text-nowrap">
                           <a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                         </td>
@@ -178,6 +179,7 @@ include_once("head.inc");
                           }?>
                         </td>
                         <td><?=$hostent['descr'];?></td>
+                        <td><span class="fa <?= empty($hostent['noptr']) ? 'fa-check-square-o' : 'fa-square-o';?>"></span></td>
                         <td class="text-nowrap">
                           <a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                           <a href="#" data-id="<?=$i;?>" class="act_delete_host btn btn-xs btn-default"><i class="fa fa-trash fa-fw"></i></a>
@@ -191,6 +193,7 @@ include_once("head.inc");
                         <td><?=strtoupper($hostent['rr']);?></td>
                         <td><?= gettext('Alias for');?> <?=$hostent['host'] ? htmlspecialchars($hostent['host'] . '.' . $hostent['domain']) : htmlspecialchars($hostent['domain']);?></td>
                         <td><?= !empty($alias['descr']) ? $alias['descr'] : $hostent['descr'] ?></td>
+                        <td><span class="fa <?= empty($hostent['noptr']) ? 'fa-check-square-o' : 'fa-square-o';?>"></span></td>
                         <td class="text-nowrap">
                           <a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
                         </td>

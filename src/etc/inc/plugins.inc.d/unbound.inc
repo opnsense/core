@@ -601,6 +601,7 @@ function unbound_add_host_entries()
                 'domain' => $host['domain'],
                 'descr' => $host['descr'],
                 'host' => $host['host'],
+                'ptr' => empty($host['noptr']),
             ));
 
             if (!empty($host['aliases']['item'])) {
@@ -609,6 +610,7 @@ function unbound_add_host_entries()
                         'domain' => !empty($alias['domain']) ? $alias['domain'] : $aliases[0]['domain'],
                         'descr' => !empty($alias['descr']) ? $alias['descr'] : $aliases[0]['descr'],
                         'host' => !empty($alias['host']) ? $alias['host'] : $aliases[0]['host'],
+                        'ptr' => empty($alias['noptr']),
                     );
                 }
             }
@@ -631,7 +633,9 @@ function unbound_add_host_entries()
                             $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                             $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
                         } else {
-                            $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$alias['host']}{$alias['domain']}\"\n";
+                            if($alias['ptr']) {
+                                $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$alias['host']}{$alias['domain']}\"\n";
+                            }
                             $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
                         }
                         break;

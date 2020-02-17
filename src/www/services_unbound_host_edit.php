@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
     }
     $pconfig = array();
-    foreach (array('rr', 'host', 'domain', 'ip', 'mxprio', 'mx', 'descr', 'aliases') as $fieldname) {
+    foreach (array('rr', 'host', 'domain', 'ip', 'mxprio', 'mx', 'descr', 'noptr', 'aliases') as $fieldname) {
         if (isset($id) && !empty($a_hosts[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_hosts[$id][$fieldname];
         } else {
@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'domain' => $pconfig['aliases_domain'][$opt_seq],
                 'descr' => $pconfig['aliases_descr'][$opt_seq],
                 'host' => $opt_host,
+                'noptr' => !in_array('yes-' . $opt_seq, $pconfig['aliases_ptr']),
             );
         }
     }
@@ -133,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $hostent['mxprio'] = $pconfig['mxprio'];
         $hostent['mx'] = $pconfig['mx'];
         $hostent['descr'] = $pconfig['descr'];
+        $hostent['noptr'] = empty($pconfig['ptr']);
         $hostent['aliases'] = $pconfig['aliases'];
 
         if (isset($id)) {
@@ -192,6 +194,14 @@ include("head.inc");
         } else {
             $(this).parent().parent().remove();
         }
+        indexRows();
+    }
+    function indexRows() {
+        var i = 0;
+        $('#aliases_table > tbody > tr > td > input[type=checkbox]').each(function(){
+          $(this).val("yes-"+i);
+          i++;
+        });
     }
     // add new detail record
     $("#addNew").click(function(){
@@ -201,6 +211,7 @@ include("head.inc");
           $(this).val("");
         });
         $(".act-removerow").click(removeRow);
+        indexRows();
     });
     $(".act-removerow").click(removeRow);
   });
@@ -302,6 +313,15 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_ptr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("PTR Record");?></td>
+                    <td>
+                      <input name="ptr" type="checkbox" id="ptr" value="yes" <?=empty($pconfig['noptr']) ? 'checked="checked"' : '';?> />
+                      <div class="hidden" data-for="help_for_ptr">
+                        <?= gettext("If this option is set, a PTR Record will be created."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases"); ?></td>
                     <td>
                       <table class="table table-striped table-condensed" id="aliases_table">
@@ -311,13 +331,15 @@ include("head.inc");
                             <th id="detailsHeading1"><?=gettext("Host"); ?></th>
                             <th id="detailsHeading3"><?=gettext("Domain"); ?></th>
                             <th id="updatefreqHeader" ><?=gettext("Description");?></th>
+                            <th id="ptr" ><?=gettext("PTR Record");?></th>
                           </tr>
                         </thead>
                         <tbody>
 <?php
                         $aliases = !empty($pconfig['aliases']['item']) ? $pconfig['aliases']['item'] : array();
-                        $aliases[] = array('number' => null, 'value' => null, 'type' => null);
+                        $aliases[] = array('number' => null, 'value' => null, 'type' => null, 'noptr' => false);
 
+                        $i = 0;
                         foreach($aliases as $item): ?>
                           <tr>
                             <td>
@@ -332,13 +354,17 @@ include("head.inc");
                             <td>
                               <input name="aliases_descr[]" type="text" value="<?=$item['descr'];?>" />
                             </td>
+                            <td>
+                              <input name="aliases_ptr[]" type="checkbox" value="yes-<?=$i;?>" <?=empty($item['noptr']) ? 'checked="checked"' : '';?> />
+                            </td>
                           </tr>
 <?php
+                          $i++;
                         endforeach;?>
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td colspan="4">
+                            <td colspan="5">
                               <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></div>
                             </td>
                           </tr>
