@@ -541,10 +541,10 @@ if ($config['interfaces']['lan']) {
 
 if (empty($config['interfaces']['lan'])) {
     unset($config['interfaces']['lan']);
-    if (isset($config['dhcpd']) && isset($config['dhcpd']['lan'])) {
+    if (isset($config['dhcpd']['lan'])) {
         unset($config['dhcpd']['lan']);
     }
-    if (isset($config['dhcpdv6']) && isset($config['dhcpdv6']['lan'])) {
+    if (isset($config['dhcpdv6']['lan'])) {
         unset($config['dhcpdv6']['lan']);
     }
     unset($config['nat']);
