@@ -454,13 +454,30 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $dnslist = array();
 
+        /* XXX We'll skip this interface unless a valid address can be found for it. */
+
+        $hasipv6 = false; 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $realif, $ifconfig_details);
+
+        if (is_ipaddrv6($ifcfgipv6)) {
+            $hasipv6 = true;
+         }
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            } else {
+                $hasipv6 = true;
+            }
+        }
 
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
+            $hasipv6 = true;
             $networkv6 = '2000::/64';
-        } elseif (!is_subnetv6($networkv6)) {
-            $networkv6 = '::/64';
+        } elseif (!is_subnetv6($networkv6)) { 
+            /* XXX This is suicidal and RADVD barfs big time. Why is it here? */
+            $networkv6 = '::/64'; 
         }
 
         if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
@@ -477,51 +494,55 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-        $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
-        $radvdconf .= "interface {$realif} {\n";
-        $radvdconf .= "\tAdvSendAdvert on;\n";
-        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
-        $radvdconf .= "\tAdvManagedFlag on;\n";
-        $radvdconf .= "\tAdvOtherConfigFlag on;\n";
+        /* XXX if we have a valid v6 address on the interface then write the config, else skip it. */
 
-        if (!empty($networkv6)) {
-            $radvdconf .= "\tprefix {$networkv6} {\n";
-            if ($autotype == 'slaac') {
-                /* XXX also of interest in the future, see hardcoded prefix above */
-                $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
-            }
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
-            $radvdconf .= "\t\tAdvOnLink on;\n";
-            $radvdconf .= "\t\tAdvAutonomous on;\n";
-            $radvdconf .= "\t};\n";
-        }
+        if($hasipv6) {
+            $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+            $radvdconf .= "interface {$realif} {\n";
+            $radvdconf .= "\tAdvSendAdvert on;\n";
+            $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
+            $radvdconf .= "\tAdvManagedFlag on;\n";
+            $radvdconf .= "\tAdvOtherConfigFlag on;\n";
 
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
-                continue;
+            if (!empty($networkv6)) {
+                $radvdconf .= "\tprefix {$networkv6} {\n";
+                if ($autotype == 'slaac') {
+                    /* XXX also of interest in the future, see hardcoded prefix above */
+                    $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+                }
+                $radvdconf .= "\t\tDeprecatePrefix on;\n";
+                $radvdconf .= "\t\tAdvOnLink on;\n";
+                $radvdconf .= "\t\tAdvAutonomous on;\n";
+                $radvdconf .= "\t};\n";
             }
 
-            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
-            $vipnetv6 = "{$subnetv6}/{$vip['subnet_bits']}";
+            foreach (config_read_array('virtualip', 'vip') as $vip) {
+                if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                    continue;
+                }
 
-            if ($vipnetv6 == $networkv6) {
-                continue;
+                $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+                $vipnetv6 = "{$subnetv6}/{$vip['subnet_bits']}";
+
+                if ($vipnetv6 == $networkv6) {
+                    continue;
+                }
+
+                $radvdconf .= "\tprefix {$vipnetv6} {\n";
+                $radvdconf .= "\t\tDeprecatePrefix on;\n";
+                $radvdconf .= "\t\tAdvOnLink on;\n";
+                $radvdconf .= "\t\tAdvAutonomous on;\n";
+                $radvdconf .= "\t};\n";
             }
 
-            $radvdconf .= "\tprefix {$vipnetv6} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
-            $radvdconf .= "\t\tAdvOnLink on;\n";
-            $radvdconf .= "\t\tAdvAutonomous on;\n";
-            $radvdconf .= "\t};\n";
+            if (count($dnslist) > 0) {
+                $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " { };\n";
+            }
+            if (!empty($config['system']['domain'])) {
+                $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
+            }
+            $radvdconf .= "};\n";
         }
-
-        if (count($dnslist) > 0) {
-            $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " { };\n";
-        }
-        if (!empty($config['system']['domain'])) {
-            $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
-        }
-        $radvdconf .= "};\n";
     }
 
     file_put_contents('/var/etc/radvd.conf', $radvdconf);
