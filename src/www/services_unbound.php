@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
             $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
         }
-        if (!empty($pconfig['dns64prefix']) && !is_subnetv6("{$pconfig['dns64prefix']}/96")) {
+        if (!empty($pconfig['dns64prefix']) && !is_subnetv6($pconfig['dns64prefix'])) {
             $input_errors[] = gettext("You must specify a valid DNS64 prefix.");
         }
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
@@ -243,10 +243,9 @@ include_once("head.inc");
                         <td><a id="help_for_dns64" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS64");?></td>
                         <td>
                           <input name="dns64" type="checkbox" id="dns64" value="yes" <?=!empty($pconfig['dns64']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable DNS64 Support') ?>
+                          <?= gettext('Enable DNS64 Support') ?><br />
                           <?= gettext('DNS64 prefix') ?>
                           <input name="dns64prefix" type="text" id="dns64prefix" value="<?= $pconfig['dns64prefix'] ?>" />
-                          <?= gettext('/96') ?>
                           <div class="hidden" data-for="help_for_dns64">
                             <?= gettext("If this option is set, Unbound will synthesize AAAA " .
                             "records from A records if no actual AAAA records are present. " .
