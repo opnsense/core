@@ -41,6 +41,8 @@ from log_helper import reverse_log_reader, fetch_clog
 import argparse
 squid_ext_timeformat = r'.*(\[\d{1,2}/[A-Za-z]{3}/\d{4}:\d{1,2}:\d{1,2}:\d{1,2} \+\d{4}\]).*'
 squid_timeformat = r'^(\d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}).*'
+freeradius_timeformat = r'^([A-Za-z]{3}\s[A-Za-z]{3}\s\d{1,2}\s\d{2}:\d{2}:\d{2}\s\d{4}\s[:]).*'
+telegraf_timeformat = r'^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z).*'
 
 if __name__ == '__main__':
     # handle parameters
@@ -118,6 +120,18 @@ if __name__ == '__main__':
                             ts = datetime.datetime.strptime(grp, "%Y/%m/%d %H:%M:%S")
                             record['timestamp'] = ts.isoformat()
                             record['line'] = record['line'][19:].strip()
+                        elif re.match(freeradius_timeformat, record['line']):
+                            tmp = re.match(freeradius_timeformat, record['line'])
+                            grp = tmp.group(1)
+                            ts = datetime.datetime.strptime(grp, "%a %b %d %H:%M:%S %Y :")
+                            record['timestamp'] = ts.isoformat()
+                            record['line'] = record['line'][26:].strip()
+                        elif re.match(telegraf_timeformat, record['line']):
+                            tmp = re.match(telegraf_timeformat, record['line'])
+                            grp = tmp.group(1)
+                            ts = datetime.datetime.strptime(grp, "%Y-%m-%dT%H:%M:%SZ")
+                            record['timestamp'] = ts.isoformat()
+                            record['line'] = record['line'][20:].strip()
                         result['rows'].append(record)
                     elif result['total_rows'] > offset + limit:
                         # do not fetch data until end of file...
