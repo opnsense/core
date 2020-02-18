@@ -534,6 +534,28 @@ class FirmwareController extends ApiControllerBase
         return $response;
     }
 
+
+    /**
+     * install missing configured plugins
+     * @param string $pkg_name package name to reinstall
+     * @return array status
+     * @throws \Exception
+     */
+    public function installConfiguredPluginsAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = strtolower(trim($backend->configdRun('firmware confplugins')));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
     /**
      * install package
      * @param string $pkg_name package name to install
@@ -731,6 +753,12 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
+        $config = Config::getInstance()->object();
+        $configPlugins = array();
+        if (isset($config->system->firmware->plugins)) {
+            $configPlugins = explode(",", $config->system->firmware->plugins);
+        }
+
         $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license', 'repository', 'origin');
         $backend = new Backend();
         $response = array();
@@ -777,6 +805,7 @@ class FirmwareController extends ApiControllerBase
                     $translated['provided'] = '1';
                 }
                 $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
+                $translated['configured'] = in_array($translated['name'], $configPlugins) ? '1' : '0';
                 $packages[$translated['name']] = $translated;
 
                 /* figure out local and remote plugins */
@@ -805,8 +834,8 @@ class FirmwareController extends ApiControllerBase
 
         uasort($plugins, function ($a, $b) {
             return strnatcasecmp(
-                ($a['installed'] ? '0' : '1') . $a['name'],
-                ($b['installed'] ? '0' : '1') . $b['name']
+                ($a['configured'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['configured'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
             );
         });
 

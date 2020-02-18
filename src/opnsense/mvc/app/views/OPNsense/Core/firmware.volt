@@ -388,6 +388,7 @@
 
             var local_count = 0;
             var plugin_count = 0;
+            var missing_plugin_count = 0;
             var changelog_count = 0;
             var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
@@ -442,6 +443,11 @@
                     status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
                     bold_off = '</b>';
+                } else if (row['installed'] == "0" && row['configured'] == "1") {
+                    status_text = ' ({{ lang._('missing') }})';
+                    bold_on = '<b class="text-warning plugin_missing">';
+                    bold_off = '</b>';
+                    missing_plugin_count += 1;
                 }
                 if (row['provided'] == "0") {
                     // this state overwrites installed on purpose
@@ -472,6 +478,22 @@
                 $('#pluginlist > tbody').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
+            } else if (missing_plugin_count > 0) {
+                let $tr = $("<tr id='plugin_install_tr'/>");
+                let $td = $("<td colspan=5 style='text-align:center;'>");
+                $td.append('<button class="btn btn-default reinstall_missing_plugins"><i class="fa fa-refresh"></i>&nbsp; {{ lang._('Install missing plugins') }}</button>');
+                $tr.append($td);
+                $('#pluginlist > tbody').prepend($tr);
+                $(".reinstall_missing_plugins").tooltip({
+                  'title': '{{ lang._('According to the configuration there is a mismatch between the installed and configured plugins') }}'
+                });
+                $(".reinstall_missing_plugins").click(function(){
+                    $(".reinstall_missing_plugins > i.fa").addClass("fa-pulse");
+                    ajaxCall('/api/core/firmware/installConfiguredPlugins', {}, function(data,status) {
+                        $(".plugin_missing").removeClass("text-warning");
+                        $("#plugin_install_tr").remove();
+                    });
+                });
             }
 
             $("#changeloglist > tbody").empty();
