@@ -104,12 +104,15 @@ function unbound_generate_config()
     // Setup optimization
     $optimization = unbound_optimization();
 
-    // Setup DNSSEC support
+    // Setup DNS64 and DNSSEC support
+    if (isset($config['unbound']['dns64'])) {
+        $module_config = 'dns64 ';
+    }
     if (isset($config['unbound']['dnssec'])) {
-        $module_config = 'validator iterator';
+        $module_config .= 'validator iterator';
         $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
-        $module_config = 'iterator';
+        $module_config .= 'iterator';
     }
 
     // Setup DNS Rebinding
