@@ -2956,14 +2956,19 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     }
 
     $count = 0; // Loop counter to increment the ia-na and ia-pd's
-    
+
     // We must do ALL of the WAN interfaces in one go to allow for multiwan dhcp6.
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $wancfg) {
-        
+        $realif = get_real_interface($if,'inet6');
+        $intf_stats = legacy_interface_stats($realif);
+        /* Is interface up? - Don't add it if it's down. It upsets dhcp6c and radvd */
+        if($intf_stats['link state'] != 2) {
+            continue;
+        }
         if (!empty($wancfg['ipaddrv6']) && $wancfg['ipaddrv6'] == 'dhcp6') {
             
             if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
-                // DHCP6 Config File Override - If override then it must do multiple interfaces. There can be only one dhcp6c.conf!        
+                /* XXX DHCP6 Config File Override - If override then it must do multiple interfaces. There can be only one dhcp6c.conf!  */
                 $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
                 if (file_exists($dhcp6cfile)) {
                     $dhcp6cconf = file_get_contents($dhcp6cfile);
@@ -2972,11 +2977,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
                     log_error("DHCP6 config file override does not exist: '{$dhcp6cfile}'");
                 }
             } else if ($wancfg['adv_dhcp6_config_advanced']) {
-                // DHCP6 Config File Advanced - per interface
-                $dhcp6cconf .= DHCP6_Config_File_Advanced($if, $wancfg, $count);
+                /* DHCP6 Config File Advanced - per interface */
+                $dhcp6cconf .= DHCP6_Config_File_Advanced($realif, $if, $wancfg, $count);
             } else {
-                 // Seperate the basic conf creation for multiple WAN dhcp6c use
-                $dhcp6cconf .= DHCP6_Config_File_Basic($if, $wancfg, $count);
+                 /* Seperate the basic conf creation for multiple WAN dhcp6c use */
+                $dhcp6cconf .= DHCP6_Config_File_Basic($realif, $if, $wancfg, $count);
             }
             $count++;
         }
@@ -3030,6 +3035,12 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     // Add the interfaces on the end, as there may be more than one interface - multiple WAN dhcp6c.
     
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $wancfg) {
+        // check the interface is up
+        $realif = get_real_interface($if,'inet6');
+        $intf_stats = legacy_interface_stats($realif);
+        if($intf_stats['link state'] != 2) {
+            continue;
+        }
         if (!empty($wancfg['ipaddrv6']) && $wancfg['ipaddrv6'] == 'dhcp6' && $wancfg['enable'] == true) {
             
             $dhcp6ccommand = exec_safe("{$dhcp6ccommand} %s", get_real_interface($if, 'inet6'));
@@ -3047,14 +3058,14 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     $rtsoldscript .= "val=`pgrep dhcp6c`\n";
     $rtsoldscript .= "pid=`cat /var/run/dhcp6c.pid`\n";
     $rtsoldscript .= "if [ \$pid -eq \$val and \$pid -gt 0 ]; then\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c client)\"\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c client\"\n";
     $rtsoldscript .= "\t/bin/pkill -HUP -F \$pid\n";
     $rtsoldscript .= "else\n";
     $rtsoldscript .= "\t/usr/bin/killall -9 -c dhcp6c\n";
     $rtsoldscript .= "if [ -f '/var/run/dhcp6c.pid' ]; then\n";
     $rtsoldscript .= "\trm '/var/run/dhcp6c.pid'\n";
     $rtsoldscript .= "fi\n";    
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6c client)\"\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6 client\"\n";
     $rtsoldscript .= "\t$dhcp6ccommand\n";
     $rtsoldscript .= "fi\n";
 
@@ -3062,13 +3073,12 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     @chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 }
 
-function DHCP6_Config_File_Basic($interface, $wancfg, $count)
+function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $count)
 {
     // Iterate through WAN interfaces looking for dhcp6, only add if set.
 
     $dhcp6cconf = ''; // zeroing just for belt and braces during dev
-
-    $realif = get_real_interface($interface);
+                            
     $dhcp6cconf .=  "interface {$realif} {\n";
 
     /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
@@ -3104,6 +3114,10 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $count)
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
             }
             foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
+                $intf_stats = legacy_interface_stats(get_real_interface($friendly));
+                if($intf_stats['link state'] != 2) {
+                    continue;
+                }
                 if (is_numeric($lancfg['track6-prefix-id'])) {
                     $trackifv6 = get_real_interface($friendly, 'inet6');
                     $dhcp6cconf .= "  prefix-interface {$trackifv6} {\n";
@@ -3118,7 +3132,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $count)
     return $dhcp6cconf;
 }
 
-function DHCP6_Config_File_Advanced($interface, $wancfg, $count)
+function DHCP6_Config_File_Advanced($realif, $interface, $wancfg, $count)
 {
     $send_options = "";
     
@@ -3146,8 +3160,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $count)
     if ($wancfg['adv_dhcp6_interface_statement_script'] != '') {
         $script = "  script \"{$wancfg['adv_dhcp6_interface_statement_script']}\";\n";
     }
-    
-    $realif = get_real_interface($interface);
+
     $interface_statement  = "interface {$realif} {\n";
     $interface_statement .= $send_options;
     $interface_statement .= $request_options;
