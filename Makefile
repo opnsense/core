@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2020 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -379,7 +379,7 @@ style: style-python style-php
 license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
-sync: license
+sync: license plist-fix
 
 dhparam:
 .for BITS in 1024 2048 4096
