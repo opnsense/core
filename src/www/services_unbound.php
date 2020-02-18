@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable'] = isset($a_unboundcfg['enable']);
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
+    $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
     $pconfig['forwarding'] = isset($a_unboundcfg['forwarding']);
     $pconfig['reglladdr6'] = empty($a_unboundcfg['noreglladdr6']);
     $pconfig['regdhcp'] = isset($a_unboundcfg['regdhcp']);
@@ -111,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
+            $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
             $a_unboundcfg['forwarding'] = !empty($pconfig['forwarding']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
@@ -226,6 +228,17 @@ include_once("head.inc");
                         <td>
                           <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Enable DNSSEC Support') ?>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_dns64" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS64");?></td>
+                        <td>
+                          <input name="dns64" type="checkbox" id="dns64" value="yes" <?=!empty($pconfig['dns64']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Enable DNS64 Support') ?>
+                          <div class="hidden" data-for="help_for_dns64">
+                            <?= gettext("If this option is set, Unbound will synthesize AAAA " .
+                            "records from A records if no actual AAAA records are present."); ?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
