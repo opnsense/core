@@ -105,8 +105,12 @@ function unbound_generate_config()
     $optimization = unbound_optimization();
 
     // Setup DNS64 and DNSSEC support
+    $dns64prefix = '';
     if (isset($config['unbound']['dns64'])) {
         $module_config = 'dns64 ';
+        if (!empty($config['unbound']['dns64prefix'])) {
+            $dns64prefix = "dns64-prefix: {$config['unbound']['dns64prefix']}";
+        }
     }
     if (isset($config['unbound']['dnssec'])) {
         $module_config .= 'validator iterator';
@@ -322,6 +326,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['key_cache_slabs']}
 {$optimization['so_rcvbuf']}
 {$anchor_file}
+{$dns64prefix}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
 
