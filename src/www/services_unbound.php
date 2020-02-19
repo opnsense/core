@@ -243,14 +243,15 @@ include_once("head.inc");
                         <td><a id="help_for_dns64" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS64");?></td>
                         <td>
                           <input name="dns64" type="checkbox" id="dns64" value="yes" <?=!empty($pconfig['dns64']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable DNS64 Support') ?><br />
-                          <?= gettext('DNS64 prefix') ?>
-                          <input name="dns64prefix" type="text" id="dns64prefix" value="<?= $pconfig['dns64prefix'] ?>" />
+                          <?= gettext('Enable DNS64 Support') ?>
                           <div class="hidden" data-for="help_for_dns64">
                             <?= gettext("If this option is set, Unbound will synthesize AAAA " .
-                            "records from A records if no actual AAAA records are present. " .
-                            "If no DNS64 prefix is specified, the default prefix 64:ff9b::/96 " .
-                            "(RFC 6052) will be used."); ?>
+                            "records from A records if no actual AAAA records are present."); ?>
+                          </div>
+                          <input placeholder="<?=gettext("DNS64 prefix");?>" title="<?=gettext("DNS64 prefix");?>" name="dns64prefix" type="text" id="dns64prefix" value="<?= $pconfig['dns64prefix'] ?>" />
+                          <div class="hidden" data-for="help_for_dns64">
+                            <?= gettext("If no DNS64 prefix is specified, the default prefix " .
+                            "64:ff9b::/96 (RFC 6052) will be used."); ?>
                           </div>
                         </td>
                       </tr>
