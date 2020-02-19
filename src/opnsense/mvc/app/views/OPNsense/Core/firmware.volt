@@ -482,14 +482,25 @@
                 let $tr = $("<tr id='plugin_install_tr'/>");
                 let $td = $("<td colspan=5 style='text-align:center;'>");
                 $td.append('<button class="btn btn-default reinstall_missing_plugins"><i class="fa fa-refresh"></i>&nbsp; {{ lang._('Install missing plugins') }}</button>');
+                $td.append('&nbsp;');
+                $td.append('<button class="btn btn-default accept_plugins"><i class="fa fa-check"></i>&nbsp; {{ lang._('Accept plugins') }}</button>');
                 $tr.append($td);
                 $('#pluginlist > tbody').prepend($tr);
                 $(".reinstall_missing_plugins").tooltip({
                   'title': '{{ lang._('According to the configuration there is a mismatch between the installed and configured plugins') }}'
                 });
+                $(".accept_plugins").tooltip({
+                  'title': '{{ lang._('Accept current state, capture installed plugins to config') }}'
+                });
                 $(".reinstall_missing_plugins").click(function(){
                     $(".reinstall_missing_plugins > i.fa").addClass("fa-pulse");
                     ajaxCall('/api/core/firmware/installConfiguredPlugins', {}, function(data,status) {
+                        $(".plugin_missing").removeClass("text-warning");
+                        $("#plugin_install_tr").remove();
+                    });
+                });
+                $(".accept_plugins").click(function(){
+                    ajaxCall('/api/core/firmware/acceptConfiguredPlugins', {}, function(data,status) {
                         $(".plugin_missing").removeClass("text-warning");
                         $("#plugin_install_tr").remove();
                     });
