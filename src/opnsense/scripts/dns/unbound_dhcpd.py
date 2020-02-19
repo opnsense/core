@@ -90,7 +90,8 @@ def main():
     while True:
         dhcpd_changed = False
         for lease in dhcpdleases.watch():
-            if 'ends' in lease and lease['ends'] > time.time() and 'client-hostname' in lease and 'address' in lease:
+            if 'ends' in lease and lease['ends'] > time.time() \
+                    and 'client-hostname' in lease and 'address' in lease and lease['client-hostname']:
                 cached_leases[lease['address']] = lease
                 dhcpd_changed = True
         if time.time() - last_cleanup > cleanup_interval:
