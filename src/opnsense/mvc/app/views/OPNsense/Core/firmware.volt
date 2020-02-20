@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -445,11 +445,11 @@
                     bold_off = '</b>';
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
-                    bold_on = '<b class="text-warning plugin_missing">';
-                    bold_off = '</b>';
+                    bold_on = '<span class="text-danger plugin_missing">';
+                    bold_off = '</span>';
                     missing_plugin_count += 1;
                 }
-                if (row['provided'] == "0") {
+                if (row['provided'] == "0" && row['installed'] == "1") {
                     // this state overwrites installed on purpose
                     status_text = ' ({{ lang._('orphaned') }})';
                 }

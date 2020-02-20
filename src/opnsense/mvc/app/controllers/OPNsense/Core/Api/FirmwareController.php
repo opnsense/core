@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -870,6 +870,20 @@ class FirmwareController extends ApiControllerBase
         $response['package'] = array();
         foreach ($packages as $package) {
             $response['package'][] = $package;
+        }
+
+        foreach ($configPlugins as $missing) {
+            if (!array_key_exists($missing, $plugins)) {
+                $plugins[$missing] = [];
+                foreach ($keys as $key) {
+                    $plugins[$missing][$key] = gettext('N/A');
+                }
+                $plugins[$missing]['path'] = gettext('N/A');
+                $plugins[$missing]['configured'] = "1";
+                $plugins[$missing]['installed'] = "0";
+                $plugins[$missing]['provided'] = "0";
+                $plugins[$missing]['name'] = $missing;
+            }
         }
 
         uasort($plugins, function ($a, $b) {
