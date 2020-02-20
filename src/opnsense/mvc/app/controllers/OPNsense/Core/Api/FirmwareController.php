@@ -548,7 +548,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $response['status'] = strtolower(trim($backend->configdRun('firmware confplugins')));
+            $response['status'] = strtolower(trim($backend->configdRun('firmware sync')));
         } else {
             $response['status'] = 'failure';
         }

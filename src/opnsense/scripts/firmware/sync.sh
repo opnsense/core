@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 2020 Deciso B.V.
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGES=`/usr/local/sbin/pluginctl -g system.firmware.plugins | /usr/bin/sed 's/,/ /g'`
+# XXX the issue here is we do get all plugins, but some are already installed
+PACKAGES=$(/usr/local/sbin/pluginctl -g system.firmware.plugins | /usr/bin/sed 's/,/ /g')
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO INSTALL: $PACKAGES***" >> ${PKG_PROGRESS_FILE}
-pkg install -y $PACKAGES >> ${PKG_PROGRESS_FILE} 2>&1
+echo "***GOT REQUEST TO SYNC: ${PACKAGES}***" >> ${PKG_PROGRESS_FILE}
+for PACKAGE in ${PACKAGES}; do
+	# XXX check which we really need to sync :)
+	pkg install -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+done
 pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
