@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // read form data
     $pconfig = array();
-    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domainsearchlist');
+    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domain', 'domainsearchlist');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if]['staticmap'][$id][$fieldname];
@@ -55,6 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+
+    // backward compatibility: migrate 'domain' to 'domainsearchlist'
+    if (empty($pconfig['domainsearchlist'])) {
+        $pconfig['domainsearchlist'] = $pconfig['domain'];
+    }
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -120,12 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig[$fieldname])) {
                 $mapent[$fieldname] = $pconfig[$fieldname];
             }
-        }
-
-        // set 'domain' to first entry of 'domainsearchlist'
-        // (used only for DNS registration)
-        if (!empty($pconfig['domainsearchlist'])) {
-            $mapent['domain'] = $domain_array[0];
         }
 
         if (isset($id)) {
