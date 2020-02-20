@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['prefixrange_to'] = $config['dhcpdv6'][$if]['prefixrange']['to'];
         $pconfig['prefixrange_length'] = $config['dhcpdv6'][$if]['prefixrange']['prefixlength'];
     }
-    $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domainsearchlist', 'ddnsdomain',
+    $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domain', 'domainsearchlist', 'ddnsdomain',
         'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'bootfile_url', 'netmask',
         'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap');
     foreach ($config_copy_fieldsnames as $fieldname) {
@@ -85,6 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dns2'] = !empty($config['dhcpdv6'][$if]['dnsserver'][1]) ? $config['dhcpdv6'][$if]['dnsserver'][1] : "";
     $pconfig['ntp1'] = !empty($config['dhcpdv6'][$if]['ntpserver'][0]) ? $config['dhcpdv6'][$if]['ntpserver'][0] : "";
     $pconfig['ntp2'] = !empty($config['dhcpdv6'][$if]['ntpserver'][1]) ? $config['dhcpdv6'][$if]['ntpserver'][1] : "";
+
+    // backward compatibility: migrate 'domain' to 'domainsearchlist'
+    if (empty($pconfig['domainsearchlist'])) {
+        $pconfig['domainsearchlist'] = $pconfig['domain'];
+    }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // handle identifiers and actions
@@ -271,11 +276,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (!empty($pconfig['ntp2'])) {
                 $dhcpdconf['ntpserver'][] = $pconfig['ntp2'];
-            }
-            // set 'domain' to first entry of 'domainsearchlist'
-            // (used only for DNS registration of static mappings)
-            if (!empty($pconfig['domainsearchlist'])) {
-                $dhcpdconf['domain'] = $domain_array[0];
             }
             $dhcpdconf['numberoptions'] = $pconfig['numberoptions'];
 
