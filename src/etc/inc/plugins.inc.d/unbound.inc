@@ -680,8 +680,20 @@ function unbound_add_host_entries()
                     }
 
                     $domain = $config['system']['domain'];
-                    if ($host['domain']) {
+                    // set domain to first entry of host's domain search list
+                    if ($host['domainsearchlist']) {
+                        $domain_array=preg_split("/[ ;]+/",$host['domainsearchlist']);
+                        $domain = $domain_array[0];
+                    // backward compatibilty: 'domain' was replaced by 'domainsearchlist'
+                    // in dhcpv6 static mappings, but may still exist in older configs
+                    } elseif ($host['domain']) {
                         $domain = $host['domain'];
+                    // set domain to first entry of interface's domain search list
+                    } elseif ($dhcpifconf['domainsearchlist']) {
+                        $domain_array=preg_split("/[ ;]+/",$dhcpifconf['domainsearchlist']);
+                        $domain = $domain_array[0];
+                    // backward compatibilty: 'domain' was removed from dhcpv6
+                    // interface settings, but may still exist in older configs
                     } elseif ($dhcpifconf['domain']) {
                         $domain = $dhcpifconf['domain'];
                     }
