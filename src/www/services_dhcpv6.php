@@ -272,6 +272,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig['ntp2'])) {
                 $dhcpdconf['ntpserver'][] = $pconfig['ntp2'];
             }
+            // set 'domain' to first entry of 'domainsearchlist'
+            // (used only for DNS registration of static mappings)
+            if (!empty($pconfig['domainsearchlist'])) {
+                $dhcpdconf['domain'] = $domain_array[0];
+            }
             $dhcpdconf['numberoptions'] = $pconfig['numberoptions'];
 
             // copy structures back in
@@ -558,7 +563,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" />
                         <div class="hidden" data-for="help_for_domainsearchlist">
-                          <?=gettext("The default is to use the domain name of this system as the domain search list option provided by DHCPv6. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.");?>
+                          <?=gettext("The default is to use the domain name of this system as the domain search list option provided by DHCPv6. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator. The first domain in this list will also be used for DNS registration of DHCP static mappings (if enabled).");?>
                         </div>
                       </td>
                     </tr>
