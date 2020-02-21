@@ -680,24 +680,18 @@ function unbound_add_host_entries()
                     }
 
                     $domain = $config['system']['domain'];
-                    // set domain to first entry of host's domain search list
-                    if ($host['domainsearchlist']) {
-                        $domain_array=preg_split("/[ ;]+/",$host['domainsearchlist']);
-                        $domain = $domain_array[0];
-                    // backward compatibilty: 'domain' was replaced by 'domainsearchlist'
-                    // in dhcpv6 static mappings, but may still exist in older configs
-                    } elseif ($host['domain']) {
+                    // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
+                    //      for backward compatibilty support both here.
+                    if (!empty($host['domainsearchlist'])) {
+                        $domain = $host['domainsearchlist'];
+                    } elseif (!empty($host['domain'])) {
                         $domain = $host['domain'];
-                    // set domain to first entry of interface's domain search list
-                    } elseif ($dhcpifconf['domainsearchlist']) {
-                        $domain_array=preg_split("/[ ;]+/",$dhcpifconf['domainsearchlist']);
-                        $domain = $domain_array[0];
-                    // backward compatibilty: 'domain' was removed from dhcpv6
-                    // interface settings, but may still exist in older configs
-                    } elseif ($dhcpifconf['domain']) {
+                    } elseif (!empty($dhcpifconf['domainsearchlist'])) {
+                        $domain = $dhcpifconf['domainsearchlist'];
+                    } elseif (!empty($dhcpifconf['domain'])) {
                         $domain = $dhcpifconf['domain'];
                     }
-
+                    $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$domain}\"\n";
                     $unbound_entries .= "local-data: \"{$host['hostname']}.{$domain} IN AAAA {$host['ipaddrv6']}\"\n";
                     if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
