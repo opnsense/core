@@ -36,7 +36,7 @@ config_read_array('ipsec', 'client');
 config_read_array('ipsec', 'phase1');
 
 // define formfields
-$form_fields = "user_source,local_group,pool_address,pool_netbits,net_list
+$form_fields = "user_source,local_group,pool_address,pool_netbits,pool_address_v6,pool_netbits_v6,net_list
 ,save_passwd,dns_domain,dns_split,dns_server1,dns_server2,dns_server3
 ,dns_server4,wins_server1,wins_server2,pfs_group,login_banner";
 
@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     // defaults
     $pconfig['pool_netbits'] = 24;
+    $pconfig['pool_netbits_v6'] = 64;
 
     // copy / initialize $pconfig attributes
     foreach (explode(",", $form_fields) as $fieldname) {
@@ -97,7 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
         if (!empty($pconfig['pool_address']) && !is_ipaddr($pconfig['pool_address'])) {
-            $input_errors[] = gettext("A valid IP address for 'Virtual Address Pool Network' must be specified.");
+            $input_errors[] = gettext("A valid IPv4 address for 'Virtual IPv4 Address Pool Network' must be specified.");
+        }
+
+        if (!empty($pconfig['pool_address_v6']) && !is_ipaddr($pconfig['pool_address_v6'])) {
+            $input_errors[] = gettext("A valid IPv6 address for 'Virtual IPv6 Address Pool Network' must be specified.");
         }
 
         if (!empty($pconfig['dns_domain']) && !is_domain($pconfig['dns_domain'])) {
@@ -136,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (count($input_errors) == 0) {
             $client = array();
-            $copy_fields = "user_source,local_group,pool_address,pool_netbits,dns_domain,dns_server1
+            $copy_fields = "user_source,local_group,pool_address,pool_netbits,pool_address_v6,pool_netbits_v6,dns_domain,dns_server1
             ,dns_server2,dns_server3,dns_server4,wins_server1,wins_server2
             ,dns_split,pfs_group,login_banner";
             foreach (explode(",", $copy_fields) as $fieldname) {
@@ -189,6 +194,7 @@ include("head.inc");
 //<![CDATA[
 $( document ).ready(function() {
   pool_change();
+  pool_v6_change();
   dns_domain_change();
   dns_split_change();
   dns_server_change();
@@ -205,6 +211,17 @@ function pool_change() {
     document.iform.pool_address.disabled = 1;
     document.iform.pool_netbits.disabled = 1;
   }
+}
+
+function pool_v6_change() {
+
+    if (document.iform.pool_enable_v6.checked) {
+        document.iform.pool_address_v6.disabled = 0;
+        document.iform.pool_netbits_v6.disabled = 0;
+    } else {
+        document.iform.pool_address_v6.disabled = 1;
+        document.iform.pool_netbits_v6.disabled = 1;
+    }
 }
 
 function dns_domain_change() {
@@ -387,24 +404,42 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                       <td colspan="2"><b><?=gettext("Client Configuration (mode-cfg)"); ?> </b></td>
                     </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual Address Pool"); ?></td>
-                    <td>
-                      <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?= !empty($pconfig['pool_address'])&&!empty($pconfig['pool_netbits']) ? "checked=\"checked\"" : "";?> onclick="pool_change()" />
-                      <?=gettext("Provide a virtual IP address to clients"); ?>
-                      <div class="input-group">
-                        <input name="pool_address" type="text" class="form-control" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" style="width:150px;" />
-                        <select name="pool_netbits" class="selectpicker form-control" id="pool_netbits" data-width="70px">
-                              <?php for ($i = 32; $i >= 0; $i--) :
-    ?>
-                              <option value="<?=$i;
-?>" <?= ($i == $pconfig['pool_netbits']) ? "selected=\"selected\"" : "";?>>
-                                <?=$i;?>
-                              </option>
-                              <?php
-endfor; ?>
-                        </select>
-                      </div>
-                    </td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual IPv4 Address Pool"); ?></td>
+                      <td>
+                          <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?= !empty($pconfig['pool_address'])&&!empty($pconfig['pool_netbits']) ? "checked=\"checked\"" : "";?> onclick="pool_change()" />
+                          <?=gettext("Provide a virtual IPv4 address to clients"); ?>
+                          <div class="input-group">
+                              <input name="pool_address" type="text" class="form-control" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" style="width:200px;" />
+                              <select name="pool_netbits" class="selectpicker form-control" id="pool_netbits" data-width="70px" data-size="10">
+<?php
+                              for ($i = 32; $i >= 0; $i--) :?>
+                                  <option value="<?=$i;?>" <?= ($i == $pconfig['pool_netbits']) ? "selected=\"selected\"" : "";?>>
+                                      <?=$i;?>
+                                  </option>
+<?php
+                              endfor; ?>
+                              </select>
+                          </div>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual IPv6 Address Pool"); ?></td>
+                      <td>
+                          <input name="pool_enable_v6" type="checkbox" id="pool_enable_v6" value="yes" <?= !empty($pconfig['pool_address_v6'])&&!empty($pconfig['pool_netbits_v6']) ? "checked=\"checked\"" : "";?> onclick="pool_v6_change()" />
+                          <?=gettext("Provide a virtual IPv6 address to clients"); ?>
+                          <div class="input-group">
+                              <input name="pool_address_v6" type="text" class="form-control" id="pool_address_v6" size="20" value="<?=$pconfig['pool_address_v6'];?>" style="width:200px;" />
+                              <select name="pool_netbits_v6" class="selectpicker form-control" id="pool_netbits_v6" data-width="70px" data-size="10">
+<?php
+                              for ($i = 128; $i >= 0; $i--) :?>
+                                  <option value="<?=$i;?>" <?= ($i == $pconfig['pool_netbits_v6']) ? "selected=\"selected\"" : "";?>>
+                                      <?=$i;?>
+                                  </option>
+<?php
+                              endfor; ?>
+                              </select>
+                          </div>
+                      </td>
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Network List') ?></td>
