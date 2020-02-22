@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -445,11 +445,11 @@
                     bold_off = '</b>';
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
-                    bold_on = '<b class="text-warning plugin_missing">';
-                    bold_off = '</b>';
+                    bold_on = '<span class="text-danger plugin_missing">';
+                    bold_off = '</span>';
                     missing_plugin_count += 1;
                 }
-                if (row['provided'] == "0") {
+                if (row['provided'] == "0" && row['installed'] == "1") {
                     // this state overwrites installed on purpose
                     status_text = ' ({{ lang._('orphaned') }})';
                 }
@@ -482,14 +482,25 @@
                 let $tr = $("<tr id='plugin_install_tr'/>");
                 let $td = $("<td colspan=5 style='text-align:center;'>");
                 $td.append('<button class="btn btn-default reinstall_missing_plugins"><i class="fa fa-refresh"></i>&nbsp; {{ lang._('Install missing plugins') }}</button>');
+                $td.append('&nbsp;');
+                $td.append('<button class="btn btn-default accept_plugins"><i class="fa fa-check"></i>&nbsp; {{ lang._('Accept plugins') }}</button>');
                 $tr.append($td);
                 $('#pluginlist > tbody').prepend($tr);
                 $(".reinstall_missing_plugins").tooltip({
                   'title': '{{ lang._('According to the configuration there is a mismatch between the installed and configured plugins') }}'
                 });
+                $(".accept_plugins").tooltip({
+                  'title': '{{ lang._('Accept current state, capture installed plugins to config') }}'
+                });
                 $(".reinstall_missing_plugins").click(function(){
                     $(".reinstall_missing_plugins > i.fa").addClass("fa-pulse");
                     ajaxCall('/api/core/firmware/installConfiguredPlugins', {}, function(data,status) {
+                        $(".plugin_missing").removeClass("text-warning");
+                        $("#plugin_install_tr").remove();
+                    });
+                });
+                $(".accept_plugins").click(function(){
+                    ajaxCall('/api/core/firmware/acceptConfiguredPlugins', {}, function(data,status) {
                         $(".plugin_missing").removeClass("text-warning");
                         $("#plugin_install_tr").remove();
                     });

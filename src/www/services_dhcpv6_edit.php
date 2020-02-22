@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // read form data
     $pconfig = array();
-    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domainsearchlist');
+    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domain', 'domainsearchlist');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if]['staticmap'][$id][$fieldname];
@@ -55,6 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+
+    // backward compatibility: migrate 'domain' to 'domainsearchlist'
+    if (empty($pconfig['domainsearchlist'])) {
+        $pconfig['domainsearchlist'] = $pconfig['domain'];
+    }
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -210,7 +216,9 @@ include("head.inc");
                     <td>
                       <input name="domainsearchlist" type="text" value="<?=$pconfig['domainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_domainsearchlist">
-                        <?=gettext("The default is to use the domain name of this system as the domain search list option provided by DHCPv6. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.");?>
+                        <?=gettext("If you want to use a custom domain search list for this host, you may optionally specify one or multiple domain(s) here. " .
+                        "Use the semicolon character as separator. The first domain in this list will also be used for DNS registration of this host (if enabled). " .
+                        "(If empty, the first domain in the interface's domain search list will be used. If this is empty, too, the system domain will be used.)");?>
                       </div>
                     </td>
                   </tr>
