@@ -63,6 +63,7 @@
 
         // Fetch the current legacy subsystem status to ensure changes have been processed
         updateLegacyStatus();
+        updateServiceControlUI('ipsec');
       });
     });
 
@@ -77,6 +78,7 @@
 
     // Refresh status of legacy subsystem when grid has changed
     $grid.on('loaded.rs.jquery.bootgrid', updateLegacyStatus);
+    updateServiceControlUI('ipsec');
   });
 </script>
 

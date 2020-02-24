@@ -257,6 +257,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/generalSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogKeyPair.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
