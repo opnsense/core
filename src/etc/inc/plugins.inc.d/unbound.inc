@@ -451,7 +451,7 @@ function unbound_configure_do($verbose = false, $interface = '')
         if (isset($config['unbound']['regdhcpdomain'])) {
             $domain = $config['unbound']['regdhcpdomain'];
         }
-        mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
+        mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py --domain %s', $domain);
     }
     mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
 
