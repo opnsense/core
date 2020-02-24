@@ -176,3 +176,4 @@ if __name__ == '__main__':
         syslog.syslog(syslog.LOG_NOTICE, 'daemonize unbound dhcpd watcher.')
         cmd  = lambda : run_watcher(target_filename=inputargs.target, domain=inputargs.domain)
         daemon = Daemonize(app="unbound_dhcpd", pid=inputargs.pid, action=cmd)
+        daemon.start()
