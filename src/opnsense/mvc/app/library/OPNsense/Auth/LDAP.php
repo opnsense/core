@@ -444,10 +444,10 @@ class LDAP extends Base implements IAuthConnector
             $cnf = Config::getInstance()->object();
             if (isset($cnf->system->group)) {
                 foreach ($cnf->system->group as $group) {
-                    $known_groups[] = (string)$group->name;
+                    $known_groups[] = strtolower((string)$group->name);
                     // when user is known, collect current groups
                     if ($user != null && in_array((string)$user->uid, (array)$group->member)) {
-                        $user_groups[] = (string)$group->name;
+                        $user_groups[] = strtolower((string)$group->name);
                     }
                 }
             }
@@ -461,7 +461,7 @@ class LDAP extends Base implements IAuthConnector
             }
             // list of enabled groups (all when empty), so we can ignore some local groups if needed
             if (!empty($this->ldapSyncMemberOfLimit)) {
-                $sync_groups = explode(",", $this->ldapSyncMemberOfLimit);
+                $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
             } else {
                 $sync_groups = $known_groups;
             }
@@ -483,10 +483,11 @@ class LDAP extends Base implements IAuthConnector
                 // if returned by ldap.
                 $cnf = Config::getInstance()->lock(true)->object();
                 foreach ($cnf->system->group as $group) {
-                    if (in_array((string)$group->name, $sync_groups)) {
+                    $lc_groupname = strtolower((string)$group->name);
+                    if (in_array($lc_groupname, $sync_groups)) {
                         if (
                             in_array((string)$user->uid, (array)$group->member)
-                              && empty($ldap_groups[(string)$group->name])
+                              && empty($ldap_groups[$lc_groupname])
                         ) {
                             unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
                             syslog(LOG_NOTICE, sprintf(
@@ -496,13 +497,13 @@ class LDAP extends Base implements IAuthConnector
                             ));
                         } elseif (
                             !in_array((string)$user->uid, (array)$group->member)
-                              && !empty($ldap_groups[(string)$group->name])
+                              && !empty($ldap_groups[$lc_groupname])
                         ) {
                             syslog(LOG_NOTICE, sprintf(
                                 'User: policy change for %s link group %s [%s]',
                                 $username,
                                 (string)$group->name,
-                                $ldap_groups[(string)$group->name]
+                                $ldap_groups[$lc_groupname]
                             ));
                             $group->addChild('member', (string)$user->uid);
                         }
