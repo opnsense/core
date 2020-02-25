@@ -39,6 +39,7 @@ import syslog
 import subprocess
 import glob
 from lib.alias import Alias
+import lib.geoip as geoip
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -108,6 +109,10 @@ if __name__ == '__main__':
     # make sure our target directory exists
     if not os.path.isdir('/var/db/aliastables'):
         os.makedirs('/var/db/aliastables')
+
+    # make sure we download geoip data if not found. Since aliases only will trigger a download when change requires it
+    if not os.path.isfile('/usr/local/share/GeoIP/alias.stats'):
+        geoip.download_geolite()
 
     try:
         source_tree = ET.ElementTree(file=inputargs.source_conf)
