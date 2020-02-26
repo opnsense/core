@@ -57,7 +57,7 @@ def download_geolite():
         'locations_filename': None,
         'address_sources': {'IPv4': None, 'IPv6': None}
     }
-    if url is not None:
+    if url is not None and url.lower().startswith('http'):
         # flush data from remote url to temp file and unpack from there
         with tempfile.NamedTemporaryFile() as tmp_stream:
             try:
