@@ -83,21 +83,19 @@ class ServiceController extends ApiMutableServiceControllerBase
             if ($this->getModel()->general->enabled->__toString() == 1) {
                 if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
                     if ($status['status'] != 'running') {
-                        $result['result'] = trim($backend->configdRun('monit start'));
+                        $result['status'] = trim($backend->configdRun('monit start'));
                     } else {
-                        $result['result'] = trim($backend->configdRun('monit reload'));
+                        $result['status'] = trim($backend->configdRun('monit reload'));
                     }
                 } else {
                     return $result;
                 }
             } else {
                 if ($status['status'] == 'running') {
-                    $result['result'] = trim($backend->configdRun('monit stop'));
+                    $result['status'] = trim($backend->configdRun('monit stop'));
                 }
             }
-            if ($this->getModel()->configClean()) {
-                $result['status'] = 'ok';
-            }
+            $this->getModel()->configClean();
             return $result;
         } else {
             return array('status' => 'failed');
