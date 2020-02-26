@@ -35,6 +35,7 @@ import sys
 import ujson
 import requests
 import zipfile
+import syslog
 from configparser import ConfigParser
 
 
@@ -59,7 +60,11 @@ def download_geolite():
     if url is not None:
         # flush data from remote url to temp file and unpack from there
         with tempfile.NamedTemporaryFile() as tmp_stream:
-            r = requests.get(url)
+            try:
+                r = requests.get(url)
+            except Exception as e:
+                syslog.syslog(syslog.LOG_ERR, 'geoip update failed : %s' % e)
+                return result
             if r.status_code == 200:
                 tmp_stream.write(r.content)
                 tmp_stream.seek(0)
