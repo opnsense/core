@@ -358,15 +358,17 @@
         /**
          * reconfigure
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            saveFormToEndpoint("/api/firewall/alias/set", 'frm_GeopIPSettings', function(){
-                ajaxCall("/api/firewall/alias/reconfigure", {}, function(data,status) {
-                    // when done, disable progress animation.
-                    $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                    loadSettings();
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint("/api/firewall/alias/set", 'frm_GeopIPSettings', function(){
+                    dfObj.resolve();
                 });
-            });
+                return dfObj;
+            },
+            onAction: function(data, status){
+                loadSettings();
+            }
         });
 
         // update history on tab state and implement navigation
@@ -439,7 +441,12 @@
         <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
-        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/firewall/alias/reconfigure'
+                data-label="{{ lang._('Apply') }}"
+                data-error-title="{{ lang._('Error reconfiguring aliases') }}"
+                type="button"
+        ></button>
         <br/><br/>
     </div>
   </div>
