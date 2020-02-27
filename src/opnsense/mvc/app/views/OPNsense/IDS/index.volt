@@ -160,22 +160,6 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         }
 
-        /**
-         * save (general) settings and reconfigure
-         * @param callback_funct: callback function, receives result status true/false
-         */
-        function actionReconfigure(callback_funct) {
-            var result_status = false;
-            saveFormToEndpoint("/api/ids/settings/set", 'frm_GeneralSettings', function(){
-                ajaxCall("/api/ids/service/reconfigure", {}, function(data,status) {
-                    if (status == "success" || data['status'].toLowerCase().trim() == "ok") {
-                        result_status = true;
-                    }
-                    $('#scheduled_updates').show();
-                    callback_funct(result_status);
-                });
-            });
-        }
 
         /**
          * toggle selected items
@@ -560,22 +544,14 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * save settings and reconfigure ids
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            actionReconfigure(function(status){
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                updateStatus();
-
-                if (!status) {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring IDS') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint("/api/ids/settings/set", 'frm_GeneralSettings', function(){
+                    dfObj.resolve();
+                });
+                return dfObj;
+            }
         });
         $("#updateSettings").click(function(){
             $("#updateSettings_progress").addClass("fa fa-spinner fa-pulse");
@@ -596,25 +572,15 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * update (userdefined) rules
          */
-        $(".act_update").click(function(){
-            $(".act_update_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/ids/service/reloadRules", {}, function(data,status) {
-                // when done, disable progress animation.
-                $(".act_update_progress").removeClass("fa fa-spinner fa-pulse");
-            });
-        });
+        $(".act_update").SimpleActionButton();
 
         /**
          * update rule definitions
          */
-        $("#updateRulesAct").click(function(){
-            $("#updateRulesAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/ids/service/updateRules", {}, function(data,status) {
-                // when done, disable progress animation and reload grid.
+        $("#updateRulesAct").SimpleActionButton({
+            onAction: function(){
                 $('#grid-rule-files').bootgrid('reload');
-                updateStatus();
-                $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
-            });
+            }
         });
 
         /**
@@ -707,7 +673,13 @@ POSSIBILITY OF SUCH DAMAGE.
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
         <div class="col-md-12">
             <hr/>
-            <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+            <button class="btn btn-primary" id="reconfigureAct"
+                    data-endpoint='/api/ids/service/reconfigure'
+                    data-label="{{ lang._('Apply') }}"
+                    data-error-title="{{ lang._('Error reconfiguring IDS') }}"
+                    data-service-widget="ids"
+                    type="button"
+            ></button>
             <br/>
             <br/>
         </div>
@@ -789,7 +761,14 @@ POSSIBILITY OF SUCH DAMAGE.
           </div>
           <hr/>
           <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b> <i id="updateSettings_progress" class=""></i></button>
-          <button class="btn btn-primary" id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b> <i id="updateRulesAct_progress" class=""></i></button>
+
+          <button class="btn btn-primary" id="updateRulesAct"
+                  data-endpoint='/api/ids/service/updateRules'
+                  data-label="{{ lang._('Download & Update Rules') }}"
+                  data-error-title="{{ lang._('Error reconfiguring IDS') }}"
+                  data-service-widget="ids"
+                  type="button"
+          ></button>
           <br/><br/>
       </div>
     </div>
@@ -841,7 +820,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 {{ lang._('After changing settings, please remember to apply them with the button below') }}
             </div>
             <hr/>
-            <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Apply') }}</b> <i class="act_update_progress"></i></button>
+            <button class="btn btn-primary act_update"
+                    data-endpoint='/api/ids/service/reloadRules'
+                    data-label="{{ lang._('Apply') }}"
+                    data-error-title="{{ lang._('Error reconfiguring IDS') }}"
+                    type="button"
+            ></button>
             <br/>
             <br/>
         </div>
@@ -875,7 +859,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 {{ lang._('After changing settings, please remember to apply them with the button below') }}
             </div>
             <hr/>
-            <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Apply') }}</b> <i class="act_update_progress"></i></button>
+            <button class="btn btn-primary act_update"
+                    data-endpoint='/api/ids/service/reloadRules'
+                    data-label="{{ lang._('Apply') }}"
+                    data-error-title="{{ lang._('Error reconfiguring IDS') }}"
+                    type="button"
+            ></button>
             <br/>
             <br/>
         </div>
