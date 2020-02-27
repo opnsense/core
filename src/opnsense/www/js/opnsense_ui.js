@@ -486,22 +486,30 @@ $.fn.SimpleActionButton = function (params) {
         this_button.html(label_content);
         this_button.on('click', function(){
             this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
-            ajaxCall(this_button.data('endpoint'), {}, function(data,status) {
-                if (params && params.onAction) {
-                    params.onAction(data, status);
-                }
-                if (status != "success" || data['status'].toLowerCase() != 'ok') {
-                      BootstrapDialog.show({
-                          type: BootstrapDialog.TYPE_WARNING,
-                          title: this_button.data('error-title'),
-                          message: data['status'],
-                          draggable: true
-                      });
-                }
-                this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
-                if (this_button.data('service-widget')) {
-                    updateServiceControlUI(this_button.data('service-widget'));
-                }
+            let pre_action = function() {
+                return (new $.Deferred()).resolve();
+            }
+            if (params && params.onPreAction) {
+                pre_action = params.onPreAction;
+            }
+            pre_action().done(function() {
+                ajaxCall(this_button.data('endpoint'), {}, function(data,status) {
+                    if (params && params.onAction) {
+                        params.onAction(data, status);
+                    }
+                    if (status != "success" || data['status'].toLowerCase() != 'ok') {
+                          BootstrapDialog.show({
+                              type: BootstrapDialog.TYPE_WARNING,
+                              title: this_button.data('error-title'),
+                              message: data['status'],
+                              draggable: true
+                          });
+                    }
+                    this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+                    if (this_button.data('service-widget')) {
+                        updateServiceControlUI(this_button.data('service-widget'));
+                    }
+                });
             });
         });
     }
