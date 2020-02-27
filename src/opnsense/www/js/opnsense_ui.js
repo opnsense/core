@@ -487,7 +487,7 @@ $.fn.SimpleActionButton = function (params) {
         this_button.on('click', function(){
             this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
             ajaxCall(this_button.data('endpoint'), {}, function(data,status) {
-                if (params.onAction) {
+                if (params && params.onAction) {
                     params.onAction(data, status);
                 }
                 if (status != "success" || data['status'].toLowerCase() != 'ok') {
