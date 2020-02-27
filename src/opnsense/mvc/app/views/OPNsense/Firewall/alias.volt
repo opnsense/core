@@ -362,13 +362,11 @@
             onPreAction: function() {
                 const dfObj = new $.Deferred();
                 saveFormToEndpoint("/api/firewall/alias/set", 'frm_GeopIPSettings', function(){
-                    console.log("onPreAction");
                     dfObj.resolve();
                 });
                 return dfObj;
             },
             onAction: function(data, status){
-                console.log("onAction");
                 loadSettings();
             }
         });
