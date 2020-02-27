@@ -163,65 +163,20 @@
         });
 
         /**
-         *
          * Reconfigure proxy - activate changes
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/proxy/service/reconfigure", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring proxy') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#reconfigureAct").SimpleActionButton();
 
         /**
-         *
          * Download ACLs and reconfigure poxy - activate changes
          */
-        $("#fetchandreconfigureAct").click(function(){
-            $("#fetchandreconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/proxy/service/fetchacls", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#fetchandreconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error fetching remote acls') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#fetchandreconfigureAct").SimpleActionButton();
 
         /**
          *
          * Download ACLs, no reconfigure
          */
-        $("#downloadAct").click(function(){
-            $("#downloadAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/proxy/service/downloadacls", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#downloadAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error fetching remote acls') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#downloadAct").SimpleActionButton();
 
         /**
          * setup cron item
@@ -269,7 +224,6 @@
         });
 
         $("#resetAct").click(function() {
-
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_DANGER,
                 title: '{{ lang._('Reset') }} ',
@@ -460,10 +414,27 @@
                     </table>
                     <div class="col-md-12">
                         <hr/>
-                        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="fetchandreconfigureAct" type="button"><b>{{ lang._('Download ACLs & Apply') }}</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="downloadAct" type="button"><b>{{ lang._('Download ACLs') }}</b><i id="downloadAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="ScheduleAct" type="button"><b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="reconfigureAct"
+                                data-endpoint='/api/proxy/service/reconfigure'
+                                data-label="{{ lang._('Apply') }}"
+                                data-error-title="{{ lang._('Error reconfiguring proxy') }}"
+                                type="button"
+                        ></button>
+                        <button class="btn btn-primary" id="fetchandreconfigureAct"
+                                data-endpoint='/api/proxy/service/fetchacls'
+                                data-label="{{ lang._('Download ACLs & Apply') }}"
+                                data-error-title="{{ lang._('Error fetching remote acls') }}"
+                                type="button"
+                        ></button>
+                        <button class="btn btn-primary" id="downloadAct"
+                                data-endpoint='/api/proxy/service/downloadacls'
+                                data-label="{{ lang._('Download ACLs & Apply') }}"
+                                data-error-title="{{ lang._('Error fetching remote acls') }}"
+                                type="button"
+                        ></button>
+                        <button class="btn btn-primary" id="ScheduleAct" type="button">
+                            <b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i>
+                        </button>
                     </div>
                 </td>
             </tr>
