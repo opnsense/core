@@ -381,6 +381,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NumericField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/OptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/PortField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ProtocolField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
