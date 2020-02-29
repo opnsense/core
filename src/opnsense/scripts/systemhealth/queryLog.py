@@ -88,7 +88,9 @@ if __name__ == '__main__':
                         if len(record['line']) > 15 and \
                                 re.match(r'(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)', record['line'][7:15]):
                             # syslog format, strip timestamp and return actual log data
-                            ts = datetime.datetime.strptime(record['line'][0:15], "%b %d %H:%M:%S")
+                            ts = datetime.datetime.strptime(
+                                "%s %s" % (startup_timestamp.year, record['line'][0:15]), "%Y %b %d %H:%M:%S"
+                            )
                             ts = ts.replace(year=startup_timestamp.year)
                             if (startup_timestamp - ts).days < 0:
                                 # likely previous year, (month for this year not reached yet)
