@@ -540,7 +540,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ModelRelationFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/OptionFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/PortFieldTest.php
-/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ProtocolFieldFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ProtocolFieldTest.php
 /usr/local/opnsense/mvc/tests/setup.php
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/allow.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py
