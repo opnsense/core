@@ -271,11 +271,14 @@ function filter_core_rules_system($fw, $defaults)
     $carp_disabled = empty($config['hasync']) && empty($config['virtualip']['vip']);
     $fw->registerFilterRule(
         1,
-        array('protocol' => 'carp', 'descr' => 'CARP defaults', 'ref#' => 'system_hasync.php',
+        array('protocol' => 'carp', 'descr' => 'CARP defaults', '#ref' => 'system_hasync.php',
             'from' => '(self)', 'direction' => 'in', 'disabled' => !$carp_disabled),
         $defaults['block']
     );
-    $fw->registerFilterRule(1, array('protocol' => 'carp', 'direction' => 'any'), $defaults['pass']);
+    $fw->registerFilterRule(1,
+        array('protocol' => 'carp', 'direction' => 'any', 'descr' => 'CARP defaults', '#ref' => 'firewall_virtual_ip.php'),
+        $defaults['pass']
+    );
 
     // Lockout rules
     $fw->registerFilterRule(
