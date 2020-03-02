@@ -62,8 +62,19 @@ abstract class BaseListField extends BaseField
     /**
      * @var string default validation message string
      */
-    protected $internalValidationMessage = "option not in list";
+    protected $internalValidationMessage = null;
 
+    /**
+     * @return string validation message
+     */
+    protected function getValidationMessage()
+    {
+        if ($this->internalValidationMessage == null) {
+            return "option not in list";
+        } else {
+            return $this->internalValidationMessage;
+        }
+    }
     /**
      * select if multiple interfaces may be selected at once
      * @param $value boolean value 0/1
@@ -124,14 +135,13 @@ abstract class BaseListField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $domain = array_map('strval', array_keys($this->internalOptionList));
+            $this_message = $this->getValidationMessage();
             if ($this->internalMultiSelect) {
                 // field may contain more than one option
-                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain' => $domain));
+                $validators[] = new CsvListValidator(array('message' => $this_message, 'domain' => $domain));
             } else {
                 // single option selection
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => $domain));
+                $validators[] = new InclusionIn(array('message' => $this_message, 'domain' => $domain));
             }
         }
         return $validators;
