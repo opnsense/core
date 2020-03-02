@@ -50,7 +50,7 @@ class ProtocolField extends BaseListField
         /* IPv6 extension headers are skipped by the packet filter, we cannot police them */
         $ipv6_ext = array('IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER');
         if (empty(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = array('any' => 'any');
+            self::$internalStaticOptionList = array('any' => gettext('any'));
             foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
                 if (substr($line, 0, 1) != "#") {
                     $parts = preg_split('/\s+/', $line);
