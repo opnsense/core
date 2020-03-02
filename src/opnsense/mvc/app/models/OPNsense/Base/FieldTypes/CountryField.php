@@ -50,11 +50,23 @@ class CountryField extends BaseListField
     private $internalAddInverse = false;
 
     /**
+     * @return string identifying selected options
+     */
+    private function optionSetId()
+    {
+        return $this->internalAddInverse ? "1" : "0";
+    }
+
+    /**
      * generate validation data (list of countries)
      */
     protected function actionPostLoadingEvent()
     {
-        if (count(self::$internalCacheOptionList) == 0) {
+        $setid = $this->optionSetId();
+        if (!isset(self::$internalCacheOptionList[$setid])) {
+            self::$internalCacheOptionList[$setid] =  array();
+        }
+        if (empty(self::$internalCacheOptionList[$setid])) {
             $filename = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';
             $data = file_get_contents($filename);
             foreach (explode("\n", $data) as $line) {
@@ -62,15 +74,15 @@ class CountryField extends BaseListField
                 if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
                     $code = substr($line, 0, 2);
                     $name = trim(substr($line, 2, 9999));
-                    self::$internalCacheOptionList[$code] = $name;
+                    self::$internalCacheOptionList[$setid][$code] = $name;
                     if ($this->internalAddInverse) {
-                        self::$internalCacheOptionList["!" . $code] = $name . " (not)";
+                        self::$internalCacheOptionList[$setid]["!" . $code] = $name . " (not)";
                     }
                 }
             }
-            natcasesort(self::$internalCacheOptionList);
+            natcasesort(self::$internalCacheOptionList[$setid]);
         }
-        $this->internalOptionList = self::$internalCacheOptionList;
+        $this->internalOptionList = self::$internalCacheOptionList[$setid];
     }
 
     /**
