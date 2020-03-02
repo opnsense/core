@@ -62,7 +62,7 @@ class ProtocolField extends BaseListField
                     }
                 }
             }
-            $this->internalOptionList = self::$internalStaticOptionList;
         }
+        $this->internalOptionList = self::$internalStaticOptionList;
     }
 }
