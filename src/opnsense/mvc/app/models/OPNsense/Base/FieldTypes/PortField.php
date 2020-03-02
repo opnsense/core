@@ -143,7 +143,7 @@ class PortField extends BaseListField
     /**
      * return validation message
      */
-    private function getValidationMessage()
+    protected function getValidationMessage()
     {
         if ($this->internalValidationMessage == null) {
             $msg = gettext('Please specify a valid port number (1-65535).');
