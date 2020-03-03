@@ -150,7 +150,7 @@ function filter_core_get_antilockout()
  * @return array containing ports
  * @throws \OPNsense\Base\ModelException
  */
-function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject=null)
+function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject = null)
 {
     $response = array();
     $aliases[] = $aliasname;
@@ -275,7 +275,8 @@ function filter_core_rules_system($fw, $defaults)
             'from' => '(self)', 'direction' => 'in', 'disabled' => !$carp_disabled),
         $defaults['block']
     );
-    $fw->registerFilterRule(1,
+    $fw->registerFilterRule(
+        1,
         array('protocol' => 'carp', 'direction' => 'any', 'descr' => 'CARP defaults', '#ref' => 'firewall_virtual_ip.php'),
         $defaults['pass']
     );
