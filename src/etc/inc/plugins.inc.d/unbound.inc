@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -742,13 +742,13 @@ function unbound_acls_subnets()
     foreach (interfaces_addresses(array_keys($active_interfaces), true) as $subnet => $info) {
         if (!empty($active_interfaces[$info['name']]['net4']) && is_subnetv4($subnet)) {
             $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net4'];
-        } elseif (!empty($active_interfaces[$info['name']]['net6']) && is_subnetv6($subnet)) {
+        } elseif (!empty($active_interfaces[$info['name']]['net6']) && is_subnetv6($subnet) && !$info['scope']) {
             $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net6'];
         }
         $subnets[] = $subnet;
     }
 
-    return $subnets;
+    return array_unique($subnets);
 }
 
 function unbound_acls_config()
