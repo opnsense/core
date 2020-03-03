@@ -275,7 +275,8 @@ function filter_core_rules_system($fw, $defaults)
             'from' => '(self)', 'direction' => 'in', 'disabled' => !$carp_disabled),
         $defaults['block']
     );
-    $fw->registerFilterRule(1,
+    $fw->registerFilterRule(
+        1,
         array('protocol' => 'carp', 'direction' => 'any', 'descr' => 'CARP defaults', '#ref' => 'firewall_virtual_ip.php'),
         $defaults['pass']
     );
