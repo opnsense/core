@@ -216,9 +216,9 @@ include("head.inc");
                     <td>
                       <input name="domainsearchlist" type="text" value="<?=$pconfig['domainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_domainsearchlist">
-                        <?=gettext("If you want to use a custom domain search list for this host, you may optionally specify one or multiple domain(s) here. " .
-                        "Use the semicolon character as separator. The first domain in this list will also be used for DNS registration of this host (if enabled). " .
-                        "(If empty, the first domain in the interface's domain search list will be used. If this is empty, too, the system domain will be used.)");?>
+                        <?=gettext("If you want to use a custom domain search list for this host, you may optionally specify one or multiple domains here. " .
+                        "Use the semicolon character as separator. The first domain in this list will also be used for DNS registration of this host if enabled. " .
+                        "If empty, the first domain in the interface's domain search list will be used. If this is empty, too, the system domain will be used.");?>
                       </div>
                     </td>
                   </tr>
