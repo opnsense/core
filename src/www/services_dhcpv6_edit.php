@@ -128,12 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        // set 'domain' to first entry of 'domainsearchlist'
-        // (used only for DNS registration)
-        if (!empty($pconfig['domainsearchlist'])) {
-            $mapent['domain'] = $domain_array[0];
-        }
-
         if (isset($id)) {
             $config['dhcpdv6'][$if]['staticmap'][$id] = $mapent;
         } else {
