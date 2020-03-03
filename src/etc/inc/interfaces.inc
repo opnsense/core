@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -4139,6 +4139,7 @@ function get_interfaces_info()
     $all_intf_stats = legacy_interface_stats();
     foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifdescr => $ifcnf) {
         $ifinfo = array();
+        /* XXX apparently we ignore a different IPv6 realif completely... */
         $ifinfo['if'] = get_real_interface($ifdescr);
         $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
         if (!empty($all_intf_details[$ifinfo['if']])) {
@@ -4152,6 +4153,12 @@ function get_interfaces_info()
         }
 
         if (!empty($ifinfo['ipv6'])) {
+            /* XXX ... so avoid intermediate breakage by using IPv4 realif here */
+            list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $ifinfo['if'], $all_intf_details);
+            if (!empty($primary6)) {
+                $ifinfo['ipaddrv6'] = $primary6;
+                $ifinfo['subnetv6'] = $subnet6;
+            }
             foreach ($ifinfo['ipv6'] as $ipv6addr) {
                 if (!empty($ipv6addr['link-local'])) {
                     $ifinfo['linklocal'] = $ipv6addr['ipaddr'];
@@ -4570,7 +4577,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                 }
                 $result["{$address['ipaddr']}{$scope}{$suffix}"] = array(
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
-                    'scope' => !empty($scope),
+                    'scope' => !empty($address['link-local']),
                     'name' => $realif,
                 );
             }
@@ -4578,4 +4585,36 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     }
 
     return $result;
+}
+
+function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null)
+{
+    $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
+
+    if ($realif === null) {
+        $realif = get_real_interface($interface, 'inet6');
+    }
+
+    foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
+        if ($info['family'] != 'inet6' || $info['scope']) {
+            /* only care about IPv6 without a scope set */
+            continue;
+        }
+
+        $addrparts = explode('/', $tmpaddr);
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
+                /* do not care about alias */
+                continue 2;
+            }
+        }
+
+        $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
+        $subnetbitsv6 = $addrparts[1];
+        $ifcfgipv6 = $addrparts[0];
+        break; /* all done */
+    }
+
+    return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
 }
