@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base;
 
-use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use Phalcon\Logger\Adapter\Syslog;
@@ -221,7 +220,7 @@ abstract class BaseModel
                     $config_section_data = null;
                 }
 
-                if ($fieldObject instanceof ArrayField) {
+                if ($fieldObject->isArrayType()) {
                     // handle Array types, recurring items
                     if ($config_section_data != null && !empty((string)$config_section_data)) {
                         foreach ($config_section_data as $conf_section) {
