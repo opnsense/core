@@ -232,7 +232,9 @@ abstract class BaseModel
                             }
 
                             // iterate array items from config data
-                            $child_node = new ContainerField($fieldObject->__reference . "." . $tagUUID, $tagName);
+                            $child_node = $fieldObject->newContainerField(
+                                $fieldObject->__reference . "." . $tagUUID, $tagName
+                            );
                             $this->parseXml($xmlNode, $conf_section, $child_node);
                             if (!isset($conf_section->attributes()->uuid)) {
                                 // if the node misses a uuid, copy it to this nodes attributes
@@ -243,7 +245,9 @@ abstract class BaseModel
                     } else {
                         // There's no content in config.xml for this array node.
                         $tagUUID = $internal_data->generateUUID();
-                        $child_node = new ContainerField($fieldObject->__reference . "." . $tagUUID, $tagName);
+                        $child_node = $fieldObject->newContainerField(
+                            $fieldObject->__reference . "." . $tagUUID, $tagName
+                        );
                         $child_node->setInternalIsVirtual();
                         $this->parseXml($xmlNode, $config_section_data, $child_node);
                         $fieldObject->addChildNode($tagUUID, $child_node);
@@ -270,7 +274,7 @@ abstract class BaseModel
         $internalConfigHandle = Config::getInstance();
 
         // init new root node, all details are linked to this
-        $this->internalData = new FieldTypes\ContainerField();
+        $this->internalData = new ContainerField();
 
         // determine our caller's filename and try to find the model definition xml
         // throw error on failure
