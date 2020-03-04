@@ -53,10 +53,7 @@ class UniqueConstraint extends BaseConstraint
             $parentNode = $node->getParentNode();
             $level = 0;
             // dive into parent
-            while (
-                $containerNode != null &&
-                get_class($containerNode) != 'OPNsense\Base\FieldTypes\ArrayField'
-            ) {
+            while ($containerNode != null && !$containerNode->isArrayType()) {
                 $containerNode = $containerNode->getParentNode();
                 $level++;
             }

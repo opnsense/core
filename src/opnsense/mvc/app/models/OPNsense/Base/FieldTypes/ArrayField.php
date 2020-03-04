@@ -59,6 +59,20 @@ class ArrayField extends BaseField
     }
 
     /**
+     * Construct new content container and attach to this items model
+     * @param $ref
+     * @param $tagname
+     * @return ContainerField
+     */
+    public function newContainerField($ref, $tagname)
+    {
+        $container_node = new ContainerField($ref, $tagname);
+        $parentmodel = $this->getParentModel();
+        $container_node->setParentModel($parentmodel);
+        return $container_node;
+    }
+
+    /**
      * retrieve read only template with defaults (copy of internal structure)
      * @return null|BaseField template node
      */
@@ -85,13 +99,7 @@ class ArrayField extends BaseField
         }
 
         $nodeUUID = $this->generateUUID();
-        $container_node = new ContainerField(
-            $this->__reference . "." . $nodeUUID,
-            $this->internalXMLTagName
-        );
-        $parentmodel = $this->getParentModel();
-        $container_node->setParentModel($parentmodel);
-
+        $container_node = $this->newContainerField($this->__reference . "." . $nodeUUID, $this->internalXMLTagName);
         foreach ($new_record as $key => $node) {
             // initialize field with new internal id and defined default value
             $node->setInternalReference($container_node->__reference . "." . $key);
