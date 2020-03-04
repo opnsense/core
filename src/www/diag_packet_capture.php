@@ -232,9 +232,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($_POST['start'])) {
-        foreach ($pconfig['interface'] as $key) {
-            if (!array_key_exists($key, $interfaces)) {
-                $input_errors[] = sprintf(gettext("Invalid interface %s."), $key);
+        if (empty($pconfig['interface'])) {
+            $input_errors[] = gettext("No interface selected");
+        } else {
+            foreach ($pconfig['interface'] as $key) {
+                if (!array_key_exists($key, $interfaces)) {
+                    $input_errors[] = sprintf(gettext("Invalid interface %s."), $key);
+                }
             }
         }
         if ($pconfig['fam'] !== "" && $pconfig['fam'] !== "ip" && $pconfig['fam'] !== "ip6") {
