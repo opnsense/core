@@ -49,10 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $params = [$parts['path'], $query['if'], $parts['fragment']];
                         header(url_safe('Location: /%s?if=%s#%s', $params));
                     }
-                } else if (strpos($rule->getRef(), "#") === false) {
-                    header(url_safe('Location: /%s', $rule->getRef()));
                 } else {
-                    header(url_safe('Location: /%s#%s', explode("#", $rule->getRef())));
+                    header(sprintf('Location: /%s', $rule->getRef()));
                 }
                 exit;
             }
