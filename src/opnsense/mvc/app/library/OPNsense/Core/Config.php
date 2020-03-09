@@ -406,7 +406,7 @@ class Config extends Singleton
      * @param array|null $revision revision tag (associative array)
      * @param \SimpleXMLElement|null pass trough xml node
      */
-    private function updateRevision($revision, $node = null)
+    private function updateRevision($revision, $node = null, $timestamp = null)
     {
         // if revision info is not provided, create a default.
         if (!is_array($revision)) {
@@ -430,7 +430,7 @@ class Config extends Singleton
         }
 
         // always set timestamp
-        $revision['time'] = microtime(true);
+        $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
 
         if ($node == null) {
             if (isset($this->simplexml->revision)) {
@@ -456,11 +456,13 @@ class Config extends Singleton
 
     /**
      * backup current (running) config
+     * @return float timestamp
      */
     public function backup()
     {
+        $timestamp = microtime(true);
         $target_dir = dirname($this->config_file) . "/backup/";
-        $target_filename = "config-" . microtime(true) . ".xml";
+        $target_filename = "config-" . $timestamp . ".xml";
 
         if (!file_exists($target_dir)) {
             // create backup directory if it is missing
@@ -471,6 +473,7 @@ class Config extends Singleton
         if (!file_exists($target_dir . $target_filename)) {
             copy($this->config_file, $target_dir . $target_filename);
         }
+        return $timestamp;
     }
 
     /**
@@ -575,11 +578,13 @@ class Config extends Singleton
         $this->checkvalid();
 
         if ($backup) {
-            $this->backup();
+            $timestamp = $this->backup();
+        } else {
+            $timestamp = microtime(true);
         }
 
-        // update revision information ROOT.revision tag
-        $this->updateRevision($revision);
+        // update revision information ROOT.revision tag, align timestamp to backup output
+        $this->updateRevision($revision, null, $timestamp);
 
         // serialize to text
         $xml_text = $this->__toString();
