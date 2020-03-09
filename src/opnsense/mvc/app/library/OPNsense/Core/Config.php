@@ -545,18 +545,26 @@ class Config extends Singleton
     }
 
     /**
+     * @return int number of backups to keep
+     */
+    public function backupCount()
+    {
+        if (
+            $this->statusIsValid && isset($this->simplexml->system->backupcount)
+            && intval($this->simplexml->system->backupcount) >= 0
+        ) {
+            return intval($this->simplexml->system->backupcount);
+        } else {
+            return 60;
+        }
+    }
+
+    /**
      * remove old backups
      */
     private function cleanupBackups()
     {
-        if (
-            $this->statusIsValid && isset($this->simplexml->system->backupcount)
-                && intval($this->simplexml->system->backupcount) >= 0
-        ) {
-            $revisions = intval($this->simplexml->system->backupcount);
-        } else {
-            $revisions = 60;
-        }
+        $revisions = $this->backupCount();
 
         $cnt = 1;
         foreach ($this->getBackups() as $filename) {
