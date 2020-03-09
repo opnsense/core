@@ -560,6 +560,22 @@ class Config extends Singleton
     }
 
     /**
+     * return backup file path if revision exists
+     * @param $revision revision timestamp (e.g. 1583766095.9337)
+     * @return bool|string filename when available or false when not found
+     */
+    public function getBackupFilename($revision)
+    {
+        $tmp = (float)$revision;
+        $bckfilename = dirname($this->config_file) . "/backup/config-{$tmp}.xml";
+        if (is_file($bckfilename)) {
+            return $bckfilename;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * remove old backups
      */
     private function cleanupBackups()
