@@ -566,7 +566,7 @@ class Config extends Singleton
      */
     public function getBackupFilename($revision)
     {
-        $tmp = (float)$revision;
+        $tmp = preg_replace("/[^0-9.]/", $revision);
         $bckfilename = dirname($this->config_file) . "/backup/config-{$tmp}.xml";
         if (is_file($bckfilename)) {
             return $bckfilename;
