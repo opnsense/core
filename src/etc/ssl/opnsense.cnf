@@ -174,7 +174,7 @@ basicConstraints=CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 # This will be displayed in Netscape's comment listbox.
-#nsComment			= "OPNsense Generated Client Certificate"
+nsComment			= "OPNsense Generated Client Certificate"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
@@ -198,7 +198,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 # Extensions for a typical CA
 
 # This will be displayed in Netscape's comment listbox.
-#nsComment			= "OPNsense Generated Certificate Authority"
+nsComment			= "OPNsense Generated Certificate Authority"
 
 # PKIX recommendation.
 
@@ -231,7 +231,7 @@ authorityKeyIdentifier=keyid:always
 basicConstraints=CA:FALSE
 
 # This will be displayed in Netscape's comment listbox.
-#nsComment			= "OPNsense Generated Certificate Revocation List"
+nsComment			= "OPNsense Generated Certificate Revocation List"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
@@ -274,8 +274,8 @@ ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
 
 # Make a cert with nsCertType=server
 basicConstraints=CA:FALSE
-#nsCertType			= server
-#nsComment			= "OPNsense Generated Server Certificate"
+nsCertType			= server
+nsComment			= "OPNsense Generated Server Certificate"
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer:always
 extendedKeyUsage=serverAuth,1.3.6.1.5.5.8.2.2
@@ -286,7 +286,7 @@ keyUsage = digitalSignature, keyEncipherment
 [ combined_server_client ]
 
 basicConstraints=CA:FALSE
-#nsComment			   = "OPNsense Generated Combined Client/Server Certificate"
+nsComment			   = "OPNsense Generated Combined Client/Server Certificate"
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer:always
 extendedKeyUsage       = clientAuth,serverAuth,1.3.6.1.5.5.8.2.2
@@ -297,7 +297,7 @@ keyUsage               = nonRepudiation, digitalSignature, keyEncipherment
 
 [ sign_csr ]
 
-#nsComment              = "OPNsense Generated Certificate Signing Request"
+nsComment              = "OPNsense Generated Certificate Signing Request"
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer:always
 
