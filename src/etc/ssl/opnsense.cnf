@@ -222,6 +222,9 @@ basicConstraints = CA:true
 # issuerAltName=issuer:copy
 authorityKeyIdentifier=keyid:always
 
+# This will be displayed in Netscape's comment listbox.
+nsComment			= "OPNsense Generated Certificate Revocation List"
+
 [ proxy_cert_ext ]
 # These extensions should be added when creating a proxy certificate
 
@@ -231,7 +234,7 @@ authorityKeyIdentifier=keyid:always
 basicConstraints=CA:FALSE
 
 # This will be displayed in Netscape's comment listbox.
-nsComment			= "OPNsense Generated Certificate Revocation List"
+nsComment			= "OPNsense Generated Proxy Certificate"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
