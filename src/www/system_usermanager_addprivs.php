@@ -210,7 +210,7 @@ include("head.inc");
                             <thead>
                                 <tr>
                                     <th style="width:70px;"></th>
-                                    <th></th>
+                                    <th style="width:50px;"></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -234,7 +234,29 @@ include("head.inc");
                                         <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
                                     </td>
                                     <td><?= $pdesc ?></td>
-                                    <td><?= $pnamesafe ?></td>
+                                    <td><?= $pnamesafe ?>
+<?php
+                                      if (!empty($pdata['match'])):?>
+                                      <i class="fa fa-info-circle" style="cursor: pointer" data-toggle="collapse" href="#<?=$pname;?>"></i>
+                                      <div class="collapse" id="<?=$pname;?>">
+                                        <table class="table table-condensed">
+                                          <thead>
+                                            <tr>
+                                                <th><?=gettext("endpoint");?>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+<?php
+                                          foreach ($pdata['match'] as $match):?>
+                                            <tr><td>/<?=$match;?></td></tr>
+<?php
+                                          endforeach;?>
+                                          </tbody>
+                                        </table>
+                                      </div>
+<?php
+                                      endif;?>
+                                    </td>
                                 </tr>
 <?php
                             } ?>
