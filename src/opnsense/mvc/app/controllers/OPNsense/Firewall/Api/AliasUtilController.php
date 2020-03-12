@@ -177,6 +177,9 @@ class AliasUtilController extends ApiControllerBase
         $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             $address = $this->request->getPost("address");
+
+            Config::getInstance()->lock();
+
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, remove address when found for static types
@@ -226,6 +229,9 @@ class AliasUtilController extends ApiControllerBase
             if (preg_match("/[^0-9a-f\:\.\/_]/", $address)) {
                 return array("status" => "not_an_address");
             }
+
+            Config::getInstance()->lock();
+
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
                 // update local administration, add address when not found for static types
