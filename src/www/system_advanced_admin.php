@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : array();
     $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
+    $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -242,6 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['kex'] = !empty($pconfig['ssh-kex']) ? implode(',', $pconfig['ssh-kex']) : null;
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
+        $config['system']['ssh']['keys'] = !empty($pconfig['ssh-keys']) ? implode(',', $pconfig['ssh-keys']) : null;
 
 
         if (!empty($pconfig['enablesshd'])) {
@@ -769,6 +771,24 @@ $(document).ready(function() {
                     </select>
                     <div class="hidden" data-for="help_for_sshmacs">
                       <?=gettext("The message authentication codes used to detect traffic modification");?>
+                    </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_sshkeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host key algorithms"); ?></td>
+                <td>
+                    <select name="ssh-keys[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php
+                    $options = json_decode(configd_run("openssh query key"), true);
+                    foreach ($options = empty($options) ? array() : $options as $option):?>
+                      <option value="<?=$option;?>" <?= !empty($pconfig['ssh-keys']) && in_array($option, $pconfig['ssh-keys']) ? 'selected="selected"' : '' ?>>
+                        <?=$option;?>
+                      </option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <div class="hidden" data-for="help_for_sshkeys">
+                      <?=gettext("Specifies the host	key algorithms that the	server offers");?>
                     </div>
                 </td>
               </tr>

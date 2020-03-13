@@ -182,6 +182,9 @@ function openssh_configure_do($verbose = false, $interface = '')
     if (!empty($sshcfg['macs'])) {
         $sshconf .= "MACs {$sshcfg['macs']}\n";
     }
+    if (!empty($sshcfg['keys'])) {
+        $sshconf .= "HostKeyAlgorithms {$sshcfg['keys']}\n";
+    }
     foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {
