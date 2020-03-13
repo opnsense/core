@@ -674,8 +674,12 @@ EOD;
         }
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
+        @unlink("/var/run/legacy_log");
         mwexecf("/usr/sbin/service syslog-ng stop");
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
+        while (count(glob("/var/run/legacy_log")) == 0) {
+            sleep(0.1);
+        }
         mwexecf("/usr/sbin/service syslog-ng start");
     }
 
