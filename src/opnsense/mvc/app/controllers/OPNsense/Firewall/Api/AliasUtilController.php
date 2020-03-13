@@ -209,6 +209,38 @@ class AliasUtilController extends ApiControllerBase
             $backend = new Backend();
             $backend->configdpRun("filter delete table", array($alias, $address));
             return array("status" => "done");
+        } elseif ($this->request->isPost() && $this->request->hasPost("alias")) {
+            Config::getInstance()->lock();
+            $aliasToRemove = $this->request->getPost("alias");
+            $cnfAlias = $this->getAlias($alias);
+            if ($cnfAlias == null || !in_array($cnfAlias->type, array('host', 'network'))) {
+                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
+            }
+            // check if the nested alias exist
+            $nestedAlias = $this->getAlias($aliasToRemove);
+            if ($nestedAlias == null || !in_array($nestedAlias->type, array('host', 'network'))) {
+                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $aliasToRemove));
+            }
+            $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+            $index = array_search($aliasToRemove, $items);
+            if ($index === false) {
+                return array("status" => "failed", "status_msg" => sprintf("Alias '%s' it not present in %s : %s", $aliasToRemove, $alias, $index));
+            }
+
+            unset($items[$index]);
+            $cnfAlias->content = implode("\n", $items);
+            $this->getModel()->serializeToConfig();
+            Config::getInstance()->save();
+            // flush to disk,
+            (new Backend())->configdRun('template reload OPNsense/Filter');           
+    
+            $backend = new Backend();
+            $nestedItems = !empty((string)$nestedAlias->content) ? explode("\n", $nestedAlias->content) : array();
+            foreach ($nestedItems as $addr) {
+                $backend->configdpRun("filter delete table", array($alias, $addr));
+            }
+
+            return array("status" => "done");
         } else {
             return array("status" => "failed");
         }
@@ -253,6 +285,37 @@ class AliasUtilController extends ApiControllerBase
             } else {
                 return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
             }
+        } elseif ($this->request->isPost() && $this->request->hasPost("alias")) {
+            Config::getInstance()->lock();
+            $aliasToAdd = $this->request->getPost("alias");
+
+            $cnfAlias = $this->getAlias($alias);
+            if ($cnfAlias == null || !in_array($cnfAlias->type, array('host', 'network'))) {
+                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
+            }
+            // check if the desired alias exist to
+            $nestedAlias = $this->getAlias($aliasToAdd);
+            if ($nestedAlias == null || !in_array($nestedAlias->type, array('host', 'network'))) {
+                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $aliasToAdd));
+            }
+            $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
+            if (array_search($aliasToAdd, $items) !== false) {
+                return array("status" => "failed", "status_msg" => sprintf("Alias '%s' already present in %s", $aliasToAdd, $alias ));
+            }
+
+            $items[] = $aliasToAdd;
+            $cnfAlias->content = implode("\n", $items);
+            $this->getModel()->serializeToConfig();
+            Config::getInstance()->save();
+            // flush to disk,
+            (new Backend())->configdRun('template reload OPNsense/Filter');
+        
+            $backend = new Backend();
+            $nestedItems = !empty((string)$nestedAlias->content) ? explode("\n", $nestedAlias->content) : array();
+            foreach ($nestedItems as $addr) {
+                $backend->configdpRun("filter add table", array($alias, $addr));
+            }
+            return array("status" => "done");
         } else {
             return array("status" => "failed");
         }
