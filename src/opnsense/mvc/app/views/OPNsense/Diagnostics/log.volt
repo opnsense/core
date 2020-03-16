@@ -91,7 +91,7 @@
                     <thead>
                     <tr>
                         <th data-column-id="pos" data-type="numeric" data-identifier="true"  data-visible="false">#</th>
-                        <th data-column-id="timestamp" data-type="string">{{ lang._('Date') }}</th>
+                        <th data-column-id="timestamp" data-width="11em" data-type="string">{{ lang._('Date') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
                     </tr>
                     </thead>
