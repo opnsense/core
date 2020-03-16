@@ -254,7 +254,7 @@ class Gateways
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (self::IsVPNInterface($ifcfg)) {
+                    } elseif (substr($ifcfg['if'], 0, 5) == "ovpnc") {
                         // other predefined types, only bound by interface (e.g. openvpn)
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
@@ -281,9 +281,11 @@ class Gateways
             foreach ($dynamic_gw as $intfgws) {
                 foreach ($intfgws as $gw_arr) {
                     if (!empty($gw_arr)) {
-                        $gw_arr['disabled'] = true;
-                        $gw_arr['defunct'] = true;
-                        unset($gw_arr['gateway']);
+                        if(!self::IsVPNInterface($ifcfg)){
+                            $gw_arr['disabled'] = true;
+                            $gw_arr['defunct'] = true;
+                            unset($gw_arr['gateway']);
+                        }
                         $this->cached_gateways[] = $gw_arr;
                     }
                 }
