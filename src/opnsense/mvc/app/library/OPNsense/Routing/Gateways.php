@@ -84,13 +84,13 @@ class Gateways
     {
         if (!empty($ifcfg['if'])) {
             if ($ipproto == "inet") {
-                if (substr($ifcfg['if'], 0, 5) == "ovpnc") {
+                if (self::IsVPNInterface($ifcfg)) {
                     return "VPNv4";
                 } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
                     return "TUNNELv4";
                 }
             } elseif ($ipproto == "inet6" && !empty($ifcfg['if'])) {
-                if (substr($ifcfg['if'], 0, 5) == "ovpnc") {
+                if (self::IsVPNInterface($ifcfg)) {
                     return 'VPNv6';
                 } elseif (in_array(substr($ifcfg['if'], 0, 3), array('gif', 'gre'))) {
                     return 'TUNNELv6';
@@ -105,6 +105,20 @@ class Gateways
         }
     }
 
+    /**
+     * Check is Interface for VPN
+     * @param array $ifcfg
+     * @return string type bool
+     */
+    private static function IsVPNInterface($ifcfg)
+    {
+        if (empty($ifcfg['if'])) return false;
+        if (substr($ifcfg['if'], 0, 5) == "ovpnc") return true; // OpenVPN
+        if (substr($ifcfg['if'], 0, 4) == "tinc")  return true; // TINC
+        if (substr($ifcfg['if'], 0, 2) == "wg")    return true; // Wireguard 
+        return false;
+    }
+    
     /**
      * generate new sort key for a gateway
      * @param string|int $prio priority
@@ -240,7 +254,7 @@ class Gateways
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (substr($ifcfg['if'], 0, 5) == "ovpnc") {
+                    } elseif (self::IsVPNInterface($ifcfg)) {
                         // other predefined types, only bound by interface (e.g. openvpn)
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
