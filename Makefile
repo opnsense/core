@@ -52,6 +52,7 @@ CORE_SQUID?=	# empty
 CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.25
+CORE_UPDATE?=	# empty
 
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
 CORE_REPOSITORY?=	${CORE_ABI}/latest
@@ -105,7 +106,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			openssh-portable \
 			openvpn${CORE_OPENVPN} \
 			opnsense-lang \
-			opnsense-update \
+			opnsense-update${CORE_UPDATE} \
 			pam_opnsense \
 			pftop \
 			php${CORE_PHP}-ctype \
