@@ -353,9 +353,9 @@ netmap:
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
 
   - interface: {{physical_interface(intfName)}}
-    copy-iface: {{physical_interface(intfName)}}+
+    copy-iface: {{physical_interface(intfName)}}^
 
-  - interface: {{physical_interface(intfName)}}+
+  - interface: {{physical_interface(intfName)}}^
     copy-iface: {{physical_interface(intfName)}}
     {% endfor %}
   {% endif %}
