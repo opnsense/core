@@ -226,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($pconfig['local_port'])) {
             $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
-            if ($portused != $vpnid && $portused != 0) {
+            if ($portused) {
                 $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
             }
         }
