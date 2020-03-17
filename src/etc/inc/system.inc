@@ -679,7 +679,7 @@ EOD;
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
         $max_sleep = 50; // 50 x 0.1 seconds
         while (count(glob("/var/run/legacy_log")) == 0 && ($max_sleep--) > 0) {
-            microseconds(100000);
+            usleep(100000);
         }
         mwexecf("/usr/sbin/service syslog-ng start");
     }
