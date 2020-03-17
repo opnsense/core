@@ -1085,7 +1085,7 @@ $( document ).ready(function() {
             <td>
               <input name="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
               <div class="hidden" data-for="help_for_route_no_exec">
-                <?=sprintf(gettext("Don't add or remove routes automatically. Instead pass routes to %s--route-up%s script using environmental variables"),'<strong>','</strong>') ?>.
+                <?= gettext('Do not add or remove routes automatically. Instead pass routes to "--route-up" script using environmental variables.') ?>
               </div>
             </td>
           </tr>
