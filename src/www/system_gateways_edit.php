@@ -199,108 +199,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (!empty($pconfig['latencylow'])) {
-        if (!is_numeric($pconfig['latencylow'])) {
-            $input_errors[] = gettext("The low latency threshold needs to be a numeric value.");
-        } elseif ($pconfig['latencylow'] < 1) {
-            $input_errors[] = gettext("The low latency threshold needs to be positive.");
-        }
-    }
-
-    if (!empty($pconfig['latencyhigh'])) {
-        if (!is_numeric($pconfig['latencyhigh'])) {
-            $input_errors[] = gettext("The high latency threshold needs to be a numeric value.");
-        } elseif ($pconfig['latencyhigh'] < 1) {
-            $input_errors[] = gettext("The high latency threshold needs to be positive.");
-        }
-    }
-
-    if (!empty($pconfig['losslow'])) {
-        if (!is_numeric($pconfig['losslow'])) {
-            $input_errors[] = gettext("The low Packet Loss threshold needs to be a numeric value.");
-        } elseif ($pconfig['losslow'] < 1) {
-            $input_errors[] = gettext("The low Packet Loss threshold needs to be positive.");
-        } elseif ($pconfig['losslow'] >= 100) {
-            $input_errors[] = gettext("The low Packet Loss threshold needs to be less than 100.");
-        }
-    }
-
-    if (!empty($pconfig['losshigh'])) {
-        if (!is_numeric($pconfig['losshigh'])) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be a numeric value.");
-        } elseif ($pconfig['losshigh'] < 1) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be positive.");
-        } elseif ($pconfig['losshigh'] > 100) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be 100 or less.");
-        }
-    }
-
-    if (!empty($pconfig['latencylow']) && !empty($pconfig['latencyhigh'])) {
-        if (is_numeric($pconfig['latencylow']) && is_numeric($pconfig['latencyhigh']) &&
-            $pconfig['latencylow'] > $pconfig['latencyhigh']
-           ) {
-            $input_errors[] = gettext("The high latency threshold needs to be higher than the low latency threshold");
-        }
-    } elseif (!empty($pconfig['latencylow'])) {
-        if (is_numeric($pconfig['latencylow']) && $pconfig['latencylow'] > $dpinger_default['latencyhigh']) {
-            $input_errors[] = sprintf(gettext('The low latency threshold needs to be less than the default high latency threshold (%d)'), $dpinger_default['latencyhigh']);
-        }
-    } elseif (!empty($pconfig['latencyhigh'])) {
-        if (is_numeric($pconfig['latencyhigh']) && $pconfig['latencyhigh'] < $dpinger_default['latencylow']) {
-            $input_errors[] = sprintf(gettext('The high latency threshold needs to be higher than the default low latency threshold (%d)'), $dpinger_default['latencylow']);
-        }
-    }
-
-    if (!empty($pconfig['losslow']) && !empty($pconfig['losshigh'])) {
-        if (is_numeric($pconfig['losslow']) && is_numeric($pconfig['losshigh']) && $pconfig['losslow'] > $pconfig['losshigh']) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold");
-        }
-    } elseif (!empty($pconfig['losslow'])) {
-        if (is_numeric($pconfig['losslow']) && $pconfig['losslow'] > $dpinger_default['losshigh']) {
-            $input_errors[] = sprintf(gettext('The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)'), $dpinger_default['losshigh']);
-        }
-    } elseif (!empty($pconfig['losshigh'])) {
-        if (is_numeric($pconfig['losshigh']) && $pconfig['losshigh'] < $dpinger_default['losslow']) {
-            $input_errors[] = sprintf(gettext('The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)'), $dpinger_default['losslow']);
-        }
-    }
-
-    if (!empty($pconfig['interval'])) {
-        if (!is_numeric($pconfig['interval'])) {
-            $input_errors[] = gettext("The probe interval needs to be a numeric value.");
-        } elseif ($pconfig['interval'] < 1) {
-            $input_errors[] = gettext("The probe interval needs to be positive.");
-        }
-    }
-
     if (!empty($pconfig['priority']) && !is_numeric($pconfig['priority'])) {
         $input_errors[] = gettext("Priority needs to be a numeric value.");
     }
 
-    if (!empty($pconfig['alert_interval'])) {
-        if (!is_numeric($pconfig['alert_interval'])) {
-            $input_errors[] = gettext("The alert interval needs to be a numeric value.");
-        } elseif ($pconfig['alert_interval'] < 1) {
-            $input_errors[] = gettext("The alert interval needs to be positive.");
-        }
+    /****
+    /* XXX: dpinger needs to take defaults under consideration
+    /****/
+    $dpinger_config = dpinger_defaults();
+    foreach ($dpinger_config as $prop => $value) {
+        $dpinger_config[$prop] = !empty($pconfig[$prop]) ? $pconfig[$prop] : $value;
     }
 
-    if (!empty($pconfig['time_period'])) {
-        if (!is_numeric($pconfig['time_period'])) {
-            $input_errors[] = gettext("The time period needs to be a numeric value.");
-        } elseif ($pconfig['time_period'] < 1) {
-            $input_errors[] = gettext("The time period needs to be positive.");
-        } elseif ($pconfig['time_period'] < (2.1*$pconfig['interval'])) {
-            $input_errors[] = gettext("The time period needs at least 2.1 times that of the probe interval.");
-        }
+    if (!is_numeric($dpinger_config['latencylow'])) {
+        $input_errors[] = gettext("The low latency threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['latencylow'] < 1) {
+        $input_errors[] = gettext("The low latency threshold needs to be positive.");
     }
 
-    if (!empty($pconfig['loss_interval'])) {
-        if (!is_numeric($pconfig['loss_interval'])) {
-            $input_errors[] = gettext("The loss interval needs to be a numeric value.");
-        } elseif ($pconfig['loss_interval'] < 1) {
-            $input_errors[] = gettext("The loss interval needs to be positive.");
-        }
+    if (!is_numeric($dpinger_config['latencyhigh'])) {
+        $input_errors[] = gettext("The high latency threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['latencyhigh'] < 1) {
+        $input_errors[] = gettext("The high latency threshold needs to be positive.");
+    }
+
+    if (!is_numeric($dpinger_config['losslow'])) {
+        $input_errors[] = gettext("The low Packet Loss threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['losslow'] < 1) {
+        $input_errors[] = gettext("The low Packet Loss threshold needs to be positive.");
+    } elseif ($dpinger_config['losslow'] >= 100) {
+        $input_errors[] = gettext("The low Packet Loss threshold needs to be less than 100.");
+    }
+
+    if (!is_numeric($dpinger_config['losshigh'])) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['losshigh'] < 1) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be positive.");
+    } elseif ($dpinger_config['losshigh'] > 100) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be 100 or less.");
+    }
+
+    if (is_numeric($dpinger_config['latencylow']) && is_numeric($dpinger_config['latencyhigh']) &&
+        $pconfig['latencylow'] > $pconfig['latencyhigh']
+       ) {
+        $input_errors[] = gettext("The high latency threshold needs to be higher than the low latency threshold");
+    }
+
+    if (is_numeric($dpinger_config['losslow']) && is_numeric($dpinger_config['losshigh']) && $dpinger_config['losslow'] > $dpinger_config['losshigh']) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold");
+    }
+
+    if (!is_numeric($dpinger_config['interval'])) {
+        $input_errors[] = gettext("The probe interval needs to be a numeric value.");
+    } elseif ($dpinger_config['interval'] < 1) {
+        $input_errors[] = gettext("The probe interval needs to be positive.");
+    }
+
+    if (!is_numeric($dpinger_config['alert_interval'])) {
+        $input_errors[] = gettext("The alert interval needs to be a numeric value.");
+    } elseif ($dpinger_config['alert_interval'] < 1) {
+        $input_errors[] = gettext("The alert interval needs to be positive.");
+    }
+
+    if (!is_numeric($dpinger_config['time_period'])) {
+        $input_errors[] = gettext("The time period needs to be a numeric value.");
+    } elseif ($dpinger_config['time_period'] < 1) {
+        $input_errors[] = gettext("The time period needs to be positive.");
+    } elseif (is_numeric($dpinger_config['interval']) && $dpinger_config['time_period'] < (2.1*$dpinger_config['interval'])) {
+        $input_errors[] = gettext("The time period needs at least 2.1 times that of the probe interval.");
+    }
+
+    if (!is_numeric($dpinger_config['loss_interval'])) {
+        $input_errors[] = gettext("The loss interval needs to be a numeric value.");
+    } elseif ($dpinger_config['loss_interval'] < 1) {
+        $input_errors[] = gettext("The loss interval needs to be positive.");
     }
 
     if (count($input_errors) == 0) {
