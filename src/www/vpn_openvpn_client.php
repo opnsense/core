@@ -1076,7 +1076,7 @@ $( document ).ready(function() {
             <td>
               <input name="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
               <div class="hidden" data-for="help_for_route_no_pull">
-                <?=sprintf(gettext("Don't add or remove routes automatically. Instead pass routes to %s--route-up%s script using environmental variables"),'<strong>','</strong>') ?>.
+                <?=gettext("This option effectively bars the server from adding routes to the client's routing table, however note that this option still allows the server to set the TCP/IP properties of the client's TUN/TAP interface"); ?>.
               </div>
             </td>
           </tr>
@@ -1085,7 +1085,7 @@ $( document ).ready(function() {
             <td>
               <input name="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
               <div class="hidden" data-for="help_for_route_no_exec">
-                <?=gettext("This option effectively bars the server from adding routes to the client's routing table, however note that this option still allows the server to set the TCP/IP properties of the client's TUN/TAP interface"); ?>.
+                <?=sprintf(gettext("Don't add or remove routes automatically. Instead pass routes to %s--route-up%s script using environmental variables"),'<strong>','</strong>') ?>.
               </div>
             </td>
           </tr>
