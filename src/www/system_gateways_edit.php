@@ -291,8 +291,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = gettext("The time period needs to be a numeric value.");
         } elseif ($pconfig['time_period'] < 1) {
             $input_errors[] = gettext("The time period needs to be positive.");
-        } elseif ($pconfig['time_period'] < (2.1*$pconfig['interval'])) {
-            $input_errors[] = gettext("The time period needs at least 2.1 times that of the probe interval.");
+        } else {
+            $__interval__ = $pconfig['interval'];
+            // If it's not a numeric value, fall back to the default
+            if (!is_numeric($__interval__) || $__interval__ <1) $__interval__ = 1;
+            if ($pconfig['time_period'] < (2.1*$__interval__)) {
+                $input_errors[] = gettext("The time period needs at least 2.1 times that of the probe interval.");
+            }
         }
     }
 
