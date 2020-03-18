@@ -158,7 +158,7 @@ class Gateways
             // iterate configured gateways
             if (!empty($this->configHandle->gateways)) {
                 foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
-                    if ($tag == "gateway_item") {
+                    if ($tag == "gateway_item" && !empty($gateway)) {
                         $reservednames[] = (string)$gateway->name;
                         $gw_arr = array();
                         foreach ($gateway as $key => $value) {
