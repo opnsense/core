@@ -28,8 +28,8 @@
 
 namespace OPNsense\Routing;
 
-use \OPNsense\Core\Config;
-use \OPNsense\Firewall\Util;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Gateways

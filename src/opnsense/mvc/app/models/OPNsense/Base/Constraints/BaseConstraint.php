@@ -30,9 +30,9 @@
 
 namespace OPNsense\Base\Constraints;
 
-use \Phalcon\Validation\Validator;
-use \Phalcon\Validation\ValidatorInterface;
-use \Phalcon\Validation\Message;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
+use Phalcon\Validation\Message;
 
 abstract class BaseConstraint extends Validator implements ValidatorInterface
 {

@@ -30,7 +30,7 @@
 
 namespace OPNsense\Firewall;
 
-use \OPNsense\Base\IndexController;
+use OPNsense\Base\IndexController;
 
 /**
  * @package OPNsense\Firewall

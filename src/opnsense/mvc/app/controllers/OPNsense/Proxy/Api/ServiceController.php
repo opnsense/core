@@ -28,9 +28,9 @@
 
 namespace OPNsense\Proxy\Api;
 
-use \OPNsense\Base\ApiMutableServiceControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Proxy\Proxy;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Proxy\Proxy;
 
 /**
  * Class ServiceController

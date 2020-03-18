@@ -28,7 +28,7 @@
 
 namespace OPNsense\Core;
 
-use \Phalcon\DI\FactoryDefault;
+use Phalcon\DI\FactoryDefault;
 
 /**
  * Class Shell shell/command handling routines

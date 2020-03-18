@@ -35,7 +35,6 @@ use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Alias;
 use OPNsense\Base\Validators\CallbackValidator;
 
-
 /**
  * Network field type supporting aliases and special nets
  * @package OPNsense\Base\FieldTypes
@@ -64,7 +63,8 @@ class NetworkAliasField extends BaseListField
     {
         if ($this->internalValidationMessage == null) {
             return sprintf(
-                gettext("%s is not a valid source IP address or alias."), $this->__toString()
+                gettext("%s is not a valid source IP address or alias."),
+                $this->__toString()
             );
         } else {
             return $this->internalValidationMessage;

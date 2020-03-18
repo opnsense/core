@@ -30,7 +30,7 @@
 
 namespace OPNsense\Core;
 
-use \Phalcon\Mvc\Router;
+use Phalcon\Mvc\Router;
 
 /**
  * Class Routing handles OPNsense ui/api routing

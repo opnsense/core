@@ -28,8 +28,8 @@
 
 namespace OPNsense\Core;
 
-use \Phalcon\DI\FactoryDefault;
-use \Phalcon\Logger\Adapter\Syslog;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class Config provides access to systems config xml

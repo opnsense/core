@@ -29,7 +29,7 @@
 namespace OPNsense\Base\Menu;
 
 use OPNsense\Core\Config;
-use \Phalcon\DI\FactoryDefault;
+use Phalcon\DI\FactoryDefault;
 
 /**
  * Class MenuSystem

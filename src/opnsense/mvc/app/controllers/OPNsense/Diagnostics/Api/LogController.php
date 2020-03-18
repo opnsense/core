@@ -28,10 +28,10 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Base\Filters\QueryFilter;
-use \Phalcon\Filter;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Base\Filters\QueryFilter;
+use Phalcon\Filter;
 
 /**
  * @inherit

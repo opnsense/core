@@ -30,9 +30,9 @@
 
 namespace OPNsense\Cron\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\Core\Config;
-use \OPNsense\Cron\Cron;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Config;
+use OPNsense\Cron\Cron;
 
 /**
  * Class SettingsController Handles settings related API actions for the Cron

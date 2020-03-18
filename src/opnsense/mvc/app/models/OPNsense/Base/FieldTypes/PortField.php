@@ -182,10 +182,17 @@ class PortField extends BaseListField
                 if (strpos($data, "-") !== false) {
                     $tmp = explode('-', $data);
                     if (count($tmp) == 2) {
-                        if (filter_var($tmp[0],FILTER_VALIDATE_INT,
-                                array('options' => array('min_range' => 1, 'max_range' => 65535))) !== false &&
-                            filter_var($tmp[1],FILTER_VALIDATE_INT,
-                                array('options' => array('min_range' => 1, 'max_range' => 65535))) !== false &&
+                        if (
+                            filter_var(
+                                $tmp[0],
+                                FILTER_VALIDATE_INT,
+                                array('options' => array('min_range' => 1, 'max_range' => 65535))
+                            ) !== false &&
+                            filter_var(
+                                $tmp[1],
+                                FILTER_VALIDATE_INT,
+                                array('options' => array('min_range' => 1, 'max_range' => 65535))
+                            ) !== false &&
                             $tmp[0] < $tmp[1]
                         ) {
                             $this->internalOptionList[$data] = $data;

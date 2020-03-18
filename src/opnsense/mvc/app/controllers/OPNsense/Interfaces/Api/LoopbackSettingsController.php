@@ -28,8 +28,8 @@
 
 namespace OPNsense\Interfaces\Api;
 
-use \OPNsense\Core\Backend;
-use \OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Base\ApiMutableModelControllerBase;
 
 class LoopbackSettingsController extends ApiMutableModelControllerBase
 {
