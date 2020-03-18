@@ -240,7 +240,10 @@ class Gateways
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (substr($ifcfg['if'], 0, 5) == "ovpnc") {
+                    } elseif (!empty($ifcfg['gateway_interface']) || substr($ifcfg['if'], 0, 5) == "ovpnc") {
+                        // XXX: ditch ovpnc in a major upgrade in the future, supersede with interface setting
+                        //      gateway_interface
+
                         // other predefined types, only bound by interface (e.g. openvpn)
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
