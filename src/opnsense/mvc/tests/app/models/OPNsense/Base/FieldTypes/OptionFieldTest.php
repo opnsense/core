@@ -34,7 +34,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\OptionField;
+use OPNsense\Base\FieldTypes\OptionField;
 
 class OptionFieldTest extends Field_Framework_TestCase
 {

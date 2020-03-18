@@ -94,6 +94,11 @@
             <value1 type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>value2.check001</reference>
+                    </check001>
+                </Constraints>
             </value1>
             <value2 type="TextField">
                 <Constraints>

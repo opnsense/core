@@ -34,7 +34,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\CountryField;
+use OPNsense\Base\FieldTypes\CountryField;
 
 class CountryFieldTest extends Field_Framework_TestCase
 {

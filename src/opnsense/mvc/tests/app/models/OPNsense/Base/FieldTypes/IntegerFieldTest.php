@@ -34,7 +34,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\IntegerField;
+use OPNsense\Base\FieldTypes\IntegerField;
 
 class IntegerFieldTest extends Field_Framework_TestCase
 {
