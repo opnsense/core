@@ -701,6 +701,9 @@
 /usr/local/opnsense/scripts/systemhealth/fetchData.py
 /usr/local/opnsense/scripts/systemhealth/flush_rrd.py
 /usr/local/opnsense/scripts/systemhealth/listReports.py
+/usr/local/opnsense/scripts/systemhealth/logformats/__init__.py
+/usr/local/opnsense/scripts/systemhealth/logformats/squid.py
+/usr/local/opnsense/scripts/systemhealth/logformats/syslog.py
 /usr/local/opnsense/scripts/systemhealth/queryLog.py
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/wrapper.py
