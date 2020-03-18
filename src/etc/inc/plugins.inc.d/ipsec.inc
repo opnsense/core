@@ -1349,8 +1349,10 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 }
 
                 $rightsourceip = null;
-                if (isset($ph1ent['mobile']) &&
-                      (!empty($a_client['pool_address']) || !empty($a_client['pool_address_v6']))) {
+                if (
+                    isset($ph1ent['mobile']) &&
+                      (!empty($a_client['pool_address']) || !empty($a_client['pool_address_v6']))
+                ) {
                     $rightsourceip = "\trightsourceip = ";
                     if (!empty($a_client['pool_address'])) {
                         $rightsourceip .= "{$a_client['pool_address']}/{$a_client['pool_netbits']}";
