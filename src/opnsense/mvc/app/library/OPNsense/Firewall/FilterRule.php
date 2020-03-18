@@ -174,10 +174,12 @@ class FilterRule extends Rule
                 $rule['disabled'] = true;
                 $this->log("Gateway down");
             }
-            if (!empty($rule['gateway']) &&
+            if (
+                !empty($rule['gateway']) &&
                   !empty($this->gatewayMapping[$rule['gateway']]) &&
                   !empty($rule['ipprotocol']) &&
-                  $this->gatewayMapping[$rule['gateway']]['proto'] != $rule['ipprotocol']) {
+                  $this->gatewayMapping[$rule['gateway']]['proto'] != $rule['ipprotocol']
+            ) {
                 $rule['disabled'] = true;
                 $this->log("Gateway protocol mismatch");
             }
