@@ -281,7 +281,7 @@ class Gateways
             foreach ($dynamic_gw as $intfgws) {
                 foreach ($intfgws as $gw_arr) {
                     if (!empty($gw_arr)) {
-                        if(!self::IsVPNInterface($ifcfg)){
+                        if(!self::IsVPNInterface($gw_arr)){
                             $gw_arr['disabled'] = true;
                             $gw_arr['defunct'] = true;
                             unset($gw_arr['gateway']);
