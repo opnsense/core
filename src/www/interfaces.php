@@ -396,6 +396,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['gateway_interface'] =  isset($a_interfaces[$if]['gateway_interface']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -1009,6 +1010,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
             $new_config['blockbogons'] = !empty($pconfig['blockbogons']);
+            $new_config['gateway_interface'] = !empty($pconfig['gateway_interface']);
             if (!empty($pconfig['mtu'])) {
                 $new_config['mtu'] = $pconfig['mtu'];
             }
@@ -1895,6 +1897,18 @@ include("head.inc");
                         </tr>
 <?php
                         endif;?>
+                        <tr>
+                          <td><a id="help_for_gateway_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic gateway policy') ?></td>
+                          <td>
+                            <input id="gateway_interface" name="gateway_interface" type="checkbox" value="yes" <?=!empty($pconfig['gateway_interface']) ? 'checked="checked"' : '' ?>/>
+                            <strong><?= gettext('This interface does not require an intermediate system to act as a gateway') ?></strong>
+                            <div class="hidden" data-for="help_for_gateway_interface">
+                              <?=gettext("If the destination is directly reachable via an interface requiring no " .
+                              "intermediary system to act as a gateway, you can select this option which allows dynamic gateways " .
+                              "to be created without direct target addresses. Some tunnel types support this."); ?>
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
