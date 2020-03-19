@@ -552,7 +552,7 @@ include("head.inc");
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Password"); ?></td>
                         <td>
-                          <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
+                          <input name="password" type="password" autocomplete="new-password" id="password" value="<?=$pconfig['password'];?>" />
                         </td>
                       </tr>
                       <tr style="display:none" id="phone_num">

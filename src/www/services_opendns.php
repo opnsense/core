@@ -181,7 +181,7 @@ include 'head.inc';
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Password'); ?></td>
                   <td>
-                    <input name="password" type="password" id="password" size="20" value="<?=$pconfig['password'];?>" />
+                    <input name="password" type="password" autocomplete="new-password" id="password" size="20" value="<?=$pconfig['password'];?>" />
                   </td>
                 </tr>
                 <tr>

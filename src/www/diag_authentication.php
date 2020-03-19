@@ -120,7 +120,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td style="width:22%"><?=gettext("Password"); ?></td>
-                  <td style="width:78%"><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
+                  <td style="width:78%"><input type="password" autocomplete="new-password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
                 </tr>
                 <tr>
                   <td style="width:22%">&nbsp;</td>
