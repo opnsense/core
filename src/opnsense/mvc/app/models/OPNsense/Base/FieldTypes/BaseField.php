@@ -126,7 +126,6 @@ abstract class BaseField
      */
     private $internalParentModel = null;
 
-
     /**
      * @return bool
      */
