@@ -80,6 +80,7 @@ class Backend
 
         // wait until socket exist for a maximum of $connect_timeout
         $timeout_wait = $connect_timeout;
+        $errorMessage = "";
         while (
             !file_exists($this->configdSocket) ||
             ($stream = @stream_socket_client('unix://' . $this->configdSocket, $errorNumber, $errorMessage, $poll_timeout)) === false
