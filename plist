@@ -659,6 +659,8 @@
 /usr/local/opnsense/scripts/routes/del_route.py
 /usr/local/opnsense/scripts/routes/gateways.php
 /usr/local/opnsense/scripts/routes/show_routes.py
+/usr/local/opnsense/scripts/shaper/dummynet_stats.py
+/usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
 /usr/local/opnsense/scripts/shell/firmware.sh
