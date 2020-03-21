@@ -185,6 +185,7 @@ def parse_ipfw_rules():
                 'pkts': parts[1],
                 'bytes': parts[2],
                 'accessed': parts[3],
+                'attached_to': parts[5],
                 'rule_uuid': None
             }
             if line.find('//') > -1:
