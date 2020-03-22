@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -216,6 +216,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         flush();
     }
 
+    $ifconfig_details = legacy_interfaces_details();
     $radvdconf = "# Automatically generated, do not edit\n";
 
     /* Process all links which need the router advertise daemon */
@@ -301,7 +302,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $stanzas = array();
 
-        $networkv6 = find_interface_networkv6($realif);
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $realif, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -372,9 +373,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
             $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $server = find_interface_ipv6($realif);
-            if (is_ipaddrv6($server)) {
-                $dnslist_tmp[] = $server;
+            if (is_ipaddrv6($ifcfgipv6)) {
+                $dnslist_tmp[] = $ifcfgipv6;
             } else {
                 log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
             }
@@ -454,8 +454,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $dnslist = array();
 
-        $ifcfgipv6 = find_interface_ipv6($realif);
-        $networkv6 = find_interface_networkv6($realif);
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $realif, $ifconfig_details);
 
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
@@ -484,15 +483,37 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
         $radvdconf .= "\tAdvManagedFlag on;\n";
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
-        $radvdconf .= "\tprefix {$networkv6} {\n";
-        if ($autotype == 'slaac') {
-            /* XXX also of interest in the future, see hardcoded prefix above */
-            $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+
+        if (!empty($networkv6)) {
+            $radvdconf .= "\tprefix {$networkv6} {\n";
+            if ($autotype == 'slaac') {
+                /* XXX also of interest in the future, see hardcoded prefix above */
+                $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+            }
+            $radvdconf .= "\t\tDeprecatePrefix on;\n";
+            $radvdconf .= "\t\tAdvOnLink on;\n";
+            $radvdconf .= "\t\tAdvAutonomous on;\n";
+            $radvdconf .= "\t};\n";
         }
-        $radvdconf .= "\t\tDeprecatePrefix on;\n";
-        $radvdconf .= "\t\tAdvOnLink on;\n";
-        $radvdconf .= "\t\tAdvAutonomous on;\n";
-        $radvdconf .= "\t};\n";
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            }
+
+            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+            $vipnetv6 = "{$subnetv6}/{$vip['subnet_bits']}";
+
+            if ($vipnetv6 == $networkv6) {
+                continue;
+            }
+
+            $radvdconf .= "\tprefix {$vipnetv6} {\n";
+            $radvdconf .= "\t\tDeprecatePrefix on;\n";
+            $radvdconf .= "\t\tAdvOnLink on;\n";
+            $radvdconf .= "\t\tAdvAutonomous on;\n";
+            $radvdconf .= "\t};\n";
+        }
 
         if (count($dnslist) > 0) {
             $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " { };\n";
@@ -1240,7 +1261,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            $ifcfgipv6 = get_interface_ipv6($ifname, $ifconfig_details);
+            list ($ifcfgipv6) = interfaces_primary_address6($ifname, null, $ifconfig_details);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
@@ -1392,11 +1413,7 @@ EOD;
             continue;
         }
 
-        $realif = get_real_interface($dhcpv6if, 'inet6');
-
-        $ifcfgipv6 = find_interface_ipv6($realif, $ifconfig_details);
-        $networkv6 = find_interface_networkv6($realif, true, $ifconfig_details);
-
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, null, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
             continue;
