@@ -132,7 +132,7 @@ if (isset($opts['h'])) {
    }
    exit (0);
 } elseif (isset($opts['g'])) {
-   echo get_config_prop($args[0]);
+   echo get_config_prop($args[0]) . PHP_EOL;
    exit (0);
 } else {
     /* second argument is hook */
