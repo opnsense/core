@@ -456,7 +456,7 @@ class LDAP extends Base implements IAuthConnector
             $ldap_groups = array();
             foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
                 if (stripos($member, "cn=") === 0) {
-                    $ldap_groups[explode(",", substr($member, 3))[0]] = $member;
+                    $ldap_groups[strtolower(explode(",", substr($member, 3))[0])] = $member;
                 }
             }
             // list of enabled groups (all when empty), so we can ignore some local groups if needed
