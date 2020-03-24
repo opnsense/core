@@ -6,7 +6,7 @@
                 <Queues url="/ui/trafficshaper#queues"/>
                 <Rules url="/ui/trafficshaper#rules"/>
             </Settings>
-            <Status order="20" url="/diag_limiter_info.php"/>
+            <Status order="20" url="/ui/trafficshaper/service/statistics"/>
         </Shaper>
     </Firewall>
 </menu>
