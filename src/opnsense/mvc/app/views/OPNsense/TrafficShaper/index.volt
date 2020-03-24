@@ -126,6 +126,9 @@ POSSIBILITY OF SUCH DAMAGE.
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
+        $(window).on('hashchange', function(e) {
+            $('a[href="' + window.location.hash + '"]').click()
+        });
     });
 
 

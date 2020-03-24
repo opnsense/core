@@ -101,13 +101,48 @@ class ServiceController extends ApiControllerBase
                 $pipenrs = array();
                 if (!empty($ipfwstats['pipes'])) {
                     $shaperModel = new TrafficShaper();
-                    // traverse pipes
-                    foreach ($ipfwstats['pipes'] as $pipeid => $pipe) {
+
+                    // link pipe and queue descriptions and sort
+                    foreach (['pipes', 'queues'] as $objectType) {
+                        if ($objectType == 'pipes') {
+                            $root = $shaperModel->pipes->pipe;
+                        } else {
+                            $root = $shaperModel->queues->queue;
+                        }
+                        $idfield = $objectType == 'queues' ? "flow_set_nr" : "pipe";
+                        foreach ($ipfwstats[$objectType] as &$ipfwObject) {
+                            $ipfwObject['description'] = "";
+                            foreach ($root->iterateItems() as $node) {
+                                if ((string)$node->number == $ipfwObject[$idfield]) {
+                                      $ipfwObject['description'] = (string)$node->description;
+                                      $ipfwObject['uuid'] = (string)$node->getAttribute('uuid');
+                                      break;
+                                }
+                            }
+                        }
+                        uasort($ipfwstats[$objectType], function ($item1, $item2) {
+                            return $item1['description'] <=> $item2['description'];
+                        });
+                    }
+
+                    foreach ($ipfwstats['pipes'] as $pipeid => &$pipe) {
                         $pipenrs[] = $pipeid;
                         $item = $pipe;
                         $item['type'] = "pipe";
                         $item['id'] = $pipeid;
+                        // move flows to "template" queue
+                        $item['flows'] = [];
                         $result['items'][] = $item;
+                        if (!empty($pipe['flowset'])) {
+                            // template queues seem to be automatically attached to pipes
+                            $item = $pipe['flowset'];
+                            $item['type'] = "queue";
+                            $item['template'] = true;
+                            $item['pipe'] = $pipeid;
+                            $item['id'] = $pipeid . "." . $item['flow_set_nr'];
+                            $item['flows'] = $pipe['flows'];
+                            $result['items'][] = $item;
+                        }
                         foreach ($ipfwstats['queues'] as $queueid => $queue) {
                             if ($queue['sched_nr'] == $pipeid) {
                                 // XXX: sched_nr seems to be the linking pin to pipe
@@ -136,29 +171,16 @@ class ServiceController extends ApiControllerBase
                             $result['items'][] = $item;
                         }
                     }
-                    // collect model properties
+                    // link rules (with statistics)
                     foreach ($result['items'] as &$item) {
-                        $idfield = $item['type'] == 'queue' ? "flow_set_nr" : "pipe";
-                        // link pipe and queue descriptions
-                        $item['description'] = "";
-                        if (in_array($item['type'], ['queue', 'pipe'])) {
-                            if ($item['type'] == 'pipe') {
-                                $root = $shaperModel->pipes->pipe;
-                            } else {
-                                $root = $shaperModel->queues->queue;
-                            }
-                            foreach ($root->iterateItems() as $node) {
-                                if ((string)$node->number == $item[$idfield]) {
-                                      $item['description'] = (string)$node->description;
-                                      $item['uuid'] = (string)$node->getAttribute('uuid');
-                                      break;
-                                }
-                            }
-                        }
-                        // link rules (with statistics)
                         $item['rules'] = [];
-                        if (!empty($ipfwstats['rules']["{$item['type']}s"])) {
-                            foreach ($ipfwstats['rules']["{$item['type']}s"] as $rule) {
+                        if ($item['type'] == 'pipe') {
+                            continue;
+                        }
+                        $idfield = empty($item['template']) ? "flow_set_nr" : "pipe";
+                        $rule_type = empty($item['template']) ? "queues" : "pipes";
+                        if (!empty($ipfwstats['rules'][$rule_type])) {
+                            foreach ($ipfwstats['rules'][$rule_type] as $rule) {
                                 if ($item[$idfield] == $rule['attached_to']) {
                                     $rule['description'] = "";
                                     if ($rule['rule_uuid'] != null) {

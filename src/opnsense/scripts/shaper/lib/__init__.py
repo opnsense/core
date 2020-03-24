@@ -29,6 +29,7 @@
 import subprocess
 import ujson
 import re
+import datetime
 
 
 def parse_flow(flow_line):
@@ -41,10 +42,10 @@ def parse_flow(flow_line):
             'flowid':tmp[2],
             'Source':tmp[3],
             'Destination':tmp[4],
-            'pkt':tmp[5],
-            'bytes':tmp[6],
-            'drop_pkt':tmp[7],
-            'drop_bytes':tmp[8]
+            'pkt':int(tmp[5]) if tmp[5].isdigit() else 0,
+            'bytes':int(tmp[6]) if tmp[6].isdigit() else 0,
+            'drop_pkt':int(tmp[7]) if tmp[7].isdigit() else 0,
+            'drop_bytes':int(tmp[8]) if tmp[8].isdigit() else 0,
         }
     elif len(tmp) > 7:
         return {
@@ -52,10 +53,10 @@ def parse_flow(flow_line):
             'Prot':tmp[1],
             'Source':tmp[2],
             'Destination':tmp[3],
-            'pkt':tmp[4],
-            'bytes':tmp[5],
-            'drop_pkt':tmp[6],
-            'drop_bytes':tmp[7]
+            'pkt':int(tmp[4]) if tmp[4].isdigit() else 0,
+            'bytes':int(tmp[5]) if tmp[5].isdigit() else 0,
+            'drop_pkt':int(tmp[6]) if tmp[6].isdigit() else 0,
+            'drop_bytes':int(tmp[7]) if tmp[7].isdigit() else 0
         }
 
 def parse_flowset_params(line):
@@ -182,9 +183,10 @@ def parse_ipfw_rules():
         if len(parts) > 5 and parts[4] in ['queue', 'pipe']:
             rule = {
                 'rule': parts[0],
-                'pkts': parts[1],
-                'bytes': parts[2],
-                'accessed': parts[3],
+                'pkts': int(parts[1]) if parts[1].isdigit() else 0,
+                'bytes': int(parts[2]) if parts[2].isdigit() else 0,
+                'accessed': datetime.datetime.fromtimestamp(int(parts[3])).isoformat() if parts[3].isdigit() else '',
+                'accessed_epoch': int(parts[3]) if parts[3].isdigit() else 0,
                 'attached_to': parts[5],
                 'rule_uuid': None
             }
