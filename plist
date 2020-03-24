@@ -297,6 +297,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogPipe.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogQueue.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogRule.xml
@@ -503,6 +504,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
@@ -1553,7 +1555,6 @@
 /usr/local/www/diag_ipsec_leases.php
 /usr/local/www/diag_ipsec_sad.php
 /usr/local/www/diag_ipsec_spd.php
-/usr/local/www/diag_limiter_info.php
 /usr/local/www/diag_logs_common.inc
 /usr/local/www/diag_logs_filter_summary.php
 /usr/local/www/diag_logs_settings.php
