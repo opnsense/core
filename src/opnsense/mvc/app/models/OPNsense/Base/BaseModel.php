@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,15 @@
 
 namespace OPNsense\Base;
 
+use Exception;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Validation;
+use Phalcon\Validation\Message\Group;
+use ReflectionClass;
+use ReflectionException;
+use SimpleXMLElement;
 
 /**
  * Class BaseModel implements base model to bind config and definition to object.
@@ -60,6 +66,13 @@ abstract class BaseModel
      * @var string
      */
     private $internal_model_version = "0.0.0";
+
+    /**
+     * prefix for migration files, default is M (e.g. M1_0_0.php equals version 1.0.0)
+     * when models share a namespace, they should be allowed to use their own unique prefix
+     * @var string
+     */
+    private $internal_model_migration_prefix = "M";
 
     /**
      * model version in config.xml
@@ -111,7 +124,7 @@ abstract class BaseModel
      * @param string $classname classname to construct
      * @return BaseField type class
      * @throws ModelException when unable to parse field type
-     * @throws \ReflectionException when unable to create class
+     * @throws ReflectionException when unable to create class
      */
     private function getNewField($classname)
     {
@@ -122,7 +135,7 @@ abstract class BaseModel
         if (!isset(self::$internalCacheReflectionClasses[$classname_idx])) {
             $is_derived_from_basefield = false;
             if (class_exists($classname)) {
-                $field_rfcls = new \ReflectionClass($classname);
+                $field_rfcls = new ReflectionClass($classname);
                 $check_derived = $field_rfcls->getParentClass();
                 while ($check_derived != false) {
                     if ($check_derived->name == 'OPNsense\Base\FieldTypes\BaseField') {
@@ -147,7 +160,7 @@ abstract class BaseModel
      * @param SimpleXMLElement $config_data (current) config data
      * @param BaseField $internal_data output structure using FieldTypes,rootnode is internalData
      * @throws ModelException parse error
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function parseXml(&$xml, &$config_data, &$internal_data)
     {
@@ -266,7 +279,7 @@ abstract class BaseModel
     /**
      * Construct new model type, using its own xml template
      * @throws ModelException if the model xml is not found or invalid
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct()
     {
@@ -278,7 +291,7 @@ abstract class BaseModel
 
         // determine our caller's filename and try to find the model definition xml
         // throw error on failure
-        $class_info = new \ReflectionClass($this);
+        $class_info = new ReflectionClass($this);
         $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName()) - 3) . "xml";
         if (!file_exists($model_filename)) {
             throw new ModelException('model xml ' . $model_filename . ' missing');
@@ -295,6 +308,11 @@ abstract class BaseModel
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
         }
+
+        if (!empty($model_xml->migration_prefix)) {
+            $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
+        }
+
 
         // use an xpath expression to find the root of our model in the config.xml file
         // if found, convert the data to a simple structure (or create an empty array)
@@ -362,9 +380,9 @@ abstract class BaseModel
 
     /**
      * structured setter for model
-     * @param array|$data named array
-     * @return array
-     * @throws \Exception
+     * @param array $data named array
+     * @return void
+     * @throws Exception
      */
     public function setNodes($data)
     {
@@ -383,12 +401,12 @@ abstract class BaseModel
     /**
      * validate full model using all fields and data in a single (1 deep) array
      * @param bool $validateFullModel validate full model or only changed fields
-     * @return \Phalcon\Validation\Message\Group
+     * @return Group
      */
     public function performValidation($validateFullModel = false)
     {
         // create a Phalcon validator and collect all model validations
-        $validation = new \Phalcon\Validation();
+        $validation = new Validation();
         $validation_data = array();
         $all_nodes = $this->internalData->getFlatNodes();
 
@@ -407,7 +425,7 @@ abstract class BaseModel
         if (count($validation_data) > 0) {
             $messages = $validation->validate($validation_data);
         } else {
-            $messages = new \Phalcon\Validation\Message\Group();
+            $messages = new Group();
         }
 
         return $messages;
@@ -441,7 +459,7 @@ abstract class BaseModel
      * render xml document from model including all parent nodes.
      * (parent nodes are included to ease testing)
      *
-     * @return \SimpleXMLElement xml representation of the model
+     * @return SimpleXMLElement xml representation of the model
      */
     public function toXML()
     {
@@ -459,7 +477,7 @@ abstract class BaseModel
             }
         }
 
-        $xml = new \SimpleXMLElement($xml_root_node);
+        $xml = new SimpleXMLElement($xml_root_node);
         $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
         // add this model's version to the newly created xml structure
         if (!empty($this->internal_current_model_version)) {
@@ -516,7 +534,7 @@ abstract class BaseModel
      *
      * @param bool $validateFullModel by default we only validate the fields we have changed
      * @param bool $disable_validation skip validation, be careful to use this!
-     * @throws \Phalcon\Validation\Exception validation errors
+     * @throws Validation\Exception validation errors
      */
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
@@ -540,7 +558,7 @@ abstract class BaseModel
                 $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
-                throw new \Phalcon\Validation\Exception($exception_msg);
+                throw new Validation\Exception($exception_msg);
             }
         }
         $this->internalSerializeToConfig();
@@ -593,7 +611,7 @@ abstract class BaseModel
      * prefixed with an M and . replaced by _ for example : M1_0_1 equals version 1.0.1
      *
      * @return bool status (true-->success, false-->failed)
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function runMigrations()
     {
@@ -601,13 +619,14 @@ abstract class BaseModel
             $upgradePerfomed = false;
             $migObjects = array();
             $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
-            $class_info = new \ReflectionClass($this);
+            $class_info = new ReflectionClass($this);
             // fetch version migrations
             $versions = array();
             // set default migration for current model version
             $versions[$this->internal_model_version] = __DIR__ . "/BaseModelMigration.php";
-            foreach (glob(dirname($class_info->getFileName()) . "/Migrations/M*.php") as $filename) {
-                $version = str_replace('_', '.', explode('.', substr(basename($filename), 1))[0]);
+            $migprefix = $this->internal_model_migration_prefix;
+            foreach (glob(dirname($class_info->getFileName()) . "/Migrations/{$migprefix}*.php") as $filename) {
+                $version = str_replace('_', '.', explode('.', substr(basename($filename), strlen($migprefix)))[0]);
                 $versions[$version] = $filename;
             }
 
@@ -627,7 +646,7 @@ abstract class BaseModel
                     $mig_classname = str_replace('/', '\\', $mig_classname);
                     // Phalcon's autoloader uses _ as a directory locator, we need to import these files ourselves
                     require_once $filename;
-                    $mig_class = new \ReflectionClass($mig_classname);
+                    $mig_class = new ReflectionClass($mig_classname);
                     $chk_class = empty($mig_class->getParentClass()) ? $mig_class :  $mig_class->getParentClass();
                     if ($chk_class->name == 'OPNsense\Base\BaseModelMigration') {
                         $migobj = $mig_class->newInstance();
@@ -635,7 +654,7 @@ abstract class BaseModel
                             $migobj->run($this);
                             $migObjects[] = $migobj;
                             $upgradePerfomed = true;
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->internal_current_model_version .
                                 " to " . $mig_version . " in " .
@@ -654,7 +673,7 @@ abstract class BaseModel
                     foreach ($migObjects as $migobj) {
                         $migobj->post($this);
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $logger->error("Model " . $class_info->getName() . " can't be saved, skip ( " . $e . " )");
                     return false;
                 }
@@ -662,6 +681,7 @@ abstract class BaseModel
 
             return true;
         }
+        return false;
     }
 
     /**
