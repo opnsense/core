@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,13 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use Exception;
+use Generator;
+use InvalidArgumentException;
 use Phalcon\Validation\Validator\PresenceOf;
+use ReflectionClass;
+use ReflectionException;
+use SimpleXMLElement;
 
 /**
  * Class BaseField
@@ -222,14 +228,14 @@ abstract class BaseField
     /**
      * change internal reference, if set it can't be changed for safety purposes.
      * @param $ref internal reference
-     * @throws \Exception change exception
+     * @throws Exception change exception
      */
     public function setInternalReference($ref)
     {
         if ($this->internalReference == null) {
             $this->internalReference = $ref;
         } else {
-            throw new \Exception("cannot change internal reference");
+            throw new Exception("cannot change internal reference");
         }
     }
 
@@ -294,7 +300,7 @@ abstract class BaseField
 
     /**
      * iterate (non virtual) child nodes
-     * @return mixed
+     * @return Generator
      */
     public function iterateItems()
     {
@@ -315,7 +321,7 @@ abstract class BaseField
         if (isset($this->internalChildnodes[$name])) {
             $this->internalChildnodes[$name]->setValue($value);
         } else {
-            throw new \InvalidArgumentException($name . " not an attribute of " . $this->internalReference);
+            throw new InvalidArgumentException($name . " not an attribute of " . $this->internalReference);
         }
     }
 
@@ -433,13 +439,13 @@ abstract class BaseField
             $constraint = $this->internalConstraints[$name];
             if (!empty($constraint['type'])) {
                 try {
-                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\' . $constraint['type']);
+                    $constr_class = new ReflectionClass('OPNsense\\Base\\Constraints\\' . $constraint['type']);
                     if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
                         $constraint['name'] = $name;
                         $constraint['node'] = $this;
                         return $constr_class->newInstance($constraint);
                     }
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException $e) {
                     null; // ignore configuration errors, if the constraint can't be found, skip.
                 }
             }
@@ -569,8 +575,8 @@ abstract class BaseField
 
     /**
      * update model with data returning missing repeating tag types.
-     * @param $data named array structure containing new model content
-     * @throws \Exception
+     * @param $data array structure containing new model content
+     * @throws Exception
      */
     public function setNodes($data)
     {
@@ -581,7 +587,7 @@ abstract class BaseField
                     if (is_array($data[$key])) {
                         $node->setNodes($data[$key]);
                     } else {
-                        throw new \Exception("Invalid  input type for {$key} (configuration error?)");
+                        throw new Exception("Invalid  input type for {$key} (configuration error?)");
                     }
                 } else {
                     $node->setValue($data[$key]);
@@ -603,7 +609,7 @@ abstract class BaseField
 
     /**
      * Add this node and its children to the supplied simplexml node pointer.
-     * @param \SimpleXMLElement $node target node
+     * @param SimpleXMLElement $node target node
      */
     public function addToXMLNode($node)
     {
