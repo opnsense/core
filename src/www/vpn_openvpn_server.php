@@ -760,31 +760,32 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface"); ?></td>
+                      <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                       <td>
                         <select name="interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $interfaces = get_configured_interface_with_descr();
-                        $carplist = get_configured_carp_interface_list();
-                        foreach ($carplist as $cif => $carpip) {
+                        foreach (get_configured_carp_interface_list() as $cif => $carpip) {
                             $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
                         }
-                                                    $aliaslist = get_configured_ip_aliases_list();
-                        foreach ($aliaslist as $aliasip => $aliasif) {
+                        foreach (get_configured_ip_aliases_list() as $aliasip => $aliasif) {
                             $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                         }
                         $interfaces['lo0'] = "Localhost";
                         $interfaces['any'] = "any";
-                        foreach ($interfaces as $iface => $ifacename) :
-                            $selected = '';
-                            if ($iface == $pconfig['interface']) {
-                                $selected = ' selected="selected"';
-                            }
-                        ?>
-                          <option value="<?=$iface; ?>"<?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
+                        foreach ($interfaces as $iface => $ifacename) :?>
+                          <option value="<?=$iface; ?>"<?=$iface == $pconfig['interface'] ? ' selected="selected"' : '';?>>
+                            <?=htmlspecialchars($ifacename);?>
+                          </option>
 <?php
                         endforeach; ?>
                         </select>
+                        <div class="hidden" data-for="help_for_interface">
+                            <?=gettext(
+                              "When selecting any in combination with UDP, we will assume the server is used multi-homed. ".
+                              "This has some small performance implications to assure proper return address lookup."
+                            ); ?>.
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -1130,12 +1131,10 @@ endif; ?>
 <?php
                         $serverbridge_interface['none'] = "none";
                         $serverbridge_interface = array_merge($serverbridge_interface, get_configured_interface_with_descr());
-                        $carplist = get_configured_carp_interface_list();
-                        foreach ($carplist as $cif => $carpip) {
+                        foreach (get_configured_carp_interface_list() as $cif => $carpip) {
                             $serverbridge_interface[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
                         }
-                                                    $aliaslist = get_configured_ip_aliases_list();
-                        foreach ($aliaslist as $aliasip => $aliasif) {
+                        foreach (get_configured_ip_aliases_list() as $aliasip => $aliasif) {
                             $serverbridge_interface[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
                         }
                         foreach ($serverbridge_interface as $iface => $ifacename) :
