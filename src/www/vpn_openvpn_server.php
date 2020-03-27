@@ -784,7 +784,7 @@ $( document ).ready(function() {
                             <?=gettext(
                               "When selecting any in combination with UDP, we will assume the server is used multi-homed. ".
                               "This has some small performance implications to assure proper return address lookup."
-                            ); ?>.
+                            ); ?>
                         </div>
                       </td>
                     </tr>
