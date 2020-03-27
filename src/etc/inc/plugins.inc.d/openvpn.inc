@@ -587,6 +587,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     if (!empty($iface_ip)) {
         $conf .= "local {$iface_ip}\n";
+    } elseif (!empty($settings['interface']) && $settings['interface'] == 'any' && substr($settings['protocol'], 0, 3) == 'UDP') {
+        $conf .= "multihome\n";
     }
 
     if (openvpn_validate_engine($settings['engine']) && ($settings['engine'] != "none")) {
