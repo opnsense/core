@@ -283,7 +283,7 @@
             <field>
                 <id>proxy.forward.sslurlonly</id>
                 <label>Log SNI information only</label>
-                <type>checkbox</type>
+                <type>dropdown</type>
                 <help>Do not decode and/or filter SSL content, only log requested domains and IP addresses. Some old servers may not provide SNI, so their addresses will not be indicated.</help>
             </field>
             <field>
