@@ -32,13 +32,40 @@
 <script>
     $( document ).ready(function() {
         $("#grid-aliases").UIBootgrid({
-                search:'/api/firewall/alias/searchItem',
-                get:'/api/firewall/alias/getItem/',
-                set:'/api/firewall/alias/setItem/',
-                add:'/api/firewall/alias/addItem/',
-                del:'/api/firewall/alias/delItem/',
-                toggle:'/api/firewall/alias/toggleItem/'
+            search:'/api/firewall/alias/searchItem',
+            get:'/api/firewall/alias/getItem/',
+            set:'/api/firewall/alias/setItem/',
+            add:'/api/firewall/alias/addItem/',
+            del:'/api/firewall/alias/delItem/',
+            toggle:'/api/firewall/alias/toggleItem/',
+            options:{
+                requestHandler: function(request){
+                    let selected = $('#type_filter').find("option:selected").val();
+                    if ( $('#type_filter').val().length > 0) {
+                        request['type'] = $('#type_filter').val();
+                    }
+                    return request;
+                }
+            }
         });
+
+        $("#type_filter").change(function(){
+            $('#grid-aliases').bootgrid('reload');
+        });
+
+        $("#grid-aliases").bootgrid().on("loaded.rs.jquery.bootgrid", function (e){
+            // network content field should only contain valid aliases, we need to fetch them separately
+            // since the form field misses context
+            ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
+                $("#network_content").empty();
+                $.each(data, function(alias, value) {
+                    $("#network_content").append($("<option/>").val(alias).text(value));
+                });
+                $("#network_content").selectpicker('refresh');
+            });
+        });
+
+
 
         /**
          * Open form with alias selected
@@ -142,6 +169,27 @@
         });
 
         /**
+         * hook network group type changes, replicate content
+         */
+        $("#network_content").change(function(){
+            let $content = $("#alias\\.content");
+            $content.unbind('tokenize:tokens:change');
+            $content.tokenize2().trigger('tokenize:clear');
+            $("#network_content").each(function () {
+               $.each($(this).val(), function(key, item){
+                   $content.tokenize2().trigger('tokenize:tokens:add', item);
+               });
+            });
+            $content.tokenize2().trigger('tokenize:select');
+            $content.tokenize2().trigger('tokenize:dropdown:hide');
+            // link on change event back
+            $content.on('tokenize:tokens:change', function(e, value){
+               $content.change();
+            });
+        });
+
+
+        /**
          * Type selector, show correct type input.
          */
         $("#alias\\.type").change(function(){
@@ -153,6 +201,10 @@
                     $("#alias\\.proto").selectpicker('show');
                     break;
                 case 'external':
+                    break;
+                case 'networkgroup':
+                    $("#alias_type_networkgroup").show();
+                    $("#alias\\.proto").selectpicker('hide');
                     break;
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
@@ -169,7 +221,7 @@
         });
 
         /**
-         * push content changes to GeopIP selectors
+         * push content changes to GeopIP selectors and network groups
          */
         $("#alias\\.content").change(function(){
             var items = $(this).val();
@@ -183,6 +235,14 @@
             });
             $(".geoip_select").selectpicker('refresh');
             geoip_update_labels();
+            $("#network_content").each(function(){
+                var network_item = $(this);
+                network_item.val([]);
+                for (var i=0; i < items.length; ++i) {
+                    network_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
+                }
+            });
+            $("#network_content").selectpicker('refresh');
         });
 
         /**
@@ -382,6 +442,9 @@
             history.pushState(null, null, e.target.hash);
         });
 
+        // move filter into action header
+        $("#type_filter_container").detach().prependTo('#grid-aliases-header > .row > .actionBar > .actions');
+
     });
 </script>
 
@@ -395,6 +458,21 @@
         <div class="row">
             <section class="col-xs-12">
                 <div class="content-box">
+                    <div class="hidden">
+                        <!-- filter per type container -->
+                        <div id="type_filter_container" class="btn-group">
+                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                                <option value="host">{{ lang._('Host(s)') }}</option>
+                                <option value="network">{{ lang._('Network(s)') }}</option>
+                                <option value="port">{{ lang._('Port(s)') }}</option>
+                                <option value="url">{{ lang._('URL (IPs)') }}</option>
+                                <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
+                                <option value="geoip">{{ lang._('GeoIP') }}</option>
+                                <option value="networkgroup">{{ lang._('Network group') }}</option>
+                                <option value="external">{{ lang._('External (advanced)') }}</option>
+                            </select>
+                        </div>
+                    </div>
                     <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage" data-store-selection="true">
                         <thead>
                         <tr>
@@ -577,6 +655,10 @@
                                                     data-nbdropdownelements="10"
                                                     data-live-search="true"
                                                     data-separator="#10">
+                                            </select>
+                                        </div>
+                                        <div class="alias_type" id="alias_type_networkgroup">
+                                            <select multiple="multiple" class="selectpicker" id="network_content" data-live-search="true">
                                             </select>
                                         </div>
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">

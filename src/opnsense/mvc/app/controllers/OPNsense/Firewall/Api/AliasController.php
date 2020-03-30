@@ -51,10 +51,18 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
+        $type = $this->request->get('type');
+        $filter_funct = null;
+        if (!empty($type)) {
+            $filter_funct = function($record) use ($type) {
+                return in_array($record->type, $type);
+            };
+        }
         return $this->searchBase(
             "aliases.alias",
             array('enabled', 'name', 'description', 'type', 'content'),
-            "name"
+            "name",
+            $filter_funct
         );
     }
 
@@ -199,6 +207,22 @@ class AliasController extends ApiMutableModelControllerBase
                 $result[$line[0]]['region'] = explode('/', $line[2])[0];
             }
         }
+        return $result;
+    }
+
+    /**
+     * list network alias types
+     * @return array indexed by country alias name
+     */
+    public function listNetworkAliasesAction()
+    {
+        $result = array();
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $alias) {
+            if (!in_array((string)$alias->type, ['external', 'port'])) {
+                $result[(string)$alias->name] = (string)$alias->name;
+            }
+        }
+        ksort($result);
         return $result;
     }
 

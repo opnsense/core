@@ -34,6 +34,7 @@
                         <url>URL (IPs)</url>
                         <urltable>URL Table (IPs)</urltable>
                         <geoip>GeoIP</geoip>
+                        <networkgroup>Network group</networkgroup>
                         <external>External (advanced)</external>
                     </OptionValues>
                 </type>

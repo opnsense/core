@@ -263,7 +263,7 @@ class Alias(object):
         """ fetch address parser to use, None if alias type is not handled here
             :return: function or None
         """
-        if self._type in ['host', 'network']:
+        if self._type in ['host', 'network', 'networkgroup']:
             return self._parse_address
         elif self._type in ['url', 'urltable']:
             return self._fetch_url
