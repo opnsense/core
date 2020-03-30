@@ -315,7 +315,6 @@ abstract class BaseModel
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
         }
 
-
         // use an xpath expression to find the root of our model in the config.xml file
         // if found, convert the data to a simple structure (or create an empty array)
         $tmp_config_data = $internalConfigHandle->xpath($model_xml->mount);
