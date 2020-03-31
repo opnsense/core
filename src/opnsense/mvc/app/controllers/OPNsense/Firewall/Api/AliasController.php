@@ -54,7 +54,7 @@ class AliasController extends ApiMutableModelControllerBase
         $type = $this->request->get('type');
         $filter_funct = null;
         if (!empty($type)) {
-            $filter_funct = function($record) use ($type) {
+            $filter_funct = function ($record) use ($type) {
                 return in_array($record->type, $type);
             };
         }
