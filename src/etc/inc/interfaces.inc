@@ -4544,10 +4544,21 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         $realif = get_real_interface($interface, 'inet6');
     }
 
+    $interfaces_a = config_read_array('interfaces');
+
     foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
-        if ($info['family'] != 'inet6' || $info['scope']) {
-            /* only care about IPv6 without a scope set */
+        if ($info['family'] != 'inet6') {
             continue;
+        }
+
+        if (!isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+            if ($info['scope']) {
+                continue;
+            }
+        } else {
+            if (!$info['scope']) {
+                continue;
+            }
         }
 
         $addrparts = explode('/', $tmpaddr);
