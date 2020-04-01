@@ -313,7 +313,7 @@ $.fn.UIBootgrid = function (params) {
         if (editDlg !== undefined) {
             const uuid = $(this).data("row-id");
             const urlMap = {};
-            urlMap['frm_' + editDlg] = params['get'] + uuid;
+            urlMap['frm_' + editDlg] = params['get'] + uuid + "?fetchmode=copy";
             mapDataToFormUI(urlMap).done(function () {
                 // update selectors
                 formatTokenizersUI();
