@@ -3983,10 +3983,9 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
         return get_configured_carp_interface_list($interface, 'inet6');
     }
 
-    $realif = get_real_interface($interface, 'inet6');
+    list ($ipv6) = interfaces_primary_address6($interface, null, $ifconfig_details);
 
-    return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
-        find_interface_ipv6_ll($realif, $ifconfig_details) : find_interface_ipv6($realif, $ifconfig_details);
+    return $ipv6;
 }
 
 /****f* interfaces/is_interface_wireless
@@ -4544,10 +4543,21 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         $realif = get_real_interface($interface, 'inet6');
     }
 
+    $interfaces_a = config_read_array('interfaces');
+
     foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
-        if ($info['family'] != 'inet6' || $info['scope']) {
-            /* only care about IPv6 without a scope set */
+        if ($info['family'] != 'inet6') {
             continue;
+        }
+
+        if (!isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+            if ($info['scope']) {
+                continue;
+            }
+        } else {
+            if (!$info['scope']) {
+                continue;
+            }
         }
 
         $addrparts = explode('/', $tmpaddr);
