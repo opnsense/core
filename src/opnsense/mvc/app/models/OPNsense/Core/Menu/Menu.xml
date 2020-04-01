@@ -146,8 +146,11 @@
         <Aliases order="10" url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
-        <Rules order="20" cssClass="fa fa-check fa-fw" />
-        <NAT order="30" cssClass="fa fa-exchange fa-fw">
+        <Groups order="20" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
+            <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
+        </Groups>
+        <Rules order="30" cssClass="fa fa-check fa-fw" />
+        <NAT order="40" cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
                 <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
@@ -161,9 +164,6 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPTv6>
         </NAT>
-        <Groups order="50" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
-            <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
-        </Groups>
         <VIP order="60" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/firewall_virtual_ip.php">
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
