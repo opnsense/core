@@ -1,12 +1,10 @@
 <menu>
     <Firewall>
         <Shaper order="40" cssClass="fa fa-filter fa-fw">
-            <Settings order="10" url="/ui/trafficshaper">
-                <Pipes url="/ui/trafficshaper#pipes"/>
-                <Queues url="/ui/trafficshaper#queues"/>
-                <Rules url="/ui/trafficshaper#rules"/>
-            </Settings>
-            <Status order="20" url="/ui/trafficshaper/service/statistics"/>
+            <Pipes order="10" url="/ui/trafficshaper#pipes"/>
+            <Queues order="20" url="/ui/trafficshaper#queues"/>
+            <Rules order="30" url="/ui/trafficshaper#rules"/>
+            <Status order="40" url="/ui/trafficshaper/service/statistics"/>
         </Shaper>
     </Firewall>
 </menu>
