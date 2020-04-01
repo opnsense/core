@@ -149,8 +149,7 @@
         <Groups order="20" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
             <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
         </Groups>
-        <Rules order="30" cssClass="fa fa-check fa-fw" />
-        <NAT order="40" cssClass="fa fa-exchange fa-fw">
+        <NAT order="30" cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
                 <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
@@ -164,6 +163,7 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPTv6>
         </NAT>
+        <Rules order="40" cssClass="fa fa-check fa-fw" />
         <VIP order="60" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/firewall_virtual_ip.php">
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
