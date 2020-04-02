@@ -1357,6 +1357,7 @@
 /usr/local/opnsense/www/css/flags/flag-icon.css
 /usr/local/opnsense/www/css/flags/flag-icon.scss
 /usr/local/opnsense/www/css/font-awesome.min.css
+/usr/local/opnsense/www/css/jqtree.css
 /usr/local/opnsense/www/css/jquery.bootgrid.css
 /usr/local/opnsense/www/css/nv.d3.css
 /usr/local/opnsense/www/css/tokenize2.css
@@ -1403,6 +1404,7 @@
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/theme.js
 /usr/local/opnsense/www/js/tokenize2.js
+/usr/local/opnsense/www/js/tree.jquery.min.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
