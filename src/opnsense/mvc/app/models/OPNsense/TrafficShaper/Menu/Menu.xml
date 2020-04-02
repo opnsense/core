@@ -1,6 +1,6 @@
 <menu>
     <Firewall>
-        <Shaper order="40" cssClass="fa fa-filter fa-fw">
+        <Shaper cssClass="fa fa-filter fa-fw">
             <Pipes order="10" url="/ui/trafficshaper#pipes"/>
             <Queues order="20" url="/ui/trafficshaper#queues"/>
             <Rules order="30" url="/ui/trafficshaper#rules"/>
