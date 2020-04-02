@@ -266,13 +266,13 @@ class MenuSystem
             }
         }
 
-	foreach ($ifgroups as $key => $groupings) {
-	    foreach ($groupings as $grouping) {
+        foreach ($ifgroups as $key => $groupings) {
+            foreach ($groupings as $grouping) {
                 $this->appendItem('Interfaces.' . $grouping, $key, array(
-                    'url' => '/interfaces.php?if=' . $key,
+                    'url' => '/interfaces.php?group=' . $grouping . '&if=' . $key,
                     'visiblename' => '[' . $iftargets['if'][$key] . ']',
                 ));
-	    }
+            }
         }
 
         $ordid = 100;
