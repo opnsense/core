@@ -47,24 +47,31 @@ if __name__ == '__main__':
             dhcp_leases[lease['address']]  = {'hostname': lease['client-hostname']}
 
     # parse arp output
-    sp = subprocess.run(['/usr/sbin/arp', '-an'], capture_output=True, text=True)
-    for line in sp.stdout.split('\n'):
-        line_parts = line.split()
-        if len(line_parts) > 3 and line_parts[3] != '(incomplete)':
-            record = {'mac': line_parts[3],
-                      'ip': line_parts[1][1:-1],
-                      'intf': line_parts[5],
-                      'manufacturer': '',
-                      'hostname': ''
-                      }
-            manufacturer_mac = netaddr.EUI(record['mac'])
-            try:
-                record['manufacturer'] = manufacturer_mac.oui.registration().org
-            except netaddr.NotRegisteredError:
-                pass
-            if record['ip'] in dhcp_leases:
-                record['hostname'] = dhcp_leases[record['ip']]['hostname']
-            result.append(record)
+    sp = subprocess.run(['/usr/sbin/arp', '-an', '--libxo','json'], capture_output=True, text=True)
+    libxo_out = ujson.loads(sp.stdout)
+    arp_cache = libxo_out['arp']['arp-cache'] if 'arp' in libxo_out and 'arp-cache' in libxo_out['arp'] else []
+    for src_record in arp_cache:
+        if 'incomplete' in src_record and src_record['incomplete'] is True:
+            continue
+        record = {
+            'mac': src_record['mac-address'],
+            'ip': src_record['ip-address'],
+            'intf': src_record['interface'],
+            'expired': src_record['expired'] if 'expired' in src_record else False,
+            'expires': src_record['expires'] if 'expires' in src_record else -1,
+            'permanent': src_record['permanent'] if 'permanent' in src_record else False,
+            'type': src_record['type'],
+            'manufacturer': '',
+            'hostname': ''
+        }
+        manufacturer_mac = netaddr.EUI(record['mac'])
+        try:
+            record['manufacturer'] = manufacturer_mac.oui.registration().org
+        except netaddr.NotRegisteredError:
+            pass
+        if record['ip'] in dhcp_leases:
+            record['hostname'] = dhcp_leases[record['ip']]['hostname']
+        result.append(record)
 
     # handle command line argument (type selection)
     if len(sys.argv) > 1 and sys.argv[1] == 'json':
