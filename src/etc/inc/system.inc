@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -228,11 +228,11 @@ function get_locale_list()
     $locales['en_US'] = gettext('English');
     $locales['cs_CZ'] = gettext('Czech');
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
-    $locales['nl_NL'] = gettext('Dutch');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
+    $locales['no_NO'] = gettext('Norwegian');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
