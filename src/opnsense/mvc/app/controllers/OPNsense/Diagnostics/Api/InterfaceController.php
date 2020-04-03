@@ -174,4 +174,96 @@ class InterfaceController extends ApiControllerBase
             return array("message" => "error");
         }
     }
+
+    /**
+     * retrieve system-wide statistics for each network protocol
+     * @return mixed
+     */
+    public function getProtocolStatisticsAction()
+    {
+        return json_decode((new Backend())->configdRun('interface show protocol'), true);
+    }
+
+    /**
+     * retrieve system-wide statistics for each network adapter
+     * @return mixed
+     */
+    public function getInterfaceStatisticsAction()
+    {
+        $stats = [];
+        $tmp = json_decode((new Backend())->configdRun('interface show interfaces'), true);
+        if (is_array($tmp) && !empty($tmp['statistics']) && !empty($tmp['statistics']['interface'])) {
+            $intfmap = $this->getInterfaceNames();
+            foreach ($tmp['statistics']['interface'] as $node) {
+                if (!empty($intfmap[$node['name']])) {
+                    $key = sprintf("[%s] (%s) / %s", $intfmap[$node['name']], $node['name'], $node['address']);
+                } else {
+                    $key = sprintf("[%s] / %s", $node['name'], $node['address']);
+                }
+                $stats[$key] = $node;
+            }
+        }
+
+        return ['statistics' => $stats];
+    }
+
+    /**
+     * retrieve system-wide socket statistics (merge netstat with sockstat)
+     * @return mixed
+     */
+    public function getSocketStatisticsAction()
+    {
+        $stats = ['Active Internet connections' => [], 'Active UNIX domain sockets' => []];
+        $tmp = json_decode((new Backend())->configdRun('interface show sockets'), true);
+        if (is_array($tmp) && !empty($tmp['statistics']) && !empty($tmp['statistics']['socket'])) {
+            // combine netstat with sockstat for the full picture
+            $sockstat = json_decode((new Backend())->configdRun('interface dump sockstat'), true);
+            $sock_app = [];
+            if (is_array($sockstat)) {
+                foreach ($sockstat as $record) {
+                    $sock_app[sprintf("%s/%s%s", $record['proto'], $record['local'], $record['remote'])] = $record;
+                }
+            }
+            foreach ($tmp['statistics']['socket'] as $node) {
+                if (!empty($node['protocol'])) {
+                    $sstatkey = sprintf(
+                        "%s/%s:%s%s:%s",
+                        $node['protocol'],
+                        $node['local']['address'],
+                        $node['local']['port'],
+                        $node['remote']['address'],
+                        $node['remote']['port']
+                    );
+                    if (!empty($sock_app[$sstatkey])) {
+                        $node = array_merge_recursive($node, $sock_app[$sstatkey]);
+                    }
+                    $key = sprintf(
+                        "%s/[%s:%s-%s:%s]",
+                        $node['protocol'],
+                        $node['local']['address'],
+                        $node['local']['port'],
+                        $node['remote']['address'],
+                        $node['remote']['port']
+                    );
+                    $stats['Active Internet connections'][$key] = $node;
+                } else {
+                    if (!empty($node['type']) && !empty($node['path'])) {
+                        $sstatkey = sprintf("%s/%s", $node['type'], $node['path']);
+                        if (!empty($sock_app[$sstatkey])) {
+                            $node = array_merge_recursive($node, $sock_app[$sstatkey]);
+                        }
+                    }
+                    $key = sprintf(
+                        '%s%s%s',
+                        $node['address'],
+                        !empty($node['path']) ? ' - ' : '',
+                        !empty($node['path']) ? $node['path'] : ''
+                    );
+                    $stats['Active UNIX domain sockets'][$key] = $node;
+                }
+            }
+        }
+
+        return ['statistics' => $stats];
+    }
 }

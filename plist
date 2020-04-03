@@ -485,6 +485,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netflow.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netstat.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/networkinsight.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
@@ -622,6 +623,7 @@
 /usr/local/opnsense/scripts/interfaces/list_interfaces.php
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
+/usr/local/opnsense/scripts/interfaces/list_sockstat.py
 /usr/local/opnsense/scripts/interfaces/mpd.script
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
@@ -1561,7 +1563,6 @@
 /usr/local/www/diag_pf_info.php
 /usr/local/www/diag_ping.php
 /usr/local/www/diag_resetstate.php
-/usr/local/www/diag_sockets.php
 /usr/local/www/diag_states_summary.php
 /usr/local/www/diag_system_pftop.php
 /usr/local/www/diag_testport.php

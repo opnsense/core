@@ -168,12 +168,6 @@
             <pattern>diag_dump_states.php*</pattern>
         </patterns>
     </page-diagnostics-showstates>
-    <page-diagnostics-sockets>
-        <name>Diagnostics: Sockets</name>
-        <patterns>
-            <pattern>diag_sockets.php*</pattern>
-        </patterns>
-    </page-diagnostics-sockets>
     <page-diagnostics-statessummary>
         <name>Diagnostics: States Summary</name>
         <patterns>
