@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2016-2020 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -60,5 +60,13 @@ class InterfaceController extends IndexController
     public function routesAction()
     {
         $this->view->pick('OPNsense/Diagnostics/routes');
+    }
+
+    /**
+     * netstat
+     */
+    public function netstatAction()
+    {
+        $this->view->pick('OPNsense/Diagnostics/netstat');
     }
 }
