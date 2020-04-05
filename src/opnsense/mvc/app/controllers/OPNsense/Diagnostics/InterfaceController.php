@@ -67,6 +67,38 @@ class InterfaceController extends IndexController
      */
     public function netstatAction()
     {
+        $this->view->tabs = [
+            [
+              "name" => "bpf",
+              "caption" => gettext("Bpf"),
+              "endpoint" => "/api/diagnostics/interface/getBpfStatistics"
+            ],
+            [
+              "name" => "interfaces",
+              "caption" => gettext("Interfaces"),
+              "endpoint" => "/api/diagnostics/interface/getInterfaceStatistics"
+            ],
+            [
+              "name" => "memory",
+              "caption" => gettext("Memory"),
+              "endpoint" => "/api/diagnostics/interface/getMemoryStatistics"
+            ],
+            [
+              "name" => "netisr",
+              "caption" => gettext("Netisr"),
+              "endpoint" => "/api/diagnostics/interface/getNetisrStatistics"
+            ],
+            [
+              "name" => "protocol",
+              "caption" => gettext("Protocol"),
+              "endpoint" => "/api/diagnostics/interface/getProtocolStatistics"
+            ],
+            [
+              "name" => "sockets",
+              "caption" => gettext("Sockets"),
+              "endpoint" => "/api/diagnostics/interface/getSocketStatistics"
+            ]
+        ];
         $this->view->pick('OPNsense/Diagnostics/netstat');
     }
 }

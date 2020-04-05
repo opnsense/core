@@ -32,6 +32,8 @@
        * https://mbraak.github.io/jqTree/#general
        */
       function dict_to_tree(node, path) {
+          // some entries are lists, try use a name for the nodes in that case
+          let node_name_keys = ['name', 'interface-name'];
           let result = [];
           if ( path === undefined) {
               path = "";
@@ -44,8 +46,15 @@
               }
               let item_path = path + key;
               if (node[key] instanceof Object) {
+                  let node_name = key;
+                  for (idx=0; idx < node_name_keys.length; ++idx) {
+                      if (/^(0|[1-9]\d*)$/.test(node_name) && node[key][node_name_keys[idx]] !== undefined) {
+                          node_name = node[key][node_name_keys[idx]];
+                          break;
+                      }
+                  }
                   result.push({
-                      name: key,
+                      name: node_name,
                       id: item_path,
                       children: dict_to_tree(node[key], item_path)
                   });
@@ -126,54 +135,26 @@
 <script src="{{ cache_safe('/ui/js/tree.jquery.min.js') }}"></script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+{% for tab in tabs %}
     <li>
-      <a data-toggle="tab" href="#interfaces" id="interfaces_tab"
-         data-tree-target="interfacesTree"
-         data-tree-endpoint="/api/diagnostics/interface/getInterfaceStatistics">
-          {{ lang._('Interfaces') }} <i class="fa tab-icon "></i>
+      <a data-toggle="tab" href="#{{tab['name']}}" id="{{tab['name']}}_tab"
+         data-tree-target="{{tab['name']}}Tree"
+         data-tree-endpoint="{{tab['endpoint']}}">
+          {{tab['caption']}} <i class="fa tab-icon "></i>
       </a>
     </li>
-    <li>
-      <a data-toggle="tab" href="#protocol" id="protocol_tab"
-         data-tree-target="protocolTree"
-         data-tree-endpoint="/api/diagnostics/interface/getProtocolStatistics">
-           {{ lang._('Protocol') }} <i class="fa tab-icon "></i>
-      </a>
-    </li>
-    <li>
-      <a data-toggle="tab" href="#sockets" id="sockets_tab"
-         data-tree-target="socketsTree"
-         data-tree-endpoint="/api/diagnostics/interface/getSocketStatistics">
-          {{ lang._('Sockets') }} <i class="fa tab-icon "></i>
-      </a>
-    </li>
+{% endfor %}
 </ul>
 <div class="tab-content content-box">
-    <div id="interfaces" class="tab-pane fade in active">
+{% for tab in tabs %}
+    <div id="{{tab['name']}}" class="tab-pane fade in active">
       <div class="row">
           <section class="col-xs-12">
               <div class="content-box">
-                <div style="padding: 5px; overflow-y: scroll; height:400px;" id="interfacesTree"></div>
+                <div style="padding: 5px; overflow-y: scroll; height:400px;" id="{{tab['name']}}Tree"></div>
               </div>
           </section>
       </div>
     </div>
-    <div id="protocol" class="tab-pane fade in active">
-        <div class="row">
-            <section class="col-xs-12">
-                <div class="content-box">
-                  <div style="padding: 5px; overflow-y: scroll; height:400px;" id="protocolTree"></div>
-                </div>
-            </section>
-        </div>
-    </div>
-    <div id="sockets" class="tab-pane fade in active">
-      <div class="row">
-          <section class="col-xs-12">
-              <div class="content-box">
-                <div style="padding: 5px; overflow-y: scroll; height:400px;" id="socketsTree"></div>
-              </div>
-          </section>
-      </div>
-    </div>
+{% endfor %}
 </div>
