@@ -102,14 +102,40 @@ class PortField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if ($this->enableWellKown) {
-            foreach (array("any") + self::$wellknownservices as $wellknown) {
-                $this->internalOptionList[(string)$wellknown] = $wellknown;
-            }
-        }
+        // Using static wellknown/numeric port lists (~4mb each) to reduce memory usage per instance.
+        // Arrays are copy-on-write, only instances that modify internalOptionList will get a real copy.
+        static $numericPorts = [];
+        static $wellknownPorts = [];
 
+        if ($this->enableWellKown) {
+            // Building shared list for numeric & wellknown ports
+            if (empty($wellknownPorts)) {
+                foreach (["any"] + self::$wellknownservices as $wellknown) {
+                    $p = strval($wellknown);
+                    $wellknownPorts[$p] = $p;
+                }
+
+                if (empty($numericPorts))
+                    self::addNumericPorts($wellknownPorts);
+                else
+                    $wellknownPorts += $numericPorts;
+            }
+
+            $this->internalOptionList = $wellknownPorts;
+        } else {
+            // Building shared list for numeric ports
+            if (empty($numericPorts))
+                self::addNumericPorts($numericPorts);
+
+            $this->internalOptionList = $numericPorts;
+        }
+    }
+
+    private static function addNumericPorts(&$portList)
+    {
         for ($port = 1; $port <= 65535; $port++) {
-            $this->internalOptionList[(string)$port] = (string)$port;
+            $p = strval($port);
+            $portList[$p] = $p;
         }
     }
 
