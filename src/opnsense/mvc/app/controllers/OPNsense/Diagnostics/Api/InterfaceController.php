@@ -266,4 +266,31 @@ class InterfaceController extends ApiControllerBase
 
         return ['statistics' => $stats];
     }
+
+    /**
+     * retrieve statistics recorded by the memory management routines
+     * @return mixed
+     */
+    public function getMemoryStatisticsAction()
+    {
+        return json_decode((new Backend())->configdRun('interface show memory'), true);
+    }
+
+    /**
+     * retrieve bpf(4) peers statistics
+     * @return mixed
+     */
+    public function getBpfStatisticsAction()
+    {
+        return json_decode((new Backend())->configdRun('interface show bpf'), true);
+    }
+
+    /**
+     * retrieve netisr(9) statistics
+     * @return mixed
+     */
+    public function getNetisrStatisticsAction()
+    {
+        return json_decode((new Backend())->configdRun('interface show netisr'), true);
+    }
 }
