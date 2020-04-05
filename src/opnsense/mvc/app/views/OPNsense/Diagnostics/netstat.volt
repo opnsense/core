@@ -123,7 +123,7 @@
 </script>
 
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jqtree.css', ui_theme|default('opnsense'))) }}">
-<script src="{{ cache_safe('/ui/js/tree.jquery.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/tree.jquery.min.js') }}"></script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li>
