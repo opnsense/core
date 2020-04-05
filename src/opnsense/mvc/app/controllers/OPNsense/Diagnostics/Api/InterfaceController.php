@@ -254,10 +254,10 @@ class InterfaceController extends ApiControllerBase
                         }
                     }
                     $key = sprintf(
-                        "%s%s%s",
+                        '%s%s%s',
                         $node['address'],
-                        !empty($node['path']) ? " - " : "",
-                        !empty($node['path']) ? $node['path']: ""
+                        !empty($node['path']) ? ' - ' : '',
+                        !empty($node['path']) ? $node['path'] : ''
                     );
                     $stats['Active UNIX domain sockets'][$key] = $node;
                 }
@@ -266,5 +266,4 @@ class InterfaceController extends ApiControllerBase
 
         return ['statistics' => $stats];
     }
-
 }
