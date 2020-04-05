@@ -186,9 +186,6 @@
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
             <pfTables order="50" url="/ui/firewall/alias_util/"/>
-            <Sockets order="60" url="/diag_sockets.php">
-                <SocketsDetails url="/diag_sockets.php?*" visibility="hidden"/>
-            </Sockets>
             <StatesDump order="70" VisibleName="States Dump" url="/diag_dump_states.php"/>
             <StatesReset order="80" VisibleName="States Reset" url="/diag_resetstate.php"/>
             <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>
