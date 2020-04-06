@@ -1274,7 +1274,7 @@ function interface_ppps_configure($interface)
                 }
                 break;
             default:
-                log_error("Unkown {$ppp['type']} configured as ppp interface.");
+                log_error("Unknown {$ppp['type']} configured as PPP interface.");
                 break;
         }
     }
