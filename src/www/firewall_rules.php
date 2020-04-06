@@ -515,7 +515,9 @@ $( document ).ready(function() {
       $(".rule").each(function(){
           if (selected_values.indexOf($(this).data('category')) == -1 && selected_values.length > 0) {
               $(this).hide();
+              $(this).find("input").prop('disabled', true);
           } else {
+              $(this).find("input").prop('disabled', false);
               $(this).show();
           }
       });
