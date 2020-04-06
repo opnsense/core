@@ -1566,7 +1566,6 @@
 /usr/local/www/diag_pf_info.php
 /usr/local/www/diag_ping.php
 /usr/local/www/diag_resetstate.php
-/usr/local/www/diag_sockets.php
 /usr/local/www/diag_states_summary.php
 /usr/local/www/diag_system_pftop.php
 /usr/local/www/diag_testport.php
