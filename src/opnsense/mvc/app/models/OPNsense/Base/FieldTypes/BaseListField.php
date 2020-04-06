@@ -55,7 +55,7 @@ abstract class BaseListField extends BaseField
     /**
      * @var bool field may contain multiple interfaces at once
      */
-    private $internalMultiSelect = false;
+    protected $internalMultiSelect = false;
 
     /**
      * @var string default validation message string
