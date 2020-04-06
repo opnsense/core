@@ -129,7 +129,7 @@ class PortField extends BaseListField
      */
     public function setEnableWellKnown($value)
     {
-        $this->enableWellKnown =  (strtoupper(trim($value)) == "Y");
+        $this->enableWellKnown = strtoupper(trim($value)) == 'Y';
     }
 
     /**
@@ -138,7 +138,7 @@ class PortField extends BaseListField
      */
     public function setEnableRanges($value)
     {
-        $this->enableRanges =  (strtoupper(trim($value)) == "Y");
+        $this->enableRanges = strtoupper(trim($value)) == 'Y';
     }
 
     /**
