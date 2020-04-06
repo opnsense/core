@@ -88,9 +88,14 @@ class PortField extends BaseListField
     );
 
     /**
+     * @var array cached collected ports
+     */
+    private static $internalCacheOptionList = array();
+
+    /**
      * @var bool enable well known ports
      */
-    private $enableWellKown = false;
+    private $enableWellKnown = false;
 
     /**
      * @var bool enable port ranges
@@ -102,15 +107,20 @@ class PortField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if ($this->enableWellKown) {
-            foreach (array("any") + self::$wellknownservices as $wellknown) {
-                $this->internalOptionList[(string)$wellknown] = $wellknown;
+        // only enableWellKnown influences valid options, keep static sets per option.
+        $setid = $this->enableWellKnown ? "1" : "0";
+        if (empty(self::$internalCacheOptionList[$setid])) {
+            self::$internalCacheOptionList[$setid] = array();
+            if ($this->enableWellKnown) {
+                foreach (array("any") + self::$wellknownservices as $wellknown) {
+                    self::$internalCacheOptionList[$setid][(string)$wellknown] = $wellknown;
+                }
+            }
+            for ($port = 1; $port <= 65535; $port++) {
+                self::$internalCacheOptionList[$setid][(string)$port] = (string)$port;
             }
         }
-
-        for ($port = 1; $port <= 65535; $port++) {
-            $this->internalOptionList[(string)$port] = (string)$port;
-        }
+        $this->internalOptionList = self::$internalCacheOptionList[$setid];
     }
 
     /**
@@ -119,7 +129,7 @@ class PortField extends BaseListField
      */
     public function setEnableWellKnown($value)
     {
-        $this->enableWellKown =  (strtoupper(trim($value)) == "Y");
+        $this->enableWellKnown =  (strtoupper(trim($value)) == "Y");
     }
 
     /**
@@ -147,7 +157,7 @@ class PortField extends BaseListField
     {
         if ($this->internalValidationMessage == null) {
             $msg = gettext('Please specify a valid port number (1-65535).');
-            if ($this->enableWellKown) {
+            if ($this->enableWellKnown) {
                 $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
             }
         } else {
