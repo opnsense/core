@@ -262,7 +262,7 @@ function filter_core_rules_system($fw, $defaults)
         1,
         array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
             'statetype' => 'keep', 'descr' => 'IPv6 requirements (ICMP)', 'from' => '::',
-            'to' => 'fe80::/10', 'direction' => 'in' ),
+            'to' => 'ff02::/16', 'direction' => 'in' ),
         $defaults['pass']
     );
     // block all targetting port 0
