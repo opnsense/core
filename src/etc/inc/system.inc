@@ -234,6 +234,7 @@ function get_locale_list()
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
+    $locales['tr_TR'] = gettext('Turkish');
 
     return $locales;
 }
