@@ -57,27 +57,13 @@
             }]
         });
       });
-      // download visible items
+      // download (filtered) items
       $("#exportbtn").click(function(event){
-          let records = [];
-          $("#grid-log > tbody > tr").each(function(){
-              let fields = [];
-              $(this).find("td").each(function(){fields.push($(this).text().trim())});
-              records.push(fields.join("\t"));
-          });
-          let output_data = records.join("\n");
-          $('<a></a>').attr('id','downloadFile')
-            .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
-            .attr('download','{{scope}}.log')
-            .appendTo('body');
-          $('#downloadFile').ready(function() {
-              if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-                  var blob = new Blob( [ output_data ], { type: "text/csv" } );
-                  navigator.msSaveOrOpenBlob( blob, '{{scope}}.log' );
-              } else {
-                  $('#downloadFile').get(0).click();
-              }
-          });
+          let download_link = "/api/diagnostics/log/{{module}}/{{scope}}/export";
+          if ($("input.search-field").val() !== "") {
+              download_link = download_link + "?searchPhrase=" + encodeURIComponent($("input.search-field").val());
+          }
+          $('<a></a>').attr('href',download_link).get(0).click();
       });
 
     });
