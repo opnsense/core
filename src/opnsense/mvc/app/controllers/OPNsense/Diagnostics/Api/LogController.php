@@ -43,25 +43,23 @@ class LogController extends ApiControllerBase
         $module = substr($name, 0, strlen($name) - 6);
         $scope = count($arguments) > 0 ? $arguments[0] : "";
         $action = count($arguments) > 1 ? $arguments[1] : "";
+        $searchPhrase = '';
+        // create filter to sanitize input data
+        $filter = new Filter();
+        $filter->add('query', new QueryFilter());
+        $backend = new Backend();
         if ($this->request->isPost() && substr($name, -6) == 'Action') {
             $this->sessionClose();
-            $backend = new Backend();
             if ($action == "clear") {
                 $backend->configdpRun("system clear log", array($module, $scope));
                 return ["status" => "ok"];
             } else {
-                // create filter to sanitize input data
-                $filter = new Filter();
-                $filter->add('query', new QueryFilter());
-
                 // fetch query parameters (limit results to prevent out of memory issues)
                 $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
                 $currentPage = $this->request->getPost('current', 'int', 1);
 
                 if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                     $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                } else {
-                    $searchPhrase = '';
                 }
 
                 $response = $backend->configdpRun("system diag log", array($itemsPerPage,
@@ -73,6 +71,19 @@ class LogController extends ApiControllerBase
                     $result['current'] = (int)$currentPage;
                     return $result;
                 }
+            }
+        } elseif ($this->request->isGet() && substr($name, -6) == 'Action') {
+            if ($action == "export") {
+                if ($this->request->get('searchPhrase', 'string', '') != "") {
+                    $searchPhrase = $filter->sanitize($this->request->get('searchPhrase'), "query");
+                }
+                $response = $backend->configdpRun("system diag log", array(0, 0, $searchPhrase, $module, $scope));
+                $this->response->setRawHeader("Content-Type: text/csv");
+                $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
+                foreach (json_decode($response, true)['rows'] as $row) {
+                    printf("%s\t%s\n", $row['timestamp'], $row['line']);
+                }
+                return;
             }
         }
         return array();
