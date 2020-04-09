@@ -1,5 +1,3 @@
-{%   if helpers.exists('OPNsense.unboundplus.dnsbl.enabled') and OPNsense.unboundplus.dnsbl.enabled == '1' %}
-{%     if helpers.exists('OPNsense.unboundplus.dnsbl.whitelists') and OPNsense.unboundplus.dnsbl.whitelists != '' %}
+{% if not helpers.empty('OPNsense.unboundplus.dnsbl.enabled') and not helpers.empty('OPNsense.unboundplus.dnsbl.whitelists')%}
 {{ OPNsense.unboundplus.dnsbl.whitelists|default("") }}
-{%     endif %}
-{%   endif %}
+{% endif %}
