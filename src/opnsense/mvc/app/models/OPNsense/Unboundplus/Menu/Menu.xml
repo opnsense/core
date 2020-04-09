@@ -1,0 +1,8 @@
+<menu>
+  <Services>
+    <Unbound>
+      <Blacklist order="50" url="/ui/unboundplus/dnsbl/index"/>
+      <Miscellaneous order="60" url="/ui/unboundplus/miscellaneous/index"/>
+    </Unbound>
+  </Services>
+</menu>

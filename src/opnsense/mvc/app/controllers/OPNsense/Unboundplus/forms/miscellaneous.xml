@@ -1,0 +1,18 @@
+<form>
+    <field>
+        <id>miscellaneous.privatedomain</id>
+        <label>Private Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to mark as private. You only need this for some DNSBL lists which resolve to private addresses.</help>
+    </field>
+    <field>
+        <id>miscellaneous.dotservers</id>
+        <label>DNS over TLS Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of nameservers to use for DoT. Use syntax ip@port like 9.9.9.9@853</help>
+    </field>
+</form>

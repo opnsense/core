@@ -1,0 +1,30 @@
+<form>
+    <field>
+        <id>dnsbl.enabled</id>
+        <label>Enable</label>
+        <type>checkbox</type>
+        <help>Enable the usage of DNS blocklists.</help>
+    </field>
+    <field>
+        <id>dnsbl.type</id>
+        <label>Type of DNSBL</label>
+        <type>select_multiple</type>
+        <help>Select which kind of DNSBL you want to use.</help>
+    </field>
+    <field>
+        <id>dnsbl.lists</id>
+        <label>URLs of Blacklists</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains from where blacklist will be downloaded.</help>
+    </field>
+    <field>
+        <id>dnsbl.whitelists</id>
+        <label>Whitelist Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to whitelist. You can use regular expressions.</help>
+    </field>
+</form>
