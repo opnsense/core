@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,12 +27,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unboundplus\Api;
+namespace OPNsense\Unbound\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 
-class DnsblController extends ApiMutableModelControllerBase
+class MiscellaneousController extends ApiMutableModelControllerBase
 {
-    protected static $internalModelClass = '\OPNsense\Unboundplus\Dnsbl';
-    protected static $internalModelName = 'dnsbl';
+    protected static $internalModelClass = '\OPNsense\Unboundplus\Miscellaneous';
+    protected static $internalModelName = 'miscellaneous';
 }

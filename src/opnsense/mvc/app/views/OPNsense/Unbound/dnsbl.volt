@@ -25,30 +25,35 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<script>
+   $(document).ready(function() {
+       var data_get_map = {'frm_dnsbl_settings':"/api/unbound/dnsbl/get"};
+       mapDataToFormUI(data_get_map).done(function(data){
+           formatTokenizersUI();
+           $('.selectpicker').selectpicker('refresh');
+       });
+
+       $("#saveAct").SimpleActionButton({
+          onPreAction: function() {
+              const dfObj = new $.Deferred();
+              saveFormToEndpoint("/api/unbound/dnsbl/set", 'frm_dnsbl_settings', function(){
+                  dfObj.resolve();
+              });
+              return dfObj;
+          }
+      });
+   });
+</script>
+
 <div class="content-box" style="padding-bottom: 1.5em;">
-    {{ partial("layout_partials/base_form",['fields':miscellaneousForm,'id':'frm_miscellaneous_settings'])}}
+    {{ partial("layout_partials/base_form",['fields':dnsblForm,'id':'frm_dnsbl_settings'])}}
     <div class="col-md-12">
         <hr />
-        <button class="btn btn-primary" id="saveAct" type="button"><b>{{ lang._('Save') }}</b> <i id="saveAct_progress"></i></button>
+        <button class="btn btn-primary" id="saveAct"
+                data-endpoint='/api/unbound/service/dnsbl'
+                data-label="{{ lang._('Save') }}"
+                data-error-title="{{ lang._('Error reloading unbound') }}"
+                type="button">
+        </button>
     </div>
 </div>
-
-<script>
-    $(function() {
-        var data_get_map = {'frm_miscellaneous_settings':"/api/unboundplus/miscellaneous/get"};
-        mapDataToFormUI(data_get_map).done(function(data){
-            formatTokenizersUI();
-            $('.selectpicker').selectpicker('refresh');
-        });
-
-        // link save button to API set action
-        $("#saveAct").click(function(){
-            saveFormToEndpoint(url="/api/unboundplus/miscellaneous/set", formid='frm_miscellaneous_settings',callback_ok=function(){
-                $("#saveAct_progress").addClass("fa fa-spinner fa-pulse");
-                ajaxCall(url="/api/unboundplus/service/reloadunbound", sendData={}, callback=function(data,status) {
-                    $("#saveAct_progress").removeClass("fa fa-spinner fa-pulse");
-                });
-            });
-        });
-    });
-</script>

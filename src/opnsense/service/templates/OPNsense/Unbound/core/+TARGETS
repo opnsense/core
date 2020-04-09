@@ -1,1 +1,6 @@
 root.min.hints:/var/unbound/root.hints
+dnsbl.inc:/var/unbound/etc/dnsbl.inc
+whitelist.inc:/var/unbound/etc/whitelist.inc
+miscellaneous.conf:/var/unbound/etc/miscellaneous.conf
+dot.conf:/var/unbound/etc/dot.conf
+lists.inc:/var/unbound/etc/lists.inc
