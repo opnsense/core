@@ -26,13 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unboundplus;
+namespace OPNsense\Unbound;
 
-class MiscellaneousController extends \OPNsense\Base\IndexController
+use OPNsense\Base\IndexController;
+
+class DnsblController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->miscellaneousForm = $this->getForm('miscellaneous');
-        $this->view->pick('OPNsense/Unboundplus/miscellaneous');
+        $this->view->dnsblForm = $this->getForm('dnsbl');
+        $this->view->pick('OPNsense/Unbound/dnsbl');
     }
 }

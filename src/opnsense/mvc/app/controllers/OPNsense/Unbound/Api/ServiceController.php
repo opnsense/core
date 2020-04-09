@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,12 +27,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unboundplus\Api;
+namespace OPNsense\Unbound\Api;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Unboundplus\Dnsbl;
+use OPNsense\Unboundplus\Miscellaneous;
 
-class MiscellaneousController extends ApiMutableModelControllerBase
+class ServiceController extends ApiMutableServiceControllerBase
 {
-    protected static $internalModelClass = '\OPNsense\Unboundplus\Miscellaneous';
-    protected static $internalModelName = 'miscellaneous';
+    protected static $internalServiceClass = '\OPNsense\Unboundplus\Dnsbl';
+    protected static $internalServiceTemplate = 'OPNsense/Unbound';
+    protected static $internalServiceEnabled = 'enabled';
+    protected static $internalServiceName = 'unboundplus';
+
+    public function dnsblAction()
+    {
+        $this->sessionClose();
+        $mdl = new Dnsbl();
+        $backend = new Backend();
+        $backend->configdRun('template reload OPNsense/Unbound');
+        $response = $backend->configdpRun('unbound dnsbl', array((string)$mdl->type));
+        return array("status" => $response);
+    }
 }
