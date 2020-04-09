@@ -38,8 +38,8 @@ class ServiceController extends ApiMutableServiceControllerBase
 {
     protected static $internalServiceClass = '\OPNsense\Unboundplus\Dnsbl';
     protected static $internalServiceTemplate = 'OPNsense/Unbound';
-    protected static $internalServiceEnabled = 'enabled';
-    protected static $internalServiceName = 'unboundplus';
+    protected static $internalServiceEnabled = 'service_enabled';
+    protected static $internalServiceName = 'unbound';
 
     public function dnsblAction()
     {
