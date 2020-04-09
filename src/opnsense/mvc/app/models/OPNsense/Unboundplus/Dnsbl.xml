@@ -3,6 +3,9 @@
     <description>Unbound DNSBL configuration</description>
     <version>0.0.1</version>
     <items>
+        <service_enabled type="LegacyLinkField">
+            <Source>unbound.enable</Source>
+        </service_enabled>
         <enabled type="BooleanField">
             <default>0</default>
             <Required>Y</Required>

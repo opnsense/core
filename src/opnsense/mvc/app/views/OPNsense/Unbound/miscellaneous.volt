@@ -49,7 +49,7 @@
     <div class="col-md-12">
         <hr />
         <button class="btn btn-primary" id="saveAct"
-                data-endpoint='/api/unbound/service/reload'
+                data-endpoint='/api/unbound/service/reconfigure'
                 data-label="{{ lang._('Save') }}"
                 data-error-title="{{ lang._('Error reloading unbound') }}"
                 type="button">
