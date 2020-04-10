@@ -164,6 +164,10 @@ class FlowParser:
                 if 'flow_times' in record:
                     record['flow_start'] = record['flow_times'][0]
                     record['flow_finish'] = record['flow_times'][1]
+                else:
+                    record['flow_start'] = record['sys_uptime_ms']
+                    record['flow_finish'] = record['sys_uptime_ms']
+
                 if 'if_indices' in record:
                     record['if_ndx_in'] = record['if_indices'][0]
                     record['if_ndx_out'] = record['if_indices'][1]
