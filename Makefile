@@ -54,12 +54,12 @@ CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.25
 CORE_UPDATE?=	# empty
 
-.if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
+.if "${CORE_FLAVOUR}" == OpenSSL
 CORE_REPOSITORY?=	${CORE_ABI}/latest
-.elif "${FLAVOUR}" == LibreSSL
+.elif "${CORE_FLAVOUR}" == LibreSSL
 CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
-CORE_REPOSITORY?=	${FLAVOUR}
+CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
 CORE_MESSAGE?=		Carry on my wayward son
@@ -286,10 +286,10 @@ package: plist-check package-check clean-wrksrc
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
+	@${MAKE} DESTDIR=${WRKSRC} CORE_FLAVOUR=${CORE_FLAVOUR} metadata
 	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
+	@${MAKE} DESTDIR=${WRKSRC} CORE_FLAVOUR=${CORE_FLAVOUR} install
 	@echo " done"
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create -f ${PKG_FORMAT} -v -m ${WRKSRC} \

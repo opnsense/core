@@ -28,8 +28,25 @@ PAGER?=		less
 
 OPENSSL?=	${LOCALBASE}/bin/openssl
 
-_FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
+.if exists(${OPENSSL})
+_FLAVOUR!=	${OPENSSL} version
 FLAVOUR?=	${_FLAVOUR:[1]}
+.else
+FLAVOUR?=	Base # not supported without OpenSSL port
+.endif
+
+PHPBIN?=	${LOCALBASE}/bin/php
+
+.if exists(${PHPBIN})
+_CORE_PHP!=	${PHPBIN} -v
+CORE_PHP?=	${_CORE_PHP:[2]:S/./ /g:[1..2]:tW:S/ //}
+.endif
+
+VERSIONBIN?=	${LOCALBASE}/sbin/opnsense-version
+
+.if exists(${VERSIONBIN})
+CORE_ABI!=	${VERSIONBIN} -a
+.endif
 
 PKG!=		which pkg || echo true
 GIT!=		which git || echo true
