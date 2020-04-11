@@ -44,11 +44,9 @@ CORE_ABI?=	20.1
 CORE_ARCH?=	${ARCH}
 CORE_FLAVOUR?=	${FLAVOUR}
 
-CORE_OPENVPN?=	# empty
 CORE_PHP?=	72
 CORE_PYTHON?=	37
 CORE_RADVD?=	# empty
-CORE_SQUID?=	# empty
 CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.25
@@ -104,7 +102,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			mpd5 \
 			ntp \
 			openssh-portable \
-			openvpn${CORE_OPENVPN} \
+			openvpn \
 			opnsense-lang \
 			opnsense-update${CORE_UPDATE} \
 			pam_opnsense \
@@ -140,7 +138,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			rate \
 			rrdtool \
 			samplicator \
-			squid${CORE_SQUID} \
+			squid \
 			sshlockout_pf \
 			strongswan \
 			sudo \
