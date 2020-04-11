@@ -3983,10 +3983,9 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
         return get_configured_carp_interface_list($interface, 'inet6');
     }
 
-    $realif = get_real_interface($interface, 'inet6');
+    list ($ipv6) = interfaces_primary_address6($interface, null, $ifconfig_details);
 
-    return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
-        find_interface_ipv6_ll($realif, $ifconfig_details) : find_interface_ipv6($realif, $ifconfig_details);
+    return $ipv6;
 }
 
 /****f* interfaces/is_interface_wireless
