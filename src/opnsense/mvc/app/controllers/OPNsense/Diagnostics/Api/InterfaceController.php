@@ -293,5 +293,4 @@ class InterfaceController extends ApiControllerBase
     {
         return json_decode((new Backend())->configdRun('interface show netisr'), true);
     }
-
 }
