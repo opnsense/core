@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 2019 Deciso B.V.
-# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2020 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 #
@@ -146,7 +146,10 @@ else
 fi
 
 # ensure default directories in /var
-mtree -deiU -f /etc/mtree/BSD.var.dist -p /var > /dev/null
+if ! mtree -deiU -f /etc/mtree/BSD.var.dist -p /var > /dev/null; then
+	echo -n "Error while applying /var mtree specification, trying to continue"
+	sleep 5
+fi
 
 # old config files are stored in this place
 mkdir -p /var/etc
