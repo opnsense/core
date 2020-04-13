@@ -26,7 +26,27 @@
 LOCALBASE?=	/usr/local
 PAGER?=		less
 
-OPENSSL?=	${LOCALBASE}/bin/openssl
+PKG!=		which pkg || echo true
+GIT!=		which git || echo true
+ARCH!=		uname -p
+
+GITVERSION=	${.CURDIR}/Scripts/version.sh
+
+.if exists(${GIT}) && exists(${GITVERSION})
+CORE_COMMIT!=	${GITVERSION}
+.else
+CORE_COMMIT=	unknown 0 undefined
+.endif
+
+.if exists(${PKG})
+_CORE_UPDATE!=	${PKG} query -g %n 'opnsense-update*'
+CORE_UPDATE?=	${_CORE_UPDATE:S/opnsense-update//g}
+
+_CORE_SYSLOGD!=	${PKG} query -g %n 'syslogd*'
+CORE_SYSLOGD?=	${_CORE_SYSLOGD:S/syslogd//g}
+.endif
+
+OPENSSL=	${LOCALBASE}/bin/openssl
 
 .if exists(${OPENSSL})
 _FLAVOUR!=	${OPENSSL} version
@@ -35,22 +55,26 @@ FLAVOUR?=	${_FLAVOUR:[1]}
 FLAVOUR?=	Base # not supported without OpenSSL port
 .endif
 
-PHPBIN?=	${LOCALBASE}/bin/php
+PHPBIN=		${LOCALBASE}/bin/php
 
 .if exists(${PHPBIN})
 _CORE_PHP!=	${PHPBIN} -v
 CORE_PHP?=	${_CORE_PHP:[2]:S/./ /g:[1..2]:tW:S/ //}
 .endif
 
-VERSIONBIN?=	${LOCALBASE}/sbin/opnsense-version
+VERSIONBIN=	${LOCALBASE}/sbin/opnsense-version
 
 .if exists(${VERSIONBIN})
-CORE_ABI!=	${VERSIONBIN} -a
+_CORE_ABI!=	${VERSIONBIN} -a
+CORE_ABI?=	${_CORE_ABI}
 .endif
 
-PKG!=		which pkg || echo true
-GIT!=		which git || echo true
-ARCH!=		uname -p
+PYTHONLINK=	${LOCALBASE}/bin/python3
+
+.if exists(${PYTHONLINK})
+_CORE_PYTHON!=	${PYTHONLINK} -V
+CORE_PYTHON?=	${_CORE_PYTHON:[2]:S/./ /g:[1..2]:tW:S/ //}
+.endif
 
 REPLACEMENTS=	CORE_ABI \
 		CORE_ARCH \
