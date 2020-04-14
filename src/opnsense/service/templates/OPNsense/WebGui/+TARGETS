@@ -1,2 +1,2 @@
-php.etc.ini:/usr/local/etc/php.ini
-php.lib.ini:/usr/local/lib/php.ini
+etc.php.ini:/usr/local/etc/php.ini
+lib.php.ini:/usr/local/lib/php.ini
