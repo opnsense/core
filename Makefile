@@ -286,6 +286,8 @@ package: plist-check package-check clean-wrksrc
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${MAKE} DESTDIR=${WRKSRC} CORE_FLAVOUR=${CORE_FLAVOUR} install
 	@echo " done"
+	@echo -n ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
+	@cat ${WRKSRC}/usr/local/opnsense/version/core
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create -f ${PKG_FORMAT} -v -m ${WRKSRC} \
 	    -r ${WRKSRC} -p ${WRKSRC}/plist -o ${PKGDIR}
