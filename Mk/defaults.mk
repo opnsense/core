@@ -26,14 +26,23 @@
 LOCALBASE?=	/usr/local
 PAGER?=		less
 
-OPENSSL?=	${LOCALBASE}/bin/openssl
-
-_FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
-FLAVOUR?=	${_FLAVOUR:[1]}
-
 PKG!=		which pkg || echo true
 GIT!=		which git || echo true
-ARCH!=		uname -p
+
+_CORE_ARCH!=	uname -p
+CORE_ARCH?=	${_CORE_ARCH}
+
+OPENSSL=	${LOCALBASE}/bin/openssl
+
+.if ! defined(CORE_FLAVOUR)
+.if exists(${OPENSSL})
+_CORE_FLAVOUR!=	${OPENSSL} version
+CORE_FLAVOUR?=	${_CORE_FLAVOUR:[1]}
+.else
+.warning "Detected 'Base' flavour is not currently supported"
+CORE_FLAVOUR?=	Base
+.endif
+.endif
 
 REPLACEMENTS=	CORE_ABI \
 		CORE_ARCH \

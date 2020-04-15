@@ -41,9 +41,6 @@ CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
 CORE_ABI?=	20.1
-CORE_ARCH?=	${ARCH}
-CORE_FLAVOUR?=	${FLAVOUR}
-
 CORE_PHP?=	72
 CORE_PYTHON?=	37
 CORE_RADVD?=	1
@@ -54,12 +51,12 @@ CORE_UPDATE?=	# empty
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
-.if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
+.if "${CORE_FLAVOUR}" == OpenSSL
 CORE_REPOSITORY?=	${CORE_ABI}/latest
-.elif "${FLAVOUR}" == LibreSSL
+.elif "${CORE_FLAVOUR}" == LibreSSL
 CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
-CORE_REPOSITORY?=	${FLAVOUR}
+CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
 CORE_MESSAGE?=		Chirp, chirp
@@ -286,10 +283,10 @@ package: plist-check package-check clean-wrksrc
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
+	@${MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
+	@${MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core
