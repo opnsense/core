@@ -62,11 +62,17 @@ install-${TARGET}:
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.in}"; \
 			FILE="$${FILE%%.in}"; \
 		fi; \
-		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
-			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
-			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.sample}"; \
-		fi; \
-		if [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+		if [ "$${FILE%%.link}" != "$${FILE}" ]; then \
+			(cd "$$(dirname "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}")"; \
+				ln -sfn "$$(cat ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE})" \
+				    "$$(basename "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.link}")"); \
+			rm "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
+		elif [ "$${FILE%%.sample}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.sample}"; \
+			fi; \
+		elif [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
 			if [ -n "${NO_SAMPLE}" ]; then \
 				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.shadow}"; \
@@ -74,12 +80,6 @@ install-${TARGET}:
 				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.shadow}.sample"; \
 			fi; \
-		fi; \
-		if [ "$${FILE%%.link}" != "$${FILE}" ]; then \
-			(cd "$$(dirname "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}")"; \
-				ln -sfn "$$(cat ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE})" \
-				    "$$(basename "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.link}")"); \
-			rm "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
 		fi; \
 		if [ "${TREE}" = "man" ]; then \
 			gzip -cn "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" > \
@@ -94,16 +94,18 @@ plist-${TARGET}:
 	@(cd ${TREE}; find * -type f ${_IGNORES} -o -type l) | while read FILE; do \
 		if [ -f "${TREE}/$${FILE}.in" ]; then continue; fi; \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
-		if [ -n "${NO_SAMPLE}" ]; then \
+		if [ "$${FILE%%.link}" != "$${FILE}" ]; then \
 			FILE="$${FILE%%.link}"; \
-			FILE="$${FILE%%.sample}"; \
-			FILE="$${FILE%%.shadow}"; \
-		else \
-			if [ "$${FILE%%.link}" != "$${FILE}" ]; then \
-				FILE="$${FILE%%.link}"; \
-			elif [ "$${FILE%%.sample}" != "$${FILE}" ]; then \
+		elif [ "$${FILE%%.sample}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				FILE="$${FILE%%.sample}"; \
+			else \
 				PREFIX="@sample "; \
-			elif [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+			fi; \
+		elif [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				FILE="$${FILE%%.shadow}"; \
+			else \
 				FILE="$${FILE%%.shadow}.sample"; \
 				PREFIX="@shadow "; \
 			fi; \
