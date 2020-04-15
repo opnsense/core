@@ -281,10 +281,10 @@ package: plist-check package-check clean-wrksrc
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} CORE_FLAVOUR=${CORE_FLAVOUR} metadata
+	@${MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} CORE_FLAVOUR=${CORE_FLAVOUR} install
+	@${MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core
