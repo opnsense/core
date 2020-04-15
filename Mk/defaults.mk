@@ -28,7 +28,6 @@ PAGER?=		less
 
 PKG!=		which pkg || echo true
 GIT!=		which git || echo true
-ARCH!=		uname -p
 
 GITVERSION=	${.CURDIR}/Scripts/version.sh
 
@@ -37,6 +36,9 @@ CORE_COMMIT!=	${GITVERSION}
 .else
 CORE_COMMIT=	unknown 0 undefined
 .endif
+
+_CORE_ARCH!=	uname -p
+CORE_ARCH?=	${_CORE_ARCH}
 
 .if exists(${PKG})
 _CORE_UPDATE!=	${PKG} query -g %n 'opnsense-update*'
@@ -48,11 +50,14 @@ CORE_SYSLOGD?=	${_CORE_SYSLOGD:S/syslogd//g}
 
 OPENSSL=	${LOCALBASE}/bin/openssl
 
+.if ! defined(CORE_FLAVOUR)
 .if exists(${OPENSSL})
-_FLAVOUR!=	${OPENSSL} version
-FLAVOUR?=	${_FLAVOUR:[1]}
+_CORE_FLAVOUR!=	${OPENSSL} version
+CORE_FLAVOUR?=	${_CORE_FLAVOUR:[1]}
 .else
-FLAVOUR?=	Base # not supported without OpenSSL port
+.warning "Detected 'Base' flavour is not currently supported"
+CORE_FLAVOUR?=	Base
+.endif
 .endif
 
 PHPBIN=		${LOCALBASE}/bin/php
