@@ -52,6 +52,8 @@ CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.25
 CORE_UPDATE?=	# empty
 
+CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
+
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
 CORE_REPOSITORY?=	${CORE_ABI}/latest
 .elif "${FLAVOUR}" == LibreSSL
@@ -353,7 +355,7 @@ sweep:
 STYLEDIRS?=	src/etc/inc src/opnsense
 
 style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle-${CORE_PYTHON:C/./&./1} --ignore=E501 ${.CURDIR}/src || true
+	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
 
 style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out
