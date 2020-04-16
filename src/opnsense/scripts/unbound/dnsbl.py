@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 # DNS BL script
-# Copyright 2020 Petr Kejval <petr.kejval6@gmail.com>
+# Copyright (c) 2020 Petr Kejval <petr.kejval6@gmail.com>
 
 # Downloads blacklisted domains from user specified URLs and "compile" them into unbound.conf compatible file
 
