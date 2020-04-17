@@ -173,6 +173,18 @@ function openssh_configure_do($verbose = false, $interface = '')
         $sshconf .= "ChallengeResponseAuthentication no\n";
         $sshconf .= "PasswordAuthentication no\n";
     }
+    if (!empty($sshcfg['kex'])) {
+        $sshconf .= "KexAlgorithms {$sshcfg['kex']}\n";
+    }
+    if (!empty($sshcfg['ciphers'])) {
+        $sshconf .= "Ciphers {$sshcfg['ciphers']}\n";
+    }
+    if (!empty($sshcfg['macs'])) {
+        $sshconf .= "MACs {$sshcfg['macs']}\n";
+    }
+    if (!empty($sshcfg['keys'])) {
+        $sshconf .= "HostKeyAlgorithms {$sshcfg['keys']}\n";
+    }
     foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {

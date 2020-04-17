@@ -45,8 +45,8 @@
             <description>ServerBase AG (HTTPS, Zurich, CH)</description>
         </mirror>
         <mirror>
-            <url>https://opnsense.ieji.de</url>
-            <description>ieji.de (HTTPS, Frankfurt, DE)</description>
+            <url>https://opn.sense.nz</url>
+            <description>opn.sense.nz (HTTPS, Frankfurt, DE)</description>
         </mirror>
         <mirror>
             <url>http://mirror.ams1.nl.leaseweb.net/opnsense</url>

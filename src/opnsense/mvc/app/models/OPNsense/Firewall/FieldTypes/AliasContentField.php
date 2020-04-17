@@ -158,6 +158,26 @@ class AliasContentField extends BaseField
     }
 
     /**
+     * Validate host options
+     * @param array $data to validate
+     * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
+     */
+    private function validateNestedAlias($data)
+    {
+        $messages = array();
+        foreach ($this->getItems($data) as $host) {
+            if (!Util::isAlias($host)) {
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid alias.'),
+                    $host
+                );
+            }
+        }
+        return $messages;
+    }
+
+    /**
      * Validate network options
      * @param array $data to validate
      * @return bool|Callback
@@ -236,6 +256,12 @@ class AliasContentField extends BaseField
                 case "network":
                     $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validateNetwork($data);
+                    }
+                    ]);
+                    break;
+                case "networkgroup":
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
+                        return $this->validateNestedAlias($data);
                     }
                     ]);
                     break;

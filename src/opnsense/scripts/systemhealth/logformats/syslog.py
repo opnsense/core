@@ -39,7 +39,7 @@ class SysLogFormat(BaseLogFormat):
 
     def timestamp(self, line):
         # syslog format, strip timestamp and return actual log data
-        ts = datetime.datetime.strptime(line[0:15], "%b %d %H:%M:%S")
+        ts = datetime.datetime.strptime("%s %s" % (self._startup_timestamp.year, line[0:15]), "%Y %b %d %H:%M:%S")
         ts = ts.replace(year=self._startup_timestamp.year)
         if (self._startup_timestamp - ts).days < 0:
             # likely previous year, (month for this year not reached yet)

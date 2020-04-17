@@ -28,8 +28,6 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_COMMIT!=	${.CURDIR}/Scripts/version.sh
-
 CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
@@ -41,24 +39,22 @@ CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
 CORE_ABI?=	20.1
-CORE_ARCH?=	${ARCH}
-CORE_FLAVOUR=	${FLAVOUR}
-
-CORE_OPENVPN?=	# empty
 CORE_PHP?=	72
 CORE_PYTHON?=	37
-CORE_RADVD?=	1
-CORE_SQUID?=	# empty
+CORE_RADVD?=	# empty
 CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.25
+CORE_UPDATE?=	# empty
 
-.if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
+CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
+
+.if "${CORE_FLAVOUR}" == OpenSSL
 CORE_REPOSITORY?=	${CORE_ABI}/latest
-.elif "${FLAVOUR}" == LibreSSL
+.elif "${CORE_FLAVOUR}" == LibreSSL
 CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
-CORE_REPOSITORY?=	${FLAVOUR}
+CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
 CORE_MESSAGE?=		Carry on my wayward son
@@ -103,9 +99,9 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			mpd5 \
 			ntp \
 			openssh-portable \
-			openvpn${CORE_OPENVPN} \
+			openvpn \
 			opnsense-lang \
-			opnsense-update \
+			opnsense-update${CORE_UPDATE} \
 			pam_opnsense \
 			pftop \
 			php${CORE_PHP}-ctype \
@@ -139,7 +135,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			rate \
 			rrdtool \
 			samplicator \
-			squid${CORE_SQUID} \
+			squid \
 			sshlockout_pf \
 			strongswan \
 			sudo \
@@ -285,11 +281,13 @@ package: plist-check package-check clean-wrksrc
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
+	@${MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
+	@${MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
+	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
+	@cat ${WRKSRC}/usr/local/opnsense/version/core
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create -f ${PKG_FORMAT} -v -m ${WRKSRC} \
 	    -r ${WRKSRC} -p ${WRKSRC}/plist -o ${PKGDIR}
@@ -354,7 +352,7 @@ sweep:
 STYLEDIRS?=	src/etc/inc src/opnsense
 
 style-python: want-py${CORE_PYTHON}-pycodestyle
-	@pycodestyle-${CORE_PYTHON:C/./&./1} --ignore=E501 ${.CURDIR}/src || true
+	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
 
 style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@: > ${WRKDIR}/style.out

@@ -1,31 +1,29 @@
 <?php
 
-/**
- *    Copyright (C) 2019 Deciso B.V.
+/*
+ * Copyright (C) 2019 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Base\FieldTypes;
@@ -57,13 +55,24 @@ abstract class BaseListField extends BaseField
     /**
      * @var bool field may contain multiple interfaces at once
      */
-    private $internalMultiSelect = false;
+    protected $internalMultiSelect = false;
 
     /**
      * @var string default validation message string
      */
-    protected $internalValidationMessage = "option not in list";
+    protected $internalValidationMessage = null;
 
+    /**
+     * @return string validation message
+     */
+    protected function getValidationMessage()
+    {
+        if ($this->internalValidationMessage == null) {
+            return "option not in list";
+        } else {
+            return $this->internalValidationMessage;
+        }
+    }
     /**
      * select if multiple interfaces may be selected at once
      * @param $value boolean value 0/1
@@ -124,14 +133,13 @@ abstract class BaseListField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $domain = array_map('strval', array_keys($this->internalOptionList));
+            $this_message = $this->getValidationMessage();
             if ($this->internalMultiSelect) {
                 // field may contain more than one option
-                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain' => $domain));
+                $validators[] = new CsvListValidator(array('message' => $this_message, 'domain' => $domain));
             } else {
                 // single option selection
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => $domain));
+                $validators[] = new InclusionIn(array('message' => $this_message, 'domain' => $domain));
             }
         }
         return $validators;

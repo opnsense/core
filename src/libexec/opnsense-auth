@@ -63,7 +63,8 @@ if (!empty($auth_data['user']) && isset($auth_data['password'])) {
     $is_authenticated = $authFactory->authenticate($auth_data['service'], $auth_data['user'], $auth_data['password']);
     if ($is_authenticated) {
         $authProps = $authFactory->getLastAuthProperties();
-        if (!empty($authProps)) {
+        //XXX: basic_pam_auth passes additional output, we probably need a smarter way to detect if a service would like to receive additional properties.
+        if (!empty($authProps) && $auth_data['service'] != "squid") {
             /* dump authentication response data to stdout */
             echo json_encode($authProps, JSON_INVALID_UTF8_IGNORE) ."\n";
         }

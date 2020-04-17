@@ -256,13 +256,13 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCPv4 Registration");?></td>
+                        <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
                         <td>
                           <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Register DHCPv4 leases') ?>
+                          <?= gettext('Register DHCP leases') ?>
                           <div class="hidden" data-for="help_for_regdhcp">
                             <?= gettext("If this option is set, then machines that specify " .
-                            "their hostname when requesting a DHCPv4 lease will be registered " .
+                            "their hostname when requesting a DHCP lease will be registered " .
                             "in Unbound, so that their name can be resolved."); ?>
                           </div>
                         </td>
@@ -285,10 +285,10 @@ include_once("head.inc");
                           <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Register DHCP static mappings') ?>
                           <div class="hidden" data-for="help_for_regdhcpstatic">
-                            <?= sprintf(gettext("If this option is set, then DHCPv6 and DHCPv4 static mappings will ".
+                            <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                                 "be registered in Unbound, so that their name can be ".
                                 "resolved. You should also set the domain in %s".
-                                "System: General setup%s, in the DHCP server settings or for specific static mappings."),'<a href="system_general.php">','</a>');?>
+                                "System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?>
                           </div>
                         </td>
                       </tr>

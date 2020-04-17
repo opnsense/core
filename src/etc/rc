@@ -69,6 +69,15 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	fi
 
 	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/(gpt|ufs)\/.+$/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
+	if [ -n "${FS_DEV}" ]; then
+		FS_DEV=$(glabel status -as | grep ${FS_DEV} | awk 'match($3, /^[a-z]+[0-9]+/) { print substr( $3, RSTART, RLENGTH )}')
+		if [ "${FS_MNT}" = "/" -a -f ${GROWFS_MARKER} ]; then
+			# hammertime!
+			gpart recover ${FS_DEV}
+			gpart resize -i 1 ${FS_DEV}
+			growfs -y ${FS_MNT}
+		fi
+	fi
 	if [ -z "${FS_DEV}" ]; then
 		FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/[a-z]+[0-9]+/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
 	fi
@@ -86,11 +95,6 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 		fi
 	fi
 done < /etc/fstab
-
-if [ -f ${GROWFS_MARKER} ]; then
-	# hammertime!
-	/etc/rc.d/growfs onestart
-fi
 
 attempts=0
 while [ ${attempts} -lt 3 ]; do

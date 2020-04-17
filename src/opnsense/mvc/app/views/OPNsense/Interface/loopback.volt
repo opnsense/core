@@ -8,23 +8,7 @@
                 del:'/api/interfaces/loopback_settings/delItem/'
             }
         );
-
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/interfaces/loopback_settings/reconfigure", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring loopbacks') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
-
+        $("#reconfigureAct").SimpleActionButton();
     });
 </script>
 <div class="tab-content content-box">
@@ -54,7 +38,12 @@
           {{ lang._('After changing settings, please remember to apply them with the button below') }}
       </div>
       <hr/>
-      <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+      <button class="btn btn-primary" id="reconfigureAct"
+              data-endpoint='/api/interfaces/loopback_settings/reconfigure'
+              data-label="{{ lang._('Apply') }}"
+              data-error-title="{{ lang._('Error reconfiguring loopbacks') }}"
+              type="button"
+      ></button>
       <br/><br/>
   </div>
 </div>

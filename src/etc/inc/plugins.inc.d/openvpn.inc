@@ -196,74 +196,52 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
 {
     global $config;
 
-    $af = null;
-
-    if (strlen($prot) > 3) {
-        $af = substr($prot, 3, 1);
-        $prot = substr($prot, 0, 3);
+    $this_proto = strlen($prot) > 3 ? $prot : $prot . "4";
+    if ($interface == "any") {
+        $this_address = $interface;
+    } elseif (stristr($prot, '6') !== false) {
+        $this_address = get_interface_ipv6($interface);
+    } else {
+        $this_address = get_interface_ip($interface);
     }
 
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $settings) {
-            if (isset($settings['disable'])) {
-                continue;
+    foreach (['server', 'client'] as $component) {
+        $cnfsection = 'openvpn-' . $component;
+        if (isset($config['openvpn'][$cnfsection])) {
+            foreach ($config['openvpn'][$cnfsection] as $settings) {
+                if (isset($settings['disable'])) {
+                    continue;
+                } elseif ($curvpnid != 0 && $curvpnid == $settings['vpnid']) {
+                    continue;
+                } elseif (empty($settings['local_port'])) {
+                    continue;
+                }
+                // any interface includes "this" interface, use same logic as "local " directive to match address
+                if ($interface == "any") {
+                    $cnf_interface = $interface;
+                } else {
+                    $cnf_interface = $settings['interface'] != 'any' ? $settings['interface'] : $interface;
+                }
+                // calculate which address would be configured
+                if ($cnf_interface == "any") {
+                    $cnf_address = "any";
+                } elseif (is_ipaddr($settings['ipaddr'])) {
+                    $cnf_address = $settings['ipaddr'];
+                } else {
+                    if (stristr($settings['protocol'], '6') !== false) {
+                        $cnf_address = get_interface_ipv6($cnf_interface);
+                    } else {
+                        $cnf_address = get_interface_ip($cnf_interface);
+                    }
+                }
+                $cnf_proto = strlen($settings['protocol']) > 3 ? $settings['protocol'] : $settings['protocol'] . "4";
+                if ($cnf_proto == $this_proto && $this_address == $cnf_address && $settings['local_port'] == $port) {
+                    return true;
+                }
             }
-
-            if ($curvpnid != 0 && $curvpnid == $settings['vpnid']) {
-                continue;
-            }
-
-            if ($port != $settings['local_port']) {
-                continue;
-            }
-
-            if (strpos($settings['protocol'], $prot) === false) {
-                continue;
-            }
-
-            if (!empty($af) && strlen($settings['protocol']) > 3 && strpos($settings['protocol'], $af) === false) {
-                continue;
-            }
-
-            if ($interface != $settings['interface'] && $interface != 'any' && $settings['interface'] != 'any') {
-                continue;
-            }
-
-            return $settings['vpnid'];
         }
     }
-
-    if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as $settings) {
-            if (isset($settings['disable'])) {
-                continue;
-            }
-
-            if ($curvpnid != 0 && $curvpnid == $settings['vpnid']) {
-                continue;
-            }
-
-            if ($port != $settings['local_port']) {
-                continue;
-            }
-
-            if (strpos($settings['protocol'], $prot) === false) {
-                continue;
-            }
-
-            if (!empty($af) && strlen($settings['protocol']) > 3 && strpos($settings['protocol'], $af) === false) {
-                continue;
-            }
-
-            if ($interface != $settings['interface'] && $interface != 'any' && $settings['interface'] != 'any') {
-                continue;
-            }
-
-            return $settings['vpnid'];
-        }
-    }
-
-    return 0;
+    return false;
 }
 
 function openvpn_port_next($prot, $interface = "wan")
@@ -609,6 +587,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     if (!empty($iface_ip)) {
         $conf .= "local {$iface_ip}\n";
+    } elseif (!empty($settings['interface']) && $settings['interface'] == 'any' && substr($settings['protocol'], 0, 3) == 'UDP') {
+        $conf .= "multihome\n";
     }
 
     if (openvpn_validate_engine($settings['engine']) && ($settings['engine'] != "none")) {

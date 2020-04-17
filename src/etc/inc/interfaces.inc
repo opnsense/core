@@ -962,8 +962,6 @@ function interfaces_configure($verbose = false)
     plugins_configure('ipsec_prepare', $verbose);
     plugins_configure('openvpn_prepare', $verbose);
     plugins_configure('vxlan_prepare', $verbose);
-
-    interfaces_group_setup();
 }
 
 function interface_vip_bring_down($vip)
@@ -1276,7 +1274,7 @@ function interface_ppps_configure($interface)
                 }
                 break;
             default:
-                log_error("Unkown {$ppp['type']} configured as ppp interface.");
+                log_error("Unknown {$ppp['type']} configured as PPP interface.");
                 break;
         }
     }
@@ -2561,11 +2559,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_bridge_add_member($bridgetmp, $realif);
             }
         }
-
-        $grouptmp = link_interface_to_group($interface);
-        if (!empty($grouptmp)) {
-            array_walk($grouptmp, 'interface_group_add_member');
-        }
     }
 
     if ($verbose) {
@@ -3447,50 +3440,6 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
     return $dhclientconf;
 }
 
-function interfaces_group_setup()
-{
-    global $config;
-
-    if (!isset($config['ifgroups']['ifgroupentry'])) {
-        return;
-    }
-
-    foreach ($config['ifgroups']['ifgroupentry'] as $groupar) {
-        interface_group_setup($groupar);
-    }
-}
-
-function interface_group_setup(&$groupname)
-{
-    if (!is_array($groupname)) {
-        return;
-    }
-
-    $members = explode(' ', $groupname['members']);
-    foreach ($members as $ifs) {
-        interface_group_add_member($ifs, $groupname['ifname']);
-    }
-}
-
-function is_interface_group($if)
-{
-    global $config;
-
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $groupentry) {
-            if ($groupentry['ifname'] === $if) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-function interface_group_add_member($interface, $groupname)
-{
-    mwexecf('/sbin/ifconfig %s group %s', array(get_real_interface($interface), $groupname));
-}
 
 /* convert fxp0 -> wan, etc. */
 function convert_real_interface_to_friendly_interface_name($interface = 'wan')
@@ -4034,10 +3983,9 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
         return get_configured_carp_interface_list($interface, 'inet6');
     }
 
-    $realif = get_real_interface($interface, 'inet6');
+    list ($ipv6) = interfaces_primary_address6($interface, null, $ifconfig_details);
 
-    return isset($config['interfaces'][$interface]['dhcp6prefixonly']) ?
-        find_interface_ipv6_ll($realif, $ifconfig_details) : find_interface_ipv6($realif, $ifconfig_details);
+    return $ipv6;
 }
 
 /****f* interfaces/is_interface_wireless
@@ -4595,10 +4543,21 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         $realif = get_real_interface($interface, 'inet6');
     }
 
+    $interfaces_a = config_read_array('interfaces');
+
     foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
-        if ($info['family'] != 'inet6' || $info['scope']) {
-            /* only care about IPv6 without a scope set */
+        if ($info['family'] != 'inet6') {
             continue;
+        }
+
+        if (!isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+            if ($info['scope']) {
+                continue;
+            }
+        } else {
+            if (!$info['scope']) {
+                continue;
+            }
         }
 
         $addrparts = explode('/', $tmpaddr);

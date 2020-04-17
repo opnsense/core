@@ -459,5 +459,62 @@ function stdDialogConfirm(title, message, accept, decline, callback, type) {
  * wrapper for backwards compatibility (do not use)
  */
 function stdDialogRemoveItem(message, callback) {
-    stdDialogConfirm('Remove', message, 'Yes', 'Cancel', callback);
+    stdDialogConfirm(
+        stdDialogRemoveItem.defaults.title,  message, stdDialogRemoveItem.defaults.accept,
+        stdDialogRemoveItem.defaults.decline, callback
+    );
+}
+
+stdDialogRemoveItem.defaults = {
+    'title': 'Remove',
+    'accept': 'Yes',
+    'decline': 'Cancel'
+};
+
+
+/**
+ *  Action button, expects the following data attributes on the widget
+ *      data-endpoint='/path/to/my/endpoint'
+ *      data-label="Apply text"
+ *      data-service-widget="service" (optional service widget to signal)
+ *      data-error-title="My error message"
+ */
+$.fn.SimpleActionButton = function (params) {
+    let this_button = this;
+    this.construct = function() {
+        let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
+        this_button.html(label_content);
+        this_button.on('click', function(){
+            this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
+            let pre_action = function() {
+                return (new $.Deferred()).resolve();
+            }
+            if (params && params.onPreAction) {
+                pre_action = params.onPreAction;
+            }
+            pre_action().done(function() {
+                ajaxCall(this_button.data('endpoint'), {}, function(data,status) {
+                    if (params && params.onAction) {
+                        params.onAction(data, status);
+                    }
+                    if (status != "success" || data['status'].toLowerCase().trim() != 'ok') {
+                          BootstrapDialog.show({
+                              type: BootstrapDialog.TYPE_WARNING,
+                              title: this_button.data('error-title'),
+                              message: data['status'],
+                              draggable: true
+                          });
+                    }
+                    this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+                    if (this_button.data('service-widget')) {
+                        updateServiceControlUI(this_button.data('service-widget'));
+                    }
+                });
+            });
+        });
+    }
+    return this.each(function(){
+        const button = this_button.construct();
+        return button;
+    });
 }

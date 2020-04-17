@@ -86,15 +86,14 @@ foreach ($iflist as $ifname => $ifcfg) {
 
 
     $realif = get_real_interface($ifname);
-    $realifv6 = get_real_interface($ifname, 'inet6');
     $network = null;
-    $network6 = null;
     if (!empty($ifdetails[$realif]['ipv4'][0])) {
         $network = $ifdetails[$realif]['ipv4'][0]['ipaddr'] . "/" .  $ifdetails[$realif]['ipv4'][0]['subnetbits'];
     }
-    if (!empty($ifdetails[$realifv6]['ipv6'][0]) && empty($ifdetails[$realifv6]['ipv6'][0]['link-local'])) {
-        $network6 = $ifdetails[$realifv6]['ipv6'][0]['ipaddr'] . "/" .  $ifdetails[$realif]['ipv6'][0]['subnetbits'];
-    }
+
+    list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifname, null, $ifdetails);
+    $network6 = "{$primary6}/{$subnet6}";
+
     $tobanner = "{$ifcfg['descr']} ({$realif})";
 
     printf("\n %-15s -> ", $tobanner);
@@ -107,7 +106,7 @@ foreach ($iflist as $ifname => $ifcfg) {
         $v6first = true;
     }
 
-    if (!empty($network6)) {
+    if ($network6 != '/') {
         if (!$v6first) {
             printf("\n%s", str_repeat(" ", 20));
         }

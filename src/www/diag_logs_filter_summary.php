@@ -65,7 +65,7 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $fil
     /* Always do a reverse tail, to be sure we're grabbing the 'end' of the log. */
     $logarr = [];
 
-    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/grep 'filterlog:' | /usr/bin/tail -r -n {$tail}", $logarr);
+    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/grep 'filterlog.*:' | /usr/bin/tail -r -n {$tail}", $logarr);
 
     $filterlog = array();
     $counter = 0;
@@ -151,7 +151,7 @@ function parse_filter_line($line, $interface_names = array())
     $flent = array();
     $log_split = '';
 
-    if (!preg_match('/(.*)\s(.*)\sfilterlog:\s(.*)$/', $line, $log_split)) {
+    if (!preg_match('/(.*)\s(.*)\sfilterlog.*:\s(.*)$/', $line, $log_split)) {
         return '';
     }
 

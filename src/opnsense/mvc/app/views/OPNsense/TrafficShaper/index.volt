@@ -91,22 +91,7 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * Reconfigure ipfw / trafficshaper
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/trafficshaper/service/reconfigure", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring trafficshaper') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#reconfigureAct").SimpleActionButton();
 
         $("#flushAct").click(function(){
           // Ask user if it's ok to flush all of ipfw
@@ -140,6 +125,9 @@ POSSIBILITY OF SUCH DAMAGE.
         }
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
+        });
+        $(window).on('hashchange', function(e) {
+            $('a[href="' + window.location.hash + '"]').click()
         });
     });
 
@@ -246,7 +234,13 @@ POSSIBILITY OF SUCH DAMAGE.
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
         <hr/>
-        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/trafficshaper/service/reconfigure'
+                data-label="{{ lang._('Apply') }}"
+                data-error-title="{{ lang._('Error reconfiguring trafficshaper') }}"
+                type="button"
+        ></button>
+
         <button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._('Reset') }}</b> <i id="flushAct_progress" class=""></i></button>
         <br/><br/>
     </div>

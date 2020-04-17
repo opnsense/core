@@ -61,7 +61,7 @@ Several OPTIONS exist to customise the package, e.g.:
 * CORE_DEPENDS: a list of required dependencies for the package
 * CORE_DEPENDS_ARCH: a list of special <ARCH>-required packages
 * CORE_ORIGIN: sets a HardenedBSD compatible package/ports origin
-* FLAVOUR: can be set to "OpenSSL" (default) or "LibreSSL"
+* CORE_FLAVOUR: can be set to "OpenSSL" or "LibreSSL"
 * CORE_COMMENT: a short description of the package
 * CORE_MAINTAINER: email of the package maintainer
 * CORE_WWW: web url of the package
@@ -70,6 +70,9 @@ Several OPTIONS exist to customise the package, e.g.:
 Options are passed in the following form:
 
     # make package CORE_NAME=my_new_name
+
+In general, options are either set to sane defaults or automatically
+detected at runtime.
 
 make update
 -----------

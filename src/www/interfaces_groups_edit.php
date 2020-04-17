@@ -113,28 +113,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       }
                   }
               }
-              mark_subsystem_dirty('filter');
-          }
-          $old_ifname = isset($id) ? $a_ifgroups[$id]['ifname'] : $pconfig['ifname'];
-          // remove group members
-          foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
-              if (!in_array($old_member, $pconfig['members']) || $old_ifname != $pconfig['ifname']) {
-                  mwexecf('/sbin/ifconfig %s -group %s', array(get_real_interface($old_member), $a_ifgroups[$id]['ifname']));
-              }
           }
           // update item
           $a_ifgroups[$id] = $ifgroupentry;
       } else {
-          mark_subsystem_dirty('filter');
           // add new item
           $a_ifgroups[] = $ifgroupentry;
       }
+      mark_subsystem_dirty('filter');
       usort($a_ifgroups, function($a, $b) {
           return strnatcmp($a['ifname'], $b['ifname']);
       });
       filter_rules_sort();
       write_config();
-      interface_group_setup($ifgroupentry);
       header(url_safe('Location: /interfaces_groups.php'));
       exit;
     }

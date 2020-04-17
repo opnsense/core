@@ -106,6 +106,8 @@ class SNatRule extends Rule
                         $rule['disabled'] = true;
                     }
                     $rule[$fieldname] = "$" . $rule[$fieldname];
+                } elseif (!empty($rule[$fieldname])) {
+                    $rule[$fieldname] = str_replace('-', ':', $rule[$fieldname]); // range interpretation
                 }
             }
             if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash") {

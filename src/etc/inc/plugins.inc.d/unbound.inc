@@ -438,30 +438,17 @@ function unbound_configure_do($verbose = false, $interface = '')
         flush();
     }
 
-    mwexecf(
-        'chroot -u unbound -g unbound / %s -a %s',
-        array('/usr/local/sbin/unbound-anchor', '/var/unbound/root.key'),
-        true
-    );
-
-    if (!file_exists('/var/unbound/unbound_control.key')) {
-        mwexecf(
-            'chroot -u unbound -g unbound / %s -d %s',
-            array('/usr/local/sbin/unbound-control-setup', '/var/unbound')
-        );
-    }
-
     unbound_generate_config();
     configd_run("template reload OPNsense/Unbound/*");
+    configd_run("unbound start", true);
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
         if (isset($config['unbound']['regdhcpdomain'])) {
             $domain = $config['unbound']['regdhcpdomain'];
         }
-        mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $domain);
+        mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py --domain %s', $domain);
     }
-    mwexecf('/usr/local/sbin/unbound -c %s', '/var/unbound/unbound.conf');
 
     //configd_run('unbound cache load');
 

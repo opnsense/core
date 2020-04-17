@@ -13,6 +13,15 @@
             <pattern>api/diagnostics/interface/getNdp*</pattern>
         </patterns>
     </page-diagnostics-ndptable>
+    <page-diagnostics-netstat>
+        <name>Diagnostics: Netstat</name>
+        <patterns>
+            <pattern>ui/diagnostics/interface/netstat/*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceStatistics*</pattern>
+            <pattern>api/diagnostics/interface/getProtocolStatistics*</pattern>
+            <pattern>api/diagnostics/interface/getSocketStatistics*</pattern>
+        </patterns>
+    </page-diagnostics-netstat>
     <page-diagnostics-routingtables>
         <name>Diagnostics: Routing tables</name>
         <patterns>
