@@ -584,6 +584,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // read physcial interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
     }
+    $ifgroup = !empty($_GET['group']) ? $_GET['group'] : "";
 
     if (!empty($pconfig['apply'])) {
         if (!is_subsystem_dirty('interfaces')) {
@@ -610,7 +611,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         @unlink('/tmp/.interfaces.apply');
-        header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        if (!empty($ifgroup)) {
+            header(url_safe('Location: /interfaces.php?group=%s&if=%s', array($ifgroup, $if)));
+        } else {
+            header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        }
         exit;
     } elseif (empty($pconfig['enable'])) {
         if (isset($a_interfaces[$if]['enable'])) {
@@ -641,7 +646,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist[$if]['ppps'] = $a_ppps;
             file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
         }
-        header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        if (!empty($ifgroup)) {
+            header(url_safe('Location: /interfaces.php?group=%s&if=%s', array($ifgroup, $if)));
+        } else {
+            header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        }
         exit;
     } else {
         // locate sequence in ppp list
@@ -1400,7 +1409,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             mark_subsystem_dirty('interfaces');
 
-            header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+            if (!empty($ifgroup)) {
+                header(url_safe('Location: /interfaces.php?group=%s&if=%s', array($ifgroup, $if)));
+            } else {
+                header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+            }
             exit;
         }
     }
