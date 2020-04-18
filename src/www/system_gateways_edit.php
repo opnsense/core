@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2020 Deciso B.V.
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
  *
@@ -261,6 +261,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("The alert interval needs to be positive.");
     }
 
+    if (!is_numeric($dpinger_config['data_length'])) {
+        $input_errors[] = gettext("The data length needs to be a numeric value.");
+    } elseif ($dpinger_config['data_length'] < 0) {
+        $input_errors[] = gettext("The data length needs to be positive.");
+    }
+
     if (!is_numeric($dpinger_config['time_period'])) {
         $input_errors[] = gettext("The time period needs to be a numeric value.");
     } elseif ($dpinger_config['time_period'] < 1) {
@@ -321,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $gateway['defaultgw'] = ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on");
 
-        foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period') as $fieldname) {
+        foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period', 'data_length') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
@@ -401,6 +407,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'name',
         'weight',
         'alert_interval',
+        'data_length',
         'time_period',
         'loss_interval',
         'priority'
@@ -437,7 +444,7 @@ $( document ).ready(function() {
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
-  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['alert_interval']) && ($pconfig['alert_interval'] > $dpinger_default['alert_interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
+  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['data_length']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['alert_interval']) && ($pconfig['alert_interval'] > $dpinger_default['alert_interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
     $("#btn_advanced").click();
 <?php
   endif;?>
@@ -594,9 +601,6 @@ $( document ).ready(function() {
                   </td>
                 </tr>
 
-
-
-
                 <tr class="advanced visible">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
@@ -708,6 +712,15 @@ $( document ).ready(function() {
                     <input name="loss_interval" id="loss_interval" type="text" value="<?=$pconfig['loss_interval'];?>" />
                     <div class="hidden" data-for="help_for_loss_interval">
                       <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d.'), $dpinger_default['loss_interval']) ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="advanced hidden">
+                  <td><a id="help_for_data_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Data Length");?></td>
+                  <td>
+                    <input name="data_length" id="data_length" type="text" value="<?=$pconfig['data_length'];?>" />
+                    <div class="hidden" data-for="help_for_data_length">
+                      <?= sprintf(gettext('Specify the number of data bytes to be sent. Default is %d.'), $dpinger_default['data_length']) ?>
                     </div>
                   </td>
                 </tr>
