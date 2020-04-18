@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2020 Deciso B.V.
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
  * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
@@ -68,6 +69,7 @@ function dpinger_defaults()
 {
     return array(
         'alert_interval' => '1',
+        'data_length' => '0',
         'interval' => '1',
         'latencyhigh' => '500',
         'latencylow' => '200',
@@ -236,42 +238,23 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         /* command to run on alarm */
         $params .= '-C "/usr/local/etc/rc.syshook monitor" ';
 
-        $params .= exec_safe(
-            '-s %ss ',
-            isset($gateway['interval']) && is_numeric($gateway['interval']) ?
-                $gateway['interval'] : $dpinger_default['interval']
-        );
-
-        $params .= exec_safe(
-            '-l %ss ',
-            isset($gateway['loss_interval']) && is_numeric($gateway['loss_interval']) ?
-                $gateway['loss_interval'] : $dpinger_default['loss_interval']
-        );
-
-        $params .= exec_safe(
-            '-t %ss ',
-            isset($gateway['time_period']) && is_numeric($gateway['time_period']) ?
-                $gateway['time_period'] : $dpinger_default['time_period']
-        );
-
-        $params .= exec_safe(
-            '-A %ss ',
-            isset($gateway['alert_interval']) && is_numeric($gateway['alert_interval']) ?
-                $gateway['alert_interval'] : $dpinger_default['alert_interval']
-        );
-
-        $params .= exec_safe(
-            '-D %s ',
-            isset($gateway['latencyhigh']) && is_numeric($gateway['latencyhigh']) ?
-                $gateway['latencyhigh'] : $dpinger_default['latencyhigh']
-        );
-
-        $params .= exec_safe(
-            '-L %s ',
-            isset($gateway['losshigh']) && is_numeric($gateway['losshigh']) ?
-                $gateway['losshigh'] : $dpinger_default['losshigh']
-        );
-
+        foreach (
+            [
+            'interval' => '-s %ss ',
+            'loss_interval' => '-l %ss ',
+            'time_period' => '-t %ss ',
+            'alert_interval' => '-A %ss ',
+            'latencyhigh' => '-D %s ',
+            'losshigh' => '-L %s ',
+            'data_length' => '-d %s '
+            ] as $pname => $ppattern
+        ) {
+            $params .= exec_safe(
+                $ppattern,
+                isset($gateway[$pname]) && is_numeric($gateway[$pname]) ?
+                    $gateway[$pname] : $dpinger_default[$pname]
+            );
+        }
         $params .= exec_safe('%s ', $gateway['monitor']);
 
         /* foreground mode in background to deal with tentative connectivity */
