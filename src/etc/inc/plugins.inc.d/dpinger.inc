@@ -238,7 +238,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         /* command to run on alarm */
         $params .= '-C "/usr/local/etc/rc.syshook monitor" ';
 
-        foreach ([
+        foreach (
+            [
             'interval' => '-s %ss ',
             'loss_interval' => '-l %ss ',
             'time_period' => '-t %ss ',
@@ -246,7 +247,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
             'latencyhigh' => '-D %s ',
             'losshigh' => '-L %s ',
             'data_length' => '-d %s '
-        ] as $pname => $ppattern) {
+            ] as $pname => $ppattern
+        ) {
             $params .= exec_safe(
                 $ppattern,
                 isset($gateway[$pname]) && is_numeric($gateway[$pname]) ?

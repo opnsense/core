@@ -79,7 +79,7 @@ class LogController extends ApiControllerBase
                 }
                 $response = $backend->configdpRun("system diag log", array(0, 0, $searchPhrase, $module, $scope));
                 $this->response->setRawHeader("Content-Type: text/csv");
-                $this->response->setRawHeader("Content-Disposition: attachment; filename=".$scope.".log");
+                $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
                 foreach (json_decode($response, true)['rows'] as $row) {
                     printf("%s\t%s\n", $row['timestamp'], $row['line']);
                 }
