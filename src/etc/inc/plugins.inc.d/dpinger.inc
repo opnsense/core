@@ -69,6 +69,7 @@ function dpinger_defaults()
 {
     return array(
         'alert_interval' => '1',
+        'data_length' => '0',
         'interval' => '1',
         'latencyhigh' => '500',
         'latencylow' => '200',
@@ -76,7 +77,6 @@ function dpinger_defaults()
         'losshigh' => '20',
         'losslow' => '10',
         'time_period' => '60',
-        'data_length' => '0'
     );
 }
 
