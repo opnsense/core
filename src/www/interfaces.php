@@ -612,7 +612,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         @unlink('/tmp/.interfaces.apply');
         if (!empty($ifgroup)) {
-            header(url_safe('Location: /interfaces.php?group=%s&if=%s', array($ifgroup, $if)));
+            header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
         } else {
             header(url_safe('Location: /interfaces.php?if=%s', array($if)));
         }
@@ -647,7 +647,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
         }
         if (!empty($ifgroup)) {
-            header(url_safe('Location: /interfaces.php?group=%s&if=%s', array($ifgroup, $if)));
+            header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
         } else {
             header(url_safe('Location: /interfaces.php?if=%s', array($if)));
         }
@@ -1410,7 +1410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             mark_subsystem_dirty('interfaces');
 
             if (!empty($ifgroup)) {
-                header(url_safe('Location: /interfaces.php?group=%s&if=%s', array($ifgroup, $if)));
+                header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
             } else {
                 header(url_safe('Location: /interfaces.php?if=%s', array($if)));
             }

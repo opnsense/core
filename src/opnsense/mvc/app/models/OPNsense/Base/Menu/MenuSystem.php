@@ -267,11 +267,19 @@ class MenuSystem
         }
 
         foreach ($ifgroups as $key => $groupings) {
+            $first = true;
             foreach ($groupings as $grouping) {
                 $this->appendItem('Interfaces.' . $grouping, $key, array(
-                    'url' => '/interfaces.php?group=' . $grouping . '&if=' . $key,
+                    'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
                     'visiblename' => '[' . $iftargets['if'][$key] . ']',
                 ));
+                if ($first) {
+                    $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
+                        'url' => '/interfaces.php?if=' . $key,
+                        'visibility' => 'hidden',
+                    ));
+                    $first = false;
+                }
             }
         }
 
