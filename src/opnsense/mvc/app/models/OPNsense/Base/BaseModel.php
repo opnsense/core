@@ -246,7 +246,8 @@ abstract class BaseModel
 
                             // iterate array items from config data
                             $child_node = $fieldObject->newContainerField(
-                                $fieldObject->__reference . "." . $tagUUID, $tagName
+                                $fieldObject->__reference . "." . $tagUUID,
+                                $tagName
                             );
                             $this->parseXml($xmlNode, $conf_section, $child_node);
                             if (!isset($conf_section->attributes()->uuid)) {
@@ -259,7 +260,8 @@ abstract class BaseModel
                         // There's no content in config.xml for this array node.
                         $tagUUID = $internal_data->generateUUID();
                         $child_node = $fieldObject->newContainerField(
-                            $fieldObject->__reference . "." . $tagUUID, $tagName
+                            $fieldObject->__reference . "." . $tagUUID,
+                            $tagName
                         );
                         $child_node->setInternalIsVirtual();
                         $this->parseXml($xmlNode, $config_section_data, $child_node);

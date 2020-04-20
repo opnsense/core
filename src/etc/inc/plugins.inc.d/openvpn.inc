@@ -196,7 +196,7 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
 {
     global $config;
 
-    $this_proto = strlen($prot) > 3 ? $prot : $prot ."4";
+    $this_proto = strlen($prot) > 3 ? $prot : $prot . "4";
     if ($interface == "any") {
         $this_address = $interface;
     } elseif (stristr($prot, '6') !== false) {
@@ -206,7 +206,7 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
     }
 
     foreach (['server', 'client'] as $component) {
-        $cnfsection = 'openvpn-'.$component;
+        $cnfsection = 'openvpn-' . $component;
         if (isset($config['openvpn'][$cnfsection])) {
             foreach ($config['openvpn'][$cnfsection] as $settings) {
                 if (isset($settings['disable'])) {

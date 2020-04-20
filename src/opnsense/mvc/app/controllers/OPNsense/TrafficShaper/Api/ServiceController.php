@@ -175,6 +175,6 @@ class ServiceController extends ApiControllerBase
                 }
             }
         }
-        return $result ;
+        return $result;
     }
 }
