@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable'] = isset($a_unboundcfg['enable']);
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
+    $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
     $pconfig['forwarding'] = isset($a_unboundcfg['forwarding']);
     $pconfig['reglladdr6'] = empty($a_unboundcfg['noreglladdr6']);
     $pconfig['regdhcp'] = isset($a_unboundcfg['regdhcp']);
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
     $pconfig['custom_options'] = !empty($a_unboundcfg['custom_options']) ? $a_unboundcfg['custom_options'] : null;
     $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
+    $pconfig['dns64prefix'] = !empty($a_unboundcfg['dns64prefix']) ? $a_unboundcfg['dns64prefix'] : null;
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
@@ -76,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
             $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
         }
+        if (!empty($pconfig['dns64prefix']) && !is_subnetv6($pconfig['dns64prefix'])) {
+            $input_errors[] = gettext("You must specify a valid DNS64 prefix.");
+        }
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
@@ -99,6 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_unboundcfg['regdhcpdomain'])) {
                 unset($a_unboundcfg['regdhcpdomain']);
             }
+            if (!empty($pconfig['dns64prefix'])) {
+                $a_unboundcfg['dns64prefix'] = $pconfig['dns64prefix'];
+            } elseif (isset($a_unboundcfg['dns64prefix'])) {
+                unset($a_unboundcfg['dns64prefix']);
+            }
             if (!empty($pconfig['local_zone_type'])) {
                 $a_unboundcfg['local_zone_type'] = $pconfig['local_zone_type'];
             } elseif (isset($a_unboundcfg['local_zone_type'])) {
@@ -111,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
+            $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
             $a_unboundcfg['forwarding'] = !empty($pconfig['forwarding']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
@@ -226,6 +237,22 @@ include_once("head.inc");
                         <td>
                           <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Enable DNSSEC Support') ?>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_dns64" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS64");?></td>
+                        <td>
+                          <input name="dns64" type="checkbox" id="dns64" value="yes" <?=!empty($pconfig['dns64']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Enable DNS64 Support') ?>
+                          <div class="hidden" data-for="help_for_dns64">
+                            <?= gettext("If this option is set, Unbound will synthesize AAAA " .
+                            "records from A records if no actual AAAA records are present."); ?>
+                          </div>
+                          <input placeholder="<?=gettext("DNS64 prefix");?>" title="<?=gettext("DNS64 prefix");?>" name="dns64prefix" type="text" id="dns64prefix" value="<?= $pconfig['dns64prefix'] ?>" />
+                          <div class="hidden" data-for="help_for_dns64">
+                            <?= gettext("If no DNS64 prefix is specified, the default prefix " .
+                            "64:ff9b::/96 (RFC 6052) will be used."); ?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
