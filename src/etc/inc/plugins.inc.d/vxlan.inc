@@ -38,7 +38,7 @@ function vxlan_devices()
 {
     $devices = array();
 
-    $devices[] = array('pattern' => '^vxlan', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^vxlan', 'volatile' => true, 'configurable' => true);
 
     return $devices;
 }
