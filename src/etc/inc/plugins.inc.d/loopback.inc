@@ -37,7 +37,7 @@ function loopback_devices()
 {
     $devices = array();
 
-    $devices[] = array('pattern' => '^lo', 'volatile' => true, 'configurable' => false);
+    $devices[] = array('pattern' => '^lo', 'volatile' => true, 'configurable' => true);
 
     return $devices;
 }
