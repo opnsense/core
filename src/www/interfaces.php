@@ -633,9 +633,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
             foreach (plugins_devices() as $device) {
                 if (!isset($device['configurable']) || $device['configurable'] == true) {
-                  continue;
+                    continue;
                 }
-                if (preg_match('/' . $device['pattern'] . '/', $ifport)) {
+                if (preg_match('/' . $device['pattern'] . '/', $pconfig['if'])) {
                     $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
                 }
             }
