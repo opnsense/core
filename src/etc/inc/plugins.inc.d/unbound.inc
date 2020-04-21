@@ -104,12 +104,19 @@ function unbound_generate_config()
     // Setup optimization
     $optimization = unbound_optimization();
 
-    // Setup DNSSEC support
+    // Setup DNS64 and DNSSEC support
+    $dns64prefix = '';
+    if (isset($config['unbound']['dns64'])) {
+        $module_config = 'dns64 ';
+        if (!empty($config['unbound']['dns64prefix'])) {
+            $dns64prefix = "dns64-prefix: {$config['unbound']['dns64prefix']}";
+        }
+    }
     if (isset($config['unbound']['dnssec'])) {
-        $module_config = 'validator iterator';
+        $module_config .= 'validator iterator';
         $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
-        $module_config = 'iterator';
+        $module_config .= 'iterator';
     }
 
     // Setup DNS Rebinding
@@ -319,6 +326,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['key_cache_slabs']}
 {$optimization['so_rcvbuf']}
 {$anchor_file}
+{$dns64prefix}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
 
