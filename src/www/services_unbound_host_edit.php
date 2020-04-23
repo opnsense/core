@@ -83,6 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("A valid domain must be specified.");
     }
 
+    if (!empty($pconfig['domain']) && $pconfig['domain'] == $config['system']['domain'] && $pconfig['host'] == '*') {
+        $input_errors[] = sprintf(
+            gettext("A wildcard domain override is not supported for the local domain '%s'."),
+            $config['system']['domain']
+        );
+    }
+
     switch ($pconfig['rr']) {
         case 'A': /* also: AAAA */
             $reqdfields = explode(" ", "ip");
