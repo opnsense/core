@@ -44,6 +44,27 @@ CORE_FLAVOUR?=	Base
 .endif
 .endif
 
+PHPBIN=		${LOCALBASE}/bin/php
+
+.if exists(${PHPBIN})
+_CORE_PHP!=	${PHPBIN} -v
+CORE_PHP?=	${_CORE_PHP:[2]:S/./ /g:[1..2]:tW:S/ //}
+.endif
+
+VERSIONBIN=	${LOCALBASE}/sbin/opnsense-version
+
+.if exists(${VERSIONBIN})
+_CORE_ABI!=	${VERSIONBIN} -a
+CORE_ABI?=	${_CORE_ABI}
+.endif
+
+PYTHONLINK=	${LOCALBASE}/bin/python3
+
+.if exists(${PYTHONLINK})
+_CORE_PYTHON!=	${PYTHONLINK} -V
+CORE_PYTHON?=	${_CORE_PYTHON:[2]:S/./ /g:[1..2]:tW:S/ //}
+.endif
+
 REPLACEMENTS=	CORE_ABI \
 		CORE_ARCH \
 		CORE_COMMIT \
