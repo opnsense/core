@@ -11,6 +11,7 @@ options {
     flush_lines(0);
     threaded(yes);
     create_dirs(yes);
+    stats-freq(0);
 };
 
 source s_all {
