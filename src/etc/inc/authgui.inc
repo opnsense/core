@@ -114,7 +114,15 @@ function session_auth(&$Login_Error)
                 log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
             if (!empty($_GET['url'])) {
-                header(url_safe("Location: {$_GET['url']}"));
+                $tmp_url_parts = parse_url($_GET['url']);
+                if (!empty($tmp_url_parts['host'])) {
+                    $redir_uri = $tmp_url_parts['path'];
+                    $redir_uri .= !empty($tmp_url_parts['query']) ? "?" . $tmp_url_parts['query'] : "";
+                    $redir_uri .= !empty($tmp_url_parts['fragment']) ? "#" . $tmp_url_parts['fragment'] : "";
+                } else {
+                    $redir_uri = $_GET['url'];
+                }
+                header(url_safe("Location: {$redir_uri}"));
             } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
                 header("Location: system_usermanager_passwordmg.php");
             } else {
