@@ -264,13 +264,11 @@ include("head.inc");
                 <td>
                   <select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None"); ?></option>
-<?php
-                    foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr) :?>
-                      <option value="<?=$cryptomod_name; ?>" <?=$pconfig['crypto_hardware'] == $cryptomod_name ? "selected=\"selected\"" :"";?>>
-                        <?="{$cryptomod_descr} ({$cryptomod_name})"; ?>
-                      </option>
-<?php
-                    endforeach; ?>
+<?php foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr): ?>
+                    <option value="<?= html_safe($cryptomod_name) ?>" <?=$pconfig['crypto_hardware'] == $cryptomod_name ? "selected=\"selected\"" :"";?>>
+                      <?="{$cryptomod_descr} ({$cryptomod_name})"; ?>
+                    </option>
+<?php endforeach ?>
                   </select>
                   <div class="hidden" data-for="help_for_crypto_hardware">
                     <?=gettext("A cryptographic accelerator module will use hardware support to speed up some " .
@@ -313,13 +311,11 @@ include("head.inc");
                 <td>
                   <select name="thermal_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None/ACPI"); ?></option>
-<?php
-                    foreach (thermal_modules() as $themalmod_name => $themalmod_descr) :?>
-                      <option value="<?=$themalmod_name; ?>" <?=$pconfig['thermal_hardware'] == $themalmod_name ? " selected=\"selected\"" :"";?>>
-                        <?="{$themalmod_descr} ({$themalmod_name})"; ?>
-                      </option>
-<?php
-                    endforeach; ?>
+<?php foreach (thermal_modules() as $themalmod_name => $themalmod_descr): ?>
+                    <option value="<?= html_safe($themalmod_name) ?>" <?=$pconfig['thermal_hardware'] == $themalmod_name ? " selected=\"selected\"" :"";?>>
+                      <?="{$themalmod_descr} ({$themalmod_name})"; ?>
+                    </option>
+<?php endforeach ?>
                   </select>
                   <div class="hidden" data-for="help_for_thermal_hardware">
                     <?=gettext("If you have a supported CPU, selecting a themal sensor will load the appropriate " .
