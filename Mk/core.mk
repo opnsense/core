@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -60,13 +60,19 @@ install-${TARGET}:
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
 			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.in}"; \
+			FILE="$${FILE%%.in}"; \
 		fi; \
-		FILE="$${FILE%%.in}"; \
-		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
-			mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
-			    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.sample}"; \
-		fi; \
-		if [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+		if [ "$${FILE%%.link}" != "$${FILE}" ]; then \
+			(cd "$$(dirname "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}")"; \
+				ln -sfn "$$(cat ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE})" \
+				    "$$(basename "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.link}")"); \
+			rm "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}"; \
+		elif [ "$${FILE%%.sample}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
+				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.sample}"; \
+			fi; \
+		elif [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
 			if [ -n "${NO_SAMPLE}" ]; then \
 				mv "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE}" \
 				    "${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}/$${FILE%%.shadow}"; \
@@ -88,16 +94,21 @@ plist-${TARGET}:
 	@(cd ${TREE}; find * -type f ${_IGNORES} -o -type l) | while read FILE; do \
 		if [ -f "${TREE}/$${FILE}.in" ]; then continue; fi; \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
-		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
-			PREFIX="@sample "; \
-		fi; \
-		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.shadow}" != "$${FILE}" ]; then \
-			FILE="$${FILE%%.shadow}.sample"; \
-			PREFIX="@shadow "; \
-		fi; \
-		if [ -n "${NO_SAMPLE}" ]; then \
-			FILE="$${FILE%%.sample}"; \
-			FILE="$${FILE%%.shadow}"; \
+		if [ "$${FILE%%.link}" != "$${FILE}" ]; then \
+			FILE="$${FILE%%.link}"; \
+		elif [ "$${FILE%%.sample}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				FILE="$${FILE%%.sample}"; \
+			else \
+				PREFIX="@sample "; \
+			fi; \
+		elif [ "$${FILE%%.shadow}" != "$${FILE}" ]; then \
+			if [ -n "${NO_SAMPLE}" ]; then \
+				FILE="$${FILE%%.shadow}"; \
+			else \
+				FILE="$${FILE%%.shadow}.sample"; \
+				PREFIX="@shadow "; \
+			fi; \
 		fi; \
 		if [ "${TREE}" == "man" ]; then \
 			FILE="$${FILE}.gz"; \
