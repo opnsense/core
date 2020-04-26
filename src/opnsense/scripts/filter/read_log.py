@@ -114,7 +114,7 @@ if __name__ == '__main__':
             rule = dict()
             metadata = dict()
             # rule metadata (unique hash, hostname, timestamp)
-            log_ident = re.split('filterlog.*\:', record['line'])
+            log_ident = re.split('filterlog[^:]*:', record['line'])
             tmp = log_ident[0].split()
             metadata['__digest__'] = md5(record['line'].encode()).hexdigest()
             metadata['__host__'] = tmp.pop()
