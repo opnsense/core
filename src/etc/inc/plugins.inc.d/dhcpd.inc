@@ -264,6 +264,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $overridemtu = $dhcpv6ifconf['AdvLinkMTU'];
             if ($overridemtu < $mtu) {
                 $mtu = $overridemtu;
+            } else {
+                log_error("Warning! AdvLinkMTU set in config is not lower than the interface MTU, therefore can't be applied.");
             }
         }
 
