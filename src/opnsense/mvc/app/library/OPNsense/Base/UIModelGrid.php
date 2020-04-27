@@ -56,7 +56,7 @@ class UIModelGrid
      * @param null|function $filter_funct additional filter callable
      * @return array
      */
-    public function fetchBindRequest($request, $fields, $defaultSort = null, $filter_funct = null)
+    public function fetchBindRequest($request, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = null)
     {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
@@ -78,7 +78,8 @@ class UIModelGrid
             $sortBy,
             $sortDescending,
             $searchPhrase,
-            $filter_funct
+            $filter_funct,
+            $sort_flags
         );
     }
 
@@ -100,12 +101,13 @@ class UIModelGrid
         $sortBy = array(),
         $sortDescending = false,
         $searchPhrase = '',
-        $filter_funct = null
+        $filter_funct = null,
+        $sort_flags = null
     ) {
         $result = array('rows' => array());
 
         $recordIndex = 0;
-        foreach ($this->DataField->sortedBy($sortBy, $sortDescending) as $record) {
+        foreach ($this->DataField->sortedBy($sortBy, $sortDescending, $sort_flags) as $record) {
             if (array_key_exists("uuid", $record->getAttributes())) {
                 if (is_callable($filter_funct) && !$filter_funct($record)) {
                     // not applicable according to $filter_funct()

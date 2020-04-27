@@ -305,7 +305,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null)
+    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = null)
     {
         $this->sessionClose();
         $element = $this->getModel();
@@ -317,7 +317,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $this->request,
             $fields,
             $defaultSort,
-            $filter_funct
+            $filter_funct,
+            $sort_flags
         );
     }
 
