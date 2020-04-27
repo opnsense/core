@@ -169,11 +169,14 @@ class ArrayField extends BaseField
             $sortedData[$sortKey] = $node;
         }
 
-        // sort by key on ascending or descending order
-        if (!$descending) {
-            ksort($sortedData, $sort_flags);
-        } else {
-            krsort($sortedData, $sort_flags);
+        // proceed with sorting if at least one field name was provided
+        if ($fieldNames[0]) {
+            // sort by key on ascending or descending order
+            if (!$descending) {
+                ksort($sortedData, $sort_flags);
+            } else {
+                krsort($sortedData, $sort_flags);
+            }
         }
 
         return array_values($sortedData);
