@@ -54,13 +54,19 @@ class UIModelGrid
      * @param array $fields to collect
      * @param null|string $defaultSort default sort order
      * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
      * @return array
      */
-    public function fetchBindRequest($request, $fields, $defaultSort = null, $filter_funct = null)
-    {
+    public function fetchBindRequest(
+        $request,
+        $fields,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL
+    ) {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
-        $sortBy = array($defaultSort);
+        $sortBy = empty($defaultSort) ? array() : array($defaultSort);
         $sortDescending = false;
 
         if ($request->has('sort') && is_array($request->get("sort"))) {
@@ -78,7 +84,8 @@ class UIModelGrid
             $sortBy,
             $sortDescending,
             $searchPhrase,
-            $filter_funct
+            $filter_funct,
+            $sort_flags
         );
     }
 
@@ -91,6 +98,7 @@ class UIModelGrid
      * @param bool $sortDescending sort in descending order
      * @param string $searchPhrase search phrase to use
      * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
      * @return array
      */
     public function fetch(
@@ -100,12 +108,13 @@ class UIModelGrid
         $sortBy = array(),
         $sortDescending = false,
         $searchPhrase = '',
-        $filter_funct = null
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL
     ) {
         $result = array('rows' => array());
 
         $recordIndex = 0;
-        foreach ($this->DataField->sortedBy($sortBy, $sortDescending) as $record) {
+        foreach ($this->DataField->sortedBy($sortBy, $sortDescending, $sort_flags) as $record) {
             if (array_key_exists("uuid", $record->getAttributes())) {
                 if (is_callable($filter_funct) && !$filter_funct($record)) {
                     // not applicable according to $filter_funct()
