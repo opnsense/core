@@ -54,10 +54,16 @@ class UIModelGrid
      * @param array $fields to collect
      * @param null|string $defaultSort default sort order
      * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
      * @return array
      */
-    public function fetchBindRequest($request, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = null)
-    {
+    public function fetchBindRequest(
+        $request,
+        $fields,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL
+    ) {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
         $sortBy = array($defaultSort);
@@ -92,6 +98,7 @@ class UIModelGrid
      * @param bool $sortDescending sort in descending order
      * @param string $searchPhrase search phrase to use
      * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
      * @return array
      */
     public function fetch(
@@ -102,7 +109,7 @@ class UIModelGrid
         $sortDescending = false,
         $searchPhrase = '',
         $filter_funct = null,
-        $sort_flags = null
+        $sort_flags = SORT_NATURAL
     ) {
         $result = array('rows' => array());
 

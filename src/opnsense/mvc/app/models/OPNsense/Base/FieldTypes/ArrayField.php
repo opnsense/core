@@ -138,7 +138,7 @@ class ArrayField extends BaseField
      * @param bool $descending sort descending
      * @return array
      */
-    public function sortedBy($fieldNames, $descending = false, $sort_flags = null)
+    public function sortedBy($fieldNames, $descending = false, $sort_flags = SORT_NATURAL)
     {
         // reserve at least X number of characters for every field to improve sorting of multiple fields
         $MAX_KEY_LENGTH = 30;
