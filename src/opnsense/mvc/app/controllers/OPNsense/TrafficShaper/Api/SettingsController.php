@@ -117,7 +117,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "pipes.pipe",
             array("enabled","number", "bandwidth","bandwidthMetric","description","mask","origin"),
-            "number"
+            "number",
+            null,
+            SORT_NATURAL
         );
     }
 
@@ -132,7 +134,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "queues.queue",
             array("enabled","number", "pipe","weight","description","mask","origin"),
-            "number"
+            "number",
+            null,
+            SORT_NATURAL
         );
     }
 
@@ -208,7 +212,9 @@ class SettingsController extends ApiMutableModelControllerBase
             "rules.rule",
             array("enabled", "interface", "proto", "source_not","source", "destination_not",
                   "destination", "description", "origin", "sequence", "target"),
-            "sequence"
+            "sequence",
+            null,
+            SORT_NATURAL
         );
     }
 

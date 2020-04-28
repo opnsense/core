@@ -156,7 +156,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "jobs.job",
             array("enabled", "minutes","hours", "days", "months", "weekdays", "description", "command", "origin"),
-            "description"
+            "description",
+            null,
+            SORT_NATURAL
         );
     }
 }

@@ -54,7 +54,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "destinations.destination",
             array("enabled", "description", "transport", "program", "level", "facility", "hostname", "port"),
-            "description"
+            "description",
+            null,
+            SORT_NATURAL
         );
     }
 

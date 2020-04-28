@@ -48,7 +48,10 @@ class KeyPairsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'keyPairs.keyPair',
-            ['name', 'keyType', 'keySize', 'keyFingerprint']
+            ['name', 'keyType', 'keySize', 'keyFingerprint'],
+            null,
+            null,
+            SORT_NATURAL
         );
     }
 

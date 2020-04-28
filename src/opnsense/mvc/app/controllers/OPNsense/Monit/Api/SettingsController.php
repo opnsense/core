@@ -110,7 +110,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "alert",
             array("enabled", "recipient", "noton", "events", "description"),
-            "description"
+            "description",
+            null,
+            SORT_NATURAL
         );
     }
 
@@ -180,7 +182,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchServiceAction()
     {
-        return $this->searchBase("service", array("enabled", "name", "type"), "name");
+        return $this->searchBase("service", array("enabled", "name", "type"), "name", null, SORT_NATURAL);
     }
 
     /**
@@ -249,7 +251,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchTestAction()
     {
-        return $this->searchBase("test", array("name", "condition", "action"), "name");
+        return $this->searchBase("test", array("name", "condition", "action"), "name", null, SORT_NATURAL);
     }
 
     /**

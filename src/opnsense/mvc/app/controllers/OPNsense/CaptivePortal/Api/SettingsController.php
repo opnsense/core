@@ -100,7 +100,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             "zones.zone",
             array("enabled", "description", "zoneid"),
-            "description"
+            "description",
+            null,
+            SORT_NATURAL
         );
     }
 }

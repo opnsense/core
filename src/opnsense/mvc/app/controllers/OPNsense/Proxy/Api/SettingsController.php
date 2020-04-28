@@ -56,7 +56,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $grid->fetchBindRequest(
             $this->request,
             array("enabled", "filename", "url", "description"),
-            "description"
+            "description",
+            null,
+            SORT_NATURAL
         );
     }
 
@@ -154,7 +156,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACRuleAction()
     {
         $this->sessionClose();
-        return $this->searchBase('pac.rule', array("enabled", "description", "proxies", "matches"), "description");
+        return $this->searchBase('pac.rule', array("enabled", "description", "proxies", "matches"), "description", null, SORT_NATURAL);
     }
 
     /**
@@ -218,7 +220,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACProxyAction()
     {
         $this->sessionClose();
-        return $this->searchBase('pac.proxy', array("enabled","proxy_type", "name", "url", "description"), "description");
+        return $this->searchBase('pac.proxy', array("enabled","proxy_type", "name", "url", "description"), "description", null, SORT_NATURAL);
     }
 
     /**
@@ -271,7 +273,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchPACMatchAction()
     {
         $this->sessionClose();
-        return $this->searchBase('pac.match', array("enabled", "name", "description", "negate", "match_type"), "name");
+        return $this->searchBase('pac.match', array("enabled", "name", "description", "negate", "match_type"), "name", null, SORT_NATURAL);
     }
 
     /**

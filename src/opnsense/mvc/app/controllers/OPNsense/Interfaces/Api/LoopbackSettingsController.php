@@ -38,7 +38,7 @@ class LoopbackSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase("loopback", array('deviceId', 'description'), "description");
+        return $this->searchBase("loopback", array('deviceId', 'description'), "description", null, SORT_NATURAL);
     }
 
     public function setItemAction($uuid)

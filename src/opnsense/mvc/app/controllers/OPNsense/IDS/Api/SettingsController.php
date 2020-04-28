@@ -582,7 +582,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchUserRuleAction()
     {
-        return $this->searchBase("userDefinedRules.rule", array("enabled", "action", "description"), "description");
+        return $this->searchBase("userDefinedRules.rule", array("enabled", "action", "description"), "description", null, SORT_NATURAL);
     }
 
     /**

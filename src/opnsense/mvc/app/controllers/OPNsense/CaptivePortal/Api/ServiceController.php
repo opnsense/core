@@ -215,7 +215,9 @@ class ServiceController extends ApiControllerBase
         return $grid->fetchBindRequest(
             $this->request,
             array("name", "fileid"),
-            "name"
+            "name",
+            null,
+            SORT_NATURAL
         );
     }
 }
