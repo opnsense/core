@@ -73,7 +73,6 @@ function system_powerd_configure($verbose = false)
 function get_default_sysctl_value($id)
 {
     $sysctls = array(
-        'debug.pfftpproxy' => '0',
         'hw.ibrs_disable' => '0',
         'hw.syscons.kbd_reboot' => '0',
         'kern.ipc.maxsockbuf' => '4262144',
@@ -111,12 +110,19 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
         'net.local.dgram.maxdgram' => '8192',
-        'net.pf.request_maxcount' => '5000000',
+        'net.pf.request_maxcount' => '65535',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
         'vm.pmap.pti' => '1',
     );
+
+    if ($id == 'net.pf.request_maxcount') {
+        $system = config_read_array('system');
+        if (!empty($system['maximumtableentries'])) {
+            $sysctls[$id] = $system['maximumtableentries'];
+        }
+    }
 
     if (isset($sysctls[$id])) {
         return $sysctls[$id];

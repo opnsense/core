@@ -1306,8 +1306,8 @@ function set_sysctl($values)
     $value_list = array();
     foreach ($values as $key => $value) {
         if ($sysctls != null && !in_array($key, $sysctls)) {
-	    continue;
-	}
+            continue;
+        }
         $value_list[] = escapeshellarg($key) . "=" . escapeshellarg($value);
     }
 
