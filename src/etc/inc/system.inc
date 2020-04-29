@@ -111,7 +111,7 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
         'net.local.dgram.maxdgram' => '8192',
-        'net.pf.request_maxcount' => '500000',
+        'net.pf.request_maxcount' => '5000000',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
