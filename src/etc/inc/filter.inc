@@ -418,10 +418,15 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
 
     if (!empty($config['system']['maximumtableentries'])) {
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
+        set_single_sysctl('net.pf.request_maxcount', $config['system']['maximumtableentries']);
     } elseif (is_bogonsv6_used()) {
         $max_table_entries = default_table_entries_size();
-        if ($max_table_entries <= 500000) {
-            $limitrules .= "set limit table-entries 500000\n";
+        $req_table_entries = 1000000;
+        if ($max_table_entries <= $req_table_entries) {
+            $limitrules .= "set limit table-entries {$req_table_entries}\n";
+            set_single_sysctl('net.pf.request_maxcount', $req_table_entries);
+        } else {
+            set_single_sysctl('net.pf.request_maxcount', $max_table_entries);
         }
     }
 

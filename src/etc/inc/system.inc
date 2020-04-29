@@ -110,19 +110,11 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
         'net.local.dgram.maxdgram' => '8192',
-        'net.pf.request_maxcount' => '65535',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
         'vm.pmap.pti' => '1',
     );
-
-    if ($id == 'net.pf.request_maxcount') {
-        $system = config_read_array('system');
-        if (!empty($system['maximumtableentries'])) {
-            $sysctls[$id] = $system['maximumtableentries'];
-        }
-    }
 
     if (isset($sysctls[$id])) {
         return $sysctls[$id];
@@ -141,7 +133,6 @@ function system_sysctl_get()
         'net.enc.out.ipsec_bpf_mask' => 'default',
         'net.enc.out.ipsec_filter_mask' => 'default',
         'net.local.dgram.maxdgram' => 'default',
-        'net.pf.request_maxcount' => 'default',
     );
 
     foreach (config_read_array('sysctl', 'item') as $tunable) {
