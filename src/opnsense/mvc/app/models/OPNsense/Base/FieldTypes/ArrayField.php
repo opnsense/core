@@ -136,6 +136,7 @@ class ArrayField extends BaseField
      * retrieve field validators for this field type
      * @param string|array $fieldNames sort by fieldname
      * @param bool $descending sort descending
+     * @param int $sort_flags sorting behavior
      * @return array
      */
     public function sortedBy($fieldNames, $descending = false, $sort_flags = SORT_NATURAL)
