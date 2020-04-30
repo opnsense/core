@@ -55,7 +55,7 @@ class Nextcloud extends Base implements IBackupProvider
                 "name" => "url",
                 "type" => "text",
                 "label" => gettext("URL"),
-                "help" => gettext("The Base URL to Nextcloud. For example: https://cloud.example.com"),
+                "help" => gettext("The Base URL to Nextcloud without trailing slash. For example: https://cloud.example.com"),
                 "value" => null
             ),
             array(
@@ -82,7 +82,7 @@ class Nextcloud extends Base implements IBackupProvider
             array(
                 "name" => "backupdir",
                 "type" => "text",
-                "label" => gettext("Directory Name"),
+                "label" => gettext("Directory Name without leading slash, starting from user's root"),
                 "value" => 'OPNsense-Backup'
             )
         );
@@ -144,7 +144,8 @@ class Nextcloud extends Base implements IBackupProvider
                 $confdata = $this->encrypt($confdata, $crypto_password);
             }
             try {
-                $directories = $this->listFiles($url, $username, $password, '/');
+                $base_backup_path = "/".basedir($backupdir);
+                $directories = $this->listFiles($url, $username, $password, $base_backup_path);
                 if (!in_array("/$backupdir/", $directories)) {
                     $this->create_directory($url, $username, $password, $backupdir);
                 }
