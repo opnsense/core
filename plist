@@ -825,9 +825,9 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
-/usr/local/opnsense/service/templates/OPNsense/WebGui/php.etc.ini
+/usr/local/opnsense/service/templates/OPNsense/WebGui/etc.php.ini
+/usr/local/opnsense/service/templates/OPNsense/WebGui/lib.php.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.ini
-/usr/local/opnsense/service/templates/OPNsense/WebGui/php.lib.ini
 /usr/local/opnsense/service/tests/__init__.py
 /usr/local/opnsense/service/tests/config/config.xml
 /usr/local/opnsense/service/tests/core.py
