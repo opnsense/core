@@ -28,8 +28,6 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_COMMIT!=	${.CURDIR}/Scripts/version.sh
-
 CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
