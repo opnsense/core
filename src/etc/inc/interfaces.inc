@@ -2940,6 +2940,28 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
 }
 
+function interface_dhcpv6_id($interface)
+{
+    global $config;
+
+    /* configuration default */
+    $id = 0;
+
+    if (empty($config['interfaces'])) {
+        return $id;
+    }
+
+    /* detect unique index */
+    foreach (array_keys($config['interfaces']) as $key) {
+        if ($key == $interface) {
+            break;
+        }
+        $id += 1;
+    }
+
+    return $id;
+}
+
 function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 {
     if (!is_array($wancfg)) {
@@ -3065,7 +3087,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     @chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
 }
 
-function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $count)
+function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $id = 0)
 {
     // Iterate through WAN interfaces looking for dhcp6, only add if set.
 
@@ -3083,10 +3105,10 @@ function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $count)
     } else {
         /* skip address request if this is set */
         if (!isset($wancfg['dhcp6prefixonly'])) {
-            $dhcp6cconf .= "  send ia-na {$count}; # request stateful address\n";
+            $dhcp6cconf .= "  send ia-na {$id}; # request stateful address\n";
         }
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
-            $dhcp6cconf .= "  send ia-pd {$count}; # request prefix delegation\n";
+            $dhcp6cconf .= "  send ia-pd {$id}; # request prefix delegation\n";
         }
 
         $dhcp6cconf .= "  request domain-name-servers;\n";
@@ -3095,12 +3117,12 @@ function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $count)
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
-            $dhcp6cconf .= "id-assoc na {$count} { };\n";
+            $dhcp6cconf .= "id-assoc na {$id} { };\n";
         }
 
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
             /* Setup the prefix delegation */
-            $dhcp6cconf .= "id-assoc pd {$count} {\n";
+            $dhcp6cconf .= "id-assoc pd {$id} {\n";
             if (isset($wancfg['dhcp6-ia-pd-send-hint'])) {
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
@@ -3124,7 +3146,7 @@ function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $count)
     return $dhcp6cconf;
 }
 
-function DHCP6_Config_File_Advanced($realif, $interface, $wancfg, $count)
+function DHCP6_Config_File_Advanced($realif, $interface, $wancfg, $id = 0)
 {
     $send_options = "";
     
@@ -3166,7 +3188,7 @@ function DHCP6_Config_File_Advanced($realif, $interface, $wancfg, $count)
         if (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_address_id'])) {
             $id_assoc_statement_address .= "{$wancfg['adv_dhcp6_id_assoc_statement_address_id']}";
         } else {
-            $id_assoc_statement_address .= $count;
+            $id_assoc_statement_address .= $id;
         }
         $id_assoc_statement_address .= " {\n";
 
@@ -3196,7 +3218,7 @@ function DHCP6_Config_File_Advanced($realif, $interface, $wancfg, $count)
         if (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_prefix_id'])) {
             $id_assoc_statement_prefix .= "{$wancfg['adv_dhcp6_id_assoc_statement_prefix_id']}";
         } else {
-            $id_assoc_statement_prefix .= $count;
+            $id_assoc_statement_prefix .= $id;
         }
         $id_assoc_statement_prefix .= " {\n";
 
