@@ -922,8 +922,7 @@ function interfaces_configure($verbose = false)
             continue;
         } elseif ($is_dhcp6c) {
             /* dhcp6c interfaces load last */
-            $dhcp6c[] = $if;         
-            
+            $dhcp6c[] = $if;
             continue;
         }
 
