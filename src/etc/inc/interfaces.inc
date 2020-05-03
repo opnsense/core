@@ -3091,6 +3091,7 @@ function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $count)
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
         $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
