@@ -502,27 +502,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-        /* XXX if we have a valid v6 address on the interface then write the config, else skip it. */
-        $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
-        $radvdconf .= "interface {$realif} {\n";
-        $radvdconf .= "\tAdvSendAdvert on;\n";
-        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
-        $radvdconf .= "\tAdvManagedFlag on;\n";
-        $radvdconf .= "\tAdvOtherConfigFlag on;\n";
-
-        if (!empty($networkv6)) {
-            $radvdconf .= "\tprefix {$networkv6} {\n";
-            if ($autotype == 'slaac') {
-                /* XXX also of interest in the future, see hardcoded prefix above */
-                $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
-                $radvdconf .= "\t\tDeprecatePrefix on;\n";
-            }
-            /* XXX DeprecatePrefix on crashes radvd on 12.1 */
-            $radvdconf .= "\t\tAdvOnLink on;\n";
-            $radvdconf .= "\t\tAdvAutonomous on;\n";
-            $radvdconf .= "\t};\n";
-        }
-
+        /* XXX if we have a valid v6 address on the interface then write the config, else skip it. */    
         if($hasipv6) {
             $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
             $radvdconf .= "interface {$realif} {\n";
@@ -536,13 +516,13 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 if ($autotype == 'slaac') {
                     /* XXX also of interest in the future, see hardcoded prefix above */
                     $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+                    $radvdconf .= "\t\tDeprecatePrefix on;\n";
                 }
-                $radvdconf .= "\t\tDeprecatePrefix on;\n";
+                /* XXX DeprecatePrefix on crashes radvd on 12.1 */
                 $radvdconf .= "\t\tAdvOnLink on;\n";
                 $radvdconf .= "\t\tAdvAutonomous on;\n";
                 $radvdconf .= "\t};\n";
             }
-
             foreach (config_read_array('virtualip', 'vip') as $vip) {
                 if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
                     continue;
