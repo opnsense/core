@@ -2941,7 +2941,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
 }
 
-
 function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 {
     if (!is_array($wancfg)) {
