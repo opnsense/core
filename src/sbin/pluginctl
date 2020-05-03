@@ -36,19 +36,43 @@ require_once 'interfaces.inc';
 require_once 'filter.inc';
 require_once 'auth.inc';
 
-/*
- * -c is configure mode
- * -s is service mode
+/**
+ * retrieve config property by path (e.g. system.firmware), return simple type or json
  */
-$opts = getopt('cshr', array(), $optind);
+function get_config_prop($path, $cnf=null)
+{
+    global $config;
+    $cnf = $cnf === null ? $config : $cnf;
+    $path = !is_array($path) ? explode(".", $path) : $path;
+    $node_name = array_shift($path);
+
+    if (isset($cnf[$node_name])) {
+        if (!empty($path)) {
+            return get_config_prop($path, $cnf[$node_name]);
+        } else {
+            $content = $cnf[$node_name];
+            if (is_array($content)) {
+                return json_encode($content, true);
+            } else {
+                return $content;
+            }
+        }
+    } else {
+        return null;
+    }
+}
+
+
+$opts = getopt('cshrg', array(), $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-h] -[c] [-s] [...]\n\n";
+    echo "Usage: pluginctl [-h] [-c] [-s] [-r] [-g] [...]\n\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
-    echo "\t-r run mode (e.g. command)\n\n";
+    echo "\t-r run mode (e.g. command)\n";
+    echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
@@ -106,6 +130,9 @@ if (isset($opts['h'])) {
       $response = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
       echo $response;
    }
+   exit (0);
+} elseif (isset($opts['g'])) {
+   echo get_config_prop($args[0]) . PHP_EOL;
    exit (0);
 } else {
     /* second argument is hook */

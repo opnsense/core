@@ -174,6 +174,15 @@ class FilterRule extends Rule
                 $rule['disabled'] = true;
                 $this->log("Gateway down");
             }
+            if (
+                !empty($rule['gateway']) &&
+                  !empty($this->gatewayMapping[$rule['gateway']]) &&
+                  !empty($rule['ipprotocol']) &&
+                  $this->gatewayMapping[$rule['gateway']]['proto'] != $rule['ipprotocol']
+            ) {
+                $rule['disabled'] = true;
+                $this->log("Gateway protocol mismatch");
+            }
             if (!isset($rule['quick'])) {
                 // all rules are quick by default except floating
                 $rule['quick'] = !isset($rule['floating']) ? true : false;

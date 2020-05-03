@@ -81,9 +81,10 @@
         </patterns>
     </page-diagnostics-haltsystem>
     <page-diagnostics-limiter-info>
-        <name>Diagnostics: Limiter Info</name>
+        <name>Diagnostics: Shaper status</name>
         <patterns>
-            <pattern>diag_limiter_info.php*</pattern>
+            <pattern>ui/trafficshaper/service/statistics/*</pattern>
+            <pattern>api/trafficshaper/service/statistics/*</pattern>
         </patterns>
     </page-diagnostics-limiter-info>
     <page-diagnostics-logs-dhcp>
@@ -167,12 +168,6 @@
             <pattern>diag_dump_states.php*</pattern>
         </patterns>
     </page-diagnostics-showstates>
-    <page-diagnostics-sockets>
-        <name>Diagnostics: Sockets</name>
-        <patterns>
-            <pattern>diag_sockets.php*</pattern>
-        </patterns>
-    </page-diagnostics-sockets>
     <page-diagnostics-statessummary>
         <name>Diagnostics: States Summary</name>
         <patterns>

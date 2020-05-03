@@ -4,6 +4,11 @@
         OPNsense IPsec
     </description>
     <items>
+        <general>
+            <enabled type="LegacyLinkField">
+                <Source>ipsec.enable</Source>
+            </enabled>
+        </general>
         <keyPairs>
             <keyPair type="ArrayField">
                 <name type="TextField">

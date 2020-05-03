@@ -35,6 +35,7 @@ lock
 reinstall
 remove
 security
+sync
 type
 unlock
 upgrade

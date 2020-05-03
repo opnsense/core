@@ -515,7 +515,9 @@ $( document ).ready(function() {
       $(".rule").each(function(){
           if (selected_values.indexOf($(this).data('category')) == -1 && selected_values.length > 0) {
               $(this).hide();
+              $(this).find("input").prop('disabled', true);
           } else {
+              $(this).find("input").prop('disabled', false);
               $(this).show();
           }
       });
@@ -731,7 +733,7 @@ $( document ).ready(function() {
                 plugins_firewall($fw);
                 foreach ($fw->iterateFilterRules() as $rule):
                     $is_selected = $rule->getInterface() == $selected_if || (
-                        $rule->getInterface() == "" && $selected_if == "FloatingRules"
+                        ($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules"
                     );
                     if ($rule->isEnabled() && $is_selected):
                         $filterent = $rule->getRawRule();

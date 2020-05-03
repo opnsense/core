@@ -260,6 +260,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
+        if (!empty($dhcpv6ifconf['AdvLinkMTU'])) {
+            if ($dhcpv6ifconf['AdvLinkMTU'] < $mtu) {
+                $mtu = $dhcpv6ifconf['AdvLinkMTU'];
+            } else {
+                log_error("Warning! AdvLinkMTU set in config is not lower than the interface MTU, therefore can't be applied.");
+            }
+        }
+
         $radvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
@@ -495,6 +503,25 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         /* XXX if we have a valid v6 address on the interface then write the config, else skip it. */
+        $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+        $radvdconf .= "interface {$realif} {\n";
+        $radvdconf .= "\tAdvSendAdvert on;\n";
+        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 1280);
+        $radvdconf .= "\tAdvManagedFlag on;\n";
+        $radvdconf .= "\tAdvOtherConfigFlag on;\n";
+
+        if (!empty($networkv6)) {
+            $radvdconf .= "\tprefix {$networkv6} {\n";
+            if ($autotype == 'slaac') {
+                /* XXX also of interest in the future, see hardcoded prefix above */
+                $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+                $radvdconf .= "\t\tDeprecatePrefix on;\n";
+            }
+            /* XXX DeprecatePrefix on crashes radvd on 12.1 */
+            $radvdconf .= "\t\tAdvOnLink on;\n";
+            $radvdconf .= "\t\tAdvAutonomous on;\n";
+            $radvdconf .= "\t};\n";
+        }
 
         if($hasipv6) {
             $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";

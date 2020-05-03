@@ -1,31 +1,29 @@
 <?php
 
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Base\FieldTypes;
@@ -61,6 +59,20 @@ class ArrayField extends BaseField
     }
 
     /**
+     * Construct new content container and attach to this items model
+     * @param $ref
+     * @param $tagname
+     * @return ContainerField
+     */
+    public function newContainerField($ref, $tagname)
+    {
+        $container_node = new ContainerField($ref, $tagname);
+        $parentmodel = $this->getParentModel();
+        $container_node->setParentModel($parentmodel);
+        return $container_node;
+    }
+
+    /**
      * retrieve read only template with defaults (copy of internal structure)
      * @return null|BaseField template node
      */
@@ -87,13 +99,7 @@ class ArrayField extends BaseField
         }
 
         $nodeUUID = $this->generateUUID();
-        $container_node = new ContainerField(
-            $this->__reference . "." . $nodeUUID,
-            $this->internalXMLTagName
-        );
-        $parentmodel = $this->getParentModel();
-        $container_node->setParentModel($parentmodel);
-
+        $container_node = $this->newContainerField($this->__reference . "." . $nodeUUID, $this->internalXMLTagName);
         foreach ($new_record as $key => $node) {
             // initialize field with new internal id and defined default value
             $node->setInternalReference($container_node->__reference . "." . $key);
@@ -130,18 +136,21 @@ class ArrayField extends BaseField
      * retrieve field validators for this field type
      * @param string|array $fieldNames sort by fieldname
      * @param bool $descending sort descending
+     * @param int $sort_flags sorting behavior
      * @return array
      */
-    public function sortedBy($fieldNames, $descending = false)
+    public function sortedBy($fieldNames, $descending = false, $sort_flags = SORT_NATURAL)
     {
         // reserve at least X number of characters for every field to improve sorting of multiple fields
         $MAX_KEY_LENGTH = 30;
 
-        // fieldnames may be a list or a single item, always convert to a list
-        if (!is_array($fieldNames)) {
+        if (empty($fieldNames)) {
+            // unsorted, just return, without any guarantee about the ordering.
+            return $this->internalChildnodes;
+        } elseif (!is_array($fieldNames)) {
+            // fieldnames may be a list or a single item, always convert to a list
             $fieldNames = array($fieldNames);
         }
-
 
         // collect sortable data as key/value store
         $sortedData = array();
@@ -165,9 +174,9 @@ class ArrayField extends BaseField
 
         // sort by key on ascending or descending order
         if (!$descending) {
-            ksort($sortedData);
+            ksort($sortedData, $sort_flags);
         } else {
-            krsort($sortedData);
+            krsort($sortedData, $sort_flags);
         }
 
         return array_values($sortedData);

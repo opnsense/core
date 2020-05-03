@@ -42,15 +42,6 @@ function pf_services()
             'nocheck' => true,
             'name' => 'pf',
         );
-        $services[] = array(
-            'description' => gettext('Interface groups'),
-            'nocheck' => true,
-            'php' => array(
-                'start' => array('interfaces_group_setup'),
-                'restart' => array('interfaces_group_setup'),
-            ),
-            'name' => 'ifgroups',
-        );
     }
 
     return $services;

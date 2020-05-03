@@ -16,6 +16,7 @@
         <Diagnostics>
             <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp"/>
             <NDPTable VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp"/>
+            <Netstat VisibleName="Netstat" url="/ui/diagnostics/interface/netstat"/>
         </Diagnostics>
     </Interfaces>
 </menu>

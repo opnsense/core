@@ -127,6 +127,20 @@ class CountryFieldTest extends Field_Framework_TestCase
     }
 
     /**
+     *
+     * @depends testCanBeCreated
+     */
+    public function testInverseOption()
+    {
+        // init field
+        $field = new CountryField();
+        $field->setAddInverted("Y");
+        $field->setValue('!NL');
+        $field->eventPostLoading();
+        $this->assertEmpty($this->validate($field));
+    }
+
+    /**
      * @depends testCanBeCreated
      */
     public function testSelectSetOnSingleValue()

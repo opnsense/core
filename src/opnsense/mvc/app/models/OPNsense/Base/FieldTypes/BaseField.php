@@ -1,36 +1,40 @@
 <?php
 
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015-2020 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Base\FieldTypes;
 
+use Exception;
+use Generator;
+use InvalidArgumentException;
 use Phalcon\Validation\Validator\PresenceOf;
+use ReflectionClass;
+use ReflectionException;
+use SimpleXMLElement;
 
 /**
  * Class BaseField
@@ -121,6 +125,15 @@ abstract class BaseField
      * @var BaseModel|null keep record of the model which originally created this field
      */
     private $internalParentModel = null;
+
+    /**
+     * @return bool
+     */
+    public function isArrayType()
+    {
+        return is_a($this, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
+            is_subclass_of($this, "OPNsense\\Base\\FieldTypes\\ArrayField");
+    }
 
     /**
      * generate a new UUID v4 number
@@ -215,14 +228,14 @@ abstract class BaseField
     /**
      * change internal reference, if set it can't be changed for safety purposes.
      * @param $ref internal reference
-     * @throws \Exception change exception
+     * @throws Exception change exception
      */
     public function setInternalReference($ref)
     {
         if ($this->internalReference == null) {
             $this->internalReference = $ref;
         } else {
-            throw new \Exception("cannot change internal reference");
+            throw new Exception("cannot change internal reference");
         }
     }
 
@@ -287,7 +300,7 @@ abstract class BaseField
 
     /**
      * iterate (non virtual) child nodes
-     * @return mixed
+     * @return Generator
      */
     public function iterateItems()
     {
@@ -308,7 +321,7 @@ abstract class BaseField
         if (isset($this->internalChildnodes[$name])) {
             $this->internalChildnodes[$name]->setValue($value);
         } else {
-            throw new \InvalidArgumentException($name . " not an attribute of " . $this->internalReference);
+            throw new InvalidArgumentException($name . " not an attribute of " . $this->internalReference);
         }
     }
 
@@ -328,7 +341,7 @@ abstract class BaseField
     public function setValue($value)
     {
         // if first set and not altered by the user, store initial value
-        if ($this->internalFieldLoaded === false && $this->internalInitialValue === false && $value != "") {
+        if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
             $this->internalInitialValue = $value;
         }
         $this->internalValue = $value;
@@ -426,13 +439,13 @@ abstract class BaseField
             $constraint = $this->internalConstraints[$name];
             if (!empty($constraint['type'])) {
                 try {
-                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\' . $constraint['type']);
+                    $constr_class = new ReflectionClass('OPNsense\\Base\\Constraints\\' . $constraint['type']);
                     if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
                         $constraint['name'] = $name;
                         $constraint['node'] = $this;
                         return $constr_class->newInstance($constraint);
                     }
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException $e) {
                     null; // ignore configuration errors, if the constraint can't be found, skip.
                 }
             }
@@ -562,8 +575,8 @@ abstract class BaseField
 
     /**
      * update model with data returning missing repeating tag types.
-     * @param $data named array structure containing new model content
-     * @throws \Exception
+     * @param $data array structure containing new model content
+     * @throws Exception
      */
     public function setNodes($data)
     {
@@ -574,7 +587,7 @@ abstract class BaseField
                     if (is_array($data[$key])) {
                         $node->setNodes($data[$key]);
                     } else {
-                        throw new \Exception("Invalid  input type for {$key} (configuration error?)");
+                        throw new Exception("Invalid  input type for {$key} (configuration error?)");
                     }
                 } else {
                     $node->setValue($data[$key]);
@@ -583,7 +596,7 @@ abstract class BaseField
         }
 
         // add new items to array type objects
-        if (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
+        if ($this->isArrayType()) {
             foreach ($data as $dataKey => $dataValue) {
                 if (!isset($this->__items[$dataKey])) {
                     $node = $this->add();
@@ -596,11 +609,11 @@ abstract class BaseField
 
     /**
      * Add this node and its children to the supplied simplexml node pointer.
-     * @param \SimpleXMLElement $node target node
+     * @param SimpleXMLElement $node target node
      */
     public function addToXMLNode($node)
     {
-        if ($this->internalReference == "" || get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
+        if ($this->internalReference == "" || $this->isArrayType()) {
             // ignore tags without internal reference (root) and ArrayTypes
             $subnode = $node;
         } else {

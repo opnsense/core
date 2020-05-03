@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -1297,25 +1297,29 @@ function set_sysctl($values)
         return array();
     }
 
+    $sysctls = null;
+    exec('/sbin/sysctl -WaN', $list, $success);
+    if ($success == 0) {
+        $sysctls = $list;
+    }
+
     $value_list = array();
     foreach ($values as $key => $value) {
+        if ($sysctls != null && !in_array($key, $sysctls)) {
+            continue;
+        }
         $value_list[] = escapeshellarg($key) . "=" . escapeshellarg($value);
     }
 
-    exec("/sbin/sysctl -i " . implode(" ", $value_list), $output, $success);
+    if (count($value_list)) {
+        exec('/sbin/sysctl ' . implode(' ', $value_list), $output);
 
-    /* Retry individually if failed (one or more read-only) */
-    if ($success != 0 && count($value_list) > 1) {
-        foreach ($value_list as $value) {
-            exec("/sbin/sysctl -i " . $value, $output);
-        }
-    }
-
-    $ret = array();
-    foreach ($output as $line) {
-        $line = explode(": ", $line, 2);
-        if (count($line) == 2) {
-            $ret[$line[0]] = true;
+        $ret = array();
+        foreach ($output as $line) {
+            $line = explode(": ", $line, 2);
+            if (count($line) == 2) {
+                $ret[$line[0]] = true;
+            }
         }
     }
 

@@ -436,6 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['gateway_interface'] =  isset($a_interfaces[$if]['gateway_interface']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -576,12 +577,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
+
     $input_errors = array();
     if (!empty($_POST['if']) && !empty($a_interfaces[$_POST['if']])) {
         $if = $_POST['if'];
         // read physcial interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
     }
+    $ifgroup = !empty($_GET['group']) ? $_GET['group'] : "";
 
     if (!empty($pconfig['apply'])) {
         if (!is_subsystem_dirty('interfaces')) {
@@ -608,7 +611,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         @unlink('/tmp/.interfaces.apply');
-        header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        if (!empty($ifgroup)) {
+            header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
+        } else {
+            header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        }
         exit;
     } elseif (empty($pconfig['enable'])) {
         if (isset($a_interfaces[$if]['enable'])) {
@@ -622,6 +629,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($a_interfaces[$if]['wireless'])) {
             interface_sync_wireless_clones($a_interfaces[$if], false);
         }
+        $a_interfaces[$if]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
 
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
@@ -638,7 +646,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist[$if]['ppps'] = $a_ppps;
             file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
         }
-        header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        if (!empty($ifgroup)) {
+            header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
+        } else {
+            header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+        }
         exit;
     } else {
         // locate sequence in ppp list
@@ -669,9 +681,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
             foreach (plugins_devices() as $device) {
                 if (!isset($device['configurable']) || $device['configurable'] == true) {
-                  continue;
+                    continue;
                 }
-                if (preg_match('/' . $device['pattern'] . '/', $ifport)) {
+                if (preg_match('/' . $device['pattern'] . '/', $pconfig['if'])) {
                     $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
                 }
             }
@@ -1045,6 +1057,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
             $new_config['blockbogons'] = !empty($pconfig['blockbogons']);
+            $new_config['gateway_interface'] = !empty($pconfig['gateway_interface']);
             if (!empty($pconfig['mtu'])) {
                 $new_config['mtu'] = $pconfig['mtu'];
             }
@@ -1400,7 +1413,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             mark_subsystem_dirty('interfaces');
 
-            header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+            if (!empty($ifgroup)) {
+                header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
+            } else {
+                header(url_safe('Location: /interfaces.php?if=%s', array($if)));
+            }
             exit;
         }
     }
@@ -1974,6 +1991,18 @@ include("head.inc");
                         </tr>
 <?php
                         endif;?>
+                        <tr>
+                          <td><a id="help_for_gateway_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic gateway policy') ?></td>
+                          <td>
+                            <input id="gateway_interface" name="gateway_interface" type="checkbox" value="yes" <?=!empty($pconfig['gateway_interface']) ? 'checked="checked"' : '' ?>/>
+                            <strong><?= gettext('This interface does not require an intermediate system to act as a gateway') ?></strong>
+                            <div class="hidden" data-for="help_for_gateway_interface">
+                              <?=gettext("If the destination is directly reachable via an interface requiring no " .
+                              "intermediary system to act as a gateway, you can select this option which allows dynamic gateways " .
+                              "to be created without direct target addresses. Some tunnel types support this."); ?>
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>

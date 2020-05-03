@@ -352,6 +352,7 @@ class Plugin
         $output = "";
         ksort($this->filterRules);
         foreach ($this->filterRules as $prio => $ruleset) {
+            $output .= "# [prio: {$prio}]\n";
             foreach ($ruleset as $rule) {
                 $output .= (string)$rule;
             }
@@ -381,6 +382,7 @@ class Plugin
         $output = "";
         ksort($this->natRules);
         foreach ($this->natRules as $prio => $ruleset) {
+            $output .= "# [prio: {$prio}]\n";
             foreach ($ruleset as $rule) {
                 $output .= (string)$rule;
             }

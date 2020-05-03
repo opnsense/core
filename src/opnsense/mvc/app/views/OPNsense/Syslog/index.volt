@@ -46,24 +46,8 @@
         /**
          * Reconfigure syslog
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/syslog/service/reconfigure", {}, function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring syslog') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-                updateServiceControlUI('syslog');
-            });
-        });
+        $("#reconfigureAct").SimpleActionButton();
         updateServiceControlUI('syslog');
-
     });
 
 </script>
@@ -121,7 +105,13 @@
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
         <hr/>
-        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/syslog/service/reconfigure'
+                data-label="{{ lang._('Apply') }}"
+                data-service-widget="syslog"
+                data-error-title="{{ lang._('Error reconfiguring syslog') }}"
+                type="button"
+        ></button>
         <br/><br/>
     </div>
 </div>

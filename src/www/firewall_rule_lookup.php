@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         header(url_safe('Location: /%s?if=%s#%s', $params));
                     }
                 } else {
-                    header(url_safe('Location: /%s#%s', explode("#", $rule->getRef())));
+                    header(sprintf('Location: /%s', $rule->getRef()));
                 }
                 exit;
             }

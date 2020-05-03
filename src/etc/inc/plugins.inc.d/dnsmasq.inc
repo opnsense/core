@@ -263,14 +263,19 @@ function _dnsmasq_add_host_entries()
                     if (!$host['ipaddrv6'] || !$host['hostname']) {
                         continue;
                     }
-
                     $domain = $config['system']['domain'];
-                    if ($host['domain']) {
+                    // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
+                    //      for backward compatibilty support both here.
+                    if (!empty($host['domainsearchlist'])) {
+                        $domain = $host['domainsearchlist'];
+                    } elseif (!empty($host['domain'])) {
                         $domain = $host['domain'];
-                    } elseif ($dhcpifconf['domain']) {
+                    } elseif (!empty($dhcpifconf['domainsearchlist'])) {
+                        $domain = $dhcpifconf['domainsearchlist'];
+                    } elseif (!empty($dhcpifconf['domain'])) {
                         $domain = $dhcpifconf['domain'];
                     }
-
+                    $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
                     $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$domain} {$host['hostname']}\n";
                 }
             }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -73,11 +73,14 @@ function system_powerd_configure($verbose = false)
 function get_default_sysctl_value($id)
 {
     $sysctls = array(
-        'debug.pfftpproxy' => '0',
         'hw.ibrs_disable' => '0',
         'hw.syscons.kbd_reboot' => '0',
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
+        'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
+        'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
+        'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
+        'net.enc.out.ipsec_filter_mask' => '1', /* before processing */
         'net.inet.icmp.drop_redirect' => '0',
         'net.inet.icmp.icmplim' => '0',
         'net.inet.icmp.log_redirect' => '0',
@@ -125,10 +128,10 @@ function system_sysctl_get()
     global $config;
 
     $sysctls = array(
-        'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
-        'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
-        'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
-        'net.enc.out.ipsec_filter_mask' => '1', /* before processing */
+        'net.enc.in.ipsec_bpf_mask' => 'default',
+        'net.enc.in.ipsec_filter_mask' => 'default',
+        'net.enc.out.ipsec_bpf_mask' => 'default',
+        'net.enc.out.ipsec_filter_mask' => 'default',
         'net.local.dgram.maxdgram' => 'default',
     );
 
@@ -222,11 +225,11 @@ function get_locale_list()
     $locales['en_US'] = gettext('English');
     $locales['cs_CZ'] = gettext('Czech');
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
-    $locales['nl_NL'] = gettext('Dutch');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
+    $locales['no_NO'] = gettext('Norwegian');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
@@ -668,8 +671,13 @@ EOD;
         }
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
+        @unlink("/var/run/legacy_log");
         mwexecf("/usr/sbin/service syslog-ng stop");
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
+        $max_sleep = 50; // 50 x 0.1 seconds
+        while (count(glob("/var/run/legacy_log")) == 0 && ($max_sleep--) > 0) {
+            usleep(100000);
+        }
         mwexecf("/usr/sbin/service syslog-ng start");
     }
 
@@ -1127,7 +1135,7 @@ function system_login_configure($verbose = false)
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
     $on_off_secure_u = $serial_enabled ? 'onifconsole secure' : 'off secure';
-    $on_off_secure_v = $virtual_enabled ? 'on  secure' : 'off secure';
+    $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
     /* XXX serial type uses 3wire nowadays */
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';

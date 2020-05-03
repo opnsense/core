@@ -56,20 +56,9 @@
       /**
        * apply changes and reload monit
        */
-      $('#btnApplyConfig').unbind('click').click(function(){
-         $('#btnApplyConfigProgress').addClass("fa fa-spinner fa-pulse");
-         ajaxCall("/api/monit/service/reconfigure", {}, function(data,status) {
-            $("#responseMsg").addClass("hidden");
-            isSubsystemDirty();
-            updateServiceControlUI('monit');
-            if (data.result) {
-               $("#responseMsg").html(data['result']);
-               $("#responseMsg").removeClass("hidden");
-            }
-            $('#btnApplyConfigProgress').removeClass("fa fa-spinner fa-pulse");
-            $('#btnApplyConfig').blur();
-         });
-      });
+      $('#btnApplyConfig').SimpleActionButton({onAction: function(data, status){
+          isSubsystemDirty();
+      }});
 
 
       /**
@@ -244,10 +233,15 @@
 </script>
 
 <div class="alert alert-info hidden" role="alert" id="configChangedMsg">
-   <button class="btn btn-primary pull-right" id="btnApplyConfig" type="button"><b>{{ lang._('Apply changes') }}</b> <i id="btnApplyConfigProgress"></i></button>
+   <button class="btn btn-primary pull-right" id="btnApplyConfig"
+           data-endpoint='/api/monit/service/reconfigure'
+           data-label="{{ lang._('Apply') }}"
+           data-service-widget="monit"
+           data-error-title="{{ lang._('Error reconfiguring Monit') }}"
+           type="button">
+   </button>
    {{ lang._('The Monit configuration has been changed') }} <br /> {{ lang._('You must apply the changes in order for them to take effect.')}}
 </div>
-<div class="alert alert-info hidden" role="alert" id="responseMsg"></div>
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
    <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General Settings') }}</a></li>

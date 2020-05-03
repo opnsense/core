@@ -103,19 +103,27 @@
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
         <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <Wireless order="930" cssClass="fa fa-wifi fa-fw">
+        <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
+            <Settings url="/firewall_virtual_ip.php">
+                <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
+            </Settings>
+            <Status url="/carp_status.php">
+                <All url="/carp_status.php*" visibility="hidden"/>
+            </Status>
+        </VIP>
+        <Wireless order="940" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/wireless"/>
         </Wireless>
-        <PPP order="940" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
+        <PPP order="950" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/ppps"/>
         </PPP>
-        <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
+        <Types VisibleName="Other Types" order="960" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
@@ -132,7 +140,7 @@
                 <Edit url="/interfaces_vlan_edit.php*" visibility="hidden"/>
             </VLAN>
         </Types>
-        <Diagnostics order="960" cssClass="fa fa-medkit fa-fw">
+        <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php">
                 <Edit url="/diag_dns.php*" visibility="hidden"/>
             </DNSLookup>
@@ -143,11 +151,13 @@
         </Diagnostics>
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
-        <Aliases order="10" url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
+        <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
-        <Rules order="20" cssClass="fa fa-check fa-fw" />
-        <NAT order="30" cssClass="fa fa-exchange fa-fw">
+        <Groups url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
+            <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
+        </Groups>
+        <NAT cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
                 <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
@@ -161,17 +171,7 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPTv6>
         </NAT>
-        <Groups order="50" url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
-            <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
-        </Groups>
-        <VIP order="60" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
-            <Settings url="/firewall_virtual_ip.php">
-                <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
-            </Settings>
-            <Status url="/carp_status.php">
-                <All url="/carp_status.php*" visibility="hidden"/>
-            </Status>
-        </VIP>
+        <Rules cssClass="fa fa-check fa-fw" />
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
             <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
@@ -186,9 +186,6 @@
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
             <pfTables order="50" url="/ui/firewall/alias_util/"/>
-            <Sockets order="60" url="/diag_sockets.php">
-                <SocketsDetails url="/diag_sockets.php?*" visibility="hidden"/>
-            </Sockets>
             <StatesDump order="70" VisibleName="States Dump" url="/diag_dump_states.php"/>
             <StatesReset order="80" VisibleName="States Reset" url="/diag_resetstate.php"/>
             <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>

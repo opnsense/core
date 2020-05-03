@@ -302,10 +302,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param array $fields fieldnames to fetch in result
      * @param string|null $defaultSort default sort field name
      * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null)
+    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = SORT_NATURAL)
     {
         $this->sessionClose();
         $element = $this->getModel();
@@ -317,7 +318,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $this->request,
             $fields,
             $defaultSort,
-            $filter_funct
+            $filter_funct,
+            $sort_flags
         );
     }
 

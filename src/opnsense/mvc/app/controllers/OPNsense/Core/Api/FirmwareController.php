@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -535,6 +535,66 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * install missing configured plugins
+     * @param string $pkg_name package name to reinstall
+     * @return array status
+     * @throws \Exception
+     */
+    public function installConfiguredPluginsAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = strtolower(trim($backend->configdRun('firmware sync')));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * install missing configured plugins
+     * @param string $pkg_name package name to reinstall
+     * @return array status
+     * @throws \Exception
+     */
+    public function acceptConfiguredPluginsAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $info = $this->infoAction();
+            $installed_plugins = array();
+            if (isset($info['plugin'])) {
+                foreach ($info['plugin'] as $plugin) {
+                    if (!empty($plugin['installed']) && !empty($plugin['provided'])) {
+                        $installed_plugins[] = $plugin['name'];
+                    }
+                }
+            }
+            $config = Config::getInstance()->object();
+            if (!isset($config->system->firmware)) {
+                $config->system->addChild('firmware');
+            }
+            if (!isset($config->system->firmware->plugins)) {
+                $config->system->firmware->addChild('plugins');
+            }
+            $config->system->firmware->plugins = implode(",", $installed_plugins);
+            $response['plugins'] = $installed_plugins;
+            $response['status'] = "ok";
+            Config::getInstance()->save();
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * install package
      * @param string $pkg_name package name to install
      * @return array status
@@ -731,6 +791,12 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
+        $config = Config::getInstance()->object();
+        $configPlugins = array();
+        if (isset($config->system->firmware->plugins)) {
+            $configPlugins = explode(",", $config->system->firmware->plugins);
+        }
+
         $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license', 'repository', 'origin');
         $backend = new Backend();
         $response = array();
@@ -777,6 +843,7 @@ class FirmwareController extends ApiControllerBase
                     $translated['provided'] = '1';
                 }
                 $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
+                $translated['configured'] = in_array($translated['name'], $configPlugins) ? '1' : '0';
                 $packages[$translated['name']] = $translated;
 
                 /* figure out local and remote plugins */
@@ -803,10 +870,24 @@ class FirmwareController extends ApiControllerBase
             $response['package'][] = $package;
         }
 
+        foreach ($configPlugins as $missing) {
+            if (!array_key_exists($missing, $plugins)) {
+                $plugins[$missing] = [];
+                foreach ($keys as $key) {
+                    $plugins[$missing][$key] = gettext('N/A');
+                }
+                $plugins[$missing]['path'] = gettext('N/A');
+                $plugins[$missing]['configured'] = "1";
+                $plugins[$missing]['installed'] = "0";
+                $plugins[$missing]['provided'] = "0";
+                $plugins[$missing]['name'] = $missing;
+            }
+        }
+
         uasort($plugins, function ($a, $b) {
             return strnatcasecmp(
-                ($a['installed'] ? '0' : '1') . $a['name'],
-                ($b['installed'] ? '0' : '1') . $b['name']
+                ($a['configured'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['configured'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
             );
         });
 
