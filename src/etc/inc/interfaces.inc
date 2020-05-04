@@ -3063,11 +3063,9 @@ function dhcp6c_set_scripts($interface,$wancfg)
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "val=`pgrep dhcp6c`\n";
-    $rtsoldscript .= "pid=`cat /var/run/dhcp6c.pid`\n";
-    $rtsoldscript .= "if [ \$pid -eq \$val and \$pid -gt 0 ]; then\n";
+    $rtsoldscript .= "if [ -f /var/run/dhcp6c.pid ]; then\n";
     $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c client\"\n";
-    $rtsoldscript .= "\t/bin/pkill -HUP -F \$pid\n";
+    $rtsoldscript .= "\t/bin/pkill -HUP -F /var/run/dhcp6c.pid\n";
     $rtsoldscript .= "else\n";
     $rtsoldscript .= "\t/usr/bin/killall -9 -c dhcp6c\n";
     $rtsoldscript .= "if [ -f '/var/run/dhcp6c.pid' ]; then\n";
