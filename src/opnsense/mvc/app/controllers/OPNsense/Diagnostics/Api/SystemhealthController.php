@@ -274,7 +274,7 @@ class SystemhealthController extends ApiControllerBase
                     $nan = false; // Not a NaN value, so add to list
                 }
                 if ($value != "NaN" && $applyInverse) {
-                    if ($key % 2 != 0) {
+                    if (in_array($name, array('loss', 'outpass', 'outblock', 'outpass6', 'outblock6', 'interrupt', 'processes'))) {
                         $value = $value * -1;
                     }
                 }
