@@ -3000,7 +3000,6 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
             $count++;
         }
     }
-    
     if (!@file_put_contents("/var/etc/dhcp6c.conf", $dhcp6cconf)) {
         log_error("Error: cannot open dhcp6c.conf in interface_dhcpv6_configure() for writing.");
     }
