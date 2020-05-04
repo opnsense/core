@@ -3147,7 +3147,7 @@ function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $id = 0)
 function DHCP6_Config_File_Advanced($realif, $interface, $wancfg, $id = 0)
 {
     $send_options = "";
-    
+
     if ($wancfg['adv_dhcp6_interface_statement_send_options'] != '') {
         $options = preg_split('/\s*,\s*(?=(?:[^"]*"[^"]*")*[^"]*$)/', $wancfg['adv_dhcp6_interface_statement_send_options']);
         foreach ($options as $option) {
