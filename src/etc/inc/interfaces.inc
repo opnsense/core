@@ -3186,11 +3186,11 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
             $id_assoc_statement_prefix .= ";\n";
         }
 
-        foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
-            if (is_numeric($ifcfg['track6-prefix-id'])) {
+        foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
+            if (is_numeric($lancfg['track6-prefix-id'])) {
                 $trackifv6 = get_real_interface($friendly, 'inet6');
                 $id_assoc_statement_prefix .= "  prefix-interface {$trackifv6} {\n";
-                $id_assoc_statement_prefix .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
+                $id_assoc_statement_prefix .= "    sla-id {$lancfg['track6-prefix-id']};\n";
                 if (
                     ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] >= 0) &&
                     ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
