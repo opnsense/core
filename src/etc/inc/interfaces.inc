@@ -1090,7 +1090,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     switch ($ifcfg['ipaddrv6']) {
         case 'slaac':
         case 'dhcp6':
-            killbypid("/var/run/dhcp6c_{$realifv6}.pid", 'TERM', true);
+            killbypid("/var/run/dhcp6c.pid", 'TERM', true);
             break;
         case 'track6':
             interface_track6_configure($interface, $ifcfg, false, true);
@@ -2603,7 +2603,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                                 dhcp6c_set_scripts($interface,  $wancfg);                                         
                 $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
-                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+                killbypid("/var/run/dhcp6c.pid", 'HUP');
                 break;
             default:
                 break;
@@ -2628,7 +2628,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 dhcp6c_set_scripts($interface, $wancfg);                                                        
                 $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
-                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+                killbypid("/var/run/dhcp6c.pid", 'HUP');
             }
             break;
     }
