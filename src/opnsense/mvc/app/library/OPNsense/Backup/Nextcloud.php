@@ -144,7 +144,7 @@ class Nextcloud extends Base implements IBackupProvider
                 $confdata = $this->encrypt($confdata, $crypto_password);
             }
             try {
-                $base_backup_path = "/".basedir($backupdir);
+                $base_backup_path = "/".dirname($backupdir);
                 $directories = $this->listFiles($url, $username, $password, $base_backup_path);
                 if (!in_array("/$backupdir/", $directories)) {
                     $this->create_directory($url, $username, $password, $backupdir);
