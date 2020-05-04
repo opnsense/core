@@ -3139,6 +3139,7 @@ function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $id = 0)
             $dhcp6cconf .= "};\n";
         }
     }
+
     return $dhcp6cconf;
 }
 
