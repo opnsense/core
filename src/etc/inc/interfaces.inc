@@ -2999,13 +2999,14 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
         }
     }
 
-    if (!@file_put_contents("/var/etc/dhcp6c.conf", $dhcp6c_global_conf)) {
+   if (!@file_put_contents("/var/etc/dhcp6c.conf", $dhcp6c_global_conf)) {
         log_error("Error: cannot open dhcp6c.conf in interface_dhcpv6_configure() for writing.");
     }
 
 }
 function dhcp6c_set_scripts($interface,$wancfg)
 {
+
     // Should we even do the rest of this function if the dhcp6.conf file has not been written?
     $wanif = get_real_interface($interface, 'inet6');
     
