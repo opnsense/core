@@ -2970,6 +2970,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     if (!is_array($wancfg)) {
         return;
     }
+
     $wanif = get_real_interface($interface, 'inet6');
     $id = interface_dhcpv6_id($interface);
 
