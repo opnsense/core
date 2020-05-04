@@ -3078,11 +3078,11 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
             }
-            foreach (link_interface_to_track6($interface) as $friendly => $ifcfg) {
-                if (is_numeric($ifcfg['track6-prefix-id'])) {
+            foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
+                if (is_numeric($lancfg['track6-prefix-id'])) {
                     $trackifv6 = get_real_interface($friendly, 'inet6');
                     $dhcp6cconf .= "  prefix-interface {$trackifv6} {\n";
-                    $dhcp6cconf .= "    sla-id {$ifcfg['track6-prefix-id']};\n";
+                    $dhcp6cconf .= "    sla-id {$lancfg['track6-prefix-id']};\n";
                     $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
                     $dhcp6cconf .= "  };\n";
                 }
