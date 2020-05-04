@@ -3089,11 +3089,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 
 function DHCP6_Config_File_Basic($realif, $interface, $wancfg, $id = 0)
 {
-    // Iterate through WAN interfaces looking for dhcp6, only add if set.
-
-    $dhcp6cconf = ''; // zeroing just for belt and braces during dev
-                            
-    $dhcp6cconf .=  "interface {$realif} {\n";
+    $dhcp6cconf = "interface {$realif} {\n";
 
     /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
     if ($wancfg['ipaddrv6'] == "slaac") {
