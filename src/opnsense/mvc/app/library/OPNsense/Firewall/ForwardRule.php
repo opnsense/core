@@ -63,7 +63,7 @@ class ForwardRule extends Rule
             'interface.from' => 'parseInterface, from (,:network)',
             'target.to' => 'parsePlainCurly,to ',
             'localport' => 'parsePlainCurly,port ',
-            'interface.to' => 'parseInterface, -> ',
+            'interface.to' => 'parseInterface, -> (,)',
             'staticnatport' => 'parseBool,  static-port , port 1024:65535 ',
             'descr' => 'parseComment'
         )
