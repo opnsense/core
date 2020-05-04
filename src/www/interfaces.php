@@ -1207,8 +1207,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['adv_dhcp6_debug'])) {
                         $new_config['adv_dhcp6_debug'] = $pconfig['adv_dhcp6_debug'];
-                    } else {
-                        $new_config['adv_dhcp6_debug'] = '';
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
