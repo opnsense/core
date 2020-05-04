@@ -423,7 +423,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
-        'adv_dhcp6_debug',
         'rfc3118_isp',
         'rfc3118_username',
         'rfc3118_password',
@@ -441,7 +440,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
-    $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
@@ -451,6 +449,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
      */
     $pconfig['staticv6usev4iface'] = $pconfig['dhcp6usev4iface'];
     $pconfig['slaacusev4iface'] = $pconfig['dhcp6usev4iface'];
+    
+    /* Global dhcp6c vars */        
+    $pconfig['adv_dhcp6_debug'] = $config['dhcp6c']['adv_dhcp6_debug'];
+    $pconfig['dhcp6norelease'] = $config['dhcp6c']['dhcp6norelease']; 
 
     // ipv4 type (from ipaddr)
     if (is_ipaddrv4($pconfig['ipaddr'])) {
@@ -1199,14 +1201,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dhcp6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
                     }
-                    if (!empty($pconfig['dhcp6norelease'])) {
-                        $new_config['dhcp6norelease'] = true;
-                    }
+                    
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
-                    }
-                    if (!empty($pconfig['adv_dhcp6_debug'])) {
-                        $new_config['adv_dhcp6_debug'] = $pconfig['adv_dhcp6_debug'];
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -1390,6 +1387,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // save interface details
             $a_interfaces[$if] = $new_config;
+
+
+
+
+            $config['dhcp6c']['adv_dhcp6_debug'] = $pconfig['adv_dhcp6_debug'];
+            $config['dhcp6c']['dhcp6norelease'] = $pconfig['dhcp6norelease']; 
 
             // save to config
             write_config();

@@ -2964,6 +2964,8 @@ function interface_dhcpv6_id($interface)
 
 function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 {
+    global $config;
+
     if (!is_array($wancfg)) {
         return;
     } 
@@ -2976,7 +2978,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
             $interface = $if;
             $id = interface_dhcpv6_id($interface);
 
-            if (!empty($wancfg['ipaddrv6']) && $wancfg['ipaddrv6'] == 'dhcp6') {    
+            if (!empty($wancfg['ipaddrv6']) && $wancfg['ipaddrv6'] == 'dhcp6') {
                 if (!empty($wancfg['adv_dhcp6_config_file_override']) && $id == 0) {
                     $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
                     if (file_exists($dhcp6cfile)) {
@@ -3023,7 +3025,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
             log_error("Error: cannot open dhcp6c.conf in interface_dhcpv6_configure() for writing.");
     }
 
-    if(empty($wancfg['adv_dhcp6_debug']) && empty($wancfg['dhcp6norelease'])) {
+    if(empty($config['dhcp6c']['adv_dhcp6_debug']) && empty($config['dhcp6c']['dhcp6norelease'])) {
         $dhcp6ccommand = exec_safe(
             "/usr/local/sbin/dhcp6c -c %s -p %s",
             array(            
@@ -3035,7 +3037,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
         $dhcp6ccommand = exec_safe(
             "/usr/local/sbin/dhcp6c %s -c %s -p %s",
             array(
-                '-' . (empty($wancfg['adv_dhcp6_debug']) ? '' : $wancfg['adv_dhcp6_debug']) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
+                '-' . (empty($config['dhcp6c']['adv_dhcp6_debug']) ? '' : $config['dhcp6c']['adv_dhcp6_debug']) . (!empty($config['dhcp6c']['dhcp6norelease']) ? 'n' : ''),
                 "/var/etc/dhcp6c.conf",
                 "/var/run/dhcp6c.pid",                
             )
