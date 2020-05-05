@@ -2484,7 +2484,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 if (isset($wancfg['dhcp6usev4iface'])) {
                     break;
                 }
-                interface_dhcpv6_prepare($interface, $wancfg);                                                      
+                interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
                 break;
             case '6rd':
@@ -2599,7 +2599,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             /* deconfiguring 6to4 and 6rd is done elsewhere as it simply removes addresses */
             case 'slaac':
             case 'dhcp6':
-                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);                                        
+                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
                 killbypid("/var/run/dhcp6c.pid", 'HUP');
                 break;
@@ -2623,7 +2623,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             /* FALLTHROUGH */
         case 'dhcp6':
             if ($linkupevent) {
-                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);                                                 
+                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
                 killbypid("/var/run/dhcp6c.pid", 'HUP');
             }
@@ -3058,11 +3058,17 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
     $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "if [ -f /var/run/dhcp6c.pid ]; then\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c\"\n";
-    $rtsoldscript .= "\t/bin/pkill -HUP -F /var/run/dhcp6c.pid\n";
+    $rtsoldscript .= "val=`pgrep dhcp6c`\n";
+    $rtsoldscript .= "pid=`cat /var/run/dhcp6c.pid`\n";
+    $rtsoldscript .= "if [ \$pid -eq \$val and \$pid -gt 0 ]; then\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c client\"\n";
+    $rtsoldscript .= "\t/bin/pkill -HUP -F \$pid\n";
     $rtsoldscript .= "else\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6c\"\n";
+    $rtsoldscript .= "\t/usr/bin/killall -9 -c dhcp6c\n";
+    $rtsoldscript .= "if [ -f '/var/run/dhcp6c.pid' ]; then\n";
+    $rtsoldscript .= "\trm '/var/run/dhcp6c.pid'\n";
+    $rtsoldscript .= "fi\n";    
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6 client\"\n";
     $rtsoldscript .= "\t$dhcp6ccommand\n";
     $rtsoldscript .= "fi\n";
 
