@@ -1136,13 +1136,12 @@ function system_login_configure($verbose = false)
     $fd = fopen('/etc/ttys', 'w');
     $on_off_secure_u = $serial_enabled ? 'onifconsole secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
-    /* XXX serial type uses 3wire nowadays */
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
-        $serial_type = 'std.' . $serialspeed;
+        $serial_type = '3wire.' . $serialspeed;
     } else {
         $console_type = 'al.Pc';
-        $serial_type = 'al.' . $serialspeed;
+        $serial_type = 'al.3wire.' . $serialspeed;
     }
     foreach ($etc_ttys_lines as $tty) {
         /* virtual terminals */
