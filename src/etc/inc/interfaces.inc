@@ -1090,7 +1090,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     switch ($ifcfg['ipaddrv6']) {
         case 'slaac':
         case 'dhcp6':
-            killbypid("/var/run/dhcp6c_{$realifv6}.pid", 'TERM', true);
+            interface_dhcpv6_prepare($interface, $ifcfg, true);
+            killbypid('/var/run/dhcp6c.pid', 'HUP');
             break;
         case 'track6':
             interface_track6_configure($interface, $ifcfg, false, true);
@@ -2600,8 +2601,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             case 'slaac':
             case 'dhcp6':
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
-                $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
-                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+                killbypid('/var/run/dhcp6c.pid', 'HUP');
                 break;
             default:
                 break;
@@ -2624,8 +2624,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         case 'dhcp6':
             if ($linkupevent) {
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
-                $parentrealif = get_real_interface($lancfg['track6-interface'], 'inet6');
-                killbypid("/var/run/dhcp6c_{$parentrealif}.pid", 'HUP');
+                killbypid('/var/run/dhcp6c.pid', 'HUP');
             }
             break;
     }
@@ -2962,7 +2961,7 @@ function interface_dhcpv6_id($interface)
     return $id;
 }
 
-function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
+function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = false)
 {
     if (!is_array($wancfg)) {
         return;
@@ -2990,7 +2989,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
         }
     }
 
-    @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
+    if (!$linkdownevent) {
+        @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
+    } else {
+        @unlink("/var/etc/dhcp6c_{$interface}.conf");
+    }
 
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
@@ -3009,14 +3012,40 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+        "/usr/local/sbin/dhcp6c -c %s -p %s",
         array(
-            '-' . (empty($syscfg['dhcp6_debug']) ? 'd' : 'D' ) . (!empty($syscfg['dhcp6_norelease']) ? 'n' : ''),
-            "/var/etc/dhcp6c_{$interface}.conf",
-            "/var/run/dhcp6c_{$wanif}.pid",
-            "{$wanif}"
+            "/var/etc/dhcp6c.conf",
+            "/var/run/dhcp6c.pid",
         )
     );
+
+    if (!empty($syscfg['dhcp6_debug'])) {
+        $mode = [ '1' => ' -d', '2' => ' -D' ];
+        $dhcp6ccommand .= $mode[$syscfg['dhcp6_debug']];
+    }
+
+    if (!empty($syscfg['dhcp6_norelease'])) {
+        $dhcp6ccommand .= ' -n';
+    }
+
+    $dhcp6cconf = '';
+
+    /* merge configs and prepare single instance of dhcp6c for startup */
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $_interface => $_wancfg) {
+        if (empty($_wancfg['ipaddrv6']) || $_wancfg['ipaddrv6'] != 'dhcp6') {
+            continue;
+        }
+
+        if (!file_exists("/var/etc/dhcp6c_{$_interface}.conf")) {
+            /* config file not yet rendered, defer for later */
+            continue;
+        }
+
+        $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c_{$_interface}.conf");
+        $dhcp6ccommand .= exec_safe(' %s', get_real_interface($_interface, 'inet6'));
+    }
+
+    @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
 
     $rtsoldscript = <<<EOD
 #!/bin/sh
@@ -3029,11 +3058,16 @@ if [ -n "\${2}" ]; then
     echo \${2} > /tmp/\${1}_routerv6
     echo \${2} > /tmp/\${1}_defaultgwv6
 fi
-if [ -f "/var/run/dhcp6c_\${1}.pid" ]; then
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c for interface \${1}"
-    /bin/pkill -HUP -F "/var/run/dhcp6c_\${1}.pid"
+if [ -f /var/run/dhcp6c.pid ]; then
+    if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
+        rm -f /var/run/dhcp6c.pid
+    fi
+fi
+if [ -f /var/run/dhcp6c.pid ]; then
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c"
+    /bin/pkill -HUP -F /var/run/dhcp6c.pid
 else
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6 client for interface \${1}"
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6 client"
     {$dhcp6ccommand}
 fi
 
