@@ -91,7 +91,10 @@
                 .tickFormat(d3.format(',.1s'));
 
         chart.focusHeight(80);
-        chart.interpolate('step-before');
+        chart.interpolate('linear');
+
+        chart.isArea(false);
+        chart.focus.isArea(false);
 
         // dispatch when one of the streams is enabled/disabled
         chart.dispatch.on('stateChange', function (e) {
@@ -225,15 +228,15 @@
                 // set defaults based on stepsize
                 if (stepsize >= 86400) {
                     stepsize = stepsize / 86400;
-                    scale = "{{ lang._('days') }}";
+                    scale = "{{ lang._('day') }}";
                     dtformat = '\'%y w%U%';
                 } else if (stepsize >= 3600) {
                     stepsize = stepsize / 3600;
-                    scale = "{{ lang._('hours') }}";
+                    scale = "{{ lang._('hour') }}";
                     dtformat = '\'%y d%j%';
                 } else if (stepsize >= 60) {
                     stepsize = stepsize / 60;
-                    scale = "{{ lang._('minutes') }}";
+                    scale = "{{ lang._('minute') }}";
                     dtformat = '%H:%M';
                 }
 
@@ -343,10 +346,11 @@
                             if (min_max_average_last[keyname] === undefined) {
                                 min_max_average_last[keyname] = {};
                                 if (average_count > 0) {
-                                    min_max_average_last[keyname]["min"] = min;
-                                    min_max_average_last[keyname]["max"] = max;
-                                    min_max_average_last[keyname]["average"] = average / average_count;
-                                    min_max_average_last[keyname]["last"] = last;
+                                    // round display value to n digits
+                                    min_max_average_last[keyname]["min"] = round_value(min, 'min', rrd_name);
+                                    min_max_average_last[keyname]["max"] = round_value(max, 'max', rrd_name);
+                                    min_max_average_last[keyname]["average"] = round_value(average / average_count, 'average', rrd_name);
+                                    min_max_average_last[keyname]["last"] = round_value(last, 'last', rrd_name);
                                 } else {
                                     min_max_average_last[keyname]["min"] = '';
                                     min_max_average_last[keyname]["max"] = '';
@@ -379,6 +383,9 @@
                             table_view_rows += "<tr><td>" + counter.toString() + "</td><td>" + parseInt(item / 1000).toString() + "</td>";
                         }
                         for (let value in table_row_data[item]) {
+                            if (rrd_name == 'cputemp-system') {
+                                table_row_data[item][value] = table_row_data[item][value].toFixed(0);
+                            }
                             if (isNaN(table_row_data[item][value])) {
                                 table_row_data[item][value] = '';
                             }
@@ -401,7 +408,6 @@
                             return d3.time.format(dtformat)(new Date(d))
                         });
                 chart.yAxis.axisLabel(data["y-axis_label"]);
-                chart.forceY([0]);
                 chart.useInteractiveGuideline(true);
                 chart.interactive(true);
 
@@ -432,6 +438,26 @@
                 $('#chart_title').text("{{ lang._('Unable to load data') }}");
             }
         });
+    }
+
+    // round value to n digits
+    function round_value(value, column, rrd_name) {
+
+        let digits;
+
+        let absValue = Math.abs(value);
+             if (absValue >= 1000) { digits = 0; }
+        else if (absValue >=  100) { digits = 1; }
+        else if (absValue >=   10) { digits = 2; }
+        else if (absValue >=    1) { digits = 3; }
+        else if (absValue >     0) { digits = 6; }
+
+        if (rrd_name == 'cputemp-system') { digits = 0; }
+
+        if (column == 'average') { digits += 1; }
+        if (absValue == 0) { digits = 0; }
+
+        return value.toFixed(digits);
     }
 
     // convert a data Array to CSV format
