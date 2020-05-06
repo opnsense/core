@@ -2929,7 +2929,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
         array(
             "/var/run/rtsold_{$realifv6}.pid",
-            "/var/etc/rtsold_{$realifv6}_script.sh",
+            '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
             empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
             $realifv6
@@ -2937,7 +2937,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     );
 
     /* unconditional trigger for hybrid approach, reloads without advertisements */
-    mwexec("/var/etc/rtsold_{$realifv6}_script.sh");
+    mwexecf('/var/etc/rtsold_script.sh %s', array($realifv6));
 }
 
 function interface_dhcpv6_id($interface)
@@ -3019,20 +3019,20 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 
     $rtsoldscript = "#!/bin/sh\n";
     $rtsoldscript .= "# this file was auto-generated, do not edit\n";
-    $rtsoldscript .= "if [ -n \"\${2}\" ]; then\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_routerv6\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/{$wanif}_defaultgwv6\n";
+    $rtsoldscript .= "if [ -n \"\${1}\" -a -n \"\${2}\" ]; then\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/\${1}_routerv6\n";
+    $rtsoldscript .= "\techo \${2} > /tmp/\${1}_defaultgwv6\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "if [ -f /var/run/dhcp6c_{$wanif}.pid ]; then\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c for interface {$interface}({$wanif})\"\n";
-    $rtsoldscript .= "\t/bin/pkill -HUP -F /var/run/dhcp6c_{$wanif}.pid\n";
+    $rtsoldscript .= "if [ -f \"/var/run/dhcp6c_\${1}.pid\" ]; then\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c for interface \${1}\"\n";
+    $rtsoldscript .= "\t/bin/pkill -HUP -F \"/var/run/dhcp6c_\${1}.pid\"\n";
     $rtsoldscript .= "else\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
+    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6 client for interface \${1}\"\n";
     $rtsoldscript .= "\t$dhcp6ccommand\n";
     $rtsoldscript .= "fi\n";
 
-    @file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript);
-    @chmod("/var/etc/rtsold_{$wanif}_script.sh", 0755);
+    @file_put_contents('/var/etc/rtsold_script.sh', $rtsoldscript);
+    @chmod('/var/etc/rtsold_script.sh', 0755);
 }
 
 function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
