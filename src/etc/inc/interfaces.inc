@@ -2989,9 +2989,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
         }
     }
 
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf)) {
-        log_error("Error: cannot open dhcp6c_{$interface}.conf in interface_dhcpv6_configure() for writing.");
-    }
+    @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
 
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
@@ -3006,12 +3004,8 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "esac\n";
 
-    if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
-        log_error("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.");
-        return;
-    }
-
-    chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
+    @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
+    @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $dhcp6ccommand = exec_safe(
         "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
