@@ -174,6 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
+    $pconfig['dhcp6_norelease'] = isset($config['system']['dhcp6_norelease']);
+    $pconfig['dhcp6_debug'] = isset($config['system']['dhcp6_debug']);
     $pconfig['ipv6duid'] = $config['system']['ipv6duid'];
     if (!isset($config['system']['disablevlanhwfilter'])) {
       $pconfig['disablevlanhwfilter'] = '0';
@@ -224,6 +226,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['disablevlanhwfilter']);
         }
 
+        if (!empty($pconfig['dhcp6_norelease'])) {
+            $config['system']['dhcp6_norelease'] = $pconfig['dhcp6_norelease'];
+        } elseif (isset($config['system']['dhcp6_norelease'])) {
+            unset($config['system']['dhcp6_norelease']);
+        }
+
+        if (!empty($pconfig['dhcp6_debug'])) {
+            $config['system']['dhcp6_debug'] = $pconfig['dhcp6_debug'];
+        } elseif (isset($config['system']['dhcp6_debug'])) {
+            unset($config['system']['dhcp6_debug']);
+        }
+
         if (!empty($pconfig['ipv6duid'])) {
             $config['system']['ipv6duid'] = format_duid($pconfig['ipv6duid']);
         } elseif (isset($config['system']['ipv6duid'])) {
@@ -260,8 +274,8 @@ include("head.inc");
     }
 ?>
     <section class="col-xs-12">
-      <div class="content-box tab-content table-responsive">
-        <form method="post" name="iform" id="iform">
+      <form method="post" name="iform" id="iform">
+        <div class="content-box tab-content table-responsive __mb">
           <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"><strong><?= gettext('Network Interfaces') ?></strong></td>
@@ -329,6 +343,32 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('IPv6 DHCP') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+	      <tr>
+                <td><a id="help_for_dhcp6_norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Prevent release') ?></td>
+                <td>
+                  <input name="dhcp6_norelease" type="checkbox" id="dhcp6_norelease" value="yes" <?= !empty($pconfig['dhcp6_norelease']) ? 'checked="checked"' : '' ?> />
+                  <div class="hidden" data-for="help_for_dhcp6_norelease">
+                    <?= gettext('Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enable debug'); ?></td>
+                <td>
+                  <input name="dhcp6_debug" type="checkbox" id="dhcp6_debug" value="yes" <?= !empty($pconfig['dhcp6_debug']) ? 'checked="checked"' : '' ?> />
+                  <div class="hidden" data-for="help_for_dhcp6_debug">
+                    <?= gettext('Enable debug mode for DHCPv6 client') ?>
+                  </div>
+                </td>
+              </tr>
               <tr>
                 <td><a id="help_for_persistent_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Unique Identifier"); ?></td>
                 <td>
@@ -364,8 +404,8 @@ include("head.inc");
                 </td>
               </tr>
             </table>
-          </form>
-        </div>
+          </div>
+        </form>
       </section>
     </div>
   </div>

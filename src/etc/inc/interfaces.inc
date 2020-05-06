@@ -2897,11 +2897,11 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
 function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 {
-    global $config;
+    $syscfg = config_read_array('system');
 
     /* write DUID if override was set */
-    if (!empty($config['system']['ipv6duid'])) {
-        dhcp6c_duid_write($config['system']['ipv6duid']);
+    if (!empty($syscfg['ipv6duid'])) {
+        dhcp6c_duid_write($syscfg['ipv6duid']);
     /* clear DUID if it is faulty */
     } elseif (empty(dhcp6c_duid_read())) {
         dhcp6c_duid_clear();
@@ -2931,7 +2931,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
             "/var/run/rtsold_{$realifv6}.pid",
             '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+            empty($syscfg['dhcp6_debug']) ? '-d' : '-D',
             $realifv6
         )
     );
@@ -2970,6 +2970,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
 
     $wanif = get_real_interface($interface, 'inet6');
     $id = interface_dhcpv6_id($interface);
+    $syscfg = config_read_array('system');
 
     $dhcp6cconf = DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id);
 
@@ -2992,11 +2993,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
 
     $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "if [ -n '" . (!empty($wancfg['adv_dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
+    $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
     $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "case \$REASON in\n";
-    $dhcp6cscript .= "REQUEST|" . (!empty($wancfg['dhcp6norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
+    $dhcp6cscript .= "REQUEST|" . (!empty($syscfg['dhcp6_norelease']) ? 'EXIT' : 'RELEASE') . ")\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
     $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
     $dhcp6cscript .= "\t;;\n";
@@ -3010,7 +3011,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
     $dhcp6ccommand = exec_safe(
         "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
         array(
-            '-' . (empty($wancfg['adv_dhcp6_debug']) ? 'd' : 'D' ) . (!empty($wancfg['dhcp6norelease']) ? 'n' : ''),
+            '-' . (empty($syscfg['dhcp6_debug']) ? 'd' : 'D' ) . (!empty($syscfg['dhcp6_norelease']) ? 'n' : ''),
             "/var/etc/dhcp6c_{$interface}.conf",
             "/var/run/dhcp6c_{$wanif}.pid",
             "{$wanif}"
