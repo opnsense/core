@@ -37,46 +37,14 @@ require_once("system.inc");
 function clear_all_log_files()
 {
     killbyname('syslogd');
-
-    $clog_files = array(
-        'dhcpd',
-        'configd',
-        'filter',
-        'gateways',
-        'ipsec',
-        'l2tps',
-        'lighttpd',
-        'mail',
-        'ntpd',
-        'openvpn',
-        'pkg',
-        'poes',
-        'portalauth',
-        'ppps',
-        'pptps',
-        'relayd',
-        'resolver',
-        'routing',
-        'suricata',
-        'system',
-        'vpn',
-        'wireless',
-    );
-
-    $log_files = array(
-        'squid/access',
-        'squid/cache',
-        'squid/store',
-    );
-
-    foreach ($clog_files as $lfile) {
-        system_clear_clog("/var/log/{$lfile}.log", false);
+    $it = new RecursiveDirectoryIterator("/var/log");
+    foreach(new RecursiveIteratorIterator($it) as $file) {
+        if ($file->isFile() && strpos($file->getFilename(), '.log') > -1) {
+            if (strpos($file->getFilename(), 'flowd') === false) {
+                @unlink((string)$file);
+            }
+        }
     }
-
-    foreach ($log_files as $lfile) {
-        system_clear_log("/var/log/{$lfile}.log", false);
-    }
-
     system_syslogd_start();
     plugins_configure('dhcp');
 }
