@@ -278,15 +278,15 @@
                 // set defaults based on stepsize
                 if (stepsize >= 86400) {
                     stepsize = stepsize / 86400;
-                    scale = "{{ lang._('days') }}";
+                    scale = "{{ lang._('day') }}";
                     dtformat = '\'%y w%U%';
                 } else if (stepsize >= 3600) {
                     stepsize = stepsize / 3600;
-                    scale = "{{ lang._('hours') }}";
+                    scale = "{{ lang._('hour') }}";
                     dtformat = '\'%y d%j%';
                 } else if (stepsize >= 60) {
                     stepsize = stepsize / 60;
-                    scale = "{{ lang._('minutes') }}";
+                    scale = "{{ lang._('minute') }}";
                     dtformat = '%H:%M';
                 }
 
