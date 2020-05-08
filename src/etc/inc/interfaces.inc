@@ -3018,19 +3018,26 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg)
         )
     );
 
-    $rtsoldscript = "#!/bin/sh\n";
-    $rtsoldscript .= "# this file was auto-generated, do not edit\n";
-    $rtsoldscript .= "if [ -n \"\${1}\" -a -n \"\${2}\" ]; then\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/\${1}_routerv6\n";
-    $rtsoldscript .= "\techo \${2} > /tmp/\${1}_defaultgwv6\n";
-    $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "if [ -f \"/var/run/dhcp6c_\${1}.pid\" ]; then\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Sending SIGHUP to dhcp6c for interface \${1}\"\n";
-    $rtsoldscript .= "\t/bin/pkill -HUP -F \"/var/run/dhcp6c_\${1}.pid\"\n";
-    $rtsoldscript .= "else\n";
-    $rtsoldscript .= "\t/usr/bin/logger -t dhcp6c \"RTSOLD script - Starting dhcp6 client for interface \${1}\"\n";
-    $rtsoldscript .= "\t$dhcp6ccommand\n";
-    $rtsoldscript .= "fi\n";
+    $rtsoldscript = <<<EOD
+#!/bin/sh
+# this file was auto-generated, do not edit
+if [ -z "\${1}" ]; then
+    echo "Nothing to do."
+    exit 0
+fi
+if [ -n "\${2}" ]; then
+    echo \${2} > /tmp/\${1}_routerv6
+    echo \${2} > /tmp/\${1}_defaultgwv6
+fi
+if [ -f "/var/run/dhcp6c_\${1}.pid" ]; then
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c for interface \${1}"
+    /bin/pkill -HUP -F "/var/run/dhcp6c_\${1}.pid"
+else
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6 client for interface \${1}"
+    {$dhcp6ccommand}
+fi
+
+EOD;
 
     @file_put_contents('/var/etc/rtsold_script.sh', $rtsoldscript);
     @chmod('/var/etc/rtsold_script.sh', 0755);
