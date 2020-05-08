@@ -143,6 +143,7 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
     $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '5');
+    $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/syslog/log_archive ', '4');
 
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
 
