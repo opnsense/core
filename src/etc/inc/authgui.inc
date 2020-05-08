@@ -64,6 +64,11 @@ function set_language()
 function session_auth(&$Login_Error)
 {
     global $config;
+    function auth_log($message) {
+        openlog("webgui", LOG_ODELAY, LOG_AUTH);
+        log_error($message);
+        closelog();
+    }
 
     // Handle HTTPS httponly and secure flags
     $currentCookieParams = session_get_cookie_params();
@@ -111,7 +116,7 @@ function session_auth(&$Login_Error)
                 $_SESSION['user_shouldChangePassword'] = true;
             }
             if (!isset($config['system']['webgui']['quietlogin'])) {
-                log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+                auth_log(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
             if (!empty($_GET['url'])) {
                 $tmp_url_parts = parse_url($_GET['url']);
@@ -137,7 +142,7 @@ function session_auth(&$Login_Error)
             }
             exit;
         } else {
-            log_error("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
+            auth_log("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
             $Login_Error = true;
         }
     }
@@ -169,9 +174,9 @@ function session_auth(&$Login_Error)
     /* user hit the logout button */
     if (isset($_GET['logout'])) {
         if (isset($_SESSION['Logout'])) {
-            log_error(sprintf("Session timed out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+            auth_log(sprintf("Session timed out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
         } else {
-            log_error(sprintf("User logged out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+            auth_log(sprintf("User logged out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
         }
 
         /* wipe out $_SESSION */
