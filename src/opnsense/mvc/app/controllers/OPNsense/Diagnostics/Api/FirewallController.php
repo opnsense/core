@@ -30,6 +30,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 /**
  * Class FirewallController
@@ -52,6 +53,65 @@ class FirewallController extends ApiControllerBase
             $response = $backend->configdpRun("filter read log", array($limit, $digest));
             $logoutput = json_decode($response, true);
             return $logoutput;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * retrieve firewall stats
+     * @return array
+     */
+    public function statsAction()
+    {
+        if ($this->request->isGet()) {
+            $this->sessionClose(); // long running action, close session
+            $limit = empty($this->request->get('limit')) ? 5000 : $this->request->get('limit');
+            $group_by = empty($this->request->get('group_by')) ? "interface" : $this->request->get('group_by');
+            $records = json_decode((new Backend())->configdpRun("filter read log", array($limit)), true);
+            $response = array();
+            if (!empty($records)) {
+                $tmp_stats = array();
+                foreach ($records as $record) {
+                    if (isset($record[$group_by])) {
+                        if (!isset($tmp_stats[$record[$group_by]])) {
+                            $tmp_stats[$record[$group_by]] = 0;
+                        }
+                        $tmp_stats[$record[$group_by]]++;
+                    }
+                }
+                arsort($tmp_stats);
+                $label_map = array();
+                switch ($group_by) {
+                    case 'interface':
+                        $label_map["lo0"] = gettext("loopback");
+                        if (Config::getInstance()->object()->interfaces->count() > 0) {
+                            foreach (Config::getInstance()->object()->interfaces->children() as $k => $n) {
+                                $label_map[(string)$n->if] = !empty((string)$n->descr) ? (string)$n->descr : $k;
+                            }
+                        }
+                      break;
+                    case 'proto':
+                      // proto
+                      break;
+                }
+                $recno = $top_cnt = 0;
+                foreach ($tmp_stats as $key => $value) {
+                    // top 10 + other
+                    if ($recno < 10) {
+                        $response[] = [
+                            "label" => !empty($label_map[$key]) ? $label_map[$key] : $key,
+                            "value" => $value
+                        ];
+                        $top_cnt += $value;
+                    } else {
+                        $response[] = ["label" => gettext("other"), "value" => count($records) - $top_cnt];
+                        break;
+                    }
+                    $recno++;
+                }
+            }
+            return $response;
         } else {
             return null;
         }

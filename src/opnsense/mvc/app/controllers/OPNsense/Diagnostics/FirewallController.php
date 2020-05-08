@@ -45,4 +45,11 @@ class FirewallController extends IndexController
     {
         $this->view->pick('OPNsense/Diagnostics/fw_log');
     }
+    /**
+     * firewall statistical view
+     */
+    public function statsAction()
+    {
+        $this->view->pick('OPNsense/Diagnostics/fw_stats');
+    }
 }
