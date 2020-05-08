@@ -175,13 +175,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
     $pconfig['dhcp6_norelease'] = isset($config['system']['dhcp6_norelease']);
-    $pconfig['dhcp6_debug'] = isset($config['system']['dhcp6_debug']);
+    $pconfig['dhcp6_debug'] = !isset($config['system']['dhcp6_debug']) ? '0' : $config['system']['dhcp6_debug'];
     $pconfig['ipv6duid'] = $config['system']['ipv6duid'];
-    if (!isset($config['system']['disablevlanhwfilter'])) {
-      $pconfig['disablevlanhwfilter'] = '0';
-    } else {
-      $pconfig['disablevlanhwfilter'] = $config['system']['disablevlanhwfilter'];
-    }
+    $pconfig['disablevlanhwfilter']  = !isset($config['system']['disablevlanhwfilter']) ? '0' : $config['system']['disablevlanhwfilter'];
     $pconfig['sharednet'] = isset($config['system']['sharednet']);
     $pconfig['ipv6_duid_llt_value'] = generate_new_duid('1');
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
@@ -351,7 +347,7 @@ include("head.inc");
                 <td style="width:22%"><strong><?= gettext('IPv6 DHCP') ?></strong></td>
                 <td style="width:78%"></td>
               </tr>
-	      <tr>
+              <tr>
                 <td><a id="help_for_dhcp6_norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Prevent release') ?></td>
                 <td>
                   <input name="dhcp6_norelease" type="checkbox" id="dhcp6_norelease" value="yes" <?= !empty($pconfig['dhcp6_norelease']) ? 'checked="checked"' : '' ?> />
@@ -361,11 +357,17 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enable debug'); ?></td>
+                <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Log level') ?></td>
                 <td>
-                  <input name="dhcp6_debug" type="checkbox" id="dhcp6_debug" value="yes" <?= !empty($pconfig['dhcp6_debug']) ? 'checked="checked"' : '' ?> />
+                  <select name="dhcp6_debug" size="3" class="selectpicker" data-style="btn-default" id="dhcp6_debug">
+<?php foreach(['0' => gettext('Standard'), '1' => gettext('Info'), '2' => gettext('Debug')] as $dhcp6cdebuglevel => $dhcp6cdebugvalue): ?>
+                    <option value="<?= html_safe($dhcp6cdebuglevel) ?>" <?= $pconfig['dhcp6_debug'] == $dhcp6cdebuglevel ? 'selected="selected"' : '' ?>>
+                      <?= html_safe($dhcp6cdebugvalue) ?>
+                    </option>
+<?php endforeach ?>
+                  </select>
                   <div class="hidden" data-for="help_for_dhcp6_debug">
-                    <?= gettext('Enable debug mode for DHCPv6 client') ?>
+                    <?= gettext('Modify log level for IPv6 clients. Info will give status, interface leases and addresses. Debug will give full diagnostics.') ?>
                   </div>
                 </td>
               </tr>
