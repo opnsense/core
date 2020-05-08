@@ -69,15 +69,18 @@ rc_enabled()
 }
 
 rc_filenames="$(${RCORDER} /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null)"
+# XXX a better way would be ${name}_defer="YES" in rc.conf
 rc_filenames_defer="
 /etc/rc.d/ipfw
 /usr/local/etc/rc.d/captiveportal
 "
-rc_filenames_ignore="
+# XXX a better way would be ${name}_skip="YES" in rc.conf
+rc_filenames_skip="
+/usr/local/etc/rc.d/dhcp6c
 /usr/local/etc/rc.d/syslog-ng
 "
 
-for rc_filename in ${rc_filenames_defer} ${rc_filenames_ignore}; do
+for rc_filename in ${rc_filenames_defer} ${rc_filenames_skip}; do
 	# exclude deferred scripts from first pass, appended last instead
 	rc_filenames=$(echo "${rc_filenames}" | grep -v "^${rc_filename}$")
 done
