@@ -2893,7 +2893,21 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
         link_interface_to_track6($interface, true);
     }
 }
+function get_wan_dhcp6_interfaces()
+{
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $_interface => $_wancfg) {
+        if (empty($_wancfg['ipaddrv6']) || $_wancfg['ipaddrv6'] != 'dhcp6') {
+            continue;
+        }
 
+        if (!file_exists("/var/etc/dhcp6c_{$_interface}.conf")) {
+            /* config file not yet rendered, defer for later */
+            continue;
+        }        
+        $dhcp6_interfaces .= exec_safe(' %s', get_real_interface($_interface, 'inet6'));
+    }
+    return $dhcp6_interfaces;
+}
 function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 {
     $syscfg = config_read_array('system');
@@ -2921,19 +2935,23 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
     /* always kill rtsold in case of reconfigure */
-    killbypid("/var/run/rtsold_{$realifv6}.pid", 'TERM', true);
+    killbypid("/var/run/rtsold.pid", 'TERM', true);
 
     /* fire up rtsold for IPv6 RAs first */
-    mwexecf(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
+
+    $rtsold_command = exec_safe(
+        '/usr/sbin/rtsold -p %s -O %s -R %s %s',
         array(
-            "/var/run/rtsold_{$realifv6}.pid",
+            "/var/run/rtsold.pid",
             '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-            empty($syscfg['dhcp6_debug']) ? '-d' : '-D',
-            $realifv6
-        )
+            empty($syscfg['dhcp6_debug']) ? '-d' : '-D'
+        )      
     );
+    $rtsold_interfaces = get_wan_dhcp6_interfaces();
+    $rtsold_command .= $rtsold_interfaces;
+    
+    mwexecf($rtsold_command);
 
     /* unconditional trigger for hybrid approach, reloads without advertisements */
     mwexecf('/var/etc/rtsold_script.sh %s', array($realifv6));
