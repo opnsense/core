@@ -104,6 +104,10 @@
             <url>http://mirror.wjcomms.co.uk/opnsense</url>
             <description>WJComms (HTTP, London, GB)</description>
         </mirror>
+        <mirror>
+            <url>https://mirrors.bfsu.edu.cn/opnsense</url>
+            <description>Beijing Foreign Studies University (HTTPS, Beijing, CN)</description>
+        </mirror>
     </mirrors>
     <flavours>
         <flavour>
