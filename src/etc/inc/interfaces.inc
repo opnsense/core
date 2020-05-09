@@ -1,4 +1,4 @@
-<?php
+   <?php
 
 /*
  * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
@@ -3007,7 +3007,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "*)\n";
     $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "esac\n";
-
+    $dhcp6cscript .= "if [ -z \"\${PINFO}\"]; then\n";
+    $dhcp6cscript .= "rm -f /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "else\n";
+    $dhcp6cscript .= "echo \$PINFO > /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "fi\n";
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 

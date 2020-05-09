@@ -340,6 +340,14 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
+                    if (file_exists("/tmp/{$ifinfo['if']}_pdinfo")): ?>                    
+                    <tr>
+                      <td><?= gettext("ISP assigned PD") ?></td>
+                      <td><?= file_get_contents("/tmp/{$ifinfo['if']}_pdinfo"); ?></td>
+                      
+                    </tr>  
+<?php
+                    endif;
                     if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext("Gateway IPv6") ?></td>
