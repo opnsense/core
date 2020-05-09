@@ -58,7 +58,6 @@ function is_valid_syslog_server($target) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['reverse'] = isset($config['syslog']['reverse']);
     $pconfig['disable_clog'] = isset($config['syslog']['disable_clog']);
     $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
     $pconfig['preservelogs'] =  !empty($config['syslog']['preservelogs']) ? $config['syslog']['preservelogs'] : null;
@@ -90,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (count($input_errors) == 0) {
-            $config['syslog']['reverse'] = !empty($pconfig['reverse']);
             $config['syslog']['disable_clog'] = !empty($pconfig['disable_clog']);
             if (isset($_POST['logfilesize']) && (strlen($pconfig['logfilesize']) > 0)) {
                 $config['syslog']['logfilesize'] = (int)$pconfig['logfilesize'];
@@ -206,15 +204,6 @@ $(document).ready(function() {
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
                       <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_reverse" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reverse Display') ?></td>
-                    <td>
-                      <input name="reverse" type="checkbox" id="reverse" value="yes" <?=!empty($pconfig['reverse']) ? "checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" data-for="help_for_reverse">
-                        <?=gettext("Show log entries in reverse order (newest entries on top)");?>
-                      </div>
                     </td>
                   </tr>
                   <tr>
