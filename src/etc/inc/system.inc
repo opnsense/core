@@ -644,7 +644,6 @@ news.err;local0.none;local3.none;local4.none			{$log_directive}/var/log/system.l
 local7.none							{$log_directive}/var/log/system.log
 security.*							{$log_directive}/var/log/system.log
 auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
-auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
 *.emerg								*
 
 EOD;
