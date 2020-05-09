@@ -1157,6 +1157,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/tmp/{$realifv6}upv6");
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
+    @unlink("/tmp/{$realifv6}_pdinfo");
 }
 
 function interfaces_ptpid_used($ptpid)
@@ -2996,6 +2997,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     }
 
     $dhcp6cscript = "#!/bin/sh\n";
+    $dhcp6cscript .= "if [ -z \"\${PINFO}\" ]; then\n";
+    $dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "else\n";
+    $dhcp6cscript .= "\techo \${PINFO} > /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
     $dhcp6cscript .= "fi\n";

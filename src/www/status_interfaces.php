@@ -338,9 +338,14 @@ include("head.inc");
                         endforeach;?>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['gatewayv6'])): ?>
+<?php endif ?>
+<?php if (file_exists("/tmp/{$ifinfo['if']}_pdinfo")): /* XXX move to interface stats, possible IPv6 device mismatch */ ?>
+                    <tr>
+                      <td><?= gettext('Delegated prefix') ?></td>
+                      <td><?= file_get_contents("/tmp/{$ifinfo['if']}_pdinfo") ?></td>
+                    </tr>
+<?php endif ?>
+<?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext("Gateway IPv6") ?></td>
                       <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>
