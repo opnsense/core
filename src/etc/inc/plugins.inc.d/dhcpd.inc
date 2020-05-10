@@ -1291,8 +1291,9 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                 $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
 
                 /* with enough room we can add dhcp6 prefix delegation */
-                $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
-                if ($pdlen > 2) {
+                $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface'],'len');
+                if ($pdlen > 48) {
+                    $pdlen = $pdlen-48;
                     $pdlenmax = $pdlen;
                     $pdlenhalf = $pdlenmax - 1;
                     $pdlenmin = 64 - ceil($pdlenhalf / 4);
