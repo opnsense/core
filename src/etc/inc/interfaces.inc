@@ -2893,21 +2893,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
         link_interface_to_track6($interface, true);
     }
 }
-function get_wan_dhcp6_interfaces()
-{
-    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $_interface => $_wancfg) {
-        if (empty($_wancfg['ipaddrv6']) || $_wancfg['ipaddrv6'] != 'dhcp6') {
-            continue;
-        }
 
-        if (!file_exists("/var/etc/dhcp6c_{$_interface}.conf")) {
-            /* config file not yet rendered, defer for later */
-            continue;
-        }        
-        $dhcp6_interfaces .= exec_safe(' %s', get_real_interface($_interface, 'inet6'));
-    }
-    return $dhcp6_interfaces;
-}
 function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 {
     $syscfg = config_read_array('system');
@@ -2939,19 +2925,15 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* fire up rtsold for IPv6 RAs first */
 
-    $rtsold_command = exec_safe(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s',
+     mwexecf(
+        '/usr/sbin/rtsold -p %s -O %s -R %s %s -a',
         array(
             "/var/run/rtsold.pid",
             '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-            empty($syscfg['dhcp6_debug']) ? '-d' : '-D'
-        )      
+            empty($syscfg['dhcp6_debug']) ? '-d' : '-D',
+        )
     );
-    $rtsold_interfaces = get_wan_dhcp6_interfaces();
-    $rtsold_command .= $rtsold_interfaces;
-    
-    mwexecf($rtsold_command);
 
     /* unconditional trigger for hybrid approach, reloads without advertisements */
     mwexecf('/var/etc/rtsold_script.sh %s', array($realifv6));
@@ -3065,7 +3047,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
 
-    $rtsoldscript = <<<EOD
+    $rtsold_script = <<<EOD
 #!/bin/sh
 # this file was auto-generated, do not edit
 if [ -z "\${1}" ]; then
@@ -3091,7 +3073,7 @@ fi
 
 EOD;
 
-    @file_put_contents('/var/etc/rtsold_script.sh', $rtsoldscript);
+    @file_put_contents('/var/etc/rtsold_script.sh', $rtsold_script);
     @chmod('/var/etc/rtsold_script.sh', 0755);
 }
 
