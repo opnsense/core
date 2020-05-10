@@ -64,7 +64,9 @@ function set_language()
 function session_auth(&$Login_Error)
 {
     global $config;
-    function auth_log($message) {
+
+    function auth_log($message)
+    {
         openlog("webgui", LOG_ODELAY, LOG_AUTH);
         log_error($message);
         closelog();

@@ -90,10 +90,10 @@ class FirewallController extends ApiControllerBase
                                 $label_map[(string)$n->if] = !empty((string)$n->descr) ? (string)$n->descr : $k;
                             }
                         }
-                      break;
+                        break;
                     case 'proto':
                       // proto
-                      break;
+                        break;
                 }
                 $recno = $top_cnt = 0;
                 foreach ($tmp_stats as $key => $value) {

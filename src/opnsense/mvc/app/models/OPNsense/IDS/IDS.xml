@@ -163,7 +163,7 @@
                   <ac>Aho-Corasick</ac>
                   <ac-bs>Aho-Corasick, reduced memory implementation</ac-bs>
                   <ac-ks>Aho-Corasick, "Ken Steele" variant</ac-ks>
-                  <hs>Hyperscan</hs>               
+                  <hs>Hyperscan</hs>
               </OptionValues>
               <ValidationMessage>Please select a valid pattern matcher algorithm</ValidationMessage>
             </MPMAlgo>
