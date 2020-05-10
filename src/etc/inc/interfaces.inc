@@ -3065,10 +3065,6 @@ if [ -z "\${1}" ]; then
     echo "Nothing to do."
     exit 0
 fi
-if [ ! -f "/var/etc/dhcp6c_\${1}.conf" ]; then
-    echo "No DHCPv6 configuration found for \${1}"
-    exit 0
-fi
 if [ -n "\${2}" ]; then
     echo \${2} > /tmp/\${1}_routerv6
     echo \${2} > /tmp/\${1}_defaultgwv6
