@@ -337,7 +337,9 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     $prefix_array[6] = '0';
     $prefix_array[7] = '0';
     $wifprefix = Net_IPv6::compress(implode(':', $prefix_array));
-    $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']) - 1;
+    $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']);    
+    $pdinfo = get_isp_pdinfo($config['interfaces'][$if]['track6-interface']);
+
 }
 
 ?>
@@ -462,8 +464,12 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                     </tr>
 <?php if ($pdlen >= 0): ?>
                      <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available prefix delegation size");?></td>
-                      <td><?= 64 - $pdlen ?></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("ISP Assigned PD/Size");?></td>
+                      <td><?=$pdinfo ?></td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Maximum prefix delegation size");?></td>
+                      <td><?= $pdlen+1 ?></td>
                     </tr>
 <?php endif ?>
 <?php endif ?>
