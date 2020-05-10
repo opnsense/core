@@ -3047,11 +3047,15 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
 
-    $rtsoldscript = <<<EOD
+    $rtsold_script = <<<EOD
 #!/bin/sh
 # this file was auto-generated, do not edit
 if [ -z "\${1}" ]; then
     echo "Nothing to do."
+    exit 0
+fi
+if [ ! -f "/var/etc/dhcp6c_\${1}.conf" ]; then
+    echo "No DHCPv6 configuration found for \${1}"
     exit 0
 fi
 if [ -n "\${2}" ]; then
@@ -3073,7 +3077,7 @@ fi
 
 EOD;
 
-    @file_put_contents('/var/etc/rtsold_script.sh', $rtsoldscript);
+    @file_put_contents('/var/etc/rtsold_script.sh', $rtsold_script);
     @chmod('/var/etc/rtsold_script.sh', 0755);
 }
 
