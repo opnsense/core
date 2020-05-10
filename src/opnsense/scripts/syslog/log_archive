@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,45 +33,30 @@ require_once("util.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc");
 
-$opts = getopt('hm:f:', array(), $optind);
-if (isset($opts['h']) || empty($opts['f']) || empty($opts['m'])) {
-    echo "Usage: clearlog [-h] [-m] [-f]\n\n";
-    echo "\t-h show this help text and exit\n";
-    echo "\t-m module name\n";
-    echo "\t-f filename\n";
-    exit(0);
+$preserve_logs = !empty($config['syslog']['preservelogs']) ? $config['syslog']['preservelogs'] : 31;
+
+// gather all syslog created local logs (filename starts with directory name_[8 digits].log)
+$relevant_logs = [];
+$it = new RecursiveDirectoryIterator("/var/log");
+foreach(new RecursiveIteratorIterator($it) as $file) {
+    if ($file->isFile()) {
+        $log_subject = basename($file->getPath());
+        if (strpos($file->getFilename(), $log_subject . "_") === 0
+              && $file->getExtension() == "log"
+              && ctype_digit(substr($file->getFilename(), strlen($log_subject)+1, 8))) {
+            if (!isset($relevant_logs[$log_subject])) {
+                $relevant_logs[$log_subject] = [];
+            }
+            $relevant_logs[$log_subject][] = (string)$file;
+        }
+    }
 }
-if (isset($opts['m']) && isset($opts['f'])) {
-    $mname = basename($opts['m']);
-    $fname = basename($opts['f']);
-    if ($mname == 'core') {
-        $basename = "/var/log/{$fname}";
-    } else {
-        $basename = "/var/log/{$mname}/{$fname}";
-    }
-    $filename = "{$basename}.log";
-
-    if (is_dir($basename)) {
-        foreach (glob("{$basename}/{$fname}_*.log") as $filename) {
+// remove expired logs
+foreach ($relevant_logs as $log_subject => $items)  {
+    if (count($items) > $preserve_logs) {
+        rsort($items);
+        foreach (array_slice($items, $preserve_logs) as $filename) {
             @unlink($filename);
-        }
-        system_syslogd_start();
-    }
-
-    if (is_file($filename)) {
-        $size = filesize($filename);
-        $handle = fopen($filename, "r");
-        fseek($handle, $size-20);
-        $is_clog = fread($handle,4) == 'CLOG';
-        fclose($handle);
-        if ($is_clog) {
-            system_clear_clog($filename);
-        } else {
-            system_clear_log($filename);
-        }
-        // XXX: should probably add some plugin hook for this.
-        if ($fname == 'dhcpd' && $mname == 'core') {
-            plugins_configure('dhcp');
         }
     }
 }

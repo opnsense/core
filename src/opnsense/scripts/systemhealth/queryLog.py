@@ -36,6 +36,7 @@ import re
 import sre_constants
 import ujson
 import datetime
+import glob
 from logformats import FormatContainer
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
@@ -54,12 +55,19 @@ if __name__ == '__main__':
 
     result = {'filters': filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
     if inputargs.filename != "":
+        log_filenames = list()
         if inputargs.module == 'core':
-            log_filename = "/var/log/%s.log"  % os.path.basename(inputargs.filename)
+            log_basename = "/var/log/%s" % os.path.basename(inputargs.filename)
         else:
-            log_filename = "/var/log/%s/%s.log"  % (
+            log_basename = "/var/log/%s/%s" % (
                 os.path.basename(inputargs.module), os.path.basename(inputargs.filename)
             )
+        if os.path.isdir(log_basename):
+            # new syslog-ng local targets use an extra directory level
+            for filename in sorted(glob.glob("%s/*.log" % log_basename), reverse=True):
+                log_filenames.append(filename)
+        # legacy log output is always stiched last
+        log_filenames.append("%s.log" % log_basename)
 
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
@@ -73,27 +81,30 @@ if __name__ == '__main__':
             # remove illegal expression
             filter_regexp = re.compile('.*')
 
-        if os.path.exists(log_filename):
-            format_container = FormatContainer(log_filename)
-            try:
-                filename = fetch_clog(log_filename)
-            except Exception as e:
-                filename = log_filename
-            for record in reverse_log_reader(filename):
-                if record['line'] != "" and filter_regexp.match(('%s' % record['line']).lower()):
-                    result['total_rows'] += 1
-                    if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
-                        record['timestamp'] = None
-                        record['parser'] = None
-                        frmt = format_container.get_format(record['line'])
-                        if frmt:
-                            record['timestamp'] = frmt.timestamp(record['line'])
-                            record['line'] = frmt.line(record['line'])
-                            record['parser'] = frmt.name
-                        result['rows'].append(record)
-                    elif result['total_rows'] > offset + limit:
-                        # do not fetch data until end of file...
-                        break
+        for log_filename in log_filenames:
+            if os.path.exists(log_filename):
+                format_container = FormatContainer(log_filename)
+                try:
+                    filename = fetch_clog(log_filename)
+                except Exception as e:
+                    filename = log_filename
+                for record in reverse_log_reader(filename):
+                    if record['line'] != "" and filter_regexp.match(('%s' % record['line']).lower()):
+                        result['total_rows'] += 1
+                        if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
+                            record['timestamp'] = None
+                            record['parser'] = None
+                            frmt = format_container.get_format(record['line'])
+                            if frmt:
+                                record['timestamp'] = frmt.timestamp(record['line'])
+                                record['line'] = frmt.line(record['line'])
+                                record['parser'] = frmt.name
+                            result['rows'].append(record)
+                        elif result['total_rows'] > offset + limit:
+                            # do not fetch data until end of file...
+                            break
+            if result['total_rows'] > offset + limit:
+                break
 
     # output results
     print(ujson.dumps(result))

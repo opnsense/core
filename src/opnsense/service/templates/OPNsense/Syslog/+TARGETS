@@ -3,3 +3,5 @@ newsyslog.conf:/etc/newsyslog.conf
 syslog-ng.conf:/usr/local/etc/syslog-ng.conf
 syslog-ng-legacy.conf:/usr/local/etc/syslog-ng.conf.d/legacy.conf
 syslog-ng-destinations.conf:/usr/local/etc/syslog-ng.conf.d/syslog-ng-destinations.conf
+syslog-ng-local.conf:/usr/local/etc/syslog-ng.conf.d/syslog-ng-local.conf
+syslog-ng-lockout.conf:/usr/local/etc/syslog-ng.conf.d/syslog-ng-lockout.conf

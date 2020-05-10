@@ -135,7 +135,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			rrdtool \
 			samplicator \
 			squid \
-			sshlockout_pf \
 			strongswan \
 			sudo \
 			syslog-ng${CORE_SYSLOGNG:S/.//g} \
