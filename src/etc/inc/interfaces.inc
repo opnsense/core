@@ -2919,22 +2919,27 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
-    set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
+    set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
 
     /* always kill rtsold in case of reconfigure */
-    killbypid("/var/run/rtsold.pid", 'TERM', true);
+    killbypid('/var/run/rtsold.pid', 'TERM', true);
 
-    /* fire up rtsold for IPv6 RAs first */
-
-     mwexecf(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s -a',
+    $rtsoldcommand = exec_safe(
+        '/usr/sbin/rtsold -p %s -O %s -R %s -a',
         array(
-            "/var/run/rtsold.pid",
+            '/var/run/rtsold.pid',
             '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-            empty($syscfg['dhcp6_debug']) ? '-d' : '-D',
         )
     );
+
+    if (!empty($syscfg['dhcp6_debug'])) {
+        $mode = [ '1' => ' -d', '2' => ' -D' ];
+        $rtsoldcommand .= $mode[$syscfg['dhcp6_debug']];
+    }
+
+    /* fire up rtsold for IPv6 RAs first */
+    mwexec($rtsoldcommand);
 
     /* unconditional trigger for hybrid approach, reloads without advertisements */
     mwexecf('/var/etc/rtsold_script.sh %s', array($realifv6));
@@ -3018,10 +3023,10 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $dhcp6ccommand = exec_safe(
-        "/usr/local/sbin/dhcp6c -c %s -p %s",
+        '/usr/local/sbin/dhcp6c -c %s -p %s',
         array(
-            "/var/etc/dhcp6c.conf",
-            "/var/run/dhcp6c.pid",
+            '/var/etc/dhcp6c.conf',
+            '/var/run/dhcp6c.pid',
         )
     );
 
