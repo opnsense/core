@@ -2922,17 +2922,17 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
     /* always kill rtsold in case of reconfigure */
-    killbypid("/var/run/rtsold_{$realifv6}.pid", 'TERM', true);
+    killbypid("/var/run/rtsold.pid", 'TERM', true);
 
     /* fire up rtsold for IPv6 RAs first */
-    mwexecf(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
+
+     mwexecf(
+        '/usr/sbin/rtsold -p %s -O %s -R %s %s -a',
         array(
-            "/var/run/rtsold_{$realifv6}.pid",
+            "/var/run/rtsold.pid",
             '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
             empty($syscfg['dhcp6_debug']) ? '-d' : '-D',
-            $realifv6
         )
     );
 
