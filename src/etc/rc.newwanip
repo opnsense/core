@@ -45,20 +45,17 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-log_error("IP renewal is starting on '{$argument}'");
+log_error("IPv4 renewal is starting on '{$argument}'");
 
 if (empty($argument)) {
     $interface = 'wan';
     $interface_real = get_real_interface($interface);
-    $ip = get_interface_ip($interface);
 } else {
     $interface = convert_real_interface_to_friendly_interface_name($argument);
     $interface_real = $argument;
-    $ip = find_interface_ip($interface_real);
-    if (empty($ip)) {
-        $ip = get_interface_ip($interface);
-    }
 }
+
+$ip = get_interface_ip($interface);
 
 if (!isset($config['interfaces'][$interface]['enable'])) {
     log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
