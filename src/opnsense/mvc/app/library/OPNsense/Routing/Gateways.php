@@ -168,6 +168,10 @@ class Gateways
                             // default priority
                             $gw_arr['priority'] = 255;
                         }
+                        if (empty($gw_arr['ipprotocol'])) {
+                            // default address family
+                            $gw_arr['ipprotocol'] = 'inet';
+                        }
                         $gw_arr["if"] = $definedIntf[$gw_arr["interface"]]['if'];
                         $gw_arr["attribute"] = $i++;
                         if (Util::isIpAddress($gateway->gateway)) {
