@@ -45,7 +45,7 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-log_error("IP renewal is starting on '{$argument}'");
+log_error("IPv4 renewal is starting on '{$argument}'");
 
 if (empty($argument)) {
     $interface = 'wan';

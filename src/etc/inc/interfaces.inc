@@ -3002,10 +3002,10 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     }
 
     $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "if [ -z \"\${PINFO}\" ]; then\n";
+    $dhcp6cscript .= "if [ -z \"\${PDINFO}\" ]; then\n";
     $dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "else\n";
-    $dhcp6cscript .= "\techo \${PINFO} > /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
@@ -4154,20 +4154,25 @@ function interfaces_staticarp_configure($if)
     }
 }
 
-//returns interface information
 function get_interfaces_info()
 {
     global $config;
-    $result = array();
+
     $all_intf_details = legacy_interfaces_details();
+    $all_intf_stats = legacy_interface_stats();
     $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
     $ifup = legacy_interface_listget('up');
-    $all_intf_stats = legacy_interface_stats();
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifdescr => $ifcnf) {
+    $result = array();
+
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifdescr => $ifcnf) {
         $ifinfo = array();
-        /* XXX apparently we ignore a different IPv6 realif completely... */
+
         $ifinfo['if'] = get_real_interface($ifdescr);
+        $ifinfo['ifv6'] = get_real_interface($ifdescr, 'inet6');
+
         $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
+        $ifinfo['statusv6'] = (is_array($ifup) && in_array($ifinfo['ifv6'], $ifup)) ? 'up' : 'down';
+
         if (!empty($all_intf_details[$ifinfo['if']])) {
             if (
                 isset($all_intf_details[$ifinfo['if']]['status']) &&
@@ -4178,6 +4183,7 @@ function get_interfaces_info()
             $ifinfo = array_merge($ifinfo, $all_intf_details[$ifinfo['if']]);
         }
 
+        /* XXX apparently we ignore a different IPv6 realif completely... */
         if (!empty($ifinfo['ipv6'])) {
             /* XXX ... so avoid intermediate breakage by using IPv4 realif here */
             list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $ifinfo['if'], $all_intf_details);
@@ -4194,9 +4200,16 @@ function get_interfaces_info()
                 }
             }
         }
+
         if (!empty($ifinfo['ipv4'])) {
             $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
             $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+        }
+
+        /* XXX there are more magic files */
+        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_pdinfo");
+        if (!empty($aux)) {
+            $ifinfo['pdinfo'] = $aux;
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];

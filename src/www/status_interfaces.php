@@ -339,10 +339,10 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<?php if (file_exists("/tmp/{$ifinfo['if']}_pdinfo")): /* XXX move to interface stats, possible IPv6 device mismatch */ ?>
+<?php if (array_key_exists('pdinfo', $ifinfo)): ?>
                     <tr>
                       <td><?= gettext('Delegated prefix') ?></td>
-                      <td><?= file_get_contents("/tmp/{$ifinfo['if']}_pdinfo") ?></td>
+                      <td><?= $ifinfo['pdinfo'] ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
