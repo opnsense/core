@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['domain']) && $pconfig['domain'] == $config['system']['domain'] && $pconfig['host'] == '*') {
         $input_errors[] = sprintf(
-            gettext("A wildcard domain override is not supported for this machines domain '%s'."),
+            gettext("A wildcard domain override is not supported for the local domain '%s'."),
             $config['system']['domain']
         );
     }
