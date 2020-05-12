@@ -183,6 +183,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
     $pconfig['ipv6_duid_en_value'] = generate_new_duid('4');
+    
+
+    $old_ipv6duid = $pconfig['ipv6duid'];
+    $old_dhcp6_norelease =  $pconfig['dhcp6_norelease'];
+    $old_config_dhcp6_debug = $pconfig['dhcp6_debug'];
+    
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -247,6 +253,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         interface_dhcpv6_configure('duidonly', null); /* XXX refactor */
         system_arp_wrong_if();
+
+        // check if any dhcp6c settings have changed.
+        if( $old_ipv6duid != $pconfig['ipv6duid'] || $old_dhcp6_norelease != $pconfig['dhcp6_norelease'] || $old_config['dhcp6_debug'] != $pconfig['dhcp6_debug']) {
+            // Restart
+            make_dhcp6c_command('true');    
+        }
     }
 }
 
