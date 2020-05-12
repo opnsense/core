@@ -415,7 +415,12 @@ abstract class BaseModel
             if ($validateFullModel || $node->isFieldChanged()) {
                 $node_validators = $node->getValidators();
                 foreach ($node_validators as $item_validator) {
-                    $validation->add($key, $item_validator);
+                    if (is_a($item_validator, "OPNsense\\Base\\Constraints\\BaseConstraint")) {
+                        $target_key = $item_validator->getOption("node")->__reference;
+                        $validation->add($target_key, $item_validator);
+                    } else {
+                        $validation->add($key, $item_validator);
+                    }
                 }
                 if (count($node_validators) > 0) {
                     $validation_data[$key] = $node->__toString();
