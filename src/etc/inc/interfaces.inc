@@ -3053,7 +3053,6 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
         }
 
         $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c_{$_interface}.conf");
-        $dhcp6ccommand .= exec_safe(' %s', get_real_interface($_interface, 'inet6'));
     }
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
