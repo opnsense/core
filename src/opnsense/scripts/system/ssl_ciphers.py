@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2020 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,12 @@ import os
 import sys
 import ujson
 import csv
+import argparse
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--format', help='format',choices=['full', 'key_value'], default='full')
+    inputargs = parser.parse_args()
     # source http://www.iana.org/assignments/tls-parameters/tls-parameters-4.csv
     rfc5246_file = '%s/rfc5246_cipher_suites.csv' % os.path.dirname(os.path.realpath(__file__))
     rfc5246 = dict()
@@ -56,4 +60,10 @@ if __name__ == '__main__':
             if cipher_id in rfc5246:
                 item['description'] = rfc5246[cipher_id]['description']
             result[cipher_key] = item
-    print (ujson.dumps(result))
+    if inputargs.format == 'key_value':
+        tmp = dict()
+        for key in result:
+            tmp[key] = result[key]['description'] if result[key]['description'] else key
+        print (ujson.dumps(tmp))
+    else:
+        print (ujson.dumps(result))
