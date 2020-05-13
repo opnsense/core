@@ -17,6 +17,7 @@
 {%         endfor%}
 {%     endif %}
 {% endif %}
+dummynet_enable="YES"
 firewall_enable="{% if shapers or cp_zones %}YES{% else %}NO{% endif %}"
 firewall_script="/usr/local/etc/rc.ipfw"
-dummynet_enable="YES"
+ipfw_defer="YES"
