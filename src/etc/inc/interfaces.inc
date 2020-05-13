@@ -2966,7 +2966,39 @@ function interface_dhcpv6_id($interface)
 
     return $id;
 }
+function make_dhcp6c_command($restart = 'false',$force_release = 'false')
+{
+        /* Restart after a change of debug or no release settings */
+        /* Create our command */
+    $dhcp6c_command = exec_safe(
+        '/usr/local/sbin/dhcp6c -c %s -p %s',
+        array(
+            '/var/etc/dhcp6c.conf',
+            '/var/run/dhcp6c.pid',
+        )
+    );
 
+    if (!empty($syscfg['dhcp6_debug'])) {
+        $mode = [ '1' => ' -d', '2' => ' -D' ];
+        $dhcp6c_command .= $mode[$syscfg['dhcp6_debug']];
+    }
+
+    if (!empty($syscfg['dhcp6_norelease'])) {
+        $dhcp6c_command .= ' -n';
+    }
+    
+    if($restart ==  'false') {            
+        return $dhcp6c_command;
+    } else {
+        if($force_release == 'false') {
+            killbypid('/var/run/dhcp6c.pid', 'TERM');
+        } else {
+            // Force a release as DUID has changed
+            killbypid('/var/run/dhcp6c.pid', 'SIGUSR2'); 
+        }
+        mwexec($dhcp6c_command);
+    }
+}
 function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = false)
 {
     if (!is_array($wancfg)) {
@@ -3022,22 +3054,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe(
-        '/usr/local/sbin/dhcp6c -c %s -p %s',
-        array(
-            '/var/etc/dhcp6c.conf',
-            '/var/run/dhcp6c.pid',
-        )
-    );
-
-    if (!empty($syscfg['dhcp6_debug'])) {
-        $mode = [ '1' => ' -d', '2' => ' -D' ];
-        $dhcp6ccommand .= $mode[$syscfg['dhcp6_debug']];
-    }
-
-    if (!empty($syscfg['dhcp6_norelease'])) {
-        $dhcp6ccommand .= ' -n';
-    }
+    $dhcp6ccommand = make_dhcp6c_command();
 
     $dhcp6cconf = '';
 
@@ -3053,6 +3070,9 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
         }
 
         $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c_{$_interface}.conf");
+        /* XXX interfaces are read from config XXX. MUST be removed in 20.7 XXX */ 
+        /* Else it will use the tagged on interfaces */
+        //$dhcp6ccommand .= exec_safe(' %s', get_real_interface($_interface, 'inet6'));
     }
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
