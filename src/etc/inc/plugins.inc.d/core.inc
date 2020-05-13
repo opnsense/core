@@ -235,6 +235,8 @@ function core_interfaces()
             "virtual" => true,
             "ipaddr" => "127.0.0.1",
             "subnet" => "8",
+            "ipaddrv6" => "::1",
+            "subnetv6" => "128",
             "type" => "none"
         ]
     ];
