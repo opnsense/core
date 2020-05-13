@@ -239,6 +239,7 @@
             <interfaces type="InterfaceField">
                 <Required>N</Required>
                 <multiple>Y</multiple>
+                <AllowDynamic>S</AllowDynamic>
                 <default>lan</default>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
