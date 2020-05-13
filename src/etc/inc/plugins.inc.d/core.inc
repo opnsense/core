@@ -223,3 +223,19 @@ function core_syslog()
 
     return $logfacilities;
 }
+
+
+function core_interfaces()
+{
+    return [
+        "lo0" => [
+            "if" => "lo0",
+            "enable" => true,
+            "descr" => gettext("loopback"),
+            "virtual" => true,
+            "ipaddr" => "127.0.0.1",
+            "subnet" => "8",
+            "type" => "none"
+        ]
+    ];
+}
