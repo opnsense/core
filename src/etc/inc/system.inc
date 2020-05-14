@@ -482,15 +482,14 @@ function system_routing_configure($verbose = false, $interface = '')
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
     foreach (['inet', 'inet6'] as $ipproto) {
-        // deterine default gateway for inet/inet6, without considering monitor status.
+        /* determine default gateway without considering monitor status */
         $gateway = $gateways->getDefaultGW(array(), $ipproto);
-        $logproto = $ipproto == 'inet' ? "IPv4" : "IPv6";
+        $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
         if ($gateway != null) {
             log_error("ROUTING: {$logproto} default gateway set to {$gateway['interface']}");
-            $fargw = isset($gateway['fargw']);
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
                 log_error("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], $fargw);
+                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
             } else {
                 log_error("ROUTING: skipping {$logproto} default route");
             }
