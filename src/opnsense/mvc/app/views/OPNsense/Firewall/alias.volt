@@ -634,12 +634,14 @@
                                             </tbody>
                                         </table>
                                         <div class="hidden" data-for="help_for_alias.frequency">
-                                                               <small>
+                                            <small>
                                                 {{lang._('The frequency that the list will be refreshed, in days + hours, so 1 day and 8 hours means the alias will be refreshed after 32 hours. ')}}
                                             </small>
                                         </div>
                                     </td>
-                                                                      
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.updatefreq"></span>
+                                    </td>
                                 </tr>
                                 <tr id="row_alias.content">
                                     <td>
