@@ -613,8 +613,8 @@
                                 <tr id="row_alias.updatefreq">
                                     <td>
                                         <div class="control-label" id="control_label_alias.updatefreq">
-                                            <i class="fa fa-info-circle text-muted"></i>
-                                            <b>{{lang._('Expiration')}}</b>
+                                            <a id="help_for_alias.frequency" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Refresh Frequency')}}</b>
                                         </div>
                                     </td>
                                     <td>
@@ -633,6 +633,11 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        <div class="hidden" data-for="help_for_alias.frequency">
+                                            <small>
+                                                {{lang._('The frequency that the list will be refreshed, in days + hours, so 1 day and 8 hours means the alias will be refreshed after 32 hours. ')}}
+                                            </small>
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.updatefreq"></span>
