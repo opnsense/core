@@ -78,6 +78,11 @@
                 <default>0</default>
                 <Required>N</Required>
             </suppressVersion>
+            <connecttimeout type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>120</MaximumValue>
+            </connecttimeout>
             <VisibleEmail type="EmailField">
                 <default>admin@localhost.local</default>
                 <Required>N</Required>
