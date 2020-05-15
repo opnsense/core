@@ -87,7 +87,7 @@ class RuleCache(object):
                     record = {'enabled': True, 'source': filename.split('/')[-1]}
                     if rule.strip()[0] == '#':
                         record['enabled'] = False
-                        record['action'] = rule.strip()[1:].split(' ')[0].replace('#', '')
+                        record['action'] = rule.replace('#', '').strip().split()[0]
                     else:
                         record['action'] = rule.strip().split(' ')[0]
 
