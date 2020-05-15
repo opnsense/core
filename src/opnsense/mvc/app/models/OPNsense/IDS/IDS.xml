@@ -167,6 +167,30 @@
               </OptionValues>
               <ValidationMessage>Please select a valid pattern matcher algorithm</ValidationMessage>
             </MPMAlgo>
+            <Profile type="OptionField">
+              <Required>N</Required>
+              <default>medium</default>
+              <BlankDesc>Default</BlankDesc>
+              <OptionValues>
+                  <low>Low</low>
+                  <medium>Medium</medium>
+                  <high>High</high>
+                  <custom>Custom</custom>
+              </OptionValues>
+              <ValidationMessage>Please select a valid detection profile</ValidationMessage>
+            </Profile>
+            <toclient type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>Enter a valid toclient-groups size</ValidationMessage>
+            </toclient>
+            <toserver type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>Enter a valid toserver-groups size</ValidationMessage>
+            </toserver>
             <syslog type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>

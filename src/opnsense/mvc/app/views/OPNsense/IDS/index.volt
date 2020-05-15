@@ -43,6 +43,9 @@ POSSIBILITY OF SUCH DAMAGE.
             max-width:1200px;
         }
     }
+    .ui_hide {
+        display: none !important;
+    }
 </style>
 
 <script>
@@ -653,6 +656,19 @@ POSSIBILITY OF SUCH DAMAGE.
                 }]
             });
 
+        });
+        // hide toclient and toserver groups when not applicable
+        $("#row_ids\\.general\\.toclient").addClass("ui_hide");
+        $("#row_ids\\.general\\.toserver").addClass("ui_hide");
+
+        $("#ids\\.general\\.Profile").change(function(){
+            if ($("#ids\\.general\\.Profile option:selected").val() == "custom") {
+                $("#row_ids\\.general\\.toclient").removeClass("ui_hide");
+                $("#row_ids\\.general\\.toserver").removeClass("ui_hide");
+            } else {
+                $("#row_ids\\.general\\.toclient").addClass("ui_hide");
+                $("#row_ids\\.general\\.toserver").addClass("ui_hide");
+            }
         });
 
     });
