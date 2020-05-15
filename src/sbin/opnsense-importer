@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2020 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -284,7 +284,7 @@ while : ; do
 		if [ -f "${MNT}/usr/local/sbin/opnsense-shell" ]; then
 			mount -t devfs devfs ${MNT}/dev
 			chroot ${MNT} /bin/sh /etc/rc.d/ldconfig start
-			chroot ${MNT} /usr/local/sbin/opnsense-shell password -x 0
+			chroot ${MNT} /usr/local/sbin/opnsense-shell password root -x 0
 			umount ${MNT}/dev
 
 			echo "The password was reset successfully."
