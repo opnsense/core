@@ -1402,9 +1402,12 @@ decoder:
 # default limit.  On not specifying a value, we use no limits on the recursion.
 detect:
   profile: {% if helpers.exists('OPNsense.IDS.general') %} {{ OPNsense.IDS.general.Profile|default("medium")}} {% else %}medium{% endif %}
+
   custom-values:
     toclient-groups: {% if helpers.exists('OPNsense.IDS.general') %} {{ OPNsense.IDS.general.toclient|default("3")}} {% else %}3{% endif %}
+
     toserver-groups: {% if helpers.exists('OPNsense.IDS.general') %} {{ OPNsense.IDS.general.toserver|default("25")}} {% else %}25{% endif %}
+    
   sgh-mpm-context: auto
   inspection-recursion-limit: 3000
   # If set to yes, the loading of signatures will be made after the capture
