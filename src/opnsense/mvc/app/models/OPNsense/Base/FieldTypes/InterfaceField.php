@@ -230,7 +230,7 @@ class InterfaceField extends BaseListField
             $this->internalAllowDynamic = 1;
         } elseif (trim(strtoupper($value)) == "S") {
             $this->internalAllowDynamic = 2;
-        }else {
+        } else {
             $this->internalAllowDynamic = 0;
         }
         $this->updateInternalCacheKey();

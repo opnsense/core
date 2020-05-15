@@ -256,7 +256,8 @@ class Nextcloud extends Base implements IBackupProvider
         );
     }
 
-    public function getInternalUsername($url, $username, $password) : string {
+    public function getInternalUsername($url, $username, $password): string
+    {
         $xml_response = $this->ocs_request(
             "$url/ocs/v1.php/cloud/user",
             $username,
@@ -291,9 +292,15 @@ class Nextcloud extends Base implements IBackupProvider
      * @return array response status
      * @throws \Exception when request fails
      */
-    public function curl_request($url, $username, $password, $method, $error_message, $postdata = null,
-                                 $headers = array("User-Agent: OPNsense Firewall"))
-    {
+    public function curl_request(
+        $url,
+        $username,
+        $password,
+        $method,
+        $error_message,
+        $postdata = null,
+        $headers = array("User-Agent: OPNsense Firewall")
+    ) {
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
@@ -331,14 +338,15 @@ class Nextcloud extends Base implements IBackupProvider
      * @return array|\SimpleXMLElement|null
      * @throws \Exception
      */
-    public function ocs_request($url, $username, $password, $method, $error_message, $postdata = null) {
+    public function ocs_request($url, $username, $password, $method, $error_message, $postdata = null)
+    {
         $headers = $headers = array("User-Agent: OPNsense Firewall", "OCS-APIRequest: true");
         $result = $this->curl_request($url, $username, $password, $method, $error_message, $postdata, $headers);
         if (array_key_exists('content_type', $result['info'])) {
-            if (stripos($result['info']['content_type'], 'xml') !== FALSE) {
+            if (stripos($result['info']['content_type'], 'xml') !== false) {
                 return new \SimpleXMLElement($result['response']);
             }
-            if (stripos($result['info']['content_type'], 'json') !== FALSE) {
+            if (stripos($result['info']['content_type'], 'json') !== false) {
                 return json_decode($result['response'], true);
             }
 
