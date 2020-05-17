@@ -84,6 +84,7 @@ function get_default_sysctl_value($id)
         'net.inet.icmp.drop_redirect' => '0',
         'net.inet.icmp.icmplim' => '0',
         'net.inet.icmp.log_redirect' => '0',
+        'net.inet.icmp.reply_from_interface' => '1',
         'net.inet.ip.accept_sourceroute' => '0',
         'net.inet.ip.intr_queue_maxlen' => '1000',
         'net.inet.ip.portrange.first' => '1024',
@@ -132,6 +133,7 @@ function system_sysctl_get()
         'net.enc.in.ipsec_filter_mask' => 'default',
         'net.enc.out.ipsec_bpf_mask' => 'default',
         'net.enc.out.ipsec_filter_mask' => 'default',
+        'net.inet.icmp.reply_from_interface' => 'default',
         'net.local.dgram.maxdgram' => 'default',
     );
 
