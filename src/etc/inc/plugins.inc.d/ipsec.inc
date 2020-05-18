@@ -154,7 +154,6 @@ function ipsec_syslog()
 
     $logfacilities['ipsec'] = array(
         'facility' => array('charon'),
-        'remote' => 'vpn',
     );
 
     return $logfacilities;
