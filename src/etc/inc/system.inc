@@ -134,7 +134,7 @@ function system_sysctl_get()
         'net.enc.out.ipsec_bpf_mask' => 'default',
         'net.enc.out.ipsec_filter_mask' => 'default',
         'net.inet.icmp.reply_from_interface' => 'default',
-        'net.local.dgram.maxdgram' => 'default'
+        'net.local.dgram.maxdgram' => 'default',
     );
 
     foreach (config_read_array('sysctl', 'item') as $tunable) {
