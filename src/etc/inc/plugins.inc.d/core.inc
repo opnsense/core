@@ -247,13 +247,13 @@ function core_interfaces()
  */
 function core_xmlrpc_sync()
 {
-  $result = array();
+    $result = array();
 
-  $result[] = array(
-      'description' => gettext('Network Time'),
-      'section' => 'ntpd',
-      'id' => 'ntpd',
-  );
+    $result[] = array(
+        'description' => gettext('Network Time'),
+        'section' => 'ntpd',
+        'id' => 'ntpd',
+    );
 
-  return $result;
+    return $result;
 }
