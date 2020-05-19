@@ -240,3 +240,20 @@ function core_interfaces()
         ]
     ];
 }
+
+/**
+ *  sync configuration via xmlrpc
+ * @return array
+ */
+function core_xmlrpc_sync()
+{
+  $result = array();
+
+  $result[] = array(
+      'description' => gettext('Network Time'),
+      'section' => 'ntpd',
+      'id' => 'ntpd',
+  );
+
+  return $result;
+}
