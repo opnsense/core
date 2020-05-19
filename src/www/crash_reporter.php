@@ -184,9 +184,9 @@ if ($has_crashed) {
     }
 }
 
-$message = gettext('Luckily we have not detected a programming bug.');
+$message = gettext('No issues were detected.');
 if ($has_crashed) {
-    $message = gettext('Unfortunately we have detected at least one programming bug.');
+    $message = gettext('An issue was detected.');
 }
 
 if (isset($pconfig['Submit'])) {
