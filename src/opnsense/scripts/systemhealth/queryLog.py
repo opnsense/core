@@ -53,7 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('--module', help='module', default='core')
     inputargs = parser.parse_args()
 
-    result = {'filters': filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
+    result = {'filters': inputargs.filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
     if inputargs.filename != "":
         log_filenames = list()
         if inputargs.module == 'core':
