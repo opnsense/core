@@ -121,9 +121,11 @@ class Util
     /**
      * return alias descriptions
      * @param string $name name
+     * @param bool   $with_content (optional) return description and content if set
+     *
      * @return string
      */
-    public static function aliasDescription($name)
+    public static function aliasDescription($name,  $with_content = false)
     {
         if (empty(self::$aliasDescriptions)) {
             // read all aliases at once, and cache descriptions.
@@ -131,8 +133,18 @@ class Util
                 if (empty(self::$aliasDescriptions[$alias['name']])) {
                     if (!empty($alias['descr'])) {
                         self::$aliasDescriptions[$alias['name']] = $alias['descr'];
+                        if($with_content) {
+                            $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                            asort($tmp);
+                            self::$aliasDescriptions[$alias['name']] .= "<br/>".implode("<br/>", $tmp);
+                        }
                     } elseif (!empty($alias['description'])) {
                         self::$aliasDescriptions[$alias['name']] = $alias['description'];
+                        if($with_content) {
+                            $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                            asort($tmp);
+                            self::$aliasDescriptions[$alias['name']] .= "<br/>".implode("<br/>", $tmp);
+                        }
                     } elseif (!empty($alias['content'])) {
                         $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
                         asort($tmp);

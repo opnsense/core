@@ -152,13 +152,16 @@ function legacy_move_config_list_items($source, $id, $items)
 
 /**
  * Retrieve description text of firewall alias by specifying the alias name.
+ *
  * @param string $name alias name to retrieve the description from
+ * @param bool   $with_content (optional) return description and content if set
+ *
  * @return string|null description of alias, or null if no description was set or alias
  *   does not exist.
  */
-function get_alias_description($name)
+function get_alias_description($name, $with_content = false)
 {
-    return OPNsense\Firewall\Util::aliasDescription($name);
+    return OPNsense\Firewall\Util::aliasDescription($name, $with_content);
 }
 
 function return_gateways_status()
