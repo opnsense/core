@@ -222,3 +222,20 @@ function core_syslog()
 
     return $logfacilities;
 }
+
+/**
+ *  sync configuration via xmlrpc
+ * @return array
+ */
+function core_xmlrpc_sync()
+{
+    $result = array();
+
+    $result[] = array(
+        'description' => gettext('Network Time'),
+        'section' => 'ntpd,system.timeservers',
+        'id' => 'ntpd',
+    );
+
+    return $result;
+}
