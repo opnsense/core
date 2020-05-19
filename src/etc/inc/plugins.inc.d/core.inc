@@ -251,7 +251,7 @@ function core_xmlrpc_sync()
 
     $result[] = array(
         'description' => gettext('Network Time'),
-        'section' => 'ntpd',
+        'section' => 'ntpd,system.timeservers',
         'id' => 'ntpd',
     );
 
