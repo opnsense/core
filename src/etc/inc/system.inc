@@ -84,6 +84,7 @@ function get_default_sysctl_value($id)
         'net.inet.icmp.drop_redirect' => '0',
         'net.inet.icmp.icmplim' => '0',
         'net.inet.icmp.log_redirect' => '0',
+        'net.inet.icmp.reply_from_interface' => '1',
         'net.inet.ip.accept_sourceroute' => '0',
         'net.inet.ip.intr_queue_maxlen' => '1000',
         'net.inet.ip.portrange.first' => '1024',
@@ -132,6 +133,7 @@ function system_sysctl_get()
         'net.enc.in.ipsec_filter_mask' => 'default',
         'net.enc.out.ipsec_bpf_mask' => 'default',
         'net.enc.out.ipsec_filter_mask' => 'default',
+        'net.inet.icmp.reply_from_interface' => 'default',
         'net.local.dgram.maxdgram' => 'default',
     );
 
@@ -482,15 +484,14 @@ function system_routing_configure($verbose = false, $interface = '')
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
     foreach (['inet', 'inet6'] as $ipproto) {
-        // deterine default gateway for inet/inet6, without considering monitor status.
+        /* determine default gateway without considering monitor status */
         $gateway = $gateways->getDefaultGW(array(), $ipproto);
-        $logproto = $ipproto == 'inet' ? "IPv4" : "IPv6";
+        $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
         if ($gateway != null) {
             log_error("ROUTING: {$logproto} default gateway set to {$gateway['interface']}");
-            $fargw = isset($gateway['fargw']);
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
                 log_error("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], $fargw);
+                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
             } else {
                 log_error("ROUTING: skipping {$logproto} default route");
             }
@@ -641,7 +642,6 @@ news.err;local0.none;local3.none;local4.none			{$log_directive}/var/log/system.l
 local7.none							{$log_directive}/var/log/system.log
 security.*							{$log_directive}/var/log/system.log
 auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
-auth.info;authpriv.info;user.*					|exec /usr/local/sbin/sshlockout_pf 15
 *.emerg								*
 
 EOD;

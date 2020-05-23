@@ -116,7 +116,7 @@
                         var menusearch_items = [];
                         $.each(data,function(idx, menu_item){
                             if (menu_item.Url != "") {
-                                menusearch_items.push({id:menu_item.Url, name:menu_item.breadcrumb});
+                                menusearch_items.push({id:$('<div />').html(menu_item.Url).text(), name:menu_item.breadcrumb});
                             }
                         });
                         $("#menu_search_box").typeahead({

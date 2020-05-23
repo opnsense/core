@@ -144,11 +144,13 @@ class ArrayField extends BaseField
         // reserve at least X number of characters for every field to improve sorting of multiple fields
         $MAX_KEY_LENGTH = 30;
 
-        // fieldnames may be a list or a single item, always convert to a list
-        if (!is_array($fieldNames)) {
+        if (empty($fieldNames)) {
+            // unsorted, just return, without any guarantee about the ordering.
+            return $this->internalChildnodes;
+        } elseif (!is_array($fieldNames)) {
+            // fieldnames may be a list or a single item, always convert to a list
             $fieldNames = array($fieldNames);
         }
-
 
         // collect sortable data as key/value store
         $sortedData = array();

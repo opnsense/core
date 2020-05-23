@@ -37,46 +37,14 @@ require_once("system.inc");
 function clear_all_log_files()
 {
     killbyname('syslogd');
-
-    $clog_files = array(
-        'dhcpd',
-        'configd',
-        'filter',
-        'gateways',
-        'ipsec',
-        'l2tps',
-        'lighttpd',
-        'mail',
-        'ntpd',
-        'openvpn',
-        'pkg',
-        'poes',
-        'portalauth',
-        'ppps',
-        'pptps',
-        'relayd',
-        'resolver',
-        'routing',
-        'suricata',
-        'system',
-        'vpn',
-        'wireless',
-    );
-
-    $log_files = array(
-        'squid/access',
-        'squid/cache',
-        'squid/store',
-    );
-
-    foreach ($clog_files as $lfile) {
-        system_clear_clog("/var/log/{$lfile}.log", false);
+    $it = new RecursiveDirectoryIterator("/var/log");
+    foreach(new RecursiveIteratorIterator($it) as $file) {
+        if ($file->isFile() && strpos($file->getFilename(), '.log') > -1) {
+            if (strpos($file->getFilename(), 'flowd') === false) {
+                @unlink((string)$file);
+            }
+        }
     }
-
-    foreach ($log_files as $lfile) {
-        system_clear_log("/var/log/{$lfile}.log", false);
-    }
-
     system_syslogd_start();
     plugins_configure('dhcp');
 }
@@ -90,8 +58,9 @@ function is_valid_syslog_server($target) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['reverse'] = isset($config['syslog']['reverse']);
+    $pconfig['disable_clog'] = isset($config['syslog']['disable_clog']);
     $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
+    $pconfig['preservelogs'] =  !empty($config['syslog']['preservelogs']) ? $config['syslog']['preservelogs'] : null;
     $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
     $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
@@ -113,13 +82,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("Log file size must be a positive integer greater than 5120.");
             }
         }
+        if (!empty($pconfig['preservelogs']) && (strlen($pconfig['preservelogs']) > 0)) {
+            if (!is_numeric($pconfig['preservelogs'])) {
+                $input_errors[] = gettext("Preserve logs must be a positive integer value.");
+            }
+        }
+
         if (count($input_errors) == 0) {
-            $config['syslog']['reverse'] = !empty($pconfig['reverse']) ? true : false;
+            $config['syslog']['disable_clog'] = !empty($pconfig['disable_clog']);
             if (isset($_POST['logfilesize']) && (strlen($pconfig['logfilesize']) > 0)) {
                 $config['syslog']['logfilesize'] = (int)$pconfig['logfilesize'];
             } elseif (isset($config['syslog']['logfilesize'])) {
                 unset($config['syslog']['logfilesize']);
             }
+            if (isset($_POST['preservelogs']) && (strlen($pconfig['preservelogs']) > 0)) {
+                $config['syslog']['preservelogs'] = (int)$pconfig['preservelogs'];
+            } elseif (isset($config['syslog']['preservelogs'])) {
+                unset($config['syslog']['preservelogs']);
+            }
+
             $config['syslog']['disablelocallogging'] = !empty($pconfig['disablelocallogging']);
             $oldnologdefaultblock = isset($config['syslog']['nologdefaultblock']);
             $oldnologdefaultpass = isset($config['syslog']['nologdefaultpass']);
@@ -185,6 +166,17 @@ $(document).ready(function() {
                 }]
         });
     });
+
+    $("#disable_clog").change(function(){
+        if ($(this).is(":checked")) {
+            $("#preservelogs").prop("disabled", false).closest("tr").removeClass("hidden");
+            $("#logfilesize").prop("disabled", true).closest("tr").addClass("hidden");
+        } else {
+            $("#preservelogs").prop("disabled", true).closest("tr").addClass("hidden");
+            $("#logfilesize").prop("disabled", false).closest("tr").removeClass("hidden");
+        }
+    });
+    $("#disable_clog").change();
 });
 
 //]]>
@@ -215,18 +207,27 @@ $(document).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_reverse" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reverse Display') ?></td>
+                    <td><a id="help_for_circular_logs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable circular logs");?></td>
                     <td>
-                      <input name="reverse" type="checkbox" id="reverse" value="yes" <?=!empty($pconfig['reverse']) ? "checked=\"checked\"" : ""; ?> />
-                      <div class="hidden" data-for="help_for_reverse">
-                        <?=gettext("Show log entries in reverse order (newest entries on top)");?>
+                      <input name="disable_clog" type="checkbox" id="disable_clog" value="yes" <?=!empty($pconfig['disable_clog']) ? "checked=\"checked\"" : ""; ?> />
+                      <div class="hidden" data-for="help_for_circular_logs">
+                        <?=gettext("Disable legacy circular logging");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="hidden">
+                    <td><a id="help_for_preservelogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Preserve logs (Days)') ?></td>
+                    <td>
+                      <input name="preservelogs" id="preservelogs" type="text" value="<?=$pconfig['preservelogs'];?>" />
+                      <div class="hidden" data-for="help_for_preservelogs">
+                          <?=gettext("Number of log to preserve. By default 31 logs are preserved.");?>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_logfilesize" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log File Size (Bytes)') ?></td>
                     <td>
-                      <input name="logfilesize" type="text" value="<?=$pconfig['logfilesize'];?>" />
+                      <input name="logfilesize" id="logfilesize" type="text" value="<?=$pconfig['logfilesize'];?>" />
                       <div class="hidden" data-for="help_for_logfilesize">
                         <?=gettext("Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files.") ?>
                         <br /><br />

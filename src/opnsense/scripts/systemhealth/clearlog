@@ -34,7 +34,6 @@ require_once("interfaces.inc");
 require_once("plugins.inc");
 
 $opts = getopt('hm:f:', array(), $optind);
-
 if (isset($opts['h']) || empty($opts['f']) || empty($opts['m'])) {
     echo "Usage: clearlog [-h] [-m] [-f]\n\n";
     echo "\t-h show this help text and exit\n";
@@ -46,10 +45,19 @@ if (isset($opts['m']) && isset($opts['f'])) {
     $mname = basename($opts['m']);
     $fname = basename($opts['f']);
     if ($mname == 'core') {
-        $filename = "/var/log/{$fname}.log";
+        $basename = "/var/log/{$fname}";
     } else {
-        $filename = "/var/log/{$mname}/{$fname}.log";
+        $basename = "/var/log/{$mname}/{$fname}";
     }
+    $filename = "{$basename}.log";
+
+    if (is_dir($basename)) {
+        foreach (glob("{$basename}/{$fname}_*.log") as $filename) {
+            @unlink($filename);
+        }
+        system_syslogd_start();
+    }
+
     if (is_file($filename)) {
         $size = filesize($filename);
         $handle = fopen($filename, "r");

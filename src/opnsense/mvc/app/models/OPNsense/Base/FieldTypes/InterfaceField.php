@@ -60,7 +60,7 @@ class InterfaceField extends BaseListField
     /**
      * @var bool allow dynamic interfaces
      */
-    private $internalAllowDynamic = false;
+    private $internalAllowDynamic = 0;
 
     /**
      *  collect parents for lagg interfaces
@@ -120,6 +120,10 @@ class InterfaceField extends BaseListField
                 foreach ($configObj->interfaces->children() as $key => $value) {
                     if (!$this->internalAllowDynamic && !empty($value->internal_dynamic)) {
                         continue;
+                    } elseif ($this->internalAllowDynamic == 2 && !empty($value->internal_dynamic)) {
+                        if (empty($value->ipaddr) && empty($value->ipaddrv6)) {
+                            continue;
+                        }
                     }
                     $allInterfaces[$key] = $value;
                     if (!empty($value->if)) {
@@ -185,7 +189,7 @@ class InterfaceField extends BaseListField
     private function updateInternalCacheKey()
     {
         $tmp  = serialize($this->internalFilters);
-        $tmp .= $this->internalAllowDynamic ? "Y" : "N";
+        $tmp .= (string)$this->internalAllowDynamic;
         $tmp .= $this->internalAddParentDevices ? "Y" : "N";
         $this->internalCacheKey = md5($tmp);
     }
@@ -218,14 +222,16 @@ class InterfaceField extends BaseListField
 
     /**
      * select if dynamic (hotplug) interfaces maybe selectable
-     * @param $value boolean value 0/1
+     * @param $value Y/N/S (Yes, No, Static)
      */
     public function setAllowDynamic($value)
     {
         if (trim(strtoupper($value)) == "Y") {
-            $this->internalAllowDynamic = true;
+            $this->internalAllowDynamic = 1;
+        } elseif (trim(strtoupper($value)) == "S") {
+            $this->internalAllowDynamic = 2;
         } else {
-            $this->internalAllowDynamic = false;
+            $this->internalAllowDynamic = 0;
         }
         $this->updateInternalCacheKey();
     }

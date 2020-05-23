@@ -66,7 +66,7 @@ class UIModelGrid
     ) {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
-        $sortBy = array($defaultSort);
+        $sortBy = empty($defaultSort) ? array() : array($defaultSort);
         $sortDescending = false;
 
         if ($request->has('sort') && is_array($request->get("sort"))) {

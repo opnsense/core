@@ -338,9 +338,14 @@ include("head.inc");
                         endforeach;?>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['gatewayv6'])): ?>
+<?php endif ?>
+<?php if (array_key_exists('pdinfo', $ifinfo)): ?>
+                    <tr>
+                      <td><?= gettext('Delegated prefix') ?></td>
+                      <td><?= $ifinfo['pdinfo'] ?></td>
+                    </tr>
+<?php endif ?>
+<?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext("Gateway IPv6") ?></td>
                       <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>

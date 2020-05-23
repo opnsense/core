@@ -98,6 +98,13 @@
                 <advanced>true</advanced>
             </field>
             <field>
+                <id>proxy.general.connecttimeout</id>
+                <label>Connection Timeout</label>
+                <type>text</type>
+                <help>This can help you when having connection issues with IPv6 enabled servers. Set a value in seconds</help>
+                <advanced>true</advanced>
+            </field>
+            <field>
                 <id>proxy.general.uriWhitespaceHandling</id>
                 <label>Whitespace handling of URI</label>
                 <type>dropdown</type>

@@ -67,10 +67,10 @@ class Downloader(object):
                 flowbits_noalert = line.replace(' ', '').find('flowbits:noalert;') > -1
                 if flowbits_noalert:
                     pass
-                elif line[0:5] == 'alert':
-                    line = 'drop %s' % line[5:]
-                elif line[0:6] == '#alert':
-                    line = '#drop %s' % line[6:]
+                elif re.match("^\s*alert", line):
+                    line = "drop %s" % line[line.find('alert')+5:]
+                elif re.match("^#\s*alert", line):
+                    line = '#drop %s' % line[line.find('alert')+5:]
             output.append(line)
         return '\n'.join(output)
 

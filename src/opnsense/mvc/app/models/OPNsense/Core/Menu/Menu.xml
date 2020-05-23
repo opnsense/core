@@ -192,7 +192,7 @@
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>
-            <Overview url="/diag_logs_filter_summary.php"/>
+            <Overview url="/ui/diagnostics/firewall/stats"/>
             <Plain VisibleName="Plain View" url="/ui/diagnostics/log/core/filter"/>
         </LogFiles>
     </Firewall>

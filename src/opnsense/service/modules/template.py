@@ -72,7 +72,6 @@ class Template(object):
             return tmp.decode()
         except UnicodeError:
             # return source when unable to decode
-            syslog.syslog(syslog.LOG_NOTICE, "encode idna: unable to decode %s, return source" % x)
             return x
 
     def list_module(self, module_name):

@@ -43,7 +43,7 @@ CORE_PHP?=	72
 CORE_PYTHON?=	37
 CORE_SURICATA?=	-devel
 CORE_SYSLOGD?=	# empty
-CORE_SYSLOGNG?=	3.25
+CORE_SYSLOGNG?=	3.27
 CORE_UPDATE?=	# empty
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
@@ -135,7 +135,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			rrdtool \
 			samplicator \
 			squid \
-			sshlockout_pf \
 			strongswan \
 			sudo \
 			syslog-ng${CORE_SYSLOGNG:S/.//g} \

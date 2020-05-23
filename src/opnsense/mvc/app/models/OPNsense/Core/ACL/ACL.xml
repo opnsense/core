@@ -312,7 +312,8 @@
     <page-diagnostics-logs-firewall-summary>
         <name>Diagnostics: Logs: Firewall: Summary View</name>
         <patterns>
-            <pattern>diag_logs_filter_summary.php*</pattern>
+            <pattern>ui/diagnostics/firewall/stats*</pattern>
+            <pattern>api/diagnostics/firewall/stats*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-summary>
     <page-interfaces-assignnetworkports>

@@ -440,8 +440,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
-    $pconfig['dhcp6norelease'] = isset($a_interfaces[$if]['dhcp6norelease']);
-    $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
@@ -1199,13 +1197,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dhcp6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
                     }
-                    if (!empty($pconfig['dhcp6norelease'])) {
-                        $new_config['dhcp6norelease'] = true;
-                    }
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
                     }
-                    $new_config['adv_dhcp6_debug'] = !empty($pconfig['adv_dhcp6_debug']);
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
                     $new_config['adv_dhcp6_interface_statement_information_only_enable'] = $pconfig['adv_dhcp6_interface_statement_information_only_enable'];
@@ -2775,24 +2769,6 @@ include("head.inc");
                               <?=gettext("Send an IPv6 prefix hint to indicate the desired prefix size for delegation"); ?>
                             </div>
                           </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prevent release"); ?></td>
-                          <td>
-                            <input name="dhcp6norelease" type="checkbox" id="dhcp6norelease" value="yes" <?= !empty($pconfig['dhcp6norelease']) ? 'checked="checked"' : '' ?> />
-                            <div class="hidden" data-for="help_for_dhcp6norelease">
-                              <?=gettext("Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                            <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable debug"); ?></td>
-                            <td>
-                              <input name="adv_dhcp6_debug" type="checkbox" id="adv_dhcp6_debug" value="yes" <?=!empty($pconfig['adv_dhcp6_debug']) ? "checked=\"checked\"" : ""; ?> />
-                              <div class="hidden" data-for="help_for_dhcp6_debug">
-                                <?=gettext("Enable debug mode for DHCPv6 client"); ?>
-                              </div>
-                            </td>
                         </tr>
                         <tr>
                           <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
