@@ -143,12 +143,14 @@ class Nextcloud extends Base implements IBackupProvider
             if (!empty($crypto_password)) {
                 $confdata = $this->encrypt($confdata, $crypto_password);
             }
+            // Check if destination directory exists, create (full path) if not
             try {
-                $base_backup_path = "/".dirname($backupdir);
-                $directories = $this->listFiles($url, $username, $password, $base_backup_path);
-                if (!in_array("/$backupdir/", $directories)) {
-                    $this->create_directory($url, $username, $password, $backupdir);
-                }
+                $this->create_directory($url, $username, $password, $backupdir);
+            } catch (\Exception $e) {
+                return array();
+            }
+
+            try {
                 $this->upload_file_content(
                     $url,
                     $username,
@@ -187,7 +189,7 @@ class Nextcloud extends Base implements IBackupProvider
             $username,
             $password,
             'PROPFIND',
-            "Error while fetching filelist from Nextcloud"
+            "Error while fetching filelist from Nextcloud '{$directory}' path"
         );
         // workaround - simplexml seems to be broken when using namespaces - remove them.
         $xml = simplexml_load_string(str_replace(['<d:', '</d:'], ['<', '</'], $result['response']));
@@ -234,7 +236,7 @@ class Nextcloud extends Base implements IBackupProvider
     }
 
     /**
-     * create new remote directory
+     * create new remote directory if doesn't exist
      * @param string $url remote location
      * @param string $username remote user
      * @param string $password password to use
@@ -243,8 +245,27 @@ class Nextcloud extends Base implements IBackupProvider
      */
     public function create_directory($url, $username, $password, $backupdir)
     {
+        $parent_path = dirname($backupdir);
+        try {
+            $directories = $this->listFiles($url, $username, $password, "/{$parent_path}");
+        } catch (\Exception $e) {
+            if ($backupdir == ".") {
+                // We cannot create root, if we reached here there's some other problem
+                syslog(LOG_ERR, "Check Nextcloud configuration parameters");
+                return FALSE;
+            }
+            // If error assume dir doesn't exist. Create parent folder
+            if ($this->create_directory($url, $username, $password, $parent_path) === FALSE) {
+                throw new \Exception();
+            }
+        }
+        // if path exists ok
+        if (in_array("/{$backupdir}/", $directories)) {
+            return;
+        }
+
         $this->curl_request(
-            $url . "/remote.php/dav/files/$username/$backupdir",
+            $url . "/remote.php/dav/files/{$username}/{$backupdir}",
             $username,
             $password,
             'MKCOL',
