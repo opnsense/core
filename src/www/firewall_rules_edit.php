@@ -678,6 +678,59 @@ include("head.inc");
       $("#category").typeahead({
           source: categories
       });
+
+      /***************************************************************************************************************
+       * typeahead seems to be broken since jQuery 3.3.0
+       * temporary fix to make sure "position()" returns the expected values as suggested in:
+       * https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/384
+       *
+       * When being used outside position: relative items, the plugin still seems to be working
+       * (which is likely why the menu quick search isn't affected).
+       ***************************************************************************************************************/
+      $.fn.position = function() {
+        if ( !this[ 0 ] ) {
+            return;
+        }
+
+        var offsetParent, offset, doc,
+          elem = this[ 0 ],
+          parentOffset = { top: 0, left: 0 };
+
+        // position:fixed elements are offset from the viewport, which itself always has zero offset
+        if ( jQuery.css( elem, "position" ) === "fixed" ) {
+
+          // Assume position:fixed implies availability of getBoundingClientRect
+          offset = elem.getBoundingClientRect();
+
+        } else {
+          offset = this.offset();
+
+          // Account for the *real* offset parent, which can be the document or its root element
+          // when a statically positioned element is identified
+          doc = elem.ownerDocument;
+          offsetParent = elem.offsetParent || doc.documentElement;
+          while ( offsetParent &&
+            offsetParent !== doc &&
+            ( offsetParent !== doc.body && offsetParent !== doc.documentElement ) &&
+            jQuery.css( offsetParent, "position" ) === "static" ) {
+
+            offsetParent = offsetParent.parentNode;
+          }
+          if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
+
+            // Incorporate borders into its offset, since they are outside its content origin
+            parentOffset = jQuery( offsetParent ).offset();
+            parentOffset.top += jQuery.css( offsetParent, "borderTopWidth", true );
+            parentOffset.left += jQuery.css( offsetParent, "borderLeftWidth", true );
+          }
+        }
+
+        // Subtract parent offsets and element margins
+        return {
+          top: offset.top - parentOffset.top - jQuery.css( elem, "marginTop", true ),
+          left: offset.left - parentOffset.left - jQuery.css( elem, "marginLeft", true )
+        };
+      };
   });
 
   </script>
