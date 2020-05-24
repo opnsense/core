@@ -64,6 +64,10 @@ if __name__ == '__main__':
                     if rule[i] != '#':
                         break
 
+                #consume an extra space before generating altered rule
+                if rule[i] == ' ':
+                    i += 1
+
                 # generate altered rule
                 if 'enabled' in rule_updates[rule_info_record['metadata']['sid']]:
                     # enabled / disabled in configuration
