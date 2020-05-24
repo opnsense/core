@@ -8,7 +8,7 @@
         </privatedomain>
         <dotservers type="CSVListField">
             <Required>N</Required>
-            <mask>/^[a-fA-F0-9\.\@]{1,46}$/</mask>
+            <mask>/^[a-fA-F0-9\.\,\:\@]{1,512}$/</mask>
         </dotservers>
     </items>
 </model>
