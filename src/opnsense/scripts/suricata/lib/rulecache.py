@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2020 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import glob
 import sqlite3
 import shlex
 import fcntl
+import csv
 from configparser import ConfigParser
 from lib import rule_source_directory
 
@@ -46,7 +47,6 @@ class RuleCache(object):
         # suricata rule settings, source directory and cache json file to use
         self.cachefile = '%srules.sqlite' % rule_source_directory
         self._rule_fields = ['sid', 'msg', 'classtype', 'rev', 'gid', 'source', 'enabled', 'reference', 'action']
-        self._rule_defaults = {'classtype': '##none##'}
 
     @staticmethod
     def list_local():
@@ -80,46 +80,36 @@ class RuleCache(object):
         :return:
         """
         with open(filename, 'r') as f_in:
+            source_filename = filename.split('/')[-1]
             for rule in f_in:
                 rule_info_record = {'rule': rule.strip(), 'metadata': None}
-                if rule.find('msg:') != -1:
+                msg_pos = rule.find('msg:')
+                if msg_pos != -1:
                     # define basic record
-                    record = {'enabled': True, 'source': filename.split('/')[-1]}
-                    if rule.strip()[0] == '#':
-                        record['enabled'] = False
-                        record['action'] = rule.replace('#', '').strip().split()[0]
-                    else:
-                        record['action'] = rule.strip().split(' ')[0]
-
-                    rule_metadata = rule[rule.find('msg:'):-1]
-                    for field in rule_metadata.split(';'):
-                        fieldname = field[0:field.find(':')].strip()
-                        fieldcontent = field[field.find(':') + 1:].strip()
-                        if fieldname in self._rule_fields:
-                            if fieldcontent[0] == '"':
-                                content = fieldcontent[1:-1]
+                    record = {
+                        'enabled': rule[0:20].strip()[0] != '#',
+                        'source': source_filename,
+                        'sid': None,
+                        'rev': None,
+                        'gid': None,
+                        'msg': None,
+                        'reference': None,
+                        'classtype': '##none##',
+                        'action': rule[0:20].replace('#', '').strip().split()[0],
+                        'metadata': dict()
+                    }
+                    rule_metadata = rule[msg_pos:-1]
+                    for section in list(csv.reader([rule_metadata], delimiter=";"))[0]:
+                        sep = section.find(':')
+                        if sep > 0:
+                            prop = section[0:sep].strip()
+                            value = section[sep+1:].strip(' "')
+                            if prop == 'metadata':
+                                for mdtag in list(csv.reader([value], delimiter=","))[0]:
+                                    parts = mdtag.split(maxsplit=1)
+                                    record['metadata'][parts[0]] = parts[1]
                             else:
-                                content = fieldcontent
-
-                            if fieldname in record:
-                                # if same field repeats, put items in list
-                                if type(record[fieldname]) != list:
-                                    record[fieldname] = [record[fieldname]]
-                                record[fieldname].append(content)
-                            else:
-                                record[fieldname] = content
-
-                    for rule_field in self._rule_fields:
-                        if rule_field not in record:
-                            if rule_field in self._rule_defaults:
-                                record[rule_field] = self._rule_defaults[rule_field]
-                            else:
-                                record[rule_field] = None
-
-                    # perform type conversions
-                    for fieldname in record:
-                        if type(record[fieldname]) == list:
-                            record[fieldname] = '\n'.join(record[fieldname])
+                                record[prop] = value
 
                     rule_info_record['metadata'] = record
 
