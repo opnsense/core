@@ -130,7 +130,7 @@ class Util
             foreach ((new Alias())->aliasIterator() as $alias) {
                 if (empty(self::$aliasDescriptions[$alias['name']])) {
                     if (!empty($alias['description'])) {
-                        self::$aliasDescriptions[$alias['name']] = "<strong>".$alias['description'] . "</strong><br/>";
+                        self::$aliasDescriptions[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
                     } else {
                         self::$aliasDescriptions[$alias['name']] = "";
                     }
