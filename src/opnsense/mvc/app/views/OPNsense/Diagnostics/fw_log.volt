@@ -1,30 +1,29 @@
 {#
-
-OPNsense® is Copyright © 2014 – 2016 by Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
+ #
+ # Copyright (c) 2014-2016 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
 <script>
     'use strict';
@@ -97,6 +96,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
+                            if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
+                                record['interface_name'] = interface_descriptions[record.interface];
+                            } else {
+                                record['interface_name'] = record.interface;
+                            }
                             log_tr.data('details', record);
                             log_tr.hide();
                             $.each(record_spec, function(idx, field){
@@ -108,13 +112,6 @@ POSSIBILITY OF SUCH DAMAGE.
                                         var icon = field_type_icons[record[column_name]];
                                         if (icon != undefined) {
                                             log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i><span style="display:none">'+record[column_name]+'</span>');
-                                        }
-                                        break;
-                                    case 'interface':
-                                        if (interface_descriptions[record[column_name]] != undefined) {
-                                            log_td.text(interface_descriptions[record[column_name]]);
-                                        } else {
-                                            log_td.text(record[column_name]);
                                         }
                                         break;
                                     case 'address':
@@ -151,7 +148,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                     // apply filter after load
-                    $("#filter").keyup();
+                    apply_filter();
 
                     // limit output, try to keep max X records on screen.
                     var tr_count = 0;
@@ -256,21 +253,69 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         // live filter
-        $("#filter").keyup(function(){
-            var search_str = $(this).val().toLowerCase();
+        function apply_filter()
+        {
+            let filters = [];
+            $("#filters > span.badge").each(function(){
+                filters.push($(this).data('filter'));
+            });
             $("#grid-log > tbody > tr").each(function(){
-                var selected_tr = $(this);
-                var visible_text = $(this).text().toLowerCase();
-                try {
-                    if (visible_text.match(search_str)) {
-                        selected_tr.show();
-                    } else {
-                        selected_tr.hide();
+                let selected_tr = $(this);
+                let this_data = $(this).data('details');
+                if (this_data === undefined) {
+                    return;
+                }
+                let is_matched = true;
+                for (let i=0; i < filters.length; i++) {
+                    let filter_tag = filters[i].tag;
+                    let filter_value = filters[i].value.toLowerCase();
+                    let filter_condition = filters[i].condition;
+                    if (this_data[filter_tag] === undefined) {
+                        is_matched = false;
+                        break;
+                    } else if (filter_condition === '=' && this_data[filter_tag].toLowerCase() != filter_value) {
+                        is_matched = false;
+                        break;
+                    } else if (filter_condition === '~' && !this_data[filter_tag].toLowerCase().match(filter_value)) {
+                        is_matched = false;
+                        break;
                     }
-                } catch(e) {
-                    // ignore regexp errors
+                }
+                if (is_matched) {
+                    selected_tr.show();
+                } else {
+                    selected_tr.hide();
                 }
             });
+        }
+
+        $("#add_filter_condition").click(function(){
+            if ($("#filter_value").val() === "") {
+                return;
+            }
+            let $new_filter = $("<span/>").addClass("badge");
+            $new_filter.data('filter', {
+                tag:$("#filter_tag").val(),
+                condition:$("#filter_condition").val(),
+                value:$("#filter_value").val(),
+              }
+            );
+            $new_filter.text($("#filter_tag").val() + $("#filter_condition").val() + $("#filter_value").val());
+            $new_filter.click(function(){
+                $("#filter_tag").val($(this).data('filter').tag);
+                $("#filter_condition").val($(this).data('filter').condition);
+                $("#filter_value").val($(this).data('filter').value);
+                $(this).remove();
+                if ($("#filters > span.badge").length == 0) {
+                    $("#filters_help").hide();
+                }
+                $('.selectpicker').selectpicker('refresh');
+                apply_filter();
+            });
+            $("#filters").append($new_filter);
+            $("#filter_value").val("");
+            $("#filters_help").show();
+            apply_filter();
         });
 
         // reset log content on limit change, forces a reload
@@ -320,30 +365,79 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="content-box-main">
         <div class="table-responsive">
             <div  class="col-xs-12">
-                <div class="checkbox-inline  col-xs-3">
-                  <input type="text" id="filter" class="form-control" placeholder="filter">
+                <div class="col-lg-6 col-sm-12">
+                  <table class="table table-condensed">
+                      <tbody>
+                          <tr>
+                              <td style="width:125px;">
+                                <select id="filter_tag" class="selectpicker" data-width="120px">
+                                    <option value="action">{{ lang._('action') }}</option>
+                                    <option value="interface_name">{{ lang._('interface') }}</option>
+                                    <option value="dir">{{ lang._('dir') }}</option>
+                                    <option value="__timestamp__">{{ lang._('Time') }}</option>
+                                    <option value="src">{{ lang._('src') }}</option>
+                                    <option value="srcport">{{ lang._('src_port') }}</option>
+                                    <option value="dst">{{ lang._('dst') }}</option>
+                                    <option value="dstport">{{ lang._('dst_port') }}</option>
+                                    <option value="protoname">{{ lang._('protoname') }}</option>
+                                    <option value="label">{{ lang._('label') }}</option>
+                                    <option value="dst">{{ lang._('dst') }}</option>
+                                    <option value="rid">{{ lang._('rule id') }}</option>
+                                    <option value="tcpflags">{{ lang._('tcpflags') }}</option>
+                                </select>
+                              </td>
+                              <td style="width:125px;">
+                                <select id="filter_condition" class="condition"  data-width="120px">
+                                    <option value="~" selected=selected>{{ lang._('contains') }}</option>
+                                    <option value="=">{{ lang._('is') }}</option>
+                                </select>
+                              </td>
+                              <td>
+                                <input type="text" id="filter_value"></input>
+                              </td>
+                              <td>
+                                  <button class="btn" id="add_filter_condition" aria-hidden="true">
+                                      <i class="fa fa-plus"></i>
+                                  </button>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td colspan="4">
+                                <div id="filters">
+                                </div>
+                                <div id="filters_help" style="display:none; padding-top:5px">
+                                  <small>{{ lang._('click on badge to remove filter') }}</small>
+                                </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
                 </div>
-                <div class="checkbox-inline pull-right">
-                  <label>
-                    <input id="auto_refresh" type="checkbox" checked="checked">
-                    <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
-                  </label>
-                  <br/>
-                  <label>
-                      <input id="dolookup" type="checkbox">
-                      <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
-                  </label>
+                <div class="col-lg-6 col-sm-12">
+                  <div class="pull-right">
+                    <div class="checkbox-inline">
+                      <label>
+                        <input id="auto_refresh" type="checkbox" checked="checked">
+                        <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
+                      </label>
+                      <br/>
+                      <label>
+                          <input id="dolookup" type="checkbox">
+                          <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
+                      </label>
+                    </div><br/>
+                    <select id="limit" class="selectpicker" data-width="150" >
+                        <option value="25" selected="selected">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="250">250</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                        <option value="2500">2500</option>
+                        <option value="5000">5000</option>
+                    </select>
+                  </div>
                 </div>
-                <select id="limit" class="selectpicker pull-right" data-width="100" >
-                    <option value="25" selected="selected">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="250">250</option>
-                    <option value="500">500</option>
-                    <option value="1000">1000</option>
-                    <option value="2500">2500</option>
-                    <option value="5000">5000</option>
-                </select>
             </div>
             <div  class="col-xs-12">
                 <hr/>
@@ -353,7 +447,7 @@ POSSIBILITY OF SUCH DAMAGE.
                           <tr>
                               <th class="hidden" data-column-id="__digest__" data-type="string">{{ lang._('Hash') }}</th>
                               <th class="data-center" data-column-id="action" data-type="icon"></th>
-                              <th data-column-id="interface" data-type="interface">{{ lang._('Interface') }}</th>
+                              <th data-column-id="interface_name" data-type="interface">{{ lang._('Interface') }}</th>
                               <th data-column-id="dir" data-type="icon"></th>
                               <th data-column-id="__timestamp__" data-type="string">{{ lang._('Time') }}</th>
                               <th data-column-id="src" data-type="address">{{ lang._('Source') }}</th>
