@@ -159,7 +159,7 @@ function updateServiceStatusUI(status)
         status_html += 'hidden';
     }
 
-    status_html += '"><i class="fa fa-play fa-fw"/></span>';
+    status_html += '"><i class="fa fa-play fa-fw"></i></span>';
 
     $('#service_status_container').html(status_html);
 }
@@ -187,7 +187,7 @@ function updateServiceControlUI(serviceName)
             status_html += 'hidden';
         }
 
-        status_html += '"><i class="fa fa-' + status_icon + ' fa-fw"/></span>';
+        status_html += '"><i class="fa fa-' + status_icon + ' fa-fw"></i></span>';
 
         $('#service_status_container').html(status_html + " " + buttons);
 
