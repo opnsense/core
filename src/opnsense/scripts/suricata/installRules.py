@@ -61,7 +61,7 @@ if __name__ == '__main__':
                     and rule_info_record['metadata']['sid'] in rule_updates:
                 # search last comment marker
                 for i in range(len(rule_info_record['rule'])):
-                    if rule[i] != '#':
+                    if rule[i] not in ['#', ' ']:
                         break
 
                 # generate altered rule
