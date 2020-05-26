@@ -34,7 +34,7 @@ else
 	# PATCH: 4133 - bad gateway being set
 	if_ipv6_gateway="$(
 		/sbin/ifconfig ${1} inet6 | \
-		/usr/bin/fgrep "inet " | \
+		/usr/bin/fgrep "inet6 " | \
 		/usr/bin/fgrep " --> " | \
 		/usr/bin/awk '{ print $4 }'
 	)"
