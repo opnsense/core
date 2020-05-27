@@ -1318,6 +1318,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                         'to' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
                     );
                 }
+
                 if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
                     $pd_prefix_from_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['from']);
                     $pd_prefix_to_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['to']);
