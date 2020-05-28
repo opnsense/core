@@ -97,3 +97,6 @@ if __name__ == '__main__':
     for filename in glob.glob("%s/*.rules" % rule_target_dir):
         if os.path.basename(filename) not in  all_installed_files:
             os.remove(filename)
+
+    # import local changes (if changed)
+    RuleCache.update_local_changes()

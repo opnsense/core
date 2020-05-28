@@ -46,9 +46,6 @@ if __name__ == '__main__':
     if rc.is_changed():
         rc.create()
 
-    # import local changes (if changed)
-    rc.update_local_changes()
-
     # load parameters, ignore validation here the search method only processes valid input
     parameters = {'limit': '0', 'offset': '0', 'sort_by': '', 'filter': ''}
     update_params(parameters)
