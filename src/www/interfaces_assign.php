@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newifname = 'opt' . $i;
         $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
         $config['interfaces'][$newifname] = array();
-        $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);;
+        $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
         $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
         $interfaces = list_interfaces();
         if ($interfaces[$_POST['if_add']]['section'] == 'ppps.ppp') {
