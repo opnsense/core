@@ -203,7 +203,7 @@ function ipsec_interfaces()
         foreach (ipsec_get_configured_vtis() as $intf => $details) {
             $interfaces[$intf] = [
                 'enable' => true,
-                'descr' => $details['descr'],
+                'descr' => preg_replace('/[^a-z_0-9]/i', '', $details['descr']),
                 'if' => $intf,
                 'type' => 'none',
             ];
