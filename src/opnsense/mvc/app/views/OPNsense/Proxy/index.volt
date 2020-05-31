@@ -428,7 +428,7 @@
                         ></button>
                         <button class="btn btn-primary" id="downloadAct"
                                 data-endpoint='/api/proxy/service/downloadacls'
-                                data-label="{{ lang._('Download ACLs & Apply') }}"
+                                data-label="{{ lang._('Download ACLs') }}"
                                 data-error-title="{{ lang._('Error fetching remote acls') }}"
                                 type="button"
                         ></button>
