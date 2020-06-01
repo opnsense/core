@@ -64,7 +64,6 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         function updateRuleClassTypes() {
             ajaxGet("/api/ids/settings/listRuleMetadata", {}, function(data, status) {
-                console.log(data);
                 if (status == "success") {
                     $('#ruleclass').html('<option value="">ALL</option>');
                     $.each(data['classtype'], function(key, value) {
