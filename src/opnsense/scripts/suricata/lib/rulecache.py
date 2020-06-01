@@ -46,7 +46,7 @@ class RuleCache(object):
     def __init__(self):
         # suricata rule settings, source directory and cache json file to use
         self.cachefile = '%srules.sqlite' % rule_source_directory
-        self._rule_fields = ['sid', 'msg', 'classtype', 'rev', 'gid', 'source', 'enabled', 'reference', 'action']
+        self._rule_fields = ['sid', 'msg', 'rev', 'gid', 'source', 'enabled', 'reference', 'action']
 
     @staticmethod
     def list_local():
@@ -164,7 +164,7 @@ class RuleCache(object):
         cur = db.cursor()
 
         cur.execute("create table stats (timestamp number, files number)")
-        cur.execute("""create table rules (sid INTEGER, msg TEXT, classtype TEXT,
+        cur.execute("""create table rules (sid INTEGER, msg TEXT,
                                            rev INTEGER, gid INTEGER, reference TEXT,
                                            enabled BOOLEAN, action text, source TEXT)""")
         cur.execute("create table rule_properties(sid INTEGER, property text, value text) ")
@@ -341,18 +341,17 @@ class RuleCache(object):
 
         return result
 
-    def list_class_types(self):
+    def list_metadata(self):
         """
-        :return: list of installed classtypes
+        :return: dictionary with known metadata types and values
         """
-        result = []
+        result = {}
         if os.path.exists(self.cachefile):
             db = sqlite3.connect(self.cachefile)
             cur = db.cursor()
-            cur.execute('SELECT DISTINCT classtype FROM rules')
+            cur.execute('SELECT property, value FROM metadata_histogram order by property, value')
             for record in cur.fetchall():
-                result.append(record[0])
-
-            return sorted(result)
-        else:
-            return result
+                if record[0] not in result:
+                    result[record[0]] = list()
+                result[record[0]].append(record[1])
+        return result

@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2020 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 
     --------------------------------------------------------------------------------------
 
-    script to fetch all classtypes from the installed suricata rules using the shared rule cache:
+    script to fetch all metadata types from the installed suricata rules using the shared rule cache
 """
 
 import ujson
@@ -38,7 +38,4 @@ if __name__ == '__main__':
     if rc.is_changed():
         rc.create()
 
-    items = rc.list_class_types()
-    result = {'items': items, 'count': len(items)}
-
-    print(ujson.dumps(result))
+    print(ujson.dumps(rc.list_metadata()))

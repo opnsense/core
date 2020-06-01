@@ -215,17 +215,16 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * List available classtypes
+     * List available rule metadata
      * @return array
      * @throws \Exception when configd action fails
      */
-    public function listRuleClasstypesAction()
+    public function listRuleMetadataAction()
     {
         $this->sessionClose();
-        $backend = new Backend();
-        $response = $backend->configdRun("ids list classtypes");
+        $response = (new Backend())->configdRun("ids list rulemetadata");
         $data = json_decode($response, true);
-        if ($data != null && array_key_exists("items", $data)) {
+        if ($data != null) {
             return $data;
         } else {
             return array();

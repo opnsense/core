@@ -63,10 +63,11 @@ POSSIBILITY OF SUCH DAMAGE.
          * list all known classtypes and add to selection box
          */
         function updateRuleClassTypes() {
-            ajaxGet("/api/ids/settings/listRuleClasstypes", {}, function(data, status) {
+            ajaxGet("/api/ids/settings/listRuleMetadata", {}, function(data, status) {
+                console.log(data);
                 if (status == "success") {
                     $('#ruleclass').html('<option value="">ALL</option>');
-                    $.each(data['items'], function(key, value) {
+                    $.each(data['classtype'], function(key, value) {
                         $('#ruleclass').append($("<option></option>").attr("value",value).text(value));
                     });
                     $('.selectpicker').selectpicker('refresh');
