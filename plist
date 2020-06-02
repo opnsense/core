@@ -701,8 +701,8 @@
 /usr/local/opnsense/scripts/suricata/lib/metadata.py
 /usr/local/opnsense/scripts/suricata/lib/rulecache.py
 /usr/local/opnsense/scripts/suricata/listAlertLogs.py
-/usr/local/opnsense/scripts/suricata/listClasstypes.py
 /usr/local/opnsense/scripts/suricata/listInstallableRulesets.py
+/usr/local/opnsense/scripts/suricata/listRuleMetadata.py
 /usr/local/opnsense/scripts/suricata/metadata/rules/et-open.xml
 /usr/local/opnsense/scripts/suricata/metadata/rules/opnsense.xml
 /usr/local/opnsense/scripts/suricata/metadata/rules/sslbl.xml
