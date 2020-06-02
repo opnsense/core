@@ -104,10 +104,13 @@ class SettingsController extends ApiMutableModelControllerBase
                 $searchPhrase = '';
             }
 
-            // add filter for classtype
-            if ($this->request->getPost("classtype", "string", '') != "") {
-                $searchTag = $filter->sanitize($this->request->getPost('classtype'), "query");
-                $searchPhrase .= " classtype/" . $searchTag . ' ';
+            // add metadata filters
+            foreach ($_POST as $key => $value) {
+                $key = $filter->sanitize($key, "string");
+                $value = $filter->sanitize($value, "string");
+                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase', 'action'])) {
+                    $searchPhrase .= " {$key}/{$value} ";
+                }
             }
 
             // add filter for action
