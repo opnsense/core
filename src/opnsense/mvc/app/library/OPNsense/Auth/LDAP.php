@@ -29,6 +29,7 @@
 namespace OPNsense\Auth;
 
 use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
 
 /**
  * Class LDAP connector
@@ -510,6 +511,7 @@ class LDAP extends Base implements IAuthConnector
                     }
                 }
                 Config::getInstance()->save();
+                (new Backend())->configdpRun("auth user changed", array($username));
             }
         }
     }

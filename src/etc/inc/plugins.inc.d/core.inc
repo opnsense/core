@@ -257,3 +257,35 @@ function core_xmlrpc_sync()
 
     return $result;
 }
+
+function core_configure()
+{
+    return array(
+        'user_changed' => array('core_user_changed_groups:2'),
+    );
+}
+
+/**
+ * user changed event, synchronize attached system groups for requested user
+ */
+function core_user_changed_groups($verbose = false, $username)
+{
+    global $config;
+    if (is_array($config['system']['user'])) {
+        foreach ($config['system']['user'] as $user) {
+            if ($user['name'] == $username) {
+                exec("/usr/bin/groups " . escapeshellarg($username). ' 2>/dev/null', $out, $ret);
+                $current_groups = [];
+                if (!$ret) {
+                    $current_groups = explode(" ", $out[0]);
+                }
+                foreach ($config['system']['group'] as $group) {
+                    if (in_array($group['name'], $current_groups) ||
+                          (!empty($group['member']) && in_array($user['uid'], $group['member']))) {
+                        local_group_set($group);
+                    }
+                }
+            }
+        }
+    }
+}
