@@ -735,6 +735,7 @@
 /usr/local/opnsense/scripts/unbound/dnsbl.py
 /usr/local/opnsense/scripts/unbound/unbound_start.sh
 /usr/local/opnsense/scripts/unbound/wrapper.py
+/usr/local/opnsense/service/conf/actions.d/actions_auth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf
 /usr/local/opnsense/service/conf/actions.d/actions_configd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
