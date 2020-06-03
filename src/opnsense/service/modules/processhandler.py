@@ -278,13 +278,17 @@ class ActionHandler(object):
 
                 if section.find('.') > -1:
                     # at this moment we only support 2 levels of actions ( 3 if you count topic as well )
-                    for alias in section.split('.')[0].split('|'):
-                        if alias not in self.action_map[topic_name]:
-                            self.action_map[topic_name][alias] = {}
-                        self.action_map[topic_name][alias][section.split('.')[1]] = action_obj
+                    action_name = section.split('.')[0]
+                    if action_name not in self.action_map[topic_name]:
+                        self.action_map[topic_name][action_name] = {}
+                    if type(self.action_map[topic_name][action_name]) is not dict:
+                        syslog.syslog(syslog.LOG_ERR,
+                            'unsupported overlay command [%s.%s.%s]' % (topic_name, action_name, section.split('.')[1])
+                        )
+                    else:
+                        self.action_map[topic_name][action_name][section.split('.')[1]] = action_obj
                 else:
-                    for alias in section.split('|'):
-                        self.action_map[topic_name][alias] = action_obj
+                    self.action_map[topic_name][section] = action_obj
 
     def list_actions(self, attributes=None):
         """ list all available actions
