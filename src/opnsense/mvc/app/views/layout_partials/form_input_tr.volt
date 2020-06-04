@@ -87,7 +87,7 @@
         {% elseif type == "textbox" %}
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }}></textarea>
         {% elseif type == "info" %}
-            <span  class="{style|default('')}}" id="{{ id }}"></span>
+            <span  class="{{style|default('')}}" id="{{ id }}"></span>
         {% endif %}
         {% if help|default(false) %}
             <div class="hidden" data-for="help_for_{{ id }}">
