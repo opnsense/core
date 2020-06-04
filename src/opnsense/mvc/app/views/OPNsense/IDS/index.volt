@@ -342,6 +342,33 @@ POSSIBILITY OF SUCH DAMAGE.
                                         }
                                         return toggle;
                                     }
+                                },
+                                onBeforeRenderDialog: function(payload) {
+                                    // update form with dynamic fields
+                                    let template_tr = $("#row___template__");
+                                    $(".__rule__metadata_record").remove();
+                                    template_tr.hide();
+                                    if (payload.frm_DialogRule) {
+                                        $.each(payload.frm_DialogRule, function(key, value){
+                                            // ignore fixed fields and empty values
+                                            if (['sid', 'rev', 'action', 'action_default', 'installed_action',
+                                                 'enabled', 'enabled_default', 'msg', 'reference'].includes(key)
+                                                 || value === null) {
+                                                return;
+                                            }
+                                            let new_tr = template_tr.clone();
+                                            new_tr.prop("id", "row_" + key);
+                                            new_tr.addClass("__rule__metadata_record");
+                                            new_tr.html(new_tr.html().replace('__template__label__', key));
+                                            if (key === 'reference_html') {
+                                                value = $("<textarea/>").html(value).text();
+                                            }
+                                            new_tr.find("#__template__").prop("id", key).html(value);
+                                            new_tr.show();
+                                            new_tr.insertBefore(template_tr);
+                                        });
+                                    }
+                                    return (new $.Deferred()).resolve();
                                 }
                             },
                             toggle:'/api/ids/settings/toggleRule/'

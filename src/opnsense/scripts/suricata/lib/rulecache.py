@@ -329,16 +329,29 @@ class RuleCache(object):
 
             # fetch results
             cur.execute(sql, sql_parameters)
-            while True:
-                row = cur.fetchone()
-                if row is None:
-                    break
-
+            all_sids = []
+            for row in cur.fetchall():
                 record = {}
                 for fieldNum in range(len(cur.description)):
                     record[cur.description[fieldNum][0]] = row[fieldNum]
                 result['rows'].append(record)
+                if record['sid']:
+                    all_sids.append("%d" % record['sid'])
 
+            # extend with collected metadata attributes
+            cur.execute("select * from rule_properties where sid in (%s) order by sid" %
+                ",".join(all_sids)
+            )
+            rule_props = dict()
+            for row in cur.fetchall():
+                if row[0] not in rule_props:
+                    rule_props[row[0]] = dict()
+                rule_props[row[0]][row[1]] = row[2]
+
+            for record in result['rows']:
+                if record['sid'] in rule_props:
+                    for fieldname in rule_props[record['sid']]:
+                        record[fieldname] = rule_props[record['sid']][fieldname]
         return result
 
     def list_metadata(self):

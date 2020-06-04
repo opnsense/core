@@ -211,6 +211,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     $row['reference_html'] .= $item_html . '<br/>';
                 }
             }
+            ksort($row);
             return $row;
         } else {
             return array();
