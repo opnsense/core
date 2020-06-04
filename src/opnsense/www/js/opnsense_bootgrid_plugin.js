@@ -136,7 +136,8 @@ $.fn.UIBootgrid = function (params) {
                         return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                     }
                 },
-            }
+            },
+            onBeforeRenderDialog: null
         };
 
         // merge additional options (if any)
@@ -151,6 +152,7 @@ $.fn.UIBootgrid = function (params) {
         } else {
             this_grid.requestHandler = null;
         }
+        this_grid.onBeforeRenderDialog = gridopt.onBeforeRenderDialog;
 
         if ($(this_grid).data('store-selection') === true && window.localStorage) {
             // fetch last selected rowcount, sort on top so it will be the current active selection
@@ -187,37 +189,52 @@ $.fn.UIBootgrid = function (params) {
         });
     };
 
+    this.show_edit_dialog = function(event, endpoint) {
+        const dfObj = new $.Deferred();
+        let editDlg = this_grid.attr('data-editDialog');
+        let urlMap = {};
+        let server_params = undefined;
+
+        urlMap['frm_' + editDlg] = endpoint;
+        if (this_grid.requestHandler !== null) {
+            // our requestHandler returns a JSON object, convert it back first
+            server_params = this_grid.requestHandler({});
+        }
+        mapDataToFormUI(urlMap, server_params).done(function(payload){
+            // update selectors
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+            // clear validation errors (if any)
+            clearFormValidation('frm_' + editDlg);
+            // show dialog
+            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+            if (this_grid.onBeforeRenderDialog) {
+                this_grid.onBeforeRenderDialog(payload).done(function(){
+                    dfObj.resolve();
+                });
+            } else {
+                dfObj.resolve();
+            }
+        });
+        return dfObj;
+    };
+
     /**
      * add event
      */
     this.command_add = function(event) {
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            let urlMap = {};
-            let server_params = undefined;
-            urlMap['frm_' + editDlg] = params['get'];
-            if (this_grid.requestHandler !== null) {
-                // our requestHandler returns a JSON object, convert it back first
-                server_params = this_grid.requestHandler({});
-            }
-            mapDataToFormUI(urlMap, server_params).done(function(){
-                // update selectors
-                formatTokenizersUI();
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_' + editDlg);
+            let saveDlg = $("#btn_"+editDlg+"_save").unbind('click');
+            this_grid.show_edit_dialog(event, params['get']).done(function(){
                 $('#'+editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
-            });
-
-            // show dialog for edit
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-            //
-            $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
-                        $("#"+editDlg).modal('hide');
-                        std_bootgrid_reload(this_grid.attr('id'));
-                        this_grid.showSaveAlert(event);
-                    }, true);
+                saveDlg.click(function(){
+                    saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
+                            $("#"+editDlg).modal('hide');
+                            std_bootgrid_reload(this_grid.attr('id'));
+                            this_grid.showSaveAlert(event);
+                        }, true);
+                });
             });
         } else {
             console.log("[grid] action get or data-editDialog missing")
@@ -245,19 +262,9 @@ $.fn.UIBootgrid = function (params) {
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
             let uuid = $(this).data("row-id");
-            let urlMap = {};
-            urlMap['frm_' + editDlg] = params['get'] + uuid;
-            mapDataToFormUI(urlMap).done(function () {
-                // update selectors
-                formatTokenizersUI();
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_' + editDlg);
-
-                // show dialog for pipe edit
-                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-                // define save action
-                $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+            let saveDlg = $("#btn_"+editDlg+"_save").unbind('click');
+            this_grid.show_edit_dialog(event, params['get'] + uuid).done(function(){
+                saveDlg.unbind('click').click(function(){
                     saveFormToEndpoint(params['set']+uuid, 'frm_' + editDlg, function(){
                             $("#"+editDlg).modal('hide');
                             std_bootgrid_reload(this_grid.attr('id'));
