@@ -99,7 +99,7 @@ class RuleCache(object):
                         'metadata': dict()
                     }
                     rule_metadata = rule[msg_pos:-1]
-                    for section in list(csv.reader([rule_metadata], delimiter=";"))[0]:
+                    for section in list(csv.reader([rule_metadata], delimiter=";", escapechar="\\"))[0]:
                         sep = section.find(':')
                         if sep > 0:
                             prop = section[0:sep].strip()
