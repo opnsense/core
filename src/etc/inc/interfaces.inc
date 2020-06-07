@@ -1127,6 +1127,9 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
         if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_routerv6")))) {
             $pfctlflush[$realifv6] = 1;
+        } else if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_serverv6")))) {
+			// XXX - might be a dhcp6c gateway
+            $pfctlflush[$realifv6] = 1;
         }
 
         $ip6 = find_interface_ipv6($realifv6);
@@ -1158,6 +1161,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_pdinfo");
+	@unlink("/tmp/{$realifv6}_serverv6");
 }
 
 function interfaces_ptpid_used($ptpid)
@@ -3006,6 +3010,11 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "else\n";
     $dhcp6cscript .= "\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "fi\n";
+	$dhcp6cscript .= "if [ -z \"\${SERVER}\" ]; then\n";
+    $dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
+    $dhcp6cscript .= "else\n";
+    $dhcp6cscript .= "\techo \${SERVER} > /tmp/{$wanif}_serverv6\n";
     $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";

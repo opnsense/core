@@ -244,6 +244,14 @@ class Gateways
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
+                    } elseif (file_exists("/tmp/{$ifcfg['if']}_server" . $fsuffix)) {
+						// XXX: No rtsold files, try dhcp6c server files
+                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_server" . $fsuffix));
+                        if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
+                            $thisconf['monitor'] = $thisconf['gateway'];
+                        }
+                        $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
+                        $this->cached_gateways[$gwkey] = $thisconf;																					 															   
                     } elseif (!empty($ifcfg['gateway_interface']) || substr($ifcfg['if'], 0, 5) == "ovpnc") {
                         // XXX: ditch ovpnc in a major upgrade in the future, supersede with interface setting
                         //      gateway_interface
