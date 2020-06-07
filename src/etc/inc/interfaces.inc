@@ -3013,8 +3013,6 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
     $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
     $dhcp6cscript .= "\t;;\n";
-	/* Not sure there is any benefit using this */
-	/* $dhcp6cscript .= "" . (!empty($syscfg['dhcp6_norelease']) ? 'EXIT' : 'RELEASE') . ")\n"; */
 	$dhcp6cscript .= "EXIT|RELEASE)\n";
 	$dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
 	$dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
