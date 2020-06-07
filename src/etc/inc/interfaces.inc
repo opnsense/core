@@ -3001,7 +3001,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
         @unlink("/var/etc/dhcp6c_{$interface}.conf");
     }
 
-   $dhcp6cscript = "#!/bin/sh\n";
+    $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
     $dhcp6cscript .= "fi\n";
