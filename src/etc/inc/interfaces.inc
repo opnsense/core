@@ -3007,7 +3007,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "fi\n";
     $dhcp6cscript .= "case \$REASON in\n";
     $dhcp6cscript .= "REQUEST)\n";
-	$dhcp6cscript .= "\tif [ -n \"\${PDINFO}\" ]; then\n";
+    $dhcp6cscript .= "\tif [ -n \"\${PDINFO}\" ]; then\n";
     $dhcp6cscript .= "\t\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "\tfi\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
