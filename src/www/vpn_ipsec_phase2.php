@@ -710,7 +710,7 @@ endif; ?>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
 <?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
-                      <option value="<?= html_safe($algo) ?>" <?= in_array($algo, $pconfig['hash-algorithm-option']) ? 'selected="selected"' : '' ?>>
+                      <option value="<?= html_safe($algo) ?>" <?= (is_array($pconfig['hash-algorithm-option']) && in_array($algo, $pconfig['hash-algorithm-option'])) ? 'selected="selected"' : '' ?>>
                         <?= html_safe($algoname) ?>
                       </option>
 <?php endforeach ?>
