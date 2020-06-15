@@ -89,9 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['id']) && isset($a_vip[$pconfig['id']])) {
         $id = $pconfig['id'];
     }
-    $selected_interface = config_read_array('interfaces', $pconfig['interface']);
-    $selected_interface = !empty($selected_interface) ? $selected_interface['if'] : $pconfig['interface'] ;
-
+    if (!empty($config['interfaces'][$pconfig['interface']]) && !empty($config['interfaces'][$pconfig['interface']]['if'])) {
+        $selected_interface = $config['interfaces'][$pconfig['interface']]['if'];
+    } else {
+        $selected_interface = array();
+    }
     // perform form validations
     $reqdfields = array("mode");
     $reqdfieldsn = array(gettext("Type"));
