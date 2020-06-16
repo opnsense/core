@@ -165,7 +165,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
         echo 'Configuring VLAN interfaces...';
         flush();
     }
-
+    $ints = legacy_interface_listget();
     foreach ($config['vlans']['vlan'] as $vlan) {
         if (empty($vlan['vlanif'])) {
             $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
@@ -175,7 +175,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
             continue;
         }
 
-        interface_vlan_configure($vlan);
+        interface_vlan_configure($vlan, $ints);
     }
 
     if ($verbose) {
@@ -183,7 +183,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
     }
 }
 
-function interface_vlan_configure(&$vlan)
+function interface_vlan_configure(&$vlan, $intfs=null)
 {
     global $config;
 
@@ -201,7 +201,8 @@ function interface_vlan_configure(&$vlan)
 
     interfaces_bring_up($if);
 
-    if (!empty($vlanif) && does_interface_exist($vlanif)) {
+    $ints = empty($intfs) ? legacy_interface_listget(): $intfs;
+    if (!empty($vlanif) && in_array($vlanif, $ints)) {
         legacy_interface_destroy($vlanif);
     }
 
@@ -210,7 +211,6 @@ function interface_vlan_configure(&$vlan)
     legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
 
     interfaces_bring_up($vlanif);
-    interfaces_bring_up($if);
 
     return $vlanif;
 }
