@@ -201,18 +201,6 @@ function interface_vlan_configure(&$vlan)
 
     interfaces_bring_up($if);
 
-    $members = array($if);
-
-    /* VLAN may be on top of another type of aggregation */
-    if (isset($config['laggs']['lagg'])) {
-        foreach ($config['laggs']['lagg'] as $lagg) {
-            if ($if == $lagg['laggif']) {
-                $members = explode(',', $lagg['members']);
-                break;
-            }
-        }
-    }
-
     if (!empty($vlanif) && does_interface_exist($vlanif)) {
         legacy_interface_destroy($vlanif);
     }
