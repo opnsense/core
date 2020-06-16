@@ -75,6 +75,7 @@ function get_default_sysctl_value($id)
     $sysctls = array(
         'hw.ibrs_disable' => '0',
         'hw.syscons.kbd_reboot' => '0',
+        'hw.ixl.enable_head_writeback' => '0',
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
         'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
@@ -129,6 +130,7 @@ function system_sysctl_get()
     global $config;
 
     $sysctls = array(
+        'hw.ixl.enable_head_writeback' => 'default',
         'net.enc.in.ipsec_bpf_mask' => 'default',
         'net.enc.in.ipsec_filter_mask' => 'default',
         'net.enc.out.ipsec_bpf_mask' => 'default',

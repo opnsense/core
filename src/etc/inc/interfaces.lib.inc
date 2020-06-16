@@ -378,9 +378,12 @@ function legacy_interface_details($intf)
 function configure_interface_hardware($ifs)
 {
     global $config;
+    if (stristr($ifs, "_vlan")) {
+        /* skip vlans for checksumming  */
+        return;
+    }
     $intf_details = legacy_interface_details($ifs);
-    /* skip vlans for checksumming  */
-    if (!stristr($ifs, "_vlan") && !empty($intf_details)) {
+    if (!empty($intf_details)) {
         // get current settings
         $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
         $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);
@@ -411,6 +414,29 @@ function configure_interface_hardware($ifs)
             legacy_interface_flags($ifs, '-lro', false);
         } elseif (!isset($config['system']['disablelargereceiveoffloading']) && !$lro_set) {
             legacy_interface_flags($ifs, 'lro', false);
+        }
+
+        // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected
+        if (!isset($config['system']['disablevlanhwfilter']) || $config['system']['disablevlanhwfilter'] == 1) {
+            // probe already selected options
+            $selected_opts = array();
+            if (!empty($intf_details['options'])) {
+                foreach ($intf_details['options'] as $opt) {
+                    if ($opt == 'vlan_hwtagging') {
+                        $selected_opts[] = 'vlanhwtag';
+                    } else {
+                        $selected_opts[] = str_replace('_', '', $opt);
+                    }
+                }
+            }
+            // set one tag at a time to avoid driver issues
+            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum') as $tag) {
+                if (!isset($config['system']['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($ifs, $tag);
+                } elseif (isset($config['system']['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($ifs, '-' . $tag);
+                }
+            }
         }
     }
 }
