@@ -37,7 +37,7 @@ class ArrayField extends BaseField
     /**
      * @var null|BaseField node to use for copying
      */
-    private $internalTemplateNode = null;
+    protected $internalTemplateNode = null;
 
     /**
      * Copy first node pointer as template node to make sure we always have a template to create new nodes from.
