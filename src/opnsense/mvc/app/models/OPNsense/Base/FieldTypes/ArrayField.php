@@ -146,7 +146,7 @@ class ArrayField extends BaseField
 
         if (empty($fieldNames)) {
             // unsorted, just return, without any guarantee about the ordering.
-            return $this->internalChildnodes;
+            return iterator_to_array($this->iterateItems());
         } elseif (!is_array($fieldNames)) {
             // fieldnames may be a list or a single item, always convert to a list
             $fieldNames = array($fieldNames);
@@ -154,7 +154,7 @@ class ArrayField extends BaseField
 
         // collect sortable data as key/value store
         $sortedData = array();
-        foreach ($this->internalChildnodes as $nodeKey => $node) {
+        foreach ($this->iterateItems() as $nodeKey => $node) {
             // populate sort key
             $sortKey = '';
             foreach ($fieldNames as $fieldName) {
