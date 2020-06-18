@@ -10,6 +10,15 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enabled>
+            <error_pages type="OptionField">
+                <Required>N</Required>
+                <Default>opnsense</Default>
+                <BlankDesc>Squid</BlankDesc>
+                <OptionValues>
+                    <opnsense>OPNsense</opnsense>
+                    <custom>Custom</custom>
+                </OptionValues>
+            </error_pages>
             <icpPort type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
@@ -735,5 +744,12 @@
               </proxies>
           </rule>
         </pac>
+        <error_pages>
+          <template type="TextField">
+              <Required>N</Required>
+              <mask>/[0-9a-zA-Z\+\=\/]{20,}/u</mask>
+              <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
+          </template>
+        </error_pages>
     </items>
 </model>

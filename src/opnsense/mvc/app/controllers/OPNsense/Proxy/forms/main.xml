@@ -8,6 +8,16 @@
                 <help>Enable or disable the proxy service.</help>
             </field>
             <field>
+                <id>proxy.general.error_pages</id>
+                <label>User error pages</label>
+                <type>dropdown</type>
+                <help>
+                  The proxy error pages can be altered, default layout uses OPNsense content, when Squid is selected
+                  the content for the selected language will be used (standard squid layout), Custom offers the possibility
+                  to upload your own theme content.
+                </help>
+            </field>
+            <field>
                 <id>proxy.general.icpPort</id>
                 <label>ICP port</label>
                 <type>text</type>

@@ -30,6 +30,15 @@
 
         var data_get_map = {'frm_proxy':"/api/proxy/settings/get"};
 
+        // show/hide error pages tab when applicable
+        $("#proxy\\.general\\.error_pages").change(function(e){
+            if ($(this).val() == 'custom') {
+                $("#subtab_error_pages").show();
+            } else {
+                $("#subtab_error_pages").hide();
+            }
+        });
+
         // load initial data
         mapDataToFormUI(data_get_map).done(function(){
             formatTokenizersUI();
@@ -249,6 +258,84 @@
 
         });
 
+        /**
+         * Error page template actions
+         */
+         $("#error_pages_content_filename").click(function(evt) {
+             $("#error_pages_content_progress").addClass("fa fa-spinner fa-pulse");
+             $("#error_pages_content_icon").hide();
+             this.value = null;
+         });
+         $("#error_pages_content_filename").change(function(evt) {
+             if (evt.target.files[0]) {
+                 var reader = new FileReader();
+                 reader.onload = function(readerEvt) {
+                     $("#error_pages_content_name").val(evt.target.files[0].name);
+                     $("#error_pages_content").val(btoa(readerEvt.target.result));
+                     $("#error_pages_content_progress").removeClass("fa fa-spinner fa-pulse");
+                     $("#error_pages_content_icon").show();
+                 };
+                 reader.readAsBinaryString(evt.target.files[0]);
+             } else {
+                 $("#error_pages_content_progress").removeClass("fa fa-spinner fa-pulse");
+                 $("#error_pages_content_icon").show();
+             }
+         });
+         $("#error_pages_download").click(function(){
+             ajaxGet("/api/proxy/template/get", {}, function(data, status){
+                 if (data.content) {
+                   let a_tag = $('<a></a>').attr('href','data:application/zip;charset=utf8,' + encodeURIComponent(data.content))
+                       .attr('download','proxy_template.zip').appendTo('body');
+
+                   a_tag.ready(function() {
+                       if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+                           var blob = new Blob( [ output_data ], { type: "application/zip" } );
+                           navigator.msSaveOrOpenBlob( blob, 'proxy_template.zip' );
+                       } else {
+                           a_tag.get(0).click();
+                       }
+                   });
+                 }
+             });
+         });
+         $("#error_pages_upload").click(function(){
+             if ($("#error_pages_content").val().length > 2) {
+                ajaxCall("/api/proxy/template/set", {'content': $("#error_pages_content").val()}, function(data,status) {
+                    if (data['error'] !== undefined) {
+                        // error saving
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: "{{ lang._('Error uploading template') }}",
+                            message: data['error'],
+                            draggable: true
+                        });
+                    } else {
+                        $("#error_pages_content_name").val("{{ lang._('saved') }}");
+                    }
+                });
+             }
+         });
+         $("#error_pages_reset").click(function(){
+              BootstrapDialog.show({
+                title: "{{ lang._('Reset custom template') }}",
+                message: "{{ lang._('Are you sure you want to flush the configured template (back to defaults)?') }}",
+                type: BootstrapDialog.TYPE_INFO,
+                draggable: true,
+                buttons: [{
+                    label: '<i class="fa fa-check" aria-hidden="true"></i>',
+                    action: function(sender){
+                        ajaxCall("/api/proxy/template/reset", {});
+                        sender.close();
+                    }
+                },{
+                   label:  '<i class="fa fa-close" aria-hidden="true"></i>',
+                   action: function(sender){
+                      sender.close();
+                   }
+                 }]
+              });
+         });
+
         // update history on tab state and implement navigation
         if(window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click()
@@ -283,6 +370,7 @@
     </li>
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
     <li><a data-toggle="tab" href="#support"><b>{{ lang._('Support') }}</b></a></li>
+    <li><a data-toggle="tab" id="subtab_error_pages" style="display:none" href="#error_pages"><b>{{ lang._('Error Pages') }}</b></a></li>
 </ul>
 
 <div class="content-box tab-content">
@@ -459,6 +547,56 @@
                   </td>
               </tr>
             </tbody>
+        </table>
+    </div>
+    <div id="error_pages" class="tab-pane fade">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>{{ lang._('Action')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>
+                    <button class="btn btn-default" style="padding-bottom: 7px;" id="error_pages_download" title="{{ lang._('Download')}}" data-toggle="tooltip">
+                      <i class="fa fa-fw fa-download"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                    <td>
+                      <textarea id="error_pages_content" class="hidden form-control"></textarea>
+                      <div class="input-group">
+                          <label class="input-group-btn">
+                              <label class="btn btn-default" style="padding-bottom: 7px;">
+                                  <i class="fa fa-fw fa-folder-o" id="error_pages_content_icon"></i>
+                                  <i id="error_pages_content_progress"></i>
+                                  <input type="file" id="error_pages_content_filename" style="display: none;">
+                              </label>
+                          </label>
+                          <input type="text" class="form-control" readonly="" for="error_pages_content" id="error_pages_content_name">
+                          <button class="btn btn-default" id="error_pages_upload" style="padding-bottom: 7px;" title="{{ lang._('Upload selected file')}}" data-toggle="tooltip">
+                            <i class="fa fa-fw fa-upload"></i>
+                          </button>
+                      </div>
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                    <button class="btn btn-default" style="padding-bottom: 7px;" id="error_pages_reset" title="{{ lang._('Reset')}}" data-toggle="tooltip">
+                      <i class="fa fa-fw fa-remove"></i>
+                    </button>
+                  </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        {{ lang._('Download and upload custom error pages, if no (new) files are provided our defaults are used.')}}
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
