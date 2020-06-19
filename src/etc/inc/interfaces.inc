@@ -183,7 +183,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
     }
 }
 
-function interface_vlan_configure(&$vlan, $intfs=null)
+function interface_vlan_configure(&$vlan, $intfs = null)
 {
     global $config;
 
@@ -201,7 +201,7 @@ function interface_vlan_configure(&$vlan, $intfs=null)
 
     interfaces_bring_up($if);
 
-    $ints = empty($intfs) ? legacy_interface_listget(): $intfs;
+    $ints = empty($intfs) ? legacy_interface_listget() : $intfs;
     if (!empty($vlanif) && in_array($vlanif, $ints)) {
         legacy_interface_destroy($vlanif);
     }
