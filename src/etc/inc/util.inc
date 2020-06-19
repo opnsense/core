@@ -397,9 +397,34 @@ function gen_subnetv6_max($ipaddr, $bits)
 
     return $result;
 }
+/* returns ISP assigned PD Info */
+function get_isp_pdinfo($wanif, $lanif, $type = 'full')
+{
+    $realwanif = get_real_interface($wanif);
+	$reallanif = get_real_interface($lanif);
 
+    if(file_exists("/tmp/{$realwanif}_pdinfo")) {
+        $file_pdinfo = file_get_contents("/tmp/{$realwanif}_pdinfo");
+		// Maybe multiple lans
+		$pd_array = explode(' ',$file_pdinfo);
+		foreach($pd_array as $i =>$key) {
+			if(strstr($key,$reallanif)) {
+				$pdstring = explode(".",$key);
+				$pdinfo = explode('/',$pdstring[1]);
+				log_error("type = {$type}");
+				if($type != 'len') {
+					return $pdstring[1];
+				} else {
+					return $pdinfo[1];
+				}
+			}
+		}
+    } else {
+		return false;
+	}
+}
 /* returns the calculated bit length of the prefix delegation from a WAN interface */
-function calculate_ipv6_delegation_length($if)
+function calculate_ipv6_delegation_length($if,$lanif = 'null')
 {
     global $config;
 
@@ -424,7 +449,10 @@ function calculate_ipv6_delegation_length($if)
             break;
         case 'dhcp6':
             $dhcp6cfg = $config['interfaces'][$if];
-            if (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
+            if($lanif != 'null' && get_isp_pdinfo($if,$lanif) != false)
+            {
+                $pdlen = get_isp_pdinfo($if,$lanif, $type = 'len');
+            } else if (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
                 $pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
             }
             break;
