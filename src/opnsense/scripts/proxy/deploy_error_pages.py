@@ -38,13 +38,13 @@ if __name__ == '__main__':
     # install error_pages into target_directory
     if not os.path.isdir(target_directory):
         os.mkdir(target_directory)
-    for filename, data in proxy_templates.templates():
+    for filename, data in proxy_templates.templates(proxy_templates.overlay_enabled()):
         if filename.endswith('.html'):
             match = re.search(b'(<!--[\s]*EMBED:start.*?EMBED:end[\s]*-->)', data, re.DOTALL)
             if match:
                 inline_css = list()
                 for href in re.findall(b"(href[\s]*=[\s]*[\"|'])(.*?)([\"|'])" ,match.group(0)):
-                    href_content = proxy_templates.get_file(href[1].decode())
+                    href_content = proxy_templates.get_file(href[1].decode(), proxy_templates.overlay_enabled())
                     if href_content:
                         inline_css.append(b'<style type="text/css">\n%s\n</style>' % href_content)
                 data = b"%s%s%s" % (data[0:match.start()], b"\n".join(inline_css), data[match.end():])

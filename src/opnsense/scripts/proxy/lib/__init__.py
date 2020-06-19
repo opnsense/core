@@ -36,26 +36,29 @@ class ProxyTemplates:
     error_config = "/usr/local/etc/squid/error_directory.in"
 
     def __init__(self):
-        self._all_files = dict()
+        self._all_src_files = dict()
+        self._all_ovl_files = dict()
         self._overlay_status = None
         self._install_overlay = False
         self._overlay_data = None
         self._load_config()
+        self.load()
 
     def _load_config(self):
         if os.path.isfile(self.error_config):
             error_cfg = ujson.loads(open(self.error_config, 'rb').read())
-            self._install_overlay = 'install' not in error_cfg or error_cfg['install'] == 'opnsense'
+            self._install_overlay = 'install' not in error_cfg or error_cfg['install'] != 'opnsense'
             self._overlay_data = error_cfg['content'] if 'content' in error_cfg else None
 
     def load(self):
         self._overlay_status = None
-        self._all_files = dict()
+        self._all_src_files = dict()
+        self._all_ovl_files = dict()
         # base (OPNsense) template
         for filename in glob.glob("/usr/local/opnsense/data/proxy/template_error_pages/*"):
             bfilename = os.path.basename(filename)
             with open(filename, "rb") as f_in:
-                self._all_files[bfilename] = f_in.read()
+                self._all_src_files[bfilename] = f_in.read()
 
         # when a (valid) overlay is provided, read it's contents
         if self._overlay_data and self._install_overlay:
@@ -67,7 +70,7 @@ class ProxyTemplates:
                         if not root_dir and zf_info.filename.endswith('/'):
                             root_dir = zf_info.filename
                         else:
-                            self._all_files[zf_info.filename.replace(root_dir, "")] = zf_in.read(zf_info.filename)
+                            self._all_ovl_files[zf_info.filename.replace(root_dir, "")] = zf_in.read(zf_info.filename)
             except binascii.Error:
                 self._overlay_status = 'Not a base64 encoded file'
             except zipfile.BadZipFile:
@@ -75,13 +78,22 @@ class ProxyTemplates:
             except IOError:
                 self._overlay_status = 'Error reading file'
 
-    def templates(self):
-        for filename in self._all_files:
-            yield filename, self._all_files[filename]
+    def templates(self, overlay=False):
+        for filename in self._all_src_files:
+            if overlay and filename in self._all_ovl_files:
+                yield filename, self._all_ovl_files[filename]
+            else:
+                yield filename, self._all_src_files[filename]
 
-    def get_file(self, filename):
-        if filename in self._all_files:
-            return self._all_files[filename]
+    def get_file(self, filename, overlay=False):
+        if filename in self._all_src_files:
+            if overlay and filename in self._all_ovl_files:
+                return self._all_ovl_files[filename]
+            else:
+                return self._all_src_files[filename]
+
+    def overlay_enabled(self):
+        return self._install_overlay
 
     def get_overlay_status(self):
         return self._overlay_status
