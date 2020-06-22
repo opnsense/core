@@ -720,6 +720,7 @@
 /usr/local/opnsense/scripts/netflow/lib/parse.py
 /usr/local/opnsense/scripts/openssh/ssh_query.py
 /usr/local/opnsense/scripts/proxy/deploy_error_pages.py
+/usr/local/opnsense/scripts/proxy/download_error_pages.py
 /usr/local/opnsense/scripts/proxy/fetchACLs.py
 /usr/local/opnsense/scripts/proxy/generate_cert.php
 /usr/local/opnsense/scripts/proxy/lib/__init__.py
