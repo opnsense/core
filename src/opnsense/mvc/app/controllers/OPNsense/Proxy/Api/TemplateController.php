@@ -29,6 +29,7 @@
 namespace OPNsense\Proxy\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * Class TemplateController
@@ -81,13 +82,21 @@ class TemplateController extends ApiMutableModelControllerBase
     }
 
     /**
-     * retrieve error pages template
+     * retrieve error pages template, overlay provided template zip file on top of OPNsense error pages
+     * using configd calls
      */
     public function getAction()
     {
-        $mdl = $this->getModel();
-        return [
-            'content' => (string)$mdl->error_pages->template
-        ];
+        $backend = new Backend();
+        $backend->configdRun("template reload OPNsense/Proxy");
+        $result = json_decode($backend->configdRun("proxy download_error_pages"), true);
+        if ($result != null) {
+            $this->response->setRawHeader("Content-Type: application/octet-stream");
+            $this->response->setRawHeader("Content-Disposition: attachment; filename=proxy_template.zip");
+            return base64_decode($result['payload']);
+        } else {
+            // return empty response on error
+            return "";
+        }
     }
 }

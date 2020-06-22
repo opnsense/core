@@ -26,29 +26,28 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
+import base64
 import ujson
 import os
 import re
+import zipfile
+from io import BytesIO
 from lib import ProxyTemplates
-target_directory = "/usr/local/etc/squid/errors/local"
 
 if __name__ == '__main__':
+    root_dir = "/proxy_template"
     proxy_templates = ProxyTemplates()
+    output_data = BytesIO()
+    processed = list()
+    with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+        for filename, data in proxy_templates.templates(True):
+            zf.writestr("%s/%s" % (root_dir, filename), data)
+            for dep_filename in proxy_templates.css_dependencies(filename, True):
+                if dep_filename not in processed:
+                    zf.writestr("%s/%s" % (root_dir, dep_filename), proxy_templates.get_file(dep_filename, True))
+                    processed.append(dep_filename)
 
-    # install error_pages into target_directory
-    if not os.path.isdir(target_directory):
-        os.mkdir(target_directory)
-    for filename, data in proxy_templates.templates(proxy_templates.overlay_enabled()):
-        match = proxy_templates.css_section(data)
-        if match:
-            inline_css = list()
-            for dep_filename in proxy_templates.css_dependencies(filename, proxy_templates.overlay_enabled()):
-                css_content = proxy_templates.get_file(dep_filename, proxy_templates.overlay_enabled())
-                if css_content:
-                    inline_css.append(b'<style type="text/css">\n%s\n</style>' % css_content)
-            data = b"%s%s%s" % (data[0:match.start()], b"\n".join(inline_css), data[match.end():])
-        with open("%s/%s" % (target_directory, os.path.splitext(filename)[0]), "wb") as target_fh:
-            target_fh.write(data)
-    print(ujson.dumps({
-        'overlay_status': proxy_templates.get_overlay_status()
-    }))
+    response = dict()
+    response['payload'] = base64.b64encode(output_data.getvalue()).decode()
+    response['size'] = len(response['payload'])
+    print(ujson.dumps(response))

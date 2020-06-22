@@ -28,6 +28,7 @@ import ujson
 import os
 import base64
 import binascii
+import re
 import zipfile
 import glob
 from io import BytesIO
@@ -45,12 +46,16 @@ class ProxyTemplates:
         self.load()
 
     def _load_config(self):
+        """ initialize configuration
+        """
         if os.path.isfile(self.error_config):
             error_cfg = ujson.loads(open(self.error_config, 'rb').read())
             self._install_overlay = 'install' not in error_cfg or error_cfg['install'] != 'opnsense'
             self._overlay_data = error_cfg['content'] if 'content' in error_cfg else None
 
     def load(self):
+        """ load (custom) error pages in memory
+        """
         self._overlay_status = None
         self._all_src_files = dict()
         self._all_ovl_files = dict()
@@ -79,21 +84,58 @@ class ProxyTemplates:
                 self._overlay_status = 'Error reading file'
 
     def templates(self, overlay=False):
+        """ return template html files
+            :param overlay: consider custom theme files when applicable
+            :rtype: [string, bytes]
+        """
         for filename in self._all_src_files:
-            if overlay and filename in self._all_ovl_files:
-                yield filename, self._all_ovl_files[filename]
-            else:
-                yield filename, self._all_src_files[filename]
+            if filename.endswith('.html'):
+                if overlay and filename in self._all_ovl_files:
+                    yield filename, self._all_ovl_files[filename]
+                else:
+                    yield filename, self._all_src_files[filename]
 
     def get_file(self, filename, overlay=False):
+        """ return file content
+            :param filename: source filename
+            :param overlay: consider custom theme files when applicable
+            :return: string
+        """
         if filename in self._all_src_files:
             if overlay and filename in self._all_ovl_files:
                 return self._all_ovl_files[filename]
             else:
                 return self._all_src_files[filename]
 
+    @staticmethod
+    def css_section(data):
+        """ extract css definition block from provided data
+            :param data: html data
+            :return: MatchObject
+        """
+        return re.search(b'(<!--[\s]*EMBED:start.*?EMBED:end[\s]*-->)', data, re.DOTALL)
+
+    def css_dependencies(self, filename, overlay=False):
+        """ extract css dependencies from provided filename
+            :param filename: source filename
+            :param overlay: consider custom theme files when applicable
+            :rtype: list
+        """
+        data = self.get_file(filename, overlay)
+        if filename.endswith('.html') and data:
+            match = self.css_section(data)
+            if match:
+                for href in re.findall(b"(href[\s]*=[\s]*[\"|'])(.*?)([\"|'])" ,match.group(0)):
+                    yield href[1].decode()
+
     def overlay_enabled(self):
+        """ when deploying files, should we consider an overlay
+            :return: bool
+        """
         return self._install_overlay
 
     def get_overlay_status(self):
+        """ return validity of the installed overlay
+            :return: string
+        """
         return self._overlay_status

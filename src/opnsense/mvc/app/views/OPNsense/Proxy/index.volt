@@ -282,21 +282,7 @@
              }
          });
          $("#error_pages_download").click(function(){
-             ajaxGet("/api/proxy/template/get", {}, function(data, status){
-                 if (data.content) {
-                   let a_tag = $('<a></a>').attr('href','data:application/zip;charset=utf8,' + encodeURIComponent(data.content))
-                       .attr('download','proxy_template.zip').appendTo('body');
-
-                   a_tag.ready(function() {
-                       if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-                           var blob = new Blob( [ output_data ], { type: "application/zip" } );
-                           navigator.msSaveOrOpenBlob( blob, 'proxy_template.zip' );
-                       } else {
-                           a_tag.get(0).click();
-                       }
-                   });
-                 }
-             });
+            window.open('/api/proxy/template/get', 'downloadTemplate');
          });
          $("#error_pages_upload").click(function(){
              if ($("#error_pages_content").val().length > 2) {
