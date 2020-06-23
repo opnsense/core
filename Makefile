@@ -420,6 +420,12 @@ mfc: clean-mfcdir
 	@git checkout master
 .endfor
 
+stable:
+	@git checkout stable/${CORE_ABI}
+
+master:
+	@git checkout master
+
 test: want-phpunit7-php${CORE_PHP}
 	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_PKGVERSION}"; \
