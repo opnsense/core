@@ -29,6 +29,13 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>rule.iplen</id>
+        <label>Max Packet Length</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Specifies the maximum size of packets to match in bytes</help>
+    </field>
+    <field>
         <id>rule.source</id>
         <label>Source</label>
         <type>select_multiple</type>
