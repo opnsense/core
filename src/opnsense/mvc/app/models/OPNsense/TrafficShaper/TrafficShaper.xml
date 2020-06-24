@@ -273,6 +273,12 @@
                         <gre>gre</gre>
                     </OptionValues>
                 </proto>
+                <iplen type="IntegerField">
+                    <MinimumValue>2</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <Required>N</Required>
+                    <ValidationMessage>The absolute limitation for packet size is 64K (65535 bytes)</ValidationMessage>
+                </iplen>
                 <source type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
