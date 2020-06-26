@@ -41,6 +41,7 @@
 # via the subdirectory used.  For backwards compat the
 # suffix is moved to the new subdirectory during a request.
 
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 SYSDIR="/usr/local/etc/rc.syshook.d"
 SYSLEVEL="${1}"
 
