@@ -87,4 +87,4 @@ for sas in s.list_sas():
             result[sa]['routed'] = False
         result[sa]['sas'].append(sas[sa])
 
-print (ujson.dumps(result))
+print (ujson.dumps(result, reject_bytes=False))
