@@ -303,7 +303,7 @@ function filter_core_rules_system($fw, $defaults)
     }
     $fw->registerFilterRule(
         1,
-        array('protocol' => 'tcp', 'from' => '<webConfiguratorlockout>', 'to' => '(self)' , 'descr' => 'webConfiguratorlockout',
+        array('protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout',
         'direction' => 'in','to_port' => $webport),
         $defaults['block']
     );

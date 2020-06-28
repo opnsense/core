@@ -681,8 +681,6 @@ function filter_generate_aliases()
 {
     $aliases = "\n# Lockout tables\n";
     $aliases .= "table <sshlockout> persist\n";
-    $aliases .= "table <webConfiguratorlockout> persist\n";
-
     $aliases .= "\n# Other tables\n";
     $aliases .= "table <virusprot>\n";
     $aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
