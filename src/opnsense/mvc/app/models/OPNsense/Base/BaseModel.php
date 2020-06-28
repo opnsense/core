@@ -582,8 +582,8 @@ abstract class BaseModel
         $node = $this->internalData;
         while (count($parts) > 0) {
             $childName = array_shift($parts);
-            if (isset($node->getChildren()[$childName])) {
-                $node = $node->getChildren()[$childName];
+            if ($node->hasChild($childName)) {
+                $node = $node->getChild($childName);
             } else {
                 return null;
             }

@@ -366,11 +366,7 @@ abstract class BaseField
      */
     public function isFieldChanged()
     {
-        if ($this->internalInitialValue !==  $this->internalValue) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->internalInitialValue !==  $this->internalValue;
     }
 
     /**
@@ -413,6 +409,26 @@ abstract class BaseField
     public function getChildren()
     {
         return $this->internalChildnodes;
+    }
+
+    /**
+     * check for existance of child attribute
+     * @return bool if child exists
+     */
+    public function hasChild($name)
+    {
+        return isset($this->internalChildnodes[$name]);
+    }
+
+    /**
+     * retrieve child object
+     * @return null|object
+     */
+    public function getChild($name)
+    {
+        if ($this->hasChild($name)) {
+            return $this->internalChildnodes[$name];
+        }
     }
 
     /**
@@ -506,7 +522,7 @@ abstract class BaseField
     }
 
     /**
-     * returns if this node is virtual, the framework uses this to determine if this node maybe should only be used to
+     * returns if this node is virtual, the framework uses this to determine if this node should only be used to
      * clone children. (using ArrayFields)
      * @return bool is virtual node
      */
@@ -632,6 +648,10 @@ abstract class BaseField
         }
 
         foreach ($this->iterateItems() as $key => $FieldNode) {
+            if ($FieldNode->getInternalIsVirtual()) {
+                // Virtual fields should never be persisted
+                continue;
+            }
             $FieldNode->addToXMLNode($subnode);
         }
     }
