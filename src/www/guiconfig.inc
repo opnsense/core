@@ -87,14 +87,13 @@ function get_themed_filename($url)
 require_once("authgui.inc");
 
 /* Reserved table names to avoid colision */
-$reserved_table_names = array(
-    "bogons",
-    "bogonsv6",
-    "sshlockout",
-    "tonatsubnets",
-    "virusprot",
-    "webConfiguratorlockout"
-);
+$reserved_table_names = [
+    'bogons',
+    'bogonsv6',
+    'sshlockout',
+    'tonatsubnets',
+    'virusprot',
+];
 
 $netbios_nodetypes = array(
     '0' => "none",
