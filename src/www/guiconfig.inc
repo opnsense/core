@@ -91,7 +91,6 @@ $reserved_table_names = [
     'bogons',
     'bogonsv6',
     'sshlockout',
-    'tonatsubnets',
     'virusprot',
 ];
 
