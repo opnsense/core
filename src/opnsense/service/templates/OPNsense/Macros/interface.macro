@@ -9,3 +9,15 @@
 else %}{{name}}{%
 endif
 %}{%- endmacro %}
+
+{#
+  macro primary_ip4, return primary IPv4 address of interface (e.g. lan -> 192.168.1.1)
+#}
+{% macro primary_ip4(name) -%}
+{% if helpers.exists('interfaces.'+name+'.ipaddr')
+%}{{
+      helpers.getNodeByTag('interfaces.'+name+'.ipaddr')
+}}{%
+else %}{{name}}{%
+endif
+%}{%- endmacro %}
