@@ -59,13 +59,13 @@ class LegacyLinkField extends BaseField
                 if (isset($cnf->$fieldname)) {
                     $cnf = $cnf->$fieldname;
                 } else {
-                    return null;
+                    $cnf = (string)null;
+                    break;
                 }
             }
             return (string)$cnf;
-        } else {
-            return null;
         }
+        return (string)null;
     }
 
 
