@@ -139,7 +139,7 @@ class Nextcloud extends Base implements IBackupProvider
             $backupdir = (string)$nextcloud->backupdir;
             $crypto_password = (string)$nextcloud->password_encryption;
             $hostname = $config->system->hostname . '.' . $config->system->domain;
-            $configname = 'config-' . $hostname . '-' .  date("Y-m-d_H:i:s") . '.xml';
+            $configname = 'config-' . $hostname . '-' .  date('Y-m-d_H_i_s') . '.xml';
             // backup source data to local strings (plain/encrypted)
             $confdata = file_get_contents('/conf/config.xml');
             if (!empty($crypto_password)) {
