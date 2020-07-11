@@ -125,26 +125,27 @@ function filter_configure()
     }
 }
 
-function filter_delete_states_for_down_gateways()
+function filter_should_trigger_kill_states()
 {
-    $a_gateways = return_gateways_status();
-    $ifdetails = legacy_interfaces_details();
-    $any_gateway_down = false;
-    foreach ((new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true) as $gateway) {
-        if (empty($gateway['monitor']) || empty($a_gateways[$gateway['name']])) {
-            continue;
-        } elseif (!is_ipaddr($gateway['monitor']) || strstr($gateway['monitor'], '127.0.0.')) {
-            continue;
+    global $config;
+    if (empty($config['system']['kill_states'])) {
+        $a_gateways = return_gateways_status();
+        $ifdetails = legacy_interfaces_details();
+        $any_gateway_down = false;
+        foreach ((new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true) as $gateway) {
+            if (empty($gateway['monitor']) || empty($a_gateways[$gateway['name']])) {
+                continue;
+            } elseif (!is_ipaddr($gateway['monitor']) || strstr($gateway['monitor'], '127.0.0.')) {
+                continue;
+            }
+            if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
+                $any_gateway_down = true;
+                break;
+            }
         }
-        if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
-            $any_gateway_down = true;
-            break;
-        }
+        return $any_gateway_down;
     }
-
-    if ($any_gateway_down == true) {
-        mwexec("/sbin/pfctl -Fs");
-    }
+    return false;
 }
 
 /**
@@ -561,10 +562,6 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     if ($verbose) {
         echo '.';
         flush();
-    }
-
-    if (empty($config['system']['kill_states'])) {
-        filter_delete_states_for_down_gateways();
     }
 
     if ($verbose) {
