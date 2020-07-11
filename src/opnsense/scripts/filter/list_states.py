@@ -86,7 +86,8 @@ if __name__ == '__main__':
                 if parts[3].find('(') > -1:
                     # NAT enabled
                     record['nat_addr'] = parts[3][1:].split(':')[0]
-                    record['nat_port'] = parts[3].split(':')[1][:-1]
+                    if parts[3].find(':') > -1:
+                       record['nat_port'] = parts[3].split(':')[1][:-1]
 
                 record['dst_addr'] = parse_address(parts[-2])['addr']
                 record['dst_port'] = parse_address(parts[-2])['port']
