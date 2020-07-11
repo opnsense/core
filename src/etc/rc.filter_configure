@@ -33,8 +33,20 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-if (count($argv) >= 1 && $argv[1] == 'skip_alias' ) {
+$event_arg = count($argv) >= 1 ? $argv[1] : "";
+
+if ($event_arg == 'skip_alias' ) {
     filter_configure_sync(true, false, false);
 } else {
-    filter_configure_sync(true);
+    if ($event_arg == 'gateway' && filter_should_trigger_kill_states()) {
+        /**
+         * XXX: When "Kill states" on gateway monitoring is used, we should reset states after this event.
+         *      Originally filter_configure_sync() reset states after each event. Although the feature isn't great
+         *      in terms of what it does (not really fine grained, just kill all), for historic reasons we probably should
+         *      leave it in.
+         */
+        filter_configure_sync(true, true);
+    } else {
+        filter_configure_sync(true);
+    }
 }
