@@ -38,10 +38,9 @@ CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
-CORE_ABI?=	20.1
+CORE_ABI?=	20.7
 CORE_PHP?=	72
 CORE_PYTHON?=	37
-CORE_SURICATA?=	-devel
 CORE_SYSLOGNG?=	3.27
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
@@ -54,9 +53,9 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
-CORE_MESSAGE?=		Carry on my wayward son
-CORE_NAME?=		opnsense-devel
-CORE_TYPE?=		development
+CORE_MESSAGE?=		TBA
+CORE_NAME?=		opnsense
+CORE_TYPE?=		release
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
 CORE_MAINTAINER?=	project@opnsense.org
@@ -71,7 +70,7 @@ CORE_COPYRIGHT_YEARS?=	2014-2020
 
 CORE_DEPENDS_amd64?=	beep \
 			bsdinstaller \
-			suricata${CORE_SURICATA}
+			suricata
 
 CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 
