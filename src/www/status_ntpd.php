@@ -96,12 +96,16 @@ if (!isset($config['ntpd']['noquery'])) {
             if (substr($tmp, 0, 6) == '$GPRMC') {
                 if (is_numeric($gps_vars[3]) && is_numeric($gps_vars[5])) {
                     list ($gps_lat_deg, $gps_lat_min) = explode('.', $gps_vars[3]);
+                    $gps_lat_min = substr($gps_lat_deg, -2) .".". $gps_lat_min;
+                    $gps_lat_deg = substr($gps_lat_deg, 0, strlen($gps_lat_deg) - 2);
                     $gps_lat_min /= 60.0;
                     $gps_lat = $gps_lat_deg + $gps_lat_min;
                     $gps_lat_dir = $gps_vars[4];
                     $gps_lat = $gps_lat * ($gps_lat_dir == 'N' ? 1 : -1);
 
                     list ($gps_lon_deg, $gps_lon_min) = explode('.', $gps_vars[5]);
+                    $gps_lon_min = substr($gps_lon_deg, -2) .".". $gps_lon_min;
+                    $gps_lon_deg = substr($gps_lon_deg, 0, strlen($gps_lon_deg) - 2);
                     $gps_lon_min /= 60.0;
                     $gps_lon = $gps_lon_deg + $gps_lon_min;
                     $gps_lon_dir = $gps_vars[6];
@@ -112,12 +116,16 @@ if (!isset($config['ntpd']['noquery'])) {
             } elseif (substr($tmp, 0, 6) == '$GPGGA') {
                 if (is_numeric($gps_vars[2]) && is_numeric($gps_vars[4])) {
                     list ($gps_lat_deg, $gps_lat_min) = explode('.', $gps_vars[2]);
+                    $gps_lat_min = substr($gps_lat_deg, -2) .".". $gps_lat_min;
+                    $gps_lat_deg = substr($gps_lat_deg, 0, strlen($gps_lat_deg) - 2);
                     $gps_lat_min /= 60.0;
                     $gps_lat = $gps_lat_deg + $gps_lat_min;
                     $gps_lat_dir = $gps_vars[3];
                     $gps_lat = $gps_lat * ($gps_lat_dir == 'N' ? 1 : -1);
 
                     list ($gps_lon_deg, $gps_lon_min) = explode('.', $gps_vars[4]);
+                    $gps_lon_min = substr($gps_lon_deg, -2) .".". $gps_lon_min;
+                    $gps_lon_deg = substr($gps_lon_deg, 0, strlen($gps_lon_deg) - 2);
                     $gps_lon_min /= 60.0;
                     $gps_lon = $gps_lon_deg + $gps_lon_min;
                     $gps_lon_dir = $gps_vars[5];
@@ -132,12 +140,16 @@ if (!isset($config['ntpd']['noquery'])) {
             } elseif (substr($tmp, 0, 6) == '$GPGLL') {
                 if (is_numeric($gps_vars[1]) && is_numeric($gps_vars[3])) {
                     list ($gps_lat_deg, $gps_lat_min) = explode('.', $gps_vars[1]);
+                    $gps_lat_min = substr($gps_lat_deg, -2) .".". $gps_lat_min;
+                    $gps_lat_deg = substr($gps_lat_deg, 0, strlen($gps_lat_deg) - 2);
                     $gps_lat_min /= 60.0;
                     $gps_lat = $gps_lat_deg + $gps_lat_min;
                     $gps_lat_dir = $gps_vars[2];
                     $gps_lat = $gps_lat * ($gps_lat_dir == 'N' ? 1 : -1);
 
                     list ($gps_lon_deg, $gps_lon_min) = explode('.', $gps_vars[3]);
+                    $gps_lon_min = substr($gps_lon_deg, -2) .".". $gps_lon_min;
+                    $gps_lon_deg = substr($gps_lon_deg, 0, strlen($gps_lon_deg) - 2);
                     $gps_lon_min /= 60.0;
                     $gps_lon = $gps_lon_deg + $gps_lon_min;
                     $gps_lon_dir = $gps_vars[4];
