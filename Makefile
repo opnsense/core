@@ -42,7 +42,9 @@ CORE_ABI?=	20.1
 CORE_PHP?=	72
 CORE_PYTHON?=	37
 CORE_SURICATA?=	-devel
+CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.27
+CORE_UPDATE?=	# empty
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
@@ -98,7 +100,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			openssh-portable \
 			openvpn \
 			opnsense-lang \
-			opnsense-update \
+			opnsense-update${CORE_UPDATE} \
 			pam_opnsense \
 			pftop \
 			php${CORE_PHP}-ctype \
@@ -136,7 +138,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			strongswan \
 			sudo \
 			syslog-ng${CORE_SYSLOGNG:S/.//g} \
-			syslogd \
+			syslogd${CORE_SYSLOGD} \
 			unbound \
 			wpa_supplicant \
 			zip
