@@ -35,6 +35,6 @@ fi
 /usr/bin/logger -t dpinger "GATEWAY ALARM: ${GATEWAY} (Addr: ${2} Alarm: ${3} RTT: ${4}ms RTTd: ${5}ms Loss: ${6}%)"
 
 echo -n "Reloading filter: "
-configctl filter reload
+configctl filter reload gateway
 
 exit 0
