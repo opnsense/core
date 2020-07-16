@@ -61,6 +61,9 @@ if __name__ == '__main__':
         rlist, _, _ = select([sys.stdin], [], [], 0.5)
         if rlist:
             line = sys.stdin.readline()
+            if line == '':
+                break
+
             ip = None
             for part in line.split():
                 if re.match('^[0-9.]+$', part) or re.match('^[a-fA-F0-9:]+$', part):
