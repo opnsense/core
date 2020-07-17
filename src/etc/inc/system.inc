@@ -597,6 +597,7 @@ function system_syslogd_extra_local($logsocket)
 
 function system_syslogd_start($verbose = false, $restart = false)
 {
+    global $config;
     if ($verbose) {
         echo 'Configuring system logging...';
         flush();
@@ -653,15 +654,17 @@ EOD;
     $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
 
     // setup log files for all facilities including default
-    $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
-    $syslog_files = array_keys($syslogconfs);
-    $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
-    foreach ($syslog_files as $syslog_fn) {
-        $filename = "/var/log/" . basename($syslog_fn) . ".log";
-        if (!file_exists($filename)) {
-            mwexecf('/usr/local/sbin/clog -i -s %s %s', array($default_logfile_size, $filename));
+    if (empty($config['syslog']['disable_clog'])) {
+        $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
+        $syslog_files = array_keys($syslogconfs);
+        $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
+        foreach ($syslog_files as $syslog_fn) {
+            $filename = "/var/log/" . basename($syslog_fn) . ".log";
+            if (!file_exists($filename)) {
+                mwexecf('/usr/local/sbin/clog -i -s %s %s', array($default_logfile_size, $filename));
+            }
+            mwexecf('chmod 0600 %s', array($filename));
         }
-        mwexecf('chmod 0600 %s', array($filename));
     }
 
     if (!$restart && isvalidpid('/var/run/syslog.pid')) {
