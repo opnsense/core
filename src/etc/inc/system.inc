@@ -597,6 +597,7 @@ function system_syslogd_extra_local($logsocket)
 
 function system_syslogd_start($verbose = false, $restart = false)
 {
+    global $config;
     if ($verbose) {
         echo 'Configuring system logging...';
         flush();
