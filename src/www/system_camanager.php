@@ -368,21 +368,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['camethod'] == "existing") {
                     ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);
                 } elseif ($pconfig['camethod'] == "internal") {
-                    $dn = array(
-                        'commonName' => $pconfig['dn_commonname']);
+                    $dn = array('commonName' => $pconfig['dn_commonname']);
                     if ($pconfig['dn_country'] != "none") {
                         $dn['countryName'] = $pconfig['dn_country'];
                     }
-                    if ($pconfig['dn_state']) {
+                    if (!empty(pconfig['dn_state'])) {
                         $dn['stateOrProvinceName'] = $pconfig['dn_state'];
                     }
-                    if ($pconfig['dn_city']) {
+                    if (!empty($pconfig['dn_city'])) {
                         $dn['localityName'] = $pconfig['dn_city'];
                     }
-                    if ($pconfig['dn_organization']) {
+                    if (!empty($pconfig['dn_organization'])) {
                         $dn['organizationName'] = $pconfig['dn_organization'];
                     }
-                    if ($pconfig['dn_email']) {
+                    if (!empty($pconfig['dn_email'])) {
                         $dn['emailAddress'] = $pconfig['dn_email'];
                     }
                     if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
@@ -392,21 +391,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                 } elseif ($pconfig['camethod'] == "intermediate") {
-                    $dn = array(
-                        'commonName' => $pconfig['dn_commonname']);
+                    $dn = array('commonName' => $pconfig['dn_commonname']);
                     if ($pconfig['dn_country'] != "none") {
                         $dn['countryName'] = $pconfig['dn_country'];
                     }
-                    if ($pconfig['dn_state']) {
+                    if (!empty($pconfig['dn_state'])) {
                         $dn['stateOrProvinceName'] = $pconfig['dn_state'];
                     }
-                    if ($pconfig['dn_city']) {
+                    if (!empty($pconfig['dn_city'])) {
                         $dn['localityName'] = $pconfig['dn_city'];
                     }
-                    if ($pconfig['dn_organization']) {
+                    if (!empty($pconfig['dn_organization'])) {
                         $dn['organizationName'] = $pconfig['dn_organization'];
                     }
-                    if ($pconfig['dn_email']) {
+                    if (!empty($pconfig['dn_email'])) {
                         $dn['emailAddress'] = $pconfig['dn_email'];
                     }
                     if (!ca_inter_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
