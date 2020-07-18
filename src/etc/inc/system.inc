@@ -605,38 +605,39 @@ function system_syslogd_start($verbose = false, $restart = false)
 
     configd_run('template reload OPNsense/Syslog');
 
-    $syslogcfg = config_read_array('syslog');
+    if (empty($config['syslog']['disable_clog'])) {
+        $syslogcfg = config_read_array('syslog');
 
-    $log_directive = '%';
-    $syslogd_extra = '';
+        $log_directive = '%';
+        $syslogd_extra = '';
 
-    $syslogconf = '';
+        $syslogconf = '';
 
-    $syslogconfs = array();
+        $syslogconfs = array();
 
-    foreach (plugins_syslog() as $plugin_name => $plugin_details) {
-        $syslogconfs[$plugin_name] = $plugin_details;
-    }
+        foreach (plugins_syslog() as $plugin_name => $plugin_details) {
+            $syslogconfs[$plugin_name] = $plugin_details;
+        }
 
-    $separatelogfacilities = array();
-    foreach ($syslogconfs as $logTopic => $logConfig) {
-        $syslogconf .= "!" . implode(',', $logConfig['facility']) . "\n";
-        $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
+        $separatelogfacilities = array();
+        foreach ($syslogconfs as $logTopic => $logConfig) {
+            $syslogconf .= "!" . implode(',', $logConfig['facility']) . "\n";
+            $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
+            if (!isset($syslogcfg['disablelocallogging'])) {
+                $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
+            }
+            if (!empty($logConfig['local'])) {
+                $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
+            }
+        }
+        $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
+
+        asort($separatelogfacilities);
+        $facilitylist = implode(',', array_unique($separatelogfacilities));
+        $syslogconf .= "!-{$facilitylist}\n";
         if (!isset($syslogcfg['disablelocallogging'])) {
-            $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
-        }
-        if (!empty($logConfig['local'])) {
-            $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
-        }
-    }
-    $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
-
-    asort($separatelogfacilities);
-    $facilitylist = implode(',', array_unique($separatelogfacilities));
-    $syslogconf .= "!-{$facilitylist}\n";
-    if (!isset($syslogcfg['disablelocallogging'])) {
-        /* XXX non-system local redirects look unused */
-        $syslogconf .= <<<EOD
+            /* XXX non-system local redirects look unused */
+            $syslogconf .= <<<EOD
 local3.*							{$log_directive}/var/log/vpn.log
 local4.*							{$log_directive}/var/log/portalauth.log
 local7.*							{$log_directive}/var/log/dhcpd.log
@@ -648,13 +649,12 @@ auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
 *.emerg								*
 
 EOD;
-    }
+        }
 
-    file_put_contents('/var/etc/syslog.conf', $syslogconf);
-    $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
+        file_put_contents('/var/etc/syslog.conf', $syslogconf);
+        $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
 
-    // setup log files for all facilities including default
-    if (empty($config['syslog']['disable_clog'])) {
+        // setup log files for all facilities including default
         $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
         $syslog_files = array_keys($syslogconfs);
         $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
@@ -667,7 +667,17 @@ EOD;
         }
     }
 
-    if (!$restart && isvalidpid('/var/run/syslog.pid')) {
+    if (!empty($config['syslog']['disable_clog'])) {
+        // non legacy mode
+        if (isvalidpid('/var/run/syslog.pid')) {
+            killbypid('/var/run/syslog.pid', 'TERM', true);
+        }
+        if (!$restart && isvalidpid('/var/run/syslog-ng.pid')) {
+            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
+        } else {
+            mwexecf("/usr/sbin/service syslog-ng restart");
+        }
+    } elseif (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
         if (isvalidpid('/var/run/syslog-ng.pid')) {
             mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
