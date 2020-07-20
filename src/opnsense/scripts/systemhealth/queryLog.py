@@ -88,22 +88,28 @@ if __name__ == '__main__':
                     filename = fetch_clog(log_filename)
                 except Exception as e:
                     filename = log_filename
-                for record in reverse_log_reader(filename):
-                    if record['line'] != "" and filter_regexp.match(('%s' % record['line']).lower()):
+                for rec in reverse_log_reader(filename):
+                    if rec['line'] != "" and filter_regexp.match(('%s' % rec['line']).lower()):
                         result['total_rows'] += 1
                         if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
-                            record['timestamp'] = None
-                            record['parser'] = None
-                            frmt = format_container.get_format(record['line'])
+                            record = {
+                                'timestamp': None,
+                                'parser': None,
+                                'process_name': ''
+                            }
+                            frmt = format_container.get_format(rec['line'])
                             if frmt:
-                                record['timestamp'] = frmt.timestamp(record['line'])
-                                record['line'] = frmt.line(record['line'])
+                                record['timestamp'] = frmt.timestamp(rec['line'])
+                                record['process_name'] = frmt.process_name(rec['line'])
+                                record['line'] = frmt.line(rec['line'])
                                 record['parser'] = frmt.name
+                            else:
+                                record['line'] = rec['line']
                             result['rows'].append(record)
-                        elif result['total_rows'] > offset + limit:
+                        elif limit > 0 and result['total_rows'] > offset + limit:
                             # do not fetch data until end of file...
                             break
-            if result['total_rows'] > offset + limit:
+            if limit > 0 and result['total_rows'] > offset + limit:
                 break
 
     # output results
