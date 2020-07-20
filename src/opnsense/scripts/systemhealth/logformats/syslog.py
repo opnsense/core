@@ -48,10 +48,16 @@ class SysLogFormat(BaseLogFormat):
 
     @staticmethod
     def line(line):
-        # strip timestamp from log line
+        # parse [date] [hostname] [process_name] [line] format
         response = line[16:]
-        # strip hostname from log line
-        return response[response.find(' ')+1:].strip()
+        tmp = response.find(':')
+        return response[tmp+1:].strip() if tmp > -1 else response[response.find(' ')+1:].strip()
+
+    @staticmethod
+    def process_name(line):
+        response = line[16:]
+        tmp = response.find(':')
+        return response[:tmp].strip().split()[-1] if tmp > -1 else ""
 
 
 class SysLogFormatEpoch(BaseLogFormat):

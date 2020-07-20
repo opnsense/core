@@ -63,6 +63,12 @@ class BaseLogFormat:
         """
         return line
 
+    @staticmethod
+    def process_name(line):
+        """ Return process name
+        """
+        return ""
+
 
 class FormatContainer:
     def __init__(self, filename):
