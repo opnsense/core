@@ -10,10 +10,10 @@
             <ACL VisibleName="Access Lists" order="40" url="/services_unbound_acls.php">
                 <All url="/services_unbound_acls.php*" visibility="hidden"/>
             </ACL>
-            <Statistics order="90" url="/ui/unbound/stats"/>
-            <LogFile VisibleName="Log File" order="100" url="/ui/diagnostics/log/core/resolver"/>
             <Blacklist order="50" url="/ui/unbound/dnsbl/index"/>
             <Miscellaneous order="60" url="/ui/unbound/miscellaneous/index"/>
+            <Statistics order="90" url="/ui/unbound/stats"/>
+            <LogFile VisibleName="Log File" order="100" url="/ui/diagnostics/log/core/resolver"/>
         </Unbound>
     </Services>
 </menu>
