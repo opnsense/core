@@ -384,6 +384,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dn_email'])) {
                         $dn['emailAddress'] = $pconfig['dn_email'];
                     }
+                    if (!empty($pconfig['dn_organizationalunit'])) {
+                        $dn['organizationalUnitName'] = $pconfig['dn_organizationalunit'];
+                    }
                     if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
@@ -406,6 +409,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['dn_email'])) {
                         $dn['emailAddress'] = $pconfig['dn_email'];
+                    }
+                    if (!empty($pconfig['dn_organizationalunit'])) {
+                        $dn['organizationalUnitName'] = $pconfig['dn_organizationalunit'];
                     }
                     if (!ca_inter_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
                         $input_errors = array();
@@ -724,6 +730,17 @@ $main_buttons = array(
                       <em><?=gettext("ex:");?></em>
                       &nbsp;
                       <?=gettext("My Company Inc");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_digest_dn_organizationalunit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
+                  <td>
+                    <input name="dn_organizationalunit" type="text" size="40" value="<?=$pconfig['dn_organizationalunit'];?>"/>
+                    <div class="hidden" data-for="help_for_digest_dn_organizationalunit">
+                      <em><?=gettext("ex:");?></em>
+                      &nbsp;
+                      <?=gettext("IT department");?>
                     </div>
                   </td>
                 </tr>
