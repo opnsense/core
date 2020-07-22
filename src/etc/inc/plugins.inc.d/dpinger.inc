@@ -87,6 +87,32 @@ function dpinger_configure()
     );
 }
 
+function ip_in_range($testip, $ip, $netmask) {
+    if (!empty($netmask) && !empty($ip)) {
+        if (strpos($netmask, '.') !== false) {
+            // $netmask is a 255.255.0.0 format
+            $netmask = str_replace('*', '0', $netmask);
+            $netmask_dec = ip2long($netmask);
+            return ( (ip2long($testip) & $netmask_dec) == (ip2long($ip) & $netmask_dec) );
+        } else {
+            // $netmask is a CIDR size block
+            // fix the range argument
+            $x = explode('.', $ip);
+            while(count($x)<4) $x[] = '0';
+            list($a,$b,$c,$d) = $x;
+            $ip = sprintf("%u.%u.%u.%u", empty($a)?'0':$a, empty($b)?'0':$b,empty($c)?'0':$c,empty($d)?'0':$d);
+            $range_dec = ip2long($ip);
+            $ip_dec = ip2long($testip);
+            # Create the netmask with 'netmask' 1s and then fill it to 32 with 0s
+            $wildcard_dec = pow(2, (32-$netmask)) - 1;
+            $netmask_dec = ~ $wildcard_dec;
+            return (($ip_dec & $netmask_dec) == ($range_dec & $netmask_dec));
+        }
+    } else {
+        return false;
+    }
+}
+
 function dpinger_configure_do($verbose = false, $gwname = null)
 {
     if ($verbose) {
@@ -130,6 +156,17 @@ function dpinger_configure_do($verbose = false, $gwname = null)
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
             $gwifip = find_interface_ip($gateway['if'], $ifconfig_details);
+            $if_name = $gateway['if'];
+            $ipix=0;
+            while(!empty($ifconfig_details[$if_name]['ipv4'][$ipix])
+                && !ip_in_range($gateway['monitor'],$ifconfig_details[$if_name]['ipv4'][$ipix]['ipaddr'],$ifconfig_details[$if_name]['ipv4'][$ipix]['subnetbits']))
+                {
+                    $ipix++;
+                }
+            if(!empty($ifconfig_details[$if_name]['ipv4'][$ipix])) {
+                $gwifip = $ifconfig_details[$if_name]['ipv4'][$ipix]['ipaddr'];
+            }
+            
             if (!is_ipaddrv4($gwifip)) {
                 log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
                 continue;
