@@ -72,8 +72,6 @@ CORE_DEPENDS_amd64?=	beep \
 			bsdinstaller \
 			suricata
 
-CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
-
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			ca_root_nss \
 			choparp \
