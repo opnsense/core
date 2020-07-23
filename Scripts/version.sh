@@ -27,7 +27,7 @@
 
 set -e
 
-VERSION=$(git describe --abbrev=0 --always)
+VERSION=$(git describe --abbrev=0 --always ${1})
 REVISION=$(git rev-list ${VERSION}.. --count)
 HASH=$(git rev-list HEAD --max-count=1 | cut -c1-9)
 

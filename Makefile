@@ -28,6 +28,24 @@ all:
 
 .include "Mk/defaults.mk"
 
+CORE_ABI?=	20.1
+CORE_PHP?=	72
+CORE_PYTHON?=	37
+CORE_SURICATA?=	-devel
+CORE_SYSLOGD?=	# empty
+CORE_SYSLOGNG?=	3.27
+CORE_UPDATE?=	# empty
+
+.if exists(${GIT}) && exists(${GITVERSION})
+. if ${CORE_ABI} == "20.1"
+CORE_COMMIT!=	${GITVERSION} --exclude=20.7.r\*
+. else
+CORE_COMMIT!=	${GITVERSION}
+. endif
+.else
+CORE_COMMIT=	unknown 0 undefined
+.endif
+
 CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
@@ -37,14 +55,6 @@ CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 .else
 CORE_PKGVERSION=	${CORE_VERSION}
 .endif
-
-CORE_ABI?=	20.1
-CORE_PHP?=	72
-CORE_PYTHON?=	37
-CORE_SURICATA?=	-devel
-CORE_SYSLOGD?=	# empty
-CORE_SYSLOGNG?=	3.27
-CORE_UPDATE?=	# empty
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
