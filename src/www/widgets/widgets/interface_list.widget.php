@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $ifinfo = $ifsinfo[$ifdescr];
     $iswireless = is_interface_wireless($ifdescr); ?>
   <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
-  <td style="width:5%; word-break: break-word;">
+  <td style="width:30px; word-break: break-word;">
 <?php if ($ifinfo['status'] == 'up' || $ifinfo['status'] == 'associated'): ?>
       <span class="fa fa-arrow-up text-success"></span>
 <?php elseif ($ifinfo['status'] == "down"): ?>
