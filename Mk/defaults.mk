@@ -31,12 +31,6 @@ GIT!=		which git || echo true
 
 GITVERSION=	${.CURDIR}/Scripts/version.sh
 
-.if exists(${GIT}) && exists(${GITVERSION})
-CORE_COMMIT!=	${GITVERSION}
-.else
-CORE_COMMIT=	unknown 0 undefined
-.endif
-
 _CORE_ARCH!=	uname -p
 CORE_ARCH?=	${_CORE_ARCH}
 
