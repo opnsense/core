@@ -39,6 +39,9 @@ CORE_ARCH?=	${_CORE_ARCH}
 _CORE_UPDATE!=	${PKG} query -g %n 'opnsense-update*'
 CORE_UPDATE?=	${_CORE_UPDATE:S/opnsense-update//g}
 
+_CORE_SURICATA!=${PKG} query -g %n 'suricata*'
+CORE_SURICATA?=	${_CORE_SURICATA:S/suricata//g}
+
 _CORE_SYSLOGD!=	${PKG} query -g %n 'syslogd*'
 CORE_SYSLOGD?=	${_CORE_SYSLOGD:S/syslogd//g}
 .endif
