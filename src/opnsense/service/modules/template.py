@@ -39,6 +39,7 @@ import traceback
 import copy
 import codecs
 import jinja2
+import re
 from .addons import template_helpers
 
 __author__ = 'Ad Schellevis'
@@ -62,6 +63,7 @@ class Template(object):
         # register additional filters
         self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
         self._j2_env.filters['encode_idna'] = self._encode_idna
+        self._j2_env.filters['regex_replace'] = self._regex_replace
 
     @staticmethod
     def _encode_idna(x):
@@ -73,6 +75,9 @@ class Template(object):
         except UnicodeError:
             # return source when unable to decode
             return x
+
+    def _regex_replace(self, value, pattern, replacement):
+        return re.sub(pattern, replacement, value)
 
     def list_module(self, module_name):
         """ list single module content
