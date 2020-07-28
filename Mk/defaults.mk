@@ -34,18 +34,6 @@ GITVERSION=	${.CURDIR}/Scripts/version.sh
 _CORE_ARCH!=	uname -p
 CORE_ARCH?=	${_CORE_ARCH}
 
-# detect current runtime dependencies to unbreak development "make upgrade"
-.if exists(${PKG})
-_CORE_UPDATE!=	${PKG} query -g %n 'opnsense-update*'
-CORE_UPDATE?=	${_CORE_UPDATE:S/opnsense-update//g}
-
-_CORE_SURICATA!=${PKG} query -g %n 'suricata*'
-CORE_SURICATA?=	${_CORE_SURICATA:S/suricata//g}
-
-_CORE_SYSLOGD!=	${PKG} query -g %n 'syslogd*'
-CORE_SYSLOGD?=	${_CORE_SYSLOGD:S/syslogd//g}
-.endif
-
 OPENSSL=	${LOCALBASE}/bin/openssl
 
 .if ! defined(CORE_FLAVOUR)
