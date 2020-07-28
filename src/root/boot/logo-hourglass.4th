@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"    20.7  ``The Road Ahead''   #[m" logo+
+	s"    21.1  ``Legendary Lion''   #[m" logo+
 
 	2drop
 ;

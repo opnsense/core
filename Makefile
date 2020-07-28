@@ -31,10 +31,7 @@ all:
 CORE_ABI?=	20.7
 CORE_PHP?=	72
 CORE_PYTHON?=	37
-CORE_SURICATA?=	-devel
-CORE_SYSLOGD?=	# empty
 CORE_SYSLOGNG?=	3.27
-CORE_UPDATE?=	# empty
 
 .if exists(${GIT}) && exists(${GITVERSION})
 . if ${CORE_ABI} == "20.7"
@@ -66,7 +63,7 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
-CORE_MESSAGE?=		TBA
+CORE_MESSAGE?=		The lion sleeps tonight
 CORE_NAME?=		opnsense
 CORE_TYPE?=		release
 
