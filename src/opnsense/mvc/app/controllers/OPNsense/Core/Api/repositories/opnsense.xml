@@ -81,10 +81,6 @@
             <description>OPNsense (HTTPS, Amsterdam, NL)</description>
         </mirror>
         <mirror>
-            <url>https://mirror.ragenetwork.de/opnsense</url>
-            <description>RageNetwork (HTTPS, Munich, DE)</description>
-        </mirror>
-        <mirror>
             <url>http://mirror.terrahost.no/opnsense</url>
             <description>TerraHost (HTTP, Sandefjord, Norway)</description>
         </mirror>
