@@ -49,10 +49,6 @@
             <description>ServerBase AG (HTTPS, Zurich, CH)</description>
         </mirror>
         <mirror>
-            <url>https://opn.sense.nz</url>
-            <description>opn.sense.nz (HTTPS, Frankfurt, DE)</description>
-        </mirror>
-        <mirror>
             <url>http://mirror.ams1.nl.leaseweb.net/opnsense</url>
             <description>LeaseWeb (HTTP, Amsterdam, NL)</description>
         </mirror>
