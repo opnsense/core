@@ -310,6 +310,7 @@
                     $("#filters_help").hide();
                 }
                 $('.selectpicker').selectpicker('refresh');
+                $("#filter_tag").change();
                 apply_filter();
             });
             $("#filters").append($new_filter);
@@ -333,6 +334,40 @@
         // fetch interface mappings on load
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
+            /**
+             * fetch log "static" dropdown filters and add logic
+             */
+            ajaxGet('/api/diagnostics/firewall/log_filters', {}, function(data, status) {
+                if (data.action !== undefined) {
+                    let filter_value_items = $("#filter_value_items");
+                    let filter_value = $("#filter_value");
+                    filter_value_items.data('filters', data);
+                    $("#filter_tag").change(function(){
+                        let filters = filter_value_items.data('filters');
+                        let filter = $("#filter_tag").val();
+                        filter_value.hide();
+                        filter_value_items.parent().hide();
+                        if (filters[filter] !== undefined) {
+                            filter_value_items.parent().show();
+                            filter_value_items.empty();
+                            for (let i = 0 ; i < filters[filter].length ; ++i) {
+                                let filter_opt = $("<option/>").text(filters[filter][i]);
+                                if (filter_value.val() == filters[filter][i]) {
+                                    filter_opt.prop('selected', true);
+                                }
+                                filter_value_items.append(filter_opt);
+                            }
+                            filter_value_items.selectpicker('refresh');
+                            filter_value_items.change();
+                        } else {
+                            filter_value.show();
+                        }
+                    }).change();
+                    filter_value_items.change(function(){
+                        filter_value.val($(this).val())
+                    });
+                }
+            });
         });
 
         // startup poller
@@ -394,6 +429,9 @@
                               </td>
                               <td>
                                 <input type="text" id="filter_value"></input>
+                                <div>
+                                <select id="filter_value_items" class="selectpicker" data-width="250px"></select>
+                                </div>
                               </td>
                               <td>
                                   <button class="btn" id="add_filter_condition" aria-hidden="true">

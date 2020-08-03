@@ -59,6 +59,26 @@ class FirewallController extends ApiControllerBase
     }
 
     /**
+     * retrieve firewall log filter choices
+     * @return array
+     */
+    public function log_filtersAction()
+    {
+        $config = Config::getInstance()->object();
+        $interfaces = [];
+        if ($config->interfaces->count() > 0) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                $interfaces[] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+            }
+        }
+        return [
+            "interface_name" => $interfaces,
+            "dir" => ["in", "out"],
+            "action" => ["pass", "block"]
+        ];
+    }
+
+    /**
      * retrieve firewall stats
      * @return array
      */
