@@ -227,6 +227,26 @@ class AliasContentField extends BaseField
     }
 
     /**
+     * Validate (partial) mac address options
+     * @param array $data to validate
+     * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
+     */
+    private function validatePartialMacAddr($data)
+    {
+        $messages = array();
+        foreach ($this->getItems($data) as $macaddr) {
+            if (!preg_match('/^[0-9A-Fa-f]{2}(?:[:][0-9A-Fa-f]{2}){1,5}$/i', $macaddr)) {
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid (partial) MAC address.'),
+                    $macaddr
+                );
+            }
+        }
+        return $messages;
+    }
+
+    /**
      * retrieve field validators for this field type
      * @return array
      */
@@ -262,6 +282,12 @@ class AliasContentField extends BaseField
                 case "networkgroup":
                     $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validateNestedAlias($data);
+                    }
+                    ]);
+                    break;
+                case "mac":
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
+                        return $this->validatePartialMacAddr($data);
                     }
                     ]);
                     break;

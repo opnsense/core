@@ -35,6 +35,7 @@ import dns.resolver
 import syslog
 from hashlib import md5
 from . import geoip
+from .arpcache import ArpCache
 
 class Alias(object):
     def __init__(self, elem, known_aliases=[], ttl=-1, ssl_no_verify=False, timeout=120):
@@ -269,6 +270,8 @@ class Alias(object):
             return self._fetch_url
         elif self._type == 'geoip':
             return self._fetch_geo
+        elif self._type == 'mac':
+            return ArpCache().iter_addresses
         else:
             return None
 
