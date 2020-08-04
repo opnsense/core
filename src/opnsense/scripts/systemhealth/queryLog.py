@@ -64,7 +64,7 @@ if __name__ == '__main__':
             )
         if os.path.isdir(log_basename):
             # new syslog-ng local targets use an extra directory level
-            for filename in sorted(glob.glob("%s/*.log" % log_basename), reverse=True):
+            for filename in sorted(glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0])), reverse=True):
                 log_filenames.append(filename)
         # legacy log output is always stiched last
         log_filenames.append("%s.log" % log_basename)
