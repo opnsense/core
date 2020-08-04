@@ -8,6 +8,10 @@
             <url>https://mirrors.dotsrc.org/opnsense</url>
             <description>Aalborg University (HTTPS, Aalborg, DK)</description>
         </mirror>
+        <mirror>
+            <url>https://opnsense.aivian.org</url>
+            <description>Aivian (HTTPS, Shaoxing, CN)</description>
+        </mirror>
         <mirror has_subscription="True">
             <url>https://opnsense-update.deciso.com</url>
             <description>Deciso (HTTPS, NL, Commercial)</description>
