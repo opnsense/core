@@ -753,7 +753,7 @@ endif; ?>
                     <select name='ldap_sync_memberof_groups[]' id="ldap_sync_memberof_groups" class="selectpicker" multiple="multiple">
 <?php
                     foreach (config_read_array('system', 'group') as $group):
-                        $selected = in_array($group['name'], $pconfig['ldap_sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
+                        $selected = !empty($pconfig['ldap_sync_memberof_groups']) && in_array($group['name'], $pconfig['ldap_sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
                       <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
 <?php
                     endforeach; ?>
