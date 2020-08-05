@@ -269,6 +269,10 @@ class MenuSystem
         foreach ($ifgroups as $key => $groupings) {
             $first = true;
             foreach ($groupings as $grouping) {
+                if (empty($iftargets['if'][$key])) {
+                    // referential integrity between ifgroups and interfaces isn't assured, skip when interface doesn't exist
+                    continue;
+                }
                 $this->appendItem('Interfaces.' . $grouping, $key, array(
                     'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
                     'visiblename' => '[' . $iftargets['if'][$key] . ']',
