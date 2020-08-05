@@ -651,6 +651,7 @@
 /usr/local/opnsense/scripts/filter/kill_table.py
 /usr/local/opnsense/scripts/filter/lib/__init__.py
 /usr/local/opnsense/scripts/filter/lib/alias.py
+/usr/local/opnsense/scripts/filter/lib/arpcache.py
 /usr/local/opnsense/scripts/filter/lib/geoip.py
 /usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
