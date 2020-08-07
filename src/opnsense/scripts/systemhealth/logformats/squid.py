@@ -32,7 +32,7 @@ squid_timeformat = r'^(\d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}).*'
 
 class SquidLogFormat(BaseLogFormat):
     def __init__(self, filename):
-        super(SquidLogFormat, self).__init__(filename)
+        super().__init__(filename)
         self._priority = 100
 
     def match(self, line):
@@ -45,13 +45,17 @@ class SquidLogFormat(BaseLogFormat):
         return datetime.datetime.strptime(grp, "%Y/%m/%d %H:%M:%S").isoformat()
 
     @staticmethod
+    def process_name(line):
+        return "squid"
+
+    @staticmethod
     def line(line):
         return line[19:].strip()
 
 
 class SquidExtLogFormat(BaseLogFormat):
     def __init__(self, filename):
-        super(SquidExtLogFormat, self).__init__(filename)
+        super().__init__(filename)
         self._priority = 120
 
     def match(self, line):
@@ -64,7 +68,39 @@ class SquidExtLogFormat(BaseLogFormat):
         return datetime.datetime.strptime(grp[1:].split()[0], "%d/%b/%Y:%H:%M:%S").isoformat()
 
     @staticmethod
+    def process_name(line):
+        return "squid"
+
+    @staticmethod
     def line(line):
         tmp = re.match(squid_ext_timeformat, line)
         grp = tmp.group(1)
         return line.replace(grp, '')
+
+
+class SquidJsonLogFormat(BaseLogFormat):
+    def __init__(self, filename):
+        super().__init__(filename)
+        self._priority = 140
+        local_now = datetime.datetime.now()
+        utc_now = datetime.datetime.utcnow()
+        self._localtimezone = datetime.timezone(local_now - utc_now)
+
+    def match(self, line):
+        return self._filename.find('squid') > -1 and line.find('"@timestamp"') > -1
+
+    def timestamp(self, line):
+        tmp = line[line.find('"@timestamp"')+13:].split(',')[0].strip().strip('"')
+        try:
+            return datetime.datetime.strptime(tmp, "%Y-%m-%dT%H:%M:%S%z")\
+                    .astimezone(self._localtimezone).isoformat().split('.')[0].split('+')[0]
+        except ValueError:
+            return None
+
+    @staticmethod
+    def process_name(line):
+        return "squid"
+
+    @staticmethod
+    def line(line):
+        return line

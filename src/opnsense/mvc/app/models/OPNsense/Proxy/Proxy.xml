@@ -45,7 +45,9 @@
                     <BlankDesc>File</BlankDesc>
                     <OptionValues>
                         <file_extendend>File (Extended)</file_extendend>
+                        <file_json>File (Json)</file_json>
                         <syslog>Syslog</syslog>
+                        <syslog_json>Syslog (Json)</syslog_json>
                     </OptionValues>
                 </target>
             </logging>
