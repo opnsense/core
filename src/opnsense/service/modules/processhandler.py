@@ -40,8 +40,7 @@ import time
 import uuid
 import shlex
 import tempfile
-from . import ph_inline_actions
-from modules import singleton
+from . import ph_inline_actions, syslog_error, syslog_info, syslog_notice, singleton
 
 __author__ = 'Ad Schellevis'
 
@@ -127,7 +126,7 @@ class Handler(object):
             except Exception:
                 # something went wrong... send traceback to syslog, restart listener (wait for a short time)
                 print(traceback.format_exc())
-                syslog.syslog(syslog.LOG_ERR, 'Handler died on %s' % traceback.format_exc())
+                syslog_error('Handler died on %s' % traceback.format_exc())
                 time.sleep(1)
 
 
@@ -203,10 +202,9 @@ class HandlerClient(threading.Thread):
                     self.connection.sendall(('%s\n' % result).encode())
                 else:
                     # log response
-                    syslog.syslog(syslog.LOG_INFO, "message %s [%s.%s] returned %s " % (self.message_uuid,
-                                                                                        exec_command,
-                                                                                        exec_action,
-                                                                                        result[:100]))
+                    syslog_info("message %s [%s.%s] returned %s " % (
+                        self.message_uuid, exec_command, exec_action, result[:100]
+                    ))
 
             # send end of stream characters
             if not exec_in_background:
@@ -216,16 +214,9 @@ class HandlerClient(threading.Thread):
             pass
         except Exception:
             print(traceback.format_exc())
-            syslog.syslog(
-                syslog.LOG_ERR,
-                'unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (result,
-                                                                                            exec_command,
-                                                                                            exec_action,
-                                                                                            exec_params,
-                                                                                            self.message_uuid,
-                                                                                            traceback.format_exc()
-                                                                                            )
-            )
+            syslog_error('unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (
+                result, exec_command, exec_action, exec_params, self.message_uuid, traceback.format_exc()
+            ))
         finally:
             if not exec_in_background:
                 self.connection.shutdown(socket.SHUT_RDWR)
@@ -282,9 +273,9 @@ class ActionHandler(object):
                     if action_name not in self.action_map[topic_name]:
                         self.action_map[topic_name][action_name] = {}
                     if type(self.action_map[topic_name][action_name]) is not dict:
-                        syslog.syslog(syslog.LOG_ERR,
-                            'unsupported overlay command [%s.%s.%s]' % (topic_name, action_name, section.split('.')[1])
-                        )
+                        syslog_error('unsupported overlay command [%s.%s.%s]' % (
+                            topic_name, action_name, section.split('.')[1]
+                        ))
                     else:
                         self.action_map[topic_name][action_name][section.split('.')[1]] = action_obj
                 else:
@@ -428,7 +419,7 @@ class Action(object):
                 for i in range(self.message.count('%s') - len(log_param)):
                     log_param.append('')
 
-            syslog.syslog(syslog.LOG_NOTICE, '[%s] %s' % (message_uuid, self.message % tuple(log_param)))
+            syslog_notice('[%s] %s' % (message_uuid, self.message % tuple(log_param)))
 
         # validate input
         if self.type is None:
@@ -438,7 +429,7 @@ class Action(object):
             # script type commands, basic script type only uses exit statuses, script_output sends back stdout data.
             if self.command is None:
                 # no command supplied, exit
-                syslog.syslog(syslog.LOG_ERR, '[%s] returned "No command"' % message_uuid)
+                syslog_error('[%s] returned "No command"' % message_uuid)
                 return 'No command'
 
             # build script command to execute, shared for both types
@@ -473,10 +464,10 @@ class Action(object):
                     if exit_status == 0:
                         return 'OK'
                     else:
-                        syslog.syslog(syslog.LOG_ERR, '[%s] returned exit status %d' % (message_uuid, exit_status))
+                        syslog_error('[%s] returned exit status %d' % (message_uuid, exit_status))
                         return 'Error (%d)' % exit_status
                 except Exception as script_exception:
-                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed with %s at %s' % (message_uuid,
+                    syslog_error('[%s] Script action failed with %s at %s' % (message_uuid,
                                                                                                script_exception,
                                                                                                traceback.format_exc()))
                     return 'Execute error'
@@ -491,15 +482,14 @@ class Action(object):
                             script_output = output_stream.read()
                             script_error_output = error_stream.read()
                             if len(script_error_output) > 0:
-                                syslog.syslog(syslog.LOG_ERR,
-                                              '[%s] Script action stderr returned "%s"' %
-                                              (message_uuid, script_error_output.strip()[:255])
-                                              )
+                                syslog_error('[%s] Script action stderr returned "%s"' %(
+                                    message_uuid, script_error_output.strip()[:255]
+                                ))
                             return script_output.decode()
                 except Exception as script_exception:
-                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed with %s at %s' % (message_uuid,
-                                                                                               script_exception,
-                                                                                               traceback.format_exc()))
+                    syslog_error('[%s] Script action failed with %s at %s' % (
+                        message_uuid, script_exception, traceback.format_exc()
+                    ))
                     return 'Execute error'
 
             # fallback should never get here
@@ -516,9 +506,9 @@ class Action(object):
                 return ph_inline_actions.execute(self, inline_act_parameters)
 
             except Exception as inline_exception:
-                syslog.syslog(syslog.LOG_ERR, '[%s] Inline action failed with %s at %s' % (message_uuid,
-                                                                                           inline_exception,
-                                                                                           traceback.format_exc()))
+                syslog_error('[%s] Inline action failed with %s at %s' % (
+                    message_uuid, inline_exception, traceback.format_exc()
+                ))
                 return 'Execute error'
 
         return 'Unknown action type'
