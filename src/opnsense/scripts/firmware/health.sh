@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2020 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,8 @@ MTREE_PATTERNS="
 ./etc/shells
 ./etc/spwd.db
 ./etc/ttys
+./usr/share/man/mandoc.db
+./usr/share/openssl/man/mandoc.db
 "
 
 GREP_PATTERNS=
