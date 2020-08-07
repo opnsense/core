@@ -40,6 +40,7 @@ import copy
 import codecs
 import jinja2
 from .addons import template_helpers
+from . import syslog_error, syslog_notice
 
 __author__ = 'Ad Schellevis'
 
@@ -95,7 +96,7 @@ class Template(object):
                             source_file = parts[0].strip()
                             target_name = parts[1].strip()
                             if target_name in list(result['+TARGETS'].values()):
-                                syslog.syslog(syslog.LOG_NOTICE, "template overlay %s with %s" % (
+                                syslog_notice("template overlay %s with %s" % (
                                     target_name, os.path.basename(target_source)
                                 ))
                             result['+TARGETS'][source_file] = target_name
@@ -324,15 +325,16 @@ class Template(object):
             wildcard_pos = module_name.find('*')
             if result is None:
                 result = list()
-            syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
+            syslog_notice("generate template container %s" % template_name)
             try:
                 for filename in self._generate(template_name, create_directory):
                     result.append(filename)
             except Exception as render_exception:
                 if wildcard_pos > -1:
                     # log failure, but proceed processing when doing a wildcard search
-                    syslog.syslog(syslog.LOG_ERR, 'error generating template %s : %s' % (template_name,
-                                                                                         traceback.format_exc()))
+                    syslog_error('error generating template %s : %s' % (
+                        template_name, traceback.format_exc()
+                    ))
                 else:
                     raise render_exception
 
@@ -345,7 +347,7 @@ class Template(object):
         """
         result = list()
         for template_name in self.iter_modules(module_name):
-            syslog.syslog(syslog.LOG_NOTICE, "cleanup template container %s" % template_name)
+            syslog_notice("cleanup template container %s" % template_name)
             module_data = self.list_module(module_name)
             for src_template in list(module_data['+CLEANUP_TARGETS']):
                 target = module_data['+CLEANUP_TARGETS'][src_template]

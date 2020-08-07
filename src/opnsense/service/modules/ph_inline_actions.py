@@ -29,9 +29,9 @@
 
 """
 
-import syslog
 from . import template
 from . import config
+from . import syslog_debug
 
 __author__ = 'Ad Schellevis'
 
@@ -56,7 +56,7 @@ def execute(action, parameters):
         # send generated filenames to syslog
         if filenames is not None:
             for filename in filenames:
-                syslog.syslog(syslog.LOG_DEBUG, ' %s generated %s' % (parameters, filename))
+                syslog_debug(' %s generated %s' % (parameters, filename))
             return 'OK'
         else:
             return 'ERR'
@@ -80,7 +80,7 @@ def execute(action, parameters):
         # send generated filenames to syslog
         if filenames is not None:
             for filename in filenames:
-                syslog.syslog(syslog.LOG_DEBUG, ' %s removed %s' % (parameters, filename))
+                syslog_debug(' %s removed %s' % (parameters, filename))
             return 'OK'
         else:
             return 'ERR'

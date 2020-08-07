@@ -35,10 +35,11 @@ import argparse
 import socket
 import os.path
 import traceback
-import syslog
 import sys
+import syslog
 import time
 from select import select
+from modules import syslog_error, syslog_notice
 
 __author__ = 'Ad Schellevis'
 
@@ -56,7 +57,7 @@ def exec_config_cmd(exec_command):
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.connect(configd_socket_name)
     except socket.error:
-        syslog.syslog(syslog.LOG_ERR,'unable to connect to configd socket (@%s)'%configd_socket_name)
+        syslog_error('unable to connect to configd socket (@%s)'%configd_socket_name)
         print('unable to connect to configd socket (@%s)'%configd_socket_name)
         return None
 
@@ -73,7 +74,7 @@ def exec_config_cmd(exec_command):
         return ''.join(data)[:-3]
     except:
         print ('error in configd communication %s, see syslog for details')
-        syslog.syslog(syslog.LOG_ERR,'error in configd communication \n%s'%traceback.format_exc())
+        syslog_error('error in configd communication \n%s'%traceback.format_exc())
     finally:
         sock.close()
 
@@ -129,10 +130,10 @@ if args.e:
         if len(stashed_lines) >= 1 and (args.t is None or time.time() - last_message_stamp > args.t):
             # emit event trigger(s) to syslog
             for line in stashed_lines:
-                syslog.syslog(syslog.LOG_NOTICE,  "event @ %.2f msg: %s" % (last_message_stamp, line))
+                syslog_notice("event @ %.2f msg: %s" % (last_message_stamp, line))
             # execute command(s)
             for exec_command in exec_commands:
-                syslog.syslog(syslog.LOG_NOTICE,  "event @ %.2f exec: %s" % (last_message_stamp, exec_command))
+                syslog_notice("event @ %.2f exec: %s" % (last_message_stamp, exec_command))
                 exec_config_cmd(exec_command=exec_command)
             stashed_lines = list()
 else:
