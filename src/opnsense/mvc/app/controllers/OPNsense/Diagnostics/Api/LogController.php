@@ -81,7 +81,7 @@ class LogController extends ApiControllerBase
                 $this->response->setRawHeader("Content-Type: text/csv");
                 $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
                 foreach (json_decode($response, true)['rows'] as $row) {
-                    printf("%s\t%s\t%s\n", $row['timestamp'],  $row['process_name'], $row['line']);
+                    printf("%s\t%s\t%s\n", $row['timestamp'], $row['process_name'], $row['line']);
                 }
                 return;
             }
