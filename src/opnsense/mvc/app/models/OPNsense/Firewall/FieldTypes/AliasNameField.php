@@ -59,7 +59,7 @@ class AliasNameField extends BaseField
     {
         $validators = parent::getValidators();
         $reservedwords = array(
-            'all', 'pass', 'block', 'out', 'queue', 'max', 'min', 'pptp', 'pppoe', 'L2TP', 'OpenVPN', 'IPsec'
+            'all', 'pass', 'block', 'out', 'queue', 'max', 'min', 'pptp', 'pppoe', 'L2TP', 'OpenVPN', 'IPsec', 'log'
         );
         if ($this->internalValue != null) {
             // add validations to deny reserved keywords, service/protocol names and invalid characters
