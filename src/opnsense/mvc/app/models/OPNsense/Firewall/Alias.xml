@@ -35,6 +35,7 @@
                         <urltable>URL Table (IPs)</urltable>
                         <geoip>GeoIP</geoip>
                         <networkgroup>Network group</networkgroup>
+                        <mac>MAC address</mac>
                         <external>External (advanced)</external>
                     </OptionValues>
                 </type>
