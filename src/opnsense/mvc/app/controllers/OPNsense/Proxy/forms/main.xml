@@ -33,9 +33,9 @@
             </field>
             <field>
                 <id>proxy.general.logging.target</id>
-                <label>Log target</label>
+                <label>Access log target</label>
                 <type>dropdown</type>
-                <help>Send log data to the selected target.</help>
+                <help>Send log data to the selected target. When syslog is selected, facility local 4 will be used to send messages of info level for these logs.</help>
                 <advanced>true</advanced>
             </field>
             <field>
