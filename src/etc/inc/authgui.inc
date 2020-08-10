@@ -334,7 +334,7 @@ function display_login_form($Login_Error)
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
 
-    <script src="/ui/js/jquery-3.4.1.min.js"></script>
+    <script src="/ui/js/jquery-3.5.1.min.js"></script>
 
     <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")) : ?>
     <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
