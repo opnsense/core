@@ -693,6 +693,9 @@ EOD;
         while (count(glob("/var/run/legacy_log")) == 0 && ($max_sleep--) > 0) {
             usleep(100000);
         }
+        // XXX: syslog-ng can be quite sensitive for available for not ready domain
+        //      sockets, it's not very pretty, but prevents vague initial start issues
+        usleep(500000);
         mwexecf("/usr/sbin/service syslog-ng start");
     }
 
