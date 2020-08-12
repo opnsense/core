@@ -58,8 +58,23 @@ class AliasNameField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
+        // Internally reserved keywords
+        //  ref https://github.com/opnsense/src/blob/41ba6e29a8d3f862f95f9ab0a1482ef58c4a7cdb/sbin/pfctl/parse.y#L5482
         $reservedwords = array(
-            'all', 'pass', 'block', 'out', 'queue', 'max', 'min', 'pptp', 'pppoe', 'L2TP', 'OpenVPN', 'IPsec', 'log'
+            'all', 'allow-opts', 'altq', 'anchor', 'antispoof', 'any', 'bandwidth', 'binat', 'binat-anchor', 'bitmask',
+            'block', 'block-policy', 'buckets', 'cbq', 'code', 'codelq', 'crop', 'debug', 'divert-reply', 'divert-to',
+            'drop', 'drop-ovl', 'dup-to', 'fail-policy', 'fairq', 'fastroute', 'file', 'fingerprints', 'flags',
+            'floating', 'flush', 'for', 'fragment', 'from', 'global', 'group', 'hfsc', 'hogs', 'hostid', 'icmp-type',
+            'icmp6-type', 'if-bound', 'in', 'include', 'inet', 'inet6', 'interval', 'keep', 'label', 'limit',
+            'linkshare', 'load', 'log', 'loginterface', 'max', 'max-mss', 'max-src-conn', 'max-src-conn-rate',
+            'max-src-nodes', 'max-src-states', 'min-ttl', 'modulate', 'nat', 'nat-anchor', 'no', 'no-df', 'no-route',
+            'no-sync', 'on', 'optimization', 'os', 'out', 'overload', 'pass', 'port', 'prio', 'priority', 'priq',
+            'probability', 'proto', 'qlimit', 'queue', 'quick', 'random', 'random-id', 'rdr', 'rdr-anchor', 'realtime',
+            'reassemble', 'reply-to', 'require-order', 'return', 'return-icmp', 'return-icmp6', 'return-rst',
+            'round-robin', 'route', 'route-to', 'rtable', 'rule', 'ruleset-optimization', 'scrub', 'set', 'set-tos',
+            'skip', 'sloppy', 'source-hash', 'source-track', 'state', 'state-defaults', 'state-policy', 'static-port',
+            'sticky-address', 'synproxy', 'table', 'tag', 'tagged', 'target', 'tbrsize', 'timeout', 'to', 'tos', 'ttl',
+            'upperlimit', 'urpf-failed', 'user'
         );
         if ($this->internalValue != null) {
             // add validations to deny reserved keywords, service/protocol names and invalid characters
