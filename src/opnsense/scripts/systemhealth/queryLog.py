@@ -68,6 +68,8 @@ if __name__ == '__main__':
                 log_filenames.append(filename)
         # legacy log output is always stiched last
         log_filenames.append("%s.log" % log_basename)
+        if inputargs.module != 'core':
+            log_filenames.append("/var/log/%s_%s.log" % (inputargs.module, os.path.basename(inputargs.filename)))
 
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
