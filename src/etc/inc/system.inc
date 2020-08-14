@@ -571,17 +571,6 @@ function system_staticroutes_configure($interface = '')
     }
 }
 
-function system_syslogd_fixup_server($server)
-{
-    /* If it's an IPv6 IP alone, encase it in brackets */
-    if (is_ipaddrv6($server)) {
-        return "[$server]";
-    } else {
-        return $server;
-    }
-}
-
-
 function system_syslogd_extra_local($logsocket)
 {
     $logdir = dirname($logsocket);
