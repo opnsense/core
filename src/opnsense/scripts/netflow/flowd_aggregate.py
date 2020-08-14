@@ -161,7 +161,7 @@ class Main(object):
                 if do_vacuum:
                     syslog.syslog(syslog.LOG_NOTICE, 'vacuum done')
             except:
-                syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
+                syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc().replace('\n', ' ')))
                 raise
 
             # rotate if needed
