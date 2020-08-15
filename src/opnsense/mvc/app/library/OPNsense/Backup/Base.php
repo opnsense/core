@@ -36,20 +36,29 @@ namespace OPNsense\Backup;
 abstract class Base
 {
     /**
+     * @var string[] openssl arguments by encryption method
+     */
+    private $openssl_arguments = [
+        "M0" => "-aes-256-cbc -md md5", /* backwards-compatible default */
+        "M1" => "-aes-256-cbc -pbkdf2 -iter 100000 -md SHA512",
+    ];
+
+    /**
      * encrypt+encode base64
      * @param string $data to encrypt
      * @param string $pass passphrase to use
      * @param string $tag
+     * @param int $encryption_method
      * @return string base64 encoded crypted data
      */
-    public function encrypt($data, $pass, $tag = 'config.xml')
+    public function encrypt($data, $pass, $tag = 'config.xml', $encryption_method = "M1")
     {
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
         @unlink("{$file}.enc");
 
         file_put_contents("{$file}.dec", $data);
         exec(sprintf(
-            '/usr/local/bin/openssl enc -e -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
+            '/usr/local/bin/openssl enc -e ' . $this->openssl_arguments[$encryption_method] . ' -in %s -out %s -pass pass:%s',
             escapeshellarg("{$file}.dec"),
             escapeshellarg("{$file}.enc"),
             escapeshellarg($pass)
@@ -60,8 +69,12 @@ abstract class Base
             $version = trim(shell_exec('opnsense-version -Nv'));
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
-            $result .= "Cipher: AES-256-CBC\n";
-            $result .= "Hash: MD5\n\n";
+            if ($encryption_method === "M0") {
+                $result .= "Cipher: AES-256-CBC\n";
+                $result .= "Hash: MD5\n\n";
+            } else {
+                $result .= "Encryption: $encryption_method\n\n";
+            }
             $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")), 76, "\n");
             $result .= "---- END {$tag} ----\n";
             @unlink("{$file}.enc");
@@ -85,10 +98,21 @@ abstract class Base
         @unlink("{$file}.dec");
 
         $data = explode("\n", $data);
+        $encryption_method = "M0"; /* default for backward compatibility */
 
         foreach ($data as $key => $val) {
-            /* XXX remove helper lines for now */
-            if (strpos($val, ':') !== false) {
+            if (strpos($val, "Encryption: ") === 0) {
+                /* honor encryption preamble field */
+                $encryption_method = explode(" ", $val, 2)[1];
+                if (!array_key_exists($encryption_method, $this->openssl_arguments)) {
+                    syslog(
+                        LOG_ERR,
+                        'Cannot decrypt with unknown encryption method "' . $encryption_method . '"');
+                    return null;
+                }
+                unset($data[$key]);
+            } elseif (strpos($val, ':') !== false) {
+                /* ignore other preamble fields */
                 unset($data[$key]);
             } elseif (strpos($val, "---- BEGIN {$tag} ----") !== false) {
                 unset($data[$key]);
@@ -102,7 +126,7 @@ abstract class Base
         file_put_contents("{$file}.enc", base64_decode($data));
         exec(
             sprintf(
-                '/usr/local/bin/openssl enc -d -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
+                '/usr/local/bin/openssl enc -d ' . $this->openssl_arguments[$encryption_method] . ' -in %s -out %s -pass pass:%s',
                 escapeshellarg("{$file}.enc"),
                 escapeshellarg("{$file}.dec"),
                 escapeshellarg($pass)
