@@ -163,7 +163,7 @@ if __name__ == '__main__':
                 sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
                                      '/var/db/aliastables/%s.txt' % alias_name], capture_output=True, text=True)
 
-                error_output = sp.stdout.strip()
+                error_output = sp.stderr.strip()
                 if error_output.find('pfctl: ') > -1:
                     result['status'] = 'error'
                     if 'messages' not in result:
