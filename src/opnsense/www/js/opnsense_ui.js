@@ -497,7 +497,7 @@ $.fn.SimpleActionButton = function (params) {
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if (status != "success" || data['status'].toLowerCase().trim() != 'ok') {
+                    if ((status != "success" || data['status'].toLowerCase().trim() != 'ok') && data['status']) {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
