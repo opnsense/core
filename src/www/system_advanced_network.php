@@ -286,7 +286,7 @@ include("head.inc");
                   <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
                   <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
                   <div class="hidden" data-for="help_for_disablechecksumoffloading">
-                    <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
+                    <?=gettext("Checking this option will disable hardware checksum offloading. Unchecking this option may block network access if IPS mode is enabled. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
                   </div>
                 </td>
               </tr>
@@ -296,7 +296,7 @@ include("head.inc");
                   <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
                   <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
                   <div class="hidden" data-for="help_for_disablesegmentationoffloading">
-                    <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                    <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). Unchecking this option may block network access if IPS mode is enabled. This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                   </div>
                 </td>
               </tr>
@@ -306,7 +306,7 @@ include("head.inc");
                   <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
                   <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
                   <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
-                    <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                    <?=gettext("Checking this option will disable hardware large receive offloading (LRO). Unchecking this option may block network access if IPS mode is enabled. This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                   </div>
                 </td>
               </tr>
@@ -325,7 +325,7 @@ include("head.inc");
                       </option>
                   </select>
                   <div class="hidden" data-for="help_for_disablevlanhwfilter">
-                    <?= gettext('Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.') ?>
+                    <?= gettext('Set usage of VLAN hardware filtering. Enabling hardware filtering may block network access if IPS mode is enabled. This hardware acceleration may be broken in a particular device driver, or may impact performance.') ?>
                   </div>
                 </td>
               </tr>
