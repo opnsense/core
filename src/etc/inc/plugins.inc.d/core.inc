@@ -81,7 +81,7 @@ function core_services()
 
     if (empty($config['syslog']['disable_clog'])) {
         $services[] = array(
-            'description' => gettext('Local Syslog (legacy mode)'),
+            'description' => gettext('Legacy Syslog Daemon'),
             'php' => array(
                 "stop" => array('system_syslogd_stop'),
                 "start" => array('system_syslogd_start'),
@@ -93,7 +93,7 @@ function core_services()
     }
 
     $services[] = array(
-        'description' => gettext('Syslog'),
+        'description' => gettext('Syslog-ng Daemon'),
         'php' => array(
             "stop" => array('system_syslogd_stop'),
             "start" => array('system_syslogd_start'),
