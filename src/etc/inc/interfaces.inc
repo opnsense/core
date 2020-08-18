@@ -2417,9 +2417,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* apply interface hardware settings (tso, lro, ..) */
     configure_interface_hardware($realhwif);
 
-    /* XXX we should remove this beyond 19.7 as we cannot configure these interfaces anyway */
-    $tunnelif = in_array(substr($realif, 0, 3), array('gif', 'gre', 'ovp', 'ips'));
-
     switch ($wancfg['ipaddr']) {
         case 'dhcp':
             interface_dhcp_configure($interface);
@@ -2431,9 +2428,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_ppps_configure($interface);
             break;
         default:
-            if ($tunnelif) {
-                break;
-            }
             interface_static_configure($interface, $wancfg);
             break;
     }
@@ -2459,9 +2453,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             default:
-                if ($tunnelif) {
-                    break;
-                }
                 /* XXX why not tell the function... */
                 if (isset($wancfg['dhcp6usev4iface'])) {
                     break;
