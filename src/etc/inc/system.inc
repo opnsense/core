@@ -675,16 +675,9 @@ EOD;
         }
     } else {
         killbypid('/var/run/syslog.pid', 'TERM', true);
-        @unlink("/var/run/legacy_log");
         mwexecf("/usr/sbin/service syslog-ng stop");
+        @unlink("/var/run/legacy_log");
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
-        $max_sleep = 50; // 50 x 0.1 seconds
-        while (count(glob("/var/run/legacy_log")) == 0 && ($max_sleep--) > 0) {
-            usleep(100000);
-        }
-        // XXX: syslog-ng can be quite sensitive for available for not ready domain
-        //      sockets, it's not very pretty, but prevents vague initial start issues
-        usleep(500000);
         mwexecf("/usr/sbin/service syslog-ng start");
     }
 
