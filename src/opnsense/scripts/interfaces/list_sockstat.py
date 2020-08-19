@@ -35,6 +35,14 @@ import ujson
 import netaddr
 
 if __name__ == '__main__':
+    netstat = dict()
+    for line in subprocess.run(['/usr/bin/netstat', '-anL'], capture_output=True, text=True).stdout.split('\n')[2:]:
+        parts = line.split()
+        if len(parts) >= 3:
+            tmp = parts[1].split('/')
+            key = parts[2].replace('.', ':') if parts[0] != 'unix' else parts[2]
+            netstat[key] = {'qlen': tmp[0], 'incqlen': tmp[1], 'maxqlen': tmp[2]}
+
     result = []
     for line in subprocess.run(['/usr/bin/sockstat'], capture_output=True, text=True).stdout.split('\n')[1:]:
         parts = line.split()
@@ -54,5 +62,8 @@ if __name__ == '__main__':
                 record['local'] = parts[5]
                 if len(parts) > 6:
                     record['remote'] = parts[6]
+
+            if record['local'] in netstat:
+                record['listen-queue-sizes'] = netstat[record['local']]
             result.append(record)
     print(ujson.dumps(result))
