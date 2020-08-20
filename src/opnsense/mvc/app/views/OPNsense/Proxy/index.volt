@@ -536,6 +536,7 @@
         </table>
     </div>
     <div id="error_pages" class="tab-pane fade">
+      <form id="frm_proxy-error_pages" class="form-inline" data-title="{{ lang._('Error pages')}}">
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
@@ -582,8 +583,17 @@
                         {{ lang._('Download and upload custom error pages, if no (new) files are provided our defaults are used.')}}
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <button class="btn btn-primary" id="save_proxy-error_pages" type="button">
+                          <b>{{ lang._('Apply')}}</b>
+                          <i id="frm_proxy-error_pages_progress" class=""></i>
+                        </button>
+                    </td>
+                </tr>
             </tfoot>
         </table>
+      </form>
     </div>
 </div>
 

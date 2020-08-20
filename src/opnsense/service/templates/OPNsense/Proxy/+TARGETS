@@ -12,4 +12,4 @@ snmp.conf:/usr/local/etc/squid/pre-auth/40-snmp.conf
 squid.conf:/usr/local/etc/squid/squid.conf
 squid.pam:/etc/pam.d/squid
 wpad.dat:/usr/local/www/wpad.dat
-error_directory.in:/usr/local/etc/squid/error_directory.in
+error_directory:/usr/local/etc/squid/error_directory.in
