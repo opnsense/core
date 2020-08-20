@@ -536,7 +536,7 @@
         </table>
     </div>
     <div id="error_pages" class="tab-pane fade">
-      <form id="frm_proxy-error_pages" class="form-inline" data-title="{{ lang._('Error pages')}}">
+      <form id="frm_proxy-error_pages" data-title="{{ lang._('Error pages')}}">
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
