@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -280,6 +280,14 @@ function recover_pkg()
 {
 	recover_ports();
 	recover_rebuild();
+
+	echo "===> Restoring critical core files\n";
+
+	foreach (['/usr/local/etc/bogons', '/usr/local/etc/bogonsv6'] as $file) {
+		if (!file_exists($file) || filesize($file) === 0) {
+			@copy("{$file}.sample", $file);
+		}
+	}
 }
 
 $stage = isset($argv[1]) ? $argv[1] : 'both';
