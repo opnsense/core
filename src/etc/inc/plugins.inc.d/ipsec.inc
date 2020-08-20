@@ -1899,7 +1899,7 @@ function ipsec_configure_vti($verbose = false)
         $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
         if (empty($current_interfaces[$intf])) {
             // prevent ipsec vti interface to hit 32768 limit (create numbered, rename and attach afterwards)
-            if (legacy_interface_create("ipsec",  $intf) != null) {
+            if (legacy_interface_create("ipsec", $intf) != null) {
                 mwexecf('/sbin/ifconfig %s reqid %s', array($intf, $intf_details['reqid']));
                 mwexecf(
                     '/sbin/ifconfig %s %s tunnel %s %s up',
