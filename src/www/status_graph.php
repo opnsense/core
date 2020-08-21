@@ -149,6 +149,9 @@ include("head.inc");
     margin: 0px;
     margin-bottom: -5px;
 }
+.table-striped select {
+  max-width: none;
+}
 </style>
 <script>
     var graphtable = {};
