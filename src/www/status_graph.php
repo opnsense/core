@@ -363,7 +363,7 @@ include("head.inc");
                           <?= gettext('Local') ?>
                         </option>
                         <option value="private" <?=$pconfig['filter'] == "private" ? " selected=\"selected\"" : "";?>>
-                          <?= gettext('Private') ?>
+                          <?= gettext('RFC1918 Private Networks') ?>
                         </option>
                         <option value="all" <?=$pconfig['filter'] == "all" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('All') ?>
