@@ -47,12 +47,20 @@
             <pattern>widgets/widgets/*.widget.php*</pattern>
             <pattern>widgets/api/get.php*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
+            <pattern>api/routes/gateway/status*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
+            <pattern>api/diagnostics/firewall/log</pattern>
+            <pattern>api/monit/status/get/xml</pattern>
         </patterns>
     </page-dashboard-all>
     <page-dashboard-widgets>
         <name>Dashboard (widgets only)</name>
         <patterns>
             <pattern>widgets/widgets/*.widget.php*</pattern>
+            <pattern>api/routes/gateway/status*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
+            <pattern>api/diagnostics/firewall/log</pattern>
+            <pattern>api/monit/status/get/xml</pattern>
         </patterns>
     </page-dashboard-widgets>
     <page-diagnostics-authentication>

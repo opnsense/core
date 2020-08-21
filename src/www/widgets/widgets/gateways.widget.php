@@ -27,7 +27,6 @@
  */
 
 require_once("guiconfig.inc");
-require_once("widgets/include/gateways.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -52,47 +51,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
-
 ?>
 
 <script>
-  function gateways_widget_update(sender, data)
-  {
-      data.map(function(gateway) {
-          var tr_id = "gateways_widget_gw_" + gateway['name'];
-          if ($("#"+tr_id).length) {
-              $("#"+tr_id+" > td:eq(0)").html('<small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small>');
-              $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
-              $("#"+tr_id+" > td:eq(2)").html(gateway['stddev']);
-              $("#"+tr_id+" > td:eq(3)").html(gateway['loss']);
-              $("#"+tr_id+" > td:eq(4)").html('<span>'+gateway['status_translated']+'</span>');
-
-              // set color on status text
-              let status_color;
-              switch (gateway['status']) {
-                case 'force_down':
-                case 'down':
-                  status_color = 'danger';
-                  break;
-                case 'loss':
-                case 'delay':
-                  status_color = 'warning';
-                  break;
-                case 'none':
-                  status_color = 'success';
-                  break;
-                default:
-                  status_color = 'default';
-                  break;
-              }
-
-              $("#"+tr_id+" > td:eq(4) > span").removeClass("label-danger label-warning label-success label");
-              if (status_color != '') {
-                $("#"+tr_id+" > td:eq(4) > span").addClass("label label-" + status_color);
-              }
-          }
-      });
-  }
+    $(window).on("load", function() {
+        function fetch_gateway_statusses(){
+            ajaxGet('/api/routes/gateway/status', {}, function(data, status) {
+                if (data.items !== undefined) {
+                    $.each(data.items, function(key, gateway) {
+                        let $gw_item = $("#gateways_widget_gw_"+gateway.name);
+                        if ($gw_item.length == 0) {
+                            $gw_item = $("<tr>").attr('id', "gateways_widget_gw_"+gateway.name);
+                            $gw_item.append($("<td/>").append(
+                              "<small><strong>~</strong><br/><div>~</div></small>")
+                            );
+                            $gw_item.append($("<td class='text-nowrap'/>").text("~"));
+                            $gw_item.append($("<td class='text-nowrap'/>").text("~"));
+                            $gw_item.append($("<td class='text-nowrap'/>").text("~"));
+                            $gw_item.append(
+                                $("<td/>").append(
+                                    $("<span class='label label-default'/>").text("<?= gettext('Unknown') ?>")
+                                )
+                            );
+                            $("#gateway_widget_table").append($gw_item);
+                            $gw_item.hide();
+                        }
+                        $gw_item.find('td:eq(0) > small > strong').text(gateway.name);
+                        $gw_item.find('td:eq(0) > small > div').text(gateway.address);
+                        $gw_item.find('td:eq(1)').text(gateway.delay);
+                        $gw_item.find('td:eq(2)').text(gateway.stddev);
+                        $gw_item.find('td:eq(3)').text(gateway.loss);
+                        let status_color;
+                        switch (gateway.status) {
+                          case 'force_down':
+                          case 'down':
+                            status_color = 'danger';
+                            break;
+                          case 'loss':
+                          case 'delay':
+                            status_color = 'warning';
+                            break;
+                          case 'none':
+                            status_color = 'success';
+                            break;
+                          default:
+                            status_color = 'default';
+                            break;
+                        }
+                        $gw_item.find('td:eq(4) > span').removeClass("label-danger label-warning label-success label");
+                        if (status_color != '') {
+                            $gw_item.find('td:eq(4) > span')
+                              .addClass("label label-" + status_color)
+                              .text(gateway.status_translated);
+                        }
+                        let show_item = $("#gatewaysinvert").val() == 'yes' ? false  : true;
+                        if ($("#gatewaysfilter").val() && $("#gatewaysfilter").val().includes(gateway.name)) {
+                            show_item = !show_item;
+                        }
+                        if (show_item) {
+                            $gw_item.show();
+                        }
+                    });
+                }
+            });
+            setTimeout(fetch_gateway_statusses, 5000);
+        }
+        fetch_gateway_statusses();
+    });
 </script>
 
 <div id="gateways-settings" class="widgetconfigdiv" style="display:none;">
@@ -117,7 +142,7 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
 </div>
 
 <!-- gateway table -->
-<table class="table table-striped table-condensed" data-plugin="gateway" data-callback="gateways_widget_update">
+<table id="gateway_widget_table" class="table table-striped table-condensed">
   <tr>
     <th><?=gettext('Name')?></th>
     <th><?=gettext('RTT')?></th>
@@ -125,20 +150,6 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
     <th><?=gettext('Loss')?></th>
     <th><?=gettext('Status')?></th>
   </tr>
-<?php foreach (array_keys($gateways) as $gwname):
-      $listed = in_array($gwname, $pconfig['gatewaysfilter']);
-      $listed = !empty($pconfig['gatewaysinvert']) ? $listed : !$listed;
-      if (!$listed) {
-        continue;
-      } ?>
-   <tr id="gateways_widget_gw_<?= html_safe($gwname) ?>">
-     <td><small><strong><?= $gwname ?></strong><br/>~</small></td>
-     <td class="text-nowrap">~</td>
-     <td class="text-nowrap">~</td>
-     <td class="text-nowrap">~</td>
-     <td><span class="label label-default"><?= gettext('Unknown') ?></span></td>
-  </tr>
-<?php endforeach ?>
 </table>
 
 <!-- needed to display the widget settings menu -->
