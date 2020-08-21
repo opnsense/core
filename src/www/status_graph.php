@@ -149,9 +149,6 @@ include("head.inc");
     margin: 0px;
     margin-bottom: -5px;
 }
-#filter {
-    max-width: none;
-}
 </style>
 <script>
     var graphtable = {};
@@ -181,138 +178,123 @@ include("head.inc");
     var hostmax = 10; //arbitrary max of top 10 hosts
 
     $( document ).ready(function() {
-
-        function update_bandwidth_stats() {
-
-            $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
-                traffic_widget_update($("[data-plugin=traffic]")[0], data);
-            });
-
-            $.ajax("status_graph.php", {
-                type: 'get',
-                cache: false,
-                dataType: "json",
-                data: { act: 'top',
-                    if: $("#if").val(),
-                    sort:  $("#sort").val(),
-                    filter: $("#filter").val(),
-                    hostipformat: $("#hostipformat").val()
+      function update_bandwidth_stats() {
+        $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
+            traffic_widget_update($("[data-plugin=traffic]")[0], data);
+        });
+        $.ajax("status_graph.php", {
+          type: 'get',
+          cache: false,
+          dataType: "json",
+          data: { act: 'top',
+                  if: $("#if").val(),
+                  sort:  $("#sort").val(),
+                  filter: $("#filter").val(),
+                  hostipformat: $("#hostipformat").val()
                 },
-                success: function(data) {
-                    var html = [];
-
-                    $.each(data, function(idx, record){
-                        var totalin = 0;
-                        var totalout = 0;
-                        var historyin;
-                        var historyout;
-
-                        if (record.in > maxvalue) {
-                            maxvalue = parseInt(record.in);
-                        }
-
-                        if (record.out > maxvalue) {
-                            maxvalue = parseInt(record.out);
-                        }
-
-                        if (record.host in graphtable) {
-                            totalin = graphtable[record.host].totalin + parseFloat(record.in);
-                            totalout = graphtable[record.host].totalout + parseFloat(record.out);
-                            historyin = graphtable[record.host].historyin;
-                            historyout = graphtable[record.host].historyout;
-                        } else {
-                            totalin = parseFloat(record.in);
-                            totalout = parseFloat(record.out);
-                            historyin = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
-                            historyout = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
-                        }
-
-                        historyin.push(parseInt(record.in));
-                        historyout.push(parseInt(record.out));
-                        historyin.shift();
-                        historyout.shift();
-                        graphtable[record.host] = record;
-                        graphtable[record.host].totalin = totalin;
-                        graphtable[record.host].totalout = totalout;
-                        graphtable[record.host].historyin = historyin;
-                        graphtable[record.host].historyout = historyout;
-                        var sum = historyin.reduce(function(a, b) { return a + b; });
-                        graphtable[record.host].avgin = parseInt(sum / datasize);
-                        sum = historyout.reduce(function(a, b) { return a + b; });
-                        graphtable[record.host].avgout = parseInt(sum / datasize);
-                    });
-
-                    var tablearray = [];
-                    var sortval = $( "#sort option:selected" ).val();
-
-                    $.each(graphtable, function(idx, record){
-                        if (!containsHost(record, data)) {
-                            record.in = 0;
-                            record.out = 0;
-                            record.historyin.push(0);
-                            record.historyin.shift();
-                            record.historyout.push(0);
-                            record.historyout.shift();
-                            var sum = record.historyin.reduce(function(a, b) { return a + b; });
-                            record.avgin = parseInt(sum / datasize);
-                            sum = record.historyout.reduce(function(a, b) { return a + b; });
-                            record.avgout = parseInt(sum / datasize);
-                        }
-                        tablearray.push(record);
-                    });
-
-                    tablearray.sort(function(a, b) {
-                        return parseFloat(b[sortval]) - parseFloat(a[sortval]);
-                    });
-
-                    if (tablearray.length > hostmax) {
-                        tablearray.length = hostmax;
+          success: function(data) {
+               var html = [];
+               $.each(data, function(idx, record){
+            var totalin = 0;
+            var totalout = 0;
+            var historyin;
+            var historyout;
+            if (record.in > maxvalue) {
+                maxvalue = parseInt(record.in);
+            }
+            if (record.out > maxvalue) {
+                maxvalue = parseInt(record.out);
+            }
+            if (record.host in graphtable) {
+                        totalin = graphtable[record.host].totalin + parseFloat(record.in);
+                        totalout = graphtable[record.host].totalout + parseFloat(record.out);
+                        historyin = graphtable[record.host].historyin;
+                        historyout = graphtable[record.host].historyout;
+            } else {
+                        totalin = parseFloat(record.in);
+                        totalout = parseFloat(record.out);
+                        historyin = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
+                        historyout = Array.apply(null, Array(datasize)).map(Number.prototype.valueOf,0);
+            }
+            historyin.push(parseInt(record.in));
+            historyout.push(parseInt(record.out));
+            historyin.shift();
+            historyout.shift();
+            graphtable[record.host] = record;
+            graphtable[record.host].totalin = totalin;
+            graphtable[record.host].totalout = totalout;
+            graphtable[record.host].historyin = historyin;
+            graphtable[record.host].historyout = historyout;
+            var sum = historyin.reduce(function(a, b) { return a + b; });
+                    graphtable[record.host].avgin = parseInt(sum / datasize);
+                    sum = historyout.reduce(function(a, b) { return a + b; });
+                    graphtable[record.host].avgout = parseInt(sum / datasize);
+               });
+               var tablearray = [];
+               var sortval = $( "#sort option:selected" ).val();
+               $.each(graphtable, function(idx, record){
+            if (!containsHost(record, data)) {
+                record.in = 0;
+                record.out = 0;
+                record.historyin.push(0);
+                record.historyin.shift();
+                record.historyout.push(0);
+                record.historyout.shift();
+                        var sum = record.historyin.reduce(function(a, b) { return a + b; });
+                        record.avgin = parseInt(sum / datasize);
+                        sum = record.historyout.reduce(function(a, b) { return a + b; });
+                        record.avgout = parseInt(sum / datasize);
                     }
-                    
-                    graphtable = {};
-                    
-                    $.each(tablearray, function(idx, record){
-                        graphtable[record.host] = record;
-                        var x = d3.scale.linear().domain([0, datasize-1]).range([0, w]);
-                        //using non-linear y so that large spikes don't zero out the other graphs
-                        var y = d3.scale.pow().exponent(0.3).domain([0, maxvalue]).range([h, 0]);
-                        var line = d3.svg.line()
-                            .x(function(d,i) {
-                                return x(i);
-                            })
-                            .y(function(d) {
-                                return y(d);
-                            });
-                        var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
-                        var graphIn = d3.select(svg).append("svg:svg")
-                              .attr("width", w + m[1] + m[3] + "px")
-                              .attr("height", h + m[0] + m[2] + "px");
-                        var svg2 = document.createElementNS(d3.ns.prefix.svg, 'g');
-                        var graphOut = d3.select(svg).append("svg:svg")
-                              .attr("width", w + m[1] + m[3] + "px")
-                              .attr("height", h + m[0] + m[2] + "px");
-                        html.push('<tr>');
-                        html.push('<td>'+record.host+'</td>');
-                        graphIn.append("svg:path").attr("d", line(record.historyin));
-                        graphOut.append("svg:path").attr("d", line(record.historyout));
-                        html.push('<td style="width: ' + w + 'px; height: ' + h + 'px;"><svg class="minigraph" style="width: ' + w  + 'px; height: ' + h + 'px;">' + graphIn.html() + '</svg></td>');
-                        html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td>');
-                        html.push('<td style="width: ' + w + 'px; height: ' + h + 'px;"><svg class="minigraph" style="width: ' + w  + 'px; height: ' + h + 'px;">' + graphOut.html() + '</svg></td>');
-                        html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td>');
-                        html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
-                        html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
-                        html.push('</tr>');
-                    });
-                    
-                    $("#bandwidth_details").html(html.join(''));
-                }
-            });
+                    tablearray.push(record);
+               });
+               tablearray.sort(function(a, b) {
+                    return parseFloat(b[sortval]) - parseFloat(a[sortval]);
+               });
+               if (tablearray.length > hostmax) {
+                    tablearray.length = hostmax;
+               }
+               graphtable = {};
+               $.each(tablearray, function(idx, record){
+            graphtable[record.host] = record;
+                    var x = d3.scale.linear().domain([0, datasize-1]).range([0, w]);
+                    //using non-linear y so that large spikes don't zero out the other graphs
+                    var y = d3.scale.pow().exponent(0.3).domain([0, maxvalue]).range([h, 0]);
+                    var line = d3.svg.line()
+                        .x(function(d,i) {
+                            return x(i);
+                        })
+                        .y(function(d) {
+                            return y(d);
+                        });
+                    var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
+                    var graphIn = d3.select(svg).append("svg:svg")
+                          .attr("width", w + m[1] + m[3] + "px")
+                          .attr("height", h + m[0] + m[2] + "px");
+                    var svg2 = document.createElementNS(d3.ns.prefix.svg, 'g');
+                    var graphOut = d3.select(svg).append("svg:svg")
+                          .attr("width", w + m[1] + m[3] + "px")
+                          .attr("height", h + m[0] + m[2] + "px");
+                    html.push('<tr>');
+                    html.push('<td>'+record.host+'</td>');
+                    graphIn.append("svg:path").attr("d", line(record.historyin));
+                    graphOut.append("svg:path").attr("d", line(record.historyout));
+                    html.push('<td style="width: ' + w + 'px; height: ' + h + 'px;"><svg class="minigraph" style="width: ' + w  + 'px; height: ' + h + 'px;">' + graphIn.html() + '</svg></td>');
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.in)+'</td>');
+                    html.push('<td style="width: ' + w + 'px; height: ' + h + 'px;"><svg class="minigraph" style="width: ' + w  + 'px; height: ' + h + 'px;">' + graphOut.html() + '</svg></td>');
+                    html.push('<td style="width: 55px;">' +formatSizeUnits(record.out)+'</td>');
+                    html.push('<td>'+formatSizeUnits(record.totalin)+'</td>');
+                    html.push('<td>'+formatSizeUnits(record.totalout)+'</td>');
+                    html.push('</tr>');
+               });
+               $("#bandwidth_details").html(html.join(''));
+          }
+        });
+        setTimeout(update_bandwidth_stats, 2000);
+      }
+      update_bandwidth_stats();
 
-            setTimeout(update_bandwidth_stats, 2000);
-        }
+  });
 
-        update_bandwidth_stats();
-    });
 </script>
 
 <section class="page-content-main">
@@ -343,20 +325,22 @@ include("head.inc");
                 <tbody>
                   <tr>
                     <td>
-                        <select id="if" name="if">
-                            <?php foreach ($ifdescrs as $ifn => $ifd):?>
-                                <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ?  " selected=\"selected\"" : "";?>>
-                                    <?=htmlspecialchars($ifd);?>
-                                </option>
-                            <?php endforeach;?>
-                        </select>
+                      <select id="if" name="if">
+<?php
+                      foreach ($ifdescrs as $ifn => $ifd):?>
+                        <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ?  " selected=\"selected\"" : "";?>>
+                            <?=htmlspecialchars($ifd);?>
+                        </option>
+<?php
+                      endforeach;?>
+                      </select>
                     </td>
                     <td>
                       <select id="sort" name="sort">
-                        <option value="in" selected>
+                        <option value="in">
                           <?= gettext('Bw In') ?>
                         </option>
-                        <option value="out">
+                        <option value="out"<?= $pconfig['sort'] == "out" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('Bw Out') ?>
                         </option>
                         <option value="avgin">
@@ -375,26 +359,24 @@ include("head.inc");
                     </td>
                     <td>
                       <select id="filter" name="filter">
-                        <option value="local" selected>
-                            <?= gettext('Local') ?>
+                        <option value="local" <?=$pconfig['filter'] == "local" ? " selected=\"selected\"" : "";?>>
+                          <?= gettext('Local') ?>
                         </option>
-                        <option value="private">
-                            <?= gettext('RFC1918 Private Networks') ?>
+                        <option value="private" <?=$pconfig['filter'] == "private" ? " selected=\"selected\"" : "";?>>
+                          <?= gettext('Private') ?>
                         </option>
-                        <option value="all">
-                            <?= gettext('All') ?>
+                        <option value="all" <?=$pconfig['filter'] == "all" ? " selected=\"selected\"" : "";?>>
+                          <?= gettext('All') ?>
                         </option>
                       </select>
                     </td>
                     <td>
                       <select id="hostipformat" name="hostipformat">
-                        <option value="" selected>
-                          <?= gettext('IP Address') ?>
-                        </option>
-                        <option value="hostname">
+                        <option value=""><?= gettext('IP Address') ?></option>
+                        <option value="hostname" <?=$pconfig['hostipformat'] == "hostname" ? " selected" : "";?>>
                           <?= gettext('Host Name') ?>
                         </option>
-                        <option value="fqdn">
+                        <option value="fqdn" <?=$pconfig['hostipformat'] == "fqdn" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('FQDN') ?>
                         </option>
                       </select>
@@ -452,17 +434,17 @@ include("head.inc");
   </div>
 </section>
 <script>
-    $('#if').on('change', function () {
+  $('#if').on('change', function () {
         graphtable = {};
-    });
-    $('#filter').on('change', function () {
+  });
+  $('#filter').on('change', function () {
         graphtable = {};
-    });
-    $('#hostipformat').on('change', function () {
+  });
+  $('#hostipformat').on('change', function () {
         graphtable = {};
-    });
-    $('#hostmax').on('change', function () {
+  });
+  $('#hostmax').on('change', function () {
         hostmax = parseInt($( "#hostmax option:selected" ).val());
-    });
+  });
 </script>
 <?php include("foot.inc"); ?>
