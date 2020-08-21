@@ -866,7 +866,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Proxy/auth.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/ca.pem.id
 /usr/local/opnsense/service/templates/OPNsense/Proxy/cache.active
-/usr/local/opnsense/service/templates/OPNsense/Proxy/error_directory
+/usr/local/opnsense/service/templates/OPNsense/Proxy/error_directory_in
 /usr/local/opnsense/service/templates/OPNsense/Proxy/externalACLs.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Proxy/nobumpsites.acl
