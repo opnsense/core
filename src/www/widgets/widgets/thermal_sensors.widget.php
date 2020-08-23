@@ -54,7 +54,7 @@ $fields = [
     ['name' => 'thermal_sensors_widget_core_warning_threshold', 'default' => 70, 'processFunc' => 'fix_temp_value'],
     ['name' => 'thermal_sensors_widget_core_critical_threshold', 'default' => 80, 'processFunc' => 'fix_temp_value'],
     ['name' => 'thermal_sensors_widget_show_one_core_temp', 'default' => false, 'processFunc' => 'fix_checkbox_value'],
-    ['name' => 'thermal_sensors_widget_show_temp_in_farenheit', 'default' => false, 'processFunc' => 'fix_checkbox_value'],
+    ['name' => 'thermal_sensors_widget_show_temp_in_fahrenheit', 'default' => false, 'processFunc' => 'fix_checkbox_value'],
 ];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             // update bar
             
-            if($('#thermal_sensors_widget_show_temp_in_farenheit').attr('checked') === 'checked') {  
+            if($('#thermal_sensors_widget_show_temp_in_fahrenheit').attr('checked') === 'checked') {  
                 progressBar.html((Number.parseFloat(((1.8) * sensor['temperature']+(32))).toFixed(1)) + ' &deg;F');
             } else {
                 progressBar.html(sensor['temperature'] + ' &deg;C');                
@@ -188,8 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
          <tr>
             <td></td>
             <td>
-                <input type="checkbox" id="thermal_sensors_widget_show_temp_in_farenheit" name="thermal_sensors_widget_show_temp_in_farenheit" <?=$pconfig['thermal_sensors_widget_show_temp_in_farenheit'] ? 'checked="checked"' : ''; ?>/>
-                <?= gettext('Display temperature in Farenheit') ?>
+                <input type="checkbox" id="thermal_sensors_widget_show_temp_in_fahrenheit" name="thermal_sensors_widget_show_temp_in_fahrenheit" <?=$pconfig['thermal_sensors_widget_show_temp_in_fahrenheit'] ? 'checked="checked"' : ''; ?>/>
+                <?= gettext('Display temperature in fahrenheit') ?>
             </td>
         </tr>
         <tr>
