@@ -108,7 +108,7 @@ class SettingsController extends ApiMutableModelControllerBase
             foreach ($_POST as $key => $value) {
                 $key = $filter->sanitize($key, "string");
                 $value = $filter->sanitize($value, "string");
-                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase', 'action'])) {
+                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase', 'action' ,'status'])) {
                     $searchPhrase .= " {$key}/{$value} ";
                 }
             }
@@ -117,6 +117,10 @@ class SettingsController extends ApiMutableModelControllerBase
             if ($this->request->getPost("action", "string", '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('action'), "query");
                 $searchPhrase .= " installed_action/" . $searchTag . ' ';
+            }
+            if ($this->request->getPost("status", "string", '') != "") {
+                $searchTag = $filter->sanitize($this->request->getPost('status'), "query");
+                $searchPhrase .= " installed_status/" . $searchTag . ' ';
             }
 
             // request list of installed rules

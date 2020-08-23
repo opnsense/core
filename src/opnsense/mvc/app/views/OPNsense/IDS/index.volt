@@ -66,7 +66,7 @@ POSSIBILITY OF SUCH DAMAGE.
             ajaxGet("/api/ids/settings/listRuleMetadata", {}, function(data, status) {
                 if (status == "success") {
                     $('#rulemetadata').empty();
-                    $.each(Object.assign({}, {'action': ['drop', 'alert']}, data), function(key, values) {
+                    $.each(Object.assign({}, {'action': ['drop', 'alert'], 'status': ['enabled', 'disabled']}, data), function(key, values) {
                         let $optgroup = $("<optgroup/>");
                         $optgroup.prop('label', key);
                         for (let i=0; i < values.length ; ++i) {
