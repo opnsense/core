@@ -87,8 +87,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $real_interface = get_real_interface($pconfig['if']);
         $intsubnet = find_interface_network($real_interface);
         if (is_subnetv4($intsubnet)) {
-            $cmd_args = $pconfig['filter'] == "local" ? " -c " . $intsubnet . " " : " -lc 0.0.0.0/0 ";
-            $cmd_args .= $pconfig['sort'] == "out" ? " -T " : " -R ";
+            $cmd_args = $pconfig['sort'] == 'out' ? ' -T' : ' -R';
+
+            switch ($pconfig['filter']) {
+              case 'local':
+                $cmd_args .= exec_safe(' -c %s', $intsubnet);
+                break;
+              case 'private':
+                $cmd_args .= ' -c 172.16.0.0/12 -c 192.168.0.0/16 -c 10.0.0.0/8';
+                break;
+              default:
+                $cmd_args .= ' -lc 0.0.0.0/0';
+                break;
+            }
+
             $cmd_action = "/usr/local/bin/rate -v -i {$real_interface} -nlq 1 -Aba 20 {$cmd_args} | tr \"|\" \" \" | awk '{ printf \"%s:%s:%s:%s:%s\\n\", $1,  $2,  $4,  $6,  $8 }'";
             exec($cmd_action, $listedIPs);
             for ($idx = 2 ; $idx < count($listedIPs) ; ++$idx) {
@@ -134,6 +146,9 @@ include("head.inc");
     padding: 0px;
     margin: 0px;
     margin-bottom: -5px;
+}
+.table-striped select {
+  max-width: none;
 }
 </style>
 <script>
@@ -347,6 +362,9 @@ include("head.inc");
                       <select id="filter" name="filter">
                         <option value="local" <?=$pconfig['filter'] == "local" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('Local') ?>
+                        </option>
+                        <option value="private" <?=$pconfig['filter'] == "private" ? " selected=\"selected\"" : "";?>>
+                          <?= gettext('RFC1918 Private Networks') ?>
                         </option>
                         <option value="all" <?=$pconfig['filter'] == "all" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('All') ?>
