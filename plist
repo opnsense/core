@@ -333,6 +333,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditPACProxy.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/dialogEditPACRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/forms/main.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/GatewayController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/forms/dialogEditRoute.xml
@@ -729,6 +730,7 @@
 /usr/local/opnsense/scripts/proxy/setup.sh
 /usr/local/opnsense/scripts/remote_backup.php
 /usr/local/opnsense/scripts/routes/del_route.py
+/usr/local/opnsense/scripts/routes/gateway_status.php
 /usr/local/opnsense/scripts/routes/gateways.php
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
@@ -1772,7 +1774,6 @@
 /usr/local/www/vpn_openvpn_csc.php
 /usr/local/www/vpn_openvpn_server.php
 /usr/local/www/widgets/api/get.php
-/usr/local/www/widgets/api/plugins/gateway.inc
 /usr/local/www/widgets/api/plugins/interfaces.inc
 /usr/local/www/widgets/api/plugins/system.inc
 /usr/local/www/widgets/api/plugins/temperature.inc
