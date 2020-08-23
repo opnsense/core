@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['interfaceslistfilter'] = !empty($config['widgets']['interfaceslistfilter']) ?
         explode(',', $config['widgets']['interfaceslistfilter']) : array();
     $pconfig['interfaceslistinvert'] = !empty($config['widgets']['interfaceslistinvert']) ? '1' : '';
+	$pconfig['interfaceslistshowspeed'] = !empty($config['widgets']['interfaceslistshowspeed']) ? '1' : '';
+	$pconfig['interfaceslistshowmask'] = !empty($config['widgets']['interfaceslistshowmask']) ? '1' : '';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['interfaceslistfilter'])) {
@@ -52,6 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['widgets']['interfaceslistinvert'] = 1;
     } elseif (isset($config['widgets']['interfaceslistinvert'])) {
         unset($config['widgets']['interfaceslistinvert']);
+    }
+	if (!empty($pconfig['interfaceslistshowspeed'])) {
+        $config['widgets']['interfaceslistshowspeed'] = 1;
+    } elseif (isset($config['widgets']['interfaceslistshowspeed'])) {
+        unset($config['widgets']['interfaceslistshowspeed']);
+    }
+	if (!empty($pconfig['interfaceslistshowmask'])) {
+        $config['widgets']['interfaceslistshowmask'] = 1;
+    } elseif (isset($config['widgets']['interfaceslistshowmask'])) {
+        unset($config['widgets']['interfaceslistshowmask']);
     }
     write_config("Saved Interface List Filter via Dashboard");
     header(url_safe('Location: /index.php'));
@@ -108,13 +120,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
         </td>
       </tr>
-    </table>
+	
+	  <tr>
+		<td>
+			<input type="checkbox" id="interfaceslistshowspeed" name="interfaceslistshowspeed" <?=$pconfig['interfaceslistshowspeed'] ? 'checked="checked"' : ''; ?>/>
+			<?= gettext('Show Interface speed') ?>
+		</td>
+		<tr>
+		<tr>
+		  <td>
+			<input type="checkbox" id="interfaceslistshowmask" name="interfaceslistshowmask" <?=$pconfig['interfaceslistshowmask'] ? 'checked="checked"' : ''; ?>/>
+			<?= gettext('Show Address Mask') ?>
+		  </td>
+		</tr>
+	</table>
   </form>
 </div>
 
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
 <?php
   $ifsinfo = get_interfaces_info();
+  if($pconfig['interfaceslistshowspeed']) {
+	 $extra_width_ip = 5;
+	 $extra_width_name = 30;
+  } else {
+	 $extra_width_ip = 0;
+	 $extra_width_name = 0;
+  }
   foreach ($interfaces as $ifdescr => $ifname):
     $listed = in_array($ifdescr, $pconfig['interfaceslistfilter']);
     $listed = !empty($pconfig['interfaceslistinvert']) ? $listed : !$listed;
@@ -122,9 +154,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       continue;
     }
     $ifinfo = $ifsinfo[$ifdescr];
-    $iswireless = is_interface_wireless($ifdescr); ?>
+    $iswireless = is_interface_wireless($ifdescr);
+	/* The following commented out would replace the existing speed/duplex text, we'd need */
+	/* a replace for every possibility */
+	/* $ifinfo['media'] = str_replace('1000baseT','1Gb bT',$ifinfo['media']); */
+	/* $ifinfo['media'] = str_replace('<half-duplex>','HD',$ifinfo['media']); */
+	/* $ifinfo['media'] = str_replace('<full-duplex>','FD',$ifinfo['media']); */
+	if($pconfig['interfaceslistshowmask']) {
+		$ifinfo['ipaddr'] = $ifinfo['ipaddr'].'/'.$ifinfo['subnet'];
+		if(!empty($ifinfo['ipaddrv6']) ) {
+			$ifinfo['ipaddrv6'] = $ifinfo['ipaddrv6'].'/'.$ifinfo['subnetv6'];
+		}
+	}?>
+	
+	
   <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
-    <td style="width:15%; word-break: break-word;">
+    <td style="width:15+$extra_width_name%; word-break: break-word;">
 <?php if (isset($ifinfo['ppplink'])): ?>
       <span title="3g" class="fa fa-mobile text-success"></span>
 <?php elseif ($iswireless): ?>
@@ -159,10 +204,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php else: ?>
       <?= htmlspecialchars($ifinfo['status']) ?>
 <?php endif ?>
+<?php if ($pconfig['interfaceslistshowspeed']): ?>
     <td style="width:35%; word-break: break-word;">
       <?= empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']) ?>
     </td>
-    <td style="width:45%; word-break: break-word;">
+<?php endif ?>	
+    <td style="width:45+$extra_width_ip%; word-break: break-word;">
       <?= htmlspecialchars($ifinfo['ipaddr']) ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
       <?= htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
