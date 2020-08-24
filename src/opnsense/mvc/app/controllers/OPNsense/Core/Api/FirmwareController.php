@@ -273,6 +273,9 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'revoked') {
                 $response['status_msg'] = gettext('The repository fingerprint has been revoked.');
                 $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
+                $response['status_msg'] = gettext('The repository has no fingerprint.');
+                $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
