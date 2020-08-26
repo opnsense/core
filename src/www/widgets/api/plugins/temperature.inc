@@ -32,7 +32,7 @@
 function temperature_api()
 {
     $result = array();
-    exec("/sbin/sysctl -a | grep temperature", $sysctlOutput);
+    exec("/sbin/sysctl -a | grep temperature:", $sysctlOutput);
     foreach ($sysctlOutput as $sysctl) {
         $parts = explode(':', $sysctl);
         if (count($parts) >= 2) {
