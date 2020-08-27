@@ -107,7 +107,7 @@ class RuleCache(object):
                             if prop == 'metadata':
                                 for mdtag in list(csv.reader([value], delimiter=","))[0]:
                                     parts = mdtag.split(maxsplit=1)
-                                    record['metadata'][parts[0]] = parts[1]
+                                    record['metadata'][parts[0]] = parts[1] if len(parts) > 1 else None
                             else:
                                 record[prop] = value
 
