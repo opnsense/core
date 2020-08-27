@@ -31,7 +31,7 @@
 function temperature_api()
 {
     $result = array();
-    exec("/sbin/sysctl -a | grep temperature", $sysctlOutput);
+    exec("/sbin/sysctl dev.cpu | grep temperature", $sysctlOutput);
     foreach ($sysctlOutput as $sysctl) {
         $parts = explode(':', $sysctl);
         if (count($parts) >= 2) {
@@ -44,6 +44,20 @@ function temperature_api()
             $result[] = $tempItem;
         }
     }
+    
+    exec("/sbin/sysctl hw.acpi.thermal | grep temperature", $sysctlOutput);
+    foreach ($sysctlOutput as $sysctl) {
+        $parts = explode(':', $sysctl);
+        if (count($parts) >= 2) {
+            $tempItem['device'] = $parts[0];
+            $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
+            $tempItem['temperature'] = trim(str_replace('C', '', $parts[1]));
+            $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? "zone" : "core";
+            $tempItem['type_translated'] = $tempItem['type'] == "zone" ? gettext("Zone") : gettext("Core");
+            $result[] = $tempItem;
+        }
+    }
+    
     usort($result, function ($item1, $item2) {
       return strcmp(strtolower($item1['device']), strtolower($item2['device']));
     });
