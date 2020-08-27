@@ -32,7 +32,8 @@
 function temperature_api()
 {
     $result = array();
-    exec("/sbin/sysctl -a | grep temperature", $sysctlOutput);
+    exec("sysctl sysctl dev.cpu hw.acpi.thermal | egrep -E 'cpu\.[0-9]+\.temp|tz[0-9]+\.temp'",$sysctlOutput);
+
     foreach ($sysctlOutput as $sysctl) {
         $parts = explode(':', $sysctl);
         if (count($parts) >= 2) {
