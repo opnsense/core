@@ -304,6 +304,7 @@ do-ip6: {$do_ip6}
 do-udp: yes
 do-tcp: yes
 do-daemonize: yes
+so-reuseport: yes
 module-config: "{$module_config}"
 cache-max-ttl: {$cache_max_ttl}
 cache-min-ttl: {$cache_min_ttl}
