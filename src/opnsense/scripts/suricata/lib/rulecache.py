@@ -105,9 +105,17 @@ class RuleCache(object):
                             prop = section[0:sep].strip()
                             value = section[sep+1:].strip(' "')
                             if prop == 'metadata':
-                                for mdtag in list(csv.reader([value], delimiter=","))[0]:
-                                    parts = mdtag.split(maxsplit=1)
-                                    record['metadata'][parts[0]] = parts[1]
+                               comma = value.find(',')
+                               if comma > 0:
+                                try:     
+                                  for mdtag in list(csv.reader([value], delimiter=","))[0]:
+                                      parts = mdtag.split(maxsplit=1)
+                                      record['metadata'][parts[0]] = parts[1]
+                                except IndexError:
+                                  record['metadata']['metadata'] = 'metadata format error. full string: '
+                                  record['metadata']['metadata'] += value
+                               else:
+                                record['metadata']['metadata2'] = value
                             else:
                                 record[prop] = value
 
