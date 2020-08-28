@@ -769,6 +769,7 @@
 /usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
+/usr/local/opnsense/scripts/system/temperature.sh
 /usr/local/opnsense/scripts/systemhealth/activity.py
 /usr/local/opnsense/scripts/systemhealth/clearlog
 /usr/local/opnsense/scripts/systemhealth/definitions/gateway-quality.xml

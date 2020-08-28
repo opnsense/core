@@ -32,9 +32,9 @@
 function temperature_api()
 {
     $result = array();
-    exec("/sbin/sysctl -a | grep temperature", $sysctlOutput);
-    foreach ($sysctlOutput as $sysctl) {
-        $parts = explode(':', $sysctl);
+
+    foreach (explode("\n", configd_run('system temp')) as $sysctl) {
+        $parts = explode('=', $sysctl);
         if (count($parts) >= 2) {
             $tempItem = array();
             $tempItem['device'] = $parts[0];
@@ -45,8 +45,9 @@ function temperature_api()
             $result[] = $tempItem;
         }
     }
+
     usort($result, function ($item1, $item2) {
-      return strcmp(strtolower($item1['device']), strtolower($item2['device']));
+        return strcmp(strtolower($item1['device']), strtolower($item2['device']));
     });
 
     return $result;
