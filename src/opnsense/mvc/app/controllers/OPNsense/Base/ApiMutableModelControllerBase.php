@@ -1,36 +1,37 @@
 <?php
 
 /*
- *    Copyright (C) 2016 IT-assistans Sverige AB
- *    Copyright (C) 2016 Deciso B.V.
- *    Copyright (C) 2018 Fabian Franz
- *    All rights reserved.
+ * Copyright (C) 2016 IT-assistans Sverige AB
+ * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2018 Fabian Franz
+ * All rights reserved.
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Base;
 
-use \OPNsense\Core\Config;
+use OPNsense\Core\ACL;
+use OPNsense\Core\Config;
 
 /**
  * Class ApiMutableModelControllerBase, inherit this class to implement
@@ -45,12 +46,17 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * @var string this implementations internal model name to use (in set/get output)
      */
-    static protected $internalModelName = null;
+    protected static $internalModelName = null;
 
     /**
      * @var string model class name to use
      */
-    static protected $internalModelClass = null;
+    protected static $internalModelClass = null;
+
+    /**
+     * @var bool use safe delete, search for references before allowing deletion
+     */
+    protected static $internalModelUseSafeDelete = false;
 
     /**
      * @var null|BaseModel model object to work on
@@ -69,6 +75,66 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         }
         if (empty(static::$internalModelName)) {
             throw new \Exception('cannot instantiate without internalModelName defined.');
+        }
+    }
+
+    /**
+     * Check if item can be safely deleted if $internalModelUseSafeDelete is enabled.
+     * Throws a user exception when the $uuid seems to be used in some other config section.
+     * @param $uuid string uuid to check
+     * @throws UserException containing additional information
+     */
+    private function checkAndThrowSafeDelete($uuid)
+    {
+        if (static::$internalModelUseSafeDelete) {
+            $configObj = Config::getInstance()->object();
+            $usages = array();
+            // find uuid's in our config.xml
+            foreach ($configObj->xpath("//text()[.='{$uuid}']") as $node) {
+                $referring_node = $node->xpath("..")[0];
+                if (!empty($referring_node->attributes()['uuid'])) {
+                    // this looks like a model node, try to find module name (first tag with version attribute)
+                    $item_path = array($referring_node->getName());
+                    $item_uuid = $referring_node->attributes()['uuid'];
+                    $parent_node = $referring_node;
+                    do {
+                        $parent_node = $parent_node->xpath("..");
+                        $parent_node = $parent_node != null ? $parent_node[0] : null;
+                        if ($parent_node != null) {
+                            $item_path[] = $parent_node->getName();
+                        }
+                    } while ($parent_node != null && !isset($parent_node->attributes()['version']));
+                    if ($parent_node != null) {
+                        // construct usage info and add to usages if this looks like a model
+                        $item_path = array_reverse($item_path);
+                        $item_description = "";
+                        foreach (["description", "descr", "name"] as $key) {
+                            if (!empty($referring_node->$key)) {
+                                $item_description = (string)$referring_node->$key;
+                                break;
+                            }
+                        }
+                        $usages[] = array(
+                            "reference" =>  implode(".", $item_path) . "." . $item_uuid,
+                            "module" => $item_path[0],
+                            "description" => $item_description
+                        );
+                    }
+                }
+            }
+            if (!empty($usages)) {
+                // render exception message
+                $message = "";
+                foreach ($usages as $usage) {
+                    $message .= sprintf(
+                        gettext("%s - %s {%s}"),
+                        $usage['module'],
+                        $usage['description'],
+                        $usage['reference']
+                    ) . "\n";
+                }
+                throw new UserException($message, gettext("Item in use by"));
+            }
         }
     }
 
@@ -120,6 +186,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array result / validation output
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     protected function validateAndSave($node = null, $prefix = null)
     {
@@ -139,7 +206,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function validate($node = null, $prefix = null)
     {
-        $result = array("result"=>"");
+        $result = array("result" => "");
         $resultPrefix = empty($prefix) ? static::$internalModelName : $prefix;
         // perform validation
         $valMsgs = $this->getModel()->performValidation();
@@ -152,7 +219,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             if ($node != null) {
                 $fieldnm = str_replace($node->__reference, $resultPrefix, $msg->getField());
             } else {
-                $fieldnm = $resultPrefix.".".$msg->getField();
+                $fieldnm = $resultPrefix . "." . $msg->getField();
             }
             $msgText = $msg->getMessage();
             if (empty($result["validations"][$fieldnm])) {
@@ -175,12 +242,20 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array result / validation output
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws \OPNsense\Base\UserException when denied write access
      */
     protected function save()
     {
-        $this->getModel()->serializeToConfig();
-        Config::getInstance()->save();
-        return array("result"=>"saved");
+        if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+            $this->getModel()->serializeToConfig();
+            Config::getInstance()->save();
+            return array("result" => "saved");
+        } else {
+            // XXX remove user-config-readonly in some future release
+            throw new UserException(
+                sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName())
+            );
+        }
     }
 
     /**
@@ -199,10 +274,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array status / validation errors
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function setAction()
     {
-        $result = array("result"=>"failed");
+        $result = array("result" => "failed");
         if ($this->request->isPost()) {
             // load model and update with provided data
             $mdl = $this->getModel();
@@ -225,10 +301,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $path path to search, relative to this model
      * @param array $fields fieldnames to fetch in result
      * @param string|null $defaultSort default sort field name
+     * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields, $defaultSort = null)
+    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = SORT_NATURAL)
     {
         $this->sessionClose();
         $element = $this->getModel();
@@ -239,7 +317,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         return $grid->fetchBindRequest(
             $this->request,
             $fields,
-            $defaultSort
+            $defaultSort,
+            $filter_funct,
+            $sort_flags
         );
     }
 
@@ -274,11 +354,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Model add wrapper, adds a new item to an array field using a specified post variable
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
+     * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
-    public function addBase($post_field, $path)
+    public function addBase($post_field, $path, $overlay = null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
@@ -289,13 +371,18 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
             $node = $tmp->Add();
             $node->setNodes($this->request->getPost($post_field));
+            if (is_array($overlay)) {
+                $node->setNodes($overlay);
+            }
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
                 // save config if validated correctly
-                $mdl->serializeToConfig();
-                Config::getInstance()->save();
-                $result = array("result" => "saved");
+                $this->save();
+                $result = array(
+                    "result" => "saved",
+                    "uuid" => $node->getAttribute('uuid')
+                );
             } else {
                 $result["result"] = "failed";
             }
@@ -310,12 +397,15 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function delBase($path, $uuid)
     {
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
+            $this->checkAndThrowSafeDelete($uuid);
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             if ($uuid != null) {
                 $tmp = $mdl;
@@ -323,8 +413,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $tmp = $tmp->{$step};
                 }
                 if ($tmp->del($uuid)) {
-                    $mdl->serializeToConfig();
-                    Config::getInstance()->save();
+                    $this->save();
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
@@ -338,12 +427,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Model setter wrapper, sets the contents of an array item using this requests post variable and path settings
      * @param string $post_field root key to retrieve item content from
      * @param string $path relative model path
-     * @param $uuid node key
+     * @param string $uuid node key
+     * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
-    public function setBase($post_field, $path, $uuid)
+    public function setBase($post_field, $path, $uuid, $overlay = null)
     {
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
             $mdl = $this->getModel();
@@ -351,11 +442,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
                 if ($node != null) {
                     $node->setNodes($this->request->getPost($post_field));
+                    if (is_array($overlay)) {
+                        $node->setNodes($overlay);
+                    }
                     $result = $this->validate($node, $post_field);
                     if (empty($result['validations'])) {
                         // save config if validated correctly
-                        $mdl->serializeToConfig();
-                        Config::getInstance()->save();
+                        $this->save();
                         $result = array("result" => "saved");
                     } else {
                         $result["result"] = "failed";
@@ -371,10 +464,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Generic toggle function, assumes our model item has an enabled boolean type field.
      * @param string $path relative model path
      * @param string $uuid node key
-     * @param string $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @param string $enabled desired state enabled(1)/disabled(0), leave empty for toggle
      * @return array
      * @throws \Phalcon\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
+     * @throws UserException when denied write access
      */
     public function toggleBase($path, $uuid, $enabled = null)
     {
@@ -384,8 +478,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             if ($uuid != null) {
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
                 if ($node != null) {
+                    $result['changed'] = true;
                     if ($enabled == "0" || $enabled == "1") {
+                        $result['result'] = !empty($enabled) ? "Enabled" : "Disabled";
+                        $result['changed'] = (string)$node->enabled !== (string)$enabled;
                         $node->enabled = (string)$enabled;
+                    } elseif ($enabled !== null) {
+                        // failed
+                        $result['changed'] = false;
                     } elseif ((string)$node->enabled == "1") {
                         $result['result'] = "Disabled";
                         $node->enabled = "0";
@@ -394,8 +494,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                         $node->enabled = "1";
                     }
                     // if item has toggled, serialize to config and save
-                    $mdl->serializeToConfig();
-                    Config::getInstance()->save();
+                    if ($result['changed']) {
+                        $this->save();
+                    }
                 }
             }
         }

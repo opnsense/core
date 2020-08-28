@@ -1,36 +1,35 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2008 Ermal Luçi
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2008 Ermal Luçi
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 /**
  * list available interfaces for lagg
@@ -42,7 +41,7 @@ function available_interfaces($selected_id=null)
     global $config;
     // configured interfaces
     $configured_interfaces = array();
-    foreach (get_configured_interface_list(false, true) as $intf) {
+    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $intf) {
         $configured_interfaces[] = get_real_interface($intf);
     }
     // lagg members from other lagg interfaces
@@ -116,8 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!in_array($pconfig['proto'], $laggprotos)) {
         $input_errors[] = gettext("Protocol supplied is invalid");
     }
-    if (!empty($pconfig['mtu']) && ($pconfig['mtu'] < 576 || $pconfig['mtu'] > 9000)) {
-        $input_errors[] = gettext("The MTU must be greater than 576 bytes and less than 9000.");
+
+    if (!empty($pconfig['mtu'])) {
+        $mtu_low = 576;
+        $mtu_high = 9214;
+        if ($pconfig['mtu'] < $mtu_low || $pconfig['mtu'] > $mtu_high) {
+            $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
+        }
     }
 
     if (count($input_errors) == 0) {
@@ -144,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config();
             $confif = convert_real_interface_to_friendly_interface_name($lagg['laggif']);
-            if ($confif <> "") {
+            if ($confif != '') {
                 interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_lagg.php'));
@@ -297,8 +301,8 @@ legacy_html_escape_form_data($pconfig);
                     <td style="width:22%">&nbsp;</td>
                     <td style="width:78%">
                       <input type="hidden" name="laggif" value="<?=$pconfig['laggif']; ?>" />
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_lagg.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_lagg.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

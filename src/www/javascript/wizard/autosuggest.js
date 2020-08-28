@@ -78,7 +78,7 @@ AutoSuggestControl.prototype.createDropDown = function () {
     this.layer.onmouseup =
     this.layer.onmouseover = function (oEvent) {
         oEvent = oEvent || window.event;
-        oTarget = oEvent.target || oEvent.srcElement;
+        let oTarget = oEvent.target || oEvent.srcElement;
 
         if (oEvent.type == "mousedown") {
             oThis.textbox.value = oTarget.firstChild.nodeValue;

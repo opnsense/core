@@ -1,37 +1,35 @@
 <?php
 
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Core;
 
-use \Phalcon\DI\FactoryDefault;
-use \Phalcon\Logger\Adapter\Syslog;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class Config provides access to systems config xml
@@ -45,6 +43,12 @@ class Config extends Singleton
      * @var string
      */
     private $config_file = "";
+
+    /**
+     * config file handle
+     * @var null|file
+     */
+    private $config_file_handle = null;
 
     /**
      * SimpleXML type reference to config
@@ -75,13 +79,7 @@ class Config extends Singleton
      */
     private function isArraySequential(&$arrayData)
     {
-        foreach ($arrayData as $key => &$value) {
-            if (!ctype_digit(strval($key))) {
-                return false;
-            }
-        }
-
-        return true;
+        return ctype_digit(implode('', array_keys($arrayData)));
     }
 
     /**
@@ -165,24 +163,26 @@ class Config extends Singleton
      */
     public function toArrayFromFile($filename, $forceList = null)
     {
-        $xml = $this->loadFromFile($filename);
+        $fp = fopen($filename, "r");
+        $xml = $this->loadFromStream($fp);
+        fclose($fp);
         return $this->toArray($forceList, $xml);
     }
 
     /**
      * update (reset) config with array structure (backwards compatibility mode)
-     * @param $source source array structure
+     * @param array $source source array structure
      * @param null $node simplexml node
      * @param null|string $parentTagName
      * @throws ConfigException when config could not be parsed
      */
-    public function fromArray($source, $node = null, $parentTagName = null)
+    public function fromArray(array $source, $node = null, $parentTagName = null)
     {
         $this->checkvalid();
 
         // root node
         if ($node == null) {
-            $this->simplexml = simplexml_load_string('<'.$this->simplexml[0]->getName().'/>');
+            $this->simplexml = simplexml_load_string('<' . $this->simplexml[0]->getName() . '/>');
             $node = $this->simplexml;
             // invalidate object on warnings/errors (prevent save from happening)
             set_error_handler(
@@ -193,7 +193,8 @@ class Config extends Singleton
         }
 
         foreach ($source as $itemKey => $itemValue) {
-            if ((is_bool($itemValue) && $itemValue == false) ||   // skip empty booleans
+            if (
+                (is_bool($itemValue) && $itemValue == false) ||   // skip empty booleans
                 $itemKey === null || trim($itemKey) === ""        // skip empty tag names
             ) {
                 continue;
@@ -243,7 +244,7 @@ class Config extends Singleton
 
     /**
      * Execute a xpath expression on config.xml (full DOM implementation)
-     * @param $query xpath expression
+     * @param string $query xpath expression
      * @return \DOMNodeList nodes
      * @throws ConfigException when config could not be parsed
      */
@@ -288,12 +289,18 @@ class Config extends Singleton
             if (count($backups) > 0) {
                 // load last backup
                 $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
-                $this->restoreBackup($backups[0]);
-            } else {
-                // in case there are no backups, restore defaults.
-                $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
-                $this->restoreBackup('/usr/local/etc/config.xml');
+                foreach ($backups as $backup) {
+                    try {
+                        $this->restoreBackup($backup);
+                        return;
+                    } catch (ConfigException $e) {
+                        $logger->error("failed restoring " . $backup);
+                    }
+                }
             }
+            // in case there are no backups, restore defaults.
+            $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
+            $this->restoreBackup('/usr/local/etc/config.xml');
         }
     }
 
@@ -302,22 +309,23 @@ class Config extends Singleton
      */
     public function forceReload()
     {
+        if ($this->config_file_handle !== null) {
+            fclose($this->config_file_handle);
+            $this->config_file_handle = null;
+        }
         $this->init();
     }
 
     /**
-     * load xml config from file
-     * @param $filename config xml source
+     * load xml config from file handle
+     * @param file $fp config xml source
      * @return \SimpleXMLElement root node
      * @throws ConfigException when config could not be parsed
      */
-    private function loadFromFile($filename)
+    private function loadFromStream($fp)
     {
-        // exception handling
-        if (!file_exists($filename)) {
-            throw new ConfigException('file not found');
-        }
-        $xml = file_get_contents($filename);
+        fseek($fp, 0);
+        $xml = stream_get_contents($fp);
         if (trim($xml) == '') {
             throw new ConfigException('empty file');
         }
@@ -347,7 +355,22 @@ class Config extends Singleton
     {
         $this->simplexml = null;
         $this->statusIsValid = false;
-        $this->simplexml = $this->loadFromFile($this->config_file);
+
+        // exception handling
+        if (!file_exists($this->config_file)) {
+            throw new ConfigException('file not found');
+        }
+
+        if (!is_resource($this->config_file_handle)) {
+            if (is_writable($this->config_file)) {
+                $this->config_file_handle = fopen($this->config_file, "r+");
+            } else {
+                // open in read-only mode
+                $this->config_file_handle = fopen($this->config_file, "r");
+            }
+        }
+
+        $this->simplexml = $this->loadFromStream($this->config_file_handle);
         $this->statusIsValid = true;
     }
 
@@ -383,7 +406,7 @@ class Config extends Singleton
      * @param array|null $revision revision tag (associative array)
      * @param \SimpleXMLElement|null pass trough xml node
      */
-    private function updateRevision($revision, $node = null)
+    private function updateRevision($revision, $node = null, $timestamp = null)
     {
         // if revision info is not provided, create a default.
         if (!is_array($revision)) {
@@ -395,7 +418,7 @@ class Config extends Singleton
                 $revision['username'] = "(system)";
             }
             if (!empty($_SERVER['REMOTE_ADDR'])) {
-                $revision['username'] .= "@".$_SERVER['REMOTE_ADDR'];
+                $revision['username'] .= "@" . $_SERVER['REMOTE_ADDR'];
             }
             if (!empty($_SERVER['REQUEST_URI'])) {
                 // when update revision is called from a controller, log the endpoint uri
@@ -407,7 +430,7 @@ class Config extends Singleton
         }
 
         // always set timestamp
-        $revision['time'] = microtime(true);
+        $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
 
         if ($node == null) {
             if (isset($this->simplexml->revision)) {
@@ -433,11 +456,13 @@ class Config extends Singleton
 
     /**
      * backup current (running) config
+     * @return float timestamp
      */
     public function backup()
     {
-        $target_dir = dirname($this->config_file)."/backup/";
-        $target_filename = "config-".microtime(true).".xml";
+        $timestamp = microtime(true);
+        $target_dir = dirname($this->config_file) . "/backup/";
+        $target_filename = "config-" . $timestamp . ".xml";
 
         if (!file_exists($target_dir)) {
             // create backup directory if it is missing
@@ -448,6 +473,7 @@ class Config extends Singleton
         if (!file_exists($target_dir . $target_filename)) {
             copy($this->config_file, $target_dir . $target_filename);
         }
+        return $timestamp;
     }
 
     /**
@@ -458,9 +484,9 @@ class Config extends Singleton
      */
     public function getBackups($fetchRevisionInfo = false)
     {
-        $target_dir = dirname($this->config_file)."/backup/";
+        $target_dir = dirname($this->config_file) . "/backup/";
         if (file_exists($target_dir)) {
-            $backups = glob($target_dir."config*.xml");
+            $backups = glob($target_dir . "config*.xml");
             // sort by date (descending)
             rsort($backups);
             if (!$fetchRevisionInfo) {
@@ -496,6 +522,7 @@ class Config extends Singleton
         if ($this->isValid()) {
             // if current config is valid,
             $simplexml = $this->simplexml;
+            $config_file_handle = $this->config_file_handle;
             try {
                 // try to restore config
                 copy($filename, $this->config_file);
@@ -504,6 +531,7 @@ class Config extends Singleton
             } catch (ConfigException $e) {
                 // copy / load failed, restore previous version
                 $this->simplexml = $simplexml;
+                $this->config_file_handle = $config_file_handle;
                 $this->statusIsValid = true;
                 $this->save(null, true);
                 return false;
@@ -513,6 +541,53 @@ class Config extends Singleton
             copy($filename, $this->config_file);
             $this->load();
             return true;
+        }
+    }
+
+    /**
+     * @return int number of backups to keep
+     */
+    public function backupCount()
+    {
+        if (
+            $this->statusIsValid && isset($this->simplexml->system->backupcount)
+            && intval($this->simplexml->system->backupcount) >= 0
+        ) {
+            return intval($this->simplexml->system->backupcount);
+        } else {
+            return 60;
+        }
+    }
+
+    /**
+     * return backup file path if revision exists
+     * @param $revision revision timestamp (e.g. 1583766095.9337)
+     * @return bool|string filename when available or false when not found
+     */
+    public function getBackupFilename($revision)
+    {
+        $tmp = preg_replace("/[^0-9.]/", "", $revision);
+        $bckfilename = dirname($this->config_file) . "/backup/config-{$tmp}.xml";
+        if (is_file($bckfilename)) {
+            return $bckfilename;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * remove old backups
+     */
+    private function cleanupBackups()
+    {
+        $revisions = $this->backupCount();
+
+        $cnt = 1;
+        foreach ($this->getBackups() as $filename) {
+            if ($cnt > $revisions) {
+                @unlink($filename);
+            }
+            ++$cnt;
         }
     }
 
@@ -527,34 +602,68 @@ class Config extends Singleton
         $this->checkvalid();
 
         if ($backup) {
-            $this->backup();
+            $timestamp = $this->backup();
+        } else {
+            $timestamp = microtime(true);
         }
 
-        // update revision information ROOT.revision tag
-        $this->updateRevision($revision);
+        // update revision information ROOT.revision tag, align timestamp to backup output
+        $this->updateRevision($revision, null, $timestamp);
 
         // serialize to text
         $xml_text = $this->__toString();
 
-        // save configuration, try to obtain a lock before doing so.
-        $target_filename = $this->config_file;
-        if (file_exists($target_filename)) {
-            $fp = fopen($target_filename, "r+");
-        } else {
-            // apparently we are missing the config, not expected but open a new one.
-            $fp = fopen($target_filename, "w+");
+        if ($this->config_file_handle !== null) {
+            if (flock($this->config_file_handle, LOCK_EX)) {
+                fseek($this->config_file_handle, 0);
+                ftruncate($this->config_file_handle, 0);
+                fwrite($this->config_file_handle, $xml_text);
+                // flush, unlock, but keep the handle open
+                fflush($this->config_file_handle);
+                flock($this->config_file_handle, LOCK_UN);
+            } else {
+                throw new ConfigException("Unable to lock config");
+            }
         }
 
-        if (flock($fp, LOCK_EX)) {
-            // lock aquired, truncate and write new data
-            ftruncate($fp, 0);
-            fwrite($fp, $xml_text);
-            // flush, unlock and close file handler
-            fflush($fp);
-            flock($fp, LOCK_UN);
-            fclose($fp);
-        } else {
-            throw new ConfigException("Unable to lock config");
+        /* cleanup backups */
+        $this->cleanupBackups();
+    }
+
+    /**
+     * cleanup, close file handle
+     */
+    public function __destruct()
+    {
+        if ($this->config_file_handle !== null) {
+            fclose($this->config_file_handle);
         }
+    }
+
+
+    /**
+     * lock configuration
+     * @param boolean $reload reload config from open file handle to enforce synchronicity
+     */
+    public function lock($reload = true)
+    {
+        if ($this->config_file_handle !== null) {
+            flock($this->config_file_handle, LOCK_EX);
+            if ($reload) {
+                $this->load();
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * unlock configuration
+     */
+    public function unlock()
+    {
+        if (is_resource($this->config_file_handle)) {
+            flock($this->config_file_handle, LOCK_UN);
+        }
+        return $this;
     }
 }

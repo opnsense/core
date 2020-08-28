@@ -24,10 +24,43 @@
         <help><![CDATA[Send alerts to system log in fast log format. This will not change the alert logging used by the product itself.]]></help>
     </field>
     <field>
+        <id>ids.general.syslog_eve</id>
+        <label>Enable eve syslog output</label>
+        <type>checkbox</type>
+        <help><![CDATA[
+          Send alerts in eve format to syslog, using log level info.
+          This will not change the alert logging used by the product itself.
+          Drop logs will only be send to the internal logger, due to restrictions in suricata.
+          ]]></help>
+    </field>
+    <field>
         <id>ids.general.MPMAlgo</id>
         <label>Pattern matcher</label>
         <type>dropdown</type>
         <help><![CDATA[Select the multi-pattern matcher algorithm to use.]]></help>
+    </field>
+        <field>
+        <id>ids.general.detect.Profile</id>
+        <label>Detect Profile</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help><![CDATA[The detection engine builds internal groups of signatures. The engine allow us to specify the profile to use for them, to manage memory on an efficient way keeping a good performance.]]></help>
+    </field>
+    <field>
+        <id>ids.general.detect.toclient_groups</id>
+        <label>ToClient</label>
+        <style>detect_custom</style>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help><![CDATA[If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.]]></help>
+    </field>
+    <field>
+        <id>ids.general.detect.toserver_groups</id>
+        <label>ToServer</label>
+        <style>detect_custom</style>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help><![CDATA[If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.]]></help>
     </field>
     <field>
         <id>ids.general.interfaces</id>

@@ -1,0 +1,7 @@
+<menu>
+    <System>
+        <Settings>
+            <LoggingTargets VisibleName="Logging / targets" url="/ui/syslog/" />
+        </Settings>
+    </System>
+</menu>

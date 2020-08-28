@@ -4,11 +4,6 @@
   <theme>opnsense</theme>
   <sysctl>
     <item>
-      <descr><![CDATA[Disable the pf ftp proxy handler.]]></descr>
-      <tunable>debug.pfftpproxy</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Increase UFS read-ahead speeds to match the state of hard drives and NCQ.]]></descr>
       <tunable>vfs.read_max</tunable>
       <value>default</value>
@@ -29,7 +24,7 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Randomize the ID field in IP packets (default is 0: sequential IP IDs)]]></descr>
+      <descr><![CDATA[Randomize the ID field in IP packets]]></descr>
       <tunable>net.inet.ip.random_id</tunable>
       <value>default</value>
     </item>
@@ -53,15 +48,6 @@
     </item>
     <item>
       <descr><![CDATA[
-        Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
-        to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
-        packets without returning a response.
-      ]]></descr>
-      <tunable>net.inet.icmp.drop_redirect</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[
         This option turns off the logging of redirect packets because there is no limit and this could fill
         up your logs consuming your whole hard drive.
       ]]></descr>
@@ -71,11 +57,6 @@
     <item>
       <descr><![CDATA[Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)]]></descr>
       <tunable>net.inet.tcp.drop_synfin</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable sending IPv4 redirects]]></descr>
-      <tunable>net.inet.ip.redirect</tunable>
       <value>default</value>
     </item>
     <item>
@@ -193,6 +174,37 @@
       <tunable>hw.ibrs_disable</tunable>
       <value>default</value>
     </item>
+    <item>
+      <descr><![CDATA[Hide processes running as other groups]]></descr>
+      <tunable>security.bsd.see_other_gids</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Hide processes running as other users]]></descr>
+      <tunable>security.bsd.see_other_uids</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Enable/disable sending of ICMP redirects in response to IP packets for which a better,
+        and for the sender directly reachable, route and next hop is known.]]>
+      </descr>
+      <tunable>net.inet.ip.redirect</tunable>
+      <value>0</value>
+    </item>
+    <item>
+      <descr><![CDATA[
+        Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
+        to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
+        packets without returning a response.
+      ]]></descr>
+      <tunable>net.inet.icmp.drop_redirect</tunable>
+      <value>1</value>
+    </item>
+    <item>
+      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
+      <tunable>net.local.dgram.maxdgram</tunable>
+      <value>default</value>
+    </item>
   </sysctl>
   <system>
     <optimization>normal</optimization>
@@ -212,7 +224,7 @@
       <descr><![CDATA[System Administrator]]></descr>
       <scope>system</scope>
       <groupname>admins</groupname>
-      <password>$2b$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
+      <password>$2y$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
       <uid>0</uid>
     </user>
     <nextuid>2000</nextuid>
@@ -225,7 +237,7 @@
     <disablenatreflection>yes</disablenatreflection>
     <usevirtualterminal>1</usevirtualterminal>
     <disableconsolemenu/>
-    <disablevlanhwfilter>2</disablevlanhwfilter>
+    <disablevlanhwfilter>1</disablevlanhwfilter>
     <disablechecksumoffloading>1</disablechecksumoffloading>
     <disablesegmentationoffloading>1</disablesegmentationoffloading>
     <disablelargereceiveoffloading>1</disablelargereceiveoffloading>
@@ -236,7 +248,6 @@
     <bogons>
       <interval>monthly</interval>
     </bogons>
-    <kill_states/>
     <backupcount>60</backupcount>
     <crypto_hardware>aesni</crypto_hardware>
     <pf_share_forward>1</pf_share_forward>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -29,7 +30,10 @@
 
 namespace OPNsense\Firewall\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 /**
  * @package OPNsense\Firewall
@@ -37,8 +41,8 @@ use \OPNsense\Base\ApiMutableModelControllerBase;
 class AliasController extends ApiMutableModelControllerBase
 {
 
-    static protected $internalModelName = 'alias';
-    static protected $internalModelClass = 'OPNsense\Firewall\Alias';
+    protected static $internalModelName = 'alias';
+    protected static $internalModelClass = 'OPNsense\Firewall\Alias';
 
     /**
      * search aliases
@@ -47,10 +51,18 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
+        $type = $this->request->get('type');
+        $filter_funct = null;
+        if (!empty($type)) {
+            $filter_funct = function ($record) use ($type) {
+                return in_array($record->type, $type);
+            };
+        }
         return $this->searchBase(
             "aliases.alias",
-            array('enabled', 'name', 'description'),
-            "description"
+            array('enabled', 'name', 'description', 'type', 'content'),
+            "name",
+            $filter_funct
         );
     }
 
@@ -63,7 +75,7 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
-        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
         $old_name = $node != null ? (string)$node->name : null;
         if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("alias")) {
             $new_name = $this->request->getPost("alias")['name'];
@@ -95,7 +107,33 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function getItemAction($uuid = null)
     {
-        return $this->getBase("alias", "aliases.alias", $uuid);
+        $response = $this->getBase("alias", "aliases.alias", $uuid);
+        $selected_aliases = array_keys($response['alias']['content']);
+        foreach ($this->getModel()->aliasIterator() as $alias) {
+            if (!in_array($alias['name'], $selected_aliases)) {
+                $response['alias']['content'][$alias['name']] = array(
+                  "selected" => 0, "value" => $alias['name']
+                );
+            }
+        }
+        return $response;
+    }
+
+    /**
+     * find the alias uuid by name
+     * @param $name alias name
+     * @return array uuid
+     * @throws \ReflectionException
+     */
+    public function getAliasUUIDAction($name)
+    {
+        $node = $this->getModel();
+        foreach ($node->aliases->alias->iterateItems() as $key => $alias) {
+            if ((string)$alias->name == $name) {
+                return array('uuid' => $key);
+            }
+        }
+        return array();
     }
 
     /**
@@ -108,7 +146,8 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function delItemAction($uuid)
     {
-        $node = $this->getModel()->getNodeByReference('aliases.alias.'. $uuid);
+        Config::getInstance()->lock();
+        $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
         if ($node != null) {
             $uses = $this->getModel()->whereUsed((string)$node->name);
             if (!empty($uses)) {
@@ -126,14 +165,14 @@ class AliasController extends ApiMutableModelControllerBase
     /**
      * toggle status
      * @param string $uuid id to toggled
-     * @param string|null $disabled set disabled by default
+     * @param string|null $enabled set enabled by default
      * @return array status
      * @throws \Phalcon\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
-    public function toggleItemAction($uuid, $disabled = null)
+    public function toggleItemAction($uuid, $enabled = null)
     {
-        return $this->toggleBase("aliases.aliases", $uuid);
+        return $this->toggleBase("aliases.alias", $uuid, $enabled);
     }
 
     /**
@@ -164,8 +203,174 @@ class AliasController extends ApiMutableModelControllerBase
             if (empty($line[2]) || strpos($line[2], '/') === false) {
                 continue;
             }
-            if (!empty($result[$line[0]])) {
+            if (!empty($result[$line[0]]) && empty($result[$line[0]]['region'])) {
                 $result[$line[0]]['region'] = explode('/', $line[2])[0];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * list network alias types
+     * @return array indexed by country alias name
+     */
+    public function listNetworkAliasesAction()
+    {
+        $result = array();
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $alias) {
+            if (!in_array((string)$alias->type, ['external', 'port'])) {
+                $result[(string)$alias->name] = (string)$alias->name;
+            }
+        }
+        ksort($result);
+        return $result;
+    }
+
+    /**
+     * reconfigure aliases
+     */
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $backend->configdRun('template reload OPNsense/Filter');
+            $backend->configdRun("filter reload skip_alias");
+            $bckresult = json_decode($backend->configdRun("filter refresh_aliases"), true);
+            if (!empty($bckresult['messages'])) {
+                throw new UserException(implode("\n", $bckresult['messages']), gettext("Alias"));
+            }
+            return array("status" => "ok");
+        } else {
+            return array("status" => "failed");
+        }
+    }
+
+    /**
+     * variant on model.getNodes() returning actual field values
+     * @param $parent_node BaseField node to reverse
+     */
+    private function getRawNodes($parent_node)
+    {
+        $result = array();
+        foreach ($parent_node->iterateItems() as $key => $node) {
+            if ($node->isContainer()) {
+                $result[$key] = $this->getRawNodes($node);
+            } else {
+                $result[$key] = (string)$node;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * export configured aliases
+     */
+    public function exportAction()
+    {
+        if ($this->request->isGet()) {
+            // return raw, unescaped since this content is intended for direct download
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setContent(json_encode($this->getRawNodes($this->getModel())));
+        } else {
+            throw new UserException("Unsupported request type");
+        }
+    }
+
+    /**
+     * import delivered aliases in post variable "data", validate all only commit when fully valid.
+     */
+    public function importAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $result = array("existing" => 0, "new" => 0, "status" => "failed");
+            $data = $this->request->getPost("data");
+            if (
+                is_array($data) && !empty($data['aliases'])
+                    && !empty($data['aliases']['alias']) && is_array($data['aliases']['alias'])
+            ) {
+                Config::getInstance()->lock();
+
+                // save into model
+                $uuid_mapping = array();
+                foreach ($data['aliases']['alias'] as $uuid => $content) {
+                    if (is_array($content) && !empty($content['name'])) {
+                        $node = $this->getModel()->getByName($content['name']);
+                        if ($node == null) {
+                            $node = $this->getModel()->aliases->alias->Add();
+                            $result['new'] += 1;
+                        } else {
+                            $result['existing'] += 1;
+                        }
+                        foreach ($content as $prop => $value) {
+                            $node->$prop = $value;
+                        }
+                        $uuid_mapping[$node->getAttribute('uuid')] = $uuid;
+                    }
+                }
+                // attach this alias to util class, to avoid recursion issues (aliases used in aliases).
+                \OPNsense\Firewall\Util::attachAliasObject($this->getModel());
+
+                // perform validation, record details.
+                foreach ($this->getModel()->performValidation() as $msg) {
+                    if (empty($result['validations'])) {
+                        $result['validations'] = array();
+                    }
+                    $parts = explode('.', $msg->getField());
+                    $uuid = $parts[count($parts) - 2];
+                    $fieldname = $parts[count($parts) - 1];
+                    $result['validations'][$uuid_mapping[$uuid] . "." . $fieldname] = $msg->getMessage();
+                }
+
+
+                // only persist when valid import
+                if (empty($result['validations'])) {
+                    $result['status'] = "ok";
+                    $this->save();
+                } else {
+                    $result['status'] = "failed";
+                    Config::getInstance()->unlock();
+                }
+            }
+        } else {
+            throw new UserException("Unsupported request type");
+        }
+        return $result;
+    }
+
+    /**
+     * get geoip settings (and stats)
+     */
+    public function getGeoIPAction()
+    {
+        $result = array();
+        if ($this->request->isGet()) {
+            $cnf = Config::getInstance()->object();
+            $result[static::$internalModelName] = ['geoip' => array()];
+            $node = $this->getModel()->getNodeByReference('geoip');
+            if ($node != null) {
+                $result[static::$internalModelName]['geoip'] = $node->getNodes();
+            }
+            // count aliases that depend on GeoIP data
+            $result[static::$internalModelName]['geoip']['usages'] = 0;
+            foreach ($this->getModel()->aliasIterator() as $alias) {
+                if ($alias['type'] == "geoip") {
+                    $result[static::$internalModelName]['geoip']['usages']++;
+                }
+            }
+            if (isset($cnf->system->firmware) && !empty($cnf->system->firmware->mirror)) {
+                // XXX: we might add some attribute in firmware to store subscription status, since we now only store uri
+                $result[static::$internalModelName]['geoip']['subscription'] =
+                    strpos($cnf->system->firmware->mirror, "opnsense-update.deciso.com") !== false;
+            }
+
+            $result[static::$internalModelName]['geoip']['address_count'] = 0;
+            if (file_exists('/usr/local/share/GeoIP/alias.stats')) {
+                $stats = json_decode(file_get_contents('/usr/local/share/GeoIP/alias.stats'), true);
+                $result[static::$internalModelName]['geoip'] = array_merge(
+                    $result[static::$internalModelName]['geoip'],
+                    $stats
+                );
             }
         }
         return $result;

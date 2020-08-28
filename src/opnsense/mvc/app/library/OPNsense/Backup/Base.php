@@ -39,6 +39,7 @@ abstract class Base
      * encrypt+encode base64
      * @param string $data to encrypt
      * @param string $pass passphrase to use
+     * @param string $tag
      * @return string base64 encoded crypted data
      */
     public function encrypt($data, $pass, $tag = 'config.xml')
@@ -56,9 +57,9 @@ abstract class Base
         @unlink("{$file}.dec");
 
         if (file_exists("{$file}.enc")) {
-            $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
+            $version = trim(shell_exec('opnsense-version -Nv'));
             $result = "---- BEGIN {$tag} ----\n";
-            $result .= "Version: OPNsense {$version}\n"; /* XXX hardcoded product name */
+            $result .= "Version: {$version}\n";
             $result .= "Cipher: AES-256-CBC\n";
             $result .= "Hash: MD5\n\n";
             $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")), 76, "\n");
@@ -75,6 +76,7 @@ abstract class Base
      * decrypt base64 encoded data
      * @param string $data to decrypt
      * @param string $pass passphrase to use
+     * @param string $tag
      * @return string data
      */
     public function decrypt($data, $pass, $tag = 'config.xml')

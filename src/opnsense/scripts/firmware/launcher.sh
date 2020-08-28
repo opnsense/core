@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,14 @@ BASEDIR="/usr/local/opnsense/scripts/firmware"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 FLOCK="/usr/local/bin/flock -n -o"
 COMMANDS="
-audit
+check
 health
 install
 lock
 reinstall
 remove
+security
+sync
 type
 unlock
 upgrade
@@ -45,10 +47,6 @@ ARGUMENT=${2}
 for COMMAND in ${COMMANDS}; do
 	if [ "${SELECTED}" != ${COMMAND} ]; then
 		continue
-	fi
-
-	if [ -n "$(pgrep pkg)" ]; then
-		break
 	fi
 
 	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}

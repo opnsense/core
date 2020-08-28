@@ -38,13 +38,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 multiSelect: false
             };
             $("#grid-arp").bootgrid('destroy');
-            ajaxGet(url = "/api/diagnostics/interface/getArp",
-                    sendData = {}, callback = function (data, status) {
+            ajaxGet("/api/diagnostics/interface/getArp", {}, function (data, status) {
                         if (status == "success") {
                             var html = [];
                             $.each(data, function (key, value) {
                                 var fields = ["ip", "mac", "manufacturer", "intf", "intf_description", "hostname"];
-                                tr_str = '<tr>';
+                                let tr_str = '<tr>';
                                 for (var i = 0; i < fields.length; i++) {
                                     if (value[fields[i]] != null) {
                                         tr_str += '<td>' + value[fields[i]] + '</td>';
@@ -68,14 +67,13 @@ POSSIBILITY OF SUCH DAMAGE.
             title: "{{ lang._('Flush ARP Table') }}",
             message: "{{ lang._('Flush the ARP cache manually, in case your ARP cache contains invalid data.') }}",
             buttons: [{
-                      label: "<?= gettext("Close");?>",
+                      label: "<?= gettext('Close');?>",
                       action: function(dialogRef) {
                         dialogRef.close();
                       }}, {
-                      label: "<?= gettext("Flush ARP Table");?>",
+                      label: "<?= gettext('Flush ARP Table');?>",
                       action: function(dialogRef) {
-                        ajaxCall(url = "/api/diagnostics/interface/flushArp",
-                            sendData = {}, callback = function (data, status) {
+                        ajaxCall("/api/diagnostics/interface/flushArp", {}, function (data, status) {
                             $("#refresh").click();
                         });
                     }

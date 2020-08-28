@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# when virtualip_carp_maintenancemode is set, make sure we startup in demoted state
+if [ -f /conf/config.xml ]; then
+    IS_MNT=$(grep -c virtualip_carp_maintenancemode /conf/config.xml)
+    IS_DEMOTED=$(sysctl -n net.inet.carp.demotion)
+    if [ ${IS_MNT} -gt 0 ] && [ ${IS_DEMOTED} -eq -0 ]; then
+        sysctl net.inet.carp.demotion=240
+    fi
+fi
+
+# Trigger carp service status event.  When any of the checks in
+# /usr/local/etc/rc.carp_service_status.d/ fail, net.inet.carp.demotion
+# is updated to prevent switching to master too early
+
+echo -n "CARP event system: "
+configctl interface update carp service_status

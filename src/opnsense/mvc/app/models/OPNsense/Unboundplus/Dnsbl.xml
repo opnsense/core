@@ -1,0 +1,45 @@
+<model>
+    <mount>//OPNsense/unboundplus/dnsbl</mount>
+    <description>Unbound DNSBL configuration</description>
+    <version>0.0.1</version>
+    <items>
+        <service_enabled type="LegacyLinkField">
+            <Source>unbound.enable</Source>
+        </service_enabled>
+        <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </enabled>
+        <type type="OptionField">
+            <Required>N</Required>
+            <Multiple>Y</Multiple>
+            <OptionValues>
+                <aa>AdAway List</aa>
+                <ag>AdGuard List</ag>
+                <bla>Blocklist.site Ads</bla>
+                <blf>Blocklist.site Fraud</blf>
+                <blp>Blocklist.site Phishing</blp>
+                <ca>Cameleon List</ca>
+                <el>Easy List</el>
+                <ep>Easyprivacy List</ep>
+                <mw>Malwaredomain List</mw>
+                <nc>NoCoin List</nc>
+                <pt>PornTop1M List</pt>
+                <rw>Ransomware Tracker List</rw>
+                <sa>Simple Ad List</sa>
+                <st>Simple Tracker List</st>
+                <sb>Steven Black List</sb>
+                <ws>WindowsSpyBlocker (spy)</ws>
+                <wsu>WindowsSpyBlocker (update)</wsu>
+                <wse>WindowsSpyBlocker (extra)</wse>
+                <yy>YoYo List</yy>
+            </OptionValues>
+        </type>
+        <lists type="CSVListField">
+            <Required>N</Required>
+        </lists>
+        <whitelists type="CSVListField">
+            <Required>N</Required>
+        </whitelists>
+    </items>
+</model>

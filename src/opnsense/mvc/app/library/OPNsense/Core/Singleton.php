@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core;
 
 /**
@@ -51,7 +53,7 @@ abstract class Singleton
 
     /**
      * Do not clone
-     * @throws Exception
+     * @throws \Exception
      */
     final private function __clone()
     {

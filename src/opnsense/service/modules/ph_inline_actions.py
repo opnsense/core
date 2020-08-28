@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2014 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2014-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@
 
 """
 
-import syslog
-import template
-import config
+from . import template
+from . import config
+from . import syslog_debug
 
 __author__ = 'Ad Schellevis'
 
@@ -56,7 +56,7 @@ def execute(action, parameters):
         # send generated filenames to syslog
         if filenames is not None:
             for filename in filenames:
-                syslog.syslog(syslog.LOG_DEBUG, ' %s generated %s' % (parameters, filename))
+                syslog_debug(' %s generated %s' % (parameters, filename))
             return 'OK'
         else:
             return 'ERR'
@@ -80,17 +80,17 @@ def execute(action, parameters):
         # send generated filenames to syslog
         if filenames is not None:
             for filename in filenames:
-                syslog.syslog(syslog.LOG_DEBUG, ' %s removed %s' % (parameters, filename))
+                syslog_debug(' %s removed %s' % (parameters, filename))
             return 'OK'
         else:
             return 'ERR'
     elif action.command == 'configd.actions':
         # list all available configd actions
-        from processhandler import ActionHandler
+        from .processhandler import ActionHandler
         act_handler = ActionHandler()
         actions = act_handler.list_actions(['message', 'description'])
 
-        if unicode(parameters).lower() == 'json':
+        if str(parameters).lower() == 'json':
             import json
             return json.dumps(actions)
         else:

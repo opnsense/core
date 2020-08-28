@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,4 +45,4 @@ if __name__ == '__main__' and len(sys.argv) > 1:
             else:
                 # archive, remove
                 os.remove(filename)
-            print ("removed %s" % filename)
+            print("removed %s" % filename)

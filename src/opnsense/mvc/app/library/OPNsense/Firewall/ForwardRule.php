@@ -39,6 +39,7 @@ class ForwardRule extends Rule
             'disabled' => 'parseIsComment',
             'nordr' => 'parseBool,no rdr,rdr',
             'pass' => 'parseBool,pass ',
+            'log' => 'parseBool,log ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
@@ -62,7 +63,7 @@ class ForwardRule extends Rule
             'interface.from' => 'parseInterface, from (,:network)',
             'target.to' => 'parsePlainCurly,to ',
             'localport' => 'parsePlainCurly,port ',
-            'interface.to' => 'parseInterface, -> ',
+            'interface.to' => 'parseInterface, -> (,)',
             'staticnatport' => 'parseBool,  static-port , port 1024:65535 ',
             'descr' => 'parseComment'
         )
@@ -72,14 +73,16 @@ class ForwardRule extends Rule
     /**
      * search interfaces without a gateway other then the one provided
      * @param $interface
-     * @return list of interfaces
+     * @return array list of interfaces
      */
     private function reflectionInterfaces($interface)
     {
         $result = array();
         foreach ($this->interfaceMapping as $intfk => $intf) {
-            if (empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
-              && !in_array($intf['if'], $result) && $intfk != 'loopback') {
+            if (
+                empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
+                && !in_array($intf['if'], $result) && $intfk != 'loopback'
+            ) {
                 $result[] = $intfk;
             }
         }
@@ -90,6 +93,7 @@ class ForwardRule extends Rule
      * preprocess internal rule data to detail level of actual ruleset
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
     private function parseRdrRules()
     {
@@ -109,13 +113,15 @@ class ForwardRule extends Rule
                 }
             }
             // parse our local port
-            if (!empty($tmp['local-port']) && !empty($tmp['protocol'])
-                  && in_array($tmp['protocol'], array('tcp/udp', 'udp', 'tcp'))) {
+            if (
+                !empty($tmp['local-port']) && !empty($tmp['protocol'])
+                  && in_array($tmp['protocol'], array('tcp/udp', 'udp', 'tcp'))
+            ) {
                 if (Util::isAlias($tmp['local-port'])) {
                     // We will keep this for backwards compatibility, although the alias use is very confusing.
                     // Because the target can only be one address or range, we will just use the first one found
                     // in the alias.... confusing.
-                    if ("$".$tmp['local-port'] == $tmp['to_port']) {
+                    if ("$" . $tmp['local-port'] == $tmp['to_port']) {
                         // destination port alias matches target port, we should skip the target and let pf handle it
                         $tmp['localport']  = "";
                     } else {
@@ -143,7 +149,8 @@ class ForwardRule extends Rule
                 $is_ipv4 = $this->isIpV4($tmp);
                 $reflinterf = $this->reflectionInterfaces($tmp['interface']);
                 foreach ($reflinterf as $interf) {
-                    if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                    if (
+                        ($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
                         (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                     ) {
                         $interflist[] = $interf;
@@ -154,8 +161,15 @@ class ForwardRule extends Rule
                 $rule = $tmp;
                 // automatically generate nat rule when enablenatreflectionhelper is set
                 if (!$rule['disabled'] && empty($rule['nordr']) && !empty($rule['enablenatreflectionhelper'])) {
-                    $rule['rule_types'][] = "rdr_nat";
-                    $rule['staticnatport'] = !empty($rule['staticnatport']);
+                    if (
+                        !empty($this->interfaceMapping[$rule['interface']]) && (
+                        !empty($this->interfaceMapping[$rule['interface']]['ifconfig']['ipv4']) ||
+                        !empty($this->interfaceMapping[$rule['interface']]['ifconfig']['ipv6'])
+                        )
+                    ) {
+                        $rule['rule_types'][] = "rdr_nat";
+                        $rule['staticnatport'] = !empty($rule['staticnatport']);
+                    }
                 }
                 $rule['interface'] = $interf;
                 yield $rule;
@@ -166,13 +180,14 @@ class ForwardRule extends Rule
     /**
      * output rule as string
      * @return string ruleset
+     * @throws \OPNsense\Base\ModelException
      */
     public function __toString()
     {
         $ruleTxt = '';
         foreach ($this->parseRdrRules() as $rule) {
             foreach ($rule['rule_types'] as $rule_type) {
-                $ruleTxt .= $this->ruleToText($this->procorder[$rule_type], $rule). "\n";
+                $ruleTxt .= $this->ruleToText($this->procorder[$rule_type], $rule) . "\n";
             }
         }
         return $ruleTxt;

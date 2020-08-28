@@ -45,6 +45,11 @@ class ControllerRoot extends Controller
     public $translator;
 
     /**
+     * @var null|string logged in username, populated during authentication
+     */
+    protected $logged_in_user = null;
+
+    /**
      * Wrap close session, for long running operations.
      */
     protected function sessionClose()
@@ -62,7 +67,7 @@ class ControllerRoot extends Controller
 
         foreach ($config->system->children() as $key => $node) {
             if ($key == 'language') {
-                $lang = $node->__toString();
+                $lang = (string)$node;
                 break;
             }
         }
@@ -70,8 +75,8 @@ class ControllerRoot extends Controller
         if ($this->session->has('Username')) {
             $username = $this->session->get('Username');
             foreach ($config->system->user as $user) {
-                if ($username == $user->name->__toString() && isset($user->language)) {
-                    $lang = $user->language->__toString();
+                if ($username == (string)$user->name && isset($user->language)) {
+                    $lang = (string)$user->language;
                     break;
                 }
             }
@@ -102,6 +107,15 @@ class ControllerRoot extends Controller
     }
 
     /**
+     * return logged-in username
+     * @return string username
+     */
+    public function getUserName()
+    {
+        return $this->logged_in_user;
+    }
+
+    /**
      * perform authentication, redirect user on non successful auth
      * @return bool
      */
@@ -113,15 +127,17 @@ class ControllerRoot extends Controller
         } else {
             $session_timeout = 14400;
         }
-        $redirect_uri = "/?url=".$_SERVER['REQUEST_URI'];
+        $redirect_uri = "/?url=" . $_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
             // user unknown
             $this->getLogger()->error("no active session, user not found");
             $this->response->redirect($redirect_uri, true);
             $this->setLang();
             return false;
-        } elseif ($this->session->has("last_access")
-            && $this->session->get("last_access") < (time() - $session_timeout)) {
+        } elseif (
+            $this->session->has("last_access")
+            && $this->session->get("last_access") < (time() - $session_timeout)
+        ) {
             // session expired / cleanup session data
             $this->getLogger()->error("session expired");
             $this->session->remove("Username");
@@ -138,8 +154,8 @@ class ControllerRoot extends Controller
         // Authorization using legacy acl structure
         $acl = new ACL();
         if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
-            $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
-                " not accessible for user ".$this->session->get("Username"));
+            $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
+                " not accessible for user " . $this->session->get("Username"));
             $this->response->redirect("/", true);
             return false;
         }

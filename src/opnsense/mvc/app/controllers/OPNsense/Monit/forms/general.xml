@@ -23,7 +23,7 @@
       <type>select_multiple</type>
       <allownew>true</allownew>
       <style>tokenize</style>
-      <help><![CDATA[Comma separated list of SMTP servers for alert delivery.]]></help>
+      <help><![CDATA[Comma-separated list of SMTP servers for alert delivery.]]></help>
    </field>
    <field>
       <id>monit.general.port</id>
@@ -48,6 +48,20 @@
       <label>Secure Connection</label>
       <type>checkbox</type>
       <help><![CDATA[Enable encryption.]]></help>
+   </field>
+   <field>
+      <id>monit.general.sslversion</id>
+      <label>SSL Version</label>
+      <type>dropdown</type>
+      <help><![CDATA[Set the SSL version to use. In AUTO mode, only TLS is used.]]></help>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.sslverify</id>
+      <label>Verify SSL certificates</label>
+      <type>checkbox</type>
+      <help><![CDATA[Enable or disable SSL server certificate verification.]]></help>
+      <advanced>true</advanced>
    </field>
    <field>
       <id>monit.general.logfile</id>

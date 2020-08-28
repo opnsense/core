@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2020 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,8 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 DO_BOOT=
+DO_PASSWORD=
+DO_ZFS=
 
 bootstrap_and_exit()
 {
@@ -51,17 +53,15 @@ bootstrap_and_exit()
 	fi
 
 	# clean up after a finished import
-	if [ -d ${MNT} ]; then
+	if [ -d ${MNT} -a "$(mount | grep -cw ${MNT})" != "0" ]; then
 		if [ -n "${PART}" ]; then
-			umount ${MNT} && rm -rf ${MNT}
+			umount ${MNT}
 		elif [ -n "${POOL}" ]; then
-			zpool export ${POOL} && rm -rf ${MNT}
+			zpool export ${POOL}
 		fi
 	fi
 
-	if [ -z "${ZFS}" ]; then
-		kldunload zfs
-	fi
+	zfs_unload
 
 	# error code given or assumed ok (trap)
 	if [ -z "${RET}" ]; then
@@ -71,21 +71,27 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-trap bootstrap_and_exit 2
-
-while getopts b OPT; do
+while getopts bpz OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
 		;;
+	p)
+		DO_PASSWORD="-p"
+		;;
+	z)
+		DO_ZFS="-z"
+		;;
 	*)
-		echo "Usage: man opnsense-importer" >&2
+		echo "Usage: man ${0##*/}" >&2
 		exit 1
 		;;
 	esac
 done
 
 shift $((${OPTIND} - 1))
+
+DO_DEV=${1}
 
 timeout_prompt()
 {
@@ -113,14 +119,39 @@ timeout_prompt()
 zfs_load()
 {
 	# we need to load ZFS to list pools
-	if kldstat -qm zfs; then
-		export ZFS="yes"
-	else
+	if ! kldstat -qm zfs; then
+		export UNLOAD_ZFS="yes"
 		kldload zfs
+	fi
+
+	export POOLS=$(zfs_probe)
+	if [ -n "${POOLS}" ]; then
+		# insert missing newline due to $()
+		export POOLS="${POOLS}
+"
 	fi
 }
 
-probe_for_part()
+zfs_unload()
+{
+	if [ -n "${UNLOAD_ZFS}" ]; then
+		kldunload zfs
+	fi
+}
+
+zfs_probe()
+{
+	zpool import -aNf
+
+	zpool get -H cachefile | while read ZPOOL ZMORE; do
+		if [ "$(mount | grep -w / | grep -c ${ZPOOL})" = "0" ]; then
+			zpool export ${ZPOOL} >/dev/null 2>/dev/null
+		fi
+		echo "zfs/${ZPOOL}"
+	done
+}
+
+import_start()
 {
 	local DEV=${1}
 
@@ -132,11 +163,10 @@ probe_for_part()
 		# GPT UFS
 		export PART="/dev/${DEV}p3"
 		return 0
-	elif [ "${DEV}" = "zroot" ]; then
-		if zpool import | awk '{ print $1 " " $2 }' | grep -q "${DEV} ONLINE"; then
-			export POOL="${DEV}"
-			return 0
-		fi
+	elif [ "$(echo ${POOLS} | grep -c ^${DEV}$)" != "0" ]; then
+		# ZFS POOL
+		export POOL="${DEV##zfs/}"
+		return 0
 	elif [ -e "/dev/${DEV}s1" ]; then
 		# MBR MSDOS
 		export PART="/dev/${DEV}s1"
@@ -152,37 +182,47 @@ probe_for_part()
 	return 1
 }
 
-DEV=${1}
+
+DEV=
 DEVS=
 PART=
+POOL=
+POOLS=
 
-if [ -n "${DEV}" ]; then
+if [ -n "${DO_ZFS}" ]; then
 	zfs_load
-
-	if ! probe_for_part ${DEV}; then
-		echo "No known partition layout was found for '${DEV}'."
-		bootstrap_and_exit 1
-	fi
-else
-	if [ -n "${DO_BOOT}" ]; then
-		touch ${INSTALL} 2> /dev/null
-		if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
-			bootstrap_and_exit 0
-		fi
-
-		if ! timeout_prompt \
-		    'Press any key to start the configuration importer:' ${WAIT}; then
-			bootstrap_and_exit 0
-		fi
-	fi
-
-	zfs_load
-
-	DEVS=$(camcontrol devlist; gmirror status -s; graid status -s)
+	zfs_unload
+	echo -n "${POOLS}"
+	exit 0
 fi
 
+trap bootstrap_and_exit 2
+
+if [ -n "${DO_BOOT}" ]; then
+	touch ${INSTALL} 2> /dev/null
+	if [ -f ${INSTALL} -a -f /conf/config.xml ]; then
+		bootstrap_and_exit 0
+	fi
+
+	if ! timeout_prompt \
+	    'Press any key to start the configuration importer:' ${WAIT}; then
+		bootstrap_and_exit 0
+	fi
+fi
+
+zfs_load
+
+if [ -n "${DO_DEV}" ]; then
+	if ! import_start ${DO_DEV}; then
+		echo "No known partition layout was found for '${DO_DEV}'."
+		bootstrap_and_exit 1
+	fi
+fi
+
+DEVS=$(camcontrol devlist; gmirror status -s; graid status -s; echo -n "${POOLS}")
+
 while : ; do
-	if [ -z "${DEV}" ]; then
+	if [ -z "${DO_DEV}" ]; then
 		echo
 		echo "${DEVS}"
 		echo
@@ -194,15 +234,11 @@ while : ; do
 		elif [ "${DEV}" = "!" ]; then
 			# secret escape! (not so secret now, is it?)
 			csh
-			DEV=
 			continue
-		elif ! probe_for_part ${DEV}; then
+		elif ! import_start ${DEV}; then
 			echo "No known partition layout was found for '${DEV}'."
-			DEV=
 			continue
 		fi
-
-		DEV=
 	fi
 
 	mkdir -p ${MNT}
@@ -225,52 +261,73 @@ while : ; do
 			echo "The device could not be mounted."
 			PART=
 		fi
-
-		break
 	elif [ -n "${POOL}" ]; then
 		echo "Starting import for ZFS pool '${POOL}'."
 		echo
 
-		zpool import -f -R ${MNT} ${POOL}
-		if ! zfs mount ${POOL}/ROOT/default; then
-			echo "The device could not be mounted."
+		zpool import -fNR ${MNT} ${POOL}
+		if ! mount -t zfs ${POOL}/ROOT/default ${MNT}; then
+			echo "The pool could not be mounted."
 			POOL=
 		fi
+	fi
 
+	if [ -z "${PART}" -a -z "${POOL}" ]; then
+		if [ -n "${DO_DEV}" ]; then
+			bootstrap_and_exit 1
+		fi
+
+		continue
+	fi
+
+	if [ -n "${DO_PASSWORD}" ]; then
+		if [ -f "${MNT}/usr/local/sbin/opnsense-shell" ]; then
+			mount -t devfs devfs ${MNT}/dev
+			chroot ${MNT} /bin/sh /etc/rc.d/ldconfig start
+			chroot ${MNT} /usr/local/sbin/opnsense-shell password root -x 0
+			umount ${MNT}/dev
+
+			echo "The password was reset successfully."
+
+			break
+		else
+			echo "The installed version does not yet support recovery."
+
+			if [ -n "${DO_DEV}" ]; then
+				bootstrap_and_exit 1
+			fi
+		fi
+	elif [ -f "${MNT}/conf/config.xml" ]; then
+		rm -rf /conf/*
+
+		for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
+			if [ -f "${MNT}/conf/${FILE}" ]; then
+				echo -n "Restoring ${FILE}..."
+				cp "${MNT}/conf/${FILE}" /conf
+				echo "done."
+			fi
+		done
+
+		for DIR in backup sshd; do
+			if [ -d "${MNT}/conf/${DIR}" ]; then
+				echo -n "Restoring ${DIR}..."
+				cp -r "${MNT}/conf/${DIR}" /conf
+				echo "done."
+			else
+				mkdir -p "/conf/${DIR}"
+			fi
+		done
+
+		# hooray, we're done!
 		break
 	else
-		echo "Something went wrong during partition selection."
-		bootstrap_and_exit 1
-	fi
+		echo "The file /conf/config.xml could not be found."
 
-	if [ -n "${DEV}" ]; then
-		echo "Import from partition '${DEV}' failed."
-		bootstrap_and_exit 1
+		if [ -n "${DO_DEV}" ]; then
+			bootstrap_and_exit 1
+		fi
 	fi
 done
-
-if [ -f "${MNT}/conf/config.xml" ]; then
-	rm -rf /conf/*
-	for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
-		if [ -f "${MNT}/conf/${FILE}" ]; then
-			echo -n "Restoring ${FILE}..."
-			cp "${MNT}/conf/${FILE}" /conf
-			echo "done."
-		fi
-	done
-	for DIR in backup sshd; do
-		if [ -d "${MNT}/conf/${DIR}" ]; then
-			echo -n "Restoring ${DIR}..."
-			cp -r "${MNT}/conf/${DIR}" /conf
-			echo "done."
-		else
-			mkdir -p "/conf/${DIR}"
-		fi
-	done
-else
-	echo "No previous configuration was found on this device."
-	bootstrap_and_exit 1
-fi
 
 if [ -z "${DO_BOOT}" ]; then
 	echo "Please reboot."

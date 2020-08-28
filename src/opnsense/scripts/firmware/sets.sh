@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LIC="BSD2CLAUSE"
-OS="FreeBSD"
+OS="HardenedBSD"
 SEP=${1:-","}
 
-BV=$(opnsense-update -bv)
-KV=$(opnsense-update -kv)
+read BN BV BS << EOF
+$(opnsense-version -nvs base)
+EOF
+
+read KN KV KS << EOF
+$(opnsense-version -nvs kernel)
+EOF
 
 BL=0
 KL=0
@@ -37,5 +42,7 @@ KL=0
 opnsense-update -Tb || BL=1
 opnsense-update -Tk || KL=1
 
-echo "base${SEP}${BV%-*}${SEP}${OS} userland set${SEP}${SEP}${BL}${SEP}${LIC}"
-echo "kernel${SEP}${KV%-*}${SEP}${OS} kernel set${SEP}${SEP}${KL}${SEP}${LIC}"
+cat << EOF
+${BN}${SEP}${BV}${SEP}${OS} userland set${SEP}${BS}${SEP}${BL}${SEP}${LIC}${SEP}${SEP}
+${KN}${SEP}${KV}${SEP}${OS} kernel set${SEP}${KS}${SEP}${KL}${SEP}${LIC}${SEP}${SEP}
+EOF

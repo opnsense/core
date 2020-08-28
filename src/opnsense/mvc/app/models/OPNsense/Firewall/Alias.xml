@@ -1,12 +1,16 @@
 <model>
-    <mount>//OPNSense/Firewall/Alias</mount>
+    <mount>//OPNsense/Firewall/Alias</mount>
     <version>1.0.0</version>
     <description>
         Firewall aliases
     </description>
     <items>
+        <geoip>
+            <url type="UrlField">
+            </url>
+        </geoip>
         <aliases>
-            <alias type="ArrayField">
+            <alias type=".\AliasField">
                 <enabled type="BooleanField">
                     <default>1</default>
                     <Required>Y</Required>
@@ -30,6 +34,8 @@
                         <url>URL (IPs)</url>
                         <urltable>URL Table (IPs)</urltable>
                         <geoip>GeoIP</geoip>
+                        <networkgroup>Network group</networkgroup>
+                        <mac>MAC address</mac>
                         <external>External (advanced)</external>
                     </OptionValues>
                 </type>
@@ -40,13 +46,16 @@
                         <IPv6>IPv6</IPv6>
                     </OptionValues>
                 </proto>
+                <counters type="BooleanField">
+                    <default>0</default>
+                </counters>
                 <updatefreq type="NumericField">
                     <ValidationMessage>Days and hours should be numeric values or left empty</ValidationMessage>
                 </updatefreq>
                 <content type=".\AliasContentField"/>
                 <description type="TextField">
                     <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </alias>

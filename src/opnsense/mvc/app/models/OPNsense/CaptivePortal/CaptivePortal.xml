@@ -31,6 +31,10 @@
                     <multiple>Y</multiple>
                     <default>Local Database</default>
                 </authservers>
+                <alwaysSendAccountingReqs type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </alwaysSendAccountingReqs>
                 <authEnforceGroup type="AuthGroupField">
                     <Required>N</Required>
                 </authEnforceGroup>

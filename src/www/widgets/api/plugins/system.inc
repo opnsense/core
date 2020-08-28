@@ -1,50 +1,61 @@
 <?php
+
 /*
-    Copyright (C) 2016 Deciso B.V.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2016 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function system_api_cpu_stats()
 {
     $cpustats = array();
     // take a short snapshot to calculate cpu usage
     $diff = array('user', 'nice', 'sys', 'intr', 'idle');
-    $cpuTicks1 = array_combine($diff, explode(" ", get_single_sysctl('kern.cp_time')));
+    $cpuTicks1 = array_combine($diff, array_slice(explode(" ", get_single_sysctl('kern.cp_time')),0, 5));
     usleep(100000);
-    $cpuTicks2 = array_combine($diff, explode(" ", get_single_sysctl('kern.cp_time')));
+    $cpuTicks2 = array_combine($diff, array_slice(explode(" ", get_single_sysctl('kern.cp_time')),0, 5));
     $totalStart = array_sum($cpuTicks1);
     $totalEnd = array_sum($cpuTicks2);
     if ($totalEnd <= $totalStart) {
         // if for some reason the measurement is invalid, assume nothing has changed (all 0)
         $totalEnd = $totalStart;
     }
-    $cpustats['used'] = floor(100 * (($totalEnd - $totalStart) - ($cpuTicks2['idle'] - $cpuTicks1['idle'])) / ($totalEnd - $totalStart));
-    $cpustats['user'] = floor(100 * (($cpuTicks2['user'] - $cpuTicks1['user'])) / ($totalEnd - $totalStart));
-    $cpustats['nice'] = floor(100 * (($cpuTicks2['nice'] - $cpuTicks1['nice'])) / ($totalEnd - $totalStart));
-    $cpustats['sys'] = floor(100 * (($cpuTicks2['sys'] - $cpuTicks1['sys'])) / ($totalEnd - $totalStart));
-    $cpustats['intr'] = floor(100 * (($cpuTicks2['intr'] - $cpuTicks1['intr'])) / ($totalEnd - $totalStart));
-    $cpustats['idle'] = floor(100 * (($cpuTicks2['idle'] - $cpuTicks1['idle'])) / ($totalEnd - $totalStart));
+    $totalDiff = $totalEnd - $totalStart;
+    if ($totalDiff != 0) {
+        $cpustats['used'] =  floor(100 * ($totalDiff - ($cpuTicks2['idle'] - $cpuTicks1['idle'])) / $totalDiff);
+        $cpustats['user'] = floor(100 * (($cpuTicks2['user'] - $cpuTicks1['user'])) / $totalDiff);
+        $cpustats['nice'] = floor(100 * (($cpuTicks2['nice'] - $cpuTicks1['nice'])) / $totalDiff);
+        $cpustats['sys'] = floor(100 * (($cpuTicks2['sys'] - $cpuTicks1['sys'])) / $totalDiff);
+        $cpustats['intr'] = floor(100 * (($cpuTicks2['intr'] - $cpuTicks1['intr'])) / $totalDiff);
+        $cpustats['idle'] = floor(100 * (($cpuTicks2['idle'] - $cpuTicks1['idle'])) / $totalDiff);
+    } else {
+        $cpustats['used'] = "0";
+        $cpustats['user'] = "0";
+        $cpustats['nice'] = "0";
+        $cpustats['sys'] = "0";
+        $cpustats['intr'] = "0";
+        $cpustats['idle'] = "0";
+    }
 
     // cpu model and count
     $cpustats['model'] = get_single_sysctl("hw.model");
@@ -106,16 +117,15 @@ function system_api_disk()
 {
     $result = array();
     $result['swap'] = array();
-    $result['swap']['device'] = null;
-    $result['swap']['total'] = null;
-    $result['swap']['used'] = null;
     exec("/usr/sbin/swapinfo -k", $swap_info);
     foreach ($swap_info as $line) {
         if (strpos($line,'/dev/') !== false) {
             $parts = preg_split('/\s+/', $line);
-            $result['swap']['device'] = $parts[0];
-            $result['swap']['total'] = $parts[1];
-            $result['swap']['used'] = $parts[2];
+            $swapItem = array();
+            $swapItem['device'] = $parts[0];
+            $swapItem['total'] = $parts[1];
+            $swapItem['used'] = $parts[2];
+            $result['swap'][] = $swapItem;
         }
     }
 
@@ -145,9 +155,9 @@ function system_api_versions()
 
     $result = array();
 
-    $result[] = sprintf('%s %s-%s', $g['product_name'], explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')))[0], trim(shell_exec('uname -p')));
+    $result[] = sprintf('%s %s-%s', $g['product_name'], $g['product_version'], $g['product_arch']);
     $result[] = php_uname('s') . ' ' . php_uname('r');
-    $result[] = OPENSSL_VERSION_TEXT;
+    $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
 
     return $result;
 }

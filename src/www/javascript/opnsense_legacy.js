@@ -31,15 +31,15 @@
  */
 
 function notice_action(action,msgid) {
-	jQuery.ajax({
-		type: 'post',
-		cache: false,
-		url: 'index.php',
-		data: {closenotice: msgid},
-		success: function(response) {
-			jQuery('#menu_messages').html(response);
-		}
-	});
+  jQuery.ajax({
+    type: 'post',
+    cache: false,
+    url: 'index.php',
+    data: {closenotice: msgid},
+    success: function(response) {
+      jQuery('#menu_messages').html(response);
+    }
+  });
 }
 
 /**
@@ -48,16 +48,16 @@ function notice_action(action,msgid) {
  * @param data_id: data field reference to network input field
  */
 function hook_ipv4v6(classname, data_id) {
-  $("."+classname).each(function(){
+  $("select."+classname).each(function(){
       var selectlist_id = $(this).attr('id');
       if ($(this).data(data_id) != undefined) {
         $("#"+$(this).data(data_id)).change(function(){
           var itemValue = $(this).val();
           $("#"+selectlist_id+" > option").each(function() {
               if (parseInt($(this).val()) > 32 && itemValue.indexOf(":") == -1 ) {
-                  $(this).addClass('hidden');
+                  $(this).hide()
               } else {
-                  $(this).removeClass('hidden');
+                  $(this).show();
               }
           });
           // select highest visible option
@@ -84,7 +84,7 @@ function hook_stacked_form_tables(match)
   $(match).each(function(){
       var root_node = $(this);
       if (root_node.is('table')) {
-          row_number = 0;
+          let row_number = 0;
           // traverse all <tr> tags
           root_node.find('tr').each(function(){
               // only evaluate children under this table or in <thead|tbody|..> element
@@ -97,7 +97,7 @@ function hook_stacked_form_tables(match)
                       }
                   }
                   if (children.length == 1) {
-                      // simple seperator line, colspan = 2
+                      // simple separator line, colspan = 2
                       $(this).before($(this).clone().removeAttr("id").attr('colspan', 1).addClass('hidden-sm hidden-md hidden-lg'));
                       $(this).addClass('hidden-xs');
                   } else if (children.length == 2) {
@@ -137,10 +137,34 @@ function hook_stacked_form_tables(match)
                           ++index;
                       }
                   });
-              }
+              };
               $( window ).resize(root_node.do_resize);
               root_node.do_resize();
           }
       }
   });
+}
+
+/**
+ * highlight table option using window location hash
+ */
+function window_highlight_table_option()
+{
+    if (window.location.hash != "") {
+        let option_id = window.location.hash.substr(1);
+        let option = $("[name='" + option_id +"']");
+        let arrow = $("<i/>").addClass("fa fa-arrow-right pull-right");
+        let container = $("<div/>");
+        let title_td = option.closest('tr').find('td:eq(0)');
+        container.css('width', '0%');
+        container.css('display', 'inline-block');
+        container.css('white-space', 'nowrap');
+
+        title_td.append(container);
+        let animate_width = title_td.width() - container.position().left+ title_td.find('i:eq(0)').position().left - 1;
+        $('html, body').animate({scrollTop: option.position().top}, 500,  function() {
+            container.append(arrow);
+            container.animate({width: animate_width}, 800);
+        });
+    }
 }

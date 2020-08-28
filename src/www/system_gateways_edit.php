@@ -1,47 +1,39 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2020 Deciso B.V.
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/dpinger.inc");
 
-$a_gateways = return_gateways_array(true, false, true);
-$a_gateways_arr = array();
-foreach ($a_gateways as $gw) {
-    $a_gateways_arr[] = $gw;
-}
-$a_gateways = $a_gateways_arr;
-$apinger_default = return_apinger_defaults();
-
-if (isset($config['system']['prefer_dpinger'])) {
-    $apinger_default = return_dpinger_defaults();
-}
+$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+$a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
+$dpinger_default = dpinger_defaults();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -74,25 +66,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("A valid gateway IP address must be specified.");
     }
 
+    $vips = [];
+
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($pconfig['interface'] == $vip['interface']) {
+            $vips[] = $vip;
+        }
+    }
+
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
-            $parent_ip = empty($pconfig['ajaxip']) ? get_interface_ip($pconfig['interface']) : $pconfig['ajaxip'];
-            $parent_sn = empty($pconfig['ajaxnet']) ? get_interface_subnet($pconfig['interface']) : $pconfig['ajaxnet'];
+            list ($parent_ip, $parent_sn) = explode('/', find_interface_network(get_real_interface($pconfig['interface']), false));
+            $parent_ip = empty($pconfig['ajaxip']) ? $parent_ip : $pconfig['ajaxip'];
+            $parent_sn = empty($pconfig['ajaxnet']) ? $parent_sn : $pconfig['ajaxnet'];
             if (empty($parent_ip) || empty($parent_sn)) {
                 $input_errors[] = gettext("Cannot add IPv4 Gateway Address because no IPv4 address could be found on the interface.");
             } else {
                 $subnets = array(gen_subnet($parent_ip, $parent_sn) . "/" . $parent_sn);
-                $vips = link_interface_to_vips($pconfig['interface']);
-                if (is_array($vips)) {
-                    foreach ($vips as $vip) {
-                        if (!is_ipaddrv4($vip['subnet'])) {
-                            continue;
-                        }
-                        $subnets[] = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
+                foreach ($vips as $vip) {
+                    if (!is_ipaddrv4($vip['subnet'])) {
+                        continue;
                     }
+                    $subnets[] = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
                 }
 
                 $found = false;
+
                 foreach ($subnets as $subnet) {
                     if (ip_in_subnet($pconfig['gateway'], $subnet)) {
                         $found = true;
@@ -101,29 +100,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 if (!$found && !isset($pconfig['fargw'])) {
-                    $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
+                    $input_errors[] = sprintf(gettext('The gateway address "%s" does not lie within one of the chosen interface\'s IPv4 subnets.'), $pconfig['gateway']);
                 }
             }
         } elseif (is_ipaddrv6($pconfig['gateway'])) {
             /* do not do a subnet match on a link local address, it's valid */
             if (!is_linklocal($pconfig['gateway'])) {
-                $parent_ip = empty($pconfig['ajaxip']) ? get_interface_ipv6($pconfig['interface']) : $pconfig['ajaxip'];
-                $parent_sn = empty($pconfig['ajaxnet']) ? get_interface_subnetv6($pconfig['interface']) : $pconfig['ajaxnet'];
+                list ($parent_ip, $parent_sn) = explode('/', find_interface_networkv6(get_real_interface($pconfig['interface'], 'inet6'), false));
+                $parent_ip = empty($pconfig['ajaxip']) ? $parent_ip : $pconfig['ajaxip'];
+                $parent_sn = empty($pconfig['ajaxnet']) ? $parent_sn : $pconfig['ajaxnet'];
                 if (empty($parent_ip) || empty($parent_sn)) {
                     $input_errors[] = gettext("Cannot add IPv6 Gateway Address because no IPv6 address could be found on the interface.");
                 } else {
                     $subnets = array(gen_subnetv6($parent_ip, $parent_sn) . "/" . $parent_sn);
-                    $vips = link_interface_to_vips($pconfig['interface']);
-                    if (is_array($vips)) {
-                        foreach ($vips as $vip) {
-                            if (!is_ipaddrv6($vip['subnet'])) {
-                                continue;
-                            }
-                            $subnets[] = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
+                    foreach ($vips as $vip) {
+                        if (!is_ipaddrv6($vip['subnet'])) {
+                            continue;
                         }
+                        $subnets[] = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/" . $vip['subnet_bits'];
                     }
 
                     $found = false;
+
                     foreach ($subnets as $subnet) {
                         if (ip_in_subnet($pconfig['gateway'], $subnet)) {
                             $found = true;
@@ -131,8 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    if (!$found && !isset($pconfig['fargw'])) {
-                        $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
+                    if (!$found) {
+                        $input_errors[] = sprintf(gettext('The gateway address "%s" does not lie within one of the chosen interface\'s IPv6 subnets.'), $pconfig['gateway']);
                     }
                 }
             }
@@ -149,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    if (($pconfig['monitor'] <> "") && !is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != "dynamic") {
+    if (($pconfig['monitor'] != '') && !is_ipaddr($pconfig['monitor']) && $pconfig['monitor'] != 'dynamic') {
         $input_errors[] = gettext("A valid monitor IP address must be specified.");
     }
     /* only allow correct IPv4 and IPv6 gateway addresses */
@@ -201,125 +199,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    /* input validation of apinger advanced parameters */
-    if (!empty($pconfig['latencylow'])) {
-        if (!is_numeric($pconfig['latencylow'])) {
-            $input_errors[] = gettext("The low latency threshold needs to be a numeric value.");
-        } elseif ($pconfig['latencylow'] < 1) {
-            $input_errors[] = gettext("The low latency threshold needs to be positive.");
-        }
+    if (!empty($pconfig['priority']) && !is_numeric($pconfig['priority'])) {
+        $input_errors[] = gettext("Priority needs to be a numeric value.");
     }
 
-    if (!empty($pconfig['latencyhigh'])) {
-        if (!is_numeric($pconfig['latencyhigh'])) {
-            $input_errors[] = gettext("The high latency threshold needs to be a numeric value.");
-        } elseif ($pconfig['latencyhigh'] < 1) {
-            $input_errors[] = gettext("The high latency threshold needs to be positive.");
-        }
+    /****
+    /* XXX: dpinger needs to take defaults under consideration
+    /****/
+    $dpinger_config = dpinger_defaults();
+    foreach ($dpinger_config as $prop => $value) {
+        $dpinger_config[$prop] = !empty($pconfig[$prop]) ? $pconfig[$prop] : $value;
     }
 
-    if (!empty($pconfig['losslow'])) {
-        if (!is_numeric($pconfig['losslow'])) {
-            $input_errors[] = gettext("The low Packet Loss threshold needs to be a numeric value.");
-        } elseif ($pconfig['losslow'] < 1) {
-            $input_errors[] = gettext("The low Packet Loss threshold needs to be positive.");
-        } elseif ($pconfig['losslow'] >= 100) {
-            $input_errors[] = gettext("The low Packet Loss threshold needs to be less than 100.");
-        }
+    if (!is_numeric($dpinger_config['latencylow'])) {
+        $input_errors[] = gettext("The low latency threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['latencylow'] < 1) {
+        $input_errors[] = gettext("The low latency threshold needs to be positive.");
     }
 
-    if (!empty($pconfig['losshigh'])) {
-        if (!is_numeric($pconfig['losshigh'])) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be a numeric value.");
-        } elseif ($pconfig['losshigh'] < 1) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be positive.");
-        } elseif ($pconfig['losshigh'] > 100) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be 100 or less.");
-        }
+    if (!is_numeric($dpinger_config['latencyhigh'])) {
+        $input_errors[] = gettext("The high latency threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['latencyhigh'] < 1) {
+        $input_errors[] = gettext("The high latency threshold needs to be positive.");
     }
 
-    if (!empty($pconfig['latencylow']) && !empty($pconfig['latencyhigh'])) {
-        if (is_numeric($pconfig['latencylow']) && is_numeric($pconfig['latencyhigh']) &&
-            $pconfig['latencylow'] > $pconfig['latencyhigh']
-           ) {
-            $input_errors[] = gettext("The high latency threshold needs to be higher than the low latency threshold");
-        }
-    } elseif (!empty($pconfig['latencylow'])) {
-        if (is_numeric($pconfig['latencylow']) && $pconfig['latencylow'] > $apinger_default['latencyhigh']) {
-            $input_errors[] = sprintf(gettext('The low latency threshold needs to be less than the default high latency threshold (%d)'), $apinger_default['latencyhigh']);
-        }
-    } elseif (!empty($pconfig['latencyhigh'])) {
-        if (is_numeric($pconfig['latencyhigh']) && $pconfig['latencyhigh'] < $apinger_default['latencylow']) {
-            $input_errors[] = sprintf(gettext('The high latency threshold needs to be higher than the default low latency threshold (%d)'), $apinger_default['latencylow']);
-        }
+    if (!is_numeric($dpinger_config['losslow'])) {
+        $input_errors[] = gettext("The low Packet Loss threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['losslow'] < 1) {
+        $input_errors[] = gettext("The low Packet Loss threshold needs to be positive.");
+    } elseif ($dpinger_config['losslow'] >= 100) {
+        $input_errors[] = gettext("The low Packet Loss threshold needs to be less than 100.");
     }
 
-    if (!empty($pconfig['losslow']) && !empty($pconfig['losshigh'])) {
-        if (is_numeric($pconfig['losslow']) && is_numeric($pconfig['losshigh']) && $pconfig['losslow'] > $pconfig['losshigh']) {
-            $input_errors[] = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold");
-        }
-    } elseif (!empty($pconfig['losslow'])) {
-        if (is_numeric($pconfig['losslow']) && $pconfig['losslow'] > $apinger_default['losshigh']) {
-            $input_errors[] = sprintf(gettext('The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)'), $apinger_default['losshigh']);
-        }
-    } elseif (!empty($pconfig['losshigh'])) {
-        if (is_numeric($pconfig['losshigh']) && $pconfig['losshigh'] < $apinger_default['losslow']) {
-            $input_errors[] = sprintf(gettext('The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)'), $apinger_default['losslow']);
-        }
+    if (!is_numeric($dpinger_config['losshigh'])) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be a numeric value.");
+    } elseif ($dpinger_config['losshigh'] < 1) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be positive.");
+    } elseif ($dpinger_config['losshigh'] > 100) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be 100 or less.");
     }
 
-    if (!empty($pconfig['interval'])) {
-        if (!is_numeric($pconfig['interval'])) {
-            $input_errors[] = gettext("The probe interval needs to be a numeric value.");
-        } elseif ($pconfig['interval'] < 1) {
-            $input_errors[] = gettext("The probe interval needs to be positive.");
-        }
+    if (is_numeric($dpinger_config['latencylow']) && is_numeric($dpinger_config['latencyhigh']) &&
+        $pconfig['latencylow'] > $pconfig['latencyhigh']
+       ) {
+        $input_errors[] = gettext("The high latency threshold needs to be higher than the low latency threshold");
     }
 
-    if (!empty($pconfig['down'])) {
-        if (! is_numeric($pconfig['down'])) {
-            $input_errors[] = gettext("The down time setting needs to be a numeric value.");
-        } elseif ($pconfig['down'] < 1) {
-            $input_errors[] = gettext("The down time setting needs to be positive.");
-        }
+    if (is_numeric($dpinger_config['losslow']) && is_numeric($dpinger_config['losshigh']) && $dpinger_config['losslow'] > $dpinger_config['losshigh']) {
+        $input_errors[] = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold");
     }
 
-    if (!empty($pconfig['interval']) && !empty($pconfig['down'])) {
-        if ((is_numeric($pconfig['interval'])) && (is_numeric($pconfig['down'])) && $pconfig['interval'] > $pconfig['down']) {
-            $input_errors[] = gettext("The probe interval needs to be less than the down time setting.");
-        }
-    } elseif (!empty($pconfig['interval'])) {
-        if (is_numeric($pconfig['interval']) && $pconfig['interval'] > $apinger_default['down']) {
-            $input_errors[] = sprintf(gettext('The probe interval needs to be less than the default down time setting (%d)'), $apinger_default['down']);
-        }
-    } elseif (!empty($pconfig['down'])) {
-        if (is_numeric($pconfig['down']) && $pconfig['down'] < $apinger_default['interval']) {
-            $input_errors[] = sprintf(gettext('The down time setting needs to be higher than the default probe interval (%d)'), $apinger_default['interval']);
-        }
+    if (!is_numeric($dpinger_config['interval'])) {
+        $input_errors[] = gettext("The probe interval needs to be a numeric value.");
+    } elseif ($dpinger_config['interval'] < 1) {
+        $input_errors[] = gettext("The probe interval needs to be positive.");
     }
 
-    if (!empty($pconfig['avg_delay_samples'])) {
-        if (!is_numeric($pconfig['avg_delay_samples'])) {
-            $input_errors[] = gettext("The average delay replies qty needs to be a numeric value.");
-        } elseif ($pconfig['avg_delay_samples'] < 1) {
-            $input_errors[] = gettext("The average delay replies qty needs to be positive.");
-        }
+    if (!is_numeric($dpinger_config['alert_interval'])) {
+        $input_errors[] = gettext("The alert interval needs to be a numeric value.");
+    } elseif ($dpinger_config['alert_interval'] < 1) {
+        $input_errors[] = gettext("The alert interval needs to be positive.");
     }
 
-    if (!empty($pconfig['avg_loss_samples'])) {
-        if (!is_numeric($pconfig['avg_loss_samples'])) {
-            $input_errors[] = gettext("The average packet loss probes qty needs to be a numeric value.");
-        } elseif ($pconfig['avg_loss_samples'] < 1) {
-            $input_errors[] = gettext("The average packet loss probes qty needs to be positive.");
-        }
+    if (!is_numeric($dpinger_config['data_length'])) {
+        $input_errors[] = gettext("The data length needs to be a numeric value.");
+    } elseif ($dpinger_config['data_length'] < 0) {
+        $input_errors[] = gettext("The data length needs to be positive.");
     }
 
-    if (!empty($pconfig['avg_loss_delay_samples'])) {
-        if (!is_numeric($pconfig['avg_loss_delay_samples'])) {
-            $input_errors[] = gettext("The lost probe delay needs to be a numeric value.");
-        } elseif ($pconfig['avg_loss_delay_samples'] < 1) {
-            $input_errors[] = gettext("The lost probe delay needs to be positive.");
-        }
+    if (!is_numeric($dpinger_config['time_period'])) {
+        $input_errors[] = gettext("The time period needs to be a numeric value.");
+    } elseif ($dpinger_config['time_period'] < 1) {
+        $input_errors[] = gettext("The time period needs to be positive.");
+    } elseif (is_numeric($dpinger_config['interval']) && $dpinger_config['time_period'] < (2.1*$dpinger_config['interval'])) {
+        $input_errors[] = gettext("The time period needs at least 2.1 times that of the probe interval.");
+    }
+
+    if (!is_numeric($dpinger_config['loss_interval'])) {
+        $input_errors[] = gettext("The loss interval needs to be a numeric value.");
+    } elseif ($dpinger_config['loss_interval'] < 1) {
+        $input_errors[] = gettext("The loss interval needs to be positive.");
     }
 
     if (count($input_errors) == 0) {
@@ -333,34 +292,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $reloadif = "";
         $gateway = array();
 
-        if (empty($pconfig['interface'])) {
-            $gateway['interface'] = $pconfig['friendlyiface'];
-        } else {
-            $gateway['interface'] = $pconfig['interface'];
-        }
+        $gateway['interface'] = $pconfig['interface'];
         if (is_ipaddr($pconfig['gateway'])) {
             $gateway['gateway'] = $pconfig['gateway'];
         } else {
             $gateway['gateway'] = "dynamic";
         }
         $gateway['name'] = $pconfig['name'];
+        $gateway['priority'] = $pconfig['priority'];
         $gateway['weight'] = $pconfig['weight'];
         $gateway['ipprotocol'] = $pconfig['ipprotocol'];
         $gateway['interval'] = $pconfig['interval'];
         $gateway['descr'] = $pconfig['descr'];
-        $gateway['avg_delay_samples'] = $pconfig['avg_delay_samples'];
-
-        if ($pconfig['avg_delay_samples_calculated'] == "yes" || $pconfig['avg_delay_samples_calculated'] == "on") {
-            $gateway['avg_delay_samples_calculated'] = true;
-        }
-        $gateway['avg_loss_samples'] = $pconfig['avg_loss_samples'];
-        if ($pconfig['avg_loss_samples_calculated'] == "yes" || $pconfig['avg_loss_samples_calculated'] == "on") {
-            $gateway['avg_loss_samples_calculated'] = true;
-        }
-        $gateway['avg_loss_delay_samples'] = $pconfig['avg_loss_delay_samples'];
-        if ($pconfig['avg_loss_delay_samples_calculated'] == "yes" || $pconfig['avg_loss_delay_samples_calculated'] == "on") {
-            $gateway['avg_loss_delay_samples_calculated'] = true;
-        }
 
         if ($pconfig['monitor_disable'] == "yes") {
             $gateway['monitor_disable'] = true;
@@ -382,22 +325,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on") {
-            $i = 0;
-            /* remove the default gateway bits for all gateways with the same address family */
-            foreach ($a_gateway_item as $gw) {
-                if ($gateway['ipprotocol'] == $gw['ipprotocol']) {
-                    unset($config['gateways']['gateway_item'][$i]['defaultgw']);
-                    if ($gw['interface'] != $pconfig['interface'] && $gw['defaultgw']) {
-                        $reloadif = $gw['interface'];
-                    }
-                }
-                $i++;
-            }
-            $gateway['defaultgw'] = true;
-        }
+        $gateway['defaultgw'] = ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on");
 
-        foreach (array('latencylow', 'latencyhigh', 'losslow', 'losshigh', 'down') as $fieldname) {
+        foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period', 'data_length') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
@@ -430,7 +360,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo $pconfig['name'];
             exit;
         } elseif (!empty($reloadif)) {
-            configd_run("interface reconfigure {$reloadif}");
+            configdp_run('interface reconfigure', array($reloadif));
         }
 
         header(url_safe('Location: /system_gateways.php'));
@@ -441,10 +371,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Content-type: text/plain");
             echo implode("\n\n", $input_errors);
             exit;
-        }
-
-        if (!empty($pconfig['interface'])) {
-            $pconfig['friendlyiface'] = $pconfig['interface'];
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -462,10 +388,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // load data from config
     $copy_fields = array(
-      'name', 'weight', 'interval', 'avg_delay_samples', 'avg_loss_samples', 'avg_loss_delay_samples',
-      'interface', 'friendlyiface', 'ipprotocol', 'gateway', 'latencylow', 'latencyhigh', 'losslow', 'losshigh',
-      'down', 'monitor', 'descr', 'avg_delay_samples_calculated', 'avg_loss_samples_calculated', 'fargw',
-      'avg_loss_delay_samples_calculated', 'monitor_disable', 'dynamic', 'defaultgw', 'force_down', 'disabled'
+        'defaultgw',
+        'descr',
+        'disabled',
+        'dynamic',
+        'fargw',
+        'force_down',
+        'gateway',
+        'interface',
+        'interval',
+        'ipprotocol',
+        'latencyhigh',
+        'latencylow',
+        'losshigh',
+        'losslow',
+        'monitor',
+        'monitor_disable',
+        'name',
+        'weight',
+        'alert_interval',
+        'data_length',
+        'time_period',
+        'loss_interval',
+        'priority'
     );
     foreach ($copy_fields as $fieldname) {
         if (isset($configId) && isset($a_gateways[$configId][$fieldname])) {
@@ -482,8 +427,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
 
-$service_hook = 'apinger';
-
 include("head.inc");
 
 ?>
@@ -492,41 +435,6 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <script>
 //<![CDATA[
-function recalc_value(object, min, max) {
-    if (object.val() != "") {
-        object.val(Math.round(object.val()));     // Round to integer
-        if (object.val() < min)  object.val(min); // Min Value
-        if (object.val() > max)  object.val(max); // Max Value
-        if (isNaN(object.val())) object.val('');  // Empty Value
-    }
-}
-
-function calculated_change() {
-  // How many replies should be used to compute average delay
-  // for controlling "delay" alarms.
-  // Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
-  if ($('#avg_delay_samples_calculated').prop('checked') && ( $('#interval').val() > 0)) {
-      $('#avg_delay_samples').val(60 * (1/6) / Math.pow($('#interval').val(), 0.333));  // Calculate
-  }
-  recalc_value($('#avg_delay_samples'), 1, 100);
-
-  // How many probes should be used to compute average loss.
-  // Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
-  if ($('#avg_loss_samples_calculated').prop('checked') && ( $('#interval').val() > 0)) {
-      $('#avg_loss_samples').val(60 / $('#interval').val());  // Calculate
-  }
-  recalc_value($('#avg_loss_samples'), 1, 1000);
-
-  // The delay (in samples) after which loss is computed
-  // without this delays larger than interval would be treated as loss.
-  // Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
-  if ($('#avg_loss_delay_samples_calculated').prop('checked') && ( $('#interval').val() > 0)) {
-      $('#avg_loss_delay_samples').val(60 * (1/3) / $('#interval').val());  // Calculate
-  }
-  recalc_value($('#avg_loss_delay_samples'), 1, 200);
-}
-
-
 $( document ).ready(function() {
     // unhide advanced
     $("#btn_advanced").click(function(event){
@@ -536,11 +444,10 @@ $( document ).ready(function() {
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
-  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $apinger_default['interval'])) || (!empty($pconfig['down']) && !($pconfig['down'] == $apinger_default['down'])))): ?>
+  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['data_length']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['alert_interval']) && ($pconfig['alert_interval'] > $dpinger_default['alert_interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
     $("#btn_advanced").click();
 <?php
   endif;?>
-
 });
 //]]>
 </script>
@@ -559,7 +466,6 @@ $( document ).ready(function() {
               <input type='hidden' name='attribute' id='attribute' value="<?=$pconfig['attribute'];?>"/>
 <?php
             endif;?>
-              <input type='hidden' name='friendlyiface' id='friendlyiface' value="<?=$pconfig['friendlyiface'];?>"/>
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td style="width:22%"><?=gettext("Edit gateway");?></td>
@@ -573,9 +479,20 @@ $( document ).ready(function() {
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                     <div class="hidden" data-for="help_for_disabled">
-                      <strong><?=gettext("Disable this gateway");?></strong><br />
                       <?=gettext("Set this option to disable this gateway without removing it from the list.");?>
                     </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Name') ?></td>
+                  <td>
+                    <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Description') ?></td>
+                  <td>
+                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                   </td>
                 </tr>
                 <tr>
@@ -583,9 +500,9 @@ $( document ).ready(function() {
                   <td>
                     <select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
-                    foreach (get_configured_interface_with_descr(false, true) as $iface => $ifacename):?>
-                      <option value="<?=$iface;?>" <?=$iface == $pconfig['friendlyiface'] ? "selected='selected'" : "";?>>
-                        <?=$ifacename;?>
+                    foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+                      <option value="<?=$iface;?>" <?=$iface == $pconfig['interface'] ? "selected='selected'" : "";?>>
+                        <?= $ifcfg['descr'] ?>
                       </option>
 <?php
                       endforeach;?>
@@ -612,29 +529,17 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
-                  <td>
-                    <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
-                    <div class="hidden" data-for="help_for_name">
-                      <?=gettext("Gateway name"); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('IP address') ?></td>
                   <td>
                     <input name="gateway" type="text" size="28" value="<?=!empty($pconfig['dynamic']) ? "dynamic" : $pconfig['gateway'];?>"/>
-                    <div class="hidden" data-for="help_for_gateway">
-                      <?=gettext("Gateway IP address"); ?>
-                    </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default Gateway"); ?></td>
+                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Upstream Gateway"); ?></td>
                   <td>
                     <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_defaultgw">
-                      <?=gettext("This will select the above gateway as the default gateway"); ?>
+                      <?= gettext('This will select the above gateway as a default gateway candidate.') ?>
                     </div>
                   </td>
                 </tr>
@@ -652,7 +557,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_monitor_disable">
-                      <?=gettext("This will consider this gateway as always being up"); ?>
+                      <?= gettext('This will consider this gateway as always being "up".') ?>
                     </div>
                   </td>
                 </tr>
@@ -661,7 +566,6 @@ $( document ).ready(function() {
                   <td>
                       <input name="monitor" type="text" value="<?=$pconfig['gateway'] == $pconfig['monitor'] ? "" : $pconfig['monitor'] ;?>" size="28" />
                       <div class="hidden" data-for="help_for_monitor">
-                        <strong><?=gettext("Alternative monitor IP"); ?></strong> <br />
                         <?=gettext("Enter an alternative address here to be used to monitor the link. This is used for the " .
                                                 "quality RRD graphs as well as the load balancer entries. Use this if the gateway does not respond " .
                                                 "to ICMP echo requests (pings)"); ?>.
@@ -673,15 +577,34 @@ $( document ).ready(function() {
                   <td>
                     <input name="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_force_down">
-                      <strong><?=gettext("Mark Gateway as Down"); ?></strong><br />
-                      <?=gettext("This will force this gateway to be considered Down"); ?>
+                      <?= gettext('This will force this gateway to be considered "down".') ?>
                     </div>
                   </td>
                 </tr>
+
+
+                <tr>
+                  <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                  <td>
+                    <select id="priority" name="priority" class="selectpicker"  data-live-search="true" data-size="5">
+<?php
+                    for ($prio=255; $prio >= 1; --$prio):?>
+                        <option value="<?=$prio;?>" <?=$pconfig['priority'] == $prio ? "selected=selected" : "";?> >
+                            <?=$prio;?>
+                        </option>
+<?php
+                    endfor;?>
+                    </select>
+                    <div class="hidden" data-for="help_for_priority">
+                      <?= gettext('Influences sort order when selecting a (default) gateway, lower means more important.') ?>
+                    </div>
+                  </td>
+                </tr>
+
                 <tr class="advanced visible">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
-                    <input type="button" id="btn_advanced" value="Advanced" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
+                    <input type="button" id="btn_advanced" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
@@ -726,7 +649,7 @@ $( document ).ready(function() {
                         </tbody>
                     </table>
                     <div class="hidden" data-for="help_for_latency">
-                        <?= sprintf(gettext('Low and high thresholds for latency in milliseconds. Default is %d/%d.'), $apinger_default['latencylow'], $apinger_default['latencyhigh']) ?>
+                        <?= sprintf(gettext('Low and high thresholds for latency in milliseconds. Default is %d/%d.'), $dpinger_default['latencylow'], $dpinger_default['latencyhigh']) ?>
                     </div>
                   </td>
                 </tr>
@@ -752,91 +675,61 @@ $( document ).ready(function() {
                         </tbody>
                     </table>
                     <div class="hidden" data-for="help_for_loss">
-                      <?= sprintf(gettext('Low and high thresholds for packet loss in %%. Default is %d/%d.'), $apinger_default['losslow'], $apinger_default['losshigh']) ?>
+                      <?= sprintf(gettext('Low and high thresholds for packet loss in %%. Default is %d/%d.'), $dpinger_default['losslow'], $dpinger_default['losshigh']) ?>
                     </div>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
                   <td><a id="help_for_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Probe Interval");?></td>
                   <td>
-                    <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" onclick="calculated_change()" />
+                    <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" />
                     <div class="hidden" data-for="help_for_interval">
-                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $apinger_default['interval']) ?><br /><br />
-                      <?=gettext("NOTE: The quality graph is averaged over seconds, not intervals, so as the probe interval is increased the accuracy of the quality graph is decreased.");?>
+                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $dpinger_default['interval']) ?>
                     </div>
                   </td>
                 </tr>
-<?php           if (!isset($config['system']['prefer_dpinger'])):?>
-                <tr class="advanced hidden">
-                  <td><a id="help_for_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Down");?></td>
+                 <tr class="advanced hidden">
+                  <td><a id="help_for_alert_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alert Interval");?></td>
                   <td>
-                    <input name="down" type="text" value="<?=$pconfig['down'];?>" />
-                    <div class="hidden" data-for="help_for_down">
-                      <?= sprintf(gettext('The number of seconds of failed probes before the alarm will fire. Default is %d.'), $apinger_default['down']) ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="advanced hidden">
-                  <td><a id="help_for_avg_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Delay Replies Qty");?></td>
-                  <td>
-                    <input name="avg_delay_samples" id="avg_delay_samples" type="text" value="<?=$pconfig['avg_delay_samples'];?>" onchange="calculated_change()"  />
-                    <input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?=!empty($pconfig['avg_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
-                    <div class="hidden" data-for="help_for_avg_delay_samples">
-                      <?= sprintf(gettext('How many replies should be used to compute average delay for controlling "delay" alarms? Default is %d.'), $apinger_default['avg_delay_samples']) ?>
+                    <input name="alert_interval" id="alert_interval" type="text" value="<?=$pconfig['alert_interval'];?>" />
+                    <div class="hidden" data-for="help_for_alert_interval">
+                      <?= sprintf(gettext('Time interval between alerts. Default is %d.'), $dpinger_default['alert_interval']) ?>
                     </div>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_avg_loss_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Packet Loss Probes Qty");?></td>
+                  <td><a id="help_for_time_period" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time Period");?></td>
                   <td>
-                    <input name="avg_loss_samples" type="text" id="avg_loss_samples" value="<?=$pconfig['avg_loss_samples'];?>" onchange="calculated_change()" />
-                    <input name="avg_loss_samples_calculated" type="checkbox" id="avg_loss_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
-
-                    <div class="hidden" data-for="help_for_avg_loss_samples">
-                      <?= sprintf(gettext('How many probes should be used to compute average packet loss? Default is %d.'), $apinger_default['avg_loss_samples']) ?>
+                    <input name="time_period" id="interval" type="text" value="<?=$pconfig['time_period'];?>" />
+                    <div class="hidden" data-for="help_for_time_period">
+                      <?= sprintf(gettext('The time period over which results are averaged. Default is %d.'), $dpinger_default['time_period']) ?>
                     </div>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_avg_loss_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lost Probe Delay");?></td>
+                  <td><a id="help_for_loss_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Loss Interval");?></td>
                   <td>
-                    <input name="avg_loss_delay_samples" type="text" id="avg_loss_delay_samples" value="<?=$pconfig['avg_loss_delay_samples'];?>" onchange="calculated_change()"  />
-                    <input name="avg_loss_delay_samples_calculated" type="checkbox" id="avg_loss_delay_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
-                    <?=gettext("Use calculated value."); ?>
-
-                    <div class="hidden" data-for="help_for_avg_loss_delay_samples">
-                      <?= sprintf(gettext('The delay (in qty of probe samples) after which loss is computed. Without this, delays longer than the probe interval would be treated as packet loss. Default is %d.'), $apinger_default['avg_loss_delay_samples']) ?>
+                    <input name="loss_interval" id="loss_interval" type="text" value="<?=$pconfig['loss_interval'];?>" />
+                    <div class="hidden" data-for="help_for_loss_interval">
+                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d.'), $dpinger_default['loss_interval']) ?>
                     </div>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td></td>
+                  <td><a id="help_for_data_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Data Length");?></td>
                   <td>
-                    <small>
-                      <?= gettext("The probe interval must be less than the down time, otherwise the gateway will seem to go down then come up again at the next probe."); ?><br /><br />
-                      <?= gettext("The down time defines the length of time before the gateway is marked as down, but the accuracy is controlled by the probe interval. For example, if your down time is 40 seconds but on a 30 second probe interval, only one probe would have to fail before the gateway is marked down at the 40 second mark. By default, the gateway is considered down after 10 seconds, and the probe interval is 1 second, so 10 probes would have to fail before the gateway is marked down."); ?><br />
-                    </small>
-                  </td>
-                </tr>
-<?php
-                endif;?>
-                <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                  <td>
-                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                    <div class="hidden" data-for="help_for_descr">
-                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>
+                    <input name="data_length" id="data_length" type="text" value="<?=$pconfig['data_length'];?>" />
+                    <div class="hidden" data-for="help_for_data_length">
+                      <?= sprintf(gettext('Specify the number of data bytes to be sent. Default is %d.'), $dpinger_default['data_length']) ?>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
-                           onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateways.php';?>'" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>" />
+                    <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Cancel')) ?>"
+                           onclick="window.location.href = '/system_gateways.php';" />
 <?php
                     if (isset($id)) :?>
                     <input name="id" type="hidden" value="<?=$id;?>" />

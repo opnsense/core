@@ -35,5 +35,6 @@
         <label>Proxies</label>
         <type>select_multiple</type>
         <style>tokenize</style>
+        <sortable>true</sortable>
     </field>
 </form>

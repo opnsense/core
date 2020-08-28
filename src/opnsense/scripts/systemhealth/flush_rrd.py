@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
     Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>

@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,5 +49,4 @@ for sas in s.list_sas():
 
 # terminate connection if found
 if conn_found:
-    devnull = open(os.devnull, 'w')
-    subprocess.call(['/usr/local/sbin/ipsec', 'down', conn_id], stdin=devnull, stdout=devnull, stderr=devnull)
+    subprocess.run(['/usr/local/sbin/ipsec', 'down', conn_id], capture_output=True)

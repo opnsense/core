@@ -57,14 +57,14 @@ class DummySocket(object):
         :param size:
         :return:
         """
-        return self._send_data
+        return self._send_data.encode()
 
     def sendall(self, data):
         """ send back to "client"
         :param data: text
         :return:
         """
-        self._receive_data.append(data)
+        self._receive_data.append(data.decode())
 
     def close(self):
         """ close connection
@@ -77,6 +77,9 @@ class DummySocket(object):
         :return:
         """
         return ''.join(self._receive_data)
+
+    def shutdown(self, mode):
+        pass
 
 
 class TestCoreMethods(unittest.TestCase):
@@ -106,7 +109,7 @@ class TestCoreMethods(unittest.TestCase):
                                                   action_handler=self.act_handler,
                                                   simulation_mode=False)
         cmd_thread.run()
-        self.assertEquals(self.dummysock.getReceived()[-4:], '\n%c%c%c' % (chr(0), chr(0), chr(0)), "Invalid sequence")
+        self.assertEqual(self.dummysock.getReceived()[-4:], '\n%c%c%c' % (chr(0), chr(0), chr(0)), "Invalid sequence")
 
     def test_command_unknown(self):
         """ test invalid command
@@ -118,7 +121,7 @@ class TestCoreMethods(unittest.TestCase):
                                                   action_handler=self.act_handler,
                                                   simulation_mode=False)
         cmd_thread.run()
-        self.assertEquals(self.dummysock.getReceived().split('\n')[0], 'Action not found', 'Invalid response')
+        self.assertEqual(self.dummysock.getReceived().split('\n')[0], 'Action not found', 'Invalid response')
 
     def test_configd_actions(self):
         """ request configd command list

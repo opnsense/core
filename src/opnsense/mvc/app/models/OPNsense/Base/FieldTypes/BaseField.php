@@ -1,36 +1,40 @@
 <?php
-/**
- *    Copyright (C) 2015 Deciso B.V.
- *
- *    All rights reserved.
- *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
- */
 
+/*
+ * Copyright (C) 2015-2020 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 namespace OPNsense\Base\FieldTypes;
 
+use Exception;
+use Generator;
+use InvalidArgumentException;
 use Phalcon\Validation\Validator\PresenceOf;
+use ReflectionClass;
+use ReflectionException;
+use SimpleXMLElement;
 
 /**
  * Class BaseField
@@ -121,6 +125,15 @@ abstract class BaseField
      * @var BaseModel|null keep record of the model which originally created this field
      */
     private $internalParentModel = null;
+
+    /**
+     * @return bool
+     */
+    public function isArrayType()
+    {
+        return is_a($this, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
+            is_subclass_of($this, "OPNsense\\Base\\FieldTypes\\ArrayField");
+    }
 
     /**
      * generate a new UUID v4 number
@@ -215,14 +228,14 @@ abstract class BaseField
     /**
      * change internal reference, if set it can't be changed for safety purposes.
      * @param $ref internal reference
-     * @throws \Exception change exception
+     * @throws Exception change exception
      */
     public function setInternalReference($ref)
     {
         if ($this->internalReference == null) {
             $this->internalReference = $ref;
         } else {
-            throw new \Exception("cannot change internal reference");
+            throw new Exception("cannot change internal reference");
         }
     }
 
@@ -268,10 +281,8 @@ abstract class BaseField
         } elseif ($name == '__items') {
             // return all (no virtual/hidden) items
             $result = array();
-            foreach ($this->internalChildnodes as $key => $value) {
-                if ($value->internalIsVirtual == false) {
-                    $result[$key] = $value;
-                }
+            foreach ($this->iterateItems() as $key => $value) {
+                $result[$key] = $value;
             }
             return $result;
         } elseif ($name == '__reference') {
@@ -287,6 +298,18 @@ abstract class BaseField
         }
     }
 
+    /**
+     * iterate (non virtual) child nodes
+     * @return Generator
+     */
+    public function iterateItems()
+    {
+        foreach ($this->internalChildnodes as $key => $value) {
+            if ($value->internalIsVirtual == false) {
+                yield $key => $value;
+            }
+        }
+    }
 
     /**
      * reflect default setter to internal child nodes
@@ -298,7 +321,7 @@ abstract class BaseField
         if (isset($this->internalChildnodes[$name])) {
             $this->internalChildnodes[$name]->setValue($value);
         } else {
-            throw new \InvalidArgumentException($name." not an attribute of ". $this->internalReference);
+            throw new InvalidArgumentException($name . " not an attribute of " . $this->internalReference);
         }
     }
 
@@ -318,7 +341,7 @@ abstract class BaseField
     public function setValue($value)
     {
         // if first set and not altered by the user, store initial value
-        if ($this->internalFieldLoaded === false && $this->internalInitialValue === false && $value != "") {
+        if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
             $this->internalInitialValue = $value;
         }
         $this->internalValue = $value;
@@ -343,17 +366,13 @@ abstract class BaseField
      */
     public function isFieldChanged()
     {
-        if ($this->internalInitialValue !==  $this->internalValue) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->internalInitialValue !==  $this->internalValue;
     }
 
     /**
      * Set attribute on Field object
-     * @param $key attribute key
-     * @param $value attribute value
+     * @param string $key attribute key
+     * @param string $value attribute value
      */
     public function setAttributeValue($key, $value)
     {
@@ -370,12 +389,46 @@ abstract class BaseField
     }
 
     /**
+     * get attribute by name
+     * @param string $key attribute key
+     * @return null|string value
+     */
+    public function getAttribute($key)
+    {
+        if (isset($this->internalAttributes[$key])) {
+            return $this->internalAttributes[$key];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * get this nodes children
      * @return array child items
      */
     public function getChildren()
     {
         return $this->internalChildnodes;
+    }
+
+    /**
+     * check for existance of child attribute
+     * @return bool if child exists
+     */
+    public function hasChild($name)
+    {
+        return isset($this->internalChildnodes[$name]);
+    }
+
+    /**
+     * retrieve child object
+     * @return null|object
+     */
+    public function getChild($name)
+    {
+        if ($this->hasChild($name)) {
+            return $this->internalChildnodes[$name];
+        }
     }
 
     /**
@@ -402,13 +455,13 @@ abstract class BaseField
             $constraint = $this->internalConstraints[$name];
             if (!empty($constraint['type'])) {
                 try {
-                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\'.$constraint['type']);
+                    $constr_class = new ReflectionClass('OPNsense\\Base\\Constraints\\' . $constraint['type']);
                     if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
                         $constraint['name'] = $name;
                         $constraint['node'] = $this;
                         return $constr_class->newInstance($constraint);
                     }
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException $e) {
                     null; // ignore configuration errors, if the constraint can't be found, skip.
                 }
             }
@@ -469,7 +522,7 @@ abstract class BaseField
     }
 
     /**
-     * returns if this node is virtual, the framework uses this to determine if this node maybe should only be used to
+     * returns if this node is virtual, the framework uses this to determine if this node should only be used to
      * clone children. (using ArrayFields)
      * @return bool is virtual node
      */
@@ -498,7 +551,7 @@ abstract class BaseField
             return array($this);
         }
 
-        foreach ($this->__items as $node) {
+        foreach ($this->iterateItems() as $node) {
             foreach ($node->getFlatNodes() as $childNode) {
                 $result[$childNode->internalReference] = $childNode;
             }
@@ -515,7 +568,7 @@ abstract class BaseField
     public function getNodes()
     {
         $result = array ();
-        foreach ($this->__items as $key => $node) {
+        foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodes();
             } else {
@@ -538,19 +591,19 @@ abstract class BaseField
 
     /**
      * update model with data returning missing repeating tag types.
-     * @param $data named array structure containing new model content
-     * @throws \Exception
+     * @param $data array structure containing new model content
+     * @throws Exception
      */
     public function setNodes($data)
     {
         // update structure with new content
-        foreach ($this->__items as $key => $node) {
+        foreach ($this->iterateItems() as $key => $node) {
             if ($data != null && isset($data[$key])) {
                 if ($node->isContainer()) {
                     if (is_array($data[$key])) {
                         $node->setNodes($data[$key]);
                     } else {
-                        throw new \Exception("Invalid  input type for {$key} (configuration error?)");
+                        throw new Exception("Invalid  input type for {$key} (configuration error?)");
                     }
                 } else {
                     $node->setValue($data[$key]);
@@ -559,7 +612,7 @@ abstract class BaseField
         }
 
         // add new items to array type objects
-        if (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
+        if ($this->isArrayType()) {
             foreach ($data as $dataKey => $dataValue) {
                 if (!isset($this->__items[$dataKey])) {
                     $node = $this->add();
@@ -571,12 +624,12 @@ abstract class BaseField
 
 
     /**
-     * Add this node and it's children to the supplied simplexml node pointer.
-     * @param \SimpleXMLElement $node target node
+     * Add this node and its children to the supplied simplexml node pointer.
+     * @param SimpleXMLElement $node target node
      */
     public function addToXMLNode($node)
     {
-        if ($this->internalReference == "" || get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
+        if ($this->internalReference == "" || $this->isArrayType()) {
             // ignore tags without internal reference (root) and ArrayTypes
             $subnode = $node;
         } else {
@@ -594,7 +647,11 @@ abstract class BaseField
             }
         }
 
-        foreach ($this->__items as $key => $FieldNode) {
+        foreach ($this->iterateItems() as $key => $FieldNode) {
+            if ($FieldNode->getInternalIsVirtual()) {
+                // Virtual fields should never be persisted
+                continue;
+            }
             $FieldNode->addToXMLNode($subnode);
         }
     }
@@ -685,6 +742,6 @@ abstract class BaseField
     public function getObjectType()
     {
         $parts = explode("\\", get_class($this));
-        return $parts[count($parts)-1];
+        return $parts[count($parts) - 1];
     }
 }

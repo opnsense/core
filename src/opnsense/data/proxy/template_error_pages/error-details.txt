@@ -1,0 +1,223 @@
+name: SQUID_X509_V_ERR_INFINITE_VALIDATION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Cert validation infinite loop detected"
+
+name: SQUID_ERR_SSL_HANDSHAKE
+detail: "%ssl_error_descr: %ssl_lib_error"
+descr: "Handshake with SSL server failed"
+
+name: SQUID_X509_V_ERR_DOMAIN_MISMATCH
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Certificate does not match domainname"
+
+name: X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT
+detail: "SSL Certficate error: certificate issuer (CA) not known: %ssl_ca_name"
+descr: "Unable to get issuer certificate"
+
+name: X509_V_ERR_UNABLE_TO_GET_CRL
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Unable to get certificate CRL"
+
+name: X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Unable to decrypt certificate's signature"
+
+name: X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Unable to decrypt CRL's signature"
+
+name: X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY
+detail: "Unable to decode issuer (CA) public key: %ssl_ca_name"
+descr: "Unable to decode issuer public key"
+
+name: X509_V_ERR_CERT_SIGNATURE_FAILURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Certificate signature failure"
+
+name: X509_V_ERR_CRL_SIGNATURE_FAILURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "CRL signature failure"
+
+name: X509_V_ERR_CERT_NOT_YET_VALID
+detail: "SSL Certficate is not valid before: %ssl_notbefore"
+descr: "Certificate is not yet valid"
+
+name: X509_V_ERR_CERT_HAS_EXPIRED
+detail: "SSL Certificate expired on: %ssl_notafter"
+descr: "Certificate has expired"
+
+name: X509_V_ERR_CRL_NOT_YET_VALID
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "CRL is not yet valid"
+
+name: X509_V_ERR_CRL_HAS_EXPIRED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "CRL has expired"
+
+name: X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD
+detail: "SSL Certificate has invalid start date (the 'not before' field): %ssl_subject"
+descr: "Format error in certificate's notBefore field"
+
+name: X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD
+detail: "SSL Certificate has invalid expiration date (the 'not after' field): %ssl_subject"
+descr: "Format error in certificate's notAfter field"
+
+name: X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Format error in CRL's lastUpdate field"
+
+name: X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Format error in CRL's nextUpdate field"
+
+name: X509_V_ERR_OUT_OF_MEM
+detail: "%ssl_error_descr"
+descr: "Out of memory"
+
+name: X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT
+detail: "Self-signed SSL Certificate: %ssl_subject"
+descr: "Self signed certificate"
+
+name: X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN
+detail: "Self-signed SSL Certificate in chain: %ssl_subject"
+descr: "Self signed certificate in certificate chain"
+
+name: X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+detail: "SSL Certficate error: certificate issuer (CA) not known: %ssl_ca_name"
+descr: "Unable to get local issuer certificate"
+
+name: X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Unable to verify the first certificate"
+
+name: X509_V_ERR_CERT_CHAIN_TOO_LONG
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Certificate chain too long"
+
+name: X509_V_ERR_CERT_REVOKED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Certificate revoked"
+
+name: X509_V_ERR_INVALID_CA
+detail: "%ssl_error_descr: %ssl_ca_name"
+descr: "Invalid CA certificate"
+
+name: X509_V_ERR_PATH_LENGTH_EXCEEDED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Path length constraint exceeded"
+
+name: X509_V_ERR_INVALID_PURPOSE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Unsupported certificate purpose"
+
+name: X509_V_ERR_CERT_UNTRUSTED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Certificate not trusted"
+
+name: X509_V_ERR_CERT_REJECTED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Certificate rejected"
+
+name: X509_V_ERR_SUBJECT_ISSUER_MISMATCH
+detail: "%ssl_error_descr: %ssl_ca_name"
+descr: "Subject issuer mismatch"
+
+name: X509_V_ERR_AKID_SKID_MISMATCH
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Authority and subject key identifier mismatch"
+
+name: X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH
+detail: "%ssl_error_descr: %ssl_ca_name"
+descr: "Authority and issuer serial number mismatch"
+
+name: X509_V_ERR_KEYUSAGE_NO_CERTSIGN
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Key usage does not include certificate signing"
+
+name: X509_V_ERR_UNABLE_TO_GET_CRL_ISSUER
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "unable to get CRL issuer certificate"
+
+name: X509_V_ERR_UNHANDLED_CRITICAL_EXTENSION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "unhandled critical extension"
+
+name: X509_V_ERR_KEYUSAGE_NO_CRL_SIGN
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "key usage does not include CRL signing"
+
+name: X509_V_ERR_UNHANDLED_CRITICAL_CRL_EXTENSION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "unhandled critical CRL extension"
+
+name: X509_V_ERR_INVALID_NON_CA
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "invalid non-CA certificate (has CA markings)"
+
+name: X509_V_ERR_PROXY_PATH_LENGTH_EXCEEDED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "proxy path length constraint exceeded"
+
+name: X509_V_ERR_KEYUSAGE_NO_DIGITAL_SIGNATURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "key usage does not include digital signature"
+
+name: X509_V_ERR_PROXY_CERTIFICATES_NOT_ALLOWED
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "proxy certificates not allowed, please set the appropriate flag"
+
+name: X509_V_ERR_INVALID_EXTENSION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "invalid or inconsistent certificate extension"
+
+name: X509_V_ERR_INVALID_POLICY_EXTENSION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "invalid or inconsistent certificate policy extension"
+
+name: X509_V_ERR_NO_EXPLICIT_POLICY
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "no explicit policy"
+
+name: X509_V_ERR_DIFFERENT_CRL_SCOPE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Different CRL scope"
+
+name: X509_V_ERR_UNSUPPORTED_EXTENSION_FEATURE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Unsupported extension feature"
+
+name: X509_V_ERR_UNNESTED_RESOURCE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "RFC 3779 resource not subset of parent's resources"
+
+name: X509_V_ERR_PERMITTED_VIOLATION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "permitted subtree violation"
+
+name: X509_V_ERR_EXCLUDED_VIOLATION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "excluded subtree violation"
+
+name: X509_V_ERR_SUBTREE_MINMAX
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "name constraints minimum and maximum not supported"
+
+name: X509_V_ERR_UNSUPPORTED_CONSTRAINT_TYPE
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "unsupported name constraint type"
+
+name: X509_V_ERR_UNSUPPORTED_CONSTRAINT_SYNTAX
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "unsupported or invalid name constraint syntax"
+
+name: X509_V_ERR_UNSUPPORTED_NAME_SYNTAX
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "unsupported or invalid name syntax"
+
+name: X509_V_ERR_CRL_PATH_VALIDATION_ERROR
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "CRL path validation error"
+
+name: X509_V_ERR_APPLICATION_VERIFICATION
+detail: "%ssl_error_descr: %ssl_subject"
+descr: "Application verification failure"

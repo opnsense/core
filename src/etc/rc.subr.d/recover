@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -60,6 +60,7 @@ dialer:*:68:
 network:*:69:
 audit:*:77:
 www:*:80:
+ntpd:*:123:
 _ypldap:*:160:
 hast:*:845:
 nogroup:*:65533:
@@ -93,6 +94,7 @@ uucp:*:66:66::0:0:UUCP pseudo-user:/var/spool/uucppublic:/usr/local/libexec/uucp
 pop:*:68:6::0:0:Post Office Owner:/nonexistent:/usr/sbin/nologin
 auditdistd:*:78:77::0:0:Auditdistd unprivileged user:/var/empty:/usr/sbin/nologin
 www:*:80:80::0:0:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
+ntpd:*:123:123::0:0:NTP Daemon:/var/db/ntp:/usr/sbin/nologin
 _ypldap:*:160:160::0:0:YP LDAP unprivileged user:/var/empty:/usr/sbin/nologin
 hast:*:845:845::0:0:HAST unprivileged user:/var/empty:/usr/sbin/nologin
 nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
@@ -158,15 +160,15 @@ $etc_ttys = <<<EOF
 # when going to single-user mode.
 console	none				unknown	off secure
 #
-ttyv0	"/usr/libexec/getty Pc"		xterm	on  secure
+ttyv0	"/usr/libexec/getty Pc"		xterm	onifexists secure
 # Virtual terminals
-ttyv1	"/usr/libexec/getty Pc"		xterm	on  secure
-ttyv2	"/usr/libexec/getty Pc"		xterm	on  secure
-ttyv3	"/usr/libexec/getty Pc"		xterm	on  secure
-ttyv4	"/usr/libexec/getty Pc"		xterm	on  secure
-ttyv5	"/usr/libexec/getty Pc"		xterm	on  secure
-ttyv6	"/usr/libexec/getty Pc"		xterm	on  secure
-ttyv7	"/usr/libexec/getty Pc"		xterm	on  secure
+ttyv1	"/usr/libexec/getty Pc"		xterm	onifexists secure
+ttyv2	"/usr/libexec/getty Pc"		xterm	onifexists secure
+ttyv3	"/usr/libexec/getty Pc"		xterm	onifexists secure
+ttyv4	"/usr/libexec/getty Pc"		xterm	onifexists secure
+ttyv5	"/usr/libexec/getty Pc"		xterm	onifexists secure
+ttyv6	"/usr/libexec/getty Pc"		xterm	onifexists secure
+ttyv7	"/usr/libexec/getty Pc"		xterm	onifexists secure
 ttyv8	"/usr/local/bin/xdm -nodaemon"	xterm	off secure
 # Serial terminals
 # The 'dialup' keyword identifies dialin lines to login, fingerd etc.
@@ -188,7 +190,7 @@ magic_quotes_gpc = Off
 max_execution_time = 900
 max_input_time = 1800
 max_input_vars = 5000
-memory_limit = 384M
+memory_limit = 512M
 register_argc_argv = On
 register_long_arrays = Off
 variables_order = "GPCS"
@@ -199,13 +201,15 @@ post_max_size = 200M
 html_errors = Off
 zlib.output_compression = Off
 zlib.output_compression_level = 1
-include_path = ".:/usr/local/etc/inc:/usr/local/www:/usr/local/opnsense/mvc:/usr/local/share/pear:/usr/local/opnsense/contrib"
+include_path = "/usr/local/etc/inc:/usr/local/www:/usr/local/opnsense/mvc:/usr/local/opnsense/contrib:/usr/local/share/pear:/usr/local/share"
 ignore_repeated_errors = on
 error_reporting = E_ALL ^ (E_NOTICE | E_DEPRECATED | E_STRICT)
 display_errors=on
 log_errors=on
 error_log=/tmp/PHP_errors.log
 date.timezone="Etc/UTC"
+session.save_path=/var/lib/php/sessions
+pcre.jit=0
 
 EOF;
 
@@ -276,6 +280,14 @@ function recover_pkg()
 {
 	recover_ports();
 	recover_rebuild();
+
+	echo "===> Restoring critical core files\n";
+
+	foreach (['/usr/local/etc/bogons', '/usr/local/etc/bogonsv6'] as $file) {
+		if (!file_exists($file) || filesize($file) === 0) {
+			@copy("{$file}.sample", $file);
+		}
+	}
 }
 
 $stage = isset($argv[1]) ? $argv[1] : 'both';

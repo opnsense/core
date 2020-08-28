@@ -61,7 +61,7 @@ class DNatRule extends Rule
             'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
             'interface.from' => 'parseInterface, from (,:network)',
             'from' => 'parsePlainCurly,to ',
-            'interface.to' => 'parseInterface, -> ',
+            'interface.to' => 'parseInterface, -> (,)',
             'staticnatport' => 'parseBool,  static-port , port 1024:65535 ',
             'descr' => 'parseComment'
         )
@@ -70,14 +70,16 @@ class DNatRule extends Rule
     /**
      * search interfaces without a gateway other then the one provided
      * @param $interface
-     * @return list of interfaces
+     * @return array list of interfaces
      */
     private function reflectionInterfaces($interface)
     {
         $result = array();
         foreach ($this->interfaceMapping as $intfk => $intf) {
-            if (empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
-              && !in_array($intf['if'], $result) && $intfk != 'loopback') {
+            if (
+                empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
+                && !in_array($intf['if'], $result) && $intfk != 'loopback'
+            ) {
                 $result[] = $intfk;
             }
         }
@@ -88,6 +90,7 @@ class DNatRule extends Rule
      * preprocess internal rule data to detail level of actual ruleset
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
+     * @throws \OPNsense\Base\ModelException
      */
     private function parseNatRules()
     {
@@ -103,7 +106,7 @@ class DNatRule extends Rule
                     $rule['disabled'] = true;
                     $this->log("Invalid address {$rule['external']}");
                 } elseif (strpos($rule['external'], '/') === false && strpos($rule['from'], '/') !== false) {
-                    $rule['external'] .= "/".explode('/', $rule['from'])[1];
+                    $rule['external'] .= "/" . explode('/', $rule['from'])[1];
                 }
             }
             yield $rule;
@@ -114,7 +117,8 @@ class DNatRule extends Rule
             if (!$rule['disabled'] && $rule['natreflection'] == "enable") {
                 foreach ($reflinterf as $interf) {
                     $is_ipv4 = $this->isIpV4($rule);
-                    if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                    if (
+                        ($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
                         (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                     ) {
                         $rule['rule_type'] = "nat_rdr";
@@ -130,7 +134,8 @@ class DNatRule extends Rule
                 foreach ($reflinterf as $interf) {
                     if (!empty($this->interfaceMapping[$interf])) {
                         $is_ipv4 = $this->isIpV4($rule);
-                        if (($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
+                        if (
+                            ($is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv4'])) ||
                             (!$is_ipv4 && !empty($this->interfaceMapping[$interf]['ifconfig']['ipv6']))
                         ) {
                             // we don't seem to know the ip protocol here, make sure our ruleset contains one
@@ -149,12 +154,13 @@ class DNatRule extends Rule
     /**
      * output rule as string
      * @return string ruleset
+     * @throws \OPNsense\Base\ModelException
      */
     public function __toString()
     {
         $ruleTxt = '';
         foreach ($this->parseNatRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule) . "\n";
         }
         return $ruleTxt;
     }

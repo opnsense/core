@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -340,7 +340,7 @@ include("head.inc");
                             <div class="input-group">
                             <!-- updates to "other" option in src -->
                             <input type="text" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
-                            <select name="srcmask" class="selectpicker" data-size="5" id="srcmask"  data-width="auto" for="src" >
+                            <select name="srcmask" class="selectpicker input-group-btn" data-size="5" id="srcmask"  data-width="auto" for="src" >
                             <?php for ($i = 32; $i > 0; $i--): ?>
                               <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                             <?php endfor; ?>
@@ -389,9 +389,9 @@ include("head.inc");
                         <tr>
                           <td>
                             <div class="input-group">
-                            <!-- updates to "other" option in src -->
+                            <!-- updates to "other" option in dst -->
                             <input type="text" for="dst" value="<?= !is_specialnet($pconfig['dst']) ? $pconfig['dst'] : "";?>" aria-label="<?=gettext("Destination address");?>"/>
-                            <select name="dstmask" class="selectpicker" data-size="5" id="dstmask"  data-width="auto" for="dst" >
+                            <select name="dstmask" class="selectpicker input-group-btn" data-size="5" id="dstmask"  data-width="auto" for="dst" >
                             <?php for ($i = 32; $i > 0; $i--): ?>
                               <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                             <?php endfor; ?>
@@ -427,8 +427,8 @@ include("head.inc");
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat_1to1.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_nat_1to1.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

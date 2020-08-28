@@ -2,7 +2,7 @@
 
 /**
  *    Copyright (C) 2017-2018 EURO-LOG AG
- *
+ *    Copyright (c) 2019 Deciso B.V.
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,8 @@
 
 namespace OPNsense\Monit\Api;
 
-use \OPNsense\Base\ApiMutableServiceControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Monit\Monit;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * Class ServiceController
@@ -40,19 +39,10 @@ use \OPNsense\Monit\Monit;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static protected $internalServiceClass = '\OPNsense\Monit\Monit';
-    static protected $internalServiceEnabled = 'general.enabled';
-    static protected $internalServiceTemplate = 'OPNsense/Monit';
-    static protected $internalServiceName = 'monit';
-
-    /**
-     * initialize object properties
-     */
-    public function onConstruct()
-    {
-        // initialize the model via parent to avoid selflock by circular references
-        $this->getModel();
-    }
+    protected static $internalServiceClass = '\OPNsense\Monit\Monit';
+    protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceTemplate = 'OPNsense/Monit';
+    protected static $internalServiceName = 'monit';
 
     /**
      * test monit configuration
@@ -93,21 +83,19 @@ class ServiceController extends ApiMutableServiceControllerBase
             if ($this->getModel()->general->enabled->__toString() == 1) {
                 if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
                     if ($status['status'] != 'running') {
-                        $result['result'] = trim($backend->configdRun('monit start'));
+                        $result['status'] = trim($backend->configdRun('monit start'));
                     } else {
-                        $result['result'] = trim($backend->configdRun('monit reload'));
+                        $result['status'] = trim($backend->configdRun('monit reload'));
                     }
                 } else {
                     return $result;
                 }
             } else {
                 if ($status['status'] == 'running') {
-                    $result['result'] = trim($backend->configdRun('monit stop'));
+                    $result['status'] = trim($backend->configdRun('monit stop'));
                 }
             }
-            if ($this->getModel()->configClean()) {
-                $result['status'] = 'ok';
-            }
+            $this->getModel()->configClean();
             return $result;
         } else {
             return array('status' => 'failed');

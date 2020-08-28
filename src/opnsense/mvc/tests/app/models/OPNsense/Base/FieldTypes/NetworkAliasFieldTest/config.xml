@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<opnsense>
+    <interfaces>
+        <wan>
+            <if>if001</if>
+            <descr>WAN</descr>
+            <enable>1</enable>
+            <ipaddr>dhcp</ipaddr>
+        </wan>
+        <lan>
+            <if>if002</if>
+            <descr>LAN</descr>
+            <enable>1</enable>
+        </lan>
+        <opt1>
+            <if>if003</if>
+            <descr>OPT1</descr>
+            <enable>1</enable>
+        </opt1>
+        <enc0>
+            <internal_dynamic>1</internal_dynamic>
+            <enable>1</enable>
+            <if>enc0</if>
+            <descr>IPsec</descr>
+            <type>none</type>
+            <virtual>1</virtual>
+        </enc0>
+    </interfaces>
+    <OPNsense>
+        <Firewall>
+            <Alias version="1.0.0">
+                <aliases>
+                    <alias uuid="9369c77d-3fca-4b87-9930-17261003e773">
+                        <enabled>1</enabled>
+                        <name>geoip_NL</name>
+                        <type>geoip</type>
+                        <proto>IPv4</proto>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content>NL</content>
+                        <description>geoip_NL</description>
+                    </alias>
+                    <alias uuid="04e91afc-0739-4664-9403-d16f45dc0d57">
+                        <enabled>1</enabled>
+                        <name>network_alias</name>
+                        <type>network</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content>10.0.0.0/24</content>
+                        <description>network_alias</description>
+                    </alias>
+                    <alias uuid="9a8fc804-4c12-43dd-99cb-283ca2d04e58">
+                        <enabled>1</enabled>
+                        <name>external_alias</name>
+                        <type>external</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content/>
+                        <description>external_alias</description>
+                    </alias>
+                    <alias uuid="3303fe76-67a6-45fa-a0e7-d3a1caa88eb1">
+                        <enabled>1</enabled>
+                        <name>host_alias</name>
+                        <type>host</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content>10.0.0.1
+                            10.0.0.2</content>
+                        <description>host_alias</description>
+                    </alias>
+                    <alias uuid="28fbe1c1-cb28-4441-aa33-3d029af05c41">
+                        <enabled>1</enabled>
+                        <name>urltable_alias</name>
+                        <type>urltable</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq>0.041666666666666664</updatefreq>
+                        <content>http://www.spamhaus.org/drop/drop.txt</content>
+                        <description>urltable_alias</description>
+                    </alias>
+                    <alias uuid="4bda1e0d-f91d-4276-b220-dd793621ab17">
+                        <enabled>1</enabled>
+                        <name>port_alias</name>
+                        <type>port</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq>1</updatefreq>
+                        <content/>
+                        <description>port_alias</description>
+                    </alias>
+                </aliases>
+            </Alias>
+        </Firewall>
+    </OPNsense>
+</opnsense>

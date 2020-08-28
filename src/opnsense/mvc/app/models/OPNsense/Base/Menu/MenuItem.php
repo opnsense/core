@@ -300,7 +300,7 @@ class MenuItem
 
     /**
      * append node, reuses existing node if it's already there.
-     * @param $id item id
+     * @param string $id item id
      * @param array $properties named array property list, there should be setters for every option
      * @return MenuItem
      */
@@ -329,7 +329,7 @@ class MenuItem
         }
 
         $orderNum = sprintf("%05d", $newMenuItem->getOrder());
-        $idx = $orderNum."_".$newMenuItem->id;
+        $idx = $orderNum . "_" . $newMenuItem->id;
         if ($isNew) {
             // new item, add to child list
             $this->children[$idx] = $newMenuItem;
@@ -363,7 +363,7 @@ class MenuItem
         $newMenuItem = $this->append($xmlNode->getName(), $properties);
 
         // when there are child nodes, add them to the new menu item
-        if ($xmlNode->count() >0) {
+        if ($xmlNode->count() > 0) {
             foreach ($xmlNode as $key => $node) {
                 $newMenuItem->addXmlNode($node);
             }
@@ -382,7 +382,7 @@ class MenuItem
     }
 
     /**
-     * set url and all it's parents selected
+     * set url and all its parents selected
      * @param string $url target url
      */
     public function toggleSelected($url)

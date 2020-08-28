@@ -1,37 +1,39 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
+
+$all_intf_details = legacy_interfaces_details();
+$a_gateways = (new \OPNsense\Routing\Gateways($all_intf_details))->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -41,13 +43,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
+    if (!empty($config['system']['dnsallowoverride_exclude'])) {
+        $pconfig['dnsallowoverride_exclude'] = explode(",", $config['system']['dnsallowoverride_exclude']);
+    } else {
+        $pconfig['dnsallowoverride_exclude'] = array();
+    }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'];
-    $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'] ;
+    $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
+
+    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         $dnsname = "dns{$dnscounter}";
@@ -73,31 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
-    $ignore_posted_dnsgw = array();
-
-    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++){
-      $dnsname="dns{$dnscounter}";
-      $dnsgwname="dns{$dnscounter}gw";
-      if (!empty($pconfig[$dnsname]) && !is_ipaddr($pconfig[$dnsname])) {
-        $input_errors[] = gettext("A valid IP address must be specified for DNS server $dnscounter.");
-      } elseif(!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] <> "none") {
-            // A real gateway has been selected.
-            if (is_ipaddr($pconfig[$dnsname])) {
-                if ((is_ipaddrv4($pconfig[$dnsname])) && (validate_address_family($pconfig[$dnsname], $pconfig[$dnsgwname]) === false )) {
-                    $input_errors[] = gettext("You can not specify IPv6 gateway '{$pconfig[$dnsgwname]}' for IPv4 DNS server '{$pconfig[$dnsname]}'");
-                }
-                if ((is_ipaddrv6($pconfig[$dnsname])) && (validate_address_family($pconfig[$dnsname], $pconfig[$dnsgwname]) === false )) {
-                    $input_errors[] = gettext("You can not specify IPv4 gateway '{$pconfig[$dnsgwname]}' for IPv6 DNS server '{$pconfig[$dnsname]}'");
-                }
-            } else {
-                // The user selected a gateway but did not provide a DNS address. Be nice and set the gateway back to "none".
-                $ignore_posted_dnsgw[$dnsgwname] = true;
-            }
-      }
-    }
     /* collect direct attached networks and static routes */
     $direct_networks_list = array();
-    foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
+    foreach ($all_intf_details as $ifname => $ifcnf) {
         foreach ($ifcnf['ipv4'] as $addr) {
             $direct_networks_list[] = gen_subnet($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
         }
@@ -110,14 +97,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
-        $dnsitem = "dns{$dnscounter}";
-        $dnsgwitem = "dns{$dnscounter}gw";
-        if (!empty($pconfig[$dnsgwitem])) {
-            if (interface_has_gateway($pconfig[$dnsgwitem])) {
-                foreach ($direct_networks_list as $direct_network) {
-                    if (ip_in_subnet($_POST[$dnsitem], $direct_network)) {
-                        $input_errors[] = sprintf(gettext("You can not assign a gateway to DNS '%s' server which is on a directly connected network."),$pconfig[$dnsitem]);
-                    }
+        $dnsname = "dns{$dnscounter}";
+        $dnsgwname = "dns{$dnscounter}gw";
+
+        if (!empty($pconfig[$dnsname]) && !is_ipaddr($pconfig[$dnsname])) {
+            $input_errors[] = sprintf(gettext('A valid IP address must be specified for DNS server "%s".'), $dnscounter);
+            continue;
+        }
+
+        if (!empty($pconfig[$dnsgwname]) && $pconfig[$dnsgwname] != 'none') {
+            if (is_ipaddr($pconfig[$dnsname])) {
+                if (is_ipaddrv4($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet') {
+                    $input_errors[] = gettext("You can not specify IPv6 gateway '{$pconfig[$dnsgwname]}' for IPv4 DNS server '{$pconfig[$dnsname]}'");
+                    continue;
+                }
+                if (is_ipaddrv6($pconfig[$dnsname]) && $a_gateways[$pconfig[$dnsgwname]]['ipprotocol'] != 'inet6') {
+                    $input_errors[] = gettext("You can not specify IPv4 gateway '{$pconfig[$dnsgwname]}' for IPv6 DNS server '{$pconfig[$dnsname]}'");
+                    continue;
+                }
+            } else {
+                $input_errors[] = sprintf(gettext('A valid IP address must be specified for DNS server "%s".'), $dnscounter);
+                continue;
+            }
+
+            $af = is_ipaddrv6($pconfig[$dnsname]) ? 'inet6' : 'inet';
+
+            foreach ($direct_networks_list as $direct_network) {
+                if ($af == 'inet' && !is_subnetv4($direct_network)) {
+                    continue;
+                } elseif ($af == 'inet6' && !is_subnetv6($direct_network)) {
+                    continue;
+                }
+                if (ip_in_subnet($pconfig[$dnsname], $direct_network)) {
+                      $input_errors[] = sprintf(gettext('You can not assign a gateway to DNS server "%s" which is on a directly connected network.'), $pconfig[$dnsname]);
+                      break;
                 }
             }
         }
@@ -136,12 +149,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['prefer_ipv4']);
         }
 
-        $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']);
+        if (!empty($pconfig['dnsallowoverride'])) {
+            $config['system']['dnsallowoverride'] = true;
+            $config['system']['dnsallowoverride_exclude'] = empty($pconfig['dnsallowoverride_exclude']) ? "" : implode(",", $pconfig['dnsallowoverride_exclude']);
+        } elseif (isset($config['system']['dnsallowoverride'])) {
+            unset($config['system']['dnsallowoverride']);
+            if (isset($config['system']['dnsallowoverride_exclude'])) {
+                unset($config['system']['dnsallowoverride_exclude']);
+            }
+        }
 
-        if($pconfig['dnslocalhost'] == "yes") {
-          $config['system']['dnslocalhost'] = true;
+        if ($pconfig['dnslocalhost'] == 'yes') {
+            $config['system']['dnslocalhost'] = true;
         } elseif (isset($config['system']['dnslocalhost'])) {
             unset($config['system']['dnslocalhost']);
+        }
+
+        if (!empty($pconfig['gw_switch_default'])) {
+            $config['system']['gw_switch_default'] = true;
+        } elseif (isset($config['system']['gw_switch_default'])) {
+            unset($config['system']['gw_switch_default']);
         }
 
         $olddnsservers = $config['system']['dnsserver'];
@@ -151,41 +178,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
             $dnsname="dns{$dnscounter}";
             $dnsgwname="dns{$dnscounter}gw";
-            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : "none" ;
+            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
+            $thisdnsgwname = $pconfig[$dnsgwname];
 
             if (!empty($pconfig[$dnsname])) {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
             }
-
-            if ($ignore_posted_dnsgw[$dnsgwname]) {
-                $thisdnsgwname = "none";
-            } else {
-                $thisdnsgwname = $pconfig[$dnsgwname];
-            }
-
-            // "Blank" out the settings for this index, then we set them below using the "outdnscounter" index.
             $config['system'][$dnsgwname] = "none";
-            $pconfig[$dnsgwname] = "none";
-            $pconfig[$dnsname] = "";
-
-            if (!empty($_POST[$dnsname])) {
-                // Only the non-blank DNS servers were put into the config above.
-                // So we similarly only add the corresponding gateways sequentially to the config (and to pconfig), as we find non-blank DNS servers.
-                // This keeps the DNS server IP and corresponding gateway "lined up" when the user blanks out a DNS server IP in the middle of the list.
+            if (!empty($pconfig[$dnsgwname])) {
+                // The indexes used to save the item don't have to correspond to the ones in the config, but since
+                // we always redirect after save, the configuration content is read after a successfull change.
                 $outdnscounter++;
-                $outdnsname="dns{$outdnscounter}";
                 $outdnsgwname="dns{$outdnscounter}gw";
-                $pconfig[$outdnsname] = $_POST[$dnsname];
-                if(!empty($_POST[$dnsgwname])) {
-                    $config['system'][$outdnsgwname] = $thisdnsgwname;
-                    $pconfig[$outdnsgwname] = $thisdnsgwname;
-                } else {
-                    // Note: when no DNS GW name is chosen, the entry is set to "none", so actually this case never happens.
-                    unset($config['system'][$outdnsgwname]);
-                    $pconfig[$outdnsgwname] = "";
-                }
+                $config['system'][$outdnsgwname] = $thisdnsgwname;
             }
-            if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $_POST[$dnsname])) {
+            if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $pconfig[$dnsname])) {
                 // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
                 // Remove the route. Later calls will add the correct new route if needed.
                 if (is_ipaddrv4($olddnsservers[$dnscounter-1])) {
@@ -203,20 +210,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* time zone change first */
         system_timezone_configure();
 
-        filter_pflog_start();
         prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
         system_resolvconf_generate();
         plugins_configure('dns');
-        services_dhcpd_configure();
+        plugins_configure('dhcp');
         filter_configure();
 
-        header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message(true))));
+        header(url_safe('Location: /system_general.php?savemsg=%s', array('The changes have been applied successfully.')));
         exit;
     }
 }
 
+legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
@@ -225,6 +232,22 @@ include("head.inc");
 <body>
     <?php include("fbegin.inc"); ?>
 
+<script>
+//<![CDATA[
+$( document ).ready(function() {
+    // unhide advanced
+    $("#dnsallowoverride").change(function(event){
+        event.preventDefault();
+        if ($("#dnsallowoverride").is(':checked')) {
+            $("#dnsallowoverride_exclude").show();
+        } else {
+            $("#dnsallowoverride_exclude").hide();
+        }
+    });
+    $("#dnsallowoverride").change();
+});
+//]]>
+</script>
 <!-- row -->
 <section class="page-content-main">
   <div class="container-fluid">
@@ -254,8 +277,6 @@ include("head.inc");
                 <input name="hostname" type="text" size="40" value="<?=$pconfig['hostname'];?>" />
                 <div class="hidden" data-for="help_for_hostname">
                   <?=gettext("Name of the firewall host, without domain part"); ?>
-                  <br />
-                  <?=gettext("e.g."); ?> <em><?=gettext("firewall");?></em>
                 </div>
               </td>
             </tr>
@@ -362,22 +383,13 @@ include("head.inc");
                       </td>
                       <td>
                         <select name='<?="dns{$dnscounter}gw";?>' class='selectpicker' data-size="10" data-width="200px">
-                          <option value="none" <?=$pconfig[$dnsgw] == "none" ? "selected=\"selected\"" :"";?>>
+                          <option value="none" <?= $pconfig[$dnsgw] == 'none' ? 'selected="selected"' : '' ?>>
                             <?=gettext("none");?>
                           </option>
 <?php
-                          foreach(return_gateways_array() as $gwname => $gwitem):
-                            if ($pconfig[$dnsgw] != "none") {
-                              if (is_ipaddrv4(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv6($gwitem['gateway'])) {
-                                continue;
-                              }
-                              if (is_ipaddrv6(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv4($gwitem['gateway'])) {
-                                continue;
-                              }
-                            }?>
-
+                          foreach($a_gateways as $gwname => $gwitem):?>
                             <option value="<?=$gwname;?>" <?=$pconfig[$dnsgw] == $gwname ? 'selected="selected"' : '' ?>>
-                              <?=$gwname;?> - <?=$gwitem['friendlyiface'];?> - <?=$gwitem['gateway'];?>
+                              <?=$gwname;?> - <?=$gwitem['interface'];?> - <?=$gwitem['gateway'];?>
                             </option>
 <?php
                              endforeach;?>
@@ -391,7 +403,7 @@ include("head.inc");
                 </table>
                 <div class="hidden" data-for="help_for_dnsservers">
                   <?=gettext("Enter IP addresses to be used by the system for DNS resolution. " .
-                  "These are also used for the DHCP service, DNS forwarder and for PPTP VPN clients."); ?>
+                  "These are also used for the DHCP service, DNS services and for PPTP VPN clients."); ?>
                   <br />
                   <br />
                   <?=gettext("In addition, optionally select the gateway for each DNS server. " .
@@ -402,28 +414,53 @@ include("head.inc");
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
+                <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
                 <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
                   "assigned by a DHCP/PPP server on WAN will be used " .
-                  "for its own purposes (including the DNS forwarder). " .
-                  "However, they will not be assigned to DHCP and PPTP " .
-                  "VPN clients.") ?>
+                  "for their own purposes (including the DNS services). " .
+                  "However, they will not be assigned to DHCP clients. " .
+                  "Since this option concerns all interfaces retrieving dynamic dns entries, you can exclude " .
+                  "items from the list below.") ?>
+                </div>
+                <div id="dnsallowoverride_exclude" style="display:none">
+                  <hr/>
+                  <strong><?=gettext("Exclude interfaces");?></strong>
+                  <br/>
+                  <select name="dnsallowoverride_exclude[]" class="selectpicker" data-style="btn-default" data-live-search="true"  multiple="multiple">
+<?php
+                  foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+                    <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['dnsallowoverride_exclude']) ? "selected='selected'" : "";?>>
+                      <?= $ifcfg['descr'] ?>
+                    </option>
+<?php
+                  endforeach;?>
+                  </select>
                 </div>
               </td>
             </tr>
-            </tr>
+            <tr>
               <td></td>
               <td>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />
                 <?= gettext('Do not use the local DNS service as a nameserver for this system') ?>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
-                  <?=gettext("By default localhost (127.0.0.1) will be used as the first nameserver when e.g. Dnsmasq or Unbund is enabled, so system can use the local DNS service to perform lookups. ".
+                  <?=gettext("By default localhost (127.0.0.1) will be used as the first nameserver when e.g. Dnsmasq or Unbound is enabled, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
                 </div>
               </td>
             </tr>
+              <tr>
+                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
+                <td>
+                  <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
+                  <?=gettext("Allow default gateway switching"); ?>
+                  <div class="hidden" data-for="help_for_gw_switch_default">
+                    <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
+                  </div>
+                </td>
+              </tr>
           </table>
         </div>
         <div class="content-box tab-content">
@@ -431,7 +468,7 @@ include("head.inc");
             <tr>
               <td style="width:22%"></td>
               <td>
-                <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
               </td>
             </tr>
           </table>

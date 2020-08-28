@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -61,12 +61,7 @@ if parameters['ip_address'] is not None and parameters['zoneid'] is not None:
                                ip_address=parameters['ip_address'],
                                mac_address=mac_address
                                )
-    # check if address is not already registered before adding it to the ipfw table
-    if not cpIPFW.ip_or_net_in_table(table_number=parameters['zoneid'], address=parameters['ip_address']):
-        cpIPFW.add_to_table(table_number=parameters['zoneid'], address=parameters['ip_address'])
-
-    # add accounting for this ip address
-    cpIPFW.add_accounting(parameters['ip_address'])
+    cpIPFW.add_to_table(table_number=parameters['zoneid'], address=parameters['ip_address'])
     response['clientState'] = 'AUTHORIZED'
 else:
     response = {'clientState': 'UNKNOWN'}
@@ -75,6 +70,6 @@ else:
 # output result as plain text or json
 if parameters['output_type'] != 'json':
     for item in response:
-        print '%20s %s' % (item, response[item])
+        print ('%20s %s' % (item, response[item]))
 else:
     print(ujson.dumps(response))

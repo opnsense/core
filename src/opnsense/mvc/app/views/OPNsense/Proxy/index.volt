@@ -30,6 +30,15 @@
 
         var data_get_map = {'frm_proxy':"/api/proxy/settings/get"};
 
+        // show/hide error pages tab when applicable
+        $("#proxy\\.general\\.error_pages").change(function(e){
+            if ($(this).val() == 'custom') {
+                $("#subtab_error_pages").show();
+            } else {
+                $("#subtab_error_pages").hide();
+            }
+        });
+
         // load initial data
         mapDataToFormUI(data_get_map).done(function(){
             formatTokenizersUI();
@@ -58,17 +67,6 @@
                     'add':'/api/proxy/settings/addPACMatch/',
                     'del':'/api/proxy/settings/delPACMatch/',
                     'options': {
-                        converters: {
-                            notprefixable: {
-                                to: function (value) {
-                                    if (value.not) {
-                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
-                                    } else {
-                                        return value.val;
-                                    }
-                                }
-                            }
-                        },
                         responseHandler: function (response) {
                             // concatenate fields for not.
                             if ('rows' in response) {
@@ -100,24 +98,11 @@
                 }
         );
 
-        // when  closing DialogEditBlacklist, point the user to the download buttons
-        $("#DialogEditBlacklist").on("show.bs.modal", function () {
-            // wait some time before linking the save button, missing handle
-            setTimeout(function(){
-                $("#btn_DialogEditBlacklist_save").click(function(){
-                    $("#remoteACLchangeMessage").slideDown(1000, function(){
-                        setTimeout(function(){
-                            $("#remoteACLchangeMessage").slideUp(2000);
-                        }, 2000);
-                    });
-                });
-            }, 500);
-        });
         function update_pac_match_view(event) {
             function show_line(the_id) {
                 $('tr[for=' + the_id + ']').show();
             }
-            value = $("#pac\\.match\\.match_type").val();
+            let value = $("#pac\\.match\\.match_type").val();
             if (!value) {
                 // retry later
                 setTimeout(update_pac_match_view, 100);
@@ -156,18 +141,9 @@
                 case "is_resolvable":
                     show_line("pac\\.match\\.hostname");
                     break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
-                    break;
                 case "dns_domain_levels":
                     show_line("pac\\.match\\.domain_level_from");
                     show_line("pac\\.match\\.domain_level_to");
-                    break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
-                    break;
-                case "dns_domain_is":
-                    show_line("pac\\.match\\.hostname");
                     break;
                 case "weekday_range":
                     show_line("pac\\.match\\.weekday_from");
@@ -190,78 +166,33 @@
 
         $('.reload-pac-btn').click(function () {
             $('.reload-pac-btn .fa-refresh').addClass('fa-spin');
-            ajaxCall(url="/api/proxy/service/refreshTemplate", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/service/refreshTemplate", {}, function(data,status) {
                 $('.reload-pac-btn .fa-refresh').removeClass('fa-spin');
             });
         });
 
         /**
-         *
          * Reconfigure proxy - activate changes
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring proxy') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#reconfigureAct").SimpleActionButton();
 
         /**
-         *
          * Download ACLs and reconfigure poxy - activate changes
          */
-        $("#fetchandreconfigureAct").click(function(){
-            $("#fetchandreconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/service/fetchacls", sendData={}, callback=function(data,status) {
-                // when done, disable progress animation.
-                $("#fetchandreconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error fetching remote acls') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#fetchandreconfigureAct").SimpleActionButton();
 
         /**
          *
          * Download ACLs, no reconfigure
          */
-        $("#downloadAct").click(function(){
-            $("#downloadAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/service/downloadacls", sendData={}, callback=function(data,status) {
-                // when done, disable progress animation.
-                $("#downloadAct_progress").removeClass("fa fa-spinner fa-pulse");
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error fetching remote acls') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#downloadAct").SimpleActionButton();
 
         /**
          * setup cron item
          */
         $("#ScheduleAct").click(function() {
             $("#scheduleAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/proxy/settings/fetchRBCron", sendData={}, callback=function(data,status) {
+            ajaxCall("/api/proxy/settings/fetchRBCron", {}, function(data,status) {
                 $("#scheduleAct_progress").removeClass("fa fa-spinner fa-pulse");
                 if (data.uuid !=undefined) {
                     // redirect to cron page
@@ -276,12 +207,12 @@
                 var frm_id = $(this).closest("form").attr("id");
                 var frm_title = $(this).closest("form").attr("data-title");
                 // save data for General TAB
-                saveFormToEndpoint(url="/api/proxy/settings/set",formid=frm_id,callback_ok=function(){
+                saveFormToEndpoint("/api/proxy/settings/set", frm_id, function(){
                     // on correct save, perform reconfigure. set progress animation when reloading
                     $("#"+frm_id+"_progress").addClass("fa fa-spinner fa-pulse");
 
                     //
-                    ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
+                    ajaxCall("/api/proxy/service/reconfigure", {}, function(data,status){
                         // when done, disable progress animation.
                         $("#"+frm_id+"_progress").removeClass("fa fa-spinner fa-pulse");
 
@@ -300,6 +231,96 @@
                 });
             });
         });
+
+        $("#resetAct").click(function() {
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: '{{ lang._('Reset') }} ',
+                message: '{{ lang._('Are you sure you want to flush all generated content and restart the proxy?') }}',
+                buttons: [{
+                    label: '{{ lang._('Yes') }}',
+                    cssClass: 'btn-primary',
+                    action: function(dlg){
+                        dlg.close();
+                        $("#resetAct_progress").addClass("fa fa-spinner fa-pulse");
+                        ajaxCall("/api/proxy/service/reset", {}, function(data,status) {
+                            $("#resetAct_progress").removeClass("fa fa-spinner fa-pulse");
+                            updateServiceControlUI('proxy');
+                        });
+                    }
+                }, {
+                    label: '{{ lang._('No') }}',
+                    action: function(dlg){
+                        dlg.close();
+                    }
+                }]
+            });
+
+        });
+
+        /**
+         * Error page template actions
+         */
+         $("#error_pages_content_filename").click(function(evt) {
+             $("#error_pages_content_progress").addClass("fa fa-spinner fa-pulse");
+             $("#error_pages_content_icon").hide();
+             this.value = null;
+         });
+         $("#error_pages_content_filename").change(function(evt) {
+             if (evt.target.files[0]) {
+                 var reader = new FileReader();
+                 reader.onload = function(readerEvt) {
+                     $("#error_pages_content_name").val(evt.target.files[0].name);
+                     $("#error_pages_content").val(btoa(readerEvt.target.result));
+                     $("#error_pages_content_progress").removeClass("fa fa-spinner fa-pulse");
+                     $("#error_pages_content_icon").show();
+                 };
+                 reader.readAsBinaryString(evt.target.files[0]);
+             } else {
+                 $("#error_pages_content_progress").removeClass("fa fa-spinner fa-pulse");
+                 $("#error_pages_content_icon").show();
+             }
+         });
+         $("#error_pages_download").click(function(){
+            window.open('/api/proxy/template/get', 'downloadTemplate');
+         });
+         $("#error_pages_upload").click(function(){
+             if ($("#error_pages_content").val().length > 2) {
+                ajaxCall("/api/proxy/template/set", {'content': $("#error_pages_content").val()}, function(data,status) {
+                    if (data['error'] !== undefined) {
+                        // error saving
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: "{{ lang._('Error uploading template') }}",
+                            message: data['error'],
+                            draggable: true
+                        });
+                    } else {
+                        $("#error_pages_content_name").val("{{ lang._('saved') }}");
+                    }
+                });
+             }
+         });
+         $("#error_pages_reset").click(function(){
+              BootstrapDialog.show({
+                title: "{{ lang._('Reset custom template') }}",
+                message: "{{ lang._('Are you sure you want to flush the configured template (back to defaults)?') }}",
+                type: BootstrapDialog.TYPE_INFO,
+                draggable: true,
+                buttons: [{
+                    label: '<i class="fa fa-check" aria-hidden="true"></i>',
+                    action: function(sender){
+                        ajaxCall("/api/proxy/template/reset", {});
+                        sender.close();
+                    }
+                },{
+                   label:  '<i class="fa fa-close" aria-hidden="true"></i>',
+                   action: function(sender){
+                      sender.close();
+                   }
+                 }]
+              });
+         });
 
         // update history on tab state and implement navigation
         if(window.location.hash != "") {
@@ -334,6 +355,8 @@
         </ul>
     </li>
     <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
+    <li><a data-toggle="tab" href="#support"><b>{{ lang._('Support') }}</b></a></li>
+    <li><a data-toggle="tab" id="subtab_error_pages" style="display:none" href="#error_pages"><b>{{ lang._('Error Pages') }}</b></a></li>
 </ul>
 
 <div class="content-box tab-content">
@@ -442,7 +465,7 @@
                     <div id="remoteACLchangeMessage" class="alert alert-info" style="display: none" role="alert">
                         {{ lang._('After changing categories, please remember to download the ACL again to apply your new settings') }}
                     </div>
-                    <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist">
+                    <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist" data-editAlert="remoteACLchangeMessage">
                         <thead>
                         <tr>
                             <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
@@ -465,15 +488,112 @@
                     </table>
                     <div class="col-md-12">
                         <hr/>
-                        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="fetchandreconfigureAct" type="button"><b>{{ lang._('Download ACLs & Apply') }}</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="downloadAct" type="button"><b>{{ lang._('Download ACLs') }}</b><i id="downloadAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="ScheduleAct" type="button"><b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="reconfigureAct"
+                                data-endpoint='/api/proxy/service/reconfigure'
+                                data-label="{{ lang._('Apply') }}"
+                                data-error-title="{{ lang._('Error reconfiguring proxy') }}"
+                                type="button"
+                        ></button>
+                        <button class="btn btn-primary" id="fetchandreconfigureAct"
+                                data-endpoint='/api/proxy/service/fetchacls'
+                                data-label="{{ lang._('Download ACLs & Apply') }}"
+                                data-error-title="{{ lang._('Error fetching remote acls') }}"
+                                type="button"
+                        ></button>
+                        <button class="btn btn-primary" id="downloadAct"
+                                data-endpoint='/api/proxy/service/downloadacls'
+                                data-label="{{ lang._('Download ACLs') }}"
+                                data-error-title="{{ lang._('Error fetching remote acls') }}"
+                                type="button"
+                        ></button>
+                        <button class="btn btn-primary" id="ScheduleAct" type="button">
+                            <b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i>
+                        </button>
                     </div>
                 </td>
             </tr>
             </tbody>
         </table>
+    </div>
+    <div id="support" class="tab-pane fade">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>{{ lang._('Action')}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                  <td>
+                      <button class="btn btn-primary" id="resetAct" type="button">{{ lang._('Reset') }}<i id="resetAct_progress" class=""></button>
+                  </td>
+                  <td>
+                      {{ lang._('Reset all generated content (cached files and certificates included) and restart the proxy.') }}
+                  </td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="error_pages" class="tab-pane fade">
+      <form id="frm_proxy-error_pages" data-title="{{ lang._('Error pages')}}">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>{{ lang._('Action')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>
+                    <button class="btn btn-default" style="padding-bottom: 7px;" id="error_pages_download" title="{{ lang._('Download')}}" data-toggle="tooltip">
+                      <i class="fa fa-fw fa-download"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                    <td>
+                      <textarea id="error_pages_content" class="hidden form-control"></textarea>
+                      <div class="input-group">
+                          <label class="input-group-btn">
+                              <label class="btn btn-default" style="padding-bottom: 7px;">
+                                  <i class="fa fa-fw fa-folder-o" id="error_pages_content_icon"></i>
+                                  <i id="error_pages_content_progress"></i>
+                                  <input type="file" id="error_pages_content_filename" style="display: none;">
+                              </label>
+                          </label>
+                          <input type="text" class="form-control" readonly="" for="error_pages_content" id="error_pages_content_name">
+                          <button class="btn btn-default" id="error_pages_upload" style="padding-bottom: 7px;" title="{{ lang._('Upload selected file')}}" data-toggle="tooltip">
+                            <i class="fa fa-fw fa-upload"></i>
+                          </button>
+                      </div>
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                    <button class="btn btn-default" style="padding-bottom: 7px;" id="error_pages_reset" title="{{ lang._('Reset')}}" data-toggle="tooltip">
+                      <i class="fa fa-fw fa-remove"></i>
+                    </button>
+                  </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        {{ lang._('Download and upload custom error pages, if no (new) files are provided our defaults are used.')}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="btn btn-primary" id="save_proxy-error_pages" type="button">
+                          <b>{{ lang._('Apply')}}</b>
+                          <i id="frm_proxy-error_pages_progress" class=""></i>
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+      </form>
     </div>
 </div>
 

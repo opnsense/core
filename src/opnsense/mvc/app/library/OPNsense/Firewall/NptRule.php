@@ -56,14 +56,16 @@ class NptRule extends Rule
     /**
      * search interfaces without a gateway other then the one provided
      * @param $interface
-     * @return list of interfaces
+     * @return array list of interfaces
      */
     private function reflectionInterfaces($interface)
     {
         $result = array();
         foreach ($this->interfaceMapping as $intfk => $intf) {
-            if (empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
-              && !in_array($intf['if'], $result) && $intfk != 'loopback') {
+            if (
+                empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
+                && !in_array($intf['if'], $result) && $intfk != 'loopback'
+            ) {
                 $result[] = $intfk;
             }
         }
@@ -93,7 +95,7 @@ class NptRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseNptRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule) . "\n";
         }
         return $ruleTxt;
     }

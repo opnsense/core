@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2020 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -26,8 +26,70 @@
 LOCALBASE?=	/usr/local
 PAGER?=		less
 
-OPENSSL?=	${LOCALBASE}/bin/openssl
-
 PKG!=		which pkg || echo true
 GIT!=		which git || echo true
-ARCH!=		uname -p
+
+GITVERSION=	${.CURDIR}/Scripts/version.sh
+
+_CORE_ARCH!=	uname -p
+CORE_ARCH?=	${_CORE_ARCH}
+
+OPENSSL=	${LOCALBASE}/bin/openssl
+
+.if ! defined(CORE_FLAVOUR)
+.if exists(${OPENSSL})
+_CORE_FLAVOUR!=	${OPENSSL} version
+CORE_FLAVOUR?=	${_CORE_FLAVOUR:[1]}
+.else
+.warning "Detected 'Base' flavour is not currently supported"
+CORE_FLAVOUR?=	Base
+.endif
+.endif
+
+PHPBIN=		${LOCALBASE}/bin/php
+
+.if exists(${PHPBIN})
+_CORE_PHP!=	${PHPBIN} -v
+CORE_PHP?=	${_CORE_PHP:[2]:S/./ /g:[1..2]:tW:S/ //}
+.endif
+
+VERSIONBIN=	${LOCALBASE}/sbin/opnsense-version
+
+.if exists(${VERSIONBIN})
+_CORE_ABI!=	${VERSIONBIN} -a
+CORE_ABI?=	${_CORE_ABI}
+.endif
+
+PYTHONLINK=	${LOCALBASE}/bin/python3
+
+.if exists(${PYTHONLINK})
+_CORE_PYTHON!=	${PYTHONLINK} -V
+CORE_PYTHON?=	${_CORE_PYTHON:[2]:S/./ /g:[1..2]:tW:S/ //}
+.endif
+
+REPLACEMENTS=	CORE_ABI \
+		CORE_ARCH \
+		CORE_COMMIT \
+		CORE_COPYRIGHT_HOLDER \
+		CORE_COPYRIGHT_WWW \
+		CORE_COPYRIGHT_YEARS \
+		CORE_FLAVOUR \
+		CORE_HASH \
+		CORE_MAINTAINER \
+		CORE_NAME \
+		CORE_PACKAGESITE \
+		CORE_PKGVERSION \
+		CORE_PRODUCT \
+		CORE_PYTHON_DOT \
+		CORE_REPOSITORY \
+		CORE_SYSLOGNG \
+		CORE_VERSION \
+		CORE_WWW
+
+MAKE_REPLACE=	# empty
+SED_REPLACE=	# empty
+
+.for REPLACEMENT in ${REPLACEMENTS}
+MAKE_REPLACE+=	${REPLACEMENT}="${${REPLACEMENT}}"
+SED_REPLACE+=	-e "s=%%${REPLACEMENT}%%=${${REPLACEMENT}}=g"
+.endfor

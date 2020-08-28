@@ -12,6 +12,7 @@ use OPNsense\Core\Routing;
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
+
 $di = new FactoryDefault();
 $di->set('config', $config);
 
@@ -53,6 +54,7 @@ $di->set('view', function () use ($config) {
             // register additional volt template functions
             $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
             $volt->getCompiler()->addFunction('file_exists', 'view_file_exists');
+            $volt->getCompiler()->addFunction('cache_safe', 'view_cache_safe');
 
             return $volt;
         },

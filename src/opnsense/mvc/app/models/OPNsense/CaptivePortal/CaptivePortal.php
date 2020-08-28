@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\CaptivePortal;
 
 use OPNsense\Base\BaseModel;
@@ -38,13 +40,13 @@ class CaptivePortal extends BaseModel
 {
     /**
      * retrieve zone by number
-     * @param $zoneid zone number
+     * @param string $zoneid zone number
      * @return null|BaseField zone details
      */
-    public function getByZoneID($zoneid)
+    public function getByZoneID(string $zoneid)
     {
-        foreach ($this->zones->zone->__items as $zone) {
-            if ((string)$zoneid === (string)$zone->zoneid) {
+        foreach ($this->zones->zone->iterateItems() as $zone) {
+            if ($zoneid === (string)$zone->zoneid) {
                 return $zone;
             }
         }
@@ -57,7 +59,7 @@ class CaptivePortal extends BaseModel
      */
     public function isEnabled()
     {
-        foreach ($this->zones->zone->__items as $zone) {
+        foreach ($this->zones->zone->iterateItems() as $zone) {
             if ((string)$zone->enabled == "1") {
                 return true;
             }
@@ -72,7 +74,7 @@ class CaptivePortal extends BaseModel
      */
     public function getTemplateByName($name)
     {
-        foreach ($this->templates->template->__items as $template) {
+        foreach ($this->templates->template->iterateItems() as $template) {
             if ((string)$template->name === $name) {
                 return $template;
             }

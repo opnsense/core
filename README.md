@@ -2,7 +2,7 @@ OPNsense GUI and system management
 ==================================
 
 The OPNsense project invites developers to start contributing to
-the code base.  For your own purpose or even better to join us in
+the code base.  For your own purposes or – even better – to join us in
 creating the best open source firewall available.
 
 The build process has been designed to make it easy for anyone to
@@ -60,8 +60,8 @@ Several OPTIONS exist to customise the package, e.g.:
 
 * CORE_DEPENDS: a list of required dependencies for the package
 * CORE_DEPENDS_ARCH: a list of special <ARCH>-required packages
-* CORE_ORIGIN: sets a FreeBSD compatible package/ports origin
-* FLAVOUR: can be set to "OpenSSL" (default) or "LibreSSL"
+* CORE_ORIGIN: sets a HardenedBSD compatible package/ports origin
+* CORE_FLAVOUR: can be set to "OpenSSL" or "LibreSSL"
 * CORE_COMMENT: a short description of the package
 * CORE_MAINTAINER: email of the package maintainer
 * CORE_WWW: web url of the package
@@ -70,6 +70,9 @@ Several OPTIONS exist to customise the package, e.g.:
 Options are passed in the following form:
 
     # make package CORE_NAME=my_new_name
+
+In general, options are either set to sane defaults or automatically
+detected at runtime.
 
 make update
 -----------
@@ -97,9 +100,10 @@ before issuing a pull request on GitHub.
 make style
 ----------
 
-Run the CodeSniffer PSR2 style checks on the MVC code base.
+Run the PSR2 and PEP8 style checks on MVC PHP code and Python,
+respectively.
 
 make sweep
 ----------
 
-Run Linux Kernel cleanfile witespace sanitiser on all files.
+Run Linux Kernel cleanfile whitespace sanitiser on all files.

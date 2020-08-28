@@ -1,35 +1,35 @@
 <?php
 
-/**
- *    Copyright (C) 2017 Deciso B.V.
- *    All rights reserved.
+/*
+ * Copyright (C) 2017 Deciso B.V.
+ * All rights reserved.
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall;
 
-use \OPNsense\Core\Config;
-use \OPNsense\Firewall\Alias;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Alias;
 
 /**
  * Class Util, common static firewall support functions
@@ -41,6 +41,11 @@ class Util
      * @var null|Alias reference to alias object
      */
     private static $aliasObject = null;
+
+    /**
+     * @var null|array cached alias descriptions
+     */
+    private static $aliasDescriptions = array();
 
     /**
      * is provided address an ip address.
@@ -75,6 +80,16 @@ class Util
     }
 
     /**
+     * use provided alias object instead of creating one. When modifying multiple aliases referencing each other
+     * we need to use the same object for validations.
+     * @param Alias $alias object to link
+     */
+    public static function attachAliasObject($alias)
+    {
+        self::$aliasObject = $alias;
+    }
+
+    /**
      * check if name exists in alias config section
      * @param string $name name
      * @param boolean $valid check if the alias can safely be used
@@ -104,30 +119,65 @@ class Util
     }
 
     /**
+     * return alias descriptions
+     * @param string $name name
+     * @return string
+     */
+    public static function aliasDescription($name)
+    {
+        if (empty(self::$aliasDescriptions)) {
+            // read all aliases at once, and cache descriptions.
+            foreach ((new Alias())->aliasIterator() as $alias) {
+                if (empty(self::$aliasDescriptions[$alias['name']])) {
+                    if (!empty($alias['description'])) {
+                        self::$aliasDescriptions[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
+                    } else {
+                        self::$aliasDescriptions[$alias['name']] = "";
+                    }
+
+                    if (!empty($alias['content'])) {
+                        $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
+                        asort($tmp);
+                        self::$aliasDescriptions[$alias['name']] .= implode("<br/>", $tmp);
+                    }
+                }
+            }
+        }
+        if (!empty(self::$aliasDescriptions[$name])) {
+            return self::$aliasDescriptions[$name];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Fetch port alias contents, other alias types are handled using tables so there usually no need
      * to know the contents within any of the scripts.
      * @param string $name name
-     * @param $aliases aliases already parsed (prevent deadlock)
+     * @param array $aliases aliases already parsed (prevent deadlock)
      * @return array containing all ports or addresses
+     * @throws \OPNsense\Base\ModelException when unable to create alias model
      */
     public static function getPortAlias($name, $aliases = array())
     {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias();
+        }
         $result = array();
-        if (!empty($name) && !empty(Config::getInstance()->object()->aliases)) {
-            foreach (Config::getInstance()->object()->aliases->children() as $node) {
-                if ($node->name == $name && $node->type == 'port') {
-                    foreach (explode(" ", $node->address) as $address) {
-                        if (Util::isAlias($address)) {
-                            if (!in_array($address, $aliases)) {
-                                foreach (Util::getPortAlias($address, $aliases) as $port) {
-                                    if (!in_array($port, $result)) {
-                                        $result[] = $port;
-                                    }
+        foreach (self::$aliasObject->aliasIterator() as $node) {
+            if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
+                foreach (explode("\n", $node['content']) as $address) {
+                    if (Util::isAlias($address)) {
+                        if (!in_array($address, $aliases)) {
+                            foreach (Util::getPortAlias($address, $aliases) as $port) {
+                                if (!in_array($port, $result)) {
+                                    $result[] = $port;
                                 }
                             }
-                        } elseif (!in_array($address, $result)) {
-                            $result[] = $address;
                         }
+                    } elseif (!in_array($address, $result)) {
+                        $result[] = $address;
                     }
                 }
             }
@@ -146,14 +196,15 @@ class Util
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
-            if (!getservbyname($port, "tcp") && !getservbyname($port, "udp")
-                && filter_var($port, FILTER_VALIDATE_INT, array(
-                    "options" => array("min_range"=>1, "max_range"=>65535))) === false
+            if (
+                !getservbyname($port, "tcp") && !getservbyname($port, "udp")
+                && (filter_var($port, FILTER_VALIDATE_INT, array(
+                    "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port))
             ) {
                 return false;
             }
         }
-        if (($allow_range && count($tmp) <=2) || count($tmp) == 1) {
+        if (($allow_range && count($tmp) <= 2) || count($tmp) == 1) {
             return true;
         }
         return false;
@@ -166,10 +217,30 @@ class Util
      */
     public static function isDomain($domain)
     {
-        $pattern = '/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i';
+        $pattern = '/^(?:(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])\.)*(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])$/iu';
         if (preg_match($pattern, $domain)) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * calculate rule hash value
+     * @param array rule
+     * @return string
+     */
+    public static function calcRuleHash($rule)
+    {
+        // remove irrelavant fields
+        foreach (array('updated', 'created', 'descr') as $key) {
+            unset($rule[$key]);
+        }
+        ksort($rule);
+        foreach ($rule as &$value) {
+            if (is_array($value)) {
+                ksort($value);
+            }
+        }
+        return md5(json_encode($rule));
     }
 }

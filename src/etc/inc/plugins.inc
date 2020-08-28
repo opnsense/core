@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,11 @@ function plugins_services()
     $services = array();
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
@@ -80,7 +84,32 @@ function plugins_services()
         }
     }
 
+    uasort($services, function ($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
+
     return $services;
+}
+
+function plugins_devices()
+{
+    $devices = array();
+
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
+        $func = sprintf('%s_devices', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $work) {
+                $devices[] = $work;
+            }
+        }
+    }
+
+    return $devices;
 }
 
 function plugins_cron()
@@ -88,7 +117,11 @@ function plugins_cron()
     $jobs = array();
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_cron', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
@@ -105,7 +138,11 @@ function plugins_syslog()
     $syslogs = array();
 
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_syslog', $name);
         if (function_exists($func)) {
             foreach ($func() as $plugin_syslog => $plugin_details) {
@@ -139,7 +176,11 @@ function plugins_interfaces()
 
     // register / update interfaces
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_interfaces', $name);
         if (function_exists($func)) {
             foreach ($func() as $intf_ref => $intf_data) {
@@ -177,7 +218,11 @@ function plugins_interfaces()
 function plugins_firewall($fw)
 {
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_firewall', $name);
         if (function_exists($func)) {
             $func($fw);
@@ -191,8 +236,14 @@ function plugins_configure($hook, $verbose = false, $args = array())
 {
     array_unshift($args, $verbose);
 
+    syslog(LOG_NOTICE, sprintf('plugins_configure %s (%s)', $hook, implode(',', $args)));
+
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
             foreach ($func() as $when => $worker) {
@@ -210,6 +261,12 @@ function plugins_configure($hook, $verbose = false, $args = array())
                         if ($argc > count($args)) {
                             $argc = count($args);
                         }
+                        syslog(LOG_NOTICE, sprintf(
+                            'plugins_configure %s (execute task : %s(%s))',
+                            $hook,
+                            $argf,
+                            implode(',', array_slice($args, 0, $argc))
+                        ));
                         call_user_func_array($argf, array_slice($args, 0, $argc));
                     }
                 }
@@ -218,18 +275,66 @@ function plugins_configure($hook, $verbose = false, $args = array())
     }
 }
 
+function plugins_run($hook, $verbose = false, $args = array())
+{
+    array_unshift($args, $verbose);
+    $ret = [];
+
+    syslog(LOG_DEBUG, sprintf('plugins_run %s (%s)', $hook, implode(',', $args)));
+
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
+        $func = sprintf('%s_run', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $when => $task) {
+                if ($hook == $when) {
+                    /*
+                     * An optional argument count parameter can be
+                     * given by the plugin, which allows to securely
+                     * pull more info from the configure call spot.
+                     */
+                    list($argf, $argc) = explode(':', $task);
+                    if (empty($argc) || !is_numeric($argc)) {
+                        $argc = 1;
+                    }
+                    if ($argc > count($args)) {
+                        $argc = count($args);
+                    }
+                    syslog(LOG_DEBUG, sprintf(
+                        'plugins_run %s (execute task : %s(%s))',
+                        $hook,
+                        $argf,
+                        implode(',', array_slice($args, 0, $argc))
+                    ));
+                    $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                }
+            }
+        }
+    }
+
+    return $ret;
+}
+
 function plugins_xmlrpc_sync()
 {
     $sync_settings = array();
     foreach (plugins_scan() as $name => $path) {
-        try { include_once $path; } catch (ParseError $e) { error_log($e); }
+        try {
+            include_once $path;
+        } catch (ParseError $e) {
+            error_log($e);
+        }
         $func = sprintf('%s_xmlrpc_sync', $name);
         if (function_exists($func)) {
             foreach ($func() as $helper) {
                 if (!empty($helper['id']) && !empty($helper['section'])) {
                     $sync_settings[$helper['id']] = $helper;
                     if (empty($helper['help'])) {
-                        $sync_settings[$helper['id']]['help'] = sprintf(gettext('Automatically synchronize the %s configuration to the other HA host when changes are made.'), $helper['description']);
+                        $sync_settings[$helper['id']]['help'] = sprintf(gettext('Synchronize the %s configuration to the other HA host.'), $helper['description']);
                     }
                     unset($sync_settings[$helper['id']]['id']);
                 }

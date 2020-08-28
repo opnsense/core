@@ -1,0 +1,107 @@
+#!/usr/local/bin/python3
+
+"""
+    Copyright (c) 2020 Ad Schellevis <ad@opnsense.org>
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+"""
+import sys
+import re
+import argparse
+import datetime
+import ipaddress
+import syslog
+import subprocess
+import time
+from select import select
+
+all_rules = {
+    '.*Accepted.*': True,
+    '.*Successful login.*': True,
+    '.*Web GUI authentication error.*': False,
+    '.*Invalid user.*': False,
+    '.*Illegal user.*': False,
+    '.*Postponed keyboard-interactive for invalid user.*': False,
+    '.*authentication error for illegal user.*': False
+}
+
+if __name__ == '__main__':
+    # handle parameters
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempts', help='maximum number of attempts', type=int, default=5)
+    parser.add_argument('--grace_period', help='keep stats for max number of seconds', type=int, default=3600)
+    parser.add_argument('--pf_table' ,help='pf table to add failed attempts in', default='sshlockout')
+    inputargs = parser.parse_args()
+
+    suspects = dict()
+    suspects_lastseen = dict()
+
+    while True:
+        rlist, _, _ = select([sys.stdin], [], [], 0.5)
+        if rlist:
+            line = sys.stdin.readline()
+            if line == '':
+                break
+
+            ip = None
+            for part in line.split():
+                if re.match('^[0-9.]+$', part) or re.match('^[a-fA-F0-9:]+$', part):
+                    try:
+                        ip = ipaddress.ip_address(part)
+                        break
+                    except ValueError:
+                        ip = None
+            if ip:
+                # cleanup entries after grace period
+                for cleanup_ip in list(suspects_lastseen):
+                    if time.time() - suspects_lastseen[cleanup_ip] > inputargs.grace_period:
+                        del suspects_lastseen[cleanup_ip]
+                        del suspects[cleanup_ip]
+
+                allowed = None
+                for rule in all_rules:
+                    if re.match(rule, line):
+                        allowed = all_rules[rule]
+                        break
+
+                if allowed is True:
+                    # reset counter when login was successful
+                    if ip in suspects:
+                        del suspects[ip]
+                        del suspects_lastseen[ip]
+                elif allowed is False:
+                    suspects_lastseen[ip] = time.time()
+                    if ip not in suspects:
+                        suspects[ip] = list()
+
+                    ts = datetime.datetime.strptime(line[0:15].split()[-1], "%H:%M:%S")
+                    if len(suspects[ip]) == 0 or abs((ts - suspects[ip][-1]).total_seconds()) > 2:
+                        # a single attempt can lead to multiple log entries, suppress likely duplicates
+                        suspects[ip].append(ts)
+                    if len(suspects[ip]) > inputargs.attempts:
+                        syslog.syslog(syslog.LOG_NOTICE, "lockout %s [using table %s] after %d attempts" % (
+                            ip, inputargs.pf_table, len(suspects[ip])
+                        ))
+                        subprocess.run(['/sbin/pfctl', '-t', inputargs.pf_table, '-T', 'add', str(ip)],
+                                        capture_output=True)

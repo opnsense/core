@@ -28,9 +28,9 @@
 
 namespace OPNsense\Proxy\Api;
 
-use \OPNsense\Base\ApiMutableServiceControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Proxy\Proxy;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Proxy\Proxy;
 
 /**
  * Class ServiceController
@@ -38,10 +38,10 @@ use \OPNsense\Proxy\Proxy;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static protected $internalServiceClass = '\OPNsense\Proxy\Proxy';
-    static protected $internalServiceEnabled = 'general.enabled';
-    static protected $internalServiceTemplate = 'OPNsense/Proxy';
-    static protected $internalServiceName = 'proxy';
+    protected static $internalServiceClass = '\OPNsense\Proxy\Proxy';
+    protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceTemplate = 'OPNsense/Proxy';
+    protected static $internalServiceName = 'proxy';
 
     protected function reconfigureForceRestart()
     {
@@ -54,6 +54,23 @@ class ServiceController extends ApiMutableServiceControllerBase
 
         return (((string)$mdlProxy->forward->sslcertificate) != $prev_sslbump_cert) ||
             (!empty((string)$mdlProxy->general->cache->local->enabled) != $prev_cache_active);
+    }
+
+    /**
+     * reload template only (for example PAC does not need to change squid configuration)
+     * @return array
+     */
+    public function resetAction()
+    {
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+            $backend = new Backend();
+            return array('status' => $backend->configdRun('proxy reset'));
+        } else {
+            return array('error' => 'This API endpoint must be called via POST',
+                         'status' => 'error');
+        }
     }
 
     /**

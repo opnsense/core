@@ -29,10 +29,10 @@
 
 namespace OPNsense\Routes\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Core\Config;
-use \OPNsense\Routes\Route;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
+use OPNsense\Routes\Route;
 
 /**
  * @package OPNsense\Routes
@@ -40,8 +40,8 @@ use \OPNsense\Routes\Route;
 class RoutesController extends ApiMutableModelControllerBase
 {
 
-    static protected $internalModelName = 'route';
-    static protected $internalModelClass = '\OPNsense\Routes\Route';
+    protected static $internalModelName = 'route';
+    protected static $internalModelClass = '\OPNsense\Routes\Route';
 
     /**
      * search routes
@@ -102,7 +102,7 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function delrouteAction($uuid)
     {
-        $node = (new Route())->getNodeByReference('route.'.$uuid);
+        $node = (new Route())->getNodeByReference('route.' . $uuid);
         $response = $this->delBase("route", $uuid);
         if (!empty($response['result']) && $response['result'] == 'deleted') {
             // we don't know for sure if this route was already removed, flush to disk to remove on apply
@@ -124,20 +124,17 @@ class RoutesController extends ApiMutableModelControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $uuid != null) {
-            $mdlRoute = new Route();
-            $node = $mdlRoute->getNodeByReference('route.' . $uuid);
+            $node = $this->getModel()->getNodeByReference('route.' . $uuid);
             if ($node != null) {
                 if ($disabled == '0' || $disabled == '1') {
                     $node->disabled = (string)$disabled;
-                } elseif ($node->disabled->__toString() == '1') {
+                } elseif ((string)$node->disabled == '1') {
                     $node->disabled = '0';
                 } else {
                     $node->disabled = '1';
                 }
                 $result['result'] = (string)$node->disabled == '1' ? 'Disabled' : 'Enabled';
-                // if item has toggled, serialize to config and save
-                $mdlRoute->serializeToConfig();
-                Config::getInstance()->save();
+                $this->save();
             }
         }
         return $result;

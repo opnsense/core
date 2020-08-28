@@ -1,5 +1,6 @@
 #!/usr/local/bin/php
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -38,7 +39,7 @@ $classprefix = !empty($argv[1]) ? str_replace('/', '\\', $argv[1]) : '';
 
 $class_info = new \ReflectionClass("OPNsense\\Base\\BaseModel");
 $executed_migration = false;
-$model_dir = dirname($class_info->getFileName())."/../../";
+$model_dir = dirname($class_info->getFileName()) . "/../../";
 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir)) as $x) {
     if (strtolower(substr($x->getPathname(), -4)) == '.php') {
         $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]);
@@ -53,16 +54,20 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
             if ($parent && $parent->name == 'OPNsense\Base\BaseModel') {
                 $mdl = $mdl_class_info->newInstance();
                 $version_pre = $mdl->getVersion();
-                $mdl->runMigrations();
+                $mig_performed = $mdl->runMigrations();
                 $version_post = $mdl->getVersion();
                 if ($version_pre != $version_post) {
-                    $version_pre = !empty($version_pre) ? $version_pre : ' <unversioned> ';
-                    echo "Migrated " .  $mdl_class_info->getName() .
-                        " from " . $version_pre .
-                        " to " . $version_post . "\n";
-                    $executed_migration = true;
+                    if ($mig_performed) {
+                        $version_pre = !empty($version_pre) ? $version_pre : ' <unversioned> ';
+                        echo "Migrated " .  $mdl_class_info->getName() .
+                            " from " . $version_pre .
+                            " to " . $version_post . "\n";
+                        $executed_migration = true;
+                    } else {
+                        echo "*** " .  $mdl_class_info->getName() . " Migration failed, check log for details\n";
+                    }
                 } elseif (!empty($version_post)) {
-                    echo "Keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";
+                    echo "Keep version " . $mdl_class_info->getName() . " (" . $version_post . ")\n";
                 } else {
                     echo "Unversioned " . $mdl_class_info->getName() . "\n";
                 }

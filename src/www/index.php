@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    oR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once('guiconfig.inc');
 
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     usort($widgetCollection, function ($item1, $item2) {
       return strcmp(strtolower($item1['sortKey']), strtolower($item2['sortKey']));
     });
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['origin']) && $_POST['origin'] == 'dashboard') {
     if (!empty($_POST['sequence'])) {
         $config['widgets']['sequence'] = $_POST['sequence'];
     } elseif (isset($config['widgets']['sequence'])) {
@@ -122,9 +122,13 @@ include("fbegin.inc");?>
     <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
       <div class="row">
         <section class="col-xs-12">
-          <div class="content-box" style="padding: 20px;">
+          <div class="content-box wizard" style="padding: 20px;">
             <div class="table-responsive">
-              <img src="/ui/themes/<?=$themename;?>/build/images/default-logo.<?=file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg") ? "svg" : "png";?>" border="0" alt="logo" style="max-width:380px;" />
+<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php else: ?>
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php endif ?>
               <br />
               <div class="content-box-main" style="padding-bottom:0px;">
                 <?php
@@ -138,7 +142,8 @@ include("fbegin.inc");?>
                             'Please consider donating to the project to help us with our overhead costs. ' .
                             'See %sour website%s to donate or purchase available %s support services.'),
                             '<a target="_new" href="' . $g['product_website'] . '">', '</a>', $g['product_name']) . "</p>\n";
-                        echo '<p class="__nomb">' . sprintf(gettext('Click to %scontinue to the dashboard%s.'), '<a href="/">', '</a>') . "</p>\n";
+                        echo '<p class="__nomb">' . sprintf(gettext('Click to %scontinue to the dashboard%s.'), '<a href="/">', '</a>') . ' ';
+                        echo sprintf(gettext('Or click to %scheck for updates%s.'), '<a href="/ui/core/firmware#checkupdate">', '</a>'). "</p>\n";
                     }
                 ?>
               </div>
@@ -157,7 +162,7 @@ include("fbegin.inc");?>
   // normal dashboard
   else:?>
 
-<script src='/ui/js/jquery-sortable.js'></script>
+<script src="<?= cache_safe('/ui/js/jquery-sortable.js') ?>"></script>
 <script>
   function addWidget(selectedDiv) {
       $('#'+selectedDiv).show();
@@ -167,7 +172,7 @@ include("fbegin.inc");?>
   }
 
   function configureWidget(selectedDiv) {
-      selectIntLink = '#' + selectedDiv + "-settings";
+      let selectIntLink = '#' + selectedDiv + "-settings";
       if ($(selectIntLink).css('display') == "none") {
           $(selectIntLink).show();
       } else {
@@ -209,7 +214,7 @@ include("fbegin.inc");?>
               // only capture visible widgets
               var index_str = "0000000" + index;
               index_str = index_str.substr(index_str.length-8);
-              col_index = $(this).parent().attr("id").split('_')[1];
+              let col_index = $(this).parent().attr("id").split('_')[1];
               widgetInfo.push($(this).attr('id')+'-container:'+index_str+'-'+col_index+':'+$('input[name='+$(this).attr('id')+'-config]').val());
               index++;
           }
@@ -234,7 +239,7 @@ include("fbegin.inc");?>
           if ($(this).data('callback') != undefined) {
               callbacks.push({'function' : $(this).data('callback'), 'plugin': $(this).data('plugin'), 'sender': $(this)});
           }
-      })
+      });
       // collect data for provided plugins
       $.ajax("/widgets/api/get.php",{type: 'get', cache: false, dataType: "json", data: {'load': plugins.join(',')}})
         .done(function(response) {
@@ -315,11 +320,13 @@ include("fbegin.inc");?>
               }
           });
       });
+      $('.selectpicker_widget').selectpicker('refresh');
   });
 </script>
 
 <section class="page-content-main">
   <form method="post" id="iform">
+    <input type="hidden" value="dashboard" name="origin" id="origin" />
     <input type="hidden" value="" name="sequence" id="sequence" />
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
   </form>
@@ -329,7 +336,7 @@ include("fbegin.inc");?>
 <?php
           print_service_banner('livecd');
           $crash_report = get_crash_report();
-          if ($crash_report != '') {
+          if (!empty($crash_report)) {
               print_info_box($crash_report);
           }?>
         </div>

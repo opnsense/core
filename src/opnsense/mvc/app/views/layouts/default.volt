@@ -17,7 +17,7 @@
     {% set theme_name = ui_theme|default('opnsense') %}
 
     <!-- include (theme) style -->
-    <link href="/ui/themes/{{theme_name}}/build/css/main.css" rel="stylesheet">
+    <link href="{{ cache_safe('/ui/themes/%s/build/css/main.css' | format(theme_name)) }}" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -30,21 +30,23 @@
       }
     </style>
 
+    <!-- legacy browser functions -->
+    <script src="{{ cache_safe('/ui/js/polyfills.js') }}"></script>
+
     <!-- Favicon -->
-    <link href="/ui/themes/{{theme_name}}/build/images/favicon.png" rel="shortcut icon">
+    <link href="{{ cache_safe('/ui/themes/%s/build/images/favicon.png' | format(theme_name)) }}" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-select.css', theme_name)}}">
+    <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-select-1.13.3.css', theme_name)) }}">
 
     <!-- bootstrap dialog -->
-    <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/bootstrap-dialog.css', theme_name)}}">
+    <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/bootstrap-dialog.css', theme_name)) }}">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ cache_safe('/ui/css/font-awesome.min.css') }}">
 
     <!-- JQuery -->
-    <script src="/ui/js/jquery-3.2.1.min.js"></script>
-    <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="/ui/js/jquery-3.5.1.min.js"></script>
     <script>
             // setup default scripting after page loading.
             $( document ).ready(function() {
@@ -114,13 +116,13 @@
                         var menusearch_items = [];
                         $.each(data,function(idx, menu_item){
                             if (menu_item.Url != "") {
-                                menusearch_items.push({id:menu_item.Url, name:menu_item.breadcrumb});
+                                menusearch_items.push({id:$('<div />').html(menu_item.Url).text(), name:menu_item.breadcrumb});
                             }
                         });
                         $("#menu_search_box").typeahead({
                             source: menusearch_items,
                             matcher: function (item) {
-                                var ar = this.query.trim()
+                                var ar = this.query.trim();
                                 if (ar == "") {
                                     return false;
                                 }
@@ -161,40 +163,31 @@
                 });
                 // enable bootstrap tooltips
                 $('[data-toggle="tooltip"]').tooltip();
+
+                // fix menu scroll position on page load
+                $(".list-group-item.active").each(function(){
+                    var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
+                    $('html,aside').scrollTop(($(this).offset().top - navbar_center));
+                });
             });
         </script>
 
         <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
-        <script src="/ui/js/tokenize2.js"></script>
-        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/tokenize2.css', theme_name)}}" rel="stylesheet" />
+        <script src="{{ cache_safe('/ui/js/tokenize2.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/tokenize2.css', theme_name)) }}" rel="stylesheet" />
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
-        <link rel="stylesheet" type="text/css" href="{{theme_file_or_default('/css/jquery.bootgrid.css', theme_name)}}" />
-        <script src="/ui/js/jquery.bootgrid.js"></script>
-        <script>
-        /* patch translations into bootgrid library */
-        Object.assign(
-            jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels,
-            {
-                'all': "{{ lang._('All') }}",
-                'infos': "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
-                'loading': "{{ lang._('Loading...') }}",
-                'noResults': "{{ lang._('No results found!') }}",
-                'refresh': "{{ lang._('Refresh') }}",
-                'search': "{{ lang._('Search') }}"
-            }
-        )
-        </script>
-
+        <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jquery.bootgrid.css', theme_name)) }}" />
+        <script src="{{ cache_safe('/ui/js/jquery.bootgrid.js') }}"></script>
         <!-- Bootstrap type ahead -->
-        <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
+        <script src="{{ cache_safe('/ui/js/bootstrap3-typeahead.min.js') }}"></script>
 
         <!-- OPNsense standard toolkit -->
-        <script src="/ui/js/opnsense.js"></script>
-        <script src="/ui/js/opnsense_theme.js"></script>
-        <script src="/ui/js/opnsense_ui.js"></script>
-        <script src="/ui/js/opnsense_bootgrid_plugin.js"></script>
-        <script src="{{theme_file_or_default('/js/theme.js', theme_name)}}"></script>
+        <script src="{{ cache_safe('/ui/js/opnsense.js') }}"></script>
+        <script src="{{ cache_safe('/ui/js/opnsense_theme.js') }}"></script>
+        <script src="{{ cache_safe('/ui/js/opnsense_ui.js') }}"></script>
+        <script src="{{ cache_safe('/ui/js/opnsense_bootgrid_plugin.js') }}"></script>
+        <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
   </head>
   <body>
   <header class="page-head">
@@ -203,14 +196,14 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
             {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/default-logo.svg"]|join("")) %}
-                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.svg" height="30" alt="logo"/>
+                <img class="brand-logo" src="{{ cache_safe('/ui/themes/%s/build/images/default-logo.svg' | format(theme_name)) }}" height="30" alt="logo"/>
             {% else %}
-                <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
+                <img class="brand-logo" src="{{ cache_safe('/ui/themes/%s/build/images/default-logo.png' | format(theme_name)) }}" height="30" alt="logo"/>
             {% endif %}
             {% if file_exists(["/usr/local/opnsense/www/themes/",theme_name,"/build/images/icon-logo.svg"]|join("")) %}
-                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.svg" height="30" alt="icon"/>
+                <img class="brand-icon" src="{{ cache_safe('/ui/themes/%s/build/images/icon-logo.svg' | format(theme_name)) }}" height="30" alt="icon"/>
             {% else %}
-                <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
+                <img class="brand-icon" src="{{ cache_safe('/ui/themes/%s/build/images/icon-logo.png' | format(theme_name)) }}" height="30" alt="icon"/>
             {% endif %}
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
@@ -220,10 +213,12 @@
             <span class="icon-bar"></span>
           </button>
         </div>
-        <button class="toggle-sidebar" style="display:none;"><i class="fa fa-chevron-left"></i></button>
+        <button class="toggle-sidebar" data-toggle="tooltip right" title="{{ lang._('Toggle sidebar') }}" style="display:none;"><i class="fa fa-chevron-left"></i></button>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
+            <li id="menu_messages">
+              <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
+            </li>
             <li>
               <form class="navbar-form" role="search">
                 <div class="input-group">
@@ -265,9 +260,8 @@
         <!-- page footer -->
         <footer class="page-foot">
           <div class="container-fluid">
-            <a target="_blank" href="{{ product_website }}" class="redlnk">{{ product_name }}</a>
-            (c) {{ product_copyright_years }}
-            <a href="{{ product_copyright_url }}" class="tblnk">{{ product_copyright_owner }}</a>
+            <a target="_blank" href="{{ product_website }}">{{ product_name }}</a> (c) {{ product_copyright_years }}
+            <a target="_blank" href="{{ product_copyright_url }}">{{ product_copyright_owner }}</a>
           </div>
         </footer>
       </div>
@@ -275,6 +269,7 @@
 
     <!-- dialog "wait for (service) action" -->
     <div class="modal fade" id="OPNsenseStdWaitDialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
+      <div class="modal-backdrop fade in"></div>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
@@ -288,10 +283,35 @@
     </div>
 
     <!-- bootstrap script -->
-    <script src="/ui/js/bootstrap.min.js"></script>
-    <script src="/ui/js/bootstrap-select.min.js"></script>
+    <script src="{{ cache_safe('/ui/js/bootstrap.min.js') }}"></script>
+    <script src="{{ cache_safe('/ui/js/bootstrap-select.min.js') }}"></script>
     <!-- bootstrap dialog -->
-    <script src="/ui/js/bootstrap-dialog.min.js"></script>
+    <script src="{{ cache_safe('/ui/js/bootstrap-dialog.min.js') }}"></script>
+    <script>
+    /* hook translations  when all JS modules are loaded*/
+    Object.assign(jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels, {
+        all: "{{ lang._('All') }}",
+        infos: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
+        loading: "{{ lang._('Loading...') }}",
+        noResults: "{{ lang._('No results found!') }}",
+        refresh: "{{ lang._('Refresh') }}",
+        search: "{{ lang._('Search') }}"
+    });
+    Object.assign(jQuery.fn.selectpicker.Constructor.DEFAULTS, {
+        noneSelectedText: "{{ lang._('Nothing selected') }}",
+        noneResultsText: "{{ lang._('No results matched {0}') }}",
+        selectAllText: "{{ lang._('Select All') }}",
+        deselectAllText: "{{ lang._('Deselect All') }}"
+    });
+    Object.assign(jQuery.fn.UIBootgrid.defaults, {
+        removeWarningText: "{{ lang._('Remove selected item(s)?') }}"
+    });
+    Object.assign(stdDialogRemoveItem.defaults, {
+        title: "{{ lang._('Remove') }}",
+        accept: "{{ lang._('Yes') }}",
+        decline: "{{ lang._('Cancel') }}"
+    });
+    </script>
 
   </body>
 </html>

@@ -1,0 +1,34 @@
+<model>
+    <mount>//OPNsense/Interfaces/vxlans</mount>
+    <version>1.0.1</version>
+    <description>
+        VXLAN configuration
+    </description>
+    <items>
+        <vxlan type="ArrayField">
+            <deviceId type="AutoNumberField">
+                <Required>Y</Required>
+            </deviceId>
+            <vxlanid type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>16777215</MaximumValue>
+                <Required>Y</Required>
+            </vxlanid>
+            <vxlanlocal type="NetworkField">
+                <Required>Y</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </vxlanlocal>
+            <vxlanremote type="NetworkField">
+                <Required>N</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </vxlanremote>
+            <vxlangroup type="NetworkField">
+                <Required>N</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </vxlangroup>
+            <vxlandev  type="InterfaceField">
+                <Required>N</Required>
+            </vxlandev>
+        </vxlan>
+    </items>
+</model>

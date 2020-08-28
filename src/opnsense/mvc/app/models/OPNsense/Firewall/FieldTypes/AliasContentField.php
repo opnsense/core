@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
@@ -71,7 +73,7 @@ class AliasContentField extends BaseField
         $result = array ();
         $selectlist = explode($this->separatorchar, (string)$this);
         foreach ($selectlist as $optKey) {
-            $result[$optKey] = array("value"=>$optKey, "selected" => 1);
+            $result[$optKey] = array("value" => $optKey, "selected" => 1);
         }
         return $result;
     }
@@ -90,10 +92,10 @@ class AliasContentField extends BaseField
     }
 
     /**
-     * return seperator character used
+     * return separator character used
      * @return string
      */
-    public function getSeperatorChar()
+    public function getSeparatorChar()
     {
         return $this->separatorchar;
     }
@@ -156,6 +158,26 @@ class AliasContentField extends BaseField
     }
 
     /**
+     * Validate host options
+     * @param array $data to validate
+     * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
+     */
+    private function validateNestedAlias($data)
+    {
+        $messages = array();
+        foreach ($this->getItems($data) as $host) {
+            if (!Util::isAlias($host)) {
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid alias.'),
+                    $host
+                );
+            }
+        }
+        return $messages;
+    }
+
+    /**
      * Validate network options
      * @param array $data to validate
      * @return bool|Callback
@@ -174,8 +196,10 @@ class AliasContentField extends BaseField
                     $domain_alias_count++;
                 }
             }
-            if (!Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
-                    !($ipaddr_count == 2 && $domain_alias_count == 0)) {
+            if (
+                !Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
+                    !($ipaddr_count == 2 && $domain_alias_count == 0)
+            ) {
                 $messages[] = sprintf(
                     gettext('Entry "%s" is not a valid hostname or IP address.'),
                     $network
@@ -197,6 +221,26 @@ class AliasContentField extends BaseField
         foreach ($this->getItems($data) as $country) {
             if (!in_array($country, $country_codes)) {
                 $messages[] = sprintf(gettext('Entry "%s" is not a valid country code.'), $country);
+            }
+        }
+        return $messages;
+    }
+
+    /**
+     * Validate (partial) mac address options
+     * @param array $data to validate
+     * @return bool|Callback
+     * @throws \OPNsense\Base\ModelException
+     */
+    private function validatePartialMacAddr($data)
+    {
+        $messages = array();
+        foreach ($this->getItems($data) as $macaddr) {
+            if (!preg_match('/^[0-9A-Fa-f]{2}(?:[:][0-9A-Fa-f]{2}){1,5}$/i', $macaddr)) {
+                $messages[] = sprintf(
+                    gettext('Entry "%s" is not a valid (partial) MAC address.'),
+                    $macaddr
+                );
             }
         }
         return $messages;
@@ -232,6 +276,18 @@ class AliasContentField extends BaseField
                 case "network":
                     $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validateNetwork($data);
+                    }
+                    ]);
+                    break;
+                case "networkgroup":
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
+                        return $this->validateNestedAlias($data);
+                    }
+                    ]);
+                    break;
+                case "mac":
+                    $validators[] = new CallbackValidator(["callback" => function ($data) {
+                        return $this->validatePartialMacAddr($data);
                     }
                     ]);
                     break;

@@ -1,6 +1,6 @@
 <acl>
     <page-firewall-trafficshaper>
-        <name>Firewall: Traffic Shaper</name>
+        <name>Firewall: Shaper</name>
         <patterns>
             <pattern>ui/trafficshaper/*</pattern>
             <pattern>api/trafficshaper/*</pattern>

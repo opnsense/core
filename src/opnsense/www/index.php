@@ -33,6 +33,21 @@ function view_file_exists($filename)
     return file_exists($filename);
 }
 
+/**
+ * return appended version string with a hash for proper caching for currently installed version
+ * @param string $url to make cache-safe
+ * @return string
+ */
+function view_cache_safe($url)
+{
+    $info = stat('/usr/local/opnsense/www/index.php');
+    if (!empty($info['mtime'])) {
+        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
+    }
+
+    return $url;
+}
+
 try {
     /**
      * Read the configuration
@@ -56,5 +71,15 @@ try {
 
     echo $application->handle()->getContent();
 } catch (\Exception $e) {
-    echo $e->getMessage();
+    if (
+        isset($application) || (
+          stripos($e->getMessage(), ' handler class cannot be loaded') !== false ||
+          stripos($e->getMessage(), ' was not found on handler ') !== false
+        )
+    ) {
+        // Render default UI page when controller or action wasn't found
+        echo $application->handle('/ui/')->getContent();
+    } else {
+        echo $e->getMessage();
+    }
 }

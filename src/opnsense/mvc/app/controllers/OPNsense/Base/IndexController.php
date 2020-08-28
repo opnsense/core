@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base;
 
 /**
@@ -45,6 +47,7 @@ class IndexController extends ControllerBase
     /**
      * log or send error message
      * @param string $message error message
+     * @param string|null $sender
      * @return bool
      */
     public function handleErrorAction($message = null, $sender = null)

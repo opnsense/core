@@ -1,8 +1,8 @@
 
       <footer class="page-foot">
         <div class="container-fluid">
-          <a target="_blank" href="<?=$g['product_website']?>" class="redlnk"><?=$g['product_name']?></a> (c)
-            <?=$g['product_copyright_years']?> <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright_owner']?></a>
+          <a target="_blank" href="<?=$g['product_website']?>"><?=$g['product_name']?></a> (c) <?=$g['product_copyright_years']?>
+          <a target="_blank" href="<?=$g['product_copyright_url']?>"><?=$g['product_copyright_owner']?></a>
         </div>
       </footer>
 
@@ -18,6 +18,7 @@
       });
     ?>
     <div class="modal fade" id="modal_widgets" tabindex="-1" role="dialog" aria-labelledby="modal_widgets_label" aria-hidden="true">
+      <div class="modal-backdrop fade in"></div>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -57,6 +58,7 @@
     endif; ?>
     <!-- dialog "wait for (service) action" -->
     <div class="modal fade" id="OPNsenseStdWaitDialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
+      <div class="modal-backdrop fade in"></div>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
@@ -69,17 +71,17 @@
       </div>
     </div>
     <!-- bootstrap script -->
-    <script src="/ui/js/bootstrap.min.js"></script>
+    <script src="/<?= cache_safe('ui/js/bootstrap.min.js') ?>"></script>
     <!-- Fancy select with search options -->
-    <script src="/ui/js/bootstrap-select.min.js"></script>
+    <script src="<?= cache_safe('/ui/js/bootstrap-select.min.js') ?>"></script>
     <!-- bootstrap dialog -->
-    <script src="/ui/js/bootstrap-dialog.min.js"></script>
+    <script src="<?= cache_safe('/ui/js/bootstrap-dialog.min.js') ?>"></script>
     <!-- service control hook -->
     <script>
       $( document ).ready(function() {
         $('.srv_status_act').click(function(event){
           event.preventDefault();
-          params = {};
+          let params = {};
           params['action'] = $(this).data('service_action');
           params['service'] = $(this).data('service');
           params['id'] = $(this).data('service_id');

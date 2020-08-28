@@ -32,7 +32,6 @@
 require_once("config.inc");
 require_once("auth.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
@@ -46,20 +45,17 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-log_error("IP renewal is starting on '{$argument}'");
+log_error("IPv4 renewal is starting on '{$argument}'");
 
 if (empty($argument)) {
     $interface = 'wan';
     $interface_real = get_real_interface($interface);
-    $ip = get_interface_ip($interface);
 } else {
     $interface = convert_real_interface_to_friendly_interface_name($argument);
     $interface_real = $argument;
-    $ip = find_interface_ip($interface_real);
-    if (empty($ip)) {
-        $ip = get_interface_ip($interface);
-    }
 }
+
+$ip = get_interface_ip($interface);
 
 if (!isset($config['interfaces'][$interface]['enable'])) {
     log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
@@ -89,7 +85,7 @@ if (is_ipaddr($ip)) {
     @file_put_contents($ip_file, $ip);
 }
 
-link_interface_to_vips($interface, "update");
+interfaces_vips_configure(false, $interface);
 
 $gre = link_interface_to_gre($interface);
 if (!empty($gre)) {
@@ -100,12 +96,6 @@ if (!empty($gif)) {
     array_walk($gif, 'interface_gif_configure');
 }
 
-$grouptmp = link_interface_to_group($interface);
-if (!empty($grouptmp)) {
-    array_walk($grouptmp, 'interface_group_add_member');
-}
-
-unset($bridgetmp);
 $bridgetmp = link_interface_to_bridge($interface);
 if (!empty($bridgetmp)) {
     interface_bridge_add_member($bridgetmp, $interface_real);
@@ -124,10 +114,17 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
             break;
         case 'dhcp6':
         case 'slaac':
-            if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-                interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
-                interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
+            if (!isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+                break;
             }
+            interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
+            interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
+            break;
+       default:
+            if (!isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+                break;
+            }
+            interface_static6_configure($interface, $config['interfaces'][$interface]);
             break;
     }
 }
@@ -155,7 +152,7 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     @unlink($cacheip_file);
 
     system_routing_configure(false, $interface);
-    setup_gateways_monitor(false);
+    plugins_configure('monitor');
     filter_configure_sync(false, isset($config['system']['ip_change_kill_states']));
 
     if (is_ipaddr($ip)) {
@@ -164,5 +161,5 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
-    rrd_configure(false);
+    rrd_configure();
 }

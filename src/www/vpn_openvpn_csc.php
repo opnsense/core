@@ -1,36 +1,35 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
-require_once("plugins.inc.d/openvpn.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/openvpn.inc");
 
 $all_form_fields = "custom_options,disable,common_name,block,description
     ,tunnel_network,tunnel_networkv6,local_network,local_networkv6,remote_network
@@ -177,6 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+        $prev_opt = (isset($id) && !empty($a_csc[$id])) ? $a_csc[$id]['custom_options'] : "";
+        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
+            $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
+        }
+
 
         $reqdfields[] = 'common_name';
         $reqdfieldsn[] = 'Common name';
@@ -531,7 +535,7 @@ if ($act!="new" && $act!="edit") {
                     <td>
                       <input name="gwredir" type="checkbox" value="yes" <?= !empty($pconfig['gwredir']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_gwredir">
-                        <?=gettext("Force all client generated traffic through the tunnel"); ?>.
+                        <?= gettext('Force all client generated traffic through the tunnel.') ?>
                       </div>
                     </td>
                   </tr>
@@ -655,6 +659,7 @@ if ($act!="new" && $act!="edit") {
                     <td><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
                     <td>
                       <textarea rows="6" cols="70" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
+                      <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
                       <div class="hidden" data-for="help_for_custom_options">
                         <?=gettext("Enter any additional options you would like to add for this client specific override, separated by a semicolon"); ?><br />
                         <?=gettext("EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""); ?>;
@@ -664,7 +669,7 @@ if ($act!="new" && $act!="edit") {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                       <input name="act" type="hidden" value="<?=$act;?>" />
 <?php
                       if (isset($id)) :?>
@@ -710,7 +715,7 @@ if ($act!="new" && $act!="edit") {
                           <?=htmlspecialchars($csc['description']);?>
                       </td>
                       <td class="text-nowrap">
-                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected before this item");?>" class="act_move btn btn-default btn-xs">
+                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Move selected before this item");?>" class="act_move btn btn-default btn-xs">
                           <span class="fa fa-arrow-left fa-fw"></span>
                         </a>
                         <a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="fa fa-pencil fa-fw"></span></a>
@@ -728,7 +733,7 @@ if ($act!="new" && $act!="edit") {
                         <?=gettext("Additional OpenVPN client specific overrides can be added here.");?>
                       </td>
                       <td class="text-nowrap">
-                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
+                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Move selected items to end");?>" class="act_move btn btn-default btn-xs">
                           <span class="fa fa-arrow-down fa-fw"></span>
                         </a>
                         <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">

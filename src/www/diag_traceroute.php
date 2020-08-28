@@ -1,32 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
-    Copyright (C) 2005 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
+ * Copyright (C) 2005 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set form defaults
     $pconfig = array();
     $pconfig['ipproto'] = 'ipv4';
-    $pconfig['sourceip'] = null;
+    $pconfig['interface'] = null;
     $pconfig['useicmp'] = null;
     $pconfig['resolve'] = null;
     $pconfig['ttl'] = isset($_GET['ttl']) ? $_GET['ttl'] : 18;
@@ -71,21 +72,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $cmd_args .= " -m " . escapeshellarg($pconfig['ttl']);
 
         $command = "/usr/sbin/traceroute";
-        if ($pconfig['ipproto'] == "ipv6") {
-            $command .= "6";
-            $ifaddr = is_ipaddr($pconfig['sourceip']) ? $pconfig['sourceip'] : get_interface_ipv6($pconfig['sourceip']);
+
+        if ($pconfig['ipproto'] == 'ipv6') {
+            $ifaddr = find_interface_ipv6(get_real_interface($pconfig['interface'], 'inet6'));
+            $command .= '6';
         } else {
-            $ifaddr = is_ipaddr($pconfig['sourceip']) ? $pconfig['sourceip'] : get_interface_ip($pconfig['sourceip']);
+            $ifaddr = find_interface_ip(get_real_interface($pconfig['interface']));
         }
 
-        if ($ifaddr && (is_ipaddr($host) || is_hostname($host))) {
+        if (is_ipaddr($ifaddr) && (is_ipaddr($host) || is_hostname($host))) {
             $cmd_args .= " -s " . escapeshellarg($ifaddr) . " ";
         }
 
         $cmd_action = "{$command} {$cmd_args} " . " " . escapeshellarg($host);
         $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
         if (is_resource($process)) {
-             $cmd_output = stream_get_contents($pipes[2]);
+             $cmd_output = "# {$cmd_action}\n";
+             $cmd_output .= stream_get_contents($pipes[2]);
              $cmd_output .= stream_get_contents($pipes[1]);
         }
     }
@@ -102,10 +105,6 @@ include("head.inc");
       <section class="col-xs-12">
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <div class="content-box">
-          <header class="content-box-head container-fluid">
-            <h3><?=gettext("Traceroute");?></h3>
-          </header>
-          <div class="content-box-main ">
             <form method="post" name="iform" id="iform">
               <div class="table-responsive">
                 <table class="table table-striped">
@@ -120,21 +119,20 @@ include("head.inc");
                         <select name="ipproto" class="selectpicker">
                           <option value="ipv4" <?=($pconfig['ipproto'] == "ipv4") ? "selected=\"selected\"" : "";?>><?= gettext('IPv4') ?></option>
                           <option value="ipv6" <?=($pconfig['ipproto'] == "ipv6") ? "selected=\"selected\"" : "";?>><?= gettext('IPv6') ?></option>
+                          <option value="ipv6-ll" <?=$pconfig['ipproto'] == "ipv6-ll" ? "selected=\"selected\"" : "";?>><?= gettext('IPv6 Link-Local') ?></option>
                         </select>
                       </td>
                     </tr>
                     <tr>
                       <td><?=gettext("Source Address"); ?></td>
                       <td>
-                        <select name="sourceip" class="selectpicker">
-                          <option value=""><?= gettext('Any') ?></option>
-<?php
-                        foreach (get_possible_listen_ips(true) as $sip):?>
-                          <option value="<?=$sip['value'];?>" <?=!link_interface_to_bridge($sip['value']) && ($sip['value'] == $pconfig['sourceip']) ? "selected=\"selected\"" : "";?>>
-                            <?=htmlspecialchars($sip['name']);?>
+                        <select name="interface" class="selectpicker">
+                          <option value=""><?= gettext('Default') ?></option>
+<?php foreach (get_configured_interface_with_descr() as $ifname => $ifdescr): ?>
+                          <option value="<?= html_safe($ifname) ?>" <?= $ifname == $pconfig['interface'] ? 'selected="selected"' : '' ?>>
+                            <?= html_safe($ifdescr) ?>
                           </option>
-<?php
-                        endforeach; ?>
+<?php endforeach ?>
                         </select>
                       </td>
                     </tr>
@@ -167,30 +165,20 @@ include("head.inc");
                     <tr>
                       <td>&nbsp;</td>
                       <td>
-                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Traceroute"); ?>" />
+                        <button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= html_safe(gettext('Traceroute')) ?></button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </form>
-          </div>
         </div>
       </section>
-<?php
-      if ( $cmd_output !== false):?>
+<?php if (!empty($cmd_output)): ?>
       <section class="col-xs-12">
-        <div class="content-box">
-          <header class="content-box-head container-fluid">
-            <h3><?=gettext("Traceroute output"); ?></h3>
-          </header>
-          <div class="content-box-main col-xs-12">
-            <pre><?=$cmd_output;?></pre>
-          </div>
-        </div>
+        <pre><?=htmlspecialchars($cmd_output);?></pre>
       </section>
-<?php
-      endif;?>
+<?php endif ?>
     </div>
   </div>
 </section>

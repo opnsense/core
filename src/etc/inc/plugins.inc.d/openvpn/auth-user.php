@@ -58,7 +58,7 @@ function parse_auth_properties($props)
 {
     $result = array();
     if (!empty($props['Framed-IP-Address']) && !empty($props['Framed-IP-Netmask'])) {
-        $cidrmask = 32-log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255'))+1, 2);
+        $cidrmask = 32 - log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255')) + 1, 2);
         $result['tunnel_network'] = $props['Framed-IP-Address'] . "/" . $cidrmask;
     }
     if (!empty($props['Framed-Route']) && is_array($props['Framed-Route'])) {
@@ -79,6 +79,18 @@ if (count($argv) > 6) {
     $strictusercn = $argv[4] == 'false' ? false : true;
 
     $a_server = get_openvpn_server($modeid);
+    if (strpos($password, 'SCRV1:') === 0) {
+        // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
+        // validate and concat password into our default pin+password
+        $tmp = explode(':', $password);
+        if (count($tmp) == 3) {
+            $pass = base64_decode($tmp[1]);
+            $pin = base64_decode($tmp[2]);
+            if ($pass !== false && $pin !== false) {
+                $password = $pin . $pass;
+            }
+        }
+    }
 
     // primary input validation
     $error_message = null;
@@ -109,7 +121,7 @@ if (count($argv) > 6) {
     }
 
     // perform the actual authentication
-    $authFactory = new OPNsense\Auth\AuthenticationFactory;
+    $authFactory = new OPNsense\Auth\AuthenticationFactory();
     foreach ($authmodes as $authName) {
         $authenticator = $authFactory->get($authName);
         if ($authenticator) {
@@ -117,15 +129,19 @@ if (count($argv) > 6) {
                 $vpnid = filter_var($a_server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
                 // fetch or  create client specif override
                 $all_cso = openvpn_fetch_csc_list();
+                $common_name = empty($a_server['cso_login_matching']) ? $common_name : $username;
+                $login_type = empty($a_server['cso_login_matching']) ? "CN" : "USER";
                 if (!empty($all_cso[$vpnid][$common_name])) {
                     $cso = $all_cso[$vpnid][$common_name];
                 } else {
                     $cso = array("common_name" => $common_name);
                 }
+
                 $cso = array_merge($cso, parse_auth_properties($authenticator->getLastAuthProperties()));
                 $cso_filename = openvpn_csc_conf_write($cso, $a_server);
                 if (!empty($cso_filename)) {
-                    syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}' cso :{$cso_filename}");
+                    $tmp = empty($a_server['cso_login_matching']) ? "CSO [CN]" : "CSO [USER]";
+                    syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}' {$tmp}:{$cso_filename}");
                 } else {
                     syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}'");
                 }

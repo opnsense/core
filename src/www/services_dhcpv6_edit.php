@@ -1,41 +1,35 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
-
-function staticmapcmp($a, $b)
-{
-    return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -51,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // read form data
     $pconfig = array();
-    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domain');
+    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domain', 'domainsearchlist');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if]['staticmap'][$id][$fieldname];
@@ -61,6 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+
+    // backward compatibility: migrate 'domain' to 'domainsearchlist'
+    if (empty($pconfig['domainsearchlist'])) {
+        $pconfig['domainsearchlist'] = $pconfig['domain'];
+    }
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -91,8 +91,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("A valid IPv6 address must be specified.");
     }
 
-    if (empty($pconfig['duid']) || preg_match('/^([a-fA-F0-9]{2}[:])*([a-fA-F0-9]{2}){1}$/', $pconfig['duid']) !== 1) {
-        $input_errors[] = gettext("A valid DUID Identifier must be specified.");
+    if (!empty($pconfig['duid'])) {
+        $pconfig['duid'] = str_replace("-",":",$pconfig['duid']);
+        if( preg_match('/^([a-fA-F0-9]{2}[:])*([a-fA-F0-9]{2}){1}$/', $pconfig['duid']) !== 1) {
+            $input_errors[] = gettext("A valid DUID Identifier must be specified.");
+        }
+    }
+
+    if (!empty($pconfig['domainsearchlist'])) {
+        $domain_array=preg_split("/[ ;]+/",$pconfig['domainsearchlist']);
+        foreach ($domain_array as $curdomain) {
+            if (!is_domain($curdomain)) {
+                $input_errors[] = gettext("A valid domain search list must be specified.");
+                break;
+            }
+        }
     }
 
     /* check for overlaps */
@@ -108,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (count($input_errors) == 0) {
         $mapent = array();
-        $config_copy_fieldnames = array('duid', 'ipaddrv6', 'hostname', 'descr', 'filename', 'rootpath', 'domain');
+        $config_copy_fieldnames = array('duid', 'ipaddrv6', 'hostname', 'descr', 'filename', 'rootpath', 'domainsearchlist');
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $mapent[$fieldname] = $pconfig[$fieldname];
@@ -121,7 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dhcpdv6'][$if]['staticmap'][] = $mapent;
         }
 
-        usort($config['dhcpdv6'][$if]['staticmap'], "staticmapcmp");
+        usort($config['dhcpdv6'][$if]['staticmap'], function ($a, $b) {
+            return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
+        });
 
         write_config();
 
@@ -180,6 +195,9 @@ include("head.inc");
                         <?=gettext("If an IPv6 address is entered, the address must be outside of the pool.");?>
                         <br />
                         <?=gettext("If no IPv6 address is given, one will be dynamically allocated from the pool.");?>
+                        <br />
+                        <?= gettext("When using a static WAN address, this should be entered using the full IPv6 address. " .
+                        "When using a dynamic WAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
                       </div>
                     </td>
                   </tr>
@@ -189,15 +207,18 @@ include("head.inc");
                       <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
                       <div class="hidden" data-for="help_for_hostname">
                         <?=gettext("Name of the host, without domain part.");?>
+                        <?=gettext("If no IP address is given above, hostname will not be visible to DNS services with lease registration enabled.");?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
+                    <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                     <td>
-                      <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
-                      <div class="hidden" data-for="help_for_domain">
-                        <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
+                      <input name="domainsearchlist" type="text" value="<?=$pconfig['domainsearchlist'];?>" />
+                      <div class="hidden" data-for="help_for_domainsearchlist">
+                        <?=gettext("If you want to use a custom domain search list for this host, you may optionally specify one or multiple domains here. " .
+                        "Use the semicolon character as separator. The first domain in this list will also be used for DNS registration of this host if enabled. " .
+                        "If empty, the first domain in the interface's domain search list will be used. If this is empty, too, the system domain will be used.");?>
                       </div>
                     </td>
                   </tr>
@@ -234,8 +255,8 @@ include("head.inc");
                   <tr>
                     <td></td>
                     <td>
-                      <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/services_dhcpv6.php?if=<?= html_safe($if) ?>'" />
+                      <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                      <input type="button" class="formbtn btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/services_dhcpv6.php?if=<?= html_safe($if) ?>'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

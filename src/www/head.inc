@@ -25,7 +25,7 @@ if (isset($extraBreadcrumb)) {
 
 $themename = html_safe(get_current_theme());
 
-$pagetitle = gentitle(array_reverse($menuBreadcrumbs), ' | ');
+$pagetitle = html_safe(gentitle(array_reverse($menuBreadcrumbs), ' | '));
 $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
 ?><!doctype html>
@@ -45,7 +45,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -78,49 +78,51 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     </style>
 
     <!-- Favicon -->
-    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+    <link rel="shortcut icon" href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>">
+
+    <!-- legacy browser functions -->
+    <script src="<?= cache_safe("/ui/js/polyfills.js") ?>"></script>
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-select.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-select-1.13.3.css")) ?>">
 
     <!-- bootstrap dialog -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-dialog.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/css/font-awesome.min.css") ?>">
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
     <!-- nvd3 -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/nv.d3.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/nv.d3.css")) ?>">
 
     <!-- datepicker css -->
-    <link rel="stylesheet" type="text/css" href="<?=get_themed_filename("/css/bootstrap-datepicker3.min.css");?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-datepicker3.min.css")) ?>">
 
     <!-- JQuery -->
-    <script src="/ui/js/jquery-3.2.1.min.js"></script>
-    <script src="/ui/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="/ui/js/jquery-3.5.1.min.js"></script>
 
     <!-- datepicker -->
-    <script src="/ui/js/bootstrap-datepicker.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/bootstrap-datepicker.min.js") ?>"></script>
 
     <!-- d3 -->
-    <script src="/ui/js/d3.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/d3.min.js") ?>"></script>
 
     <!-- nvd3 -->
-    <script src="/ui/js/nv.d3.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/nv.d3.min.js") ?>"></script>
 
     <!-- append some helper functions to integrate into the legacy code -->
-    <script src="/javascript/opnsense_legacy.js"></script>
+    <script src="<?= cache_safe("/javascript/opnsense_legacy.js") ?>"></script>
 
     <!-- opnsense non legacy helper functions -->
-    <script src="/ui/js/opnsense.js"></script>
+    <script src="<?= cache_safe("/ui/js/opnsense.js") ?>"></script>
 
     <!-- opnsense non legacy theme support functions -->
-    <script src="/ui/js/opnsense_theme.js"></script>
+    <script src="<?= cache_safe("/ui/js/opnsense_theme.js") ?>"></script>
 
     <!-- Bootstrap type ahead -->
-    <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
+    <script src="<?= cache_safe("/ui/js/bootstrap3-typeahead.min.js") ?>"></script>
 
     <script>
     //<![CDATA[
@@ -187,6 +189,11 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         }
       });
 
+      $(".list-group-item.active").each(function(){
+          var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
+          $('html,aside').scrollTop(($(this).offset().top - navbar_center));
+      });
+
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
           type: 'get',
@@ -200,13 +207,13 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               var menusearch_items = [];
               $.each(data,function(idx, menu_item){
                   if (menu_item.Url != "") {
-                      menusearch_items.push({id:menu_item.Url, name:menu_item.breadcrumb});
+                      menusearch_items.push({id:$('<div/>').html(menu_item.Url).text(), name:menu_item.breadcrumb});
                   }
               });
               $("#menu_search_box").typeahead({
                   source: menusearch_items,
                   matcher: function (item) {
-                      var ar = this.query.trim()
+                      var ar = this.query.trim();
                       if (ar == "") {
                           return false;
                       }
@@ -249,9 +256,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     });
     //]]>
     </script>
-<?php
-    if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
-    <script src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
-<?php
-    endif;?>
+<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")): ?>
+    <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
+<?php endif ?>
 </head>

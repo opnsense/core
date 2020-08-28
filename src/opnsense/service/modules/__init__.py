@@ -23,6 +23,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
+import syslog
 
 
 def singleton(cls, *args, **kwargs):
@@ -38,3 +39,20 @@ def singleton(cls, *args, **kwargs):
         return instances[cls]
 
     return getinstance
+
+
+def emit_syslog(priority, message):
+    msg = message.replace('\n', ' ')[:4000]
+    syslog.syslog(priority, msg)
+
+def syslog_debug(message):
+    emit_syslog(syslog.LOG_DEBUG, message)
+
+def syslog_notice(message):
+    emit_syslog(syslog.LOG_NOTICE, message)
+
+def syslog_info(message):
+    emit_syslog(syslog.LOG_INFO, message)
+
+def syslog_error(message):
+    emit_syslog(syslog.LOG_ERR, message)

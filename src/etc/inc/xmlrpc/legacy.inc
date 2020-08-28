@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2015-2016 Deciso B.V.
-    Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015-2016 Deciso B.V.
+ * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 /**
  * request functions which may be registered by the xmlrpc system
@@ -43,10 +43,9 @@ function xmlrpc_publishable_legacy()
  * does_vip_exist($vip): return true or false if a vip is
  * configured.
  */
-function does_vip_exist($vip) {
-    global $config;
-
-    if(!$vip) {
+function does_vip_exist($vip)
+{
+    if (!$vip) {
         return false;
     }
 
@@ -65,8 +64,7 @@ function does_vip_exist($vip) {
             return false;
     }
 
-    $ifacedata = legacy_getall_interface_addresses($realif);
-    foreach ($ifacedata as $vipips) {
+    foreach (array_keys(interfaces_addresses($realif, true)) as $vipips) {
         if ($vipips == "{$vip['subnet']}/{$vip['subnet_bits']}") {
             return true;
         }
@@ -83,20 +81,21 @@ function does_vip_exist($vip) {
  */
 function merge_config_attributes(&$cnf_source, &$cnf_dest)
 {
-   foreach ($cnf_source as $cnf_key => &$cnf_value) {
-       if (is_array($cnf_value)) {
-           if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
+    foreach ($cnf_source as $cnf_key => &$cnf_value) {
+        if (is_array($cnf_value)) {
+            if (
+                !isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key][0])) || // sequenced item
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key]['@attributes']['uuid'])) // mvc array
-                ) {
-               // (re)set destination array when new or containing a sequenced list of items
-               $cnf_dest[$cnf_key] = array();
-           }
-           merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
-       } else {
-           $cnf_dest[$cnf_key] = $cnf_value;
-       }
-   }
+            ) {
+                // (re)set destination array when new or containing a sequenced list of items
+                $cnf_dest[$cnf_key] = array();
+            }
+            merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
+        } else {
+            $cnf_dest[$cnf_key] = $cnf_value;
+        }
+    }
 }
 
 /**
@@ -106,9 +105,9 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
 function firmware_version_xmlrpc()
 {
     return array(
-        'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
-        'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/kernel')),
-        'base' => array('version' => file_get_contents('/usr/local/opnsense/version/base')),
+        'base' => array('version' => trim(shell_exec('opnsense-version -v base'))),
+        'firmware' => array('version' => trim(shell_exec('opnsense-version -v core'))),
+        'kernel' => array('version' => trim(shell_exec('opnsense-version -v kernel'))),
     );
 }
 
@@ -118,22 +117,18 @@ function firmware_version_xmlrpc()
  */
 function filter_configure_xmlrpc()
 {
-    global $config;
-
     require_once("filter.inc");
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("services.inc");
-    require_once("rrd.inc");
 
     system_routing_configure();
-    setup_gateways_monitor();
+    plugins_configure('monitor');
     filter_configure();
     system_hosts_generate();
     local_sync_accounts();
+    plugins_configure('dhcp');
     plugins_configure('dns');
-    services_dhcpd_configure();
     plugins_configure('remote');
 
     return true;
@@ -149,7 +144,6 @@ function restore_config_section_xmlrpc($new_config)
     global $config;
 
     require_once("interfaces.inc");
-    require_once("services.inc");
     require_once("filter.inc");
 
     // save old config
@@ -168,13 +162,25 @@ function restore_config_section_xmlrpc($new_config)
         }
     }
 
+    $vhidVipsInNewConfig = [];
+    if (isset($new_config['virtualip']['vip'])) {
+        foreach ($new_config['virtualip']['vip'] as $vip) {
+            $vhidVipsInNewConfig[get_unique_vip_key($vip)] = $vip;
+        }
+    }
+
     $vipbackup = array();
     $oldvips = array();
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
-            if ($vip['mode'] == "carp") {
-                // rc.filter_synchronize only sends carp vips, keep the rest like it was
-                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = $vip ;
+            if (!empty($vip['vhid'])) {
+                // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
+                $vipKey = get_unique_vip_key($vip);
+                $oldvips[$vipKey] = $vip;
+                // Remove entries that are present locally, but are not present in the new config.
+                if (!array_key_exists($vipKey, $vhidVipsInNewConfig)) {
+                    unset($config['virtualip']['vip'][$vipindex]);
+                }
             } else {
                 $vipbackup[] = $vip;
             }
@@ -185,7 +191,7 @@ function restore_config_section_xmlrpc($new_config)
     merge_config_attributes($new_config, $config);
 
     if (count($vipbackup) > 0) {
-        // if $new_config contained VIPS and the old config contained non carp vips, prepend original vips
+        // if $new_config contained VIPs and the old config contained VIPs with no VHID, prepend original VIPs
         foreach ($vipbackup as $vip) {
             array_unshift($config['virtualip']['vip'], $vip);
         }
@@ -202,39 +208,40 @@ function restore_config_section_xmlrpc($new_config)
         $carp_setuped = false;
         $anyproxyarp = false;
         if (isset($config['virtualip']['vip'])) {
-          foreach ($config['virtualip']['vip'] as $vip) {
-              if ($vip['mode'] == "carp" && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
-                  $is_changed = false;
-                  foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
-                      if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"][$chk_key] != $vip[$chk_key]) {
-                          $is_changed = true;
-                          break;
-                      }
-                  }
-                  if (!$is_changed) {
-                      unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
-                      if (does_vip_exist($vip)) {
-                          continue; // Skip reconfiguring this vips since nothing has changed.
-                      }
-                  }
-              }
+            foreach ($config['virtualip']['vip'] as $vip) {
+                $vipKey = get_unique_vip_key($vip);
+                if (!empty($vip['vhid']) && isset($oldvips[$vipKey])) {
+                    $is_changed = false;
+                    foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
+                        if ($oldvips[$vipKey][$chk_key] != $vip[$chk_key]) {
+                            $is_changed = true;
+                            break;
+                        }
+                    }
+                    if (!$is_changed) {
+                        unset($oldvips[$vipKey]);
+                        if (does_vip_exist($vip)) {
+                            continue; // Skip reconfiguring this VIP since nothing has changed.
+                        }
+                    }
+                }
 
-              switch ($vip['mode']) {
-                  case "proxyarp":
-                      $anyproxyarp = true;
-                      break;
-                  case "ipalias":
-                      interface_ipalias_configure($vip);
-                      break;
-                  case "carp":
-                      $carp_setuped = true;
-                      interface_carp_configure($vip);
-                      break;
-              }
-          }
+                switch ($vip['mode']) {
+                    case "proxyarp":
+                        $anyproxyarp = true;
+                        break;
+                    case "ipalias":
+                        interface_ipalias_configure($vip);
+                        break;
+                    case "carp":
+                        $carp_setuped = true;
+                        interface_carp_configure($vip);
+                        break;
+                }
+            }
         }
 
-        // remove old (carp) virtual ip's
+        // remove old (carp/ipalias-with-vhid) virtual ip's
         foreach ($oldvips as $oldvip) {
             interface_vip_bring_down($oldvip);
         }
@@ -246,14 +253,22 @@ function restore_config_section_xmlrpc($new_config)
         if ($anyproxyarp) {
             interface_proxyarp_configure();
         }
-
     }
 
     if (isset($old_config['ipsec']['enable']) !== isset($config['ipsec']['enable'])) {
-        ipsec_configure_do();
+        plugins_configure('ipsec');
     }
 
     unset($old_config);
 
     return true;
+}
+
+function get_unique_vip_key($vip)
+{
+    if ($vip['mode'] === 'carp') {
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}";
+    } else {
+        return "{$vip['mode']}_{$vip['interface']}_vip{$vip['vhid']}_{$vip['subnet']}_{$vip['subnet_bits']}";
+    }
 }

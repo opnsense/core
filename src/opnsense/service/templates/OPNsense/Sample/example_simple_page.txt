@@ -10,7 +10,7 @@ version according to config.xml : {{ version|default('?') }}
 
 list of configured network interfaces :
 
-{% for key,item in interfaces.iteritems() %}
+{% for key,item in interfaces.items() %}
     interface {{ key }}
     --- interface {{ item.if }}
     --- address  {{ item.ipaddr }}

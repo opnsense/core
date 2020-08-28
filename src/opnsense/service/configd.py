@@ -1,8 +1,8 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
 
 """
-    Copyright (c) 2014-2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2014-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,16 +39,14 @@ import signal
 import time
 import socket
 import subprocess
+import syslog
 import modules.processhandler
 import modules.csconfigparser
 from modules.daemonize import Daemonize
 import cProfile
 
 # find program path
-if len(__file__.split('/')[:-1]) > 0:
-    program_path = '/'.join(__file__.split('/')[:-1])
-else:
-    program_path = os.getcwd()
+program_path = os.path.dirname(os.path.abspath(__file__))
 
 # set working directory to program_path
 sys.path.append(program_path)
@@ -125,6 +123,7 @@ this_config = get_config()
 validate_config(this_config)
 if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
     print('run %s in console mode' % sys.argv[0])
+    syslog.openlog("configd.py")
     if 'profile' in sys.argv[1:]:
         # profile configd
         # for graphical output use gprof2dot:

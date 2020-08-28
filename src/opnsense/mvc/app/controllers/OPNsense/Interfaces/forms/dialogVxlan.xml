@@ -1,0 +1,49 @@
+<form>
+    <field>
+        <id>vxlan.deviceId</id>
+        <label>deviceId</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>vxlan.vxlanid</id>
+        <label>VNI</label>
+        <type>text</type>
+        <help>VXLAN Network Identifier (VNI) that identifies the virtual network segment membership of the interface.</help>
+    </field>
+    <field>
+        <id>vxlan.vxlanlocal</id>
+        <label>Source address</label>
+        <type>text</type>
+        <help>
+          The source address used in the encapsulating IPv4/IPv6 header.
+          The address should already be assigned to an existing interface.
+          When the interface is configured in unicast mode, the listening socket is bound to this address.
+        </help>
+    </field>
+    <field>
+        <id>vxlan.vxlanremote</id>
+        <label>Remote address</label>
+        <type>text</type>
+        <help>
+          The interface can be configured in a unicast, or point-to-point, mode to create a tunnel between two hosts.
+          This is the IP address of the remote end of the tunnel.
+        </help>
+    </field>
+    <field>
+        <id>vxlan.vxlangroup</id>
+        <label>Multicast group</label>
+        <type>text</type>
+        <help>
+          The interface can be configured in a multicast mode to create a virtual network of hosts.
+          This is the IP multicast group address the interface will join.
+        </help>
+    </field>
+    <field>
+        <id>vxlan.vxlandev</id>
+        <label>Device</label>
+        <type>dropdown</type>
+        <help>
+          When the interface is configured in multicast mode, the dev interface is used to transmit IP multicast packets.
+        </help>
+    </field>
+</form>

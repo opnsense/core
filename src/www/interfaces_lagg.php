@@ -1,43 +1,44 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Ermal Luçi
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2008 Ermal Luçi
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 
-
-function lagg_inuse($lagg_intf) {
+function lagg_inuse($lagg_intf)
+{
     global $config;
-    $iflist = get_configured_interface_list(false, true);
-    foreach ($iflist as $if) {
+
+    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
         if ($config['interfaces'][$if]['if'] == $lagg_intf) {
             return true;
         }
     }
+
     if (isset($config['vlans']['vlan'])) {
         foreach ($config['vlans']['vlan'] as $vlan) {
             if($vlan['if'] == $lagg_intf) {
@@ -45,12 +46,14 @@ function lagg_inuse($lagg_intf) {
             }
         }
     }
+
     return false;
 }
 
-$a_laggs = &config_read_array('laggs', 'lagg') ;
+$a_laggs = &config_read_array('laggs', 'lagg');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     if (!empty($a_laggs[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -59,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (lagg_inuse($a_laggs[$id]['laggif'])) {
             $input_errors[] = gettext("This LAGG interface cannot be deleted because it is still being used.");
         } else {
-            mwexec_bg("/sbin/ifconfig " . escapeshellarg($a_laggs[$id]['laggif']) . " destroy");
+            mwexecf('/sbin/ifconfig %s destroy', $a_laggs[$id]['laggif']);
             unset($a_laggs[$id]);
             write_config();
             header(url_safe('Location: /interfaces_lagg.php'));

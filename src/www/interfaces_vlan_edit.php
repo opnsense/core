@@ -1,36 +1,35 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 $a_vlans = &config_read_array('vlans', 'vlan');
 
@@ -104,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     legacy_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
                     $confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
                 }
-                if ($confif <> "") {
+                if ($confif != '') {
                     $config['interfaces'][$confif]['if'] = "{$_POST['if']}_vlan{$_POST['tag']}";
                 }
                 $vlan['vlanif'] = interface_vlan_configure($vlan);
@@ -122,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             write_config();
 
-            if ($confif <> "") {
+            if ($confif != '') {
                 interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_vlan.php'));
@@ -132,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 include("head.inc");
+legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
@@ -162,22 +162,26 @@ include("head.inc");
                     <td>
                       <select name="if" class="selectpicker">
 <?php
-                      $portlist = get_interface_list();
-                      /* add LAGG interfaces */
-                      if (isset($config['laggs']['lagg'])) {
-                          foreach ($config['laggs']['lagg'] as $lagg) {
-                              $portlist[$lagg['laggif']] = $lagg;
+                      $all_interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                      $all_interface_data = legacy_interfaces_details();
+                      foreach ($all_interfaces as $intf) {
+                          if (!empty($intf['if']) && !empty($all_interface_data[$intf['if']])) {
+                              $all_interface_data[$intf['if']]['descr'] = $intf['descr'];
                           }
                       }
-                      foreach ($portlist as $ifn => $ifinfo): ?>
+                      foreach ($all_interface_data as $ifn => $ifinfo):
+                        if (strpos($ifn, "_vlan") > 1 || strpos($ifn, "lo") === 0 || strpos($ifn, "enc") === 0 ||
+                              strpos($ifn, "pflog") === 0 || strpos($ifn, "pfsync") === 0 ||
+                              strpos($ifn, "ipsec") === 0){
+                            continue;
+                        }?>
+
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? " selected=\"selected\"" : "";?>>
                           <?=htmlspecialchars($ifn);?>
-                          ( <?= !empty($ifinfo['mac']) ? $ifinfo['mac'] :"" ;?> )
+                          ( <?= !empty($ifinfo['macaddr']) ? $ifinfo['macaddr'] :"" ;?> )
 <?php
-                          if (!empty($ifinfo['friendly'])):?>
-                          [
-                          <?=!empty($config['interfaces'][$ifinfo['friendly']]['descr']) ? htmlspecialchars($config['interfaces'][$ifinfo['friendly']]['descr']) : $ifinfo['friendly'];?>
-                          ]
+                          if (!empty($ifinfo['descr'])):?>
+                          [<?=htmlspecialchars($ifinfo['descr']);?>]
 <?php
                           endif;?>
                         </option>
@@ -203,9 +207,9 @@ include("head.inc");
                     <td><a id="help_for_pcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN priority");?></td>
                     <td>
                       <select name="pcp">
-<? foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
+<?php foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
                         <option value="<?=$pcp;?>"<?=($pconfig['pcp'] == $pcp ? ' selected="selected"' : '');?>><?=htmlspecialchars($priority);?></option>
-<? endforeach ?>
+<?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_pcp">
                         <?=gettext('802.1Q VLAN PCP (priority code point)');?>
@@ -225,8 +229,8 @@ include("head.inc");
                     <td style="width:22%">&nbsp;</td>
                     <td style="width:78%">
                       <input type="hidden" name="vlanif" value="<?=$pconfig['vlanif']; ?>" />
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_vlan.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_vlan.php'" />
                       <?php if (isset($id)): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

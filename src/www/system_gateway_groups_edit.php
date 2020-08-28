@@ -1,38 +1,37 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
-$a_gateways = return_gateways_array();
+$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && isset($a_gateway_groups[$_GET['id']])) {
@@ -100,9 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['item'] = array();
     foreach ($a_gateways as $gwname => $gateway) {
         if (isset($pconfig[$gwname]) && $pconfig[$gwname] > 0) {
-            $vipname = "{$gwname}_vip";
             /* we have a priority above 0 (disabled), add item to list */
-            $pconfig['item'][] = "{$gwname}|{$pconfig[$gwname]}|{$pconfig[$vipname]}";
+            $pconfig['item'][] = "{$gwname}|{$pconfig[$gwname]}";
         }
         /* check for overlaps */
         if ($pconfig['name'] == $gwname) {
@@ -127,9 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_gateway_groups[] = $gateway_group;
         }
 
-        mark_subsystem_dirty('staticroutes');
-        mark_subsystem_dirty('gwgroup.' . $gateway_group['name']);
-
+        mark_subsystem_dirty('gwgroups');
         write_config();
 
         header(url_safe('Location: /system_gateway_groups.php'));
@@ -139,8 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
-
-$service_hook = 'apinger';
 
 include("head.inc");
 
@@ -193,19 +187,10 @@ $( document ).ready(function() {
                         <tr>
                           <td><?= gettext('Gateway') ?></td>
                           <td><?= gettext('Tier') ?></td>
-                          <td><?= gettext('Virtual IP') ?></td>
                           <td><?= gettext('Description') ?></td>
                         </tr>
 <?php
-                        foreach ($a_gateways as $gwname => $gateway):
-                        if (!empty($pconfig['item'])) {
-                            $af = explode("|", $pconfig['item'][0]);
-                            $family = $a_gateways[$af[0]]['ipprotocol'];
-                            if ($gateway['ipprotocol'] != $family) {
-                                continue;
-                            }
-                        }
-?>
+                        foreach ($a_gateways as $gwname => $gateway):?>
                         <tr>
                           <td><strong><?=$gateway['name'];?></strong></td>
                           <td>
@@ -225,39 +210,6 @@ $( document ).ready(function() {
                                 </option>
 <?php
                               endfor;?>
-                            </select>
-                          </td>
-                          <td>
-                            <select name="<?=$gwname;?>_vip" class="selectpicker" data-width="auto">
-<?php
-                              $selected_key = 'address';
-                              foreach ((array)$pconfig['item'] as $item) {
-                                  $itemsplit = explode("|", $item);
-                                  if ($itemsplit[0] == $gwname) {
-                                      $selected_key = $itemsplit[2];
-                                      break;
-                                  }
-                              }?>
-                              <option value="address" <?=$selected_key == "address" ? "selected=\"selected\"" :"";?> >
-                                <?=gettext("Interface Address");?>
-                              </option>
-<?php
-                              foreach (get_configured_carp_interface_list() as $vip => $address):
-                                  if (!preg_match("/^{$gateway['friendlyiface']}_/i", $vip)) {
-                                      continue;
-                                  }
-                                  if (($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address))) {
-                                      continue;
-                                  }
-                                  if (($gateway['ipprotocol'] == "inet6") && (!is_ipaddrv6($address))) {
-                                      continue;
-                                  }?>
-                                  <option value="<?=$vip;?>" <?=$selected_key == $vip ? "selected=\"selected\"" :"";?> >
-                                    <?=$vip;?> - <?=$address;?>
-                                  </option>
-<?php
-                              endforeach;?>
-
                             </select>
                           </td>
                           <td><strong><?=$gateway['descr'];?></strong></td>
@@ -304,8 +256,8 @@ $( document ).ready(function() {
                   <tr>
                     <td></td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_gateway_groups.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext("Cancel"));?>" onclick="window.location.href='/system_gateway_groups.php'" />
 <?php
                       if (isset($id)) :?>
                       <input name="id" type="hidden" value="<?=$id;?>" />

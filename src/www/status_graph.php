@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2017 Deciso B.V.
-    Copyright (C) 2017 Jeffrey Gentes
-    Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2017 Deciso B.V.
+ * Copyright (C) 2017 Jeffrey Gentes
+ * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once('interfaces.inc');
@@ -85,11 +85,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // top data
         $result = array();
         $real_interface = get_real_interface($pconfig['if']);
-        if (does_interface_exist($real_interface)) {
-            $netmask = find_interface_subnet($real_interface);
-            $intsubnet = gen_subnet(find_interface_ip($real_interface), $netmask) . "/$netmask";
-            $cmd_args = $pconfig['filter'] == "local" ? " -c " . $intsubnet . " " : " -lc 0.0.0.0/0 ";
-            $cmd_args .= $pconfig['sort'] == "out" ? " -T " : " -R ";
+        $intsubnet = find_interface_network($real_interface);
+        if (is_subnetv4($intsubnet)) {
+            $cmd_args = $pconfig['sort'] == 'out' ? ' -T' : ' -R';
+
+            switch ($pconfig['filter']) {
+              case 'local':
+                $cmd_args .= exec_safe(' -c %s', $intsubnet);
+                break;
+              case 'private':
+                $cmd_args .= ' -c 172.16.0.0/12 -c 192.168.0.0/16 -c 10.0.0.0/8';
+                break;
+              default:
+                $cmd_args .= ' -lc 0.0.0.0/0';
+                break;
+            }
+
             $cmd_action = "/usr/local/bin/rate -v -i {$real_interface} -nlq 1 -Aba 20 {$cmd_args} | tr \"|\" \" \" | awk '{ printf \"%s:%s:%s:%s:%s\\n\", $1,  $2,  $4,  $6,  $8 }'";
             exec($cmd_action, $listedIPs);
             for ($idx = 2 ; $idx < count($listedIPs) ; ++$idx) {
@@ -135,6 +146,9 @@ include("head.inc");
     padding: 0px;
     margin: 0px;
     margin-bottom: -5px;
+}
+.table-striped select {
+  max-width: none;
 }
 </style>
 <script>
@@ -252,7 +266,7 @@ include("head.inc");
                         })
                         .y(function(d) {
                             return y(d);
-                        })
+                        });
                     var svg = document.createElementNS(d3.ns.prefix.svg, 'g');
                     var graphIn = d3.select(svg).append("svg:svg")
                           .attr("width", w + m[1] + m[3] + "px")
@@ -348,6 +362,9 @@ include("head.inc");
                       <select id="filter" name="filter">
                         <option value="local" <?=$pconfig['filter'] == "local" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('Local') ?>
+                        </option>
+                        <option value="private" <?=$pconfig['filter'] == "private" ? " selected=\"selected\"" : "";?>>
+                          <?= gettext('RFC1918 Private Networks') ?>
                         </option>
                         <option value="all" <?=$pconfig['filter'] == "all" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('All') ?>

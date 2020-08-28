@@ -9,7 +9,7 @@ all of the config.xml data when rendering this template, we have to filter the p
 
 For example, only use this interfaces data:
 
-{% for key,item in interfaces.iteritems() %}
+{% for key,item in interfaces.items() %}
     {% if TARGET_FILTERS['interfaces.'+key] %}
        my interface name is {{ key }}, connected to {{ item.if }} using {{ item.ipaddr }}
     {% endif %}

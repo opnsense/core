@@ -1,32 +1,32 @@
 <?php
 
 /*
-    Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
-    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 function ntpd_enabled()
 {
@@ -76,7 +76,7 @@ function ntpd_configure_gps($serialport)
 {
     global $config;
     $gps_device = '/dev/gps0';
-    $serialport = '/dev/'.$serialport;
+    $serialport = '/dev/' . $serialport;
 
     if (!file_exists($serialport)) {
         return false;
@@ -151,15 +151,15 @@ function ntpd_configure_pps($serialport)
 
 function ntpd_configure_start($verbose = false)
 {
-    ntpd_configure_do(true, $verbose);
+    ntpd_configure_do($verbose, true);
 }
 
 function ntpd_configure_defer($verbose = false)
 {
-    ntpd_configure_do(false, $verbose);
+    ntpd_configure_do($verbose, false);
 }
 
-function ntpd_configure_do($start_ntpd = true, $verbose = false)
+function ntpd_configure_do($verbose = false, $start_ntpd = true)
 {
     global $config;
 
@@ -178,7 +178,6 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
 
     $driftfile = '/var/db/ntpd.drift';
     $statsdir = '/var/log/ntp';
-    $gps_device = '/dev/gps0';
 
     @mkdir($statsdir, 0755);
 
@@ -200,9 +199,11 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
     $ntpcfg .= "\n";
 
     /* Add PPS configuration */
-    if (!empty($config['ntpd']['pps'])
-      && file_exists('/dev/'.$config['ntpd']['pps']['port'])
-      && ntpd_configure_pps($config['ntpd']['pps']['port'])) {
+    if (
+        !empty($config['ntpd']['pps'])
+        && file_exists('/dev/' . $config['ntpd']['pps']['port'])
+        && ntpd_configure_pps($config['ntpd']['pps']['port'])
+    ) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# PPS Setup\n";
         $ntpcfg .= 'server 127.127.22.0';
@@ -242,15 +243,19 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
     /* End PPS configuration */
 
     /* Add GPS configuration */
-    if (isset($config['ntpd']['gps']['port'])
-      && file_exists('/dev/'.$config['ntpd']['gps']['port'])
-      && ntpd_configure_gps($config['ntpd']['gps']['port'])) {
+    if (
+        isset($config['ntpd']['gps']['port'])
+        && file_exists('/dev/' . $config['ntpd']['gps']['port'])
+        && ntpd_configure_gps($config['ntpd']['gps']['port'])
+    ) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# GPS Setup\n";
         $ntpcfg .= 'server 127.127.20.0 mode ';
-        if (!empty($config['ntpd']['gps']['nmea']) ||
+        if (
+            !empty($config['ntpd']['gps']['nmea']) ||
             !empty($config['ntpd']['gps']['speed']) ||
-            !empty($config['ntpd']['gps']['subsec'])) {
+            !empty($config['ntpd']['gps']['subsec'])
+        ) {
             if (!empty($config['ntpd']['gps']['nmea'])) {
                 $ntpmode = (int) $config['ntpd']['gps']['nmea'];
             }
@@ -330,9 +335,11 @@ function ntpd_configure_do($start_ntpd = true, $verbose = false)
     /* prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04 */
     $ntpcfg .= "disable monitor\n";
 
-    if (!empty($config['ntpd']['clockstats']) ||
+    if (
+        !empty($config['ntpd']['clockstats']) ||
         !empty($config['ntpd']['loopstats']) ||
-        !empty($config['ntpd']['peerstats'])) {
+        !empty($config['ntpd']['peerstats'])
+    ) {
         $ntpcfg .= "enable stats\n";
         $ntpcfg .= 'statistics';
         if (!empty($config['ntpd']['clockstats'])) {

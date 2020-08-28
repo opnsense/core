@@ -4,7 +4,8 @@
         <patterns>
             <pattern>ui/proxy/*</pattern>
             <pattern>api/proxy/*</pattern>
-            <pattern>diag_logs_proxy.php*</pattern>
+            <pattern>ui/diagnostics/log/squid/*</pattern>
+            <pattern>api/diagnostics/log/squid/*</pattern>
         </patterns>
     </page-services-proxy>
 </acl>

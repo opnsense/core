@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
+    Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -194,7 +194,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ". gettext("Address:"); ?></td>
                     <td>
-                      <table style="border:0; cellspacing:0; cellpadding:0">
+                      <table style="border:0;">
                         <tr>
                           <td style="width:348px">
                             <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
@@ -232,7 +232,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ". gettext("Address:"); ?></td>
                     <td>
-                      <table style="border:0; cellspacing:0; cellpadding:0">
+                      <table style="border:0;">
                         <tr>
                           <td style="width:348px">
                             <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Source address");?>"/>
@@ -262,8 +262,8 @@ include("head.inc");
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_nat_npt.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_nat_npt.php'" />
                       <?php if (isset($id)): ?>
                         <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
                       <?php endif; ?>

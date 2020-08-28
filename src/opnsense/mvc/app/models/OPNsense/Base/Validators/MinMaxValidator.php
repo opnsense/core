@@ -27,11 +27,12 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\Validators;
 
-use \Phalcon\Validation\Validator;
-use \Phalcon\Validation\ValidatorInterface;
-use \Phalcon\Validation\Message;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
+use Phalcon\Validation\Message;
 
 /**
  * Class MinMaxValidator

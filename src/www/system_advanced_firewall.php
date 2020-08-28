@@ -1,39 +1,37 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("gwlb.inc");
-require_once("rrd.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -53,9 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
     $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
-    $pconfig['kill_states'] = isset($config['system']['kill_states']);
+    $pconfig['kill_states'] = !empty($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
-    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
@@ -64,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
-    $pconfig['prefer_dpinger'] = isset($config['system']['prefer_dpinger']);
     $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -218,20 +214,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['skip_rules_gw_down']);
         }
 
-        if (!empty($pconfig['gw_switch_default'])) {
-            $config['system']['gw_switch_default'] = true;
-        } elseif (isset($config['system']['gw_switch_default'])) {
-            unset($config['system']['gw_switch_default']);
-        }
-
-        $old_pinger = isset($config['system']['prefer_dpinger']);
-
-        if (!empty($pconfig['prefer_dpinger'])) {
-            $config['system']['prefer_dpinger'] = true;
-        } elseif (isset($config['system']['prefer_dpinger'])) {
-            unset($config['system']['prefer_dpinger']);
-        }
-
         if (!empty($pconfig['ip_change_kill_states'])) {
             $config['system']['ip_change_kill_states'] = true;
         } elseif (isset($config['system']['ip_change_kill_states'])) {
@@ -244,12 +226,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_cron_configure();
         filter_configure();
-
-        if ($old_pinger != isset($config['system']['prefer_dpinger'])) {
-            mwexec('rm /var/db/rrd/*-quality.rrd');
-            setup_gateways_monitor();
-            rrd_configure();
-        }
     }
 }
 
@@ -257,7 +233,11 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 ?>
-
+<script>
+    $( document ).ready(function() {
+        window_highlight_table_option();
+    });
+</script>
 <body>
 <?php include("fbegin.inc"); ?>
   <!-- row -->
@@ -390,28 +370,6 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
-              <tr>
-                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
-                <td>
-                  <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
-                  <?=gettext("Allow default gateway switching"); ?>
-                  <div class="hidden" data-for="help_for_gw_switch_default">
-                    <?= gettext('If the link where the default gateway resides fails switch the default gateway to another available one.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_prefer_dpinger" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Monitoring daemon') ?></td>
-                <td>
-                  <input name="prefer_dpinger" type="checkbox" id="prefer_dpinger" value="yes" <?= !empty($pconfig['prefer_dpinger']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Prefer Dpinger over Apinger') ?>
-                  <div class="hidden" data-for="help_for_prefer_dpinger">
-                    <?=gettext("By default, the system will use Apinger for gateway monitoring. ".
-                                        "Switching from one to the other will result in the loss of " .
-                                        "any existing quality RRD data."); ?>
-                  </div>
-                </td>
-              </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
@@ -433,7 +391,12 @@ include("head.inc");
                                         "refer to this connection. Once the states expire, so will " .
                                         "the sticky connection. Further connections from that host " .
                                         "will be redirected to the next gateway in the round-robin."); ?>
-                  </div><br/>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
                   <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
                   <div class="hidden" data-for="help_for_lb_use_sticky">
                     <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
@@ -463,7 +426,7 @@ include("head.inc");
                   <div class="hidden" data-for="help_pf_disable_force_gw">
                     <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
                                 'will normally use the specified gateway for that interface. ' .
-                                'When this option is set, the default routing rules apply (automatic rules will be disabled).') ?>
+                                'When this option is set the route will be selected by the system routing table instead.') ?>
                   </div>
                 </td>
               </tr>
@@ -733,7 +696,7 @@ include("head.inc");
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td style="width:22%"></td>
-                <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
+                <td style="width:78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" /></td>
               </tr>
             </table>
           </div>

@@ -42,9 +42,21 @@ extra_commands="status"
 [ -z "$netflow_enable" ] && netflow_enable="NO"
 [ -z "$netflow_egress_only" ] && netflow_egress_only=""
 
-# setup_interface (interface)
-# - use netgraph + ng_netflow in combination with samplicate to record netflow data and send it to multiple locations
-setup_interface()
+# netflow_node_error (interface, message)
+# - shutdown the netflow node on error to avoid connection problems
+#   with unassigned hooks
+netflow_node_error()
+{
+    interface=$1
+    message=$2
+    echo "error $interface: $message"
+    /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
+}
+
+# netflow_setup_interface (interface)
+# - use netgraph + ng_netflow in combination with samplicate to record netflow
+#   data and send it to multiple locations
+netflow_setup_interface()
 {
     # set netflow version (export keyword)
     if [ "$netflow_version" == "9" ]; then
@@ -57,8 +69,7 @@ setup_interface()
     # determine (snmp) ifIndex
     ifIndex=0
     found=0
-    for item in `/sbin/ifconfig -l`
-    do
+    for item in $(/sbin/ifconfig -l); do
        let ifIndex = ifIndex + 1  > /dev/null 2>&1
        if [ "$item" = "$interface" ]; then
            found=1
@@ -73,7 +84,7 @@ setup_interface()
 
     # disable ingress (traffic to this host) for selected interfaces
     # avoids counting traffic going through this firewall double when using nat
-    if [ ! -z "`echo " $netflow_egress_only " | grep " $interface "`" ]; then
+    if [ -n "$(echo " $netflow_egress_only " | grep " $interface ")" ]; then
         conf="10"
         echo "setup $interface [egress only]"
     else
@@ -83,33 +94,74 @@ setup_interface()
 
     # remove earlier setup (if any)
     /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
-    # configure netflow for this interface, sending all to localhost
-    /usr/sbin/ngctl -f-  <<-SEQ
-       mkpeer $interface: netflow	lower iface$ifIndex
-       name	$interface:lower netflow_$interface
-       connect $interface: netflow_$interface: upper	out$ifIndex
-       mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp
-       msg netflow_$interface: setconfig {iface=$ifIndex conf=$conf}
-       msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
-SEQ
+
+    # configure netflow for this interface
+    # ng_ether:lower <-> ng_netflow:ifaceX <-> ng_netflow:export <-> ng_netflow:outX <-> ng_ether:upper
+
+    # create ng_netflow node and connect ifaceX hook with ng_ether lower hook
+    if ! /usr/sbin/ngctl mkpeer $interface: netflow lower iface$ifIndex; then
+      netflow_node_error $interface "cannot create netflow node for $interface"
+      return
+    fi
+    # set a name for the netflow node
+    if ! /usr/sbin/ngctl name $interface:lower netflow_$interface; then
+      netflow_node_error $interface "cannot set name for $interface:lower"
+      return
+    fi
+    # connect ng_netflow outX hook with ng_ether upper hook to reinject the packets
+    if ! /usr/sbin/ngctl connect $interface: netflow_$interface: upper out$ifIndex; then
+      netflow_node_error $interface "cannot connect $interface:upper with out$ifIndex"
+      return
+    fi
+    # set timeouts
+    if ! /usr/sbin/ngctl msg netflow_$interface: settimeouts { inactive=$netflow_inactive_timeout active=$netflow_active_timeout }; then
+      netflow_node_error $interface "cannot set timouts"
+      return
+    fi
+    # configure ingress
+    if ! /usr/sbin/ngctl msg netflow_$interface: setconfig {iface=$ifIndex conf=$conf}; then
+      netflow_node_error $interface "cannot configure ingress"
+      return
+    fi
+    # create a ng_ksocket node to export the NetFlow datagrams from ng_netflow
+    if ! /usr/sbin/ngctl mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp; then
+      netflow_node_error $interface "cannot create ksocket node for netflow_$interface"
+      return
+    fi
+    # set a name for the ksocket node
+    if ! /usr/sbin/ngctl name netflow_$interface:export$nfversion ksocket_netflow_$interface; then
+      netflow_node_error $interface "cannot set name for netflow_$interface:export$nfversion"
+      return
+    fi
+    # connect the ng_ksocket with the NetFlow destination
+    if ! /usr/sbin/ngctl msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination; then
+      netflow_node_error $interface "cannot connect socket_netflow_$interface with inet/$netflow_int_destination"
+      return
+    fi
 }
 
 netflow_start()
 {
-    is_running=`ngctl list | grep netflow_ | wc -l`
+    is_running=$(ngctl list | grep netflow_ | wc -l)
+
     if [ $is_running -ne 0 ]; then
         echo "already running"
         return
     fi
+
+    if ! kldstat -qm ng_ether; then
+        kldload ng_ether
+    fi
+
     # configure interfaces
-    for interface in $netflow_interfaces
-    do
-          setup_interface "$interface"
+    for interface in $netflow_interfaces; do
+        netflow_setup_interface "$interface"
     done
+
     # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
     if [ "$netflow_destinations" != "" ]; then
-        netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`
-        destinations=`echo $netflow_destinations | /usr/bin/sed 's/:/\//g'`
+        netflow_port=$(echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}')
+        destinations=$(echo $netflow_destinations | /usr/bin/sed 's/:/\//g')
         /usr/sbin/daemon -p /var/run/netflow_samplicate.pid -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
     fi
 
@@ -120,12 +172,11 @@ netflow_stop()
 {
     # kill all samplicate process
     if [ -f /var/run/netflow_samplicate.pid ]; then
-        kill -9 `cat /var/run/netflow_samplicate.pid`
+        kill -9 $(cat /var/run/netflow_samplicate.pid)
     fi
 
     # cleanup netflow processes
-    for netflow_node in `/usr/sbin/ngctl list | grep netflow_ | awk '{print $2;}'`
-    do
+    for netflow_node in $(/usr/sbin/ngctl list | grep "Type: netflow" | awk '{print $2;}'); do
         /usr/sbin/ngctl shutdown  $netflow_node:
     done
 }
@@ -133,7 +184,7 @@ netflow_stop()
 # netflow status
 netflow_status()
 {
-    flows=`/usr/sbin/ngctl list | grep netflow_ | wc -l | /usr/bin/awk '{print $1}'`
+    flows=$(/usr/sbin/ngctl list | grep netflow_ | wc -l | /usr/bin/awk '{print $1}')
     if [ $flows -eq 0 ]; then
         echo "netflow is not active"
     else

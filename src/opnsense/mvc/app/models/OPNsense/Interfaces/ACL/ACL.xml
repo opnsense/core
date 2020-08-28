@@ -1,0 +1,16 @@
+<acl>
+    <page-interfaces-vxlan>
+        <name>Interfaces: VXLAN</name>
+        <patterns>
+            <pattern>ui/interfaces/vxlan</pattern>
+            <pattern>api/interfaces/vxlan</pattern>
+        </patterns>
+    </page-interfaces-vxlan>
+    <page-interfaces-loopback>
+        <name>Interfaces: Loopback</name>
+        <patterns>
+            <pattern>ui/interfaces/loopback</pattern>
+            <pattern>api/interfaces/loopback</pattern>
+        </patterns>
+    </page-interfaces-loopback>
+</acl>

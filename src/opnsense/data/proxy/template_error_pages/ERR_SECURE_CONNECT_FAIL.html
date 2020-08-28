@@ -1,0 +1,43 @@
+
+<html><head>
+<meta type="copyright" content="Copyright (C) 1996-2020 The Squid Software Foundation and contributors">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ERROR: The requested URL could not be retrieved</title>
+<!--EMBED:start-->
+<!-- leave this block as is, our parser will convert links to inline content -->
+<link rel="stylesheet" type="text/css" href="errorpage.css">
+<!--EMBED:end -->
+</head><body id="%c">
+<div id="titles">
+<h1>ERROR</h1>
+<h2>The requested URL could not be retrieved</h2>
+</div>
+<hr>
+
+<div id="content">
+<p>The following error was encountered while trying to retrieve the URL: <a href="%U">%U</a></p>
+
+<blockquote id="error">
+<p><b>Failed to establish a secure connection to %I</b></p>
+</blockquote>
+
+<div id="sysmsg">
+<p>The system returned:</p>
+<blockquote id="data">
+<pre>%E (TLS code: %x)</pre>
+<p>%D</p>
+</blockquote>
+</div>
+
+<p>This proxy and the remote host failed to negotiate a mutually acceptable security settings for handling your request. It is possible that the remote host does not support secure connections, or the proxy is not satisfied with the host security credentials.</p>
+
+<p>Your cache administrator is <a href="mailto:%w%W">%w</a>.</p>
+<br>
+</div>
+
+<hr>
+<div id="footer">
+<p>Generated %T by %h (%s)</p>
+<!-- %c -->
+</div>
+</body></html>

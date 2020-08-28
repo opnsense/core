@@ -61,18 +61,44 @@
                     </check001>
                 </Constraints>
             </value3>
-            <value4 type="TextField">
+        </AllOrNone>
+        <SingleSelect>
+            <value1 type="TextField">
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Only one option could be selected</ValidationMessage>
+                        <type>SingleSelectConstraint</type>
+                        <addFields>
+                            <field2>value2</field2>
+                            <field3>value3</field3>
+                        </addFields>
+                    </check001>
+                </Constraints>
+            </value1>
+            <value2 type="TextField">
                 <Constraints>
                     <check001>
                         <reference>value1.check001</reference>
                     </check001>
                 </Constraints>
-            </value4>
-        </AllOrNone>
+            </value2>
+            <value3 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value3>
+        </SingleSelect>
         <DependConstraint>
             <value1 type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>value2.check001</reference>
+                    </check001>
+                </Constraints>
             </value1>
             <value2 type="TextField">
                 <Constraints>
@@ -86,5 +112,10 @@
                 </Constraints>
             </value2>
         </DependConstraint>
+        <simpleList>
+            <items type="ArrayField">
+                <number type="IntegerField"/>
+            </items>
+        </simpleList>
     </items>
 </model>

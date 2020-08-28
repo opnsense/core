@@ -51,7 +51,7 @@ function htmlDecode(value) {
 function getFormData(parent) {
 
     var data = {};
-    $( "#"+parent+"  input,#"+parent+" select,#"+parent+" textarea" ).each(function( index ) {
+    $("#"+parent+" input,#"+parent+" select,#"+parent+" textarea" ).each(function() {
         if ($(this).prop('id') === undefined || $(this).prop('id') === "") {
             // we need an id.
             return;
@@ -59,16 +59,16 @@ function getFormData(parent) {
         var node = data; // target node
         var sourceNode = $(this); // document node to fetch data from
         var keyparts = sourceNode.prop('id').split('.');
-        $.each(keyparts,function(indx,keypart){
+        $.each(keyparts,function(index,keypart){
             if (!(keypart in node)) {
                 node[keypart] = {};
             }
-            if (indx < keyparts.length - 1 ) {
+            if (index < keyparts.length - 1 ) {
                 node = node[keypart];
             } else {
                 if (sourceNode.is("select")) {
                     var separator = ",";
-                    if (sourceNode.data('separator') != undefined) {
+                    if (sourceNode.data('separator') !== undefined) {
                         // select defined it's own separator
                         separator = sourceNode.data('separator');
                         if (separator.match(/#[0-9]{1,3}/g)) {
@@ -80,18 +80,21 @@ function getFormData(parent) {
                     var tmp_str = "";
                     sourceNode.children().each(function(index){
                         if ($(this).prop("selected")){
-                            if (tmp_str != "") tmp_str = tmp_str + separator;
+                            if (tmp_str !== "") tmp_str = tmp_str + separator;
                             tmp_str = tmp_str + $(this).val();
                         }
                     });
                     node[keypart] = tmp_str;
-                } else if (sourceNode.prop("type") == "checkbox") {
+                } else if (sourceNode.prop("type") === "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
                         node[keypart] = "1";
                     } else {
                         node[keypart] = "0";
                     }
+                } else if (sourceNode.hasClass("json-data")) {
+                    // deserialize the field content - used for JS maintained fields
+                    node[keypart] = sourceNode.data('data');
                 } else {
                     // regular input type
                     node[keypart] = sourceNode.val();
@@ -116,42 +119,47 @@ function getFormData(parent) {
  * @param data named array structure
  */
 function setFormData(parent,data) {
-    $( "#"+parent+"  input,#"+parent+" select,#"+parent+" span,#"+parent+" textarea" ).each(function( index ) {
-        if ($(this).prop('id') == undefined || $(this).prop('id') == "") {
+    $("#"+parent+"  input,#"+parent+" select,#"+parent+" span,#"+parent+" textarea").each(function() {
+        if ($(this).prop('id') === undefined || $(this).prop('id') === "") {
             // we need an id.
             return;
         }
         var node = data;
         var targetNode = $(this); // document node to fetch data to
         var keyparts = $(this).prop('id').split('.');
-        $.each(keyparts,function(indx,keypart){
+        $.each(keyparts,function(index,keypart){
             if (keypart in node) {
-                if (indx < keyparts.length - 1) {
+                if (index < keyparts.length - 1) {
                     node = node[keypart];
                 } else {
                     // data node found, handle per type
                     if (targetNode.is("select")) {
                         // handle select boxes
+                        if (targetNode.find('option').length > 0 && targetNode.hasClass("tokenize")) {
+                            // when setting the same content twice to a widget, tokenize2 sorting mixes up.
+                            // Ideally formatTokenizersUI() or tokenize2 should handle this better, but for now
+                            // this seems like the only fix that actually works.
+                            targetNode.tokenize2().trigger('tokenize:clear');
+                        }
                         targetNode.empty(); // flush
                         $.each(node[keypart],function(indxItem, keyItem){
+                            var opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
                             if (keyItem["selected"] != "0") {
-                                targetNode.append("<option value='"+indxItem+"' selected>" + keyItem["value"] + " </option>");
-                            } else {
-                                targetNode.append("<option value='"+indxItem+"'>" + keyItem["value"] + " </option>");
+                                opt.attr('selected', 'selected');
                             }
+                            targetNode.append(opt);
                         });
-                    } else if (targetNode.prop("type") == "checkbox") {
+                    } else if (targetNode.prop("type") === "checkbox") {
                         // checkbox type
-                        if (node[keypart] != 0) {
-                            targetNode.prop("checked",true);
-                        } else {
-                            targetNode.prop("checked",false);
-                        }
+                        targetNode.prop("checked", node[keypart] != 0);
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
                             targetNode.text("");
                             targetNode.append(htmlDecode(node[keypart]));
                         }
+                    } else if (targetNode.hasClass('json-data')) {
+                        // if the input field is JSON data, serialize the data into the field
+                        targetNode.data('data', node[keypart]);
                     } else {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
@@ -170,8 +178,8 @@ function setFormData(parent,data) {
  * @param validationErrors
  */
 function handleFormValidation(parent,validationErrors) {
-    $( "#"+parent).find("*").each(function( index ) {
-        if (validationErrors != undefined && $(this).prop('id') in validationErrors) {
+    $( "#"+parent).find("*").each(function() {
+        if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
             $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
             $("span[id='help_block_" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
@@ -198,17 +206,17 @@ function clearFormValidation(parent) {
  */
 function ajaxCall(url, sendData, callback) {
     return $.ajax({
-        type: "POST",
+        type: 'POST',
         url: url,
-        dataType:"json",
-        contentType: "application/json",
+        dataType:'json',
+        contentType: 'application/json',
         complete: function(data, status) {
-            if ( callback == null ) {
-                null;
-            } else if ( "responseJSON" in data ) {
-                callback(data['responseJSON'],status);
-            } else {
-                callback(data,status);
+            if (callback != null) {
+                if ('responseJSON' in data) {
+                    callback(data['responseJSON'], status);
+                } else {
+                    callback(data, status);
+                }
             }
         },
         data: JSON.stringify(sendData)
@@ -224,17 +232,17 @@ function ajaxCall(url, sendData, callback) {
  */
 function ajaxGet(url,sendData,callback) {
     return $.ajax({
-        type: "GET",
+        type: 'GET',
         url: url,
-        dataType:"json",
-        contentType: "application/json",
+        dataType:'json',
+        contentType: 'application/json',
         complete: function(data,status) {
-            if ( callback == null ) {
-                null;
-            } else if ( "responseJSON" in data ) {
-                callback(data['responseJSON'],status);
-            } else {
-                callback({},status);
+            if (callback != null) {
+                if ('responseJSON' in data) {
+                    callback(data['responseJSON'], status);
+                } else {
+                    callback({}, status);
+                }
             }
         },
         data: sendData
@@ -252,16 +260,17 @@ function watchScrollPosition() {
 
     // link on scroll event handler
     if (window.sessionStorage) {
-        $(window).scroll(function(){
-            sessionStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
+        var $window = $(window);
+        $window.scroll(function(){
+            sessionStorage.setItem('scrollpos', current_location() + "|" + $window.scrollTop());
         });
 
         // move to last known position on page load
-        $( document ).ready(function() {
+        $(document).ready(function() {
             var scrollpos = sessionStorage.getItem('scrollpos');
             if (scrollpos != null) {
-                if (scrollpos.split('|')[0] == current_location()) {
-                    $(window).scrollTop(scrollpos.split('|')[1]);
+                if (scrollpos.split('|')[0] === current_location()) {
+                    $window.scrollTop(scrollpos.split('|')[1]);
                 }
             }
         });

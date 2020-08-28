@@ -27,12 +27,8 @@
 
 set -e
 
-VERSION=$(git describe --abbrev=0 --always)
+VERSION=$(git describe --abbrev=0 --always ${1})
 REVISION=$(git rev-list ${VERSION}.. --count)
-COMMENT=$(git rev-list HEAD --max-count=1 | cut -c1-9)
-if [ "${REVISION}" != "0" ]; then
-	# must construct full version string manually
-	VERSION=${VERSION}_${REVISION}
-fi
+HASH=$(git rev-list HEAD --max-count=1 | cut -c1-9)
 
-echo ${VERSION}-${COMMENT}
+echo ${VERSION} ${REVISION} ${HASH}

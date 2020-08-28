@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -33,7 +34,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\BooleanField;
+use OPNsense\Base\FieldTypes\BooleanField;
 
 class BooleanFieldTest extends Field_Framework_TestCase
 {
@@ -47,22 +48,22 @@ class BooleanFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage Regex
      */
     public function testShouldNotBeANumber()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("Regex");
         $field = new BooleanField();
         $field->setValue("90");
         $this->validateThrow($field);
     }
 
     /**
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage Regex
      */
     public function testShouldNotBeAString()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("Regex");
         $field = new BooleanField();
         $field->setValue("xx");
         $this->validateThrow($field);
@@ -70,11 +71,11 @@ class BooleanFieldTest extends Field_Framework_TestCase
 
 
     /**
-     * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage PresenceOf
      */
     public function testRequiredEmpty()
     {
+        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectExceptionMessage("PresenceOf");
         $field = new BooleanField();
         $field->setRequired("Y");
         $field->setValue("");

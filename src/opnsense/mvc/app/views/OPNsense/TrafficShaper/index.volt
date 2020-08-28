@@ -67,25 +67,14 @@ POSSIBILITY OF SUCH DAMAGE.
                     del:'/api/trafficshaper/settings/delRule/',
                     toggle:'/api/trafficshaper/settings/toggleRule/',
                     options: {
-                        converters: {
-                            notprefixable: {
-                                to: function (value) {
-                                    if (value.not) {
-                                        return '<i class="fa fa-exclamation"></i> ' + value.val;
-                                    } else {
-                                        return value.val;
-                                    }
-                                }
-                            }
-                        },
                         responseHandler: function (response) {
                             // concatenate fields for not.
                             if ('rows' in response) {
                                 for (var i = 0; i < response.rowCount; i++) {
                                     response.rows[i]['displaysrc'] = {'not':response.rows[i].source_not == '1',
-                                                                      'val':response.rows[i].source}
+                                                                      'val':response.rows[i].source};
                                     response.rows[i]['displaydst'] = {'not':response.rows[i].destination_not == '1',
-                                                                      'val':response.rows[i].destination}
+                                                                      'val':response.rows[i].destination};
                                 }
                             }
                             return response;
@@ -102,22 +91,7 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * Reconfigure ipfw / trafficshaper
          */
-        $("#reconfigureAct").click(function(){
-            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall(url="/api/trafficshaper/service/reconfigure", sendData={}, callback=function(data,status) {
-                // when done, disable progress animation.
-                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "{{ lang._('Error reconfiguring trafficshaper') }}",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-        });
+        $("#reconfigureAct").SimpleActionButton();
 
         $("#flushAct").click(function(){
           // Ask user if it's ok to flush all of ipfw
@@ -130,7 +104,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   action: function(dialogRef){
                       dialogRef.close();
                       $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
-                      ajaxCall(url="/api/trafficshaper/service/flushreload", sendData={}, callback=function(data,status) {
+                      ajaxCall("/api/trafficshaper/service/flushreload", {}, function(data,status) {
                           // when done, disable progress animation.
                           $("#flushAct_progress").removeClass("fa fa-spinner fa-pulse");
                       });
@@ -152,6 +126,9 @@ POSSIBILITY OF SUCH DAMAGE.
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
+        $(window).on('hashchange', function(e) {
+            $('a[href="' + window.location.hash + '"]').click()
+        });
     });
 
 
@@ -165,7 +142,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="tab-content content-box">
     <div id="pipes" class="tab-pane fade in active">
         <!-- tab page "pipes" -->
-        <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPipe">
+        <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPipe" data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
@@ -195,7 +172,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="queues" class="tab-pane fade in">
         <!-- tab page "queues" -->
-        <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogQueue">
+        <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogQueue"  data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
@@ -223,7 +200,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="rules" class="tab-pane fade in">
         <!-- tab page "rules" -->
-        <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+        <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule"  data-editAlert="shaperChangeMessage">
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
@@ -253,8 +230,17 @@ POSSIBILITY OF SUCH DAMAGE.
         </table>
     </div>
     <div class="col-md-12">
+        <div id="shaperChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
         <hr/>
-        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b> <i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/trafficshaper/service/reconfigure'
+                data-label="{{ lang._('Apply') }}"
+                data-error-title="{{ lang._('Error reconfiguring trafficshaper') }}"
+                type="button"
+        ></button>
+
         <button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._('Reset') }}</b> <i id="flushAct_progress" class=""></i></button>
         <br/><br/>
     </div>

@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,6 @@ if __name__ == '__main__':
     if rc.is_changed():
         rc.create()
 
-    # import local changes (if changed)
-    rc.update_local_changes()
-
     # load parameters, ignore validation here the search method only processes valid input
     parameters = {'limit': '0', 'offset': '0', 'sort_by': '', 'filter': ''}
     update_params(parameters)
@@ -59,4 +56,4 @@ if __name__ == '__main__':
     # dump output
     result = rc.search(**parameters)
     result['parameters'] = parameters
-    print (ujson.dumps(result))
+    print(ujson.dumps(result))

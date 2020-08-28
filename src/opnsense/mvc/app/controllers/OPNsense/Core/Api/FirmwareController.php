@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -29,9 +29,9 @@
 
 namespace OPNsense\Core\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Core\Backend;
-use \OPNsense\Core\Config;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 /**
  * Class FirmwareController
@@ -46,14 +46,18 @@ class FirmwareController extends ApiControllerBase
      */
     protected function formatBytes($bytes)
     {
+        if (preg_match('/[^0-9]/', $bytes)) {
+            /* already processed */
+            return $bytes;
+        }
         if ($bytes >= (1024 * 1024 * 1024)) {
-            return sprintf("%d GB", $bytes / (1024 * 1024 * 1024));
+            return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024), 'GiB');
         } elseif ($bytes >= 1024 * 1024) {
-            return sprintf("%d MB", $bytes / (1024 * 1024));
+            return sprintf('%.1F%s', $bytes / (1024 * 1024), 'MiB');
         } elseif ($bytes >= 1024) {
-            return sprintf("%d KB", $bytes / 1024);
+            return sprintf('%.1F%s', $bytes / 1024, 'KiB');
         } else {
-            return sprintf("%d bytes", $bytes);
+            return sprintf('%d%s', $bytes, 'B');
         }
     }
 
@@ -86,6 +90,14 @@ class FirmwareController extends ApiControllerBase
         switch ($action) {
             case 'install':
             case 'reinstall':
+                /* find the development/stable equivalent */
+                $other = preg_replace('/-devel$/', '', $name);
+                if ($other == $name) {
+                    $other = "$name-devel";
+                }
+                if (isset($plugins[$other])) {
+                    unset($plugins[$other]);
+                }
                 $plugins[$name] = 'hello';
                 break;
             case 'remove':
@@ -171,8 +183,10 @@ class FirmwareController extends ApiControllerBase
 
             $sorted = array();
 
-            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages',
-                'downgrade_packages', 'remove_packages') as $pkg_type) {
+            foreach (
+                array('new_packages', 'reinstall_packages', 'upgrade_packages',
+                'downgrade_packages', 'remove_packages') as $pkg_type
+            ) {
                 if (isset($response[$pkg_type])) {
                     foreach ($response[$pkg_type] as $value) {
                         switch ($pkg_type) {
@@ -253,14 +267,25 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('connection', $response) && $response['connection'] != 'ok') {
                 $response['status_msg'] = gettext('An error occurred while connecting to the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'untrusted') {
+                $response['status_msg'] = gettext('Could not verify the repository fingerprint.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'revoked') {
+                $response['status_msg'] = gettext('The repository fingerprint has been revoked.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
+                $response['status_msg'] = gettext('The repository has no fingerprint.');
+                $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
-            } elseif (array_key_exists(0, $response['upgrade_packages']) &&
-                $response['upgrade_packages'][0]['name'] == 'pkg') {
+            } elseif (
+                array_key_exists(0, $response['upgrade_packages']) &&
+                $response['upgrade_packages'][0]['name'] == 'pkg'
+            ) {
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
@@ -513,6 +538,66 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * install missing configured plugins
+     * @param string $pkg_name package name to reinstall
+     * @return array status
+     * @throws \Exception
+     */
+    public function installConfiguredPluginsAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = strtolower(trim($backend->configdRun('firmware sync')));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * install missing configured plugins
+     * @param string $pkg_name package name to reinstall
+     * @return array status
+     * @throws \Exception
+     */
+    public function acceptConfiguredPluginsAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $info = $this->infoAction();
+            $installed_plugins = array();
+            if (isset($info['plugin'])) {
+                foreach ($info['plugin'] as $plugin) {
+                    if (!empty($plugin['installed']) && !empty($plugin['provided'])) {
+                        $installed_plugins[] = $plugin['name'];
+                    }
+                }
+            }
+            $config = Config::getInstance()->object();
+            if (!isset($config->system->firmware)) {
+                $config->system->addChild('firmware');
+            }
+            if (!isset($config->system->firmware->plugins)) {
+                $config->system->firmware->addChild('plugins');
+            }
+            $config->system->firmware->plugins = implode(",", $installed_plugins);
+            $response['plugins'] = $installed_plugins;
+            $response['status'] = "ok";
+            Config::getInstance()->save();
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * install package
      * @param string $pkg_name package name to install
      * @return array status
@@ -677,6 +762,7 @@ class FirmwareController extends ApiControllerBase
     /**
      * query package details
      * @return array
+     * @throws \Exception
      */
     public function detailsAction($package)
     {
@@ -708,14 +794,22 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license');
+        $config = Config::getInstance()->object();
+        $configPlugins = array();
+        if (isset($config->system->firmware->plugins)) {
+            $configPlugins = explode(",", $config->system->firmware->plugins);
+        }
+
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license', 'repository', 'origin');
         $backend = new Backend();
         $response = array();
 
-        /* allows us to select UI features based on product state */
-        $response['product_version'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
-        $response['product_name'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense.name'));
+        $version = explode(' ', trim(shell_exec('opnsense-version -nv')));
+        foreach (array('product_name' => 0, 'product_version' => 1) as $result => $index) {
+            $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
+        }
 
+        /* allows us to select UI features based on product state */
         $devel = explode('-', $response['product_name']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
 
@@ -739,24 +833,30 @@ class FirmwareController extends ApiControllerBase
                     $translated[$key] = $expanded[$index++];
                     if (empty($translated[$key])) {
                         $translated[$key] = gettext('N/A');
+                    } elseif ($key == 'flatsize') {
+                        $translated[$key] = $this->formatBytes($translated[$key]);
                     }
                 }
 
                 /* mark remote packages as "provided", local as "installed" */
-                $translated['provided'] = $type == 'remote' ? "1" : "0";
-                $translated['installed'] = $type == 'local' ? "1" : "0";
+                $translated['provided'] = $type == 'remote' ? '1' : '0';
+                $translated['installed'] = $type == 'local' ? '1' : '0';
                 if (isset($packages[$translated['name']])) {
                     /* local iteration, mark package provided */
-                    $translated['provided'] = "1";
+                    $translated['provided'] = '1';
                 }
+                $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
+                $translated['configured'] = in_array($translated['name'], $configPlugins) ? '1' : '0';
                 $packages[$translated['name']] = $translated;
 
                 /* figure out local and remote plugins */
                 $plugin = explode('-', $translated['name']);
                 if (count($plugin)) {
                     if ($plugin[0] == 'os') {
-                        if ($type == 'local' || ($type == 'remote' &&
-                            ($devel || end($plugin) != 'devel'))) {
+                        if (
+                            $type == 'local' || ($type == 'remote' &&
+                            ($devel || end($plugin) != 'devel'))
+                        ) {
                             $plugins[$translated['name']] = $translated;
                         }
                     }
@@ -773,10 +873,24 @@ class FirmwareController extends ApiControllerBase
             $response['package'][] = $package;
         }
 
+        foreach ($configPlugins as $missing) {
+            if (!array_key_exists($missing, $plugins)) {
+                $plugins[$missing] = [];
+                foreach ($keys as $key) {
+                    $plugins[$missing][$key] = gettext('N/A');
+                }
+                $plugins[$missing]['path'] = gettext('N/A');
+                $plugins[$missing]['configured'] = "1";
+                $plugins[$missing]['installed'] = "0";
+                $plugins[$missing]['provided'] = "0";
+                $plugins[$missing]['name'] = $missing;
+            }
+        }
+
         uasort($plugins, function ($a, $b) {
             return strnatcasecmp(
-                ($a['installed'] ? '0' : '1') . $a['name'],
-                ($b['installed'] ? '0' : '1') . $b['name']
+                ($a['configured'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['configured'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
             );
         });
 
@@ -790,8 +904,8 @@ class FirmwareController extends ApiControllerBase
         if ($changelogs == null) {
             $changelogs = array();
         } else {
-            $version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
-            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $version) ? true : false;
+            /* development strategy for changelog slightly differs from above */
+            $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $response['product_version']) ? true : false;
 
             foreach ($changelogs as $index => &$changelog) {
                 /* skip development items */
@@ -828,10 +942,10 @@ class FirmwareController extends ApiControllerBase
         $has_subscription = array();
         $allow_custom = false;
         // parse firmware options
-        foreach (glob(__DIR__. "/repositories/*.xml") as $xml) {
+        foreach (glob(__DIR__ . "/repositories/*.xml") as $xml) {
             $repositoryXml = simplexml_load_file($xml);
             if ($repositoryXml === false || $repositoryXml->getName() != 'firmware') {
-                syslog(LOG_ERR, 'unable to parse firmware file '. $xml);
+                syslog(LOG_ERR, 'unable to parse firmware file ' . $xml);
             } else {
                 if (isset($repositoryXml->mirrors->mirror)) {
                     if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
@@ -881,16 +995,16 @@ class FirmwareController extends ApiControllerBase
             // custom options allowed, skip validations
             return true;
         } elseif (!isset($validOptions['flavours'][$selectedFlavour])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware flavour '. $selectedFlavour);
+            syslog(LOG_ERR, 'unable to set invalid firmware flavour ' . $selectedFlavour);
             return false;
         } elseif (!isset($validOptions['families'][$selectedType])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware release type '. $selectedFlavour);
+            syslog(LOG_ERR, 'unable to set invalid firmware release type ' . $selectedFlavour);
             return false;
         } elseif (!isset($validOptions['mirrors'][$selectedMirror])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware mirror '. $selectedMirror);
+            syslog(LOG_ERR, 'unable to set invalid firmware mirror ' . $selectedMirror);
             return false;
         } elseif (!empty($selSubscription) && !in_array($selectedMirror, $validOptions['has_subscription'])) {
-            syslog(LOG_ERR, 'unable to set subscription for firmware mirror '. $selectedMirror);
+            syslog(LOG_ERR, 'unable to set subscription for firmware mirror ' . $selectedMirror);
             return false;
         }
         return true;

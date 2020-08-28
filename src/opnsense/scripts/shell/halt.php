@@ -38,7 +38,7 @@ echo 'The system will halt and power off. Do you want to proceed? [y/N]: ';
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
     echo PHP_EOL;
-    system_halt(true);
+    passthru('/usr/local/etc/rc.halt');
 }
 
 fclose($fp);

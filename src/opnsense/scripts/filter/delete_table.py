@@ -1,7 +1,7 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,22 +35,15 @@ import os
 import sys
 
 if __name__ == '__main__':
-    result = []
     if len(sys.argv) > 2:
         # always validate if the item is in the pf table before trying to delete
-        with tempfile.NamedTemporaryFile() as output_stream:
-            # delete an entry from a pf table
-            subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'show'],
-                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            output_stream.seek(0)
-            if sys.argv[2].strip() == 'ALL':
-                if len(output_stream.read().strip().split('\n')) > 0:
-                    # delete all entries from a pf table
-                    subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'flush'],
-                                    stdout=output_stream, stderr=open(os.devnull, 'wb'))
-            else:
-                for line in output_stream.read().strip().split('\n'):
-                    if line.strip() == sys.argv[2].strip():
-                        result = []
-                        subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'delete', line.strip()],
-                                        stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        sp = subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'show'], capture_output=True, text=True)
+        if sys.argv[2].strip() == 'ALL':
+            if len(sp.stdout.strip().split('\n')) > 0:
+                # delete all entries from a pf table
+                subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'flush'], capture_output=True)
+        else:
+            for line in sp.stdout.strip().split('\n'):
+                if line.strip() == sys.argv[2].strip():
+                    subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'delete', line.strip()],
+                                    capture_output=True)

@@ -32,8 +32,10 @@ function suricata_services()
 
     $services = array();
 
-    if (isset($config['OPNsense']['IDS']['general']['enabled']) &&
-        $config['OPNsense']['IDS']['general']['enabled'] == 1) {
+    if (
+        isset($config['OPNsense']['IDS']['general']['enabled']) &&
+        $config['OPNsense']['IDS']['general']['enabled'] == 1
+    ) {
         $services[] = array(
             'description' => gettext('Intrusion Detection'),
             'configd' => array(
@@ -52,10 +54,7 @@ function suricata_syslog()
 {
     $logfacilities = array();
 
-    $logfacilities['suricata'] = array(
-        'facility' => array('suricata'),
-        'remote' => 'ids',
-    );
+    $logfacilities['suricata'] = array('facility' => array('suricata'));
 
     return $logfacilities;
 }

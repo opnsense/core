@@ -1,33 +1,35 @@
 <?php
-/**
- *    Copyright (C) 2015 Deciso B.V.
+
+/*
+ * Copyright (C) 2015 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Auth;
+
+use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
 
 /**
  * Class LDAP connector
@@ -90,6 +92,10 @@ class LDAP extends Base implements IAuthConnector
      */
     private $ldapScope = 'subtree';
 
+    /**
+     * @var null|string url type (standard, startTLS, SSL)
+     */
+    private $ldapURLType = null;
 
     /**
      * @var array list of already known usernames vs distinguished names
@@ -100,6 +106,27 @@ class LDAP extends Base implements IAuthConnector
      * @var bool if true, startTLS will be initialized
      */
     private $useStartTLS = false;
+
+    /**
+     * when set, $lastAuthProperties will contain the authenticated user properties
+     */
+    private $ldapReadProperties = false;
+
+    /**
+     * when set, synchronize groups defined in memberOf attribute to local database
+     */
+    private $ldapSyncMemberOf = false;
+
+    /**
+     * limit the groups which will be considered for sync, empty means all
+     */
+    private $ldapSyncMemberOfLimit = null;
+
+    /**
+     * @var array internal list of authentication properties (returned by radius auth)
+     */
+    private $lastAuthProperties = array();
+
     /**
      * close ldap handle if open
      */
@@ -159,6 +186,21 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
+     * log ldap errors, append ldap error output when available
+     * @param string message
+     */
+    private function logLdapError($message)
+    {
+        $error_string = "";
+        if ($this->ldapHandle !== false) {
+            ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
+            syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+        } else {
+            syslog(LOG_ERR, $message);
+        }
+    }
+
+    /**
      * type name in configuration
      * @return string
      */
@@ -186,8 +228,11 @@ class LDAP extends Base implements IAuthConnector
         $this->ldapVersion = $ldapVersion;
         $this->baseSearchDN = $baseSearchDN;
         // setup ldap general search list, list gets updated by requested data
-        $this->addSearchAttribute("dn");
+        // Note that the "dn" is always returned irrespective of which attributes types are requested
+        $this->addSearchAttribute("displayName");
+        $this->addSearchAttribute("cn");
         $this->addSearchAttribute("name");
+        $this->addSearchAttribute("mail");
     }
 
     /**
@@ -204,7 +249,10 @@ class LDAP extends Base implements IAuthConnector
             "ldap_extended_query" => "ldapExtendedQuery",
             "ldap_authcn" => "ldapAuthcontainers",
             "ldap_scope" => "ldapScope",
-            "local_users" => "userDNmap"
+            "local_users" => "userDNmap",
+            "ldap_read_properties" => "ldapReadProperties",
+            "ldap_sync_memberof" => "ldapSyncMemberOf",
+            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit"
         );
 
         // map properties 1-on-1
@@ -218,11 +266,14 @@ class LDAP extends Base implements IAuthConnector
         // Encryption types: Standard ( none ), StartTLS and SSL
         if (strstr($config['ldap_urltype'], "Standard")) {
             $this->ldapBindURL = "ldap://";
+            $this->ldapURLType = "standard";
         } elseif (strstr($config['ldap_urltype'], "StartTLS")) {
             $this->ldapBindURL = "ldap://";
             $this->useStartTLS = true;
+            $this->ldapURLType = "StartTLS";
         } else {
             $this->ldapBindURL = "ldaps://";
+            $this->ldapURLType = "SSL";
         }
 
         $this->ldapBindURL .= strpos($config['host'], "::") !== false ? "[{$config['host']}]" : $config['host'];
@@ -257,13 +308,21 @@ class LDAP extends Base implements IAuthConnector
         );
 
         $this->closeLDAPHandle();
+
+        // Note: All TLS options must be set before ldap_connect is called
+        if ($this->ldapURLType != "standard") {
+            ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, "/etc/ssl/cert.pem");
+        } else {
+            ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
+        }
         $this->ldapHandle = @ldap_connect($bind_url);
 
         if ($this->useStartTLS) {
             ldap_set_option($this->ldapHandle, LDAP_OPT_PROTOCOL_VERSION, 3);
             if (ldap_start_tls($this->ldapHandle) === false) {
-                $this->ldapHandle = null;
-                syslog(LOG_ERR, 'Could not startTLS on ldap connection (' .  ldap_error($this->ldapHandle).')');
+                $this->logLdapError("Could not startTLS on ldap connection");
+                $this->ldapHandle = false;
             }
         }
 
@@ -276,7 +335,7 @@ class LDAP extends Base implements IAuthConnector
             if ($bindResult) {
                 $retval = true;
             } else {
-                syslog(LOG_ERR, 'LDAP bind error (' .  ldap_error($this->ldapHandle).')');
+                $this->logLdapError("LDAP bind error");
             }
         }
 
@@ -313,12 +372,25 @@ class LDAP extends Base implements IAuthConnector
                     // fetch distinguished name and most likely username (try the search field first)
                     foreach (array($userNameAttribute, "name") as $ldapAttr) {
                         if (isset($searchResults[$i][$ldapAttr]) && $searchResults[$i][$ldapAttr]['count'] > 0) {
-                            $result[] = array(
+                            $user = array(
                                 'name' => $searchResults[$i][$ldapAttr][0],
-                                'fullname' => !empty($searchResults[$i]['name'][0]) ?
-                                    $searchResults[$i]['name'][0] : "",
                                 'dn' => $searchResults[$i]['dn']
                             );
+                            if (!empty($searchResults[$i]['displayName'][0])) {
+                                $user['fullname'] = $searchResults[$i]['displayName'][0];
+                            } elseif (!empty($searchResults[$i]['cn'][0])) {
+                                $user['fullname'] = $searchResults[$i]['cn'][0];
+                            } elseif (!empty($searchResults[$i]['name'][0])) {
+                                $user['fullname'] = $searchResults[$i]['name'][0];
+                            } else {
+                                $user['fullname'] = '';
+                            }
+                            if (!empty($searchResults[$i]['mail'][0])) {
+                                $user['email'] = $searchResults[$i]['mail'][0];
+                            } else {
+                                $user['email'] = '';
+                            }
+                            $result[] = $user;
                             break;
                         }
                     }
@@ -356,7 +428,92 @@ class LDAP extends Base implements IAuthConnector
      */
     public function getLastAuthProperties()
     {
-        return array();
+        return $this->lastAuthProperties;
+    }
+
+    /**
+     * update user group policies when configured
+     * @param string $username authenticated username
+     */
+    private function updatePolicies($username)
+    {
+        if ($this->ldapSyncMemberOf && !empty($this->lastAuthProperties['memberof'])) {
+            $user = $this->getUser($username);
+            // gather known and user configured groups to be able to compare the results from ldap
+            $user_groups = array();
+            $known_groups = array();
+            $cnf = Config::getInstance()->object();
+            if (isset($cnf->system->group)) {
+                foreach ($cnf->system->group as $group) {
+                    $known_groups[] = strtolower((string)$group->name);
+                    // when user is known, collect current groups
+                    if ($user != null && in_array((string)$user->uid, (array)$group->member)) {
+                        $user_groups[] = strtolower((string)$group->name);
+                    }
+                }
+            }
+            // collect all groups from the memberof attribute, store full object path for logging
+            // first cn= defines our local groupname
+            $ldap_groups = array();
+            foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
+                if (stripos($member, "cn=") === 0) {
+                    $ldap_groups[strtolower(explode(",", substr($member, 3))[0])] = $member;
+                }
+            }
+            // list of enabled groups (all when empty), so we can ignore some local groups if needed
+            if (!empty($this->ldapSyncMemberOfLimit)) {
+                $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
+            } else {
+                $sync_groups = $known_groups;
+            }
+            //
+            // sort groups and intersect with $sync_groups to determine difference.
+            natcasesort($sync_groups);
+            natcasesort($user_groups);
+            natcasesort($ldap_groups);
+            $diff_ugrp = array_intersect($sync_groups, $user_groups);
+            $diff_lgrp = array_intersect($sync_groups, array_keys($ldap_groups));
+            if ($diff_lgrp != $diff_ugrp) {
+                // update when changed
+                if ($user == null) {
+                    // user creation not supported (yet)
+                    // XXX: we might consider this in the future, since legacy code is involved in creating users
+                    return;
+                }
+                // Lock our configuration while updating, remove now unassigned groups and add new ones
+                // if returned by ldap.
+                $cnf = Config::getInstance()->lock(true)->object();
+                foreach ($cnf->system->group as $group) {
+                    $lc_groupname = strtolower((string)$group->name);
+                    if (in_array($lc_groupname, $sync_groups)) {
+                        if (
+                            in_array((string)$user->uid, (array)$group->member)
+                              && empty($ldap_groups[$lc_groupname])
+                        ) {
+                            unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
+                            syslog(LOG_NOTICE, sprintf(
+                                'User: policy change for %s unlink group %s',
+                                $username,
+                                (string)$group->name
+                            ));
+                        } elseif (
+                            !in_array((string)$user->uid, (array)$group->member)
+                              && !empty($ldap_groups[$lc_groupname])
+                        ) {
+                            syslog(LOG_NOTICE, sprintf(
+                                'User: policy change for %s link group %s [%s]',
+                                $username,
+                                (string)$group->name,
+                                $ldap_groups[$lc_groupname]
+                            ));
+                            $group->addChild('member', (string)$user->uid);
+                        }
+                    }
+                }
+                Config::getInstance()->save();
+                (new Backend())->configdpRun("auth user changed", array($username));
+            }
+        }
     }
 
     /**
@@ -367,26 +524,49 @@ class LDAP extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        // todo: implement SSL parts (legacy : ldap_setup_caenv)
+        $ldap_is_connected = false;
+        $user_dn = null;
         // authenticate user
         if (empty($password)) {
             // prevent anonymous bind
             return false;
         } elseif (array_key_exists($username, $this->userDNmap)) {
             // we can map $username to distinguished name, just feed to connect
+            $user_dn = $this->userDNmap[$username];
             $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
-            return $ldap_is_connected;
         } else {
             // we don't know this users distinguished name, try to find it
-            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword);
-            if ($ldap_is_connected) {
+            if ($this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword)) {
                 $result = $this->searchUsers($username, $this->ldapAttributeUser, $this->ldapExtendedQuery);
                 if ($result !== false && count($result) > 0) {
+                    $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
-                    return $ldap_is_connected;
                 }
             }
-            return false;
         }
+
+        if ($ldap_is_connected) {
+            $this->lastAuthProperties['dn'] = $user_dn;
+            if ($this->ldapReadProperties) {
+                $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)');
+                $info = @ldap_get_entries($this->ldapHandle, $sr);
+                if ($info['count'] != 0) {
+                    foreach ($info[0] as $ldap_key => $ldap_value) {
+                        if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
+                            if (isset($ldap_value['count'])) {
+                                unset($ldap_value['count']);
+                                $this->lastAuthProperties[$ldap_key] = implode("\n", $ldap_value);
+                            } elseif ($ldap_value !== "") {
+                                $this->lastAuthProperties[$ldap_key] = $ldap_value;
+                            }
+                        }
+                    }
+                    // update group policies when applicable
+                    $this->updatePolicies($username);
+                }
+            }
+        }
+
+        return $ldap_is_connected;
     }
 }

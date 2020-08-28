@@ -3,7 +3,7 @@
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -149,7 +149,6 @@ include("head.inc");
                       $("#id").val(id);
                       $("#action").val("del");
                       $("#iform").submit()
-                      event.preventDefault();
                   }
                 }]
         });
@@ -169,7 +168,6 @@ include("head.inc");
                       $("#id").val("");
                       $("#action").val("del_x");
                       $("#iform").submit()
-                      event.preventDefault();
                   }
                 }]
         });
@@ -384,10 +382,12 @@ include("head.inc");
                         <span title="<?=htmlspecialchars(get_alias_description($natent['source']['network']));?>" data-toggle="tooltip"  data-html="true">
                           <?=htmlspecialchars($natent['source']['network']);?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['network']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['network']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
+<?php                 elseif (is_specialnet($natent['source']['network'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['source']['network']]); ?>
 <?php                 else: ?>
                         <?=$natent['source']['network'] == "(self)" ? gettext("This Firewall") : htmlspecialchars($natent['source']['network']); ?>&nbsp;
 <?php                 endif; ?>
@@ -402,7 +402,7 @@ include("head.inc");
                       <span title="<?=htmlspecialchars(get_alias_description($natent['sourceport']));?>" data-toggle="tooltip"  data-html="true">
                         <?=htmlspecialchars(pprint_port($natent['sourceport'])); ?>&nbsp;
                       </span>
-                      <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['sourceport']);?>"
+                      <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['sourceport']);?>"
                           title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                         <i class="fa fa-list"></i>
                       </a>
@@ -414,14 +414,16 @@ include("head.inc");
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?= isset($natent['destination']['not']) ? '!' : '' ?>
-<?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars($natent['destination']['address']);?>&nbsp;
+<?php                 if (isset($natent['destination']['network']) && is_alias($natent['destination']['network'])): ?>
+                        <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['network']));?>" data-toggle="tooltip"  data-html="true">
+                          <?=htmlspecialchars($natent['destination']['network']);?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['network']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
+<?php                 elseif (is_specialnet($natent['destination']['network'])):?>
+                        <?=htmlspecialchars(get_specialnets()[$natent['destination']['network']]); ?>
 <?php                 else: ?>
                         <?=isset($natent['destination']['any']) ? "*" : htmlspecialchars($natent['destination']['address']);?>
 <?php                 endif; ?>
@@ -436,7 +438,7 @@ include("head.inc");
                       <span title="<?=htmlspecialchars(get_alias_description($natent['dstport']));?>" data-toggle="tooltip"  data-html="true">
                         <?=htmlspecialchars(pprint_port($natent['dstport'])); ?>&nbsp;
                       </span>
-                      <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['dstport']);?>"
+                      <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['dstport']);?>"
                           title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                         <i class="fa fa-list"></i>
                       </a>
@@ -453,6 +455,8 @@ include("head.inc");
                           $nat_address = '<I>NO NAT</I>';
                       } elseif (empty($natent['target'])) {
                           $nat_address = gettext("Interface address");
+                      } elseif (is_specialnet($natent['target'])) {
+                          $nat_address = htmlspecialchars(get_specialnets()[$natent['target']]);
                       } elseif ($natent['target'] == "other-subnet") {
                           $nat_address = $natent['targetip'] . '/' . $natent['targetip_subnet'];
                       } else {
@@ -463,7 +467,7 @@ include("head.inc");
                         <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip" data-html="true">
                           <?=$nat_address;?>&nbsp;
                         </span>
-                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['target']);?>"
+                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['target']);?>"
                             title="<?=gettext("edit alias");?>" data-toggle="tooltip">
                           <i class="fa fa-list"></i>
                         </a>
@@ -483,7 +487,7 @@ include("head.inc");
                       <?=htmlspecialchars($natent['descr']);?>&nbsp;
                     </td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('move selected rules before this rule')) ?>" class="act_move btn btn-default btn-xs">
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules before this rule')) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
                       <a href="firewall_nat_out_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
@@ -506,7 +510,7 @@ include("head.inc");
                   <td colspan="6" class="hidden-xs hidden-sm"></td>
                   <td colspan="5"></td>
                   <td>
-                    <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext('move selected rules to end'))?>" class="act_move btn btn-default btn-xs">
+                    <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext('Move selected rules to end'))?>" class="act_move btn btn-default btn-xs">
                       <i class="fa fa-arrow-left fa-fw"></i>
                     </button>
                     <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">

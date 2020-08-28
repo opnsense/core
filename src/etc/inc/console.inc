@@ -31,8 +31,11 @@
 function timeout($timer = 5)
 {
     while (!isset($key)) {
-        if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
-        else { echo chr(8). "{$timer}"; }
+        if ($timer >= 9) {
+            echo chr(8) . chr(8) . ($timer == 9 ? chr(32) : null)  . "{$timer}";
+        } else {
+            echo chr(8) . "{$timer}";
+        }
         shell_exec('/bin/stty -icanon min 0 time 25');
         $key = shell_exec('/bin/dd count=1 status=none');
         shell_exec('/bin/stty icanon');
@@ -50,14 +53,24 @@ function timeout($timer = 5)
 
 function is_interface_mismatch()
 {
+    $patterns = array('^impossiblecontrolmatch$'); /* XXX */
     $mismatch = false;
 
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
+    foreach (plugins_devices() as $device) {
+        if (!empty($device['volatile'])) {
+            $patterns[] = "({$device['pattern']})";
+        }
+    }
+
+    /* XXX we can match known devices names, much easier as soon as it is provided */
+    $regex = '/' . implode('|', $patterns) . '/';
+
+    foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $ifcfg) {
         if (!empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
             $mismatch = false;
             break;
-        } elseif (preg_match('/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^tinc|^gif|^gre|^lagg|^bridge|vlan|_wlan|_stf/i', $ifcfg['if'])) {
+        } elseif (preg_match($regex, $ifcfg['if'])) {
             /* Do not check these interfaces */
             continue;
         } elseif (does_interface_exist($ifcfg['if']) == false) {
@@ -140,8 +153,11 @@ EOD;
     if (isset($config['vlans']['vlan'][0])) {
         echo "\nVLAN interfaces:\n\n";
         foreach ($config['vlans']['vlan'] as $vlan) {
-            echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
-                "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
+            echo sprintf(
+                "% -16s%s\n",
+                "{$vlan['if']}_vlan{$vlan['tag']}",
+                "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}"
+            );
             $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
         }
     }
@@ -221,7 +237,7 @@ EOD;
         }
     } while (!$lanif);
 
-    $done = !$lanif;    /* only if lan was set */
+    $done = false;
     while (!$done) {
         /* optional interfaces */
         $optif = array();
@@ -237,7 +253,7 @@ EOD;
                 printf("\nOptional interface %s description found: %s", $io, $config['interfaces']['opt' . $io]['descr']);
             }
 
-            printf("\nEnter the Optional %s interface name or 'a' for auto-detection\n" .
+            printf("\nEnter the Optional interface %s name or 'a' for auto-detection\n" .
                 "(or nothing if finished): ", $io);
 
             if ($interactive) {
@@ -273,8 +289,8 @@ EOD;
             $ifarr = array_merge(array($lanif, $wanif), $optif);
             $again = false;
 
-            for ($k = 0; $k < (count($ifarr)-1); $k++) {
-                for ($j = ($k+1); $j < count($ifarr); $j++) {
+            for ($k = 0; $k < (count($ifarr) - 1); $k++) {
+                for ($j = ($k + 1); $j < count($ifarr); $j++) {
                     if ($ifarr[$k] == $ifarr[$j]) {
                         $again = true;
                         echo <<<EOD
@@ -292,7 +308,7 @@ EOD;
         }
     }
 
-        if ($wanif != '' || $lanif != '' || count($optif)) {
+    if ($wanif != '' || $lanif != '' || count($optif)) {
         echo "\nThe interfaces will be assigned as follows:\n\n";
 
         if ($wanif != '') {
@@ -302,7 +318,7 @@ EOD;
             echo "LAN  -> " . $lanif . "\n";
         }
         for ($i = 0; $i < count($optif); $i++) {
-            echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
+            echo "OPT" . ($i + 1) . " -> " . $optif[$i] . "\n";
         }
     } else {
         echo "\nNo interfaces will be assigned!\n";
@@ -407,24 +423,24 @@ EOD;
     }
 
     for ($i = 0; $i < count($optif); $i++) {
-        config_read_array('interfaces', 'opt' . ($i+1));
-        $config['interfaces']['opt' . ($i+1)]['if'] = $optif[$i];
+        config_read_array('interfaces', 'opt' . ($i + 1));
+        $config['interfaces']['opt' . ($i + 1)]['if'] = $optif[$i];
 
         if (match_wireless_interface($optif[$i])) {
-            config_read_array('interfaces', 'opt' . ($i+1), 'wireless');
-        } elseif (isset($config['interfaces']['opt' . ($i+1)]['wireless'])) {
-            unset($config['interfaces']['opt' . ($i+1)]['wireless']);
+            config_read_array('interfaces', 'opt' . ($i + 1), 'wireless');
+        } elseif (isset($config['interfaces']['opt' . ($i + 1)]['wireless'])) {
+            unset($config['interfaces']['opt' . ($i + 1)]['wireless']);
         }
 
-        if (empty($config['interfaces']['opt' . ($i+1)]['descr'])) {
-            $config['interfaces']['opt' . ($i+1)]['descr'] = "OPT" . ($i+1);
-            unset($config['interfaces']['opt' . ($i+1)]['enable']);
+        if (empty($config['interfaces']['opt' . ($i + 1)]['descr'])) {
+            $config['interfaces']['opt' . ($i + 1)]['descr'] = "OPT" . ($i + 1);
+            unset($config['interfaces']['opt' . ($i + 1)]['enable']);
         }
     }
 
     /* remove all other (old) optional interfaces */
-    for (; isset($config['interfaces']['opt' . ($i+1)]); $i++) {
-        unset($config['interfaces']['opt' . ($i+1)]);
+    for (; isset($config['interfaces']['opt' . ($i + 1)]); $i++) {
+        unset($config['interfaces']['opt' . ($i + 1)]);
     }
 
     echo "\nWriting configuration...";
@@ -471,8 +487,7 @@ function vlan_setup($iflist, $fp)
     $yes_no_prompt = '[y/N]: ';
 
     if (count($vlancfg)) {
-
-    echo <<<EOD
+        echo <<<EOD
 
 WARNING: all existing VLANs will be cleared if you proceed!
 
@@ -496,8 +511,12 @@ EOD;
         } else {
             $vlan_capable = 0;
             foreach ($iflist as $iface => $ifa) {
-                echo sprintf("% -8s%s%s\n", $iface, $ifa['mac'],
-                    $ifa['up'] ? "   (up)" : "");
+                echo sprintf(
+                    "% -8s%s%s\n",
+                    $iface,
+                    $ifa['mac'],
+                    $ifa['up'] ? "   (up)" : ""
+                );
                 $vlan_capable++;
             }
         }

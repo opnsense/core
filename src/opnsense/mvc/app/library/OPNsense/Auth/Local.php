@@ -1,30 +1,29 @@
 <?php
-/**
- *    Copyright (C) 2015 Deciso B.V.
+
+/*
+ * Copyright (C) 2015 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Auth;
@@ -93,9 +92,9 @@ class Local extends Base implements IAuthConnector
                     // equal password is not allowed
                     $result[] = gettext("Current password equals new password");
                 }
-                if (($pwd_has_upper+$pwd_has_lower+$pwd_has_number+$pwd_has_special) < 3) {
+                if (($pwd_has_upper + $pwd_has_lower + $pwd_has_number + $pwd_has_special) < 3) {
                     // passwords should at least contain 3 of the 4 available character types
-                    $result[] = gettext("Password should contain at least 3 of the 4 different character groups".
+                    $result[] = gettext("Password should contain at least 3 of the 4 different character groups" .
                                         " (lowercase, uppercase, number, special)");
                 } elseif (strpos($new_password, $username) !== false) {
                     $result[] = gettext("The username may not be a part of the password");
@@ -119,12 +118,11 @@ class Local extends Base implements IAuthConnector
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
             if (!empty($configObj->system->webgui->password_policy_duration)) {
-                $duration = $configObj->system->webgui->password_policy_duration;
                 $userObject = $this->getUser($username);
                 if ($userObject != null) {
                     $now = microtime(true);
                     $pwdChangedAt = empty($userObject->pwd_changed_at) ? 0 : $userObject->pwd_changed_at;
-                    if (abs($now - $pwdChangedAt)/60/60/24 >= $configObj->system->webgui->password_policy_duration) {
+                    if (abs($now - $pwdChangedAt) / 60 / 60 / 24 >= $configObj->system->webgui->password_policy_duration) {
                         return true;
                     }
                 }
@@ -147,20 +145,16 @@ class Local extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        if (is_a($username, 'SimpleXMLElement')) {
-            // user xml section provided
-            $userObject = $username;
-        } else {
-            // get xml section from config
-            $userObject = $this->getUser($username);
-        }
+        $userObject = $this->getUser($username);
         if ($userObject != null) {
             if (isset($userObject->disabled)) {
                 // disabled user
                 return false;
             }
-            if (!empty($userObject->expires)
-                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))) {
+            if (
+                !empty($userObject->expires)
+                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))
+            ) {
                 // expired user
                 return false;
             }

@@ -1,0 +1,14 @@
+<model>
+    <mount>//OPNsense/unboundplus/miscellaneous</mount>
+    <description>Unbound Miscellaneous configuration</description>
+    <version>0.0.2</version>
+    <items>
+        <privatedomain type="CSVListField">
+            <Required>N</Required>
+        </privatedomain>
+        <dotservers type="CSVListField">
+            <Required>N</Required>
+            <mask>/^[a-fA-F0-9\.\,\:\@]{1,512}$/</mask>
+        </dotservers>
+    </items>
+</model>

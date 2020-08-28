@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2015-2017 Deciso B.V.
  * All rights reserved.
@@ -27,13 +28,13 @@
 
 namespace OPNsense\IDS\Api;
 
-use \OPNsense\Base\ApiMutableServiceControllerBase;
-use \OPNsense\Base\Filters\QueryFilter;
-use \OPNsense\Core\Backend;
-use \OPNsense\Core\Config;
-use \OPNsense\Cron\Cron;
-use \OPNsense\IDS\IDS;
-use \Phalcon\Filter;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Base\Filters\QueryFilter;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
+use OPNsense\Cron\Cron;
+use OPNsense\IDS\IDS;
+use Phalcon\Filter;
 
 /**
  * Class ServiceController
@@ -41,10 +42,10 @@ use \Phalcon\Filter;
  */
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    static protected $internalServiceClass = '\OPNsense\IDS\IDS';
-    static protected $internalServiceEnabled = 'general.enabled';
-    static protected $internalServiceTemplate = 'OPNsense/IDS';
-    static protected $internalServiceName = 'ids';
+    protected static $internalServiceClass = '\OPNsense\IDS\IDS';
+    protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceTemplate = 'OPNsense/IDS';
+    protected static $internalServiceName = 'ids';
 
     /**
      * Reconfigure IDS
@@ -65,7 +66,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             if ((string)$mdlIDS->general->UpdateCron == "") {
                 $mdlCron = new Cron();
                 // update cron relation (if this doesn't break consistency)
-                $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "0");
+                $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "*", "0");
 
                 if ($mdlCron->performValidation()->count() == 0) {
                     $mdlCron->serializeToConfig();
@@ -93,13 +94,13 @@ class ServiceController extends ApiMutableServiceControllerBase
                             $status = $this->startAction()['response'];
                         }
                     } else {
-                        $status = "error installing ids rules (".$bckresult.")";
+                        $status = "error installing ids rules (" . $bckresult . ")";
                     }
                 } else {
                     $status = "OK";
                 }
             } else {
-                $status = "error generating ids template (".$bckresult.")";
+                $status = "error generating ids template (" . $bckresult . ")";
             }
         }
         return array("status" => $status);
@@ -181,7 +182,7 @@ class ServiceController extends ApiMutableServiceControllerBase
 
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                 $filterTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                $searchPhrase = 'alert,alert_action,src_ip,dest_ip/"*'.$filterTag .'*"';
+                $searchPhrase = 'alert,alert_action,src_ip,dest_ip/"*' . $filterTag . '*"';
             } else {
                 $searchPhrase = '';
             }
@@ -195,7 +196,7 @@ class ServiceController extends ApiMutableServiceControllerBase
 
             $backend = new Backend();
             $response = $backend->configdpRun("ids query alerts", array($itemsPerPage,
-                ($currentPage-1)*$itemsPerPage, $searchPhrase, $fileid));
+                ($currentPage - 1) * $itemsPerPage, $searchPhrase, $fileid));
             $result = json_decode($response, true);
             if ($result != null) {
                 $result['rowCount'] = count($result['rows']);
@@ -220,7 +221,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         $backend = new Backend();
         $filter = new Filter();
         $id = $filter->sanitize($alertId, "int");
-        $response = $backend->configdpRun("ids query alerts", array(1, 0, "filepos/".$id, $fileid));
+        $response = $backend->configdpRun("ids query alerts", array(1, 0, "filepos/" . $id, $fileid));
         $result = json_decode($response, true);
         if ($result != null && count($result['rows']) > 0) {
             return $result['rows'][0];

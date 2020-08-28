@@ -1,32 +1,31 @@
 <?php
 
-/**
- *    Copyright (C) 2016-2017 Deciso B.V.
+/*
+ * Copyright (C) 2016-2017 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall;
 
 /**
@@ -63,7 +62,7 @@ class FilterRule extends Rule
         'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
         'label' => 'parsePlain,label ",",63',
-        'md5' => 'parseComment'
+        'descr' => 'parseComment'
     );
 
     /**
@@ -133,15 +132,19 @@ class FilterRule extends Rule
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
                 switch ($proto) {
                     case "inet6":
-                        if (!empty($this->interfaceMapping[$rule['interface']]['gatewayv6'])
-                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gatewayv6'])) {
+                        if (
+                            !empty($this->interfaceMapping[$rule['interface']]['gatewayv6'])
+                            && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gatewayv6'])
+                        ) {
                             $gw = $this->interfaceMapping[$rule['interface']]['gatewayv6'];
                             $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
                         }
                         break;
                     default:
-                        if (!empty($this->interfaceMapping[$rule['interface']]['gateway'])
-                           && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gateway'])) {
+                        if (
+                            !empty($this->interfaceMapping[$rule['interface']]['gateway'])
+                            && Util::isIpAddress($this->interfaceMapping[$rule['interface']]['gateway'])
+                        ) {
                             $gw = $this->interfaceMapping[$rule['interface']]['gateway'];
                             $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
                         }
@@ -164,10 +167,21 @@ class FilterRule extends Rule
             $rule['from'] = empty($rule['from']) ? "any" : $rule['from'];
             $rule['to'] = empty($rule['to']) ? "any" : $rule['to'];
             // disable rules when gateway is down and skip_rules_gw_down is set
-            if (!empty($rule['skip_rules_gw_down']) && !empty($rule['gateway']) &&
-              empty($this->gatewayMapping[$rule['gateway']])) {
+            if (
+                !empty($rule['skip_rules_gw_down']) && !empty($rule['gateway']) &&
+                empty($this->gatewayMapping[$rule['gateway']])
+            ) {
                 $rule['disabled'] = true;
                 $this->log("Gateway down");
+            }
+            if (
+                !empty($rule['gateway']) &&
+                  !empty($this->gatewayMapping[$rule['gateway']]) &&
+                  !empty($rule['ipprotocol']) &&
+                  $this->gatewayMapping[$rule['gateway']]['proto'] != $rule['ipprotocol']
+            ) {
+                $rule['disabled'] = true;
+                $this->log("Gateway protocol mismatch");
             }
             if (!isset($rule['quick'])) {
                 // all rules are quick by default except floating
@@ -225,7 +239,7 @@ class FilterRule extends Rule
             if ($rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
                 if ($rule['ipprotocol'] == 'inet') {
                     $rule['icmp-type'] = $rule['icmptype'];
-                } elseif ($rule['ipprotocol']== 'inet6') {
+                } elseif ($rule['ipprotocol'] == 'inet6') {
                     $rule['icmp6-type'] = $rule['icmptype'];
                 }
             }
@@ -234,8 +248,10 @@ class FilterRule extends Rule
                 $rule['protocol'] = 'ipv6-icmp';
             }
             // set prio
-            if (isset($rule['set-prio']) && $rule['set-prio'] !== ""
-              && isset($rule['set-prio-low']) && $rule['set-prio-low'] !== "" ) {
+            if (
+                isset($rule['set-prio']) && $rule['set-prio'] !== ""
+                && isset($rule['set-prio-low']) && $rule['set-prio-low'] !== ""
+            ) {
                 $rule['set-prio'] = "({$rule['set-prio']}, {$rule['set-prio-low']})";
             }
             yield $rule;
@@ -262,7 +278,7 @@ class FilterRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseFilterRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder, $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder, $rule) . "\n";
         }
         return $ruleTxt;
     }

@@ -1,35 +1,34 @@
 <?php
 
-/**
- *    Copyright (C) 2016 Deciso B.V.
+/*
+ * Copyright (C) 2016 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall;
 
-use \OPNsense\Core\Config;
+use OPNsense\Core\Config;
 
 /**
  * Class Plugin
@@ -37,6 +36,7 @@ use \OPNsense\Core\Config;
  */
 class Plugin
 {
+    private $gateways = null;
     private $anchors = array();
     private $filterRules = array();
     private $natRules = array();
@@ -44,6 +44,7 @@ class Plugin
     private $gatewayMapping = array();
     private $systemDefaults = array();
     private $tables = array();
+    private $ifconfigDetails = array();
 
     /**
      * init firewall plugin component
@@ -81,7 +82,7 @@ class Plugin
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
-                $realif = "{$intf['if']}_stf";
+                $realif = "{$key}_stf";
                 // create new interface
                 $this->interfaceMapping[$realif] = array();
                 $this->interfaceMapping[$realif]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
@@ -97,21 +98,28 @@ class Plugin
 
     /**
      * set defined gateways (route-to)
-     * @param array $gateways named array
+     * @param  \OPNsense\Routing\Gateways $gateways object
      */
-    public function setGateways($gateways)
+    public function setGateways(\OPNsense\Routing\Gateways $gateways)
     {
-        if (is_array($gateways)) {
-            foreach ($gateways as $key => $gw) {
-                if (Util::isIpAddress($gw['gateway']) && !empty($gw['interface'])) {
-                    $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['interface']} {$gw['gateway']} )",
-                                                        "interface" => $gw['interface'],
-                                                        "gateway" => $gw['gateway'],
-                                                        "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
-                                                        "type" => "gateway");
-                }
+        $this->gateways = $gateways;
+        foreach ($gateways->gatewaysIndexedByName(false, true) as $key => $gw) {
+            if (Util::isIpAddress($gw['gateway']) && !empty($gw['if'])) {
+                $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['if']} {$gw['gateway']} )",
+                                                    "interface" => $gw['if'],
+                                                    "gateway" => $gw['gateway'],
+                                                    "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
+                                                    "type" => "gateway");
             }
         }
+    }
+
+    /**
+     * @return \OPNsense\Routing\Gateways gateway object
+     */
+    public function getGateways(): ?\OPNsense\Routing\Gateways
+    {
+        return $this->gateways;
     }
 
     /**
@@ -134,7 +142,7 @@ class Plugin
                     }
                 }
                 if (count($routeto) > 0) {
-                    $routetologic = "route-to {".implode(' ', $routeto)."}";
+                    $routetologic = "route-to {" . implode(' ', $routeto) . "}";
                     if (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
                     }
@@ -191,6 +199,24 @@ class Plugin
     }
 
     /**
+     * link parsed ifconfig output
+     * @param array $ifconfig from legacy_interfaces_details()
+     */
+    public function setIfconfigDetails($ifconfig)
+    {
+        $this->ifconfigDetails = $ifconfig;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIfconfigDetails()
+    {
+        return $this->ifconfigDetails;
+    }
+
+
+    /**
      * register anchor
      * @param string $name anchor name
      * @param string $type anchor type (fw for filter, other options are nat,rdr,binat)
@@ -207,7 +233,7 @@ class Plugin
 
     /**
      * fetch anchors as text (pf ruleset part)
-     * @param string $types anchor types (fw for filter, other options are nat,rdr,binat. comma seperated)
+     * @param string $types anchor types (fw for filter, other options are nat,rdr,binat. comma-separated)
      * @param string $placement placement head,tail
      * @return string
      */
@@ -242,6 +268,11 @@ class Plugin
         }
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
+        }
+        if (empty($conf['label'])) {
+            // generated rule, has no label
+            $rule_hash = Util::calcRuleHash($conf);
+            $conf['label'] = $rule_hash;
         }
         $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
         if (empty($this->filterRules[$prio])) {
@@ -321,11 +352,25 @@ class Plugin
         $output = "";
         ksort($this->filterRules);
         foreach ($this->filterRules as $prio => $ruleset) {
+            $output .= "# [prio: {$prio}]\n";
             foreach ($ruleset as $rule) {
                 $output .= (string)$rule;
             }
         }
         return $output;
+    }
+
+    /**
+     * iterate through registered rules
+     * @return Iterator
+     */
+    public function iterateFilterRules()
+    {
+        foreach ($this->filterRules as $prio => $ruleset) {
+            foreach ($ruleset as $rule) {
+                 yield $rule;
+            }
+        }
     }
 
     /**
@@ -337,6 +382,7 @@ class Plugin
         $output = "";
         ksort($this->natRules);
         foreach ($this->natRules as $prio => $ruleset) {
+            $output .= "# [prio: {$prio}]\n";
             foreach ($ruleset as $rule) {
                 $output .= (string)$rule;
             }

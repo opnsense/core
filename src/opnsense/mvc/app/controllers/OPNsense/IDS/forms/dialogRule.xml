@@ -10,24 +10,16 @@
         <type>info</type>
     </field>
     <field>
-        <id>gid</id>
-        <label>Group Id</label>
-        <type>info</type>
-    </field>
-    <field>
-        <id>classtype</id>
-        <label>Classtype</label>
-        <type>info</type>
-    </field>
-    <field>
         <id>msg</id>
         <label>Message</label>
         <type>info</type>
     </field>
+    <!-- template field, copied for every metadata record on dialog show -->
     <field>
-        <id>reference_html</id>
-        <label>Reference</label>
-        <type>info</type>
+      <id>__template__</id>
+      <label>__template__label__</label>
+      <type>info</type>
+      <style>rule_template</style>
     </field>
     <field>
         <id>action</id>

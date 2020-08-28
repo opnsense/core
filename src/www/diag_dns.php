@@ -1,37 +1,38 @@
 <?php
 
 /*
-    Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2009 Jim Pingle <jimp@pfsense.org>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2009 Jim Pingle <jimp@pfsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 
 $resolved = array();
 $dns_speeds = array();
 if (!empty($_REQUEST['host'])) {
+    $input_errors = array();
     $host = trim($_REQUEST['host'], " \t\n\r\0\x0B[];\"'");
     $host_esc = escapeshellarg($host);
 
@@ -79,7 +80,7 @@ include("head.inc"); ?>
               <table class="table table-striped">
                 <tbody>
                   <tr>
-                    <td><?=gettext("Hostname or IP");?></td>
+                    <td style="width: 22%"><?=gettext("Hostname or IP");?></td>
                     <td>
                       <input name="host" type="text" value="<?=htmlspecialchars($host);?>" />
                     </td>
@@ -126,28 +127,13 @@ include("head.inc"); ?>
                     </td>
                   </tr>
 <?php
-                  endif;
-                  if (!empty($ipaddr)):?>
-                  <tr>
-                    <td><?=gettext("More Information:");?></td>
-                    <td>
-                      <a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
-                      <a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
-                      <p>
-                      <?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
-                      <a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?=$ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
-                      <a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?=$ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
-                      </p>
-                    </td>
-                  </tr>
-<?php
-                  endif; ?>
+                  endif;?>
                 </tbody>
                 <tfoot>
                   <tr>
                     <td></td>
                     <td>
-                      <input type="submit" class="btn btn-primary btn-fixed" value="<?=gettext("DNS Lookup");?>" />
+                      <input type="submit" class="btn btn-primary btn-fixed" value="<?= html_safe(gettext('DNS Lookup')) ?>" />
                     </td>
                   </tr>
                 </tfoot>

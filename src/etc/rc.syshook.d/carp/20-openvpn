@@ -28,9 +28,9 @@
  */
 
 require_once("config.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
+require_once("plugins.inc.d/openvpn.inc");
 
 $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
@@ -45,24 +45,12 @@ if (!strstr($subsystem, '@')) {
     exit(1);
 }
 
-list($vhid, $iface) = explode("@", $subsystem);
+list ($vhid, $iface) = explode('@', $subsystem);
 
 $friendly = convert_real_interface_to_friendly_interface_name($iface);
 $carp_iface = "{$friendly}_vip{$vhid}";
-$friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-$notificationmsg = sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $friendly_descr, $subsystem, $type, $vhid);
+$descr = convert_friendly_interface_to_friendly_descr($carp_iface);
 
-notify_via_smtp($notificationmsg);
-notify_via_growl($notificationmsg);
-log_error($notificationmsg);
+log_error(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid));
 
-switch ($type) {
-    case 'MASTER':
-        /* XXX inspect usefulness of this trickery */
-        openvpn_carp_start($carp_iface);
-        break;
-    case 'BACKUP':
-        /* XXX inspect usefulness of this trickery */
-        openvpn_carp_stop($carp_iface);
-        break;
-}
+openvpn_configure_do(false, $carp_iface, true);

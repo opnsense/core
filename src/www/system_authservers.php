@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = $_GET['act'];
     }
     $pconfig = array();
+    $pconfig['ldap_sync_memberof_groups'] = array();
     if ($act == "new") {
         $pconfig['ldap_protver'] = 3;
         $pconfig['radius_srvcs'] = "both";
@@ -71,8 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['type'] = $a_server[$id]['type'];
         $pconfig['name'] = $a_server[$id]['name'];
 
-        if ($pconfig['type'] == "ldap") {
-            $pconfig['ldap_caref'] = $a_server[$id]['ldap_caref'];
+        if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
             $pconfig['ldap_host'] = $a_server[$id]['host'];
             $pconfig['ldap_port'] = $a_server[$id]['ldap_port'];
             $pconfig['ldap_urltype'] = $a_server[$id]['ldap_urltype'];
@@ -87,6 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (!empty($a_server[$id]['ldap_bindpw'])) {
                 $pconfig['ldap_bindpw'] = $a_server[$id]['ldap_bindpw'];
+            }
+            $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
+            $pconfig['ldap_sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
+                $pconfig['ldap_sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
             }
         } elseif ($pconfig['type'] == "radius") {
             $pconfig['radius_host'] = $a_server[$id]['host'];
@@ -114,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $pconfig[$fieldname] = null;
                 }
             }
-        } elseif (!empty($authCNFOptions[$pconfig['type']])) {
+        }
+        if (!empty($authCNFOptions[$pconfig['type']])) {
             foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
                 $pconfig[$fieldname] = $a_server[$id][$fieldname];
             }
@@ -131,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (isset($pconfig['save'])) {
       /* input validation */
-      if ($pconfig['type'] == "ldap") {
+      if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
           $reqdfields = explode(" ", "name type ldap_host ldap_port ".
                           "ldap_urltype ldap_protver ldap_scope ".
                           "ldap_attr_user ldapauthcontainers");
@@ -170,7 +176,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $reqdfields[] = "radius_secret";
               $reqdfieldsn[] = gettext("Shared Secret");
           }
-      } elseif (!empty($authCNFOptions[$pconfig['type']])) {
+      }
+      if (!empty($authCNFOptions[$pconfig['type']])) {
           foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
               if (!empty($field['validate'])) {
                   foreach ($field['validate']($pconfig[$fieldname]) as $input_error) {
@@ -182,10 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
       do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-      if (!empty($pconfig['ldap_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['ldap_host'])) {
+      if (!empty($pconfig['ldap_host']) && !(is_hostname($pconfig['ldap_host']) || is_ipaddr($pconfig['ldap_host']))) {
           $input_errors[] = gettext("The host name contains invalid characters.");
       }
-      if (!empty($pconfig['radius_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['radius_host'])) {
+      if (!empty($pconfig['radius_host']) && !(is_hostname($pconfig['radius_host']) || is_ipaddr($pconfig['radius_host']))) {
           $input_errors[] = gettext("The host name contains invalid characters.");
       }
 
@@ -212,10 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['name'] = $pconfig['name'];
           }
 
-          if ($server['type'] == "ldap") {
-              if (!empty($pconfig['ldap_caref'])) {
-                  $server['ldap_caref'] = $pconfig['ldap_caref'];
-              }
+          if (in_array($server['type'], array("ldap", "ldap-totp"))) {
               $server['host'] = $pconfig['ldap_host'];
               $server['ldap_port'] = $pconfig['ldap_port'];
               $server['ldap_urltype'] = $pconfig['ldap_urltype'];
@@ -236,6 +240,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       unset($server['ldap_bindpw']);
                   }
               }
+              $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
+              $server['ldap_sync_memberof'] = !empty($pconfig['ldap_sync_memberof']);
+              $server['ldap_sync_memberof_groups'] = !empty($pconfig['ldap_sync_memberof_groups']) ? implode(",", $pconfig['ldap_sync_memberof_groups']) : array();
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
@@ -267,7 +274,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       unset($config['system']['webgui'][$fieldname]);
                   }
               }
-          } elseif (!empty($authCNFOptions[$server['type']])) {
+          }
+          if (!empty($authCNFOptions[$server['type']])) {
               foreach ($authCNFOptions[$server['type']]['additionalFields'] as $fieldname => $field) {
                   $server[$fieldname] = $pconfig[$fieldname];
               }
@@ -303,8 +311,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // list of all possible fields for auth item (used for form init)
 $all_authfields = array(
-    'type','name','ldap_caref','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
-    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user','radius_host',
+    'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
+    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
+    'ldap_read_properties', 'ldap_sync_memberof', 'radius_host',
     'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
 );
 
@@ -423,9 +432,6 @@ $( document ).ready(function() {
             'proto': $("#ldap_protver").val(),
             'authcn': $("#ldapauthcontainers").val(),
         };
-        if ($("#ldap_caref").val() != undefined) {
-            request_data['cert'] = $("#ldap_caref").val();
-        }
         //
         if ($("#ldap_port").val() == '' || $("#ldap_host").val() == '' || $("#ldap_scope").val() == '' || $("#ldap_basedn").val() == '') {
             BootstrapDialog.show({
@@ -469,9 +475,19 @@ $( document ).ready(function() {
                             }
                         }]
                 });
-            }, dataType="json");
+            }, "json");
         }
     });
+    $("#ldap_read_properties").change(function(){
+        if ($(this).is(":checked")) {
+            $("#ldap_sync_memberof").prop('disabled', false);
+            $("#ldap_sync_memberof_groups").prop('disabled', false);
+        } else {
+            $("#ldap_sync_memberof").prop('disabled', true);
+            $("#ldap_sync_memberof_groups").prop('disabled', true);
+        }
+    });
+    $("#ldap_read_properties").change();
 });
 </script>
 
@@ -589,7 +605,7 @@ endif; ?>
                   </td>
                 </tr>
                 <!-- LDAP -->
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname or IP address");?></td>
                   <td>
                     <input name="ldap_host" type="text" id="ldap_host" size="20" value="<?=$pconfig['ldap_host'];?>"/>
@@ -598,14 +614,14 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Port value");?></td>
                   <td>
                     <input name="ldap_port" type="text" id="ldap_port" size="5" value="<?=$pconfig['ldap_port'];?>"/>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Transport");?></td>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_urltype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transport");?></td>
                   <td>
                     <select name="ldap_urltype" id="ldap_urltype" class="selectpicker" data-style="btn-default">
                       <option value="TCP - Standard" data-port="389" <?=$pconfig['ldap_urltype'] == "TCP - Standard" ? "selected=\"selected\"" : "";?>>
@@ -618,33 +634,12 @@ endif; ?>
                         <?=gettext("SSL - Encrypted");?>
                       </option>
                     </select>
-                  </td>
-                </tr>
-                <tr class="auth_ldap auth_options hidden">
-                  <td><a id="help_for_ldap_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Peer Certificate Authority"); ?></td>
-                  <td>
-<?php
-                    if (count($config['ca'])) :?>
-                    <select id="ldap_caref" name="ldap_caref" class="selectpicker" data-style="btn-default">
-<?php
-                    foreach ($config['ca'] as $ca) :
-?>
-                      <option value="<?=$ca['refid'];?>" <?=$pconfig['ldap_caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>><?=$ca['descr'];?></option>
-<?php
-                    endforeach; ?>
-                    </select>
-                    <div class="hidden" data-for="help_for_ldap_caref">
-                      <span><?=gettext("This option is used if 'SSL Encrypted' option is choosen.");?> <br />
-                      <?=gettext("It must match with the CA in the AD otherwise problems will arise.");?></span>
+                    <div class="hidden" data-for="help_for_ldap_urltype">
+                        <?=gettext("When choosing StartTLS or SSL, please configure the required private CAs in System -> Trust");?>
                     </div>
-<?php
-                    else :?>
-                    <b><?=gettext('No Certificate Authorities defined.');?></b> <br /><?=gettext('Create one under');?> <a href="system_camanager.php"><?=gettext('System: Certificates');?></a>.
-<?php
-                    endif; ?>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol version");?></td>
                   <td>
                     <select name="ldap_protver" id="ldap_protver" class="selectpicker" data-style="btn-default">
@@ -653,7 +648,7 @@ endif; ?>
                     </select>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_binddn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bind credentials");?></td>
                   <td>
                     <?=gettext("User DN:");?><br/>
@@ -665,7 +660,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
                     <select name="ldap_scope" id="ldap_scope" class="selectpicker" data-style="btn-default">
@@ -678,18 +673,18 @@ endif; ?>
                     </select>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Base DN");?></td>
                   <td>
                     <input name="ldap_basedn" type="text" id="ldap_basedn" size="40" value="<?=$pconfig['ldap_basedn'];?>"/>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldapauthcontainers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication containers");?></td>
                   <td>
                     <ul class="list-inline">
                     <li><input name="ldapauthcontainers" type="text" id="ldapauthcontainers" size="40" value="<?=$pconfig['ldap_authcn'];?>"/></li>
-                    <li><input type="button" id="act_select" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
+                    <li><input type="button" id="act_select" class="btn btn-default" value="<?= html_safe(gettext('Select')) ?>" /></li>
                     </ul>
                     <br/>
                     <div class="hidden" data-for="help_for_ldapauthcontainers">
@@ -698,7 +693,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_extended_query" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Extended Query");?></td>
                   <td>
                     <input name="ldap_extended_query" type="text" id="ldap_extended_query" size="40" value="<?=$pconfig['ldap_extended_query'];?>"/>
@@ -709,7 +704,7 @@ endif; ?>
                 </tr>
 <?php if (!isset($id)) :
 ?>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Initial Template");?></td>
                   <td>
                     <select name="ldap_tmpltype" id="ldap_tmpltype" class="selectpicker" data-style="btn-default">
@@ -721,12 +716,51 @@ endif; ?>
                 </tr>
 <?php
 endif; ?>
-                <tr class="auth_ldap auth_options hidden">
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_ldap_attr_user" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User naming attribute");?></td>
                   <td>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
                     <div class="hidden" data-for="help_for_ldap_attr_user">
                       <?= gettext('Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_read_properties" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Read properties'); ?></td>
+                  <td>
+                    <input id="ldap_read_properties" name="ldap_read_properties" type="checkbox" <?= empty($pconfig['ldap_read_properties']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_ldap_read_properties">
+                      <?= gettext("Normally the authentication only tries to bind to the remote server, ".
+                                  "when this option is enabled also the objects properties are fetched, can be practical for debugging purposes.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_sync_memberof" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize groups'); ?></td>
+                  <td>
+                    <input id="ldap_sync_memberof" name="ldap_sync_memberof" type="checkbox" <?= empty($pconfig['ldap_sync_memberof']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_ldap_sync_memberof">
+                      <?= gettext("Synchronize groups specified by memberOf attribute after login, this option requires to enable read properties. ".
+                                  "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
+                                  "Group memberships will be persisted in OPNsense. ".
+                                  "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_sync_memberof_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Limit groups'); ?></td>
+                  <td>
+                    <select name='ldap_sync_memberof_groups[]' id="ldap_sync_memberof_groups" class="selectpicker" multiple="multiple">
+<?php
+                    foreach (config_read_array('system', 'group') as $group):
+                        $selected = !empty($pconfig['ldap_sync_memberof_groups']) && in_array($group['name'], $pconfig['ldap_sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
+                      <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_ldap_sync_memberof_groups">
+                      <?= gettext("Limit the groups which may be used by ldap, keep empty to consider all local groups in OPNsense. ".
+                                  "When groups are selected, you can assign unassigned groups to the user manually ");?>
                     </div>
                   </td>
                 </tr>
@@ -832,7 +866,7 @@ endif; ?>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
-                    <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                    <input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
 <?php if (isset($id)) :
 ?>
                     <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />

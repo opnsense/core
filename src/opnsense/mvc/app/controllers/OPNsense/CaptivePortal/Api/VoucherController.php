@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,10 +27,11 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\CaptivePortal\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Auth\AuthenticationFactory;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Auth\AuthenticationFactory;
 
 /**
  * Class VoucherController
@@ -39,7 +41,7 @@ class VoucherController extends ApiControllerBase
 {
     /**
      * list voucher providers (authenticators of type "voucher")
-     * @return list of auth providers
+     * @return array list of auth providers
      */
     public function listProvidersAction()
     {
@@ -56,7 +58,7 @@ class VoucherController extends ApiControllerBase
     /**
      * list voucher groups
      * @param string $provider name of authentication provider
-     * @return list of registered vouchers
+     * @return array list of registered vouchers
      */
     public function listVoucherGroupsAction($provider)
     {

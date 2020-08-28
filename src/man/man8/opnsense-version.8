@@ -1,0 +1,102 @@
+.\"
+.\" Copyright (c) 2018 Franco Fichtner <franco@opnsense.org>
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\"
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.Dd December 11, 2018
+.Dt OPNSENSE-VERSION 8
+.Os
+.Sh NAME
+.Nm opnsense-version
+.Nd OPNsense version utility
+.Sh SYNOPSIS
+.Nm
+.Op Fl AaefHNnsvw
+.Op Ar package
+.Sh DESCRIPTION
+The
+.Nm
+utility emits build-time package metadata, e.g. version numbers
+and product-related information for branding capabilities.
+.Pp
+Callers use this metadata to configure the system, return user
+information or to construct links for firmware upgrades using
+.Xr opnsense-update 8 .
+It is similar to
+.Xr opnsense-verify 8 Ap s
+.Sq Fl a
+parameter, but not intended to handle operating system information.
+.Pp
+The default package is assumed to be
+.Ar core ,
+unless another package has been specificed.
+Other packages can be
+.Ar base ,
+.Ar kernel ,
+or plugin names.
+.Pp
+Multiple options can be specified to build a custom version string
+when that information is available.
+The options are as follows:
+.Bl -tag -width ".Fl a" -offset indent
+.It Fl A
+Return the system architecture string.
+.It Fl a
+Return the firmware ABI string.
+.It Fl e
+Return the product contact e-mail address.
+.It Fl f
+Return the cryptography flavour.
+The correct flavour will be read from the installed OpenSSL
+binary, or from package metadata if the binary could
+not be found.
+.It Fl H
+Return the package commit hash.
+.It Fl N
+Return the product name.
+.It Fl n
+Return the package name.
+.It Fl s
+Return the accumulated file size of the package.
+.It Fl v
+Return the package version.
+.It Fl w
+Return the product version website.
+.El
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa /usr/local/opnsense/version
+The version metadata directory of OPNsense packages.
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr opnsense-update 8 ,
+.Xr opnsense-verify 8
+.Sh HISTORY
+The
+.Nm
+utility first appeared in OPNsense 18.7.4.
+.Sh AUTHORS
+.An Franco Fichtner Aq Mt franco@opnsense.org

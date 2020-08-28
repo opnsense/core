@@ -37,7 +37,7 @@ while getopts c: OPT; do
 		exec ${CMD_SHELL} -${OPT} "${OPTARG}"
 		;;
 	*)
-		echo "Usage: man opnsense-shell" >&2
+		echo "Usage: man ${0##*/}" >&2
 		exit 1
 		;;
 	esac

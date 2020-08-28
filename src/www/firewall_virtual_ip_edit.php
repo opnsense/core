@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-    Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
@@ -89,7 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['id']) && isset($a_vip[$pconfig['id']])) {
         $id = $pconfig['id'];
     }
-
+    if (!empty($config['interfaces'][$pconfig['interface']]) && !empty($config['interfaces'][$pconfig['interface']]['if'])) {
+        $selected_interface = $config['interfaces'][$pconfig['interface']]['if'];
+    } else {
+        $selected_interface = array();
+    }
     // perform form validations
     $reqdfields = array("mode");
     $reqdfieldsn = array(gettext("Type"));
@@ -110,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway'])) {
-            $input_errors[] = gettext("A valid IP address must be specified.");
+            $input_errors[] = gettext("A valid gateway IP address must be specified.");
         }
 
         /* ipalias and carp should not use network or broadcast address */
@@ -132,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['mode'] == 'carp') {
             /* verify against reusage of vhids */
             foreach($config['virtualip']['vip'] as $vipId => $vip) {
-               if (isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['interface'] == $pconfig['interface'] && $vipId <> $id) {
+               if (isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['mode'] == 'carp' && $vip['interface'] == $pconfig['interface'] && $vipId != $id) {
                    $input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
                }
             }
@@ -142,11 +146,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($pconfig['vhid'])) {
                $input_errors[] = gettext('A VHID must be selected for this CARP VIP.');
             }
-            if ($pconfig['interface'] == "lo0") {
-                $input_errors[] = gettext("For this type of vip localhost is not allowed.");
+            if (substr($selected_interface,0, 2) === 'lo') {
+                $input_errors[] = gettext('For this type of VIP loopback is not allowed.');
             }
-        } else if ($pconfig['mode'] != 'ipalias' && $pconfig['interface'] == "lo0") {
-            $input_errors[] = gettext("For this type of vip localhost is not allowed.");
+        } else if ($pconfig['mode'] != 'ipalias' && substr($selected_interface,0, 2) === 'lo') {
+            $input_errors[] = gettext('For this type of VIP loopback is not allowed.');
         } elseif ($pconfig['mode'] == 'ipalias' && !empty($pconfig['vhid'])) {
             $carpvip_found = false;
             foreach($config['virtualip']['vip'] as $vipId => $vip) {
@@ -178,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $vipent['noexpand'] = true;
         }
 
-        // virtual ip UI keeps track of it's changes in a separate file
+        // virtual ip UI keeps track of its changes in a separate file
         // (which is only use on apply in firewall_virtual_ip)
         // add or change this administration here.
         // Not the nicest thing to do, but we keep it for now.
@@ -296,7 +300,7 @@ $( document ).ready(function() {
 
 </script>
 
-</script>
+
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -333,11 +337,11 @@ $( document ).ready(function() {
                     <td>
                       <select name="interface" class="selectpicker" data-width="auto">
 <?php
-                      $interfaces = get_configured_interface_with_descr(false, true);
-                      $interfaces['lo0'] = "Localhost";
-                      foreach ($interfaces as $iface => $ifacename): ?>
-                        <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
-                          <?=htmlspecialchars($ifacename);?>
+                      $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                      $interfaces['lo0'] = array('descr' => 'Loopback');
+                      foreach ($interfaces as $iface => $ifcfg): ?>
+                        <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? 'selected="selected"' : '' ?>>
+                          <?= htmlspecialchars($ifcfg['descr']) ?>
                         </option>
 <?php
                       endforeach; ?>
@@ -363,7 +367,7 @@ $( document ).ready(function() {
                   <tr>
                       <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address");?></td>
                       <td>
-                        <table style="border:0; cellspacing:0; cellpadding:0">
+                        <table style="border:0;">
                           <tr>
                             <td style="width:348px">
                               <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
@@ -470,8 +474,8 @@ $( document ).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/firewall_virtual_ip.php'" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_virtual_ip.php'" />
                       <?php if (isset($id) && $a_vip[$id]): ?>
                         <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>

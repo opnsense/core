@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2018 Deciso B.V.
  *
@@ -31,6 +32,7 @@ namespace OPNsense\Firewall;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Alias
@@ -79,7 +81,9 @@ class Alias extends BaseModel
         foreach ($this->getAliasSource() as $aliasref) {
             $cfgsection = $cfgObj;
             foreach ($aliasref[0] as $cfgName) {
-                $cfgsection = $cfgsection->$cfgName;
+                if ($cfgsection != null) {
+                    $cfgsection = $cfgsection->$cfgName;
+                }
             }
             if ($cfgsection != null) {
                 $nodeidx = 0;
@@ -100,7 +104,7 @@ class Alias extends BaseModel
 
     /**
      * Return all places an alias seems to be used
-     * @param $name alias name
+     * @param string $name alias name
      * @return array hashmap with references where this alias is used
      */
     public function whereUsed($name)
@@ -111,7 +115,7 @@ class Alias extends BaseModel
             $result[$item[0]] = (string)$item[1]->descr;
         }
         // find all used in this model
-        foreach ($this->aliases->alias->__items as $alias) {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
             if (!in_array($alias->type, array('geoip', 'urltable'))) {
                 $nodeData = $alias->content->getNodeData();
                 if (isset($nodeData[$name])) {
@@ -133,14 +137,15 @@ class Alias extends BaseModel
      */
     public function refactor($oldname, $newname)
     {
+        Util::attachAliasObject($this);
         // replace in legacy config
         foreach ($this->searchConfig($oldname) as $item) {
             $item[2][0] = $newname;
         }
         // find all used in this model (alias nesting)
-        foreach ($this->aliases->alias->__items as $alias) {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
             if (!in_array($alias->type, array('geoip', 'urltable'))) {
-                $sepchar = $alias->content->getSeperatorChar();
+                $sepchar = $alias->content->getSeparatorChar();
                 $aliases = explode($sepchar, (string)$alias->content);
                 if (in_array($oldname, $aliases)) {
                     $aliases = array_unique($aliases);
@@ -158,10 +163,10 @@ class Alias extends BaseModel
     public function aliasIterator()
     {
         $use_legacy = true;
-        foreach ($this->aliases->alias->__items as $alias) {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
             $record = array();
-            foreach (array_keys($alias->__items) as $key) {
-                $record[$key] = (string)$alias->$key;
+            foreach ($alias->iterateItems() as $key => $value) {
+                $record[$key] = (string)$value;
             }
             yield $record;
             $use_legacy = false;
@@ -177,5 +182,15 @@ class Alias extends BaseModel
                 }
             }
         }
+    }
+
+    public function getByName($name)
+    {
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
+            if ((string)$alias->name == $name) {
+                return $alias;
+            }
+        }
+        return null;
     }
 }

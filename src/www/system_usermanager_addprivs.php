@@ -1,38 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2006 Daniel S. Haischt
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2006 Daniel S. Haischt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
-
-function cpusercmp($a, $b)
-{
-    return strcasecmp($a['name'], $b['name']);
-}
 
 function sort_user_privs($privs)
 {
@@ -62,8 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $a_privs = &config_read_array('system', 'user', $id, 'priv');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
     $pconfig = $_POST;
-    if (isset($pconfig['input_type']) && isset($pconfig['id'])) {
+
+    $user = getUserEntry($_SESSION['Username']);
+    if (userHasPrivilege($user, 'user-config-readonly')) {
+        $input_errors[] = gettext('You do not have the permission to perform this action.');
+    }
+
+    if (count($input_errors)) {
+        /* FALLTHROUGH */
+    } elseif (isset($pconfig['input_type']) && isset($pconfig['id'])) {
         if ($pconfig['input_type'] == 'user' && isset($config['system']['user'][$pconfig['id']]['name'])) {
             $userid = $_POST['id'];
             $a_user = &config_read_array('system', 'user', $userid);
@@ -71,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_user['priv'] = sort_user_privs($a_user['priv']);
             local_user_set($a_user);
             $retval = write_config();
-            $savemsg = get_std_save_message();
+            $savemsg = get_std_save_message(true);
 
             header(url_safe('Location: /system_usermanager.php?act=edit&userid=%d&savemsg=%s', array($userid, $savemsg)));
             exit;
@@ -90,21 +94,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (isset($config['system']['group']) && is_array($config['system']['group'])) {
-                usort($config['system']['group'], "cpusercmp");
+                usort($config['system']['group'], function ($a, $b) {
+                    return strcasecmp($a['name'], $b['name']);
+                });
             }
 
             write_config();
-            header(url_safe('Location: /system_groupmanager.php?act=edit&groupid=%s', array($groupid)));
+            header(url_safe('Location: /system_groupmanager.php?act=edit&groupid=%d', array($groupid)));
             exit;
         }
+    } else {
+        header(url_safe('Location: /system_usermanager.php'));
+        exit;
     }
-    header(url_safe('Location: /system_usermanager.php'));
-    exit;
 }
 
 include("head.inc");
-?>
 
+?>
 <body>
 <?php include("fbegin.inc"); ?>
 <script>
@@ -151,17 +158,28 @@ include("head.inc");
         $("#search_selected").click(function(){
             $("#search").keyup();
         });
+
+        // Warn user about future removal.
+        $("input[value='user-config-readonly']").change(function(){
+            if ($(this).is(':checked')) {
+              BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: "<?= gettext("Privileges");?>",
+                message: "<?=gettext("Please be aware that this option does not cover all areas of the system and will be removed in a future release.");?>",
+                buttons: [{ label: "<?= gettext("Ok");?>", action: function(dialogRef) {
+                              dialogRef.close();
+                          }
+                }]
+              });
+            }
+        });
     });
 </script>
 
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
-<?php
-    if (isset($input_errors) && count($input_errors) > 0) {
-        print_input_errors($input_errors);
-    }
-?>
+      <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform">
@@ -192,7 +210,7 @@ include("head.inc");
                             <thead>
                                 <tr>
                                     <th style="width:70px;"></th>
-                                    <th></th>
+                                    <th style="width:50px;"></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -213,10 +231,32 @@ include("head.inc");
                                  } ?>
                                 <tr class="acl_item" data-search-phrase="<?= $pdesc . ' ' . $pnamesafe ?>">
                                     <td>
-                                        <input name="sysprivs[]" type="checkbox" value="<?=$pname;?>" <?=in_array($pname, $a_privs) ?  "checked=\"checked\"" : "";?>>
+                                        <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
                                     </td>
                                     <td><?= $pdesc ?></td>
-                                    <td><?= $pnamesafe ?></td>
+                                    <td><?= $pnamesafe ?>
+<?php
+                                      if (!empty($pdata['match'])):?>
+                                      <i class="fa fa-info-circle" style="cursor: pointer" data-toggle="collapse" href="#<?=$pname;?>"></i>
+                                      <div class="collapse" id="<?=$pname;?>">
+                                        <table class="table table-condensed">
+                                          <thead>
+                                            <tr>
+                                                <th><?=gettext("endpoint");?>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+<?php
+                                          foreach ($pdata['match'] as $match):?>
+                                            <tr><td>/<?=$match;?></td></tr>
+<?php
+                                          endforeach;?>
+                                          </tbody>
+                                        </table>
+                                      </div>
+<?php
+                                      endif;?>
+                                    </td>
                                 </tr>
 <?php
                             } ?>
@@ -240,8 +280,8 @@ include("head.inc");
               <tr>
                 <td>&nbsp;</td>
                 <td>
-                  <input type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                  <input class="btn btn-default" type="button" value="<?=gettext("Cancel");?>" onclick="history.back()" />
+                  <input type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                  <input class="btn btn-default" type="button" value="<?=html_safe(gettext("Cancel"));?>" onclick="history.back()" />
                 </td>
               </tr>
             </table>

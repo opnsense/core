@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\IDS;
 
 use OPNsense\Base\BaseModel;
@@ -52,7 +54,7 @@ class IDS extends BaseModel
     private function updateSIDlist()
     {
         if (count($this->sid_list) == 0) {
-            foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
+            foreach ($this->rules->rule->iterateItems() as $NodeKey => $NodeValue) {
                 $this->sid_list[$NodeValue->sid->__toString()] = $NodeValue;
             }
             // list of known actions and defaults
@@ -79,26 +81,31 @@ class IDS extends BaseModel
     /**
      * enable rule
      * @param string $sid unique id
+     * @return ArrayField affected rule
      */
     public function enableRule($sid)
     {
         $rule = $this->getRule($sid);
         $rule->enabled = "1";
+        return $rule;
     }
 
     /**
      * disable rule
      * @param string $sid unique id
+     * @return ArrayField affected rule
      */
     public function disableRule($sid)
     {
         $rule = $this->getRule($sid);
         $rule->enabled = "0";
+        return $rule;
     }
 
     /**
      * set new action for selected rule
-     * @param string $sid  unique id
+     * @param string $sid unique id
+     * @param $action
      */
     public function setAction($sid, $action)
     {
@@ -113,7 +120,7 @@ class IDS extends BaseModel
     public function removeRule($sid)
     {
         // search and drop rule
-        foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
+        foreach ($this->rules->rule->iterateItems() as $NodeKey => $NodeValue) {
             if ((string)$NodeValue->sid == $sid) {
                 $this->rules->rule->Del($NodeKey);
                 unset($this->sid_list[$sid]);
@@ -126,7 +133,7 @@ class IDS extends BaseModel
      * retrieve current altered rule status
      * @param string $sid unique id
      * @param string $default default value
-     * @return default, 0, 1 ( default, true, false)
+     * @return string|bool default, 0, 1 ( default, true, false)
      */
     public function getRuleStatus($sid, $default)
     {
@@ -143,7 +150,7 @@ class IDS extends BaseModel
      * @param string $sid unique id
      * @param string $default default value
      * @param bool $response_plain response as text ot model (select list)
-     * @return default, <action value> ( default, true, false)
+     * @return string|bool default, <action value> ( default, true, false)
      */
     public function getRuleAction($sid, $default, $response_plain = false)
     {
@@ -190,7 +197,7 @@ class IDS extends BaseModel
      */
     public function getFileNode($filename)
     {
-        foreach ($this->files->file->__items as $NodeKey => $NodeValue) {
+        foreach ($this->files->file->iterateItems() as $NodeKey => $NodeValue) {
             if ($filename == $NodeValue->filename) {
                 return $NodeValue;
             }

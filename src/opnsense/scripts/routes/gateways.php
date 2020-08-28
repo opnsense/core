@@ -31,7 +31,7 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
 
-$gateways = return_gateways_array(true, true, true);
+$gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true, true, true);
 
 $ret = array();
 

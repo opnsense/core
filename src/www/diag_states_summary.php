@@ -62,7 +62,6 @@ function build_port_info($portarr, $proto) {
     $ports = array();
     asort($portarr);
     foreach (array_reverse($portarr, TRUE) as $port => $count) {
-        $str = "";
         $service = getservbyport($port, strtolower($proto));
         $port = "{$proto}/{$port}";
         if (!empty($service)) {

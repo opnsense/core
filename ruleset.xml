@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
-<ruleset name="PSR2+">
-  <description>Slightly enhanced version of the PSR2 standard</description>
+<ruleset name="PSR12+">
+  <description>Slightly enhanced version of the PSR12 standard</description>
   <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
   <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
-<!--
   <rule ref="Generic.CodeAnalysis.EmptyPHPStatement"/>
--->
-  <rule ref="PSR2"/>
+  <rule ref="PSR12"/>
   <exclude-pattern>*.css</exclude-pattern>
   <exclude-pattern>*.js</exclude-pattern>
 </ruleset>

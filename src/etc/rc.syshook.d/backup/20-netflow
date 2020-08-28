@@ -1,7 +1,8 @@
 #!/bin/sh
 
-BACKUPFILE="/conf/netflow.tgz"
 BACKUPDIR="/var/netflow"
+BACKUPFILE="/conf/netflow.tgz"
+BACKUPOFF="<netflowbackup>-1</netflowbackup>"
 
 # find out if the service is running and stop/start it only if needed
 RCSCRIPT="/usr/local/etc/rc.d/flowd_aggregate"
@@ -9,7 +10,9 @@ if ! ${RCSCRIPT} status > /dev/null; then
 	RCSCRIPT="true"
 fi
 
-if [ "${1}" = "restore" ]; then
+if [ "$(grep -c "${BACKUPOFF}" /conf/config.xml)" != "0" ]; then
+	rm -f ${BACKUPFILE}
+elif [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
 		${RCSCRIPT} stop
 		tar -C / -xzpf "${BACKUPFILE}"

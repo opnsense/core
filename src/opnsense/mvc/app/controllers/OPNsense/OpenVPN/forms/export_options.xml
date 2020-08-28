@@ -1,0 +1,74 @@
+<form>
+    <field>
+        <id>openvpn_export.servers</id>
+        <label>Remote Access Server</label>
+        <type>dropdown</type>
+        <help><![CDATA[Select an OpenVPN server to export profiles for.]]></help>
+    </field>
+    <field>
+        <id>openvpn_export.template</id>
+        <label>Export type</label>
+        <type>dropdown</type>
+        <help><![CDATA[File format to export.]]></help>
+    </field>
+    <field>
+        <id>openvpn_export.hostname</id>
+        <label>Hostname</label>
+        <type>text</type>
+        <help>
+            Address(es) or hostname(s) to which this client should connect to, use comma's to provide more then one
+        </help>
+    </field>
+    <field>
+        <id>openvpn_export.local_port</id>
+        <label>Port</label>
+        <type>text</type>
+        <help>Port on which OpenVPN listens</help>
+    </field>
+    <field>
+        <id>openvpn_export.random_local_port</id>
+        <label>Use random local port</label>
+        <style>export_option</style>
+        <type>checkbox</type>
+        <help>Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.</help>
+    </field>
+    <field>
+        <id>openvpn_export.p12_password</id>
+        <label>P12 Password/confirm</label>
+        <style>password_field export_option</style>
+        <type>password</type>
+        <help>Use a password to protect the pkcs12 file contents</help>
+    </field>
+    <field>
+        <id>openvpn_export.validate_server_cn</id>
+        <label>Validate server subject</label>
+        <type>checkbox</type>
+        <help>Verify the server certificate name when the client connects</help>
+    </field>
+    <field>
+        <id>openvpn_export.cryptoapi</id>
+        <label>Windows Certificate System Store</label>
+        <type>checkbox</type>
+        <style>export_option</style>
+        <help>
+          Load the certificate and private key from the Windows Certificate System Store (Windows/OpenSSL Only).
+        </help>
+    </field>
+    <field>
+        <id>openvpn_export.auth_nocache</id>
+        <label>Disable password save</label>
+        <type>checkbox</type>
+        <style>export_option</style>
+        <help>
+          Sets auth-nocache in the exported configuration when password authentication is used.
+          This prevents OpenVPN from caching passwords in memory.
+        </help>
+    </field>
+    <field>
+        <id>openvpn_export.plain_config</id>
+        <label>Custom config</label>
+        <style>export_option</style>
+        <type>textbox</type>
+        <help>Custom configuration, which will be returned in the output file without modifications</help>
+    </field>
+</form>

@@ -1,52 +1,45 @@
 <?php
 
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015-2019 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\Backend;
-use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * Class ConfigdActionsField list configurable configd actions
  * @package OPNsense\Base\FieldTypes
  */
-class ConfigdActionsField extends BaseField
+class ConfigdActionsField extends BaseListField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
     /**
      * @var array collected options
      */
-    private static $internalOptionList = array();
+    private static $internalStaticOptionList = array();
 
     /**
      * @var string default validation message string
@@ -68,8 +61,8 @@ class ConfigdActionsField extends BaseField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalOptionList[$this->internalCacheKey])) {
-            self::$internalOptionList[$this->internalCacheKey] = array();
+        if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
+            self::$internalStaticOptionList[$this->internalCacheKey] = array();
 
             $backend = new Backend();
             $service_tempfile = "/tmp/configdmodelfield.data";
@@ -90,7 +83,6 @@ class ConfigdActionsField extends BaseField
                 }
             }
 
-
             foreach ($actions as $key => $value) {
                 // use filters to determine relevance
                 $isMatched = true;
@@ -104,13 +96,15 @@ class ConfigdActionsField extends BaseField
                 }
                 if ($isMatched) {
                     if (!isset($value['description']) || $value['description'] == '') {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = $key;
+                        self::$internalStaticOptionList[$this->internalCacheKey][$key] = $key;
                     } else {
-                        self::$internalOptionList[$this->internalCacheKey][$key] = $value['description'];
+                        self::$internalStaticOptionList[$this->internalCacheKey][$key] = $value['description'];
                     }
                 }
             }
+            natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
         }
+        $this->internalOptionList = self::$internalStaticOptionList[$this->internalCacheKey];
     }
 
     /**
@@ -124,45 +118,5 @@ class ConfigdActionsField extends BaseField
             $this->internalFilters = $filters;
             $this->internalCacheKey = md5(serialize($this->internalFilters));
         }
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        $result = array();
-        // if interface is not required, add empty option
-        if (!$this->internalIsRequired) {
-            $result[""] = array("value" => gettext("none"), "selected" => 0);
-        }
-
-        foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
-            if ($optKey == $this->internalValue) {
-                $selected = 1;
-            } else {
-                $selected = 0;
-            }
-            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
-        }
-
-
-
-        return $result;
-    }
-
-    /**
-     * retrieve field validators for this field type
-     * @return array returns Text/regex validator
-     */
-    public function getValidators()
-    {
-        $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
-        }
-        return $validators;
     }
 }

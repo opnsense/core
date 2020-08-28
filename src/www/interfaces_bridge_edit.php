@@ -1,47 +1,45 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2008 Ermal Luçi
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2008 Ermal Luçi
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("services.inc");
 
 $a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list
 $ifacelist = array();
-foreach (get_configured_interface_with_descr() as $bif => $bdescr) {
-    if (substr(get_real_interface($bif), 0, 3) != "gre") {
-        $ifacelist[$bif] = $bdescr;
+foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+    if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
+        $ifacelist[$intf] = $intfdata['descr'];
     }
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data
@@ -57,8 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+
     // bool fields
-    $pconfig['enablestp'] = isset($a_bridges[$id]['enablestp']);
+    $pconfig['enablestp'] = !empty($a_bridges[$id]['enablestp']);
+    $pconfig['linklocal'] = !empty($a_bridges[$id]['linklocal']);
 
     // simple array fields
     $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
@@ -144,7 +144,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $bridge = array();
-        $bridge['enablestp'] = !empty($pconfig['enablestp']);
+        // booleans
+        foreach (['enablestp', 'linklocal'] as $fieldname) {
+            if (!empty($pconfig[$fieldname])) {
+                $bridge[$fieldname] = true;
+            }
+        }
         // 1 on 1 copy
         $copy_fields = array('descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt');
         foreach ($copy_fields as $fieldname) {
@@ -193,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             write_config();
             $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
-            if ($confif <> "") {
+            if ($confif != '') {
                 interface_configure(false, $confif);
             }
             header(url_safe('Location: /interfaces_bridge.php'));
@@ -272,10 +277,22 @@ $(document).ready(function() {
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <td><a id="help_for_linklocal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Link-local address') ?></td>
+                      <td>
+                        <input type="checkbox" name="linklocal" <?= !empty($pconfig['linklocal']) ? 'checked="checked"' : '' ?> />
+                        <?= gettext('Enable link-local address') ?>
+                        <div class="hidden" data-for="help_for_linklocal">
+                          <?= gettext('By default, link-local addresses for bridges are disabled. You can enable them manually using this option. ' .
+                            'However, when a bridge interface has IPv6 addresses, IPv6 addresses on a member interface will be automatically ' .
+                            'removed before the interface is added.') ?>
+                        </div>
+                      </td>
+                    </tr>
                     <tr id="show_advanced_opt">
                       <td></td>
                       <td>
-                        <input type="button" id="show_advanced" class="btn btn-xs btn-default" value="<?=gettext("Show advanced options"); ?>" />
+                        <input type="button" id="show_advanced" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Show advanced options')) ?>" />
                       </td>
                     </tr>
                   </tbody>
@@ -620,8 +637,8 @@ $(document).ready(function() {
                       <td style="width:22%">&nbsp;</td>
                       <td style="width:78%">
                         <input type="hidden" name="bridgeif" value="<?=$pconfig['bridgeif']; ?>" />
-                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/interfaces_bridge.php'" />
+                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces_bridge.php'" />
 <?php if (isset($id)): ?>
                         <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php endif; ?>
@@ -636,4 +653,7 @@ $(document).ready(function() {
       </div>
     </div>
   </section>
-<?php include("foot.inc"); ?>
+
+<?php
+
+include 'foot.inc';

@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -77,9 +77,11 @@ function startElement($parser, $name, $attrs)
         array_push($curpath, count($ptr));
     } elseif (isset($ptr)) {
         /* multiple entries not allowed for this element, bail out */
-        die(sprintf(gettext('XML error: %s at line %d cannot occur more than once') . "\n",
+        die(sprintf(
+            gettext('XML error: %s at line %d cannot occur more than once') . "\n",
             $name,
-            xml_get_current_line_number($parser)));
+            xml_get_current_line_number($parser)
+        ));
     }
     $depth++;
     $havedata = $depth;
@@ -107,7 +109,7 @@ function endElement($parser, $name)
 
 function cData($parser, $data)
 {
-    global $depth, $curpath, $parsedcfg, $havedata;
+    global $curpath, $parsedcfg, $havedata;
 
     $data = trim($data, "\t\n\r");
 
@@ -129,7 +131,7 @@ function cData($parser, $data)
 
 function parse_xml_config_raw($cffile, $rootobj, $isstring = "false")
 {
-    global $depth, $curpath, $parsedcfg, $havedata, $listtags;
+    global $depth, $curpath, $parsedcfg, $havedata;
     $parsedcfg = array();
     $curpath = array();
     $depth = 0;
@@ -139,7 +141,7 @@ function parse_xml_config_raw($cffile, $rootobj, $isstring = "false")
 
     xml_set_element_handler($xml_parser, "startElement", "endElement");
     xml_set_character_data_handler($xml_parser, "cdata");
-    xml_parser_set_option($xml_parser,XML_OPTION_SKIP_WHITE, 1);
+    xml_parser_set_option($xml_parser, XML_OPTION_SKIP_WHITE, 1);
 
     if (!($fp = fopen($cffile, "r"))) {
         log_error('Error: could not open XML input');
@@ -148,10 +150,12 @@ function parse_xml_config_raw($cffile, $rootobj, $isstring = "false")
 
     while ($data = fread($fp, 4096)) {
         if (!xml_parse($xml_parser, $data, feof($fp))) {
-            log_error(sprintf('XML error: %s at line %d in %s' . "\n",
-                  xml_error_string(xml_get_error_code($xml_parser)),
-                  xml_get_current_line_number($xml_parser),
-                  $cffile));
+            log_error(sprintf(
+                'XML error: %s at line %d in %s' . "\n",
+                xml_error_string(xml_get_error_code($xml_parser)),
+                xml_get_current_line_number($xml_parser),
+                $cffile
+            ));
             return -1;
         }
     }
@@ -178,9 +182,9 @@ function parse_xml_config_raw($cffile, $rootobj, $isstring = "false")
 
 function dump_xml_config_sub($arr, $indent)
 {
-  global $listtags;
+    global $listtags;
 
-  $xmlconfig = "";
+    $xmlconfig = "";
 
     foreach ($arr as $ent => $val) {
         if (is_array($val)) {
@@ -205,14 +209,16 @@ function dump_xml_config_sub($arr, $indent)
                         $xmlconfig .= str_repeat("\t", $indent);
                         if ((is_bool($cval) && $cval == true) || ($cval === "")) {
                             $xmlconfig .= "<$ent/>\n";
-                        } elseif ((substr($ent, 0, 5) == "descr")
-                          || (substr($ent, 0, 6) == "detail")
-                          || (substr($ent, 0, 12) == "login_banner")
-                          || (substr($ent, 0, 9) == "ldap_attr")
-                          || (substr($ent, 0, 9) == "ldap_bind")
-                          || (substr($ent, 0, 11) == "ldap_basedn")
-                          || (substr($ent, 0, 18) == "ldap_authcn")
-                          || (substr($ent, 0, 19) == "ldap_extended_query")) {
+                        } elseif (
+                            (substr($ent, 0, 5) == "descr")
+                            || (substr($ent, 0, 6) == "detail")
+                            || (substr($ent, 0, 12) == "login_banner")
+                            || (substr($ent, 0, 9) == "ldap_attr")
+                            || (substr($ent, 0, 9) == "ldap_bind")
+                            || (substr($ent, 0, 11) == "ldap_basedn")
+                            || (substr($ent, 0, 18) == "ldap_authcn")
+                            || (substr($ent, 0, 19) == "ldap_extended_query")
+                        ) {
                             $xmlconfig .= "<$ent><![CDATA[" . htmlentities($cval) . "]]></$ent>\n";
                         } else {
                             $xmlconfig .= "<$ent>" . htmlentities($cval) . "</$ent>\n";
@@ -230,20 +236,22 @@ function dump_xml_config_sub($arr, $indent)
                 $xmlconfig .= str_repeat("\t", $indent);
                 $xmlconfig .= "</$ent>\n";
             }
-          } else {
+        } else {
             if ((is_bool($val) && ($val == true)) || ($val === "")) {
                 $xmlconfig .= str_repeat("\t", $indent);
                 $xmlconfig .= "<$ent/>\n";
             } elseif (!is_bool($val)) {
                 $xmlconfig .= str_repeat("\t", $indent);
-                if ((substr($ent, 0, 5) == "descr")
-                  || (substr($ent, 0, 6) == "detail")
-                  || (substr($ent, 0, 12) == "login_banner")
-                  || (substr($ent, 0, 9) == "ldap_attr")
-                  || (substr($ent, 0, 9) == "ldap_bind")
-                  || (substr($ent, 0, 11) == "ldap_basedn")
-                  || (substr($ent, 0, 18) == "ldap_authcn")
-                  || (substr($ent, 0, 19) == "ldap_extended_query")) {
+                if (
+                    (substr($ent, 0, 5) == "descr")
+                    || (substr($ent, 0, 6) == "detail")
+                    || (substr($ent, 0, 12) == "login_banner")
+                    || (substr($ent, 0, 9) == "ldap_attr")
+                    || (substr($ent, 0, 9) == "ldap_bind")
+                    || (substr($ent, 0, 11) == "ldap_basedn")
+                    || (substr($ent, 0, 18) == "ldap_authcn")
+                    || (substr($ent, 0, 19) == "ldap_extended_query")
+                ) {
                     $xmlconfig .= "<$ent><![CDATA[" . htmlentities($val) . "]]></$ent>\n";
                 } else {
                     $xmlconfig .= "<$ent>" . htmlentities($val) . "</$ent>\n";

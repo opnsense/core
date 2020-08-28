@@ -1,5 +1,6 @@
 ##############################################################
 # This file was auto-generated using the rc.loader facility. #
 # In order to deploy a custom change to this installation,   #
-# please use /boot/loader.conf.local as it is not rewritten. #
+# please use /boot/loader.conf.local as it is not rewritten, #
+# or better yet use System: Settings: Tunables from the GUI. #
 ##############################################################

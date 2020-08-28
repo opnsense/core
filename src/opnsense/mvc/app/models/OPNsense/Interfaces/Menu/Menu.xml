@@ -1,0 +1,8 @@
+<menu>
+    <Interfaces>
+        <Types>
+            <VXLAN url="/ui/interfaces/vxlan"/>
+            <Loopback url="/ui/interfaces/loopback"/>
+        </Types>
+    </Interfaces>
+</menu>

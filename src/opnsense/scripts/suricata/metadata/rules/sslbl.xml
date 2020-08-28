@@ -2,7 +2,7 @@
 <ruleset>
     <location url="https://sslbl.abuse.ch/blacklist/" prefix="abuse.ch"/>
     <files>
-        <file url="https://sslbl.abuse.ch/blacklist/sslblacklist.rules"
+        <file url="https://sslbl.abuse.ch/blacklist/sslblacklist_tls_cert.rules"
               description="SSL Fingerprint Blacklist"
               documentation_url="https://sslbl.abuse.ch/blacklist/"
         >abuse.ch.sslblacklist.rules</file>
@@ -10,11 +10,7 @@
               description="SSL IP Blacklist"
               documentation_url="https://sslbl.abuse.ch/blacklist/"
         >abuse.ch.sslipblacklist.rules</file>
-        <file url="https://sslbl.abuse.ch/blacklist/dyre_sslipblacklist.rules"
-              description="Dyre SSL IPBL"
-              documentation_url="https://sslbl.abuse.ch/blacklist/"
-        >abuse.ch.dyre_sslipblacklist.rules</file>
-        <file url="https://feodotracker.abuse.ch/blocklist/?download=suricata"
+        <file url="https://feodotracker.abuse.ch/downloads/feodotracker.rules"
               description="Feodo Tracker"
               documentation_url="https://feodotracker.abuse.ch/blocklist/"
         >abuse.ch.feodotracker.rules</file>

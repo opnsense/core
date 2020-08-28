@@ -30,9 +30,9 @@
 
 namespace OPNsense\Cron\Api;
 
-use \OPNsense\Base\ApiMutableModelControllerBase;
-use \OPNsense\Core\Config;
-use \OPNsense\Cron\Cron;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Config;
+use OPNsense\Cron\Cron;
 
 /**
  * Class SettingsController Handles settings related API actions for the Cron
@@ -41,8 +41,8 @@ use \OPNsense\Cron\Cron;
 class SettingsController extends ApiMutableModelControllerBase
 {
 
-    static protected $internalModelName = 'job';
-    static protected $internalModelClass = '\OPNsense\Cron\Cron';
+    protected static $internalModelName = 'job';
+    protected static $internalModelClass = '\OPNsense\Cron\Cron';
 
     /**
      * retrieve job settings or return defaults
@@ -64,9 +64,8 @@ class SettingsController extends ApiMutableModelControllerBase
     public function setJobAction($uuid)
     {
         if ($this->request->isPost() && $this->request->hasPost("job")) {
-            $mdlCron = new Cron();
             if ($uuid != null) {
-                $node = $mdlCron->getNodeByReference('jobs.job.' . $uuid);
+                $node = $this->getModel()->getNodeByReference('jobs.job.' . $uuid);
                 if ($node != null) {
                     $result = array("result" => "failed", "validations" => array());
                     $jobInfo = $this->request->getPost("job");
@@ -85,17 +84,14 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
 
                     $node->setNodes($jobInfo);
-                    $valMsgs = $mdlCron->performValidation();
+                    $valMsgs = $this->getModel()->performValidation();
                     foreach ($valMsgs as $field => $msg) {
                         $fieldnm = str_replace($node->__reference, "job", $msg->getField());
                         $result["validations"][$fieldnm] = $msg->getMessage();
                     }
 
                     if (count($result['validations']) == 0) {
-                        // save config if validated correctly
-                        $mdlCron->serializeToConfig();
-                        Config::getInstance()->save();
-                        $result = array("result" => "saved");
+                        $result = $this->save();
                     }
                     return $result;
                 }
@@ -159,8 +155,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             "jobs.job",
-            array("enabled", "minutes","hours", "days", "months", "weekdays", "description", "command", "origin",
-                  "cronPermissions"),
+            array("enabled", "minutes","hours", "days", "months", "weekdays", "description", "command", "origin"),
             "description"
         );
     }

@@ -1,0 +1,37 @@
+
+<html><head>
+<meta type="copyright" content="Copyright (C) 1996-2020 The Squid Software Foundation and contributors">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ERROR: The requested URL could not be retrieved</title>
+<!--EMBED:start-->
+<!-- leave this block as is, our parser will convert links to inline content -->
+<link rel="stylesheet" type="text/css" href="errorpage.css">
+<!--EMBED:end -->
+</head><body id="%c">
+<div id="titles">
+<h1>ERROR</h1>
+<h2>The requested URL could not be retrieved</h2>
+</div>
+<hr>
+
+<div id="content">
+<p>The following error was encountered while trying to retrieve the URL: <a href="%U">%U</a></p>
+
+<blockquote id="error">
+<p><b>The request or reply is too large.</b></p>
+</blockquote>
+
+<p>If you are making a POST or PUT request, then the item you are trying to upload is too large.</p>
+<p>If you are making a GET request, then the item you are trying to download is too large.</p>
+<p>These limits have been established by the Internet Service Provider who operates this cache. Please contact them directly if you feel this is an error.</p>
+
+<p>Your cache administrator is <a href="mailto:%w%W">%w</a>.</p>
+<br>
+</div>
+
+<hr>
+<div id="footer">
+<p>Generated %T by %h (%s)</p>
+<!-- %c -->
+</div>
+</body></html>

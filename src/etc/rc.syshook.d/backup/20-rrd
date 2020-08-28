@@ -2,8 +2,11 @@
 
 BACKUPDIR="/var/db/rrd"
 BACKUPFILE="/conf/rrd.tgz"
+BACKUPOFF="<rrdbackup>-1</rrdbackup>"
 
-if [ "${1}" = "restore" ]; then
+if [ "$(grep -c "${BACKUPOFF}" /conf/config.xml)" != "0" ]; then
+	rm -f ${BACKUPFILE}
+elif [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
 		tar -C / -xzpf "${BACKUPFILE}"
 		for XML in $(find "${BACKUPDIR}" -name "*.xml"); do

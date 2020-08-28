@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/proxy</mount>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
     <description>
         (squid) proxy settings
     </description>
@@ -10,6 +10,15 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enabled>
+            <error_pages type="OptionField">
+                <Required>N</Required>
+                <Default>opnsense</Default>
+                <BlankDesc>Squid</BlankDesc>
+                <OptionValues>
+                    <opnsense>OPNsense</opnsense>
+                    <custom>Custom</custom>
+                </OptionValues>
+            </error_pages>
             <icpPort type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
@@ -36,7 +45,9 @@
                     <BlankDesc>File</BlankDesc>
                     <OptionValues>
                         <file_extendend>File (Extended)</file_extendend>
+                        <file_json>File (Json)</file_json>
                         <syslog>Syslog</syslog>
+                        <syslog_json>Syslog (Json)</syslog_json>
                     </OptionValues>
                 </target>
             </logging>
@@ -78,6 +89,11 @@
                 <default>0</default>
                 <Required>N</Required>
             </suppressVersion>
+            <connecttimeout type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>120</MaximumValue>
+            </connecttimeout>
             <VisibleEmail type="EmailField">
                 <default>admin@localhost.local</default>
                 <Required>N</Required>
@@ -182,11 +198,64 @@
                     </Constraints>
                 </perHostTrotteling>
             </traffic>
+            <parentproxy>
+                <enabled type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enabled>
+                <host type="HostnameField">
+                    <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A host must be set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>enabled</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </host>
+                <enableauth type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enableauth>
+                <user type="TextField">
+                    <default>username</default>
+                    <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\._\-]){1,32}$/u</mask>
+                    <ValidationMessage>Username can be up to 32 signs long. Alphanumeric characters and also dot, dash and underscore allowed.</ValidationMessage>
+                </user>
+                <password type="TextField">
+                    <default>password</default>
+                    <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\._\-]){1,32}$/u</mask>
+                    <ValidationMessage>Password can be up to 32 signs long. Alphanumeric characters and also dot, dash and underscore allowed.</ValidationMessage>
+                </password>
+                <port type="PortField">
+                    <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A port must be set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>enabled</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </port>
+                <localdomains type="CSVListField">
+                    <Required>N</Required>
+                </localdomains>
+                <localips type="CSVListField">
+                    <Required>N</Required>
+                </localips>
+            </parentproxy>
         </general>
         <forward>
             <interfaces type="InterfaceField">
                 <Required>N</Required>
                 <multiple>Y</multiple>
+                <AllowDynamic>S</AllowDynamic>
                 <default>lan</default>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
@@ -210,10 +279,24 @@
             <sslbump type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>When enabling "Log SNI information only", SSL inspection must also be enabled</ValidationMessage>
+                        <type>DependConstraint</type>
+                        <addFields>
+                            <field1>sslurlonly</field1>
+                        </addFields>
+                    </check001>
+                </Constraints>
             </sslbump>
             <sslurlonly type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>sslbump.check001</reference>
+                    </check001>
+                </Constraints>
             </sslurlonly>
             <sslcertificate type="CertificateField">
                 <Required>N</Required>
@@ -430,6 +513,10 @@
                     <Required>N</Required>
                     <multiple>Y</multiple>
                 </method>
+                <authEnforceGroup type="AuthGroupField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                </authEnforceGroup>
                 <realm type="TextField">
                     <default>OPNsense proxy authentication</default>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
@@ -479,7 +566,7 @@
               </url>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
           </proxy>
           <match type="ArrayField">
@@ -495,7 +582,7 @@
               </name>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <negate type="BooleanField">
                   <default>0</default>
@@ -618,7 +705,7 @@
               </enabled>
               <description type="TextField">
                   <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <matches type="ModelRelationField">
                   <Model>
@@ -646,6 +733,7 @@
                   </OptionValues>
               </match_type>
               <proxies type="ModelRelationField">
+                  <Sorted>Y</Sorted>
                   <Model>
                       <queues>
                           <source>OPNsense.Proxy.Proxy</source>
@@ -658,5 +746,12 @@
               </proxies>
           </rule>
         </pac>
+        <error_pages>
+          <template type="TextField">
+              <Required>N</Required>
+              <mask>/[0-9a-zA-Z\+\=\/]{20,}/u</mask>
+              <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
+          </template>
+        </error_pages>
     </items>
 </model>

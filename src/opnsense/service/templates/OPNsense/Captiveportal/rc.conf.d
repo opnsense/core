@@ -7,4 +7,5 @@
 {%   endfor %}
 {% endif
 %}
+captiveportal_defer="YES"
 captiveportal_enable="{% if isEnabled %}YES{% else %}NO{% endif %}"

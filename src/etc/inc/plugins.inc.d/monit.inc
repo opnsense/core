@@ -36,8 +36,10 @@ function monit_services()
 
     $services = array();
 
-    if (isset($config['OPNsense']['monit']['general']['enabled']) &&
-        $config['OPNsense']['monit']['general']['enabled'] == 1) {
+    if (
+        isset($config['OPNsense']['monit']['general']['enabled']) &&
+        $config['OPNsense']['monit']['general']['enabled'] == 1
+    ) {
         $services[] = array(
                 'description' => gettext('Monit System Monitoring'),
                 'configd' => array(

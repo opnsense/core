@@ -1,32 +1,31 @@
 <?php
 
-/**
- *    Copyright (C) 2017 Deciso B.V.
+/*
+ * Copyright (C) 2017 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall;
 
 /**
@@ -76,13 +75,13 @@ abstract class Rule
      */
     protected function parseComment($value)
     {
-        return !empty($value) ? "# " . $value : "";
+        return !empty($value) ? "# " . preg_replace("/\r|\n/", "", $value) : "";
     }
 
     /**
      * parse static text
-     * @param string $value field value, ignored
      * @param string $value static text
+     * @param string $text
      * @return string
      */
     protected function parseStaticText($value, $text)
@@ -93,6 +92,8 @@ abstract class Rule
     /**
      * parse boolean, return text from $valueTrue / $valueFalse
      * @param string $value field value
+     * @param $valueTrue
+     * @param string $valueFalse
      * @return string
      */
     protected function parseBool($value, $valueTrue, $valueFalse = "")
@@ -222,7 +223,7 @@ abstract class Rule
             $ruleTxt .= $cmdout;
         }
         if (!empty($this->ruleDebugInfo)) {
-            $debugTxt = "#debug:". implode("|", $this->ruleDebugInfo) . "\n";
+            $debugTxt = "#debug:" . implode("|", $this->ruleDebugInfo) . "\n";
         } else {
             $debugTxt = "";
         }
@@ -257,17 +258,18 @@ abstract class Rule
                     } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
                         $rule[$target] = $rule[$tag]['network'];
                     } elseif (Util::isAlias($rule[$tag]['network'])) {
-                        $rule[$target] = '$'.$rule[$tag]['network'];
+                        $rule[$target] = '$' . $rule[$tag]['network'];
                     } elseif ($rule[$tag]['network'] == 'any') {
                         $rule[$target] = $rule[$tag]['network'];
                     }
                 } elseif (!empty($rule[$tag]['address'])) {
-                    if (Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
-                      Util::isPort($rule[$tag]['address'])
+                    if (
+                        Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
+                        Util::isPort($rule[$tag]['address'])
                     ) {
                         $rule[$target] = $rule[$tag]['address'];
                     } elseif (Util::isAlias($rule[$tag]['address'])) {
-                        $rule[$target] = '$'.$rule[$tag]['address'];
+                        $rule[$target] = '$' . $rule[$tag]['address'];
                     }
                 }
                 if (!empty($rule[$target]) && $rule[$target] != 'any' && isset($rule[$tag]['not'])) {
@@ -276,9 +278,9 @@ abstract class Rule
                 if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
                     $port = str_replace('-', ':', $rule[$tag]['port']);
                     if (Util::isPort($port)) {
-                        $rule[$target."_port"] = $port;
+                        $rule[$target . "_port"] = $port;
                     } elseif (Util::isAlias($port)) {
-                        $rule[$target."_port"] = '$'.$port;
+                        $rule[$target . "_port"] = '$' . $port;
                         if (!Util::isAlias($port, true)) {
                             // unable to map port
                             $rule['disabled'] = true;
@@ -310,7 +312,7 @@ abstract class Rule
         } elseif (empty($this->interfaceMapping[$value]['if'])) {
             return "{$prefix}##{$value}##{$suffix} ";
         } else {
-            return "{$prefix}". $this->interfaceMapping[$value]['if']."{$suffix} ";
+            return "{$prefix}" . $this->interfaceMapping[$value]['if'] . "{$suffix} ";
         }
     }
 
@@ -328,12 +330,65 @@ abstract class Rule
         } else {
             // check fields which are known to contain addresses and search for an ipv4 address
             foreach (array('from', 'to', 'external', 'target') as $fieldname) {
-                if ((Util::isIpAddress($rule[$fieldname]) || Util::isSubnet($rule[$fieldname]))
-                        && strpos($rule[$fieldname], ":") === false) {
+                if (
+                    (Util::isIpAddress($rule[$fieldname]) || Util::isSubnet($rule[$fieldname]))
+                        && strpos($rule[$fieldname], ":") === false
+                ) {
                     return true;
                 }
             }
             return false;
         }
+    }
+
+    /**
+     * return label
+     * @return string
+     */
+    public function getLabel()
+    {
+        return !empty($this->rule['label']) ? $this->rule['label'] : "";
+    }
+
+    /**
+     * return #ref
+     * @return string
+     */
+    public function getRef()
+    {
+        return !empty($this->rule['#ref']) ? $this->rule['#ref'] : "";
+    }
+
+    /**
+     * return description
+     * @return string
+     */
+    public function getDescr()
+    {
+        return !empty($this->rule['descr']) ? $this->rule['descr'] : "";
+    }
+
+    /**
+     * return interface
+     */
+    public function getInterface()
+    {
+        return !empty($this->rule['interface']) ? $this->rule['interface'] : "";
+    }
+
+    /**
+     * is rule enabled
+     */
+    public function isEnabled()
+    {
+        return empty($this->rule['disabled']);
+    }
+
+    /**
+     * return raw rule
+     */
+    public function getRawRule()
+    {
+        return $this->rule;
     }
 }

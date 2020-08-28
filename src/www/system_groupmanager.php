@@ -1,33 +1,33 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
-    Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
+ * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 require_once("guiconfig.inc");
 
@@ -65,20 +65,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['groupid'];
     }
     $pconfig = $_POST;
+    $input_errors = array();
     $act = (isset($pconfig['act']) ? $pconfig['act'] : '');
-    if (isset($id) && $act == "delgroup" && isset($pconfig['groupname']) && $pconfig['groupname'] == $a_group[$id]['name']) {
-        // remove group
+
+    $user = getUserEntry($_SESSION['Username']);
+    if (userHasPrivilege($user, 'user-config-readonly')) {
+        $input_errors[] = gettext('You do not have the permission to perform this action.');
+    } elseif (isset($id) && $act == "delgroup" && isset($pconfig['groupname']) && $pconfig['groupname'] == $a_group[$id]['name']) {
         local_group_del($a_group[$id]);
         $groupdeleted = $a_group[$id]['name'];
         unset($a_group[$id]);
         write_config();
-        // reload page
         header(url_safe('Location: /system_groupmanager.php'));
         exit;
-    }  elseif (isset($pconfig['save'])) {
-        $input_errors = array();
-
-        /* input validation */
+    } elseif (isset($pconfig['save'])) {
         $reqdfields = explode(" ", "name");
         $reqdfieldsn = array(gettext("Group Name"));
 
@@ -108,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+
         if (count($input_errors) == 0) {
             $group = array();
             if (isset($id) && $a_group[$id]) {
@@ -215,11 +216,7 @@ $( document ).ready(function() {
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
-<?php
-      if (isset($input_errors) && count($input_errors) > 0) {
-          print_input_errors($input_errors);
-      }
-?>
+      <?php if (isset($input_errors) && count($input_errors)) print_input_errors($input_errors); ?>
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12 table-responsive">
 <?php
@@ -254,7 +251,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
                 <td>
-                  <table class="table" style="width:100%; border:0; cellpadding:0; cellspacing:0">
+                  <table class="table" style="width:100%; border:0;">
                     <thead>
                       <tr>
                         <th><?=gettext("Not Member Of"); ?></th>
@@ -319,16 +316,29 @@ $( document ).ready(function() {
                 <td>
                   <table class="table table-hover table-condensed">
                     <tr>
+                      <td><b><?=gettext("Type");?></b></td>
                       <td><b><?=gettext("Name");?></b></td>
-                      <td><b><?=gettext("Description");?></b></td>
                     </tr>
 <?php
                     if (isset($pconfig['priv']) && is_array($pconfig['priv'])) :
                         foreach ($pconfig['priv'] as $priv) :
                     ?>
                     <tr>
+                      <td>
+<?php
+                             switch (substr($priv, 0, 5)) {
+                                 case 'page-':
+                                     echo gettext('GUI');
+                                     break;
+                                 case 'user-':
+                                     echo gettext('User');
+                                     break;
+                                 default:
+                                     echo gettext('N/A');
+                                     break;
+                             } ?>
+                        </td>
                       <td><?=$priv_list[$priv]['name'];?></td>
-                      <td><?=$priv_list[$priv]['descr'];?></td>
                     </tr>
 <?php
                         endforeach;
@@ -348,8 +358,8 @@ $( document ).ready(function() {
               <tr>
                 <td></td>
                 <td>
-                  <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                  <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_groupmanager.php'" />
+                  <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                  <input type="button" class="btn btn-default" value="<?=html_safe(gettext("Cancel"));?>" onclick="window.location.href='/system_groupmanager.php'" />
 <?php
                   if (isset($id)) :?>
                   <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
@@ -377,35 +387,34 @@ $( document ).ready(function() {
               </thead>
               <tbody>
 <?php
-              $i = 0;
-              foreach ($a_group as $group) :?>
+              /* create a copy for sorting */
+              $a_group_ro = $a_group;
+              uasort($a_group_ro, function($a, $b) {
+                return strnatcasecmp($a['name'], $b['name']);
+              });
+              foreach ($a_group_ro as $i => $group): ?>
                 <tr>
                   <td>
                     <span class="fa fa-user <?= !empty($group['priv']) && in_array('page-all', $group['priv']) ? 'text-danger' : 'text-info' ?>"></span>
                     <?=$group['name']; ?>
                   </td>
-                  <td><?= count($group['member']) ?></td>
-                  <td ><?=$group['description'];?></td>
+                  <td><?=!empty($group['member']) ? count($group['member']) : 0; ?></td>
+                  <td><?=$group['description'];?></td>
                   <td class="text-nowrap">
                     <a href="system_groupmanager.php?act=edit&groupid=<?=$i?>"
-                       class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit group");?>">
+                       class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                         <span class="fa fa-pencil fa-fw"></span>
                     </a>
-
-<?php
-                    if ($group['scope'] != "system") :?>
+<?php if ($group['scope'] != 'system'): ?>
                     <button type="button" class="btn btn-default btn-xs act-del-group"
                         data-groupname="<?=$group['name'];?>"
-                        data-groupid="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip">
+                        data-groupid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                       <span class="fa fa-trash fa-fw"></span>
                     </button>
-<?php
-                    endif;?>
+<?php endif ?>
                   </td>
                 </tr>
-<?php
-              $i++;
-              endforeach;?>
+<?php endforeach ?>
                 <tr>
                   <td colspan="4">
                     <table>

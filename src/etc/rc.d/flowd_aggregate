@@ -12,7 +12,7 @@
 name=flowd_aggregate
 rcvar=flowd_aggregate_enable
 command=/usr/local/opnsense/scripts/netflow/flowd_aggregate.py
-command_interpreter=/usr/local/bin/python2.7
+command_interpreter=/usr/local/bin/python3
 pidfile="/var/run/${name}.pid"
 load_rc_config $name
 

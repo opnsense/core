@@ -46,10 +46,16 @@ fi
 
 rm -f /tmp/install_complete
 
-daemon -f lua50c51 /usr/local/share/dfuibe_lua/main.lua \
-    /usr/local/share/dfuibe_lua/conf/BSDInstaller.lua \
-    /usr/local/share/dfuibe_lua/conf/FreeBSD.lua \
-    /usr/local/share/dfuibe_lua/conf/Product.lua
+CONFIGDIR=/usr/local/share/dfuibe_lua
+CONFIGS=${CONFIGDIR}/main.lua
+
+for CONFIG in BSDInstaller FreeBSD Product; do
+	if [ -f /usr/local/share/dfuibe_lua/conf/${CONFIG}.lua ]; then
+		CONFIGS="${CONFIGS} ${CONFIGDIR}/conf/${CONFIG}.lua"
+	fi
+done
+
+daemon -f lua50c51 ${CONFIGS}
 
 conscontrol mute on > /dev/null
 

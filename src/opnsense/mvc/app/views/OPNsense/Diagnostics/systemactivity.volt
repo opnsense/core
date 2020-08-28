@@ -25,9 +25,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 #}
-<script src="/ui/js/moment-with-locales.min.js"></script>
+<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 
 <script>
+    'use strict';
 
     $( document ).ready(function() {
         /**
@@ -37,16 +38,15 @@ POSSIBILITY OF SUCH DAMAGE.
             var gridopt = {
                 ajax: false,
                 selection: true,
-                multiSelect: true
+                multiSelect: true,
             };
             $("#grid-top").bootgrid('destroy');
-            ajaxGet(url = "/api/diagnostics/activity/getActivity",
-                    sendData = {}, callback = function (data, status) {
+            ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
                         if (status == "success") {
                             $("#grid-top > tbody").html('');
                             $.each(data['details'], function (key, value) {
                                 var fields = ["PID", "USERNAME", "PRI", "NICE", "SIZE", "RES", "STATE", "C", "TIME", "WCPU", "COMMAND"];
-                                tr_str = '<tr>';
+                                let tr_str = '<tr>';
                                 for (var i = 0; i < fields.length; i++) {
                                     if (value[fields[i]] != null) {
                                         tr_str += '<td>' + value[fields[i]] + '</td>';
@@ -101,8 +101,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         <th data-column-id="USERNAME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('USERNAME') }}</th>
                         <th data-column-id="PRI" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('PRI') }}</th>
                         <th data-column-id="NICE" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('NICE') }}</th>
-                        <th data-column-id="SIZE" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
-                        <th data-column-id="RES" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
+                        <th data-column-id="SIZE" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
+                        <th data-column-id="RES" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
                         <th data-column-id="STATE" data-type="string">{{ lang._('STATE') }}</th>
                         <th data-column-id="C" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('C') }}</th>
                         <th data-column-id="TIME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('TIME') }}</th>

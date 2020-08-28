@@ -2,9 +2,6 @@
     <user-config-readonly>
         <name>System: Deny config write</name>
     </user-config-readonly>
-    <user-proxy-auth>
-        <name>Proxy: Login</name>
-    </user-proxy-auth>
     <page-diagnostics-backup-restore>
         <name>Diagnostics: Backup / Restore</name>
         <patterns>
@@ -20,14 +17,14 @@
     <page-getserviceproviders>
         <name>AJAX: Get Service Providers</name>
         <patterns>
-            <pattern>license.php</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-getserviceproviders>
     <page-getstats>
         <name>AJAX: Get Stats</name>
         <patterns>
-            <pattern>license.php</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>widgets/api/get.php*</pattern>
         </patterns>
     </page-getstats>
@@ -47,15 +44,23 @@
         <name>Dashboard (all)</name>
         <patterns>
             <pattern>index.php*</pattern>
-            <pattern>*.widget.php*</pattern>
+            <pattern>widgets/widgets/*.widget.php*</pattern>
             <pattern>widgets/api/get.php*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
+            <pattern>api/routes/gateway/status*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
+            <pattern>api/diagnostics/firewall/log</pattern>
+            <pattern>api/monit/status/get/xml</pattern>
         </patterns>
     </page-dashboard-all>
     <page-dashboard-widgets>
         <name>Dashboard (widgets only)</name>
         <patterns>
-            <pattern>*.widget.php*</pattern>
+            <pattern>widgets/widgets/*.widget.php*</pattern>
+            <pattern>api/routes/gateway/status*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
+            <pattern>api/diagnostics/firewall/log</pattern>
+            <pattern>api/monit/status/get/xml</pattern>
         </patterns>
     </page-dashboard-widgets>
     <page-diagnostics-authentication>
@@ -79,25 +84,29 @@
     <page-diagnostics-haltsystem>
         <name>Diagnostics: Halt system</name>
         <patterns>
-            <pattern>diag_halt.php*</pattern>
+            <pattern>ui/core/halt</pattern>
+            <pattern>api/core/system/halt</pattern>
         </patterns>
     </page-diagnostics-haltsystem>
     <page-diagnostics-limiter-info>
-        <name>Diagnostics: Limiter Info</name>
+        <name>Diagnostics: Shaper status</name>
         <patterns>
-            <pattern>diag_limiter_info.php*</pattern>
+            <pattern>ui/trafficshaper/service/statistics/*</pattern>
+            <pattern>api/trafficshaper/service/statistics/*</pattern>
         </patterns>
     </page-diagnostics-limiter-info>
     <page-diagnostics-logs-dhcp>
         <name>Diagnostics: Logs: DHCP</name>
         <patterns>
-            <pattern>diag_logs_dhcp.php*</pattern>
+            <pattern>ui/diagnostics/log/core/dhcp/*</pattern>
+            <pattern>api/diagnostics/log/core/dhcp/*</pattern>
         </patterns>
     </page-diagnostics-logs-dhcp>
     <page-diagnostics-logs-gateways>
         <name>Diagnostics: Logs: Gateways</name>
         <patterns>
-            <pattern>diag_logs_gateways.php*</pattern>
+            <pattern>ui/diagnostics/log/core/gateways/*</pattern>
+            <pattern>api/diagnostics/log/core/gateways/*</pattern>
         </patterns>
     </page-diagnostics-logs-gateways>
     <page-diagnostics-logs-settings>
@@ -109,9 +118,12 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
-            <pattern>diag_logs.php*</pattern>
-            <pattern>httpd_logs.php*</pattern>
-            <pattern>configd_logs.php*</pattern>
+            <pattern>ui/diagnostics/log/core/configd/*</pattern>
+            <pattern>api/diagnostics/log/core/configd/*</pattern>
+            <pattern>ui/diagnostics/log/core/system/*</pattern>
+            <pattern>api/diagnostics/log/core/system/*</pattern>
+            <pattern>ui/diagnostics/log/core/lighttpd/*</pattern>
+            <pattern>api/diagnostics/log/core/lighttpd/*</pattern>
         </patterns>
     </page-diagnostics-logs-system>
     <page-diagnostics-packetcapture>
@@ -123,7 +135,8 @@
     <page-diagnostics-tables>
         <name>Diagnostics: PF Table IP addresses</name>
         <patterns>
-            <pattern>diag_tables.php*</pattern>
+            <pattern>ui/firewall/alias_util/*</pattern>
+            <pattern>api/firewall/alias_util/*</pattern>
         </patterns>
     </page-diagnostics-tables>
     <page-diagnostics-pf-info>
@@ -147,7 +160,8 @@
     <page-diagnostics-rebootsystem>
         <name>Diagnostics: Reboot System</name>
         <patterns>
-            <pattern>reboot.php*</pattern>
+            <pattern>ui/core/reboot</pattern>
+            <pattern>api/core/system/reboot</pattern>
         </patterns>
     </page-diagnostics-rebootsystem>
     <page-diagnostics-resetstate>
@@ -162,12 +176,6 @@
             <pattern>diag_dump_states.php*</pattern>
         </patterns>
     </page-diagnostics-showstates>
-    <page-diagnostics-sockets>
-        <name>Diagnostics: Sockets</name>
-        <patterns>
-            <pattern>diag_sockets.php*</pattern>
-        </patterns>
-    </page-diagnostics-sockets>
     <page-diagnostics-statessummary>
         <name>Diagnostics: States Summary</name>
         <patterns>
@@ -189,19 +197,17 @@
     <page-firewall-alias-edit>
         <name>Firewall: Alias: Edit</name>
         <patterns>
-            <pattern>firewall_aliases_edit.php*</pattern>
+            <pattern>ui/firewall/alias/*</pattern>
+            <pattern>api/firewall/alias/*</pattern>
         </patterns>
     </page-firewall-alias-edit>
-    <page-firewall-alias-import>
-        <name>Firewall: Alias: Import</name>
-        <patterns>
-            <pattern>firewall_aliases_import.php*</pattern>
-        </patterns>
-    </page-firewall-alias-import>
     <page-firewall-aliases>
         <name>Firewall: Aliases</name>
         <patterns>
-            <pattern>firewall_aliases.php*</pattern>
+            <pattern>ui/firewall/alias/*</pattern>
+            <pattern>api/firewall/alias/search*</pattern>
+            <pattern>api/firewall/alias/list*</pattern>
+            <pattern>api/firewall/alias/getItem*</pattern>
         </patterns>
     </page-firewall-aliases>
     <page-firewall-nat-1-1>
@@ -298,7 +304,8 @@
     <page-diagnostics-logs-firewall-plain>
         <name>Diagnostics: Logs: Firewall: Plain View</name>
         <patterns>
-            <pattern>diag_logs_filter_plain.php*</pattern>
+            <pattern>ui/diagnostics/log/core/filter/*</pattern>
+            <pattern>api/diagnostics/log/core/filter/*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-plain>
     <page-diagnostics-logs-firewall-dynamic>
@@ -313,7 +320,8 @@
     <page-diagnostics-logs-firewall-summary>
         <name>Diagnostics: Logs: Firewall: Summary View</name>
         <patterns>
-            <pattern>diag_logs_filter_summary.php*</pattern>
+            <pattern>ui/diagnostics/firewall/stats*</pattern>
+            <pattern>api/diagnostics/firewall/stats*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-summary>
     <page-interfaces-assignnetworkports>
@@ -437,7 +445,7 @@
         </patterns>
     </page-services-dhcprelay>
     <page-services-dhcpserver-editstaticmapping>
-        <name>Services: DHCP Server : Edit static mapping</name>
+        <name>Services: DHCP Server: Edit static mapping</name>
         <patterns>
             <pattern>services_dhcp_edit.php*</pattern>
         </patterns>
@@ -455,7 +463,7 @@
         </patterns>
     </page-services-dhcpv6relay>
     <page-services-dhcpserverv6-editstaticmapping>
-        <name>Services: DHCPv6 Server : Edit static mapping</name>
+        <name>Services: DHCPv6 Server: Edit static mapping</name>
         <patterns>
             <pattern>services_dhcpv6_edit.php*</pattern>
         </patterns>
@@ -508,30 +516,6 @@
             <pattern>status_interfaces.php*</pattern>
         </patterns>
     </page-status-interfaces>
-    <page-status-ipsec>
-        <name>Status: IPsec</name>
-        <patterns>
-            <pattern>diag_ipsec.php*</pattern>
-        </patterns>
-    </page-status-ipsec>
-    <page-status-ipsec-leases>
-        <name>Status: IPsec: Leasespage</name>
-        <patterns>
-            <pattern>diag_ipsec_leases.php*</pattern>
-        </patterns>
-    </page-status-ipsec-leases>
-    <page-status-ipsec-sad>
-        <name>Status: IPsec: SAD</name>
-        <patterns>
-            <pattern>diag_ipsec_sad.php*</pattern>
-        </patterns>
-    </page-status-ipsec-sad>
-    <page-status-ipsec-spd>
-        <name>Status: IPsec: SPD</name>
-        <patterns>
-            <pattern>diag_ipsec_spd.php*</pattern>
-        </patterns>
-    </page-status-ipsec-spd>
     <page-status-openvpn>
         <name>Status: OpenVPN</name>
         <patterns>
@@ -547,37 +531,36 @@
     <page-status-systemlogs-portalauth>
         <name>Status: System logs: Captive portal</name>
         <patterns>
-            <pattern>diag_logs_auth.php*</pattern>
+            <pattern>ui/diagnostics/log/core/portalauth/*</pattern>
+            <pattern>api/diagnostics/log/core/portalauth/*</pattern>
         </patterns>
     </page-status-systemlogs-portalauth>
-    <page-status-systemlogs-ipsecvpn>
-        <name>Status: System logs: IPsec VPN</name>
-        <patterns>
-            <pattern>diag_logs_ipsec.php*</pattern>
-        </patterns>
-    </page-status-systemlogs-ipsecvpn>
     <page-status-systemlogs-ppp>
-        <name>Status: System logs: IPsec VPN</name>
+        <name>Status: System logs: PPP</name>
         <patterns>
-            <pattern>diag_logs_ppp.php*</pattern>
+            <pattern>ui/diagnostics/log/core/ppp/*</pattern>
+            <pattern>api/diagnostics/log/core/ppp/*</pattern>
         </patterns>
     </page-status-systemlogs-ppp>
     <page-status-systemlogs-openvpn>
         <name>Status: System logs: OpenVPN</name>
         <patterns>
-            <pattern>diag_logs_openvpn.php*</pattern>
+            <pattern>ui/diagnostics/log/core/openvpn/*</pattern>
+            <pattern>api/diagnostics/log/core/openvpn/*</pattern>
         </patterns>
     </page-status-systemlogs-openvpn>
     <page-status-systemlogs-routing>
         <name>Status: System logs: Routing</name>
         <patterns>
-            <pattern>diag_logs_routing.php*</pattern>
+            <pattern>ui/diagnostics/log/core/routing/*</pattern>
+            <pattern>api/diagnostics/log/core/routing/*</pattern>
         </patterns>
     </page-status-systemlogs-routing>
     <page-status-systemlogs-wireless>
         <name>Status: System logs: Wireless</name>
         <patterns>
-            <pattern>diag_logs_wireless.php*</pattern>
+            <pattern>ui/diagnostics/log/core/wireless/*</pattern>
+            <pattern>api/diagnostics/log/core/wireless/*</pattern>
         </patterns>
     </page-status-systemlogs-wireless>
     <page-status-trafficgraph>
@@ -616,12 +599,6 @@
             <pattern>system_advanced_network.php*</pattern>
         </patterns>
     </page-system-advanced-network>
-    <page-system-advanced-notifications>
-        <name>System: Advanced: Notifications</name>
-        <patterns>
-            <pattern>system_advanced_notifications.php*</pattern>
-        </patterns>
-    </page-system-advanced-notifications>
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>
@@ -658,6 +635,8 @@
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>
+            <pattern>ui/diagnostics/log/core/pkg/*</pattern>
+            <pattern>api/diagnostics/log/core/pkg/*</pattern>
         </patterns>
     </page-system-firmware-manualupdate>
     <page-system-gatewaygroups>
@@ -711,7 +690,7 @@
     <page-system-license>
         <name>System: License</name>
         <patterns>
-            <pattern>license.php*</pattern>
+            <pattern>ui/core/license*</pattern>
         </patterns>
     </page-system-license>
     <page-system-staticroutes>
@@ -740,46 +719,11 @@
             <pattern>system_usermanager_passwordmg.php*</pattern>
         </patterns>
     </page-system-usermanager-passwordmg>
-    <page-vpn-ipsec>
-        <name>VPN: IPsec</name>
-        <patterns>
-            <pattern>vpn_ipsec.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec>
-    <page-vpn-ipsec-editphase1>
-        <name>VPN: IPsec: Edit Phase 1</name>
-        <patterns>
-            <pattern>vpn_ipsec_phase1.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-editphase1>
-    <page-vpn-ipsec-editphase2>
-        <name>VPN: IPsec: Edit Phase 2</name>
-        <patterns>
-            <pattern>vpn_ipsec_phase2.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-editphase2>
-    <page-vpn-ipsec-editkeys>
-        <name>VPN: IPsec: Edit Pre-Shared Keys</name>
-        <patterns>
-            <pattern>vpn_ipsec_keys_edit.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-editkeys>
-    <page-vpn-ipsec-mobile>
-        <name>VPN: IPsec: Mobile</name>
-        <patterns>
-            <pattern>vpn_ipsec_mobile.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-mobile>
-    <page-vpn-ipsec-listkeys>
-        <name>VPN: IPsec: Pre-Shared Keys List</name>
-        <patterns>
-            <pattern>vpn_ipsec_keys.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-listkeys>
     <page-openvpn-client-export>
         <name>VPN: OpenVPN: Client Export Utility</name>
         <patterns>
-            <pattern>vpn_openvpn_export.php*</pattern>
+            <pattern>ui/openvpn/export/*</pattern>
+            <pattern>api/openvpn/export/*</pattern>
         </patterns>
     </page-openvpn-client-export>
     <page-openvpn-client>

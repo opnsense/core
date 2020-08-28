@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -38,7 +38,8 @@ trap "echo 'Boot interrupted'; exit 1" 3
 
 HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
-export HOME PATH
+REQUESTS_CA_BUNDLE=/etc/ssl/cert.pem
+export HOME PATH REQUESTS_CA_BUNDLE
 
 echo "Mounting filesystems..."
 
@@ -99,8 +100,9 @@ done < /etc/fstab
 attempts=0
 while [ ${attempts} -lt 3 ]; do
 	if [ -n "${ROOT_IS_UFS}" ]; then
-		fsck -C -y /
-		fsck -C -y /
+		# fsck_ffs is required to be run twice
+		# in order to mark the system "clean"
+		fsck -C -y / || fsck -C -y /
 	fi
 	if mount -a; then
 		# bail if all is well
@@ -199,6 +201,7 @@ rm /var/run/booting
 
 echo -n "Root file system: "
 mount | grep ' on / ' | awk '{ print $1 }'
+date
 
 /usr/local/sbin/opnsense-shell banner
 /usr/local/etc/rc.subr.d/livemode

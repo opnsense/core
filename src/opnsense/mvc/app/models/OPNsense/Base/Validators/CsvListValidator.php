@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,11 +27,12 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\Validators;
 
-use \Phalcon\Validation\Validator;
-use \Phalcon\Validation\ValidatorInterface;
-use \Phalcon\Validation\Message;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
+use Phalcon\Validation\Message;
 
 /**
  * Class CsvListValidator validate a string list against a list of options

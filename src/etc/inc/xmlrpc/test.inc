@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -41,7 +42,7 @@ function xmlrpc_publishable_test()
  * test function
  * @return string
  */
-function test($message="test")
+function test($message = "test")
 {
     return $message;
 }

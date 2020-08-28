@@ -1,32 +1,31 @@
 <?php
 
-/**
- *    Copyright (C) 2017 Deciso B.V.
+/*
+ * Copyright (C) 2017 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall;
 
 /**
@@ -51,6 +50,7 @@ class SNatRule extends Rule
         'target' => 'parsePlain, -> ',
         'natport' => 'parsePlain, port ',
         'poolopts' => 'parsePlain',
+        'poolopts_sourcehashkey' => 'parsePlain',
         'staticnatport' => 'parseBool,  static-port ',
         'descr' => 'parseComment'
     );
@@ -74,11 +74,6 @@ class SNatRule extends Rule
                 if (!empty($this->interfaceMapping[$interf])) {
                     $interf_settings = $this->interfaceMapping[$interf];
                     if (!empty($interf_settings['if'])) {
-                        /*
-                         * ":0" does not work for IPv6, but NAT is not relevant there anyway.
-                         * The reason for this is that it selects the first address which is
-                         * the link local address so the real global address is not found.
-                         */
                         $rule['target'] = "({$interf_settings['if']}:0)";
                     }
                 }
@@ -90,10 +85,16 @@ class SNatRule extends Rule
             } elseif ($rule['target'] == "other-subnet") {
                 $rule['target'] = $rule['targetip'] . '/' . $rule['targetip_subnet'];
             } elseif (!empty($rule['target']) && Util::isAlias($rule['target'])) {
-                $rule['target'] = "$".$rule['target'];
+                $rule['target'] = "$" . $rule['target'];
                 if (!empty($rule['poolopts']) && substr($rule['poolopts'], 0, 11) != 'round-robin') {
                     // wrong pool type on alias, disable rule
                     $this->log('SNAT / pool type not round-robin');
+                    $rule['disabled'] = true;
+                }
+            } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $rule['target'], $matches)) {
+                $rule['target'] = "({$this->interfaceMapping["{$matches[1]}"]['if']}:0)";
+                if (empty($this->interfaceMapping["{$matches[1]}"])) {
+                    $this->log("SNAT / target missing");
                     $rule['disabled'] = true;
                 }
             }
@@ -101,11 +102,16 @@ class SNatRule extends Rule
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
                     if (!Util::isAlias($rule[$fieldname], true)) {
                         // unable to map port
-                        $this->log("SNAT / unable to map port ". $rule[$fieldname]. ", empty?");
+                        $this->log("SNAT / unable to map port " . $rule[$fieldname] . ", empty?");
                         $rule['disabled'] = true;
                     }
-                    $rule[$fieldname] = "$".$rule[$fieldname];
+                    $rule[$fieldname] = "$" . $rule[$fieldname];
+                } elseif (!empty($rule[$fieldname])) {
+                    $rule[$fieldname] = str_replace('-', ':', $rule[$fieldname]); // range interpretation
                 }
+            }
+            if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash") {
+                $rule['poolopts_sourcehashkey'] = '';
             }
             if (!empty($rule['staticnatport']) || !empty($rule['nonat'])) {
                 $rule['natport'] = '';
@@ -124,7 +130,7 @@ class SNatRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseNatRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder, $rule). "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder, $rule) . "\n";
         }
         return $ruleTxt;
     }
