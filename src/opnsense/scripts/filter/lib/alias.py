@@ -148,9 +148,7 @@ class Alias(object):
                 # only handle content if response is correct
                 req.raw.decode_content = True
                 lines = req.raw.read().decode().splitlines()
-                if len(lines) > 100:
-                    # when larger alias lists are downloaded, make sure we log before handling.
-                    syslog.syslog(syslog.LOG_ERR, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
+                syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
                 for line in lines:
                     raw_address = re.split(r'[\s,;|#]+', line)[0]
                     if raw_address and not raw_address.startswith('//'):
