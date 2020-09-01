@@ -282,12 +282,14 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemhealthController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/TrafficController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/FirewallController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/InterfaceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/LogController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemhealthController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/TrafficController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/netflow_capture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
@@ -552,6 +554,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traffic.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
@@ -694,6 +697,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-log-uptime.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
+/usr/local/opnsense/scripts/interfaces/traffic_stats.php
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
@@ -1492,6 +1496,9 @@
 /usr/local/opnsense/www/js/bootstrap.min.js
 /usr/local/opnsense/www/js/bootstrap3-typeahead.js
 /usr/local/opnsense/www/js/bootstrap3-typeahead.min.js
+/usr/local/opnsense/www/js/chartjs-plugin-colorschemes.js
+/usr/local/opnsense/www/js/chartjs-plugin-streaming.js
+/usr/local/opnsense/www/js/chartjs-plugin-streaming.min.js
 /usr/local/opnsense/www/js/d3.min.js
 /usr/local/opnsense/www/js/d3.min.js.LICENSE
 /usr/local/opnsense/www/js/jquery-3.4.1.min.js
