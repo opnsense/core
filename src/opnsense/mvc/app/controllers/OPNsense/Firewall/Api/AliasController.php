@@ -227,10 +227,11 @@ class AliasController extends ApiMutableModelControllerBase
     }
 
     /**
-     * reconfigure aliases
+     * reconfigure aliases (optional kill sessions with host_to_kill host)
      */
-    public function reconfigureAction()
+    public function reconfigureAction($host_to_kill = null)
     {
+		$result = array();
         if ($this->request->isPost()) {
             $backend = new Backend();
             $backend->configdRun('template reload OPNsense/Filter');
@@ -239,10 +240,23 @@ class AliasController extends ApiMutableModelControllerBase
             if (!empty($bckresult['messages'])) {
                 throw new UserException(implode("\n", $bckresult['messages']), gettext("Alias"));
             }
-            return array("status" => "ok");
+            $result = array("status" => "ok");
         } else {
-            return array("status" => "failed");
+            $result = array("status" => "failed");
         }
+		// optional kill sessions with host_to_kill host
+		if (!empty($host_to_kill)) { 
+			$output = array();
+			$command = "/sbin/pfctl -k {$host_to_kill}/32 -k 0/0";
+			exec($command . ' 2>&1', $output);
+			$retval = implode("\n", $output);
+			//
+			$command = "/sbin/pfctl -k 0/0 -k {$host_to_kill}/32";
+			exec($command . ' 2>&1', $output);
+			$retval = implode("\n", $output);
+			$result = array("status" => "{$retval}");
+		}
+		return $result;
     }
 
     /**
