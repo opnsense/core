@@ -29,18 +29,16 @@
 require_once("interfaces.inc");
 require_once("config.inc");
 
-$result = array();
-$result['interfaces'] = legacy_interface_stats();
+$result = array("interfaces" => array());
+$interfaces = legacy_interface_stats();
 $temp = gettimeofday();
 $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
 // collect user friendly interface names
 foreach (legacy_config_get_interfaces(array("virtual" => false)) as $interfaceKey => $itf) {
-    if (array_key_exists($itf['if'], $result['interfaces'])) {
-        $result['interfaces'][$itf['if']]['name'] = !empty($itf['descr']) ? $itf['descr'] : $interfaceKey;
+    if (array_key_exists($itf['if'], $interfaces)) {
+        $result['interfaces'][$interfaceKey] = $interfaces[$itf['if']];
+        $result['interfaces'][$interfaceKey]['name'] = !empty($itf['descr']) ? $itf['descr'] : $interfaceKey;
     }
-}
-if (!empty($result['interfaces']['enc0'])) {
-    $result['interfaces']['enc0']['name'] = "IPsec";
 }
 
 echo json_encode($result);
