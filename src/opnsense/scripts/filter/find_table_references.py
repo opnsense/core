@@ -52,8 +52,7 @@ if __name__ == '__main__':
             # Test given address against tables
             for table in tables:
                 sp = subprocess.run(['/sbin/pfctl', '-t', table, '-Ttest', sys.argv[1]], capture_output=True, text=True)
-                line = sp.stderr.strip()
-                if line.find("1/1") == 0:
+                if sp.stderr.strip().find("1/1") == 0:
                    result['matches'].append(table)
             print(ujson.dumps(result))
 
