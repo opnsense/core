@@ -92,6 +92,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			expiretable \
 			filterlog \
 			ifinfo \
+			iftop \
 			flock \
 			flowd \
 			hostapd \
@@ -135,7 +136,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
 			radvd \
-			rate \
 			rrdtool \
 			samplicator \
 			squid \
