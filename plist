@@ -951,6 +951,7 @@
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
 /usr/local/opnsense/www/css/bootstrap-select-1.13.3.css
+/usr/local/opnsense/www/css/chart.css
 /usr/local/opnsense/www/css/flags/1x1/ad.svg
 /usr/local/opnsense/www/css/flags/1x1/ae.svg
 /usr/local/opnsense/www/css/flags/1x1/af.svg
@@ -1496,6 +1497,8 @@
 /usr/local/opnsense/www/js/bootstrap.min.js
 /usr/local/opnsense/www/js/bootstrap3-typeahead.js
 /usr/local/opnsense/www/js/bootstrap3-typeahead.min.js
+/usr/local/opnsense/www/js/chart.js
+/usr/local/opnsense/www/js/chart.min.js
 /usr/local/opnsense/www/js/chartjs-plugin-colorschemes.js
 /usr/local/opnsense/www/js/chartjs-plugin-streaming.js
 /usr/local/opnsense/www/js/chartjs-plugin-streaming.min.js
