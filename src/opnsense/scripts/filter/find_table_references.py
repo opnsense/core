@@ -33,7 +33,7 @@ import subprocess
 import os
 import sys
 import ujson
-from netaddr import IPNetwork, IPAddress, AddrFormatError
+from netaddr import IPAddress, AddrFormatError
 
 if __name__ == '__main__':
     # IP should have been passed as a command line argument
