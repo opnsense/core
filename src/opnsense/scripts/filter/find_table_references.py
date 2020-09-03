@@ -49,13 +49,12 @@ if __name__ == '__main__':
             for line in sp.stdout.strip().split('\n'):
                 tables.append(line.strip())
 
-            # Fetch IP ranges in this table and check if they match
+            # Test given address against tables
             for table in tables:
-                sp = subprocess.run(['/sbin/pfctl', '-t', table, '-T', 'show'], capture_output=True, text=True)
-                for line in sp.stdout.strip().split('\n'):
-                    if line.strip() != "":
-                        if ip in IPNetwork(line.strip()):
-                            result['matches'].append(table)
+                sp = subprocess.run(['/sbin/pfctl', '-t', table, '-Ttest', sys.argv[1]], capture_output=True, text=True)
+                line = sp.stderr.strip()
+                if line.find("1/1") == 0:
+                   result['matches'].append(table)
             print(ujson.dumps(result))
 
         except AddrFormatError:
