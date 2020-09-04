@@ -185,7 +185,7 @@ POSSIBILITY OF SUCH DAMAGE.
                               realtime: {
                                   duration: 40000,
                                   refresh: 3000,
-                                  delay: 3000
+                                  delay: 500
                               },
                           }],
                           yAxes: [{
