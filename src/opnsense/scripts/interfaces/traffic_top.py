@@ -34,6 +34,7 @@ import sys
 import ujson
 import netaddr
 from concurrent.futures import ThreadPoolExecutor
+from netaddr import IPNetwork, IPAddress, AddrFormatError
 
 
 def iftop(interface, target):
@@ -44,14 +45,28 @@ def iftop(interface, target):
         )
         target[interface] = sp.stdout
     except subprocess.TimeoutExpired:
-        target[interface] = ""
+        target[interface] = None
 
+def local_addresses():
+    result = []
+    sp = subprocess.run(['/sbin/ifconfig'], capture_output=True, text=True)
+    for line in sp.stdout.split('\n'):
+        if line.find('\tinet') > -1:
+            try:
+                ip = IPAddress(line.split()[1].split('%')[0])
+            except AddrFormatError:
+                ip = None
+
+            if ip and not ip.is_loopback() and not ip.is_link_local():
+                result.append(ip)
+    return result
 
 if __name__ == '__main__':
     result = dict()
     parser = argparse.ArgumentParser()
-    parser.add_argument('--interfaces', help='interface(s) to sample', default='lo0')
+    parser.add_argument('--interfaces', help='interface(s) to sample')
     cmd_args = parser.parse_args()
+    all_local_addresses = local_addresses()
     interfaces = cmd_args.interfaces.split(',')
     iftop_data = dict()
     with ThreadPoolExecutor(max_workers=len(interfaces)) as executor:
@@ -60,6 +75,12 @@ if __name__ == '__main__':
 
     for intf in iftop_data:
         result[intf] = {'in' : [], 'out': []}
+        if iftop_data[intf] is None:
+            result[intf]['status'] = 'timeout'
+            continue
+        else:
+            result[intf]['status'] = 'ok'
+
         for line in iftop_data[intf].split('\n'):
             if line.find('=>') > -1 or line.find('<=') > -1:
                 parts = line.split()
@@ -74,10 +95,23 @@ if __name__ == '__main__':
                     rate_bits = decimal.Decimal(parts[2][:-2]) * 1000000000
                 elif parts[2].endswith('b') and parts[2][:-1].isdigit():
                     rate_bits = decimal.Decimal(parts[2][:-1])
-                item = {'address': parts[0], 'rate': parts[2], 'rate_bits': rate_bits}
+                item = {'address': parts[0], 'rate': parts[2], 'rate_bits': rate_bits, 'tags': []}
+                # attach tags (type of address)
+                try:
+                    ip = IPAddress(parts[0])
+                    if ip in all_local_addresses:
+                        item['tags'].append('local')
+                    if ip.is_private():
+                        item['tags'].append('private')
+                except subprocess.TimeoutExpired:
+                    pass
+
                 if parts[1] == '=>':
                     result[intf]['out'].append(item)
                 else:
                     result[intf]['in'].append(item)
+
+        for sort_key in ['in', 'out']:
+            result[intf][sort_key] = sorted(result[intf][sort_key], key=lambda x: x['rate_bits'], reverse=True)
 
     print(ujson.dumps(result))
