@@ -566,7 +566,8 @@
     <page-status-trafficgraph>
         <name>Status: Traffic Graph</name>
         <patterns>
-            <pattern>status_graph.php*</pattern>
+            <pattern>ui/diagnostics/traffic*</pattern>
+            <pattern>api/diagnostics/traffic*</pattern>
         </patterns>
     </page-status-trafficgraph>
     <page-diagnostics-wirelessstatus>

@@ -45,7 +45,39 @@ class TrafficController extends ApiControllerBase
      */
     public function InterfaceAction()
     {
+        $this->sessionClose(); // long running action, close session
         $response = (new Backend())->configdRun('interface show traffic');
         return json_decode($response, true);
+    }
+
+    /**
+     * retrieve interface top traffic hosts
+     * @param $interfaces string comma separated list of interfaces
+     * @return array
+     */
+    public function TopAction($interfaces)
+    {
+        $response = [];
+        $this->sessionClose(); // long running action, close session
+        $config = Config::getInstance()->object();
+        $iflist = [];
+        $ifmap = [];
+        foreach (explode(',', $interfaces) as $intf) {
+            if (isset($config->interfaces->$intf) && !empty($config->interfaces->$intf->if)) {
+                $iflist[] = (string)$config->interfaces->$intf->if;
+                $ifmap[(string)$config->interfaces->$intf->if] = $intf;
+            }
+        }
+        if (count($iflist) > 0) {
+            $data = (new Backend())->configdpRun('interface show top', [implode(",", $iflist)]);
+            $data = json_decode($data, true);
+            foreach ($data as $if => $content) {
+                if (isset($ifmap[$if])) {
+                    $response[$ifmap[$if]] = $content;
+                }
+            }
+        }
+        return $response;
+
     }
 }

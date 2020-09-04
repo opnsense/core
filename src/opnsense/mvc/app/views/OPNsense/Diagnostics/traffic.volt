@@ -45,11 +45,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
         function format_field(value) {
-            if (value) {
+            if (!isNaN(value) && value > 0) {
                 let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-                let ndx = Math.floor(Math.log(value) / Math.log(1024) );
-                let fmt =  (value / Math.pow(1024, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
-                return fmt;
+                let ndx = Math.floor(Math.log(value) / Math.log(1000) );
+                if (ndx > 0) {
+                    return  (value / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+                } else {
+                    return value.toFixed(2);
+                }
             } else {
                 return "";
             }
@@ -98,7 +101,7 @@ POSSIBILITY OF SUCH DAMAGE.
                               type: 'realtime',
                               realtime: {
                                   duration: 20000,
-                                  refresh: 1000,
+                                  refresh: 2000,
                                   delay: 2000
                               },
                           }],
@@ -136,36 +139,94 @@ POSSIBILITY OF SUCH DAMAGE.
             };
             return new Chart(ctx, config);
         }
+
         /**
-         * poll for new stats and update selected charts
+         * create new traffic top usage chart
          */
-        function traffic_poller(charts){
-            ajaxGet("/api/diagnostics/traffic/interface", {}, function(data, status) {
-                if (data.interfaces !== undefined) {
-                    for (var i =0 ; i < charts.length; ++i) {
-                        let this_chart = charts[i];
-                        Object.keys(data.interfaces).forEach(function(intf) {
-                            this_chart.config.data.datasets.forEach(function(dataset) {
-                                if (dataset.intf == intf) {
-                                    let calc_data = data.interfaces[intf][dataset.src_field];
-                                    let elapsed_time = data.time - dataset.last_time;
-                                    dataset.hidden = !$("#interfaces").val().includes(intf);
-                                    dataset.data.push({
-                                        x: Date.now(),
-                                        y: Math.round(((calc_data - dataset.last_data) / elapsed_time) * 8, 0)
-                                    });
-                                    dataset.last_time = data.time;
-                                    dataset.last_data = calc_data;
-                                    return;
-                                }
-                            });
-                        });
-                        this_chart.update();
-                    }
-                }
+        function traffic_top_graph(target, graph_title, init_data) {
+            // setup legend
+            let all_datasets = [];
+            Object.keys(init_data.interfaces).forEach(function(intf) {
+                all_datasets.push({
+                    label: init_data.interfaces[intf].name,
+                    hidden: true,
+                    borderColor: init_data.interfaces[intf].color,
+                    backgroundColor: init_data.interfaces[intf].color,
+                    pointHoverBackgroundColor: init_data.interfaces[intf].color,
+                    pointHoverBorderColor: init_data.interfaces[intf].color,
+                    pointBackgroundColor: init_data.interfaces[intf].color,
+                    pointBorderColor: init_data.interfaces[intf].color,
+                    intf: intf,
+                    last_time: init_data.time,
+                    last_data: init_data.interfaces[intf][target.data('src_field')],
+                    src_field: target.data('src_field'),
+                    data: []
+                });
             });
-            setTimeout(function(){traffic_poller(charts)}, 1000);
-        };
+            // new chart
+            var ctx = target[0].getContext('2d');
+            var config = {
+                  type: 'bubble',
+                  data: {
+                      datasets: all_datasets
+                  },
+                  options: {
+                      legend: {
+                          display: false,
+                      },
+                      title: {
+                          display: true,
+                          text: graph_title
+                      },
+                      maintainAspectRatio: false,
+                      scales: {
+                          xAxes: [{
+                              type: 'realtime',
+                              realtime: {
+                                  duration: 40000,
+                                  refresh: 3000,
+                                  delay: 3000
+                              },
+                          }],
+                          yAxes: [{
+                              ticks: {
+                                  callback: function (value, index, values) {
+                                      return format_field(value);
+                                  }
+                              }
+                          }]
+                      },
+                      tooltips: {
+                          mode: 'nearest',
+                          intersect: false,
+                          callbacks: {
+                              label: function(tooltipItem, data) {
+                                  let ds = data.datasets[tooltipItem.datasetIndex];
+                                  return [
+                                    tooltipItem.xLabel,
+                                    ds.label + " : " + ds.data[tooltipItem.index].address,
+                                    "@ " + format_field(ds.data[tooltipItem.index].y).toString()
+                                  ];
+                              }
+                          }
+                      },
+                      hover: {
+                          mode: 'nearest',
+                          intersect: false
+                      },
+                      plugins: {
+                          streaming: {
+                              frameRate: 30
+                          },
+                          colorschemes: {
+                              scheme: 'brewer.Paired12'
+                          }
+                      }
+                  }
+            };
+            return new Chart(ctx, config);
+        }
+
         /**
          * startup, fetch initial interface stats and create graphs
          */
@@ -190,10 +251,90 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#interfaces').append(option);
             });
             $('#interfaces').selectpicker('refresh');
-            traffic_poller([
-                traffic_graph($("#rxChart"), '{{ lang._('In (bps)') }}', data),
-                traffic_graph($("#txChart"), '{{ lang._('Out (bps)') }}', data)
-            ]);
+
+            // register traffic update event
+            $( document ).on( "updateTrafficCharts", {
+                charts: [
+                    traffic_graph($("#rxChart"), '{{ lang._('In (bps)') }}', data),
+                    traffic_graph($("#txChart"), '{{ lang._('Out (bps)') }}', data)
+                ]
+            }, function( event, data) {
+                let charts = event.data.charts;
+                for (var i =0 ; i < charts.length; ++i) {
+                    let this_chart = charts[i];
+                    Object.keys(data.interfaces).forEach(function(intf) {
+                        this_chart.config.data.datasets.forEach(function(dataset) {
+                            if (dataset.intf == intf) {
+                                let calc_data = data.interfaces[intf][dataset.src_field];
+                                let elapsed_time = data.time - dataset.last_time;
+                                dataset.hidden = !$("#interfaces").val().includes(intf);
+                                dataset.data.push({
+                                    x: Date.now(),
+                                    y: Math.round(((calc_data - dataset.last_data) / elapsed_time) * 8, 0)
+                                });
+                                dataset.last_time = data.time;
+                                dataset.last_data = calc_data;
+                                return;
+                            }
+                        });
+                    });
+                    this_chart.update();
+                }
+            });
+
+            // register traffic update event
+            $( document ).on( "updateTrafficTopCharts", {
+                charts: [
+                    traffic_top_graph($("#rxTopChart"), '{{ lang._('Top hosts in (bps)') }}', data),
+                    traffic_top_graph($("#txTopChart"), '{{ lang._('Top hosts out (bps)') }}', data)
+                ]
+            }, function( event, data) {
+                let charts = event.data.charts;
+                for (var i =0 ; i < charts.length; ++i) {
+                    let this_chart = charts[i];
+                    Object.keys(data).forEach(function(intf) {
+                        this_chart.config.data.datasets.forEach(function(dataset) {
+                            if (dataset.intf == intf) {
+                                let calc_data = data[intf][dataset.src_field];
+                                dataset.hidden = !$("#interfaces").val().includes(intf);
+                                for (var i=0; i < data[intf][dataset.src_field].length ; ++i) {
+                                    dataset.data.push({
+                                        x: Date.now(),
+                                        y: data[intf][dataset.src_field][i]['rate_bits'],
+                                        r: 4,
+                                        address: data[intf][dataset.src_field][i]['address']
+                                    });
+                                }
+                                return;
+                            }
+                        });
+                    });
+                    this_chart.update();
+                }
+            });
+
+
+            /**
+             * poll for new stats and update selected charts
+             */
+            (function traffic_poller(){
+                ajaxGet("/api/diagnostics/traffic/interface", {}, function(data, status) {
+                    if (data.interfaces !== undefined) {
+                        $( document ).trigger( "updateTrafficCharts", [ data ] );
+                    }
+                });
+                setTimeout(traffic_poller, 2000);
+            })();
+            (function top_traffic_poller(){
+                ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
+                    if (status == 'success') {
+                        $( document ).trigger( "updateTrafficTopCharts", [ data ] );
+                        top_traffic_poller();
+                    } else {
+                        setTimeout(top_traffic_poller, 2000);
+                    }
+                });
+            })();
         });
 
     });
@@ -225,6 +366,23 @@ POSSIBILITY OF SUCH DAMAGE.
                     <div class="col-xs-12 col-lg-6">
                         <div class="chart-container">
                             <canvas id="txChart" data-src_field="bytes transmitted"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                      <hr/>
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6">
+                        <div class="chart-container">
+                            <canvas id="rxTopChart" data-src_field="in"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-6">
+                        <div class="chart-container">
+                            <canvas id="txTopChart" data-src_field="out"></canvas>
                         </div>
                     </div>
                 </div>

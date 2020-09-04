@@ -111,7 +111,8 @@ if __name__ == '__main__':
                 else:
                     result[intf]['in'].append(item)
 
+        # XXX: sort output, limit output results to max 200 (safety precaution)
         for sort_key in ['in', 'out']:
-            result[intf][sort_key] = sorted(result[intf][sort_key], key=lambda x: x['rate_bits'], reverse=True)
+            result[intf][sort_key] = sorted(result[intf][sort_key], key=lambda x: x['rate_bits'], reverse=True)[:200]
 
     print(ujson.dumps(result))

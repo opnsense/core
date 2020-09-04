@@ -1747,7 +1747,6 @@
 /usr/local/www/services_unbound_overrides.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
-/usr/local/www/status_graph.php
 /usr/local/www/status_habackup.php
 /usr/local/www/status_interfaces.php
 /usr/local/www/status_ntpd.php
