@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if len(sys.argv) >= 1:
 
         try:
-            ip = IPAddress(sys.argv[1])
+            IPAddress(sys.argv[1])
             result = {'status': 'ok', 'matches': []}
             tables = []
 
