@@ -318,6 +318,13 @@ while : ; do
 			fi
 		done
 
+		if [ -d /conf/sshd ]; then
+			for FILE in "$(find /conf/sshd -type -f -name '*key')"; do
+				# fixup permissions in MSDOS case
+				chmod 600 ${FILE}
+			done
+		fi
+
 		# hooray, we're done!
 		break
 	else
