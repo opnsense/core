@@ -698,6 +698,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-log-uptime.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/traffic_stats.php
+/usr/local/opnsense/scripts/interfaces/traffic_top.py
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
