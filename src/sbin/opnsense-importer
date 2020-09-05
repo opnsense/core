@@ -300,28 +300,15 @@ while : ; do
 	elif [ -f "${MNT}/conf/config.xml" ]; then
 		rm -rf /conf/*
 
-		for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
-			if [ -f "${MNT}/conf/${FILE}" ]; then
-				echo -n "Restoring ${FILE}..."
-				cp "${MNT}/conf/${FILE}" /conf
-				echo "done."
-			fi
-		done
+		echo -n "Restoring configuration..."
+		mkdir -p /conf/sshd
+		cp -rv "${MNT}/conf/" /conf/
+		echo "done."
 
-		for DIR in backup sshd; do
-			if [ -d "${MNT}/conf/${DIR}" ]; then
-				echo -n "Restoring ${DIR}..."
-				cp -r "${MNT}/conf/${DIR}" /conf
-				echo "done."
-			else
-				mkdir -p "/conf/${DIR}"
-			fi
-		done
-
-		for FILE in "$(find /conf/sshd -type f -name '*key')"; do
-			# fixup permissions in MSDOS case
-			chmod 600 ${FILE}
-		done
+		# Ensure correct permission for keys so that sshd can start successfully
+		echo -n "Ensure correct permission for sshd keys..."
+		find /conf/sshd/ -name '*key' -type f -exec chmod -vv -- 600 {} +
+		echo "done."
 
 		# hooray, we're done!
 		break
