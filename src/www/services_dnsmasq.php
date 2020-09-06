@@ -122,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($a_dnsmasq['custom_options']);
             }
             write_config();
+            system_resolvconf_generate();
             dnsmasq_configure_do();
             plugins_configure('dhcp');
             header(url_safe('Location: /services_dnsmasq.php'));
