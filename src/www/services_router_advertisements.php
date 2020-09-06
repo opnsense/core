@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $pconfig = array();
-    $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist');
+    $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist', 'radontdeprecateprefix');
     $config_copy_fieldsnames = array_merge($advanced_options, $config_copy_fieldsnames);
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
@@ -162,6 +162,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dhcpdv6'][$if]['ranodefault'] = true;
         } elseif (isset($config['dhcpdv6'][$if]['ranodefault'])) {
             unset($config['dhcpdv6'][$if]['ranodefault']);
+        }
+
+        if (!empty($pconfig['radontdeprecateprefix'])) {
+            $config['dhcpdv6'][$if]['radontdeprecateprefix'] = true;
+        } elseif (isset($config['dhcpdv6'][$if]['radontdeprecateprefix'])) {
+            unset($config['dhcpdv6'][$if]['radontdeprecateprefix']);
         }
 
         $config['dhcpdv6'][$if]['radomainsearchlist'] = $pconfig['radomainsearchlist'];
@@ -332,6 +338,15 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
                     <td>
                       <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_radontdeprecateprefix" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't deprecate prefix");?></td>
+                    <td>
+                      <input id="radontdeprecateprefix" name="radontdeprecateprefix" type="checkbox" value="yes" <?= !empty($pconfig['radontdeprecateprefix']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" data-for="help_for_radontdeprecateprefix">
+                        <?= sprintf(gettext("Disables sending out a router advertisement with preferred lifetime set to 0 on interface shutdown. This prevents devices from deprecating associated addresses."))?>
+                      </div>
                     </td>
                   </tr>
                   <tr>

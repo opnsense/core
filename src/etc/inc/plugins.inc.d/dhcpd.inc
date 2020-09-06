@@ -327,7 +327,13 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix " . (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on") . ";\n";
+
+            if (!empty($dhcpv6ifconf['radontdeprecateprefix'])) {
+                $radvdconf .= "\t\tDeprecatePrefix off;\n";
+            } else {
+                $radvdconf .= "\t\tDeprecatePrefix " . (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on") . ";\n";
+            }
+
             switch ($dhcpv6ifconf['ramode']) {
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
