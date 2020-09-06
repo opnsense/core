@@ -184,6 +184,8 @@ function dnsmasq_configure_do($verbose = false)
         $args .= ' --log-queries=extra ';
     }
 
+    $args .= ' --conf-dir=/usr/local/etc/dnsmasq.conf.d,\*.conf ';
+
     if (!empty($config['dnsmasq']['custom_options'])) {
         foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
             if (!empty($c)) {

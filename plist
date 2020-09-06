@@ -6,6 +6,7 @@
 /usr/local/etc/dh-parameters.2048.rfc7919
 /usr/local/etc/dh-parameters.3072.rfc7919
 /usr/local/etc/dh-parameters.4096.rfc7919
+/usr/local/etc/dnsmasq.conf.d/README
 /usr/local/etc/inc/IPv6.inc
 /usr/local/etc/inc/XMLRPC_Client.inc
 /usr/local/etc/inc/auth.inc
