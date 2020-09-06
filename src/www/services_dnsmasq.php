@@ -32,6 +32,7 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("plugins.inc.d/dnsmasq.inc");
+
 $a_dnsmasq = &config_read_array('dnsmasq');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -47,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['no_private_reverse'] = isset($a_dnsmasq['no_private_reverse']);
     $pconfig['strictbind'] = isset($a_dnsmasq['strictbind']);
     $pconfig['dnssec'] = isset($a_dnsmasq['dnssec']);
+    $pconfig['log_queries'] = isset($a_dnsmasq['log_queries']);
     // simple text types
     $pconfig['port'] = !empty($a_dnsmasq['port']) ? $a_dnsmasq['port'] : "";
     $pconfig['custom_options'] = !empty($a_dnsmasq['custom_options']) ? $a_dnsmasq['custom_options'] : "";
@@ -96,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_dnsmasq['strict_order'] = !empty($pconfig['strict_order']);
             $a_dnsmasq['domain_needed'] = !empty($pconfig['domain_needed']);
             $a_dnsmasq['no_private_reverse'] = !empty($pconfig['no_private_reverse']);
+            $a_dnsmasq['log_queries'] = !empty($pconfig['log_queries']);
             $a_dnsmasq['strictbind'] = !empty($pconfig['strictbind']);
             $a_dnsmasq['dnssec'] = !empty($pconfig['dnssec']);
             if (!empty($pconfig['regdhcpdomain'])) {
@@ -380,6 +383,13 @@ $( document ).ready(function() {
                         'not known from /etc/hosts, DHCP or a specific domain override ' .
                         'then a "not found" answer is immediately returned.') ?>
                     </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Log Queries') ?></td>
+                  <td>
+                    <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= !empty($pconfig['log_queries']) ? 'checked="checked"' : '' ?> />
+                    <?= gettext('Log the results of DNS queries') ?>
                   </td>
                 </tr>
                 <tr>

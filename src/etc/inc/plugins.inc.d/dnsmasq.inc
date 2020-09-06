@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -178,6 +178,10 @@ function dnsmasq_configure_do($verbose = false)
         $args .= ' --dnssec ';
         $args .= ' --trust-anchor=.,19036,8,2,49AAC11D7B6F6446702E54A1607371607A1A41855200FD2CE1CDDE32F24E8FB5 ';
         $args .= ' --trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D ';
+    }
+
+    if (isset($config['dnsmasq']['log_queries'])) {
+        $args .= ' --log-queries=extra ';
     }
 
     if (!empty($config['dnsmasq']['custom_options'])) {
