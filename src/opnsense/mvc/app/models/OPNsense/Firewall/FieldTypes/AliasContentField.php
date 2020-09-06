@@ -147,7 +147,10 @@ class AliasContentField extends BaseField
     {
         $messages = array();
         foreach ($this->getItems($data) as $host) {
-            if (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
+            if (strpos($host, "!") === 0 && Util::isIpAddress(substr($host, 1))) {
+                // exclude address (https://www.freebsd.org/doc/handbook/firewalls-pf.html 30.3.2.4)
+                continue;
+            } elseif (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
                 $messages[] = sprintf(
                     gettext('Entry "%s" is not a valid hostname or IP address.'),
                     $host
