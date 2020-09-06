@@ -90,13 +90,6 @@ function dnsmasq_configure_do($verbose = false)
 {
     global $config;
 
-    // hard coded args: will be removed to avoid duplication if specified in custom_options
-    $standard_args = array(
-        "dns-forward-max" => "--dns-forward-max=5000",
-        "cache-size" => "--cache-size=10000",
-        "local-ttl" => "--local-ttl=1"
-    );
-
     _dnsmasq_dhcpleases_stop();
 
     killbypid('/var/run/dnsmasq.pid', 'TERM', true);
@@ -184,21 +177,10 @@ function dnsmasq_configure_do($verbose = false)
         $args .= ' --log-queries=extra ';
     }
 
+    $args .= ' --dns-forward-max=5000 ';
+    $args .= ' --cache-size=10000 ';
+    $args .= ' --local-ttl=1 ';
     $args .= ' --conf-dir=/usr/local/etc/dnsmasq.conf.d,\*.conf ';
-
-    if (!empty($config['dnsmasq']['custom_options'])) {
-        foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
-            if (!empty($c)) {
-                $args .= " " . escapeshellarg("--{$c}");
-                $p = explode('=', $c);
-                if (array_key_exists($p[0], $standard_args)) {
-                    unset($standard_args[$p[0]]);
-                }
-            }
-        }
-    }
-
-    $args .= ' ' . implode(' ', array_values($standard_args));
 
     _dnsmasq_add_host_entries();
 

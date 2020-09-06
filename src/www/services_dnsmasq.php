@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['log_queries'] = isset($a_dnsmasq['log_queries']);
     // simple text types
     $pconfig['port'] = !empty($a_dnsmasq['port']) ? $a_dnsmasq['port'] : "";
-    $pconfig['custom_options'] = !empty($a_dnsmasq['custom_options']) ? $a_dnsmasq['custom_options'] : "";
     // arrays
     $pconfig['interface'] = !empty($a_dnsmasq['interface']) ? explode(",", $a_dnsmasq['interface']) : array();
 
@@ -70,23 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $dnsmasq_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
         if (!empty($pconfig['enable']) && isset($config['unbound']['enable']) && $dnsmasq_port == $unbound_port) {
             $input_errors[] = gettext('Unbound is still active on the same port. Disable it before enabling Dnsmasq.');
-        }
-
-        $prev_opt = !empty($a_dnsmasq['custom_options']) ? $a_dnsmasq['custom_options'] : "";
-        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
-            $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
-        }
-        if (!empty($pconfig['custom_options']) && userIsAdmin($_SESSION['Username'])) {
-            $args = '';
-            foreach (preg_split('/\s+/', str_replace("\r\n", "\n", $pconfig['custom_options'])) as $c) {
-                if (!empty($c)) {
-                    $args .= escapeshellarg("--{$c}") . " ";
-                }
-            }
-            exec("/usr/local/sbin/dnsmasq --test $args", $output, $rc);
-            if ($rc != 0) {
-                $input_errors[] = gettext("Invalid custom options");
-            }
         }
 
         if (count($input_errors) == 0) {
@@ -115,11 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_dnsmasq['port'] = $pconfig['port'];
             } elseif (isset($a_dnsmasq['port'])) {
                 unset($a_dnsmasq['port']);
-            }
-            if (!empty($pconfig['custom_options'])) {
-                $a_dnsmasq['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
-            } elseif (isset($a_dnsmasq['custom_options'])) {
-                unset($a_dnsmasq['custom_options']);
             }
             write_config();
             system_resolvconf_generate();
@@ -168,14 +145,6 @@ include("head.inc");
 <script>
 //<![CDATA[
 $( document ).ready(function() {
-  $("#show_advanced_dns").click(function(event){
-    event.preventDefault();
-    $("#showadvbox").hide();
-    $("#showadv").show();
-  });
-  if ($("#custom_options").val() != "") {
-      $("#show_advanced_dns").click();
-  }
   // delete host action
   $(".act_delete_host").click(function(event){
     event.preventDefault();
@@ -394,39 +363,9 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_advanced" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Advanced') ?></td>
-                  <td>
-                    <div id="showadvbox" <?= !empty($pconfig['custom_options']) ? "style='display:none'" : '' ?>>
-                      <button class="btn btn-default btn-xs" id="show_advanced_dns" value="yes"><?= gettext('Show advanced option') ?></button>
-                    </div>
-                    <div id="showadv" <?= empty($pconfig['custom_options']) ? "style='display:none'" : "" ?>>
-                      <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
-                      <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
-                    </div>
-                    <div class="hidden" data-for="help_for_advanced">
-                      <?=gettext("Enter any additional options you would like to add to the Dnsmasq configuration here, separated by a space or newline"); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
                   <td></td>
                   <td>
                     <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <?= sprintf(gettext("If Dnsmasq is enabled, the DHCP".
-                    " service (if enabled) will automatically serve the LAN IP".
-                    " address as a DNS server to DHCP clients so they will use".
-                    " the Dnsmasq forwarder. Dnsmasq will use the DNS servers".
-                    " entered in %sSystem: General setup%s".
-                    " or those obtained via DHCP or PPP on WAN if the \"Allow".
-                    " DNS server list to be overridden by DHCP/PPP on WAN\"".
-                    " is checked. If you don't use that option (or if you use".
-                    " a static IP address on WAN), you must manually specify at".
-                    " least one DNS server on the %sSystem: General setup%s page."),
-                    '<a href="system_general.php">','</a>','<a href="system_general.php">','</a>');?>
                   </td>
                 </tr>
               </table>
