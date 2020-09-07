@@ -316,7 +316,7 @@ include("head.inc");
                     <td>
                       <select name="rainterface" id="rainterface">
                         <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) . " (" . gettext('dynamic') . ")" ?></option>
-                        <option value="static" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if)  . " (" . gettext('dynamic') . ")" ?></option>
+                        <option value="static" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if)  . " (" . gettext('static') . ")" ?></option>
 <?php foreach ($carplistif as $ifname => $vip): ?>
                         <option value="<?= $ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo 'selected="selected"' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
 <?php endforeach ?>
