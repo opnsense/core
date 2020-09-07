@@ -35,7 +35,7 @@ import ujson
 
 if __name__ == '__main__':
     result = collections.OrderedDict()
-    for stattype in ['info', 'memory', 'timeouts', 'Interfaces', 'rules']:
+    for stattype in ['info', 'memory', 'timeouts', 'Interfaces', 'rules', 'nat']:
         sp = subprocess.run(['/sbin/pfctl', '-vvs'+stattype], capture_output=True, text=True)
         result[stattype] = sp.stdout.strip()
 
