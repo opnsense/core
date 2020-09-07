@@ -239,7 +239,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
          * Check if we need to listen on a CARP interface.  A CARP setup will try
          * to leave the clients configured: RemoveRoute off / DeprecatePrefix off
          */
-        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
+        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'static' ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         }
