@@ -265,6 +265,10 @@ class Gateways
                     } elseif (empty($thisconf['virtual'])) {
                         // skipped dynamic gateway from config, add to $dynamic_gw to handle defunct
                         $dynamic_gw[$ifname][] = $thisconf;
+                    } elseif ($ipproto == 'inet' && $ifcfg['ipaddr'] == 'dslite') {
+                        // handle default gateway ip in DS-lite
+                        $thisconf['gateway'] = '192.0.0.1';
+                        $this->cached_gateways[$gwkey] = $thisconf;
                     }
                 }
             }

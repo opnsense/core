@@ -443,7 +443,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
             @unlink($to_delete);
         }
 
-        log_error("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'");
+        log_error("ROUTING: creating /tmp/{$realif}_defaultgw/tmp/{$realif}_defaultgw using '{$gateway}'");
         @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
 
         if (!$far) {

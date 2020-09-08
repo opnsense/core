@@ -31,6 +31,7 @@
  */
 
 require_once("interfaces.lib.inc");
+require_once("dslite.php");
 
 /*
  * converts a string like "a,b,c,d"
@@ -2962,7 +2963,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "\t\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "\tfi\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif} \$raw_dhcp_option_64\n";
     $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "EXIT|RELEASE)\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
@@ -3063,6 +3064,11 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
 
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
+
+        if ($wancfg['ipaddr'] == "dslite") {
+            $dhcp6cconf .= "  request raw-option 64 00;\n";
+        }
+
         $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
 
         $dhcp6cconf .= "};\n";
@@ -4157,6 +4163,14 @@ function get_interfaces_info()
         if (!empty($ifinfo['ipv4'])) {
             $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
             $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+        }
+
+        if ($config['interfaces'][$ifdescr]['ipaddr'] == "dslite") {
+            $gifif = dslite_find_tunnel_interface($ifdescr);
+            $aftr = dslite_find_aftr_address($ifdescr);
+            $ifinfo['ipaddr'] = 'dslite';
+            $ifinfo['dslite_aftr'] = $aftr;
+            $ifinfo['dslite_gif'] = $gifif;
         }
 
         /* XXX there are more magic files */
