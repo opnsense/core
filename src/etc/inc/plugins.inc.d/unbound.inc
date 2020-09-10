@@ -101,6 +101,22 @@ function unbound_generate_config()
 {
     global $config;
 
+    if (!unbound_enabled()) {
+        return;
+    }
+
+    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+
+    foreach ($dirs as $dir) {
+        mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
+    }
+
+    if (mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
+        mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
+    }
+
+    mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
+
     // Setup optimization
     $optimization = unbound_optimization();
 
@@ -369,6 +385,7 @@ remote-control:
 EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
+    configd_run('template reload OPNsense/Unbound/*');
 }
 
 function unbound_interface($interface)
@@ -408,6 +425,8 @@ function unbound_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
+    unbound_generate_config();
+
     if (!unbound_interface($interface) && isvalidpid('/var/run/unbound.pid')) {
         return;
     }
@@ -421,25 +440,11 @@ function unbound_configure_do($verbose = false, $interface = '')
         return;
     }
 
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
-
-    foreach ($dirs as $dir) {
-        mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
-    }
-
-    if (mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
-        mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
-    }
-
-    mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
-
     if ($verbose) {
         echo 'Starting Unbound DNS...';
         flush();
     }
 
-    unbound_generate_config();
-    configd_run("template reload OPNsense/Unbound/*");
     configd_run("unbound start", true);
 
     if (isset($config['unbound']['regdhcp'])) {
