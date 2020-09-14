@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 
-$data_tabs = array("info" => gettext("info"), "memory" => gettext("memory"), "timeouts" => gettext("timeouts"), "interfaces" => gettext("interfaces"), "rules" => gettext("rules"));
+$data_tabs = array("info" => gettext("info"), "memory" => gettext("memory"), "timeouts" => gettext("timeouts"), "interfaces" => gettext("interfaces"), "rules" => gettext("rules"), "nat" => gettext("nat"));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['getactivity'])) {
