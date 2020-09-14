@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -179,7 +179,7 @@ function next_unused_gateway_name($interface)
 {
     global $config;
 
-    $new_name = "GW_" . strtoupper($interface);
+    $new_name = strtoupper($interface) . '_GW';
 
     if (!isset($config['gateways']['gateway_item'])) {
         return $new_name;
@@ -195,7 +195,7 @@ function next_unused_gateway_name($interface)
         }
         if ($existing) {
             $count += 1;
-            $new_name = "GW_" . strtoupper($interface) . "_" . $count;
+            $new_name = strtoupper($interface) . '_GW_' . $count;
         }
     } while ($existing);
     return $new_name;

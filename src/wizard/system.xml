@@ -425,7 +425,7 @@ if (!empty($input_errors)) {
         <stepbeforeformdisplay><![CDATA[
 if (isset($config['gateways']['gateway_item'])) {
     foreach ($config['gateways']['gateway_item'] as $gw) {
-        if ($gw['name'] == 'WAN_GW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway'])) {
+        if (empty($config['wizardtemp']['wangateway']) && $gw['name'] == 'WAN_GW') {
             $config['wizardtemp']['wangateway'] = $gw['gateway'];
         }
     }
