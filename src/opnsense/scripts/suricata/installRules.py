@@ -99,4 +99,4 @@ if __name__ == '__main__':
             os.remove(filename)
 
     # import local changes (if changed)
-    RuleCache.update_local_changes()
+    RuleCache.create()
