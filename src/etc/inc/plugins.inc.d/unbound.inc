@@ -73,7 +73,7 @@ function unbound_xmlrpc_sync()
 
     $result[] = array(
         'description' => gettext('Unbound DNS'),
-        'section' => 'unbound',
+        'section' => 'unbound,OPNsense.unboundplus',
         'id' => 'dnsresolver',
     );
 
