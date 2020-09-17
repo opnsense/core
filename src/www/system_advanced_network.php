@@ -274,68 +274,78 @@ include("head.inc");
         <div class="content-box tab-content table-responsive __mb">
           <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?= gettext('Network Interfaces') ?></strong></td>
+                <td style="width:22%"><strong><?= gettext('Hardware Offloading') ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
+                <td colspan="2">
+                  <?=gettext("The following options are disabled by default because some NICs and/or drivers are broken. Enabling a hardware offloading option may completely block network connectivity when IPS mode is enabled in Services – Intrusion Detection – Administration."); ?>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC offloading"); ?></td>
                 <td>
-                  <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
-                  <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
+                  <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "" :"checked=\"checked\"";?> />
                   <div class="hidden" data-for="help_for_disablechecksumoffloading">
-                    <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
+                    <?=gettext("Choose whether to process checksums in hardware. Note that when this is enabled, a packet capture will see empty (all zero) or flag incorrect packet checksums. This is expected behavior with hardware checksum handling."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
                 <td>
-                  <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
+                  <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "" :"checked=\"checked\"";?>/>
                   <div class="hidden" data-for="help_for_disablesegmentationoffloading">
-                    <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                    <?=gettext("Choose whether to process outgoing TCP segmentation in hardware, also known as TCP segmentation offloading (TSO, TSO4, TSO6)."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
                 <td>
-                  <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
+                  <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "" :"checked=\"checked\"";?>/>
                   <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
-                    <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                    <?=gettext("Choose whether to process incoming TCP segmentation in hardware, also known as large receive offloading (LRO)."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Filtering"); ?></td>
+                <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Processing"); ?></td>
                 <td>
                   <select name="disablevlanhwfilter" class="selectpicker">
                       <option value="0" <?=$pconfig['disablevlanhwfilter'] == "0" ? "selected=\"selected\"" : "";?> >
-                        <?=gettext("Enable VLAN Hardware Filtering");?>
+                        <?=gettext("Enable");?>
                       </option>
                       <option value="1" <?=$pconfig['disablevlanhwfilter'] == "1" ? "selected=\"selected\"" : "";?> >
-                        <?=gettext("Disable VLAN Hardware Filtering"); ?>
+                        <?=gettext("Disable"); ?>
                       </option>
                       <option value="2" <?=$pconfig['disablevlanhwfilter'] == "2" ? "selected=\"selected\"" : "";?> >
-                        <?=gettext("Leave default");?>
+                        <?=gettext("Default");?>
                       </option>
                   </select>
                   <div class="hidden" data-for="help_for_disablevlanhwfilter">
-                    <?= gettext('Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.') ?>
+                    <?= gettext('Choose whether to process VLAN tagging, filtering, outgoing TCP segmentation (TSO) and checksums in hardware. Setting this to \'Default\' means that each NIC will retain its own default setting.') ?>
                   </div>
                 </td>
               </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Handling"); ?></td>
+                <td style="width:22%"><strong><?= gettext('Logging') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP"); ?></td>
                 <td>
-                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Suppress ARP messages"); ?></strong><br />
+                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "" :"checked=\"checked\"";?>/>
+                  <strong><?=gettext("Log ARP address changes"); ?></strong>
                   <div class="hidden" data-for="help_for_sharednet">
-                    <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
+                    <?=gettext("Choose whether to make a log entry in the main system log when an IP address moves to a different MAC address."); ?>
                   </div>
                 </td>
               </tr>
