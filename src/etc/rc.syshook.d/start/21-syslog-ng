@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#
+# In some cases syslog-ng seems to be initialized partially, dropping some
+# messages on the floor. Forcing a restart at the end of the boot procedure
+# seems to fix that.
+#
+/usr/local/etc/rc.d/syslog-ng restart

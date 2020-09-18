@@ -310,15 +310,15 @@ include("head.inc");
                         if ((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
                           $carplistif[$ifname] = $vip;
                       }
-                    }
-                    if (count($carplistif) > 0):?>
+                    } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) ?></option>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) . " (" . gettext('dynamic') . ")" ?></option>
+                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= strtoupper($if)  . " (" . gettext('static') . ")" ?></option>
 <?php foreach ($carplistif as $ifname => $vip): ?>
-                        <option value="<?= $ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo 'selected="selected"' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
+                        <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
@@ -326,8 +326,6 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-<?php
-                  endif ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
                     <td>

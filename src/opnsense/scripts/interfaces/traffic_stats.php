@@ -1,7 +1,8 @@
+#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016-2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,30 +26,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+require_once("interfaces.inc");
+require_once("config.inc");
 
-/**
- * widget temperature data
- */
-function temperature_api()
-{
-    $result = array();
-
-    foreach (explode("\n", configd_run('system temp')) as $sysctl) {
-        $parts = explode('=', $sysctl);
-        if (count($parts) >= 2) {
-            $tempItem = array();
-            $tempItem['device'] = $parts[0];
-            $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
-            $tempItem['temperature'] = trim(str_replace('C', '', $parts[1]));
-            $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? "zone" : "core";
-            $tempItem['type_translated'] = $tempItem['type'] == "zone" ? gettext("Zone") : gettext("Core");
-            $result[] = $tempItem;
-        }
+$result = array("interfaces" => array());
+$interfaces = legacy_interface_stats();
+$temp = gettimeofday();
+$result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
+// collect user friendly interface names
+foreach (legacy_config_get_interfaces(array("virtual" => false)) as $interfaceKey => $itf) {
+    if (array_key_exists($itf['if'], $interfaces)) {
+        $result['interfaces'][$interfaceKey] = $interfaces[$itf['if']];
+        $result['interfaces'][$interfaceKey]['name'] = !empty($itf['descr']) ? $itf['descr'] : $interfaceKey;
     }
-
-    usort($result, function ($item1, $item2) {
-        return strcmp(strtolower($item1['device']), strtolower($item2['device']));
-    });
-
-    return $result;
 }
+
+echo json_encode($result);

@@ -169,7 +169,7 @@ if __name__ == '__main__':
                     if 'messages' not in result:
                         result['messages'] = list()
                     if error_output not in result['messages']:
-                        result['messages'].append(error_output.replace('pfctl: ', ''))
+                        result['messages'].append("%s [%s]" % (error_output.replace('pfctl: ', ''), alias_name))
     # cleanup removed aliases
     to_remove = dict()
     for filename in glob.glob('/var/db/aliastables/*.txt'):

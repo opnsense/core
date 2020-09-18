@@ -518,7 +518,7 @@ function rrd_configure($verbose = false)
         }
 
         /* the CPU Temperature gathering function */
-        $rrdupdatesh .= "CPUTEMP=`$sysctl -n dev.cpu.0.temperature | sed 's/C//g'`\n";
+        $rrdupdatesh .= "CPUTEMP=\$(/usr/local/opnsense/scripts/system/temperature.sh rrd)\n";
         $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cputemp N:\${CPUTEMP}\n";
         /* end CPU Temp gathering */
 

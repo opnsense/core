@@ -38,9 +38,9 @@ urls = set()
 predefined_lists = {
     "aa": "https://adaway.org/hosts.txt",
     "ag": "https://justdomains.github.io/blocklists/lists/adguarddns-justdomains.txt",
-    "bla": "https://blocklist.site/app/dl/ads",
-    "blf": "https://blocklist.site/app/dl/fraud",
-    "blp": "https://blocklist.site/app/dl/phishing",
+    "bla": "https://blocklistproject.github.io/Lists/ads.txt",
+    "blf": "https://blocklistproject.github.io/Lists/fraud.txt",
+    "blp": "https://blocklistproject.github.io/Lists/phishing.txt",
     "ca": "http://sysctl.org/cameleon/hosts",
     "el": "https://justdomains.github.io/blocklists/lists/easylist-justdomains.txt",
     "ep": "https://justdomains.github.io/blocklists/lists/easyprivacy-justdomains.txt",

@@ -3,9 +3,9 @@
 # when virtualip_carp_maintenancemode is set, make sure we startup in demoted state
 if [ -f /conf/config.xml ]; then
     IS_MNT=$(grep -c virtualip_carp_maintenancemode /conf/config.xml)
-    IS_DEMOTED=$(/sbin/sysctl net.inet.carp.demotion | /usr/bin/awk '{print $2;}')
+    IS_DEMOTED=$(sysctl -n net.inet.carp.demotion)
     if [ ${IS_MNT} -gt 0 ] && [ ${IS_DEMOTED} -eq -0 ]; then
-        /sbin/sysctl net.inet.carp.demotion=240
+        sysctl net.inet.carp.demotion=240
     fi
 fi
 

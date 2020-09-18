@@ -107,7 +107,7 @@ class RuleCache(object):
                             if prop == 'metadata':
                                 for mdtag in list(csv.reader([value], delimiter=","))[0]:
                                     parts = mdtag.split(maxsplit=1)
-                                    record['metadata'][parts[0]] = parts[1]
+                                    record['metadata'][parts[0]] = parts[1] if len(parts) > 1 else None
                             else:
                                 record[prop] = value
 
@@ -168,7 +168,8 @@ class RuleCache(object):
                                            rev INTEGER, gid INTEGER, reference TEXT,
                                            enabled BOOLEAN, action text, source TEXT)""")
         cur.execute("create table rule_properties(sid INTEGER, property text, value text) ")
-        cur.execute("create table local_rule_changes(sid number primary key, action text, last_mtime number)")
+        cur.execute("""create table local_rule_changes(sid number primary key,
+                                                       action text, enabled BOOLEAN, last_mtime number)""")
         last_mtime = 0
         all_rule_files = self.list_local()
         rules_sql = 'insert into rules(%(fieldnames)s) values (%(fieldvalues)s)' % {
@@ -238,8 +239,10 @@ class RuleCache(object):
                 cur.execute('delete from local_rule_changes')
                 local_changes = self.list_local_changes()
                 for sid in local_changes:
-                    sql_params = (sid, local_changes[sid]['action'], local_changes[sid]['mtime'])
-                    cur.execute('insert into local_rule_changes(sid, action, last_mtime) values (?,?,?)', sql_params)
+                    cur.execute(
+                        'insert into local_rule_changes(sid, action, enabled, last_mtime) values (?,?,?,?)',
+                        (sid, local_changes[sid]['action'], local_changes[sid]['enabled'], local_changes[sid]['mtime'])
+                    )
                 db.commit()
                 # release lock
                 fcntl.flock(lock, fcntl.LOCK_UN)
@@ -262,7 +265,7 @@ class RuleCache(object):
             sql_parameters = {}
             sql_filters = []
             prop_values = []
-            rule_search_fields = ['msg', 'sid', 'source', 'installed_action']
+            rule_search_fields = ['msg', 'sid', 'source', 'installed_action', 'installed_status']
             for filtertag in shlex.split(filter_txt):
                 fieldnames, searchcontent = filtertag.split('/', maxsplit=1)
                 sql_item = []
@@ -292,7 +295,13 @@ class RuleCache(object):
 
             sql = """select *
                      from (
-                         select rules.*, case when rc.action is null then rules.action else rc.action end installed_action
+                         select rules.*,
+                                case when rc.action is null then rules.action else rc.action end installed_action,
+                                case
+                                    when case when rc.enabled is null then rules.enabled else rc.enabled end = true
+                                    then 'enabled'
+                                    else  'disabled'
+                                end installed_status
                          from rules
                   """
 

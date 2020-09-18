@@ -680,10 +680,6 @@ function filter_generate_aliases()
     $aliases .= "table <sshlockout> persist\n";
     $aliases .= "\n# Other tables\n";
     $aliases .= "table <virusprot>\n";
-    $aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
-    if (is_bogonsv6_used()) {
-        $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
-    }
 
     $aliases .= "\n# User Aliases\n";
     $aliasObject = new \OPNsense\Firewall\Alias();
@@ -707,6 +703,11 @@ function filter_generate_aliases()
                 $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                 break;
         }
+    }
+
+    $aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
+    if (is_bogonsv6_used()) {
+        $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
     }
 
     return $aliases;

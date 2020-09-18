@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -27,7 +27,7 @@
 
 # This script generates a json structured file with the following content:
 # connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
-# repository: error|untrusted|revoked|ok
+# repository: error|untrusted|unsigned|revoked|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
 # download_size: <size_of_total_downloads>
@@ -104,6 +104,11 @@ if [ -z "${pkg_running}" ]; then
         elif grep -q 'At least one of the certificates has been revoked' ${outfile}; then
           # fingerprint mismatch
           repository="revoked"
+          connection="ok"
+          timer=0
+	elif grep -q 'No signature found' ${outfile}; then
+	  # fingerprint not found
+          repository="unsigned"
           connection="ok"
           timer=0
         fi

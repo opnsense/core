@@ -40,6 +40,25 @@ class LogController extends IndexController
         $this->view->pick('OPNsense/Diagnostics/log');
         $this->view->module = $module;
         $this->view->scope = $scope;
+        $this->view->service = '';
+
+        $service = $module == 'core' ? $scope : $module;
+
+        /* XXX manually hook up known services for now */
+        switch ($service) {
+        case 'ipsec':
+            $this->view->service = 'ipsec';
+            break;
+        case 'suricata':
+            $this->view->service = 'ids';
+            break;
+        case 'squid':
+            $this->view->service = 'proxy';
+            break;
+        default:
+            /* no service API at the moment */
+            break;
+        }
     }
 
     public function __call($name, $arguments)

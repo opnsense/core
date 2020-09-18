@@ -65,7 +65,7 @@
           }
           $('<a></a>').attr('href',download_link).get(0).click();
       });
-
+      updateServiceControlUI('{{service}}');
     });
 </script>
 

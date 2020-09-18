@@ -42,6 +42,7 @@
 # suffix is moved to the new subdirectory during a request.
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
+REQUESTS_CA_BUNDLE=/etc/ssl/cert.pem
 SYSDIR="/usr/local/etc/rc.syshook.d"
 SYSLEVEL="${1}"
 
