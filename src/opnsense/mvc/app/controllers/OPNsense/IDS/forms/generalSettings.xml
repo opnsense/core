@@ -9,7 +9,7 @@
         <id>ids.general.ips</id>
         <label>IPS mode</label>
         <type>checkbox</type>
-        <help><![CDATA[Enable protection mode (block traffic).<br />Before enabling, please disable all options under <strong>Hardware Offloading</strong> in <a href="/system_advanced_network.php">Interfaces – Settings</a>.]]></help>
+        <help><![CDATA[Enable protection mode (block traffic).<br />Before enabling, please disable all hardware offloading first <a href="/system_advanced_network.php">in advanced network</a>.]]></help>
     </field>
     <field>
         <id>ids.general.promisc</id>
