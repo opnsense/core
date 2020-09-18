@@ -171,14 +171,18 @@ $duid = read_duid();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
-    $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
-    $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
+    $pconfig['hardware_crc_offloading'] = !isset($config['system']['disablechecksumoffloading']);
+    $pconfig['hardware_tso'] = !isset($config['system']['disablesegmentationoffloading']);
+    $pconfig['hardware_lro'] = !isset($config['system']['disablelargereceiveoffloading']);
     $pconfig['dhcp6_norelease'] = isset($config['system']['dhcp6_norelease']);
     $pconfig['dhcp6_debug'] = !isset($config['system']['dhcp6_debug']) ? '0' : $config['system']['dhcp6_debug'];
     $pconfig['ipv6duid'] = $config['system']['ipv6duid'];
-    $pconfig['disablevlanhwfilter']  = !isset($config['system']['disablevlanhwfilter']) ? '0' : $config['system']['disablevlanhwfilter'];
-    $pconfig['sharednet'] = isset($config['system']['sharednet']);
+    $pconfig['vlan_hardware_processing'] = (
+        isset($config['system']['disablevlanhwfilter'])
+            ? ($config['system']['disablevlanhwfilter'] == 2 ? 2 /* default */ : 0 /* disabled */)
+            : 1 /* enabled */
+    );
+    $pconfig['log_arp_change'] = !isset($config['system']['sharednet']);
     $pconfig['ipv6_duid_llt_value'] = generate_new_duid('1');
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
@@ -192,34 +196,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!count($input_errors)) {
-        if (!empty($pconfig['sharednet'])) {
+        if (empty($pconfig['log_arp_change'])) {
             $config['system']['sharednet'] = true;
         } elseif (isset($config['system']['sharednet'])) {
-            unset($config['system']['sharednet']);
-        }
+                unset($config['system']['sharednet']);
+            }
 
-        if (!empty($pconfig['disablechecksumoffloading'])) {
+        if (empty($pconfig['hardware_crc_offloading'])) {
             $config['system']['disablechecksumoffloading'] = true;
         } elseif (isset($config['system']['disablechecksumoffloading'])) {
-            unset($config['system']['disablechecksumoffloading']);
-        }
+                unset($config['system']['disablechecksumoffloading']);
+            }
 
-        if (!empty($pconfig['disablesegmentationoffloading'])) {
+        if (empty($pconfig['hardware_tso'])) {
             $config['system']['disablesegmentationoffloading'] = true;
         } elseif (isset($config['system']['disablesegmentationoffloading'])) {
-            unset($config['system']['disablesegmentationoffloading']);
-        }
+                unset($config['system']['disablesegmentationoffloading']);
+            }
 
-        if (!empty($pconfig['disablelargereceiveoffloading'])) {
+        if (empty($pconfig['hardware_lro'])) {
             $config['system']['disablelargereceiveoffloading'] = true;
         } elseif (isset($config['system']['disablelargereceiveoffloading'])) {
-            unset($config['system']['disablelargereceiveoffloading']);
-        }
+                unset($config['system']['disablelargereceiveoffloading']);
+            }
 
-        if (!empty($pconfig['disablevlanhwfilter'])) {
-            $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
-        } elseif (isset($config['system']['disablevlanhwfilter'])) {
-            unset($config['system']['disablevlanhwfilter']);
+        if (empty($pconfig['vlan_hardware_processing'])) { /* disabled */
+            $config['system']['disablevlanhwfilter'] = 1;
+        } elseif ($pconfig['vlan_hardware_processing'] == 1) { /* enabled */
+            if (isset($config['system']['disablevlanhwfilter'])) {
+                unset($config['system']['disablevlanhwfilter']);
+            }
+        } else { /* default */
+            $config['system']['disablevlanhwfilter'] = 2;
         }
 
         if (!empty($pconfig['dhcp6_norelease'])) {
@@ -286,47 +294,47 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC offloading"); ?></td>
+                <td><a id="help_for_hardware_crc_offloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC offloading"); ?></td>
                 <td>
-                  <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "" :"checked=\"checked\"";?> />
-                  <div class="hidden" data-for="help_for_disablechecksumoffloading">
+                  <input name="hardware_crc_offloading" type="checkbox" id="hardware_crc_offloading" value="yes" <?= !empty($pconfig['hardware_crc_offloading']) ? "checked=\"checked\"" :"";?> />
+                  <div class="hidden" data-for="help_for_hardware_crc_offloading">
                     <?=gettext("Choose whether to process checksums in hardware. Note that when this is enabled, a packet capture will see empty (all zero) or flag incorrect packet checksums. This is expected behavior with hardware checksum handling."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
+                <td><a id="help_for_hardware_tso" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
                 <td>
-                  <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "" :"checked=\"checked\"";?>/>
-                  <div class="hidden" data-for="help_for_disablesegmentationoffloading">
+                  <input name="hardware_tso" type="checkbox" id="hardware_tso" value="yes" <?= !empty($pconfig['hardware_tso']) ? "checked=\"checked\"" :"";?>/>
+                  <div class="hidden" data-for="help_for_hardware_tso">
                     <?=gettext("Choose whether to process outgoing TCP segmentation in hardware, also known as TCP segmentation offloading (TSO, TSO4, TSO6)."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
+                <td><a id="help_for_hardware_lro" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
                 <td>
-                  <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "" :"checked=\"checked\"";?>/>
-                  <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
+                  <input name="hardware_lro" type="checkbox" id="hardware_lro" value="yes" <?= !empty($pconfig['hardware_lro']) ? "checked=\"checked\"" :"";?>/>
+                  <div class="hidden" data-for="help_for_hardware_lro">
                     <?=gettext("Choose whether to process incoming TCP segmentation in hardware, also known as large receive offloading (LRO)."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Processing"); ?></td>
+                <td><a id="help_for_vlan_hardware_processing" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Processing"); ?></td>
                 <td>
-                  <select name="disablevlanhwfilter" class="selectpicker">
-                      <option value="0" <?=$pconfig['disablevlanhwfilter'] == "0" ? "selected=\"selected\"" : "";?> >
-                        <?=gettext("Enable");?>
+                  <select name="vlan_hardware_processing" class="selectpicker">
+                      <option value="0" <?=$pconfig['vlan_hardware_processing'] == "0" ? "selected=\"selected\"" : "";?> >
+                        <?=gettext("Disable");?>
                       </option>
-                      <option value="1" <?=$pconfig['disablevlanhwfilter'] == "1" ? "selected=\"selected\"" : "";?> >
-                        <?=gettext("Disable"); ?>
+                      <option value="1" <?=$pconfig['vlan_hardware_processing'] == "1" ? "selected=\"selected\"" : "";?> >
+                        <?=gettext("Enable"); ?>
                       </option>
-                      <option value="2" <?=$pconfig['disablevlanhwfilter'] == "2" ? "selected=\"selected\"" : "";?> >
+                      <option value="2" <?=$pconfig['vlan_hardware_processing'] == "2" ? "selected=\"selected\"" : "";?> >
                         <?=gettext("Default");?>
                       </option>
                   </select>
-                  <div class="hidden" data-for="help_for_disablevlanhwfilter">
+                  <div class="hidden" data-for="help_for_vlan_hardware_processing">
                     <?= gettext('Choose whether to process VLAN tagging, filtering, outgoing TCP segmentation (TSO) and checksums in hardware. Setting this to \'Default\' means that each NIC will retain its own default setting.') ?>
                   </div>
                 </td>
@@ -340,11 +348,11 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP"); ?></td>
+                <td><a id="help_for_log_arp_change" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP"); ?></td>
                 <td>
-                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "" :"checked=\"checked\"";?>/>
+                  <input name="log_arp_change" type="checkbox" id="log_arp_change" value="yes" <?= !empty($pconfig['log_arp_change']) ? "checked=\"checked\"": "";?>/>
                   <strong><?=gettext("Log ARP address changes"); ?></strong>
-                  <div class="hidden" data-for="help_for_sharednet">
+                  <div class="hidden" data-for="help_for_log_arp_change">
                     <?=gettext("Choose whether to make a log entry in the main system log when an IP address moves to a different MAC address."); ?>
                   </div>
                 </td>
