@@ -873,6 +873,14 @@ EOPP;
                     && (empty($dhcpifconf['ddnsdomain']) || $poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])
                 ) {
                     $pdnscfg .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
+
+                    $newddnszone = array();
+                    $newddnszone['domain-name'] = $poolconf['ddnsdomain'];
+                    $newddnszone['dns-servers'] = array($poolconf['ddnsdomainprimary']);
+                    $newddnszone['ddnsdomainkeyname'] = $poolconf['ddnsdomainkeyname'];
+                    $newddnszone['ddnsdomainkey'] = $poolconf['ddnsdomainkey'];
+                    $newddnszone['ddnsdomainalgorithm'] = !empty($poolconf['ddnsdomainalgorithm']) ? $poolconf['ddnsdomainalgorithm'] : "hmac-md5";
+                    $ddns_zones[] = $newddnszone;
                 }
                 $pdnscfg .= "    ddns-update-style interim;\n";
             }
