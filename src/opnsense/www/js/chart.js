@@ -733,11 +733,11 @@ for (var func in conversions) {
   // export rgb2hsl and ["rgb"]["hsl"]
   convert[from] = convert[from] || {};
 
-  convert[from][to] = convert[func] = (function(func) { 
+  convert[from][to] = convert[func] = (function(func) {
     return function(arg) {
       if (typeof arg == "number")
         arg = Array.prototype.slice.call(arguments);
-      
+
       var val = conversions[func](arg);
       if (typeof val == "string" || val === undefined)
         return val; // keyword
@@ -765,12 +765,12 @@ Converter.prototype.routeSpace = function(space, args) {
    }
    // color.rgb(10, 10, 10)
    if (typeof values == "number") {
-      values = Array.prototype.slice.call(args);        
+      values = Array.prototype.slice.call(args);
    }
 
    return this.setValues(space, values);
 };
-  
+
 /* Set the values for a space, invalidating cache */
 Converter.prototype.setValues = function(space, values) {
    this.space = space;
@@ -1102,7 +1102,7 @@ function getAlpha(string) {
 // generators
 function hexString(rgba, a) {
    var a = (a !== undefined && rgba.length === 3) ? a : rgba[3];
-   return "#" + hexDouble(rgba[0]) 
+   return "#" + hexDouble(rgba[0])
               + hexDouble(rgba[1])
               + hexDouble(rgba[2])
               + (
@@ -9782,7 +9782,7 @@ var core_helpers = function() {
 	};
 	/**
 	 * @private
- 	 */
+	 */
 	helpers$1._calculatePadding = function(container, padding, parentDimension) {
 		padding = helpers$1.getStyle(container, padding);
 
@@ -13793,8 +13793,8 @@ var Legend = core_element.extend({
 		this.legendHitBoxes = [];
 
 		/**
- 		 * @private
- 		 */
+		 * @private
+		 */
 		this._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
