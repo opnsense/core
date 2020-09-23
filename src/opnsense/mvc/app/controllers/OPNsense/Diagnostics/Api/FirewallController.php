@@ -68,9 +68,16 @@ class FirewallController extends ApiControllerBase
         $interfaces = [];
         if ($config->interfaces->count() > 0) {
             foreach ($config->interfaces->children() as $key => $node) {
+                // XXX: Omit group types since they don't link to actual interfaces.
+                if (isset($node->type) && (string)$node->type == 'group') {
+                    continue;
+                } elseif ((string)$node->if == 'openvpn') {
+                    continue;
+                }
                 $interfaces[] = !empty((string)$node->descr) ? (string)$node->descr : $key;
             }
         }
+
         return [
             "interface_name" => $interfaces,
             "dir" => ["in", "out"],
