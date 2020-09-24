@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['backupcount'] = $config['system']['backupcount'];
     } else {
         # XXX fallback value for older configs
-        $pconfig['backupcount'] = 60;
+        $pconfig['backupcount'] = 100;
     }
 
     $cnf = OPNsense\Core\Config::getInstance();
