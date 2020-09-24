@@ -995,7 +995,7 @@ if (empty($act)) {
                         }
                         $("#basic_constraints_is_ca_sign_csr").change();
 
-                        $('#key_usage_sign_csr option').removeAttr('selected');
+                        $('#key_usage_sign_csr option').prop('selected', false);
                         if ('keyUsage' in data) {
                                 data.keyUsage.forEach(function(item) {
                                         $('#key_usage_sign_csr_' + item).prop('selected', true);
@@ -1004,7 +1004,7 @@ if (empty($act)) {
                         }
                         $("#key_usage_sign_csr").selectpicker('refresh');
 
-                        $('#extended_key_usage_sign_csr option').removeAttr('selected');
+                        $('#extended_key_usage_sign_csr option').prop('selected', false);
                         if ('extendedKeyUsage' in data) {
                                 data.extendedKeyUsage.forEach(function(item) {
                                         $('#extended_key_usage_sign_csr_' + (item.replace(/\./g, '_'))).prop('selected', true);
@@ -1211,7 +1211,7 @@ $( document ).ready(function() {
           $("#dn_city").val("<?=$subject_items['L'];?>");
           $("#dn_organization").val("<?=$subject_items['O'];?>");
           $("#dn_email").val("<?=$subject_items['emailAddress'];?>");
-          $('#dn_country option').removeAttr('selected');
+          $('#dn_country option').prop('selected', false);
           $('#dn_country option').filter('[value="<?=$subject_items['C'];?>"]').prop('selected', true);
           $("#dn_country").selectpicker('refresh');
           break;
