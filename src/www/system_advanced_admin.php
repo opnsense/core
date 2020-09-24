@@ -373,7 +373,7 @@ $(document).ready(function() {
                  btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
                  callback: function(result) {
                      if (!result) {
-                         $('#webguiinterface option:selected').removeAttr('selected');
+                         $('#webguiinterface option:selected').prop('selected', false);
                          $('#webguiinterface').selectpicker('refresh');
                          $.webguiinterface_warned = 0;
                      }
@@ -381,7 +381,7 @@ $(document).ready(function() {
              });
          }
      });
-     $.webguiinterface_warned = 0;
+     $.webguiinterface_warned = $('#webguiinterface option:selected').length ? 1 : 0;
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
