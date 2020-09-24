@@ -373,7 +373,7 @@ $(document).ready(function() {
                  btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
                  callback: function(result) {
                      if (!result) {
-                         $('#webguiinterface option:selected').removeAttr('selected');
+                         $('#webguiinterface option:selected').prop('selected', false);
                          $('#webguiinterface').selectpicker('refresh');
                          $.webguiinterface_warned = 0;
                      }
