@@ -381,7 +381,7 @@ $(document).ready(function() {
              });
          }
      });
-     $.webguiinterface_warned = 0;
+     $.webguiinterface_warned = $('#webguiinterface option:selected').length ? 1 : 0;
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
