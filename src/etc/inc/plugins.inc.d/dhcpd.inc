@@ -535,8 +535,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
     file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
+    if ($config['system']['ipv6_radvd_debug_level']){
+        $radvddebug = " -d{$config['system']['ipv6_radvd_debug_level']}";
+    } else {
+        $radvddebug = " -d0";
+    }
+
     if (count($radvdifs)) {
-        mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+        mwexec("/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog {$radvddebug}");
     }
 
     if ($verbose) {
