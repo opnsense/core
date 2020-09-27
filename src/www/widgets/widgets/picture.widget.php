@@ -87,7 +87,7 @@ if ($_POST) {
 <?php
 if ($config['widgets']['picturewidget_filename'] != "") :?>
   <div id="picture-widgets" style="padding: 5px">
-    <a href='/widgets/widgets/picture.widget.php?getpic=true' target='_blank'>
+    <img scr="/widgets/widgets/picture.widget.php?getpic=true" target="_blank">
       <img style="border:0px solid; width:100%; height:100%" src="/widgets/widgets/picture.widget.php?getpic=true" alt="picture" />
     </a>
   </div>
