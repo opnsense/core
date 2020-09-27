@@ -709,7 +709,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (empty($pconfig['type6'])) {
                     $input_errors[] = gettext("DS-Lite requires IPv6 configuration to be present.");
                 } else {
-                    switch (strtolower($pconfig['type6'])) {
+                    switch ($pconfig['type6']) {
                         case "staticv6":
                             // No further checks as the IPv6 address is checked in the next step
                             break;
