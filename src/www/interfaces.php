@@ -717,6 +717,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             if (!empty($pconfig['dhcp6prefixonly'])) {
                                 $input_errors[] = gettext("DS-Lite requires a public IPv6 on the WAN interface to create a 4in6 tunnel, therefore 'Request only an IPv6 prefix' does not work");
                             }
+                            break;
                         default:
                             // Just fail, no other option allowed for the time being
                             $input_errors[] = gettext("DS-Lite requires either of static IPv6 or DHCPv6 to be configured.");
