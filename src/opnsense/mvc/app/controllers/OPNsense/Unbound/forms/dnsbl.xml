@@ -17,6 +17,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
+        <advanced>true</advanced>
         <help>List of domains from where blacklist will be downloaded.</help>
     </field>
     <field>
