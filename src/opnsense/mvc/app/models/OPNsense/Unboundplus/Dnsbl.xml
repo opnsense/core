@@ -16,16 +16,28 @@
             <OptionValues>
                 <aa>AdAway List</aa>
                 <ag>AdGuard List</ag>
+                <bla0>Blocklist.site Abuse</bla0>
                 <bla>Blocklist.site Ads</bla>
+                <blc>Blocklist.site Crypto</blc>
+                <bld>Blocklist.site Drugs</bld>
                 <blf>Blocklist.site Fraud</blf>
+                <blf0>Blocklist.site Facebook</blf0>
+                <blg>Blocklist.site Gambling</blg>
+                <blm>Blocklist.site Malware</blm>
                 <blp>Blocklist.site Phishing</blp>
-                <ca>Cameleon List</ca>
-                <el>Easy List</el>
-                <ep>Easyprivacy List</ep>
-                <mw>Malwaredomain List</mw>
+                <blp0>Blocklist.site Piracy</blp0>
+                <blp1>Blocklist.site Porn</blp1>
+                <blr>Blocklist.site Ransomware</blr>
+                <blr0>Blocklist.site Redirect</blr0>
+                <bls>Blocklist.site Scam</bls>
+                <blt>Blocklist.site Tiktok</blt>
+                <blt0>Blocklist.site Torrent</blt0>
+                <blt1>Blocklist.site Tracking</blt1>
+                <bly>Blocklist.site Youtube</bly>
+                <el>EasyList</el>
+                <ep>EasyPrivacy</ep>
                 <nc>NoCoin List</nc>
                 <pt>PornTop1M List</pt>
-                <rw>Ransomware Tracker List</rw>
                 <sa>Simple Ad List</sa>
                 <st>Simple Tracker List</st>
                 <sb>Steven Black List</sb>
