@@ -81,6 +81,10 @@
                     <chop>Chop URI at first whitespace</chop>
                 </OptionValues>
             </uriWhitespaceHandling>
+            <enablePinger type="BooleanField">
+                <default>1</default>
+                <Required>Y</Required>
+            </enablePinger>
             <useViaHeader type="BooleanField">
                 <default>1</default>
                 <Required>N</Required>
