@@ -121,6 +121,13 @@
                 <help>Select what to do with URI that contain whitespaces. The current Squid implementation of encode and chop violates RFC2616 by not using a 301 redirect after altering the URL.</help>
                 <advanced>true</advanced>
             </field>
+            <field>
+                <id>proxy.general.enablePinger</id>
+                <label>Enable pinger</label>
+                <type>checkbox</type>
+                <help>Toggles the Squid pinger service. This service is used in the selection of the best parent proxy.</help>
+                <advanced>true</advanced>
+            </field>
         </subtab>
         <subtab id="proxy-general-cache-local" description="Local Cache Settings">
             <field>
