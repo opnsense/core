@@ -44,10 +44,9 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function dnsblAction()
     {
         $this->sessionClose();
-        $mdl = new Dnsbl();
         $backend = new Backend();
-        $backend->configdRun('template reload OPNsense/Unbound');
-        $response = $backend->configdpRun('unbound dnsbl', array((string)$mdl->type));
+        $backend->configdRun('template reload OPNsense/Unbound/*');
+        $response = $backend->configdpRun('unbound dnsbl');
         return array("status" => $response);
     }
 }
