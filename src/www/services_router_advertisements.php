@@ -136,8 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['AdvRouteLifetime']) && !val_int_in_range($pconfig['AdvRouteLifetime'], 1, 4294967295)) {
             $input_errors[] = sprintf(gettext('AdvRouteLifetime must be between %s and %s seconds.'),  1, 4294967295);
         }
-        if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], 1280, 8192)) {
-            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  1280, 8192);
+        if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], 1280, 65535)) {
+            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  1280, 65535);
         }
     }
 
