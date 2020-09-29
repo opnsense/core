@@ -84,9 +84,9 @@ if __name__ == '__main__':
     startup_time = time.time()
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
     blacklist_items = set()
-    if os.path.exists('/var/unbound/etc/blacklists.conf'):
+    if os.path.exists('/var/unbound/etc/blacklists.ini'):
         cnf = ConfigParser()
-        cnf.read('/var/unbound/etc/blacklists.conf')
+        cnf.read('/var/unbound/etc/blacklists.ini')
         # exclude (white) lists, compile to regex to be used to filter blacklist entries
         if cnf.has_section('exclude'):
             exclude_list = set()
