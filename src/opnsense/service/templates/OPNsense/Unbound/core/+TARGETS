@@ -1,4 +1,4 @@
 root.min.hints:/var/unbound/root.hints
 miscellaneous.conf:/var/unbound/etc/miscellaneous.conf
 dot.conf:/var/unbound/etc/dot.conf
-blacklists.conf:/var/unbound/etc/blacklists.conf
+blacklists.conf:/var/unbound/etc/blacklists.ini
