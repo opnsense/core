@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ *  Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
  *  Copyright (C) 2014-2016 Deciso B.V.
  *  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  *  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
@@ -136,8 +136,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['AdvRouteLifetime']) && !val_int_in_range($pconfig['AdvRouteLifetime'], 1, 4294967295)) {
             $input_errors[] = sprintf(gettext('AdvRouteLifetime must be between %s and %s seconds.'),  1, 4294967295);
         }
-        if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], 1280, 65535)) {
-            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  1280, 65535);
+        $mtu_low = 1280;
+        $mtu_high = 65535;
+        if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], $mtu_low, $mtu_high)) {
+            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  $mtu_low, $mtu_high);
         }
     }
 
