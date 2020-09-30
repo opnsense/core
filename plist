@@ -472,6 +472,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
@@ -791,7 +792,7 @@
 /usr/local/opnsense/scripts/systemhealth/logformats/syslog.py
 /usr/local/opnsense/scripts/systemhealth/queryLog.py
 /usr/local/opnsense/scripts/unbound/cache.sh
-/usr/local/opnsense/scripts/unbound/dnsbl.py
+/usr/local/opnsense/scripts/unbound/download_blacklists.py
 /usr/local/opnsense/scripts/unbound/unbound_start.sh
 /usr/local/opnsense/scripts/unbound/wrapper.py
 /usr/local/opnsense/service/conf/actions.d/actions_auth.conf
@@ -816,7 +817,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
 /usr/local/opnsense/service/conf/actions.d/actions_unbound.conf
-/usr/local/opnsense/service/conf/actions.d/actions_unboundplus.conf
 /usr/local/opnsense/service/conf/actions.d/actions_webgui.conf
 /usr/local/opnsense/service/conf/actions_service.conf
 /usr/local/opnsense/service/conf/configd.conf
@@ -927,12 +927,10 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-lockout.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/dnsbl.inc
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/blacklists.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/lists.inc
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/miscellaneous.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/whitelist.inc
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/WebGui/etc.php.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/lib.php.ini
