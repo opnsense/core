@@ -31,12 +31,7 @@
 require_once("guiconfig.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($config['system']['backupcount'])) {
-        $pconfig['backupcount'] = $config['system']['backupcount'];
-    } else {
-        # XXX fallback value for older configs
-        $pconfig['backupcount'] = 60;
-    }
+    $pconfig['backupcount'] = isset($config['system']['backupcount']) ? $config['system']['backupcount'] : null;
 
     $cnf = OPNsense\Core\Config::getInstance();
     $confvers = $cnf->getBackups(true);
@@ -98,11 +93,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($pconfig['save'])) {
-        if (!isset($pconfig['backupcount']) || !is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] <= 0) {
+        if ($pconfig['backupcount'] != null && (!is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] <= 0)) {
             $input_errors[] = gettext('Backup count must be greater than zero.');
         }
         if (count($input_errors) == 0) {
-            $config['system']['backupcount'] = $pconfig['backupcount'];
+            if ($pconfig['backupcount'] != null) {
+                $config['system']['backupcount'] = $pconfig['backupcount'];
+            } elseif (isset($config['system']['backupcount'])) {
+                unset($config['system']['backupcount']);
+            }
             write_config('Changed backup revision count');
             $savemsg = get_std_save_message();
         }
