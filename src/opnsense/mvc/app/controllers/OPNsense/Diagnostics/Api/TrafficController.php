@@ -78,6 +78,5 @@ class TrafficController extends ApiControllerBase
             }
         }
         return $response;
-
     }
 }
