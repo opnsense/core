@@ -777,6 +777,7 @@
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/system/temperature.sh
+/usr/local/opnsense/scripts/system/trigger_config_changed_events.py
 /usr/local/opnsense/scripts/systemhealth/activity.py
 /usr/local/opnsense/scripts/systemhealth/clearlog
 /usr/local/opnsense/scripts/systemhealth/definitions/gateway-quality.xml
@@ -921,6 +922,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Syslog/sources/001-local.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-config-events.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-destinations.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-legacy.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-local.conf
