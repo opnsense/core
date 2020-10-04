@@ -199,7 +199,8 @@ class AliasContentField extends BaseField
                     $domain_alias_count++;
                 }
             }
-            if (strpos($network, "!") === 0 &&
+            if (
+                strpos($network, "!") === 0 &&
                   (Util::isIpAddress(substr($network, 1)) || Util::isSubnet(substr($network, 1)))
             ) {
                 // exclude address or network (https://www.freebsd.org/doc/handbook/firewalls-pf.html 30.3.2.4)

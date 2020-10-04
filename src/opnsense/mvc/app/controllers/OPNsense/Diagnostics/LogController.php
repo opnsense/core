@@ -46,18 +46,18 @@ class LogController extends IndexController
 
         /* XXX manually hook up known services for now */
         switch ($service) {
-        case 'ipsec':
-            $this->view->service = 'ipsec';
-            break;
-        case 'suricata':
-            $this->view->service = 'ids';
-            break;
-        case 'squid':
-            $this->view->service = 'proxy';
-            break;
-        default:
-            /* no service API at the moment */
-            break;
+            case 'ipsec':
+                $this->view->service = 'ipsec';
+                break;
+            case 'suricata':
+                $this->view->service = 'ids';
+                break;
+            case 'squid':
+                $this->view->service = 'proxy';
+                break;
+            default:
+                /* no service API at the moment */
+                break;
         }
     }
 
