@@ -342,7 +342,9 @@ legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 $all_interfaces = legacy_config_get_interfaces();
 $ifdetails = legacy_interfaces_details();
-foreach (array_keys($interfaces) as $portname) {
+$intfkeys = array_keys($interfaces);
+natcasesort($intfkeys);
+foreach ($intfkeys as $portname) {
     $portused = false;
     if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
         $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
