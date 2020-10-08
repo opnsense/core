@@ -627,7 +627,7 @@ $(document).ready(function() {
 <?php endforeach ?>
                   </select>
                   <div class="hidden" data-for="help_for_webguiinterfaces">
-                    <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
+                    <?= gettext('Choose which interfaces sshd listens on or leave as default (none selected) to listen on all interfaces. The SSHd default limit is 16 listening connections.  Use with care.') ?>
                   </div>
                 </td>
               </tr>
