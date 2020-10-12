@@ -461,6 +461,9 @@
                         <Required>N</Required>
                     </UpdateCron>
                 </remoteACLs>
+                <noCertError type="CSVListField">
+                    <Required>N</Required>
+                </noCertError>
             </acl>
             <icap>
                 <enable type="BooleanField">

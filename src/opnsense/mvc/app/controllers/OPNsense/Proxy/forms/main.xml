@@ -452,6 +452,14 @@
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
+            <field>
+                <id>proxy.forward.acl.noCertError</id>
+                <label>No Certificate Error</label>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <help>Bypass server certificate validation errors. Use a comma or press Enter for new item."</help>
+                <allownew>true</allownew>
+            </field>
         </subtab>
         <subtab id="proxy-icap" description="ICAP Settings">
             <field>
