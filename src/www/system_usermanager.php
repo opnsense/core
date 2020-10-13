@@ -386,6 +386,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             local_user_set_groups($userent, $pconfig['groups']);
             local_user_set($userent);
             write_config();
+            // XXX: signal backend that the user has changed.
+            configdp_run('auth user changed', [$userent['name']]);
 
             if (!empty($pconfig['chkNewCert'])) {
                 header(url_safe('Location: /system_certmanager.php?act=new&userid=%d', array(isset($id) ? $id : count($a_user) - 1)));
