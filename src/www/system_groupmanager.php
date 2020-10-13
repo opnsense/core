@@ -69,13 +69,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $act = (isset($pconfig['act']) ? $pconfig['act'] : '');
 
     $user = getUserEntry($_SESSION['Username']);
+    $a_user = &config_read_array('system', 'user');
     if (userHasPrivilege($user, 'user-config-readonly')) {
         $input_errors[] = gettext('You do not have the permission to perform this action.');
     } elseif (isset($id) && $act == "delgroup" && isset($pconfig['groupname']) && $pconfig['groupname'] == $a_group[$id]['name']) {
+        $prev_members = !empty($a_group[$id]['member']) ? $a_group[$id]['member'] : array();
         local_group_del($a_group[$id]);
-        $groupdeleted = $a_group[$id]['name'];
         unset($a_group[$id]);
         write_config();
+        // XXX: signal backend about changed users for the members of this group
+        foreach ($prev_members as $member) {
+            foreach ($a_user as & $user) {
+                if ($user['uid'] == $member) {
+                    configdp_run('auth user changed', [$user['name']]);
+                }
+            }
+        }
         header(url_safe('Location: /system_groupmanager.php'));
         exit;
     } elseif (isset($pconfig['save'])) {
@@ -114,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (isset($id) && $a_group[$id]) {
                 $group = $a_group[$id];
             }
+            $prev_members = !empty($group['member']) ? $group['member'] : array();
 
             $group['name'] = $pconfig['name'];
             $group['description'] = $pconfig['description'];
@@ -130,18 +140,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $group['gid'] = $config['system']['nextgid']++;
                 $a_group[] = $group;
             }
+
             local_group_set($group);
 
-            /* Refresh users in this group since their privileges may have changed. */
+            /* Refresh users in this group since their privileges may have changed.
+               XXX: it looks like local_user_set's intend is to only change group assignments, if that's
+                    the case, it should be safe to drop the block below and let configd handle it.
+            */
+
             if (is_array($group['member'])) {
-                $a_user = &config_read_array('system', 'user');
                 foreach ($a_user as & $user) {
                     if (in_array($user['uid'], $group['member'])) {
                         local_user_set($user);
                     }
                 }
             }
+
             write_config();
+            // XXX: signal backend which users have changed.
+            //      core_user_changed_groups() would change local group assignments in that case as well.
+            $new_members = !empty($group['member']) ? $group['member'] : array();
+            $all_members = array_merge($prev_members, $new_members);
+            foreach ($all_members as $member) {
+                if (!in_array($member, $prev_members) || !in_array($member, $new_members)) {
+                    foreach ($a_user as & $user) {
+                        if ($user['uid'] == $member) {
+                            configdp_run('auth user changed', [$user['name']]);
+                        }
+                    }
+                }
+            }
             header(url_safe('Location: /system_groupmanager.php'));
             exit;
         } else {
