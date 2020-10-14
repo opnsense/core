@@ -205,7 +205,7 @@ class FilterRule extends Rule
                 }
             }
             // restructure state settings for easier output parsing
-            if (!empty($rule['statetype']) && $rule['type'] == 'pass') {
+            if (!empty($rule['statetype']) && ($rule['type'] == 'pass' || empty($rule['type']))) {
                 $rule['state'] = array('type' => 'keep', 'options' => array());
                 switch ($rule['statetype']) {
                     case 'none':

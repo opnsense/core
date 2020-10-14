@@ -288,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // Update interface, protocol and destination
             $filterent['interface'] = $natent['interface'];
+            $filterent['statetype'] = "keep state";
             if (!empty($natent['protocol'])) {
                 $filterent['protocol'] = $natent['protocol'];
             } elseif (isset($filterent['protocol'])) {
