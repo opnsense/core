@@ -376,8 +376,8 @@ class LDAP extends Base implements IAuthConnector
                                 'name' => $searchResults[$i][$ldapAttr][0],
                                 'dn' => $searchResults[$i]['dn']
                             );
-                            if (!empty($searchResults[$i]['displayName'][0])) {
-                                $user['fullname'] = $searchResults[$i]['displayName'][0];
+                            if (!empty($searchResults[$i]['displayname'][0])) {
+                                $user['fullname'] = $searchResults[$i]['displayname'][0];
                             } elseif (!empty($searchResults[$i]['cn'][0])) {
                                 $user['fullname'] = $searchResults[$i]['cn'][0];
                             } elseif (!empty($searchResults[$i]['name'][0])) {
