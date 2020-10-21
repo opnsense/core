@@ -67,6 +67,7 @@ function parse_duid($duid_string)
             $n = substr($duid_string, $i+1, 1);
             if (($n == '\\') || ($n == '"')) {
                 $parsed_duid[] = sprintf("%02x", ord($n));
+                $i += 1;
             } elseif (is_numeric($n)) {
                 $parsed_duid[] = sprintf("%02x", octdec(substr($duid_string, $i+1, 3)));
                 $i += 3;
