@@ -423,6 +423,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AuthGroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AuthenticationServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/AutoNumberField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/Base64Field.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BaseField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BaseListField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BooleanField.php
@@ -599,6 +600,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthenticationServerFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthenticationServerFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AutoNumberFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/Base64FieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/BooleanFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CertificateFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CertificateFieldTest/config.xml
