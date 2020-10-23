@@ -42,7 +42,10 @@ $script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
 
 /* reload subsystem that may have changed */
 if ($script == 'POST_INSTALL') {
-	system_syslogd_start(true);
+	echo 'Configuring system logging...';
+	flush();
+	configd_run("syslog restart");
+	echo "done.\n";
 }
 
 /* flush user-facing caches */
