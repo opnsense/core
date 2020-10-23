@@ -48,7 +48,7 @@ convert_config(true);
 system_firmware_configure(true);
 system_trust_configure(true);
 system_login_configure(true);
-system_syslogd_start(true);
+system_syslogd_start(true, false, true);
 
 /* flush user-facing caches */
 (new OPNsense\Core\ACL())->invalidateCache();
