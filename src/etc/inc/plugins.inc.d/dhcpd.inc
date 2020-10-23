@@ -206,6 +206,12 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
     global $config;
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
+	
+	// Wait for rtadvd to exit gracefully
+	
+	while(is_process_running("rtadvd")) {
+		sleep(1);	
+	}
 
     if (!dhcpd_radvd_enabled()) {
         return;
@@ -221,6 +227,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
     /* Process all links which need the router advertise daemon */
     $radvdifs = array();
+    $rtadvd_interface_list = array();
 
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
@@ -269,6 +276,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         $radvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
+        $rtadvd_interface_list[] = $realif;
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
@@ -486,6 +494,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+        $rtadvd_interface_list[] = $realif;
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
@@ -535,10 +544,19 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
     file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
-    if (count($radvdifs)) {
-        mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+    $radvd_interfaces = implode(' ',$rtadvd_interface_list);
+
+    if ($config['system']['ipv6_radvd_debug_level'] > 1 ) {
+        $radvddebug = " -D";
+    } else if ($config['system']['ipv6_radvd_debug_level'] = 1 ) {
+        $radvddebug = " -d";
+    } else {
+        $radvddebug = "";
     }
 
+    if (count($radvdifs)) {
+		mwexecf('/usr/sbin/rtadvd %s -c /var/etc/radvd.conf -p /var/run/radvd.pid %s',$radvddebug,$radvd_interfaces);
+    }
     if ($verbose) {
         echo "done.\n";
     }
