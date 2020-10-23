@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/proxy</mount>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <description>
         (squid) proxy settings
     </description>
@@ -81,6 +81,10 @@
                     <chop>Chop URI at first whitespace</chop>
                 </OptionValues>
             </uriWhitespaceHandling>
+            <enablePinger type="BooleanField">
+                <default>1</default>
+                <Required>Y</Required>
+            </enablePinger>
             <useViaHeader type="BooleanField">
                 <default>1</default>
                 <Required>N</Required>
