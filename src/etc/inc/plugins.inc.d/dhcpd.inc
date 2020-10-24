@@ -58,6 +58,26 @@ function dhcpd_radvd_enabled()
 
     return false;
 }
+function dhcpd_rtadvd_enabled()
+{
+    global $config;
+
+    /* handle manually configured DHCP6 server settings first */
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
+            return true;
+        }
+    }
+
+    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 function dhcpd_dhcpv6_enabled()
 {
@@ -106,6 +126,15 @@ function dhcpd_services()
         $pconfig['php']['restart'] = array('dhcpd_radvd_configure');
         $pconfig['php']['start'] = array('dhcpd_radvd_configure');
         $pconfig['pidfile'] = '/var/run/radvd.pid';
+        $services[] = $pconfig;
+    }
+	if (dhcpd_rtadvd_enabled()) {
+        $pconfig = array();
+        $pconfig['name'] = "rtadvd";
+        $pconfig['description'] = gettext("Router Advertisement Daemon");
+        $pconfig['php']['restart'] = array('dhcpd_rtadvd_configure');
+        $pconfig['php']['start'] = array('dhcpd_rtadvd_configure');
+        $pconfig['pidfile'] = '/var/run/rtadvd.pid';
         $services[] = $pconfig;
     }
 
@@ -539,6 +568,378 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
     }
 
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
+function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
+{
+    global $config;
+
+    killbypid('/var/run/rtadvd.pid', 'TERM', true);
+	
+	// Wait for rtadvd to exit gracefully
+	
+	while(is_process_running("rtadvd")) {
+		sleep(1);	
+	}
+
+    if (!dhcpd_radvd_enabled()) {
+        return;
+    }
+
+    if ($verbose) {
+        echo 'Starting router advertisement service...';
+        flush();
+    }
+
+    /* rtadvd set default values */
+	$rtadvdconf = "default:\x5c\n";
+    $rtadvdconf .= "\t:raflags#0:rltime#3600:\x5c\n";
+    $rtadvdconf .= "\t:pinfoflags#64:vltime#360000:pltime#360000:mtu#1500:\x5c\n\n";
+	
+    $ifconfig_details = legacy_interfaces_details();
+	$rtadvdconf .= "# Automatically generated, do not edit\n";
+
+    /* Process all links which need the router advertise daemon */
+    $radvdifs = array();
+
+    /* handle manually configured DHCP6 server settings first */
+    foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
+        if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+            continue;
+        } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
+            continue;
+        } elseif (isset($blacklist[$dhcpv6if])) {            
+			$rtadvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\\n";
+            continue;
+        } elseif (!isset($dhcpv6ifconf['ramode']) || $dhcpv6ifconf['ramode'] == 'disabled') {
+            continue;
+        }
+
+        /*
+         * Check if we need to listen on a CARP interface.  A CARP setup will try
+         * to leave the clients configured: RemoveRoute off / DeprecatePrefix off
+         */
+        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'static' ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
+        if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+            continue;
+        }
+
+        $realif = get_real_interface($dhcpv6if, 'inet6');
+        $radvdifs[$realif] = 1;
+
+        $mtu = legacy_interface_stats($realif)['mtu'];
+
+        if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
+            $realtrackif = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface'], 'inet6');
+
+            $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
+            if (!empty($trackmtu) && !empty($mtu)) {
+                if ($trackmtu < $mtu) {
+                    $mtu = $trackmtu;
+                }
+            }
+        }
+
+        if (!empty($dhcpv6ifconf['AdvLinkMTU']) && !empty($mtu)) {
+            if ($dhcpv6ifconf['AdvLinkMTU'] < $mtu) {
+                $mtu = $dhcpv6ifconf['AdvLinkMTU'];
+            } else {
+                log_error('Warning! Skipping AdvLinkMTU configuration since it cannot be applied.');
+            }
+        }
+
+		$rtadvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
+
+		$rtadvd_interface_list[] = $realif;
+		$rtadvdconf .= "{$realif}:\x5c\n";
+		// $radvdconf .= "\tAdvSendAdvert on;\n"; // No equivemlent?  
+		$rtadvdconf .= sprintf("\t:mininterval#%s:\x5c\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
+		$rtadvdconf .= sprintf("\t:maxinterval#%s:\x5c\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '200');
+        if (!empty($dhcpv6ifconf['AdvDefaultLifetime'])) {
+			$rtadvdconf .= sprintf("\:rltime#%s:\x5c\n", $dhcpv6ifconf['AdvDefaultLifetime']);
+        }
+        $rtadvdconf .= sprintf("\t:mtu#%s:\x5c\n", !empty($mtu) ? $mtu : 0);
+
+		$rtaflags = "";
+		
+        switch ($dhcpv6ifconf['rapriority']) {
+            case "low":
+				$rtaflags = 24;
+                break;
+            case "high":
+				$rtaflags = 8;
+                break;
+            default:
+				$rtaflags = 0;
+                break;
+        }
+
+        switch ($dhcpv6ifconf['ramode']) {
+            case 'managed':
+            case 'assist':
+				$raflags = $raflags+128+64;
+				$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+                break;
+            case 'stateless':
+				$raflags = $raflags+64;
+				$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+                break;
+            default:
+                break;
+        }
+
+        if (!empty($dhcpv6ifconf['ranodefault'])) {
+			$rtadvdconf .= sprintf("\:rltime#0:\x5c\n");
+        }
+
+        $stanzas = array();
+
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $realif, $ifconfig_details);
+        if (is_subnetv6($networkv6)) {
+            $stanzas[] = $networkv6;
+        }
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] == $dhcpv6if && is_ipaddrv6($vip['subnet'])) {
+                $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+                $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
+            }
+        }
+
+        /* VIPs may duplicate readings from system */
+        $stanzas = array_unique($stanzas);
+		
+        foreach ($stanzas as $stanza) {
+			$rtadvd_addresses = explode("/",$stanza);			
+			$rtadvdconf .= "\t:addr=\x22{$rtadvd_addresses[0]}\x22:prefixlen#{$rtadvd_addresses[1]}\x5c\n";
+
+			//$rtadvdconf .= "depricate"; No equiv
+            switch ($dhcpv6ifconf['ramode']) {
+                case 'managed':
+					$rtaautonimous  = 128;
+					$rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
+                    break;
+                case 'router':
+					$rtaautonimous  = 0;
+					$rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
+                    break;
+                case 'assist':
+                case 'unmanaged':
+                case 'stateless':
+					$rtaautonimous  = 128+64;
+					$rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
+                    break;
+                default:
+                    break;
+            }
+            if (!empty($dhcpv6ifconf['AdvValidLifetime'])) {
+				$rtadvdconf .= sprintf("\tvltime#%s:\x5c\n", $dhcpv6ifconf['AdvValidLifetime']);				
+            }
+            if (!empty($dhcpv6ifconf['AdvPreferredLifetime'])) {
+				$rtadvdconf .= sprintf("\tpltime#%s:\x5c\n", $dhcpv6ifconf['AdvPreferredLifetime']);
+            }
+        }
+
+	    /* rtadvd no equiv? 
+		
+        if (!empty($dhcpv6ifconf['rainterface'])) {
+            $radvdconf .= "\troute ::/0 {\n";
+            $radvdconf .= "\t\tRemoveRoute off;\n";
+            $radvdconf .= "\t};\n";
+        }
+		*/
+		
+        if (!empty($dhcpv6ifconf['raroutes'])) {
+            foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
+              /* rtadvd no equiv? 
+			  if (!empty($dhcpv6ifconf['rainterface'])) {
+                    $radvdconf .= "\t\tRemoveRoute off;\n";
+                } 
+				*/
+                if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {
+                    $radvdconf .= "\t\tAdvRouteLifetime {$dhcpv6ifconf['AdvRouteLifetime']};\n";
+                }                
+				$rtadvdconf .= "\x5c\n";
+            }
+        }
+
+        /* add DNS servers */
+        $dnslist_tmp = array();
+        if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
+            $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
+        } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
+            $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
+        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+            if (is_ipaddrv6($ifcfgipv6)) {
+                $dnslist_tmp[] = $ifcfgipv6;
+            } else {
+                log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
+            }
+        } elseif (!empty($config['system']['dnsserver'][0])) {
+            $dnslist_tmp = $config['system']['dnsserver'];
+        }
+        $dnslist = array();
+        foreach ($dnslist_tmp as $server) {
+            if (is_ipaddrv6($server)) {
+                $dnslist[] = $server;
+            }
+        }
+
+        if (count($dnslist) > 0) {
+			$rtadvdconf .= "\t:rdnss=\x22" . implode(",", $dnslist)."\x22:\x5c\n";
+            if (!empty($dhcpv6ifconf['AdvRDNSSLifetime'])) {
+				$rtadvdconf .= "\t:rdnssltime:#{$dhcpv6ifconf['AdvRDNSSLifetime']}:\x5c\n";
+            }
+        }
+
+        if (!empty($dhcpv6ifconf['radomainsearchlist'])) {
+            $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
+        } elseif (!empty($config['system']['domain'])) {
+            $dnssl = $config['system']['domain'];
+        } else {
+            $dnssl = null;
+        }
+        if (!empty($dnssl)) {
+			$rtadvdconf .= "\t:dnssl=\x22{$dnssl}\x22:";
+            if (!empty($dhcpv6ifconf['AdvDNSSLLifetime'])) {
+				$rtadvdconf .= "\t:dnssltime#{$dhcpv6ifconf['AdvDNSSLLifetime']}:\x5c\n";
+            }
+        }
+		$rtadvdconf .= "\n";
+    }
+
+    /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
+    foreach (array_keys(get_configured_interface_with_descr()) as $if) {
+        if (!isset($config['interfaces'][$if]['track6-interface'])) {
+            continue;
+        } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
+            continue;
+        } elseif (!isset($config['interfaces'][$if]['enable'])) {
+            continue;
+        } elseif (isset($blacklist[$if])) {
+			$rtadvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
+            continue;
+        }
+
+        $trackif = $config['interfaces'][$if]['track6-interface'];
+        $realif = get_real_interface($if, 'inet6');
+
+        /* prevent duplicate entries, manual overrides */
+        if (isset($radvdifs[$realif])) {
+            continue;
+        }
+
+        $radvdifs[$realif] = 1;
+        $autotype = 'unknown';
+
+        if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
+            $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
+        }
+
+        $realtrackif = get_real_interface($trackif, 'inet6');
+
+        $mtu = legacy_interface_stats($realif)['mtu'];
+        $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
+        if (!empty($trackmtu) && !empty($mtu)) {
+            if ($trackmtu < $mtu) {
+                $mtu = $trackmtu;
+            }
+        }
+
+        $dnslist = array();
+
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $realif, $ifconfig_details);
+
+        if ($autotype == 'slaac') {
+            /* XXX this may be incorrect and needs an override or revisit */
+            $networkv6 = '2000::/64';
+        } elseif (!is_subnetv6($networkv6)) {
+            $networkv6 = '::/64';
+        }
+
+        if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+            if (is_ipaddrv6($ifcfgipv6)) {
+                $dnslist[] = $ifcfgipv6;
+            } else {
+                log_error("Warning! dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}");
+            }
+        } elseif (!empty($config['system']['dnsserver'])) {
+            foreach ($config['system']['dnsserver'] as $server) {
+                if (is_ipaddrv6($server)) {
+                    $dnslist[] = $server;
+                }
+            }
+        }
+
+		$rtadvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+        $rtadvd_interface_list[] = $realif;
+		$rtadvdconf .= "{$realif}:\x5c\n";
+		// $radvdconf .= "\tAdvSendAdvert on;\n"; // No equivemlent?  
+		$rtadvdconf .= sprintf("\t:mtu#%s:\x5c\n", !empty($mtu) ? $mtu : 0);
+		$raflags = $raflags+128+64;
+		$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+		
+        if (!empty($networkv6)) {
+			/* No rtadvd equiv ? 
+            $radvdconf .= "\tprefix {$networkv6} {\n";
+			*/
+            //if ($autotype == 'slaac') {
+            //    /* XXX also of interest in the future, see hardcoded prefix above */
+            //    $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+            //    $radvdconf .= "\t\tDeprecatePrefix on;\n";
+            //}
+			
+            /* XXX DeprecatePrefix on crashes radvd on 12.1 */
+
+			$raflags = $raflags+128+64;
+			$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);		
+        }
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            }
+
+            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+            $vipnetv6 = "{$subnetv6}/{$vip['subnet_bits']}";
+
+            if ($vipnetv6 == $networkv6) {
+                continue;
+            }
+
+			$rtadvdconf .= "\trtprefix=\x22{$vipnetv6}\x22:\x5c\n";
+			$raflags = $raflags+128+64;
+			$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+        }
+
+        if (count($dnslist) > 0) {
+			$rtadvdconf .= "\t:rdnss=\x22" . implode(",", $dnslist)."\x22:\x5c\n";
+        }
+        if (!empty($config['system']['domain'])) {
+			$rtadvdconf .= "\t:dnssl=\x22{$dnssl}\x22:";
+        }
+		$rtadvdconf .= "\n";
+    }
+
+	file_put_contents('/var/etc/rtadvd.conf', $rtadvdconf);
+
+    if ($config['system']['ipv6_radvd_debug_level'] > 1 ) {
+        $rtadvddebug = "-D";
+    } else if ($config['system']['ipv6_radvd_debug_level'] = 1 ) {
+        $rtadvddebug = "-d";
+    } else {
+        $rtadvddebug = " ";
+    }
+	$rtadvdinterfaces .= implode(' ',$rtadvd_interface_list);
+
+	$rtadvd_cmd = "/usr/sbin/rtadvd {$rtadvddebug} -c /var/etc/rtadvd.conf -p /var/run/rtadvd.pid {$rtadvdinterfaces}";
+
+    if (count($radvdifs)) {
+		mwexec_bg($rtadvd_cmd);
+    }
     if ($verbose) {
         echo "done.\n";
     }
