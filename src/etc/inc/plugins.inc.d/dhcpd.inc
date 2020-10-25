@@ -128,7 +128,7 @@ function dhcpd_services()
         $pconfig['pidfile'] = '/var/run/radvd.pid';
         $services[] = $pconfig;
     }
-	if (dhcpd_rtadvd_enabled()) {
+    if (dhcpd_rtadvd_enabled()) {
         $pconfig = array();
         $pconfig['name'] = "rtadvd";
         $pconfig['description'] = gettext("Router Advertisement Daemon");
@@ -235,6 +235,15 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
     global $config;
 
     killbypid('/var/run/radvd.pid', 'TERM', true);
+	
+	/* kill rtadvd if it's running, there can be only one - Highlander ref */
+	killbypid('/var/run/rtadvd.pid', 'TERM', true);
+	// Wait for rtadvd to exit gracefully
+    
+    while(is_process_running("rtadvd")) {
+        sleep(1);   
+    }
+	
 
     if (!dhcpd_radvd_enabled()) {
         return;
@@ -578,12 +587,14 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
     global $config;
 
     killbypid('/var/run/rtadvd.pid', 'TERM', true);
-	
-	// Wait for rtadvd to exit gracefully
-	
-	while(is_process_running("rtadvd")) {
-		sleep(1);	
-	}
+	/* Kill any radvd instance to. More Highlander */
+	killbypid('/var/run/radvd.pid', 'TERM', true);
+    
+    // Wait for rtadvd to exit gracefully
+    
+    while(is_process_running("rtadvd")) {
+        sleep(1);   
+    }
 
     if (!dhcpd_radvd_enabled()) {
         return;
@@ -595,12 +606,12 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
     }
 
     /* rtadvd set default values */
-	$rtadvdconf = "default:\x5c\n";
+    $rtadvdconf = "default:\x5c\n";
     $rtadvdconf .= "\t:raflags#0:rltime#3600:\x5c\n";
     $rtadvdconf .= "\t:pinfoflags#64:vltime#360000:pltime#360000:mtu#1500:\x5c\n\n";
-	
+    
     $ifconfig_details = legacy_interfaces_details();
-	$rtadvdconf .= "# Automatically generated, do not edit\n";
+    $rtadvdconf .= "# Automatically generated, do not edit\n";
 
     /* Process all links which need the router advertise daemon */
     $radvdifs = array();
@@ -612,7 +623,7 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$dhcpv6if])) {            
-			$rtadvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\\n";
+            $rtadvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\\n";
             continue;
         } elseif (!isset($dhcpv6ifconf['ramode']) || $dhcpv6ifconf['ramode'] == 'disabled') {
             continue;
@@ -651,48 +662,48 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-		$rtadvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
+        $rtadvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
 
-		$rtadvd_interface_list[] = $realif;
-		$rtadvdconf .= "{$realif}:\x5c\n";
-		// $radvdconf .= "\tAdvSendAdvert on;\n"; // No equivemlent?  
-		$rtadvdconf .= sprintf("\t:mininterval#%s:\x5c\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
-		$rtadvdconf .= sprintf("\t:maxinterval#%s:\x5c\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '200');
+        $rtadvd_interface_list[] = $realif;
+        $rtadvdconf .= "{$realif}:\x5c\n";
+        // $radvdconf .= "\tAdvSendAdvert on;\n"; // No equivemlent?  
+        $rtadvdconf .= sprintf("\t:mininterval#%s:\x5c\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
+        $rtadvdconf .= sprintf("\t:maxinterval#%s:\x5c\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '200');
         if (!empty($dhcpv6ifconf['AdvDefaultLifetime'])) {
-			$rtadvdconf .= sprintf("\:rltime#%s:\x5c\n", $dhcpv6ifconf['AdvDefaultLifetime']);
+            $rtadvdconf .= sprintf("\:rltime#%s:\x5c\n", $dhcpv6ifconf['AdvDefaultLifetime']);
         }
         $rtadvdconf .= sprintf("\t:mtu#%s:\x5c\n", !empty($mtu) ? $mtu : 0);
 
-		$rtaflags = "";
-		
+        $rtaflags = "";
+        
         switch ($dhcpv6ifconf['rapriority']) {
             case "low":
-				$rtaflags = 24;
+                $rtaflags = 24;
                 break;
             case "high":
-				$rtaflags = 8;
+                $rtaflags = 8;
                 break;
             default:
-				$rtaflags = 0;
+                $rtaflags = 0;
                 break;
         }
 
         switch ($dhcpv6ifconf['ramode']) {
             case 'managed':
             case 'assist':
-				$raflags = $raflags+128+64;
-				$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+                $raflags = $raflags+128+64;
+                $rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
                 break;
             case 'stateless':
-				$raflags = $raflags+64;
-				$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+                $raflags = $raflags+64;
+                $rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
                 break;
             default:
                 break;
         }
 
         if (!empty($dhcpv6ifconf['ranodefault'])) {
-			$rtadvdconf .= sprintf("\:rltime#0:\x5c\n");
+            $rtadvdconf .= sprintf("\:rltime#0:\x5c\n");
         }
 
         $stanzas = array();
@@ -711,58 +722,58 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
 
         /* VIPs may duplicate readings from system */
         $stanzas = array_unique($stanzas);
-		
+        
         foreach ($stanzas as $stanza) {
-			$rtadvd_addresses = explode("/",$stanza);			
-			$rtadvdconf .= "\t:addr=\x22{$rtadvd_addresses[0]}\x22:prefixlen#{$rtadvd_addresses[1]}\x5c\n";
+            $rtadvd_addresses = explode("/",$stanza);           
+            $rtadvdconf .= "\t:addr=\x22{$rtadvd_addresses[0]}\x22:prefixlen#{$rtadvd_addresses[1]}\x5c\n";
 
-			//$rtadvdconf .= "depricate"; No equiv
+            //$rtadvdconf .= "depricate"; No equiv
             switch ($dhcpv6ifconf['ramode']) {
                 case 'managed':
-					$rtaautonimous  = 128;
-					$rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
+                    $rtaautonimous  = 128;
+                    $rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
                     break;
                 case 'router':
-					$rtaautonimous  = 0;
-					$rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
+                    $rtaautonimous  = 0;
+                    $rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
                     break;
                 case 'assist':
                 case 'unmanaged':
                 case 'stateless':
-					$rtaautonimous  = 128+64;
-					$rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
+                    $rtaautonimous  = 128+64;
+                    $rtadvdconf .= sprintf("\t:pinfoflags#%d:\x5c\n",$rtaautonimous);
                     break;
                 default:
                     break;
             }
             if (!empty($dhcpv6ifconf['AdvValidLifetime'])) {
-				$rtadvdconf .= sprintf("\tvltime#%s:\x5c\n", $dhcpv6ifconf['AdvValidLifetime']);				
+                $rtadvdconf .= sprintf("\tvltime#%s:\x5c\n", $dhcpv6ifconf['AdvValidLifetime']);                
             }
             if (!empty($dhcpv6ifconf['AdvPreferredLifetime'])) {
-				$rtadvdconf .= sprintf("\tpltime#%s:\x5c\n", $dhcpv6ifconf['AdvPreferredLifetime']);
+                $rtadvdconf .= sprintf("\tpltime#%s:\x5c\n", $dhcpv6ifconf['AdvPreferredLifetime']);
             }
         }
 
-	    /* rtadvd no equiv? 
-		
+        /* rtadvd no equiv? 
+        
         if (!empty($dhcpv6ifconf['rainterface'])) {
             $radvdconf .= "\troute ::/0 {\n";
             $radvdconf .= "\t\tRemoveRoute off;\n";
             $radvdconf .= "\t};\n";
         }
-		*/
-		
+        */
+        
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
               /* rtadvd no equiv? 
-			  if (!empty($dhcpv6ifconf['rainterface'])) {
+              if (!empty($dhcpv6ifconf['rainterface'])) {
                     $radvdconf .= "\t\tRemoveRoute off;\n";
                 } 
-				*/
+                */
                 if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {
                     $radvdconf .= "\t\tAdvRouteLifetime {$dhcpv6ifconf['AdvRouteLifetime']};\n";
                 }                
-				$rtadvdconf .= "\x5c\n";
+                $rtadvdconf .= "\x5c\n";
             }
         }
 
@@ -789,9 +800,9 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
         }
 
         if (count($dnslist) > 0) {
-			$rtadvdconf .= "\t:rdnss=\x22" . implode(",", $dnslist)."\x22:\x5c\n";
+            $rtadvdconf .= "\t:rdnss=\x22" . implode(",", $dnslist)."\x22:\x5c\n";
             if (!empty($dhcpv6ifconf['AdvRDNSSLifetime'])) {
-				$rtadvdconf .= "\t:rdnssltime:#{$dhcpv6ifconf['AdvRDNSSLifetime']}:\x5c\n";
+                $rtadvdconf .= "\t:rdnssltime:#{$dhcpv6ifconf['AdvRDNSSLifetime']}:\x5c\n";
             }
         }
 
@@ -803,12 +814,12 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
             $dnssl = null;
         }
         if (!empty($dnssl)) {
-			$rtadvdconf .= "\t:dnssl=\x22{$dnssl}\x22:";
+            $rtadvdconf .= "\t:dnssl=\x22{$dnssl}\x22:";
             if (!empty($dhcpv6ifconf['AdvDNSSLLifetime'])) {
-				$rtadvdconf .= "\t:dnssltime#{$dhcpv6ifconf['AdvDNSSLLifetime']}:\x5c\n";
+                $rtadvdconf .= "\t:dnssltime#{$dhcpv6ifconf['AdvDNSSLLifetime']}:\x5c\n";
             }
         }
-		$rtadvdconf .= "\n";
+        $rtadvdconf .= "\n";
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
@@ -820,7 +831,7 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
         } elseif (!isset($config['interfaces'][$if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$if])) {
-			$rtadvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
+            $rtadvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
             continue;
         }
 
@@ -874,28 +885,28 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-		$rtadvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+        $rtadvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
         $rtadvd_interface_list[] = $realif;
-		$rtadvdconf .= "{$realif}:\x5c\n";
-		// $radvdconf .= "\tAdvSendAdvert on;\n"; // No equivemlent?  
-		$rtadvdconf .= sprintf("\t:mtu#%s:\x5c\n", !empty($mtu) ? $mtu : 0);
-		$raflags = $raflags+128+64;
-		$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
-		
+        $rtadvdconf .= "{$realif}:\x5c\n";
+        // $radvdconf .= "\tAdvSendAdvert on;\n"; // No equivemlent?  
+        $rtadvdconf .= sprintf("\t:mtu#%s:\x5c\n", !empty($mtu) ? $mtu : 0);
+        $raflags = $raflags+128+64;
+        $rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+        
         if (!empty($networkv6)) {
-			/* No rtadvd equiv ? 
+            /* No rtadvd equiv ? 
             $radvdconf .= "\tprefix {$networkv6} {\n";
-			*/
+            */
             //if ($autotype == 'slaac') {
             //    /* XXX also of interest in the future, see hardcoded prefix above */
             //    $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
             //    $radvdconf .= "\t\tDeprecatePrefix on;\n";
             //}
-			
+            
             /* XXX DeprecatePrefix on crashes radvd on 12.1 */
 
-			$raflags = $raflags+128+64;
-			$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);		
+            $raflags = $raflags+128+64;
+            $rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);       
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
@@ -910,21 +921,21 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
                 continue;
             }
 
-			$rtadvdconf .= "\trtprefix=\x22{$vipnetv6}\x22:\x5c\n";
-			$raflags = $raflags+128+64;
-			$rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
+            $rtadvdconf .= "\trtprefix=\x22{$vipnetv6}\x22:\x5c\n";
+            $raflags = $raflags+128+64;
+            $rtadvdconf .= sprintf("\t:raflags#%d:\x5c\n", $raflags);
         }
 
         if (count($dnslist) > 0) {
-			$rtadvdconf .= "\t:rdnss=\x22" . implode(",", $dnslist)."\x22:\x5c\n";
+            $rtadvdconf .= "\t:rdnss=\x22" . implode(",", $dnslist)."\x22:\x5c\n";
         }
         if (!empty($config['system']['domain'])) {
-			$rtadvdconf .= "\t:dnssl=\x22{$dnssl}\x22:";
+            $rtadvdconf .= "\t:dnssl=\x22{$dnssl}\x22:";
         }
-		$rtadvdconf .= "\n";
+        $rtadvdconf .= "\n";
     }
 
-	file_put_contents('/var/etc/rtadvd.conf', $rtadvdconf);
+    file_put_contents('/var/etc/rtadvd.conf', $rtadvdconf);
 
     if ($config['system']['ipv6_radvd_debug_level'] > 1 ) {
         $rtadvddebug = "-D";
@@ -933,12 +944,12 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
     } else {
         $rtadvddebug = " ";
     }
-	$rtadvdinterfaces .= implode(' ',$rtadvd_interface_list);
+    $rtadvdinterfaces .= implode(' ',$rtadvd_interface_list);
 
-	$rtadvd_cmd = "/usr/sbin/rtadvd {$rtadvddebug} -c /var/etc/rtadvd.conf -p /var/run/rtadvd.pid {$rtadvdinterfaces}";
+    $rtadvd_cmd = "/usr/sbin/rtadvd {$rtadvddebug} -c /var/etc/rtadvd.conf -p /var/run/rtadvd.pid {$rtadvdinterfaces}";
 
     if (count($radvdifs)) {
-		mwexec_bg($rtadvd_cmd);
+        mwexec_bg($rtadvd_cmd);
     }
     if ($verbose) {
         echo "done.\n";
@@ -957,6 +968,8 @@ function dhcpd_dhcpv6_leasesfile()
 
 function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = array())
 {
+    global $config;
+    
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
 
     foreach ($dirs as $dir) {
@@ -975,7 +988,12 @@ function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = ar
 
     if ($family == 'all' || $family == 'inet6') {
         dhcpd_dhcp6_configure($verbose, $blacklist);
-        dhcpd_radvd_configure($verbose, $blacklist);
+        if($config['system']['ipv6_use_rtadvd'] == 1)
+        {
+            dhcpd_rtadvd_configure($verbose, $blacklist);
+        } else {
+            dhcpd_radvd_configure($verbose, $blacklist);
+        }   
     }
 }
 

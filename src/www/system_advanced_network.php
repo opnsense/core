@@ -183,6 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
     $pconfig['ipv6_duid_en_value'] = generate_new_duid('4');
+    $pconfig['ipv6_radvd_debug_level'] = $config['system']['ipv6_radvd_debug_level'];
+	$pconfig['ipv6_rtadvd_debug_level'] = $config['system']['ipv6_rtadvd_debug_level'];
+	$pconfig['ipv6_use_rtadvd'] = $config['system']['ipv6_use_rtadvd'];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -242,6 +245,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             dhcp6c_duid_clear();
         }
 
+        if (!empty($pconfig['ipv6_radvd_debug_level'])) {
+            $config['system']['ipv6_radvd_debug_level'] = $pconfig['ipv6_radvd_debug_level'];
+        } else {
+            $config['system']['ipv6_radvd_debug_level'] = 0;
+        }
+		if (!empty($pconfig['ipv6_rtadvd_debug_level'])) {
+            $config['system']['ipv6_rtadvd_debug_level'] = $pconfig['ipv6_rtadvd_debug_level'];
+        } else {
+            $config['system']['ipv6_rtadvd_debug_level'] = 0;
+        }
+		if (!empty($pconfig['ipv6_use_rtadvd'])) {
+            $config['system']['ipv6_use_rtadvd'] = 1;
+        } else {
+            $config['system']['ipv6_use_rtadvd'] = 0;
+        }
         $savemsg = get_std_save_message();
 
         write_config();
@@ -396,7 +414,50 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+			  <tr>
+                <td><a id="help_for_ipv6_use_rtadvd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use RTADVD') ?></td>
+                <td>
+                  <input name="ipv6_use_rtadvd" type="checkbox" id="ipv6_use_rtadvd" value="yes" <?= !empty($pconfig['ipv6_use_rtadvd']) ? 'checked="checked"' : '' ?> />
+                  <div class="hidden" data-for="help_for_ipv6_use_rtadvd">
+                    <?= gettext('User RTADVD instead of RADVVD.') ?>
+                  </div>
+                </td>
+              </tr>			  
               <tr>
+                <td><a id="help_for_ipv6_radvd_debug_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RADVD Log level verbosity");?></td>
+                <td>
+                  <select id="ipv6_radvd_debug_level" name="ipv6_radvd_debug_level" class="selectpicker">
+<?php
+                  for ($level = 0; $level <= 5; $level++):?>
+                    <option value="<?= $level; ?>" <?=$pconfig['ipv6_radvd_debug_level'] == $level ? 'selected="selected"' : ''; ?>>
+                      <?= sprintf(gettext("Level %s"), $level) ?>
+                    </option>
+<?php
+                  endfor;?>
+                  </select>
+                  <div class="hidden" data-for="help_for_ipv6_radvd_debug_level">
+                    <?= gettext("Select the log verbosity. Level 0 means no verbosity, Level 5 is maximum ") ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+			  <tr>
+                <td><a id="help_for_ipv6_rtadvd_debug_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RTADVD Log level verbosity");?></td>
+                <td>
+                  <select id="ipv6_rtadvd_debug_level" name="ipv6_rtadvd_debug_level" class="selectpicker">
+<?php
+                  for ($level = 0; $level <= 3; $level++):?>
+                    <option value="<?= $level; ?>" <?=$pconfig['ipv6_rtadvd_debug_level'] == $level ? 'selected="selected"' : ''; ?>>
+                      <?= sprintf(gettext("Level %s"), $level) ?>
+                    </option>
+<?php
+                  endfor;?>
+                  </select>
+                  <div class="hidden" data-for="help_for_ipv6_rtadvd_debug_level">
+                    <?= gettext("Select the log verbosity. Level 0 means off, Level 2 is verbose") ?>
+                  </div>
+                </td>
+              </tr>			  
                 <td>&nbsp;</td>
                 <td><button name="submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
               </tr>
