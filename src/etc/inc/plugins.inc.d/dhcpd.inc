@@ -937,9 +937,9 @@ function dhcpd_rtadvd_configure($verbose = false, $blacklist = array())
 
     file_put_contents('/var/etc/rtadvd.conf', $rtadvdconf);
 
-    if ($config['system']['ipv6_radvd_debug_level'] > 1 ) {
+    if ($config['system']['ipv6_rtadvd_debug_level'] == 1 ) {
         $rtadvddebug = "-D";
-    } else if ($config['system']['ipv6_radvd_debug_level'] = 1 ) {
+    } else if ($config['system']['ipv6_rtadvd_debug_level'] == 2 ) {
         $rtadvddebug = "-d";
     } else {
         $rtadvddebug = " ";
