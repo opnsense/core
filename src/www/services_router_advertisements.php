@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        dhcpd_radvd_configure();
+        dhcpd_rtadvd_configure();
         $savemsg = get_std_save_message();
     }
 }
