@@ -446,7 +446,7 @@ include("head.inc");
                 <td>
                   <select id="ipv6_rtadvd_debug_level" name="ipv6_rtadvd_debug_level" class="selectpicker">
 <?php
-                  for ($level = 0; $level <= 3; $level++):?>
+                  for ($level = 0; $level <= 2; $level++):?>
                     <option value="<?= $level; ?>" <?=$pconfig['ipv6_rtadvd_debug_level'] == $level ? 'selected="selected"' : ''; ?>>
                       <?= sprintf(gettext("Level %s"), $level) ?>
                     </option>
