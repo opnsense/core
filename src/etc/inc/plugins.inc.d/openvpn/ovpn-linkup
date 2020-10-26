@@ -8,7 +8,8 @@ if [ -n "${route_vpn_gateway}" ]; then
 elif [ -n "${ifconfig_remote}" ]; then
 	/bin/echo ${ifconfig_remote} > /tmp/$1_router
 elif [ -n "${ifconfig_local}" ]; then
-	/bin/echo ${ifconfig_local} > /tmp/$1_router
+	vpn_subnet=`/bin/echo ${ifconfig_local} | /usr/bin/cut -d'.' -f 1-3`
+	/bin/echo $vpn_subnet".1" > /tmp/$1_router
 elif [ "${dev_type}" = "tun" ]; then
 	/bin/echo ${5} > /tmp/${1}_router
 fi
