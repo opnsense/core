@@ -8,7 +8,7 @@ if [ -n "${route_vpn_gateway}" ]; then
 elif [ -n "${ifconfig_remote}" ]; then
 	/bin/echo ${ifconfig_remote} > /tmp/$1_router
 elif [ -n "${ifconfig_local}" ]; then
-	/bin/echo ${ifconfig_local} > /tmp/$1_router
+	/usr/local/bin/python3 -c "import netaddr; import sys; print(netaddr.IPNetwork('%s/%s'%(sys.argv[1], sys.argv[2]))[1])" ${ifconfig_local} ${ifconfig_netmask} > /tmp/$1_router
 elif [ "${dev_type}" = "tun" ]; then
 	/bin/echo ${5} > /tmp/${1}_router
 fi
