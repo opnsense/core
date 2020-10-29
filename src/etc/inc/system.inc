@@ -584,12 +584,23 @@ function system_syslogd_extra_local($logsocket)
     return exec_safe('-l %s ', $logsocket);
 }
 
-function system_syslogd_start($verbose = false, $restart = false)
+function system_syslogd_start($verbose = false, $restart = false, $async = false)
 {
     global $config;
+
     if ($verbose) {
         echo 'Configuring system logging...';
         flush();
+    }
+
+    if ($async) {
+        configd_run('syslog restart');
+
+        if ($verbose) {
+            echo "done.\n";
+        }
+
+        return;
     }
 
     configd_run('template reload OPNsense/Syslog');
