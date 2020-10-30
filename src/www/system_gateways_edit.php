@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    if (!$found && !isset($pconfig['fargw'])) {
+                    if (!$found) {
                         $input_errors[] = sprintf(gettext('The gateway address "%s" does not lie within one of the chosen interface\'s IPv6 subnets.'), $pconfig['gateway']);
                     }
                 }
