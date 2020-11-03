@@ -87,8 +87,8 @@ class AliasNameField extends BaseField
             $validators[] = new Regex(array(
                 'message' => sprintf(gettext(
                     'The name must be less than 32 characters long and may only consist of the following characters: %s'
-                ), 'a-z, A-Z, 0-9, _'),
-                'pattern' => '/[_0-9a-zA-z]{1,31}/'));
+                ), 'a-z, A-Z, 0-9, _, -'),
+                'pattern' => '/[_0-9a-zA-z-]{1,31}/'));
             $validators[] = new CallbackValidator(
                 [
                     "callback" => function ($value) {
