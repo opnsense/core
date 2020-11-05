@@ -25,6 +25,52 @@
                 </action>
             </rule>
         </rules>
+        <policies>
+            <policy type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <prio type="IntegerField">
+                    <ValidationMessage>Priority should be a number.</ValidationMessage>
+                    <Required>Y</Required>
+                    <default>0</default>
+                </prio>
+                <rulesets type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.IDS.IDS</source>
+                            <items>files.file</items>
+                            <display>filename</display>
+                            <filters>
+                                <enabled>/1/</enabled>
+                            </filters>
+                        </rulesets>
+                    </Model>
+                    <multiple>Y</multiple>
+                    <ValidationMessage>Related ruleset not found.</ValidationMessage>
+                    <Required>N</Required>
+                </rulesets>
+                <content type=".\PolicyContentField">
+                    <multiple>Y</multiple>
+                    <Required>Y</Required>
+                    <ValidationMessage>Policy rule not found.</ValidationMessage>
+                </content>
+                <new_action type="OptionField">
+                    <Required>Y</Required>
+                    <default>alert</default>
+                    <OptionValues>
+                        <alert>Alert</alert>
+                        <drop>Drop</drop>
+                    </OptionValues>
+                </new_action>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </policy>
+        </policies>
         <userDefinedRules>
             <rule type="ArrayField">
                 <!--user defined rules -->
