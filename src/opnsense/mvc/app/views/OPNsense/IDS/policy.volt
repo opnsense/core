@@ -46,24 +46,30 @@ POSSIBILITY OF SUCH DAMAGE.
           all_options.sort();
           let prev_section = null;
           let target_select = null;
+          let select_options = {};
           for (i=0; i < all_options.length; i++) {
               let this_section = all_options[i].split('.')[0];
               let this_item = $(this).data('data')[all_options[i]];
               if (this_section != prev_section) {
-                  target_select = $("<select id='policy_content_"+
-                      this_section+
+                  target_select = $("<select id='policy_content_" +
+                      this_section +
                       "' data-live-search='true' data-size='5' multiple='multiple' class='policy_select'/>"
                   );
-                  policy_content_container.append($("<label for='policy_content_"+this_section+"'/>").text(this_section));
+                  policy_content_container.append($("<label class='policy_label' for='policy_content_"+this_section+"'/>").text(this_section));
                   policy_content_container.append(target_select);
+                  select_options[this_section] = [];
                   prev_section = this_section;
               }
               let option = $("<option/>").val(all_options[i]).text(this_item.value);
               if (this_item.selected) {
                   option.prop("selected", true);
               }
-              target_select.append(option);
+              select_options[this_section].push(option.html());
           }
+          Object.keys(select_options).forEach(function(target){
+              $("#policy_content_" + target).append(select_options[target]);
+          });
+
           $('.policy_select').selectpicker('refresh');
           $('.policy_select').change(function(){
               let selections = [];
@@ -75,9 +81,17 @@ POSSIBILITY OF SUCH DAMAGE.
               $("#policy\\.content").data('data', selections.join(','));
           });
           $('.policy_select').change();
+          return false;
       });
     });
 </script>
+
+<style>
+    .policy_label {
+        margin-bottom: 1px;
+        font-weight: bold;
+    }
+</style>
 
 <div class="tab-content content-box">
     <div class="col-md-12">
