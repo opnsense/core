@@ -140,9 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $parent_net = find_interface_network(get_real_interface($if));
 
-    if (!ip_in_subnet($pconfig['ipaddr'], $parent_net)) {
-        $ifcfgdescr = convert_friendly_interface_to_friendly_descr($if);
-        $input_errors[] = sprintf(gettext('The IP address must lie in the %s subnet.'), $ifcfgdescr);
+    if (!empty($pconfig['ipaddr'])) {
+      if (!ip_in_subnet($pconfig['ipaddr'], $parent_net)) {
+          $ifcfgdescr = convert_friendly_interface_to_friendly_descr($if);
+          $input_errors[] = sprintf(gettext('The IP address must lie in the %s subnet.'), $ifcfgdescr);
+      }
     }
 
     if (!empty($pconfig['gateway']) && !is_ipaddrv4($pconfig['gateway'])) {
