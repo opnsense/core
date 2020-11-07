@@ -315,8 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
 
-<section class="col-xs-12">
-    <div class="content-box">
+    <div class="content-box" style="overflow:scroll;">
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
@@ -382,5 +381,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             </table>
         </div>
     </div>
-</section>
 
