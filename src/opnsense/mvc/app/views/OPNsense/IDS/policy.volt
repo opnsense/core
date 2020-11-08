@@ -60,11 +60,14 @@ POSSIBILITY OF SUCH DAMAGE.
                   select_options[this_section] = [];
                   prev_section = this_section;
               }
-              let option = $("<option/>").val(all_options[i]).text(this_item.value);
+              let option = null;
               if (this_item.selected) {
-                  option.prop("selected", true);
+                  option = "<option selected='selected' value='"+all_options[i]+"'>" + this_item.value + "</option>";
+              } else {
+                  option = "<option value='"+all_options[i]+"'>" + this_item.value + "</option>";
               }
-              select_options[this_section].push(option.html());
+
+              select_options[this_section].push(option);
           }
           Object.keys(select_options).forEach(function(target){
               $("#policy_content_" + target).append(select_options[target]);
