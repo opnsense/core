@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2020 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -98,5 +98,5 @@ if __name__ == '__main__':
         if os.path.basename(filename) not in  all_installed_files:
             os.remove(filename)
 
-    # import local changes (if changed)
+    # import local changes
     RuleCache.create()

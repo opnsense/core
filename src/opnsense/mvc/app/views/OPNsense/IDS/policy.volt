@@ -28,6 +28,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script>
     $( document ).ready(function() {
+      /**
+       * update service status
+       */
+      updateServiceControlUI('ids');
       $("#grid-policy").UIBootgrid({
               search:'/api/ids/settings/searchPolicy',
               get:'/api/ids/settings/getPolicy/',
@@ -86,6 +90,8 @@ POSSIBILITY OF SUCH DAMAGE.
           $('.policy_select').change();
           return false;
       });
+
+      $("#reconfigureAct").SimpleActionButton();
     });
 </script>
 
@@ -120,6 +126,20 @@ POSSIBILITY OF SUCH DAMAGE.
           </tr>
           </tfoot>
       </table>
+    </div>
+    <div>
+      <div class="col-md-12">
+          <hr/>
+          <button class="btn btn-primary" id="reconfigureAct"
+                  data-endpoint='/api/ids/service/reconfigure'
+                  data-label="{{ lang._('Apply') }}"
+                  data-error-title="{{ lang._('Error reconfiguring IDS') }}"
+                  data-service-widget="ids"
+                  type="button"
+          ></button>
+          <br/>
+          <br/>
+      </div>
     </div>
 </div>
 
