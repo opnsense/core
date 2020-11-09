@@ -864,6 +864,7 @@
 /usr/local/opnsense/service/templates/OPNsense/IDS/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/IDS/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/IDS/reference.config
+/usr/local/opnsense/service/templates/OPNsense/IDS/rule-policies.config
 /usr/local/opnsense/service/templates/OPNsense/IDS/rule-updater.config
 /usr/local/opnsense/service/templates/OPNsense/IDS/rules.config
 /usr/local/opnsense/service/templates/OPNsense/IDS/suricata.yaml
