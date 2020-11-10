@@ -39,6 +39,11 @@ use OPNsense\Core\Config;
 abstract class Base
 {
     /**
+     * @var bool match usernames case insensitive
+     */
+    protected $caseInSensitiveUsernames = false;
+
+    /**
      * return group memberships
      * @param string $username username to find
      * @return array
@@ -111,10 +116,15 @@ abstract class Base
         $configObj = Config::getInstance()->object();
         $userObject = null;
         foreach ($configObj->system->children() as $key => $value) {
-            if ($key == 'user' && !empty($value->name) && (string)$value->name == $username) {
-                // user found, stop search
-                $userObject = $value;
-                break;
+            if ($key == 'user' && !empty($value->name)) {
+                // depending on caseInSensitiveUsernames setting match exact or case-insensitive
+                if ((string)$value->name == $username ||
+                    ($this->caseInSensitiveUsernames && strtolower((string)$value->name) == strtolower($username))
+                ) {
+                    // user found, stop search
+                    $userObject = $value;
+                    break;
+                }
             }
         }
         return $userObject;
