@@ -79,13 +79,11 @@ class FormatContainer:
     def _register(self):
         all_handlers = list()
         for filename in glob.glob("%s/*.py" % os.path.dirname(__file__)):
-            if not filename.endswith('__init__.py'):
-                module_name = ".%s" % os.path.splitext(os.path.basename(filename))[0]
-                importlib.import_module(module_name, "logformats")
+            importlib.import_module(".%s" % os.path.splitext(os.path.basename(filename))[0], __name__)
 
-        for module_name in dir(sys.modules['logformats']):
-            for attribute_name in dir(getattr(sys.modules['logformats'], module_name)):
-                cls = getattr(getattr(sys.modules['logformats'], module_name), attribute_name)
+        for module_name in dir(sys.modules[__name__]):
+            for attribute_name in dir(getattr(sys.modules[__name__], module_name)):
+                cls = getattr(getattr(sys.modules[__name__], module_name), attribute_name)
                 if isinstance(cls, type) and issubclass(cls, BaseLogFormat) and cls != BaseLogFormat:
                     all_handlers.append(cls(self._filename))
 
