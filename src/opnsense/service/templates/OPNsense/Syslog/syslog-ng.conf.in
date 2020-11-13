@@ -1,3 +1,4 @@
+@version:%%CORE_SYSLOGNG%%
 @include "scl.conf"
 
 #
