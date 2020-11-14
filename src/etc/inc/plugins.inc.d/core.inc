@@ -218,7 +218,7 @@ function core_syslog()
     $logfacilities['ppps'] = array('facility' => array('ppp'));
     $logfacilities['resolver'] = array('facility' => array('unbound'));
     $logfacilities['routing'] = array('facility' => array(
-          'radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
+          'rtadvd', 'radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
     ));
     $logfacilities['wireless'] = array('facility' => array('hostapd'));
 

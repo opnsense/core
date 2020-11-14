@@ -183,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
     $pconfig['ipv6_duid_en_value'] = generate_new_duid('4');
+	$pconfig['ipv6_rtadvd_debug_level'] = $config['system']['ipv6_rtadvd_debug_level'];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -240,6 +241,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ipv6duid']);
             /* clear the file as this means auto-generate */
             dhcp6c_duid_clear();
+        }
+
+		if (!empty($pconfig['ipv6_rtadvd_debug_level'])) {
+            $config['system']['ipv6_rtadvd_debug_level'] = $pconfig['ipv6_rtadvd_debug_level'];
+        } else {
+            $config['system']['ipv6_rtadvd_debug_level'] = 0;
         }
 
         $savemsg = get_std_save_message();
@@ -393,6 +400,23 @@ include("head.inc");
                     <?= gettext('UUID: 4 bytes "00:00:00:04" followed by 8 bytes of a universally unique identifier.') ?><br/>
                     <?= gettext('EN: 2 bytes "00:02" followed by 4 bytes of the enterprise number e.g. "00:00:00:01", ' .
                             'followed by a variable length identifier of hex values up to 122 bytes in length.') ?>
+                  </div>
+                </td>
+              </tr
+			  <tr>
+                <td><a id="help_for_ipv6_rtadvd_debug_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RTADVD Log level verbosity");?></td>
+                <td>
+                  <select id="ipv6_rtadvd_debug_level" name="ipv6_rtadvd_debug_level" class="selectpicker">
+<?php
+                  for ($level = 0; $level <= 2; $level++):?>
+                    <option value="<?= $level; ?>" <?=$pconfig['ipv6_rtadvd_debug_level'] == $level ? 'selected="selected"' : ''; ?>>
+                      <?= sprintf(gettext("Level %s"), $level) ?>
+                    </option>
+<?php
+                  endfor;?>
+                  </select>
+                  <div class="hidden" data-for="help_for_ipv6_rtadvd_debug_level">
+                    <?= gettext("Select the log verbosity. Level 0 means off, Level 2 is verbose") ?>
                   </div>
                 </td>
               </tr>
