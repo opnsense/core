@@ -63,6 +63,9 @@ class LDAPTOTP extends LDAP
     public function setProperties($config)
     {
         parent::setProperties($config);
+        if (!empty($config['caseInSensitiveUsernames'])) {
+            $this->caseInSensitiveUsernames = true;
+        }
         $this->setTOTPProperties($config);
     }
 
@@ -73,6 +76,13 @@ class LDAPTOTP extends LDAP
     public function getConfigurationOptions()
     {
         $options = $this->getTOTPConfigurationOptions();
+        $options["caseInSensitiveUsernames"] = array();
+        $options["caseInSensitiveUsernames"]["name"] = gettext("Match case insensitive");
+        $options["caseInSensitiveUsernames"]["help"] = gettext("Allow mixed case input when gathering local user settings.");
+        $options["caseInSensitiveUsernames"]["type"] = "checkbox";
+        $options["caseInSensitiveUsernames"]["validate"] = function ($value) {
+            return array();
+        };
         return $options;
     }
 }

@@ -1,8 +1,9 @@
 <menu>
     <Services>
         <IDS VisibleName="Intrusion Detection" cssClass="fa fa-shield fa-fw">
-            <Administration url="/ui/ids" />
-            <Log VisibleName="Log File" url="/ui/diagnostics/log/core/suricata" />
+            <Administration order="10" url="/ui/ids" />
+            <Policy order="20" url="/ui/ids/policy" />
+            <Log  order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/suricata" />
         </IDS>
     </Services>
 </menu>

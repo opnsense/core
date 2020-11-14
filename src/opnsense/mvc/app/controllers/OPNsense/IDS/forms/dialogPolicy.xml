@@ -1,0 +1,44 @@
+<form>
+    <field>
+        <id>policy.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable this policy.</help>
+    </field>
+    <field>
+        <id>policy.prio</id>
+        <label>Priority</label>
+        <type>text</type>
+        <help>Policies are processed on a first match basis a lower number means more important.</help>
+    </field>
+    <field>
+        <id>policy.rulesets</id>
+        <label>Rulesets</label>
+        <type>select_multiple</type>
+        <help>rulesets this policy applies to (all when none selected)</help>
+    </field>
+    <field>
+        <id>policy.action</id>
+        <label>Action</label>
+        <type>select_multiple</type>
+        <help>Rule configured action</help>
+    </field>
+    <field>
+        <id>policy.content</id>
+        <label>Rules</label>
+        <style>json-data</style>
+        <type>hidden</type>
+        <help>metadata rules per category</help>
+    </field>
+    <field>
+        <id>policy.new_action</id>
+        <label>New action</label>
+        <type>dropdown</type>
+        <help>Action to perform when filter policy applies</help>
+    </field>
+    <field>
+        <id>policy.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>
