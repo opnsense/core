@@ -881,7 +881,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['mtu'])) {
             $mtu_low = 576;
-            $mtu_high = 9214;
+            $mtu_high = 65535;
             if ($pconfig['mtu'] < $mtu_low || $pconfig['mtu'] > $mtu_high) {
                 $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
             }

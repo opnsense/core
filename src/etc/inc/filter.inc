@@ -612,7 +612,16 @@ function filter_generate_scrubing(&$FilterIflist)
                     }
                 }
                 $scrub_rule_out .= count($interfaces) > 1 ? "{ " . implode(' ', $interfaces) . " } " : $interfaces[0];
-                $scrub_rule_out .= $scrub_rule['proto'] != 'any' ? " proto " . $scrub_rule['proto'] : "";
+                switch ($scrub_rule['proto']) {
+                    case 'any':
+                        break;
+                    case 'tcp/udp':
+                        $scrub_rule_out .= " proto {tcp udp}";
+                        break;
+                    default:
+                        $scrub_rule_out .= " proto " . $scrub_rule['proto'];
+                        break;
+                }
                 $scrub_rule_out .= " from ";
                 if (is_alias($scrub_rule['src'])) {
                     $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
@@ -623,7 +632,11 @@ function filter_generate_scrubing(&$FilterIflist)
                 } else {
                     $scrub_rule_out .= "any";
                 }
-                $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
+                if (!empty($scrub_rule['srcport']) && is_alias($scrub_rule['srcport'])) {
+                    $scrub_rule_out .=  " port $" . $scrub_rule['srcport'];
+                } else {
+                    $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
+                }
                 $scrub_rule_out .= " to ";
                 if (is_alias($scrub_rule['dst'])) {
                     $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
@@ -634,7 +647,11 @@ function filter_generate_scrubing(&$FilterIflist)
                 } else {
                     $scrub_rule_out .= "any";
                 }
-                $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
+                if (!empty($scrub_rule['dstport']) && is_alias($scrub_rule['dstport'])) {
+                    $scrub_rule_out .= " port $" . $scrub_rule['dstport'];
+                } else {
+                    $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
+                }
                 $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
                 $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
                 $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";

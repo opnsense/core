@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2019 Deciso B.V.
- * Copyright (C) 2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2019-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -62,7 +62,6 @@ function get_config_prop($path, $cnf=null)
     }
 }
 
-
 $opts = getopt('cshrg', array(), $optind);
 $args = array_slice($argv, $optind);
 
@@ -108,15 +107,19 @@ if (isset($opts['h'])) {
 } elseif (isset($opts['s'])) {
     $name = !empty($args[0]) ? $args[0] : '';
     $act = !empty($args[1]) ? $args[1] : '';
+    $filter = [];
+    if (!empty($args[2])) {
+        $filter['id'] = $args[2];
+    }
     switch ($act) {
         case 'start':
-            echo service_control_start($name, array()) . PHP_EOL;
+            echo service_control_start($name, $filter) . PHP_EOL;
             break;
         case 'stop':
-            echo service_control_stop($name, array()) . PHP_EOL;
+            echo service_control_stop($name, $filter) . PHP_EOL;
             break;
         case 'restart':
-            echo service_control_restart($name, array()) . PHP_EOL;
+            echo service_control_restart($name, $filter) . PHP_EOL;
             break;
         default:
             echo "Unknown command `$act'\n";

@@ -147,7 +147,10 @@ class AliasContentField extends BaseField
     {
         $messages = array();
         foreach ($this->getItems($data) as $host) {
-            if (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
+            if (strpos($host, "!") === 0 && Util::isIpAddress(substr($host, 1))) {
+                // exclude address (https://www.freebsd.org/doc/handbook/firewalls-pf.html 30.3.2.4)
+                continue;
+            } elseif (!Util::isAlias($host) && !Util::isIpAddress($host) && !Util::isDomain($host)) {
                 $messages[] = sprintf(
                     gettext('Entry "%s" is not a valid hostname or IP address.'),
                     $host
@@ -197,6 +200,12 @@ class AliasContentField extends BaseField
                 }
             }
             if (
+                strpos($network, "!") === 0 &&
+                  (Util::isIpAddress(substr($network, 1)) || Util::isSubnet(substr($network, 1)))
+            ) {
+                // exclude address or network (https://www.freebsd.org/doc/handbook/firewalls-pf.html 30.3.2.4)
+                continue;
+            } elseif (
                 !Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
                     !($ipaddr_count == 2 && $domain_alias_count == 0)
             ) {

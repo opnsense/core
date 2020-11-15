@@ -1,6 +1,4 @@
-root.min.hints:/var/unbound/root.hints
-dnsbl.inc:/var/unbound/etc/dnsbl.inc
-whitelist.inc:/var/unbound/etc/whitelist.inc
-miscellaneous.conf:/var/unbound/etc/miscellaneous.conf
+blacklists.conf:/var/unbound/etc/blacklists.ini
 dot.conf:/var/unbound/etc/dot.conf
-lists.inc:/var/unbound/etc/lists.inc
+miscellaneous.conf:/var/unbound/etc/miscellaneous.conf
+root.min.hints:/var/unbound/root.hints

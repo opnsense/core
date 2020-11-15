@@ -239,7 +239,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
          * Check if we need to listen on a CARP interface.  A CARP setup will try
          * to leave the clients configured: RemoveRoute off / DeprecatePrefix off
          */
-        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
+        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'static' ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         }
@@ -873,6 +873,14 @@ EOPP;
                     && (empty($dhcpifconf['ddnsdomain']) || $poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])
                 ) {
                     $pdnscfg .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
+
+                    $newddnszone = array();
+                    $newddnszone['domain-name'] = $poolconf['ddnsdomain'];
+                    $newddnszone['dns-servers'] = array($poolconf['ddnsdomainprimary']);
+                    $newddnszone['ddnsdomainkeyname'] = $poolconf['ddnsdomainkeyname'];
+                    $newddnszone['ddnsdomainkey'] = $poolconf['ddnsdomainkey'];
+                    $newddnszone['ddnsdomainalgorithm'] = !empty($poolconf['ddnsdomainalgorithm']) ? $poolconf['ddnsdomainalgorithm'] : "hmac-md5";
+                    $ddns_zones[] = $newddnszone;
                 }
                 $pdnscfg .= "    ddns-update-style interim;\n";
             }

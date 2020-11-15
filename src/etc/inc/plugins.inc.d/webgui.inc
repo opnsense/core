@@ -45,7 +45,8 @@ function webgui_configure_do($verbose = false, $interface = '')
     $interfaces = array();
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
-        $interfaces[] = 'lo0';
+        /* place loopback with good IPv4 first for server.bind */
+        array_unshift($interfaces, 'lo0');
     }
 
     @mkdir('/var/lib/php/sessions', 0750, true);

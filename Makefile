@@ -31,7 +31,6 @@ all:
 CORE_ABI?=	20.7
 CORE_PHP?=	72
 CORE_PYTHON?=	37
-CORE_SYSLOGNG?=	3.27
 
 .if exists(${GIT}) && exists(${GITVERSION})
 . if ${CORE_ABI} == "20.7"
@@ -93,6 +92,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			expiretable \
 			filterlog \
 			ifinfo \
+			iftop \
 			flock \
 			flowd \
 			hostapd \
@@ -136,13 +136,12 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
 			radvd \
-			rate \
 			rrdtool \
 			samplicator \
 			squid \
 			strongswan \
 			sudo \
-			syslog-ng${CORE_SYSLOGNG:S/.//g} \
+			syslog-ng \
 			syslogd \
 			unbound \
 			wpa_supplicant \

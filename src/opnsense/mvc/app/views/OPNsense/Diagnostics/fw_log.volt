@@ -259,26 +259,34 @@
             $("#filters > span.badge").each(function(){
                 filters.push($(this).data('filter'));
             });
+            let filter_or_type = $("#filter_or_type").is(':checked');
             $("#grid-log > tbody > tr").each(function(){
                 let selected_tr = $(this);
                 let this_data = $(this).data('details');
                 if (this_data === undefined) {
                     return;
                 }
-                let is_matched = true;
+                let is_matched = !filter_or_type;
                 for (let i=0; i < filters.length; i++) {
                     let filter_tag = filters[i].tag;
                     let filter_value = filters[i].value.toLowerCase();
                     let filter_condition = filters[i].condition;
+                    let this_condition_match = true;
                     if (this_data[filter_tag] === undefined) {
-                        is_matched = false;
-                        break;
+                        this_condition_match = false;
                     } else if (filter_condition === '=' && this_data[filter_tag].toLowerCase() != filter_value) {
-                        is_matched = false;
-                        break;
+                        this_condition_match = false;
                     } else if (filter_condition === '~' && !this_data[filter_tag].toLowerCase().match(filter_value)) {
-                        is_matched = false;
+                        this_condition_match = false;
+                    }
+
+                    if (!this_condition_match && !filter_or_type) {
+                        // normal AND condition, exit when one of the criteria is not met
+                        is_matched = this_condition_match;
                         break;
+                    } else if (filter_or_type) {
+                        // or condition is deselected by default
+                        is_matched = is_matched || this_condition_match;
                     }
                 }
                 if (is_matched) {
@@ -319,6 +327,10 @@
             apply_filter();
         });
 
+        $("#filter_or_type").click(function(){
+            apply_filter();
+        });
+
         // reset log content on limit change, forces a reload
         $("#limit").change(function(){
             $('#grid-log > tbody').html("<tr></tr>");
@@ -342,6 +354,9 @@
                     let filter_value_items = $("#filter_value_items");
                     let filter_value = $("#filter_value");
                     filter_value_items.data('filters', data);
+                    filter_value_items.change(function(){
+                        filter_value.val($(this).val())
+                    });
                     $("#filter_tag").change(function(){
                         let filters = filter_value_items.data('filters');
                         let filter = $("#filter_tag").val();
@@ -363,9 +378,6 @@
                             filter_value.show();
                         }
                     }).change();
-                    filter_value_items.change(function(){
-                        filter_value.val($(this).val())
-                    });
                 }
             });
         });
@@ -449,6 +461,14 @@
                               </td>
                           </tr>
                       </tbody>
+                      <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                <input id="filter_or_type" type="checkbox">
+                                {{ lang._('Select any of given criteria (or)') }}
+                            </td>
+                        </tr>
+                      </tfoot>
                   </table>
                 </div>
                 <div class="col-lg-6 col-sm-12">

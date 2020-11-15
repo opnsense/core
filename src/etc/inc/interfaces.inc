@@ -93,8 +93,35 @@ function convert_128bit_to_ipv6($ip6bin)
 
 function match_wireless_interface($int)
 {
-    $wireless_regex = '/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/';
-    return preg_match($wireless_regex, $int);
+    $wireless_prefix = [
+        'an',
+        'ath',
+        'bwi',
+        'bwn',
+        'ipw',
+        'iwi',
+        'iwm',
+        'iwn',
+        'malo',
+        'mwl',
+        'ndis',
+        'otus',
+        'ral',
+        'rsu',
+        'rtwn',
+        'rum',
+        'run',
+        'uath',
+        'upgt',
+        'ural',
+        'urtw',
+        'wi',
+        'wlan',
+        'wpi',
+        'zyd',
+    ];
+
+    return preg_match('/^(' . implode('|', $wireless_prefix) . ')/', $int);
 }
 
 function interfaces_bring_up($interface)

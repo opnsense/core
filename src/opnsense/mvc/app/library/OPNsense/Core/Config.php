@@ -455,25 +455,29 @@ class Config extends Singleton
     }
 
     /**
-     * backup current (running) config
-     * @return float timestamp
+     * backup current config
+     * @return string target filename
      */
     public function backup()
     {
         $timestamp = microtime(true);
         $target_dir = dirname($this->config_file) . "/backup/";
-        $target_filename = "config-" . $timestamp . ".xml";
 
         if (!file_exists($target_dir)) {
             // create backup directory if it is missing
             mkdir($target_dir);
         }
-        // The new target backup filename shouldn't exists, because of the use of microtime.
-        // But if for some reason a script keeps calling this backup very often, it should not crash.
-        if (!file_exists($target_dir . $target_filename)) {
-            copy($this->config_file, $target_dir . $target_filename);
+        if (file_exists($target_dir . "config-" . $timestamp . ".xml")) {
+            // The new target backup filename shouldn't exists, because of the use of microtime.
+            // in the unlikely event that we can process events too fast for microtime(), suffix with a more
+            // precise tiestamp to ensure we can't miss a backup
+            $target_filename = "config-" . $timestamp . "_" .  hrtime()[1] . ".xml";
+        } else {
+            $target_filename = "config-" . $timestamp . ".xml";
         }
-        return $timestamp;
+        copy($this->config_file, $target_dir . $target_filename);
+
+        return $target_dir . $target_filename;
     }
 
     /**
@@ -555,7 +559,7 @@ class Config extends Singleton
         ) {
             return intval($this->simplexml->system->backupcount);
         } else {
-            return 60;
+            return 100;
         }
     }
 
@@ -601,25 +605,24 @@ class Config extends Singleton
     {
         $this->checkvalid();
 
-        if ($backup) {
-            $timestamp = $this->backup();
-        } else {
-            $timestamp = microtime(true);
-        }
-
         // update revision information ROOT.revision tag, align timestamp to backup output
-        $this->updateRevision($revision, null, $timestamp);
-
-        // serialize to text
-        $xml_text = $this->__toString();
+        $this->updateRevision($revision, null, microtime(true));
 
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
                 fseek($this->config_file_handle, 0);
                 ftruncate($this->config_file_handle, 0);
-                fwrite($this->config_file_handle, $xml_text);
+                fwrite($this->config_file_handle, (string)$this);
                 // flush, unlock, but keep the handle open
                 fflush($this->config_file_handle);
+                $backup_filename = $backup ? $this->backup() : null;
+                if ($backup_filename) {
+                    // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
+                    // Althought we include the backup filename, the event handler is responsible to determine the
+                    // last processed event itself. (it's merely added for debug purposes)
+                    $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL5));
+                    $logger->info("config-event: new_config " . $backup_filename);
+                }
                 flock($this->config_file_handle, LOCK_UN);
             } else {
                 throw new ConfigException("Unable to lock config");

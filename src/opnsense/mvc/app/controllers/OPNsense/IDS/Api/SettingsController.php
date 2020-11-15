@@ -650,4 +650,73 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->toggleBase("userDefinedRules.rule", $uuid, $enabled);
     }
+
+    /**
+     * Search policy
+     * @return array list of found user rules
+     * @throws \ReflectionException when not bound to model
+     */
+    public function searchPolicyAction()
+    {
+        return $this->searchBase("policies.policy", array("enabled", "prio", "description"), "description");
+    }
+
+    /**
+     * Update policy
+     * @param string $uuid internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function setPolicyAction($uuid)
+    {
+        return $this->setBase("policy", "policies.policy", $uuid);
+    }
+
+    /**
+     * Add new policy
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function addPolicyAction()
+    {
+        return $this->addBase("policy", "policies.policy");
+    }
+
+    /**
+     * Get properties of a policy
+     * @param null|string $uuid user rule internal id
+     * @return array user defined properties
+     * @throws \ReflectionException when not bound to model
+     */
+    public function getPolicyAction($uuid = null)
+    {
+        return $this->getBase("policy", "policies.policy", $uuid);
+    }
+
+    /**
+     * Delete policy item
+     * @param string $uuid user rule internal id
+     * @return array save status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function delPolicyAction($uuid)
+    {
+        return  $this->delBase("policies.policy", $uuid);
+    }
+
+    /**
+     * Toggle policy by uuid (enable/disable)
+     * @param $uuid user defined rule internal id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array save result
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function togglePolicyAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase("policies.policy", $uuid, $enabled);
+    }
 }

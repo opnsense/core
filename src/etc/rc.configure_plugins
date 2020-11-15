@@ -42,7 +42,7 @@ $script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
 
 /* reload subsystem that may have changed */
 if ($script == 'POST_INSTALL') {
-	system_syslogd_start(true);
+    system_syslogd_start(true, false, true);
 }
 
 /* flush user-facing caches */

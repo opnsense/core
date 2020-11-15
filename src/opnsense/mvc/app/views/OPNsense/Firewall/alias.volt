@@ -464,6 +464,7 @@
                             <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
+                                <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
                                 <option value="url">{{ lang._('URL (IPs)') }}</option>
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>

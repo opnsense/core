@@ -5,5 +5,6 @@ newsyslog.conf:/etc/newsyslog.conf.d/suricata
 rc.conf.d:/etc/rc.conf.d/suricata
 reference.config:/usr/local/etc/suricata/reference.config
 rule-updater.config:/usr/local/etc/suricata/rule-updater.config
+rule-policies.config:/usr/local/etc/suricata/rule-policies.config
 rules.config:/usr/local/etc/suricata/rules.config
 suricata.yaml:/usr/local/etc/suricata/suricata.yaml

@@ -288,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // Update interface, protocol and destination
             $filterent['interface'] = $natent['interface'];
+            $filterent['statetype'] = "keep state";
             if (!empty($natent['protocol'])) {
                 $filterent['protocol'] = $natent['protocol'];
             } elseif (isset($filterent['protocol'])) {
@@ -539,7 +540,7 @@ $( document ).ready(function() {
                       <select name="interface[]" class="selectpicker" data-width="auto" data-live-search="true" multiple="multiple">
 <?php
                         foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
-                        <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
                         <?php endforeach; ?>

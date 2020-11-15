@@ -94,7 +94,7 @@ class Alias(object):
         if address.find('/') > -1:
             # provided address could be a network
             try:
-                ipaddress.ip_network(str(address), strict=False)
+                ipaddress.ip_network(str(address.lstrip('!')), strict=False)
                 yield address
                 return
             except (ipaddress.AddressValueError, ValueError):
@@ -103,13 +103,14 @@ class Alias(object):
             # check if address is an ipv4/6 address or range
             try:
                 tmp = str(address).split('-')
-                addr1 = ipaddress.ip_address(tmp[0])
                 if len(tmp) > 1:
+                    addr1 = ipaddress.ip_address(tmp[0])
                     # address range (from-to)
                     addr2 = ipaddress.ip_address(tmp[1])
                     for addr in ipaddress.summarize_address_range(addr1, addr2):
                         yield str(addr)
                 else:
+                    ipaddress.ip_address(tmp[0].lstrip('!'))
                     yield address
                 return
             except (ipaddress.AddressValueError, ValueError):
@@ -148,9 +149,7 @@ class Alias(object):
                 # only handle content if response is correct
                 req.raw.decode_content = True
                 lines = req.raw.read().decode().splitlines()
-                if len(lines) > 100:
-                    # when larger alias lists are downloaded, make sure we log before handling.
-                    syslog.syslog(syslog.LOG_ERR, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
+                syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
                 for line in lines:
                     raw_address = re.split(r'[\s,;|#]+', line)[0]
                     if raw_address and not raw_address.startswith('//'):

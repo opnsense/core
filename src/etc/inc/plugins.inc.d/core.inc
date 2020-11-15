@@ -281,10 +281,10 @@ function core_user_changed_groups($verbose = false, $username)
                     $current_groups = explode(" ", $out[0]);
                 }
                 foreach ($config['system']['group'] as $group) {
-                    if (
-                        in_array($group['name'], $current_groups) ||
-                          (!empty($group['member']) && in_array($user['uid'], $group['member']))
-                    ) {
+                    $in_group = !empty($group['member']) && in_array($user['uid'], $group['member']);
+                    $to_remove = in_array($group['name'], $current_groups) && !$in_group;
+                    $to_add =  !in_array($group['name'], $current_groups) && $in_group;
+                    if ($to_remove || $to_add) {
                         local_group_set($group);
                     }
                 }

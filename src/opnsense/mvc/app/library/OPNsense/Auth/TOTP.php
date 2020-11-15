@@ -253,7 +253,7 @@ trait TOTP
         };
         $fields["passwordFirst"] = array();
         $fields["passwordFirst"]["name"] = gettext("Reverse token order");
-        $fields["passwordFirst"]["help"] = gettext("Require the password in front of the token instead of behind it.");
+        $fields["passwordFirst"]["help"] = gettext("Checking this box requires the token after the password. Default requires the token before the password.");
         $fields["passwordFirst"]["type"] = "checkbox";
         $fields["passwordFirst"]["validate"] = function ($value) {
             return array();

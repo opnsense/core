@@ -32,12 +32,13 @@
 import os.path
 import sys
 import ujson
-import netaddr.eui.ieee
+import importlib.util
 
 if __name__ == '__main__':
     result=dict()
-    if os.path.isfile(netaddr.eui.ieee.OUI_REGISTRY_PATH):
-        for line in open(netaddr.eui.ieee.OUI_REGISTRY_PATH, 'rb'):
+    oui_registry_file = "%s/eui/oui.txt" % os.path.dirname(importlib.util.find_spec('netaddr').origin)
+    if os.path.isfile(oui_registry_file):
+        for line in open(oui_registry_file, 'rb'):
             line = line.decode()
             if line.find('(base 16)') > -1:
                 parts=line.split('(base 16)')

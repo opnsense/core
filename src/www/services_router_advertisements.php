@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ *  Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
  *  Copyright (C) 2014-2016 Deciso B.V.
  *  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  *  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
@@ -136,8 +136,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['AdvRouteLifetime']) && !val_int_in_range($pconfig['AdvRouteLifetime'], 1, 4294967295)) {
             $input_errors[] = sprintf(gettext('AdvRouteLifetime must be between %s and %s seconds.'),  1, 4294967295);
         }
-        if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], 1280, 8192)) {
-            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  1280, 8192);
+        $mtu_low = 1280;
+        $mtu_high = 65535;
+        if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], $mtu_low, $mtu_high)) {
+            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  $mtu_low, $mtu_high);
         }
     }
 
@@ -310,15 +312,15 @@ include("head.inc");
                         if ((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
                           $carplistif[$ifname] = $vip;
                       }
-                    }
-                    if (count($carplistif) > 0):?>
+                    } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) ?></option>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) . " (" . gettext('dynamic') . ")" ?></option>
+                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= strtoupper($if)  . " (" . gettext('static') . ")" ?></option>
 <?php foreach ($carplistif as $ifname => $vip): ?>
-                        <option value="<?= $ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo 'selected="selected"' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
+                        <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
@@ -326,8 +328,6 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-<?php
-                  endif ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
                     <td>

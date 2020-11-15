@@ -248,7 +248,6 @@
     <bogons>
       <interval>monthly</interval>
     </bogons>
-    <backupcount>60</backupcount>
     <crypto_hardware>aesni</crypto_hardware>
     <pf_share_forward>1</pf_share_forward>
     <lb_use_sticky>1</lb_use_sticky>
