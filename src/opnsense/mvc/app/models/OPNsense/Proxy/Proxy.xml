@@ -67,6 +67,7 @@
                     <on>Append client's IP (on)</on>
                     <off>Set forward header to unknown (off)</off>
                     <transparent>Do not alter forward header (transparent)</transparent>
+                    <delete>Remove forward header (delete)</delete>
                     <truncate>Replace all with client's IP (truncate)</truncate>
                 </OptionValues>
             </forwardedForHandling>
