@@ -525,9 +525,9 @@ function ipsec_parse_phase2($ikeid)
             }
         } else {
             // merge tunnels
-            $result['reqids'][] = (int)$ph1ent['ikeid'];
+            $result['reqids'][] = (int)$ph1ent['ikeid'] * 1000;
             for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
-                $result['uniqid_reqid'][$uniqids[$idx]] = (int)$ph1ent['ikeid'];
+                $result['uniqid_reqid'][$uniqids[$idx]] = (int)$ph1ent['ikeid'] * 1000;
             }
             $result['leftsubnets'] = array_unique($result['leftsubnets']);
             $result['rightsubnets'] = array_unique($result['rightsubnets']);
@@ -928,8 +928,8 @@ function ipsec_configure_spd()
                     foreach (explode(',', $ph2ent['spd']) as $local_net) {
                         $proto = $ph2ent['mode'] == "tunnel" ? "4" : "6";
                         $remote_net = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
-                        $req_id = (int)$ph1ent['ikeid'] * 1000;
                         if (!empty($reqid_mapping[$ph2ent['uniqid']])) {
+                            $req_id = $reqid_mapping[$ph2ent['uniqid']];
                             $spd_command = "spdadd -%s %s %s any -P out ipsec %s/tunnel/%s-%s/unique:{$req_id};";
                             $spd_entries[] = sprintf(
                                 $spd_command,
@@ -1681,11 +1681,11 @@ EOD;
                     for ($idx = 0; $idx < count($parsed_phase2['leftsubnets']); ++$idx) {
                         if (count($parsed_phase2['leftsubnets']) == 1) {
                             $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
+                            $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][$idx]);
                         } else {
                             // suffix connection with sequence number
                             $tmpconf = str_replace('<<connectionId>>', sprintf('%s-%03d', $ph1ent['ikeid'], $idx), $connEntry);
-                            $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
+                            $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][$idx]);
                         }
                         $tmpconf .= "\trightsubnet = " . $parsed_phase2['rightsubnets'][$idx] . "\n";
                         $tmpconf .= "\tleftsubnet = " . $parsed_phase2['leftsubnets'][$idx] . "\n";
@@ -1709,7 +1709,7 @@ EOD;
                             // name from the first configured tunnel ($idx == 0):
                             $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
                             $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
-                            $tmpconf[] = sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000 + $idx);
+                            $tmpconf[] = sprintf("\treqid = %d\n", $parsed_phase2['reqids'][$idx]);
 
                             if (!empty($parsed_phase2['rightsubnets'][$idx])) {
                                 $tmpconf[] = "\trightsubnet = {$parsed_phase2['rightsubnets'][$idx]}";
@@ -1729,7 +1729,7 @@ EOD;
                         }
                     } else {
                         $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                        $tmpconf .= sprintf("\treqid = %d\n", (int)$ph1ent['ikeid'] * 1000);
+                        $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][0]);
                         if (!empty($parsed_phase2['rightsubnets'])) {
                             $tmpconf .= "\trightsubnet = " . join(',', $parsed_phase2['rightsubnets']) . "\n";
                         }
