@@ -389,7 +389,7 @@
                 <mimeType type="CSVListField">
                     <Required>N</Required>
                 </mimeType>
-                <googleapps type="TextField">
+                <googleapps type="HostnameField">
                     <Required>N</Required>
                     <mask>/^([a-zA-Z0-9]){0,}\.([a-zA-Z0-9].){0,}/</mask>
                     <ValidationMessage>Please enter a valid domain name here</ValidationMessage>
