@@ -440,6 +440,21 @@
                 <advanced>true</advanced>
             </field>
             <field>
+                <id>proxy.forward.acl.googleapps</id>
+                <label>Google GSuite restricted</label>
+                <type>text</type>
+                <advanced>true</advanced>
+                <help><![CDATA[Insert here the domain that will be allowed to use Google GSuite.
+                All accounts that are not in this domain will be blocked to use it.]]></help>
+            </field>
+            <field>
+                <id>proxy.forward.acl.youtube</id>
+                <label>YouTube Filter</label>
+                <type>dropdown</type>
+                <advanced>true</advanced>
+                <help><![CDATA[Select the Youtube filter level.]]></help>
+            </field>
+            <field>
                 <id>proxy.forward.acl.safePorts</id>
                 <label>Allowed destination TCP port</label>
                 <type>select_multiple</type>
