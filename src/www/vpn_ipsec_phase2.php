@@ -271,27 +271,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } elseif ($pconfig['mode'] == 'route-based') {
         // validate if both tunnel networks are using the correct address family
-        $protocol = 'inet';
-        foreach ($config['ipsec']['phase1'] as $phase1ent) {
-            if ($phase1ent['ikeid'] == $pconfig['ikeid']) {
-                $protocol = $phase1ent['protocol'];
-                break;
-            }
-        }
-        if ($protocol == 'inet') {
-            if (!is_ipaddrv4($pconfig['tunnel_local'])) {
+        if (!is_ipaddr($pconfig['tunnel_local']) || !is_ipaddr($pconfig['tunnel_remote'])) {
+            if (!is_ipaddr($pconfig['tunnel_local'])) {
                 $input_errors[] = gettext('A valid local network IP address must be specified.');
             }
-            if (!is_ipaddrv4($pconfig['tunnel_remote'])) {
+            if (!is_ipaddr($pconfig['tunnel_remote'])) {
                 $input_errors[] = gettext("A valid remote network IP address must be specified.");
             }
-        } else {
-            if (!is_ipaddrv6($pconfig['tunnel_local'])) {
-                $input_errors[] = gettext('A valid local network IP address must be specified.');
-            }
-            if (!is_ipaddrv6($pconfig['tunnel_remote'])) {
-                $input_errors[] = gettext("A valid remote network IP address must be specified.");
-            }
+        } elseif(
+            !(is_ipaddrv4($pconfig['tunnel_local']) && is_ipaddrv4($pconfig['tunnel_remote'])) &&
+            !(is_ipaddrv6($pconfig['tunnel_local']) && is_ipaddrv6($pconfig['tunnel_remote']))
+        ) {
+            $input_errors[] = gettext('A valid local network IP address must be specified.');
+            $input_errors[] = gettext("A valid remote network IP address must be specified.");
         }
     }
     /* Validate enabled phase2's are not duplicates */
