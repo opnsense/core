@@ -1,11 +1,11 @@
 <?php
 
 /*
- *  Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
- *  Copyright (C) 2014-2016 Deciso B.V.
- *  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
- *  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
- *  All rights reserved.
+ * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
