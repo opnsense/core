@@ -442,6 +442,10 @@ function openvpn_add_dhcpopts(&$settings, &$conf)
         $conf .= "push \"register-dns\"\n";
     }
 
+    if (!empty($settings['push_block_outside_dns'])) {
+        $conf .= "push \"block-outside-dns\"\n";
+    }
+
     if (!empty($settings['ntp_server1'])) {
         $conf .= "push \"dhcp-option NTP {$settings['ntp_server1']}\"\n";
     }

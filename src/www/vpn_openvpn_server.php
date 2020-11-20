@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,local_group
+            ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain,local_group
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
 
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
+            ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
             ,cso_login_matching";
@@ -362,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
-                ,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
+                ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
                 ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
 
@@ -1417,6 +1417,17 @@ endif; ?>
                         <div class="hidden" data-for="help_for_push_register_dns">
                           <span>
                             <?=gettext("Run ''net stop dnscache'', ''net start dnscache'', ''ipconfig /flushdns'' and ''ipconfig /registerdns'' on connection initiation. This is known to kick Windows into recognizing pushed DNS servers."); ?><br />
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr id="chkboxBlockOutsideDNS">
+                      <td style="width:22%"><a id="help_for_push_block_outside_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prevent DNS leaks"); ?></td>
+                      <td>
+                        <input name="push_block_outside_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_block_outside_dns']) ? "checked=\"checked\"" : "" ;?> />
+                        <div class="hidden" data-for="help_for_push_block_outside_dns">
+                          <span>
+                            <?=gettext("Block DNS servers on other network adapters to prevent DNS leaks. Compatible with Windows clients only."); ?><br />
                           </span>
                         </div>
                       </td>
