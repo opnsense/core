@@ -493,6 +493,8 @@
                         <option value="1000">1000</option>
                         <option value="2500">2500</option>
                         <option value="5000">5000</option>
+                        <option value="10000">10000</option>
+                        <option value="20000">20000</option>
                     </select>
                   </div>
                 </div>
