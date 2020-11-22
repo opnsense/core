@@ -394,6 +394,7 @@ function ipsec_parse_phase2($ikeid)
     if ($ph1ent) {
         $uniqids = [];
         $keyexchange = !empty($ph1ent['iketype']) ? $ph1ent['iketype'] : "ikev1";
+        $idx = 0;
         foreach ($a_phase2 as $ph2ent) {
             if ($ph1ent['ikeid'] != $ph2ent['ikeid'] || isset($ph2ent['disabled'])) {
                 continue;
@@ -516,18 +517,19 @@ function ipsec_parse_phase2($ikeid)
                     $result['ipseclifetime'] = intval($ph2ent['lifetime']);
                 }
             }
+            $result['reqids'][] = !empty($ph2ent['reqid']) ? $ph2ent['reqid'] : null;
+            $idx++;
         }
         if ((!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
             // isolated tunnels
             for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
-                $result['reqids'][] = (int)$ph1ent['ikeid'] * 1000 + $idx;
-                $result['uniqid_reqid'][$uniqids[$idx]] = (int)$ph1ent['ikeid'] * 1000 + $idx;
+                $result['uniqid_reqid'][$uniqids[$idx]] = $result['reqids'][$idx];
             }
         } else {
             // merge tunnels
-            $result['reqids'][] = (int)$ph1ent['ikeid'] * 1000;
+            $result['reqids'] = [min($result['reqids'])];
             for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
-                $result['uniqid_reqid'][$uniqids[$idx]] = (int)$ph1ent['ikeid'] * 1000;
+                $result['uniqid_reqid'][$uniqids[$idx]] = $result['reqids'][0];
             }
             $result['leftsubnets'] = array_unique($result['leftsubnets']);
             $result['rightsubnets'] = array_unique($result['rightsubnets']);
@@ -1801,21 +1803,28 @@ function ipsec_get_configured_vtis()
     foreach ($a_phase1 as $ph1ent) {
         if (empty($ph1ent['disabled'])) {
             $phase2items = array();
+            $phase2reqids = array();
             foreach ($a_phase2 as $ph2ent) {
                 if (
                     $ph2ent['mode'] == 'route-based' &&
                         empty($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid']
                 ) {
                     $phase2items[] = $ph2ent;
+                    if (!empty($ph2ent['reqid'])) {
+                        $phase2reqids[] = $ph2ent['reqid'];
+                    }
                 }
             }
             foreach ($phase2items as $idx => $phase2) {
-                if ((!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
-                    // isolated tunnels
-                    $reqid = (int)$ph1ent['ikeid'] * 1000 + $idx;
+                if (empty($phase2['reqid'])) {
+                    continue;
+                } elseif ((!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
+                    // isolated tunnels, every tunnel it's own reqid
+                    $reqid = $phase2['reqid'];
                     $descr = empty($phase2['descr']) ? $ph1ent['descr'] : $phase2['descr'];
                 } else {
-                    $reqid = (int)$ph1ent['ikeid'] * 1000;
+                    // use smallest reqid within tunnel
+                    $reqid = min($phase2reqids);
                     $descr = $ph1ent['descr'];
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
