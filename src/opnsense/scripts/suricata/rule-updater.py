@@ -63,11 +63,6 @@ if __name__ == '__main__':
                     rule_properties[item[0]] = item[1]
             elif cnf.has_option(section, 'enabled') and cnf.getint(section, 'enabled') == 1:
                 enabled_rulefiles[section.strip()] = {}
-                # input filter
-                if cnf.has_option(section, 'filter'):
-                    enabled_rulefiles[section.strip()]['filter'] = cnf.get(section, 'filter').strip()
-                else:
-                    enabled_rulefiles[section.strip()]['filter'] = ""
 
     # download / remove rules
     md = metadata.Metadata()
@@ -82,24 +77,23 @@ if __name__ == '__main__':
                     # Required files are always sorted last in list_rules(), add required when there's at least one
                     # file selected from the metadata package or not on disk yet.
                     if metadata_sources[rule['metadata_source']] > 0 or not os.path.isfile(full_path):
-                        enabled_rulefiles[rule['filename']] = {'filter': ''}
+                        enabled_rulefiles[rule['filename']] = {}
                 if rule['filename'] not in enabled_rulefiles or rule['deprecated']:
                     if not rule['required']:
                         if os.path.isfile(full_path):
                             os.remove(full_path)
                 else:
-                    input_filter = enabled_rulefiles[rule['filename']]['filter']
                     if ('username' in rule['source'] and 'password' in rule['source']):
                         auth = (rule['source']['username'], rule['source']['password'])
                     else:
                         auth = None
                     # when metadata supports versioning, check if either version or settings changed before download
-                    remote_hash = dl.fetch_version_hash(check_url=rule['version_url'], input_filter=input_filter,
+                    remote_hash = dl.fetch_version_hash(check_url=rule['version_url'],
                                                         auth=auth, headers=rule['http_headers'])
                     local_hash = dl.installed_file_hash(rule['filename'])
                     if remote_hash is None or remote_hash != local_hash:
                         dl.download(url=rule['url'], url_filename=rule['url_filename'],
-                                    filename=rule['filename'], input_filter=input_filter, auth=auth,
+                                    filename=rule['filename'], auth=auth,
                                     headers=rule['http_headers'], version=remote_hash)
                         # count number of downloaded files/rules from this metadata package
                         metadata_sources[rule['metadata_source']] += 1
