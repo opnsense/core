@@ -936,8 +936,6 @@ $(document).ready(function() {
                   </div>
                 </td>
               </tr>
-
-
               <tr>
                 <td><a id="help_for_user_allow_gen_token" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('User OTP seed') ?></td>
                 <td>
