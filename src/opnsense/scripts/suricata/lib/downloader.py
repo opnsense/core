@@ -45,34 +45,6 @@ class Downloader(object):
         self._target_dir = target_dir
         self._download_cache = dict()
 
-    def filter(self, in_data, filter_type):
-        """ apply input filter to downloaded data
-            :param in_data: raw input data (ruleset)
-            :param filter_type: filter type to use on input data
-            :return: ruleset data
-        """
-        if filter_type == "drop":
-            return self.filter_drop(in_data)
-        else:
-            return in_data
-
-    def filter_drop(self, in_data):
-        """ change all alert rules to block
-            :param in_data: raw input data (ruleset)
-            :return: new ruleset
-        """
-        output = list()
-        for line in in_data.split('\n'):
-            if len(line) > 10:
-                flowbits_noalert = line.replace(' ', '').find('flowbits:noalert;') > -1
-                if flowbits_noalert:
-                    pass
-                elif re.match("^\s*alert", line):
-                    line = "drop %s" % line[line.find('alert')+5:]
-                elif re.match("^#\s*alert", line):
-                    line = '#drop %s' % line[line.find('alert')+5:]
-            output.append(line)
-        return '\n'.join(output)
 
     @staticmethod
     def _unpack(src, source_filename, filename=None):
@@ -165,10 +137,9 @@ class Downloader(object):
         else:
             return None
 
-    def fetch_version_hash(self, check_url, input_filter, auth=None, headers=None):
+    def fetch_version_hash(self, check_url, auth=None, headers=None):
         """ Calculate a hash value using the download settings and a predefined version url (check_url).
             :param check_url: download url, version identifier
-            :param input_filter: filter to use on received data before save
             :param auth: authentication
             :param headers: headers to send
             :return: None or hash
@@ -179,8 +150,7 @@ class Downloader(object):
                 version_fetch = self.fetch(url=check_url, auth=auth, headers=headers)
                 if version_fetch:
                     version_response = version_fetch['handle'].read().decode()
-                    hash_value = [json.dumps(input_filter), json.dumps(auth),
-                                  json.dumps(headers), version_response]
+                    hash_value = [json.dumps(auth), json.dumps(headers), version_response]
                     if not version_fetch['cached']:
                         syslog.syslog(syslog.LOG_NOTICE, 'version response for %s : %s' % (check_url, version_response))
                     return hashlib.md5(('\n'.join(hash_value)).encode()).hexdigest()
@@ -199,12 +169,11 @@ class Downloader(object):
                     return line.split(':')[1].strip()
         return None
 
-    def download(self, url, url_filename, filename, input_filter, auth=None, headers=None, version=None):
+    def download(self, url, url_filename, filename, auth=None, headers=None, version=None):
         """ download ruleset file
             :param url: download url
             :param url_filename: if provided the filename within the (packet) resource
             :param filename: target filename
-            :param input_filter: filter to use on received data before save
             :param auth: authentication
             :param headers: headers to send
             :param version: version hash
@@ -218,10 +187,10 @@ class Downloader(object):
                     save_data = "#@opnsense_download_hash:%s\n" % version
                 else:
                     save_data = ""
-                save_data += self._unpack(src=fetch_result['handle'],
-                                          source_filename=fetch_result['filename'],
-                                          filename=url_filename)
-                save_data = self.filter(save_data, input_filter)
+                save_data += self._unpack(
+                    src=fetch_result['handle'], source_filename=fetch_result['filename'],
+                    filename=url_filename
+                )
                 open(target_filename, 'w', buffering=10240).write(save_data)
             except IOError:
                 syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)

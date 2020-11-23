@@ -275,8 +275,6 @@ class SettingsController extends ApiMutableModelControllerBase
                 // retrieve status from model
                 $fileNode = $this->getModel()->getFileNode($fileinfo['filename']);
                 $item['enabled'] = (string)$fileNode->enabled;
-                $item['filter'] = $fileNode->filter->getNodeData(); // filter (option list)
-                $item['filter_str'] = (string)$fileNode->filter; // filter current value
                 $result[] = $item;
             }
         }
@@ -455,12 +453,6 @@ class SettingsController extends ApiMutableModelControllerBase
                     $node = $this->getModel()->getFileNode($filename);
                     if ($enabled == "0" || $enabled == "1") {
                         $node->enabled = (string)$enabled;
-                    } elseif ($enabled == "drop") {
-                        $node->enabled = "1";
-                        $node->filter = "drop";
-                    } elseif ($enabled == "clear") {
-                        $node->enabled = "1";
-                        $node->filter = "";
                     } elseif ((string)$node->enabled == "1") {
                         $node->enabled = "0";
                     } else {

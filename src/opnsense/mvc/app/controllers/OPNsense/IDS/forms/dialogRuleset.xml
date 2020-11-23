@@ -15,10 +15,4 @@
         <label>Source</label>
         <type>info</type>
     </field>
-    <field>
-        <id>filter</id>
-        <label>Input Filter</label>
-        <type>dropdown</type>
-        <help>Filter to use when downloading this ruleset, applies this action to all incoming lines.</help>
-    </field>
 </form>

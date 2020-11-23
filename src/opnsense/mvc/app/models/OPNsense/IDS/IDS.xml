@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <description>
         OPNsense IDS
     </description>
@@ -121,12 +121,6 @@
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                 </filename>
-                <filter type="OptionField">
-                    <Required>N</Required>
-                    <OptionValues>
-                        <drop>Change all alerts to drop actions</drop>
-                    </OptionValues>
-                </filter>
                 <enabled type="BooleanField">
                     <default>0</default>
                     <Required>Y</Required>
