@@ -67,7 +67,7 @@ class RuleCache(object):
             rule_filename = os.path.basename(filename)
             for rule in self.list_rules(filename):
                 if rule['metadata']:
-                    rule['rulesets'] = rule_filename
+                    rule['metadata']['rulesets'] = rule_filename
                     rule_orig_action = rule['metadata']['action']
                     if 'enabled' not in rule['metadata'] or not rule['metadata']['enabled']:
                         rule['metadata']['action'] = 'disable'
