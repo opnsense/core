@@ -939,7 +939,6 @@ $(document).ready(function() {
               <tr>
                 <td><a id="help_for_user_allow_gen_token" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('User OTP seed') ?></td>
                 <td>
-
                   <select name="user_allow_gen_token[]" multiple=multiple class="selectpicker">
 <?php foreach ($a_group as $group): ?>
                       <option value="<?= html_safe($group['name']) ?>" <?= in_array($group['name'], $pconfig['user_allow_gen_token']) ? 'selected="selected"' : '' ?>>
