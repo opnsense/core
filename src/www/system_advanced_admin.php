@@ -240,12 +240,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['noauto'] = 1;
 
         $config['system']['ssh']['interfaces'] = !empty($pconfig['sshinterfaces']) ? implode(',', $pconfig['sshinterfaces']) : null;
-
         $config['system']['ssh']['kex'] = !empty($pconfig['ssh-kex']) ? implode(',', $pconfig['ssh-kex']) : null;
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
         $config['system']['ssh']['keys'] = !empty($pconfig['ssh-keys']) ? implode(',', $pconfig['ssh-keys']) : null;
-
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -270,7 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['user_allow_gen_token'])) {
             unset($config['system']['user_allow_gen_token']);
         }
-
 
         if (!empty($pconfig['sshpasswordauth'])) {
             $config['system']['ssh']['passwordauth'] = true;
