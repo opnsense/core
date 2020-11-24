@@ -498,6 +498,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.xml
