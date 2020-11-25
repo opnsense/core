@@ -26,14 +26,38 @@
 
 <script>
     $( document ).ready(function() {
-      $("#grid-log").UIBootgrid({
+      let grid_log = $("#grid-log").UIBootgrid({
           options:{
               sorting:false,
               rowSelect: false,
               selection: false,
               rowCount:[20,50,100,200,500,1000,-1],
+              formatters:{
+                  page: function (column, row) {
+                      if ($("input.search-field").val() !== "") {
+                          return "<button type=\"button\" class=\"btn btn-xs btn-default action-page\" data-row-id=\"" +
+                                row.rnum +
+                                "\"><span class=\"fa fa-arrow-right fa-fw\"></span></button>";
+                      } else {
+                          return "";
+                      }
+                  },
+              },
           },
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
+      });
+
+      grid_log.on("loaded.rs.jquery.bootgrid", function(){
+          $(".action-page").click(function(event){
+              event.preventDefault();
+              $("#grid-log").bootgrid("search",  "");
+              let new_page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
+              $("input.search-field").val("");
+              // XXX: a bit ugly, but clearing the filter triggers a load event.
+              setTimeout(function(){
+                  $("ul.pagination > li:last > a").data('page', new_page).click();
+              }, 100);
+          });
       });
 
       $("#flushlog").on('click', function(event){
@@ -76,10 +100,10 @@
                 <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive" data-store-selection="true">
                     <thead>
                     <tr>
-                        <th data-column-id="pos" data-type="numeric" data-identifier="true"  data-visible="false">#</th>
                         <th data-column-id="timestamp" data-width="11em" data-type="string">{{ lang._('Date') }}</th>
                         <th data-column-id="process_name" data-width="2em" data-type="string">{{ lang._('Process') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
+                        <th data-column-id="rnum" data-type="numeric" data-formatter="page"  data-width="2em"></th>
                     </tr>
                     </thead>
                     <tbody>
