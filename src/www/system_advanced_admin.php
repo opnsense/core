@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
     $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
     $pconfig['sudo_allow_group'] = isset($config['system']['sudo_allow_group']) ? $config['system']['sudo_allow_group'] : null;
-    $pconfig['user_allow_gen_token'] = isset($config['system']['user_allow_gen_token']) ? explode(",", $config['system']['user_allow_gen_token']) : null;
+    $pconfig['user_allow_gen_token'] = isset($config['system']['user_allow_gen_token']) ? explode(",", $config['system']['user_allow_gen_token']) : [];
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
@@ -938,7 +938,7 @@ $(document).ready(function() {
                 <td>
                   <select name="user_allow_gen_token[]" multiple=multiple class="selectpicker">
 <?php foreach ($a_group as $group): ?>
-                      <option value="<?= html_safe($group['name']) ?>" <?= in_array($group['name'], $pconfig['user_allow_gen_token']) ? 'selected="selected"' : '' ?>>
+                      <option value="<?= html_safe($group['name']) ?>" <?= in_array($group['name'], $pconfig['user_allow_gen_token'] ?? []) ? 'selected="selected"' : '' ?>>
                         <?= html_safe($group['name']) ?>
                       </option>
 <?php endforeach ?>
