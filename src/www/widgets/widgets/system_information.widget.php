@@ -45,6 +45,10 @@ require_once("system.inc");
    */
   function system_information_widget_cpu_update(sender, data)
   {
+      // update cpu usage progress-bar
+      var cpu_perc = parseInt(data['cpu']['used']);
+      $("#system_information_widget_cpu .progress-bar").css("width",  cpu_perc + "%").attr("aria-valuenow", cpu_perc + "%");
+      $("#system_information_widget_cpu .cpu_text").html(cpu_perc + " % ");
       // push new measurement, keep a maximum of 100 measures in
       system_information_widget_cpu_data.push(parseInt(data['cpu']['used']));
       if (system_information_widget_cpu_data.length > 100) {
@@ -207,6 +211,15 @@ require_once("system.inc");
     <tr>
       <td><?=gettext("Last config change");?></td>
       <td id="system_information_widget_last_config_change"></td>
+    </tr>
+    <tr>
+      <td><?=gettext("CPU usage");?></span></td>
+      <td id="system_information_widget_cpu">
+        <div class="progress" style="text-align:center;">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+          <span class="cpu_text" style="position:absolute;right:0;left:0;"></span>
+        </div>
+      </td>
     </tr>
     <tr>
       <td><?=gettext("State table size");?></td>
