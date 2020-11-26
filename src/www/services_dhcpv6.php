@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domain', 'domainsearchlist', 'ddnsdomain',
         'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'bootfile_url', 'netmask',
-        'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap');
+        'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap', 'minsecs');
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if][$fieldname];
@@ -155,6 +155,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['maxleasetime']) && (!is_numeric($pconfig['maxleasetime']) || ($pconfig['maxleasetime'] < 60) || ($pconfig['maxleasetime'] <= $_POST['defaultleasetime']))) {
             $input_errors[] = gettext("The maximum lease time must be at least 60 seconds and higher than the default lease time.");
         }
+        if (!empty($pconfig['minsecs']) && (!is_numeric($pconfig['minsecs']) || ($pconfig['minsecs'] < 0) || ($pconfig['minsecs'] > 255))) {
+            $input_errors[] = gettext("The response delay must be at least 0 and no more than 255 seconds.");
+        }
         if (!empty($pconfig['ddnsdomain']) && !is_domain($pconfig['ddnsdomain'])) {
             $input_errors[] = gettext("A valid domain name must be specified for the dynamic DNS registration.");
         }
@@ -241,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // simple 1-on-1 copy
             $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domainsearchlist',
               'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'bootfile_url',
-              'dhcpv6leaseinlocaltime');
+              'dhcpv6leaseinlocaltime', 'minsecs');
             foreach ($config_copy_fieldsnames as $fieldname) {
                 if (!empty($pconfig[$fieldname])) {
                     $dhcpdconf[$fieldname] = $pconfig[$fieldname];
@@ -584,6 +587,16 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                         <div class="hidden" data-for="help_for_maxleasetime">
                           <?=gettext("This is the maximum lease time for clients that ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 86400 seconds.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_minsecs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Response delay");?> (<?=gettext("seconds");?>)</td>
+                      <td>
+                       <input name="minsecs" type="text" value="<?=$pconfig['minsecs'];?>" />
+                        <div class="hidden" data-for="help_for_minsecs">
+                          <?=gettext("This is the minimum number of seconds since a client began trying to acquire a new lease before the DHCP server will respond to its request."); ?><br />
+                          <?=gettext("The default is 0 seconds (no delay).");?>
                         </div>
                       </td>
                     </tr>
