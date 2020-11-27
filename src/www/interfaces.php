@@ -1877,8 +1877,8 @@ include("head.inc");
                             <input name="mss" type="text" id="mss" value="<?=$pconfig['mss'];?>" />
                             <div class="hidden" data-for="help_for_mss">
                               <?=gettext("If you enter a value in this field, then MSS clamping for " .
-                              "TCP connections to the value entered above minus 40 (TCP/IP " .
-                              "header size) will be in effect."); ?>
+                              "TCP connections to the value entered above minus 40 (IPv4) or 60 (IPv6) " .
+                              "will be in effect (TCP/IP header size)."); ?>
                             </div>
                           </td>
                         </tr>
