@@ -674,17 +674,24 @@ function filter_generate_scrubing(&$FilterIflist)
                 continue;
             }
 
-            $mssclamp = '';
+            $mssclampv4 = '';
+            $mssclampv6 = '';
             if (
                 !empty($scrubcfg['mss']) && is_numeric($scrubcfg['mss']) &&
                 !in_array($scrubcfg['if'], array('pppoe', 'pptp', 'l2tp'))
             ) {
-                $mssclamp = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
+                $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
+                $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
             }
 
             $scrubnodf = !empty($config['system']['scrubnodf']) ? 'no-df' : '';
             $scrubrnid = !empty($config['system']['scrubrnid']) ? 'random-id' : '';
-            $scrubrules .= "scrub on {$scrubcfg['if']} all {$scrubnodf} {$scrubrnid} {$mssclamp}\n";
+            if (!empty($mssclampv4)) {
+                $scrubrules .= "scrub on {$scrubcfg['if']} inet all {$scrubnodf} {$scrubrnid} {$mssclampv4}\n";
+                $scrubrules .= "scrub on {$scrubcfg['if']} inet6 all {$scrubnodf} {$scrubrnid} {$mssclampv6}\n";
+            } else {
+                $scrubrules .= "scrub on {$scrubcfg['if']} all {$scrubnodf} {$scrubrnid}\n";
+            }
         }
     }
 
