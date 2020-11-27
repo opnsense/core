@@ -539,7 +539,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                           "The start and end of the range must end on boundaries of the prefix delegation size."); ?>
                            <?= gettext("Ensure that any prefix delegation range does not overlap the LAN prefix range."); ?>
                           <br/><br/>
-                          <?= gettext('The system does not check the validity of your emtry against the selected mask - please refer to an online net ' .
+                          <?= gettext('The system does not check the validity of your entry against the selected mask - please refer to an online net ' .
                             'calculator to ensure you have entered a correct range if the dhcpd6 server fails to start.') ?>
 <?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
                           <br/><br/>
