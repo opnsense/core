@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,local_group
+            ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain,local_group
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
 
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
+            ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
             ,cso_login_matching";
@@ -362,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
-                ,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
+                ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
                 ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
 
@@ -1367,7 +1367,7 @@ endif; ?>
                         </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
                       <td style="width:22%"><a id="help_for_dns_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
                       <td>
                         <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=!empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "" ;?> />
@@ -1381,7 +1381,7 @@ endif; ?>
                         </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
                       <td style="width:22%"><a id="help_for_dns_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
                       <td>
                         <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
@@ -1410,7 +1410,7 @@ endif; ?>
                         </div>
                       </td>
                     </tr>
-                    <tr id="chkboxPushRegisterDNS">
+                    <tr id="chkboxPushRegisterDNS" class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
                       <td style="width:22%"><a id="help_for_push_register_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Force DNS cache update"); ?></td>
                       <td>
                         <input name="push_register_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_register_dns']) ? "checked=\"checked\"" : "" ;?> />
@@ -1421,7 +1421,18 @@ endif; ?>
                         </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr id="chkboxBlockOutsideDNS" class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
+                      <td style="width:22%"><a id="help_for_push_block_outside_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prevent DNS leaks"); ?></td>
+                      <td>
+                        <input name="push_block_outside_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_block_outside_dns']) ? "checked=\"checked\"" : "" ;?> />
+                        <div class="hidden" data-for="help_for_push_block_outside_dns">
+                          <span>
+                            <?=gettext("Block DNS servers on other network adapters to prevent DNS leaks. Compatible with Windows clients only."); ?><br />
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
                       <td style="width:22%"><a id="help_for_ntp_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NTP Servers"); ?></td>
                       <td>
                         <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?>  />
@@ -1442,7 +1453,7 @@ endif; ?>
                         </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
                       <td style="width:22%"><a id="help_for_netbios_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NetBIOS Options"); ?></td>
                       <td>
                         <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?>  />
