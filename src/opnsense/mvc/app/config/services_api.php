@@ -38,6 +38,7 @@ use OPNsense\Core\Routing;
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
+
 $di = new FactoryDefault();
 $di->set('config', $config);
 

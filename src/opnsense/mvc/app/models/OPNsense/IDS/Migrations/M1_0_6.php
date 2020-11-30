@@ -51,7 +51,7 @@ class M1_0_6 extends BaseModelMigration
                 $rulesets[] = (string)$file->attributes()['uuid'];
             }
         }
-        if (!empty($rulesets)){
+        if (!empty($rulesets)) {
             $policy = $model->policies->policy->Add();
             $policy->action = "alert";
             $policy->new_action = "drop";

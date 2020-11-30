@@ -118,7 +118,8 @@ abstract class Base
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'user' && !empty($value->name)) {
                 // depending on caseInSensitiveUsernames setting match exact or case-insensitive
-                if ((string)$value->name == $username ||
+                if (
+                    (string)$value->name == $username ||
                     ($this->caseInSensitiveUsernames && strtolower((string)$value->name) == strtolower($username))
                 ) {
                     // user found, stop search

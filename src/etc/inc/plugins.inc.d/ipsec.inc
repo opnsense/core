@@ -390,7 +390,9 @@ function ipsec_parse_phase2($ikeid)
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : array();
     $p2_ealgos = ipsec_p2_ealgos();
-    $ph1ent = current(array_filter($a_phase1, function($e) use($ikeid) {return $e['ikeid'] == $ikeid;}));
+    $ph1ent = current(array_filter($a_phase1, function ($e) use ($ikeid) {
+        return $e['ikeid'] == $ikeid;
+    }));
     if ($ph1ent) {
         $uniqids = [];
         $keyexchange = !empty($ph1ent['iketype']) ? $ph1ent['iketype'] : "ikev1";
@@ -421,7 +423,8 @@ function ipsec_parse_phase2($ikeid)
                 }
             } else {
                 $result['type'] = 'transport';
-                if ((($ph1ent['authentication_method'] == "xauth_psk_server") ||
+                if (
+                    (($ph1ent['authentication_method'] == "xauth_psk_server") ||
                     ($ph1ent['authentication_method'] == "pre_shared_key")) && isset($ph1ent['mobile'])
                 ) {
                     $result['left_override'] = "%any";
@@ -555,7 +558,7 @@ function ipsec_parse_phase2($ikeid)
             $result['ealgoAHsp2'] = $ah_content;
         }
     }
-  return $result;
+    return $result;
 }
 
 /*

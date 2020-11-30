@@ -59,12 +59,12 @@ class ServiceController extends ApiMutableServiceControllerBase
 
     private function hookStartErrorHandler($result)
     {
-      if (preg_match('/__ok__$/', $result['response'])) {
-          $result['response'] = "ok";
-      } else {
-          throw new UserException($result['response'], gettext("proxy load error"));
-      }
-      return $result;
+        if (preg_match('/__ok__$/', $result['response'])) {
+            $result['response'] = "ok";
+        } else {
+            throw new UserException($result['response'], gettext("proxy load error"));
+        }
+        return $result;
     }
 
     public function startAction()
