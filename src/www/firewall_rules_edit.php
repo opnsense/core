@@ -241,6 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
     } elseif ($pconfig['protocol'] == "ipv6-icmp" && !empty($pconfig['icmp6-type']) && $pconfig['ipprotocol'] == "inet46") {
         $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
+    } elseif ($pconfig['protocol'] == "ipv6-icmp" && $pconfig['ipprotocol'] != "inet4") {
+        $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
     }
     if ($pconfig['statetype'] == "synproxy state" || $pconfig['statetype'] == "modulate state") {
         if ($pconfig['protocol'] != "tcp") {
