@@ -503,6 +503,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
