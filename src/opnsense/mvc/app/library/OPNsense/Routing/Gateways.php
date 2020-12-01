@@ -410,7 +410,8 @@ class Gateways
             }
             // The interface might have a gateway configured
             if (isset($this->configHandle->interfaces->$interface)) {
-                $intf_gateway = $this->configHandle->interfaces->$interface->gateway;
+                $gwfield = $ipproto == "inet" ? "gateway" : "gatewayv6";
+                $intf_gateway = $this->configHandle->interfaces->$interface->$gwfield;
             } else {
                 $intf_gateway = null;
             }
