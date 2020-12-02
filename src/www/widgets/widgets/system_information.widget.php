@@ -185,7 +185,7 @@ require_once("system.inc");
       </td>
     </tr>
     <tr>
-      <td><?=gettext("CPU Type");?></td>
+      <td><?=gettext("CPU type");?></td>
       <td id="system_information_widget_cpu_type"></td>
     </tr>
     <tr>
@@ -213,7 +213,7 @@ require_once("system.inc");
       <td id="system_information_widget_last_config_change"></td>
     </tr>
     <tr>
-      <td><?=gettext("CPU usage");?></span></td>
+      <td><?=gettext("CPU usage");?></td>
       <td id="system_information_widget_cpu">
         <div class="progress" style="text-align:center;">
           <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
@@ -231,7 +231,7 @@ require_once("system.inc");
       </td>
     </tr>
     <tr>
-      <td><?=gettext("MBUF Usage");?></td>
+      <td><?=gettext("MBUF usage");?></td>
       <td id="system_information_widget_mbuf">
         <div class="progress" style="text-align:center;">
           <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
