@@ -132,6 +132,40 @@ EOD;
 
     $ifnames = array_keys($iflist);
 
+        echo <<<EOD
+
+You now have the opportunity to configure LAGGs.  If you don't require LAGGs
+for initial connectivity, say no here and use the GUI to configure LAGGs later.
+
+Do you want to configure LAGGs now? ${yes_no_prompt}
+EOD;
+    if ($interactive) {
+        $key = chop(fgets($fp));
+    } else {
+        $key = 'n';
+        echo $key . PHP_EOL;
+    }
+
+    if (in_array($key, array('y', 'Y'))) {
+        lagg_setup($iflist, $fp);
+    }
+
+    if (isset($config['laggs']['lagg'][0])) {
+        echo "\nLAGG interfaces:\n\n";
+        foreach ($config['laggs']['lagg'] as $lagg) {
+            $members = implode(",", $lagg['members']);
+            echo sprintf(
+                "% -16s%s\n",
+                "{$lagg['laggif']}",
+                "member interfaces {$members}"
+            );
+            $iflist_all[$lagg['laggif']] = array();
+
+            if (!isset($iflist[$lagg['laggif']]))
+                $iflist[$lagg['laggif']] = $lagg;
+        }
+    }
+
     echo <<<EOD
 
 You now have the opportunity to configure VLANs.  If you don't require VLANs
@@ -479,6 +513,105 @@ EOD;
     echo "No link-up detected.\n";
 
     return false;
+}
+
+function lagg_setup($iflist, $fp)
+{
+    $laggcfg = &config_read_array('laggs', 'lagg');
+    $yes_no_prompt = '[y/N]: ';
+
+    if (count($vlancfg)) {
+        echo <<<EOD
+
+WARNING: all existing LAGGs will be cleared if you proceed!
+
+Do you want to proceed? ${yes_no_prompt}
+EOD;
+
+        if (strcasecmp(chop(fgets($fp)), "y") != 0) {
+            return;
+        }
+    }
+
+    $laggcfg = array();
+    $laggif = 0;
+
+    $unused_ifs = array();
+    foreach ($iflist as $iface => $ifa) {
+        $unused_ifs[$iface] = $ifa;
+    }
+
+    while (1) {
+        $lagg = array();
+
+        echo "\nLAGG-capable interfaces:\n\n";
+        if (!is_array($iflist)) {
+            echo "No interfaces found!\n";
+        } else {
+            $lagg_capable = 0;
+            foreach ($unused_ifs as $iface => $ifa) {
+                echo sprintf(
+                    "% -8s%s%s\n",
+                    $iface,
+                    $ifa['mac'],
+                    $ifa['up'] ? "   (up)" : ""
+                );
+                $lagg_capable++;
+            }
+        }
+
+        if ($lagg_capable == 0) {
+            echo "No LAGG-capable interfaces detected.\n";
+            return;
+        }
+
+        echo "\nEnter the member interface names for the new LAGG seperated by commas (or nothing if finished): ";
+        $members_str = chop(fgets($fp));
+
+        if ($members_str) {
+            $members = explode(",", str_replace(" ", "", $members_str));
+            $unused_ifnames = array_keys($unused_ifs);
+            $valid_ifs = array_intersect($unused_ifnames, $members);
+            if (count($members) != count($valid_ifs)) {
+                $invalid_ifs = array_diff($members, $unused_ifnames);
+                printf("\nInvalid interfaces: %s\n", implode(", ", $invalid_ifs));
+                continue;
+            }
+            $lagg['members'] = str_replace(" ", "", $members_str));
+        } else {
+            break;
+        }
+
+        echo 'Enter the LAGG protocol (none,lacp,failover,fec,loadbalance,roundrobin): ';
+        $lagg['proto'] = strtolower(chop(fgets($fp)));
+        if (!in_array($lagg['proto'], ['none', 'lacp', 'failover', 'fec', 'loadbalance', 'roundrobin'])) {
+            printf("\nInvalid LAGG protocol '%s'\n", $lagg['proto']);
+            continue;
+        }
+
+        if ($lagg['proto'] == "lacp") {
+            echo "Do you want to enable LACP fast timeout? ${yes_no_prompt}";
+
+            if (strcasecmp(chop(fgets($fp)), "y") == 0) {
+                $lagg['lacp_fast_timeout'] = true;
+            }
+        }
+
+        echo 'Enter the LAGG MTU (leave blank for auto): ';
+        $lagg['mtu'] = chop(fgets($fp));
+        if (!$lagg['mtu']) {
+            $lagg['mtu'] = null;
+        }
+
+        foreach($lagg['members'] as $member) {
+            unset($unused_ifs[$member]);
+        }
+
+        $lagg['laggif'] = 'lagg' . $laggif;
+
+        $laggcfg[] = $lagg;
+        $laggif++;
+    }
 }
 
 function vlan_setup($iflist, $fp)
