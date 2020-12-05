@@ -578,6 +578,10 @@ EOD;
                 continue;
             }
             $lagg['members'] = str_replace(" ", "", $members_str));
+            
+            foreach($members as $member) {
+                unset($unused_ifs[$member]);
+            }
         } else {
             break;
         }
@@ -601,10 +605,6 @@ EOD;
         $lagg['mtu'] = chop(fgets($fp));
         if (!$lagg['mtu']) {
             $lagg['mtu'] = null;
-        }
-
-        foreach($lagg['members'] as $member) {
-            unset($unused_ifs[$member]);
         }
 
         $lagg['laggif'] = 'lagg' . $laggif;
