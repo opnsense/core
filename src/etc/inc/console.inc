@@ -577,7 +577,7 @@ EOD;
                 printf("\nInvalid interfaces: %s\n", implode(", ", $invalid_ifs));
                 continue;
             }
-            $lagg['members'] = str_replace(" ", "", $members_str));
+            $lagg['members'] = str_replace(" ", "", $members_str);
             
             foreach($members as $member) {
                 unset($unused_ifs[$member]);
