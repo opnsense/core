@@ -520,7 +520,7 @@ function lagg_setup($iflist, $fp)
     $laggcfg = &config_read_array('laggs', 'lagg');
     $yes_no_prompt = '[y/N]: ';
 
-    if (count($vlancfg)) {
+    if (count($laggcfg)) {
         echo <<<EOD
 
 WARNING: all existing LAGGs will be cleared if you proceed!
