@@ -130,4 +130,22 @@ abstract class Base
         }
         return $userObject;
     }
+
+    /**
+     * return actual username.
+     * This is more or less a temporary function to support case insensitive names in sessions
+     * @param string $username username
+     * @return string
+     */
+    public function getUserName($username)
+    {
+        if ($this->caseInSensitiveUsernames) {
+            $user = $this->getUser($username);
+            if ($user) {
+                return (string)$user->name;
+            }
+        } else {
+            return $username;
+        }
+    }
 }
