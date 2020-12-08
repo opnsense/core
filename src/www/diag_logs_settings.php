@@ -89,6 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (count($input_errors) == 0) {
+            if (empty($config['syslog'])) {
+                $config['syslog'] = array();
+            }
             $config['syslog']['disable_clog'] = !empty($pconfig['disable_clog']);
             if (isset($_POST['logfilesize']) && (strlen($pconfig['logfilesize']) > 0)) {
                 $config['syslog']['logfilesize'] = (int)$pconfig['logfilesize'];
