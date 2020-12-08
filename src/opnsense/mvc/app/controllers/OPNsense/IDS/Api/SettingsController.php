@@ -74,7 +74,6 @@ class SettingsController extends ApiMutableModelControllerBase
             $filter = new Filter();
             $filter->add('query', new QueryFilter());
 
-
             // fetch query parameters (limit results to prevent out of memory issues)
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
@@ -109,18 +108,8 @@ class SettingsController extends ApiMutableModelControllerBase
                 $key = $filter->sanitize($key, "string");
                 $value = $filter->sanitize($value, "string");
                 if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase', 'action' ,'status'])) {
-                    $searchPhrase .= " {$key}/{$value} ";
+                    $searchPhrase .= " {$key}/\"{$value}\" ";
                 }
-            }
-
-            // add filter for action
-            if ($this->request->getPost("action", "string", '') != "") {
-                $searchTag = $filter->sanitize($this->request->getPost('action'), "query");
-                $searchPhrase .= " installed_action/" . $searchTag . ' ';
-            }
-            if ($this->request->getPost("status", "string", '') != "") {
-                $searchTag = $filter->sanitize($this->request->getPost('status'), "query");
-                $searchPhrase .= " installed_status/" . $searchTag . ' ';
             }
 
             // request list of installed rules
@@ -136,7 +125,6 @@ class SettingsController extends ApiMutableModelControllerBase
                 $result['rows'] = $data['rows'];
                 // update rule status with own administration
                 foreach ($result['rows'] as &$row) {
-                    $row['enabled_default'] = $row['enabled'];
                     $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
                     $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
                 }
@@ -176,8 +164,6 @@ class SettingsController extends ApiMutableModelControllerBase
         if ($data != null && array_key_exists("rows", $data) && !empty($data['rows'])) {
             $row = $data['rows'][0];
             // set current enable status (default + registered offset)
-            $row['enabled_default'] = $row['enabled'];
-            $row['action_default'] = $row['action'];
             $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
             $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action']);
             //
@@ -233,6 +219,12 @@ class SettingsController extends ApiMutableModelControllerBase
         $response = (new Backend())->configdRun("ids list rulemetadata");
         $data = json_decode($response, true);
         if ($data != null) {
+            $data['matched_policy'] = ['__manual__'];
+            foreach ($this->getModel()->policies->policy->iterateItems() as $policy) {
+                if (!empty((string)$policy->enabled) && !empty((string)$policy->description)) {
+                    $data['matched_policy'][] = (string)$policy->description;
+                }
+            }
             return $data;
         } else {
             return array();

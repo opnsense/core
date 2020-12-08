@@ -91,7 +91,8 @@ class RuleCache(object):
                     if policy_match:
                         local_change = {
                             'mtime': policy_config_mtime,
-                            'policy_id': configured_policies[policy_match]['__policy_id__']
+                            'policy_id': configured_policies[policy_match]['__policy_id__'],
+                            'policy': configured_policies[policy_match]['__policy_description__']
                         }
                         local_change['action'] = rule_orig_action
                         if configured_policies[policy_match]['__target_action__'] == 'disable':
@@ -111,7 +112,8 @@ class RuleCache(object):
             for section in cnf.sections():
                 if section[0:5] == 'rule_':
                     sid = section[5:]
-                    rule_updates[sid] = {'mtime': policy_config_mtime, 'policy_id': None}
+                    # mark rule policies as __manual__ so we can filter them easily
+                    rule_updates[sid] = {'mtime': policy_config_mtime, 'policy_id': None, 'policy': "__manual__"}
                     for rule_item in cnf.items(section):
                         rule_updates[sid][rule_item[0]] = rule_item[1]
         return rule_updates
@@ -310,7 +312,7 @@ class RuleCache(object):
                 cur.execute(
                     'insert into local_rule_changes(sid, action, enabled, last_mtime, policy) values (?,?,?,?,?)',
                     (sid, local_changes[sid]['action'], local_changes[sid]['enabled'], local_changes[sid]['mtime'],
-                     local_changes[sid]['policy_id'])
+                     local_changes[sid]['policy'])
                 )
             db.commit()
             # release lock
@@ -334,7 +336,7 @@ class RuleCache(object):
             sql_parameters = {}
             sql_filters = []
             prop_values = []
-            rule_search_fields = ['msg', 'sid', 'source', 'installed_action', 'installed_status']
+            rule_search_fields = ['msg', 'sid', 'source', 'action', 'status', 'matched_policy']
             for filtertag in shlex.split(filter_txt):
                 fieldnames, searchcontent = filtertag.split('/', maxsplit=1)
                 sql_item = []
@@ -364,13 +366,17 @@ class RuleCache(object):
 
             sql = """select *
                      from (
-                         select rules.*,
-                                case when rc.action is null then rules.action else rc.action end installed_action,
+                         select rules.sid, rules.rev, rules.gid, rules.msg, rules.reference, rules.source,
+                                case when rc.enabled is null then rules.enabled else rc.enabled end enabled,
+                                case when rc.action is null then rules.action else rc.action end action,
                                 case
                                     when case when rc.enabled is null then rules.enabled else rc.enabled end = true
                                     then 'enabled'
                                     else  'disabled'
-                                end installed_status
+                                end status,
+                                rules.enabled enabled_default,
+                                rules.action action_default,
+                                rc.policy matched_policy
                          from rules
                   """
 
@@ -440,7 +446,7 @@ class RuleCache(object):
         if os.path.exists(self.cachefile):
             db = sqlite3.connect(self.cachefile)
             cur = db.cursor()
-            cur.execute('SELECT property, value FROM metadata_histogram order by property, value')
+            cur.execute("SELECT property, value FROM metadata_histogram")
             for record in cur.fetchall():
                 if record[0] not in result:
                     result[record[0]] = list()
