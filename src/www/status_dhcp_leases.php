@@ -246,19 +246,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
 
-    usort($leases,
-        function ($a, $b) use ($order) {
-            if ($order === 'ip') {
+    if ($order === 'ip') {
+        usort($leases, function ($a, $b) {
+            return ipcmp($a['ip'], $b['ip']);
+        });
+    } else {
+        usort($leases, function ($a, $b) use ($order) {
+            $cmp = strnatcasecmp($a[$order], $b[$order]);
+            if ($cmp === 0) {
                 $cmp = ipcmp($a['ip'], $b['ip']);
-            } else {
-                $cmp = strnatcasecmp($a[$order], $b[$order]);
-                if ($cmp === 0) {
-                    $cmp = ipcmp($a['ip'], $b['ip']);
-                }
             }
             return $cmp;
-        }
-    );
+        });
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
