@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         usort($config['dhcpdv6'][$if]['staticmap'], function ($a, $b) {
-            return ip6cmp($a['ipaddrv6'], $b['ipaddrv6']);
+            return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
         });
 
         write_config();

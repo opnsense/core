@@ -1187,20 +1187,8 @@ function check_subnets_overlap($subnet1, $bits1, $subnet2, $bits2)
     return ($sn1 == $sn2);
 }
 
-/* compare two IPv4 addresses */
+/* compare two IP addresses */
 function ipcmp($a, $b)
-{
-    if (ip_less_than($a, $b)) {
-        return -1;
-    } elseif (ip_greater_than($a, $b)) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-/* compare two IPv6 addresses */
-function ip6cmp($a, $b)
 {
     $na = inet_pton($a);
     $nb = inet_pton($b);
