@@ -460,7 +460,6 @@ endif;?>
               </thead>
               <tbody>
 <?php
-              $mac_man = json_decode(configd_run("interface list macdb json"), true);
               foreach ($leases as $data):
                 if (!($data['act'] == 'active' || $data['act'] == 'static' || $_GET['all'] == 1)) {
                     continue;
