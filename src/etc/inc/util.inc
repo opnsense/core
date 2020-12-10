@@ -1190,9 +1190,11 @@ function check_subnets_overlap($subnet1, $bits1, $subnet2, $bits2)
 /* compare two IP addresses */
 function ipcmp($a, $b)
 {
-    if (ip_less_than($a, $b)) {
+    $na = inet_pton($a);
+    $nb = inet_pton($b);
+    if ($na < $nb) {
         return -1;
-    } elseif (ip_greater_than($a, $b)) {
+    } elseif ($na > $nb) {
         return 1;
     } else {
         return 0;
