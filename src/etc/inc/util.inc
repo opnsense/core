@@ -1194,7 +1194,7 @@ function ipcmp($a, $b)
     $nb = inet_pton($b);
     if ($na < $nb) {
         return -1;
-    } elseif ($na > $b) {
+    } elseif ($na > $nb) {
         return 1;
     } else {
         return 0;
