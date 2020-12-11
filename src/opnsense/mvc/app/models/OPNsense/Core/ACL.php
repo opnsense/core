@@ -99,20 +99,25 @@ class ACL
 
         // gather user / group data from config.xml
         $config = Config::getInstance()->object();
+        $userUidMap = array();
         if ($config->system->count() > 0) {
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user') {
-                    $this->userDatabase[(string)$node->name] = array();
-                    $this->userDatabase[(string)$node->name]['uid'] = (string)$node->uid;
-                    $this->userDatabase[(string)$node->name]['groups'] = array();
-                    $this->userDatabase[(string)$node->name]['gids'] = array();
-                    $this->userDatabase[(string)$node->name]['priv'] = array();
+                    $username = (string)$node->name;
+                    $uid = (string)$node->uid;
+                    $userUidMap[$uid] = $username;
+                    $this->userDatabase[$username] = array();
+                    $this->userDatabase[$username]['uid'] = $uid;
+                    $this->userDatabase[$username]['groups'] = array();
+                    $this->userDatabase[$username]['gids'] = array();
+                    $this->userDatabase[$username]['priv'] = array();
                     if (!empty($node->landing_page)) {
-                        $this->userDatabase[(string)$node->name]['landing_page'] = (string)$node->landing_page;
+                        $this->userDatabase[$username]['landing_page'] = (string)$node->landing_page;
                     }
                     foreach ($node->priv as $priv) {
-                        if (array_key_exists((string)$priv, $pageMap)) {
-                            $this->userDatabase[(string)$node->name]['priv'][] = $pageMap[(string)$priv];
+                        $privname = (string)$priv;
+                        if (array_key_exists($privname, $pageMap)) {
+                            $this->userDatabase[$username]['priv'][] = $pageMap[$privname];
                         }
                     }
                 } elseif ($key == 'group') {
@@ -125,16 +130,16 @@ class ACL
         foreach ($groupmap as $groupkey => $groupNode) {
             $allGroupPrivs[$groupkey] = array();
             foreach ($groupNode->children() as $itemKey => $node) {
-                if ($node->getName() == "member" && (string)$node != "") {
-                    foreach ($this->userDatabase as $username => $userinfo) {
-                        if ($this->userDatabase[$username]["uid"] == (string)$node) {
-                            $this->userDatabase[$username]["groups"][] = $groupkey;
-                            $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
-                        }
+                $node_data = (string)$node;
+                if ($itemKey == "member" && $node_data != "") {
+                    $username = $userUidMap[$node_data];
+                    if ($this->userDatabase[$username]["uid"] == $node_data) {
+                        $this->userDatabase[$username]["groups"][] = $groupkey;
+                        $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
                     }
-                } elseif ($node->getName() == "priv") {
-                    if (array_key_exists((string)$node, $pageMap)) {
-                        $this->allGroupPrivs[$groupkey][] = $pageMap[(string)$node];
+                } elseif ($itemKey == "priv") {
+                    if (array_key_exists($node_data, $pageMap)) {
+                        $this->allGroupPrivs[$groupkey][] = $pageMap[$node_data];
                     }
                 }
             }
