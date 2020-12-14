@@ -470,6 +470,8 @@ endif;?>
                   $data['if'] = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($data['ip']));
                   $data['int'] = htmlspecialchars($interfaces[$data['if']]['descr']);
                 }
+                $mac = !empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";
+                $mac_hi = !empty($mac) ? strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]) : "";
                 ?>
                 <tr>
                   <td><?=$data['int'];?></td>
@@ -478,7 +480,8 @@ endif;?>
                   <td><?=$data['duid'];?></td>
                   <td>
                     <?=!empty($data['hostname']) ? htmlentities($data['hostname']) : "";?>
-                    <?=!empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";?>
+                    <?=$mac;?><br />
+                    <small><i><?=!empty($mac_man[$mac_hi]) ? $mac_man[$mac_hi] : "";?></i></small>
                   </td>
                   <td><?=htmlentities($data['descr']);?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
