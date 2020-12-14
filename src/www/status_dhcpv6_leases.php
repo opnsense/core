@@ -384,6 +384,11 @@ legacy_html_escape_form_data($leases);
               location.reload();
           });
       });
+      // keep sorting in place.
+      $(".act_sort").click(function(){
+          var all = <?=!empty($_GET['all']) ? 1 : 0;?> ;
+          document.location = document.location.origin + window.location.pathname +"?all="+all+"&order="+$(this).data('field');
+      });
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -430,16 +435,16 @@ endif;?>
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <th><?=gettext("Interface"); ?></th>
-                    <th><?=gettext("IPv6 address"); ?></th>
-                    <th><?=gettext("IAID"); ?></th>
-                    <th><?=gettext("DUID"); ?></th>
-                    <th><?=gettext("Hostname/MAC"); ?></th>
-                    <th><?=gettext("Description"); ?></th>
-                    <th><?=gettext("Start"); ?></th>
-                    <th><?=gettext("End"); ?></th>
-                    <th><?=gettext("Online"); ?></th>
-                    <th><?=gettext("Lease Type"); ?></th>
+                    <th class="act_sort" data-field="int"><?=gettext("Interface"); ?></th>
+                    <th class="act_sort" data-field="ip"><?=gettext("IPv6 address"); ?></th>
+                    <th class="act_sort" data-field="iaid"><?=gettext("IAID"); ?></th>
+                    <th class="act_sort" data-field="duid"><?=gettext("DUID"); ?></th>
+                    <th class="act_sort" data-field="hostname"><?=gettext("Hostname/MAC"); ?></th>
+                    <th class="act_sort" data-field="descr"><?=gettext("Description"); ?></th>
+                    <th class="act_sort" data-field="start"><?=gettext("Start"); ?></th>
+                    <th class="act_sort" data-field="end"><?=gettext("End"); ?></th>
+                    <th class="act_sort" data-field="online"><?=gettext("Online"); ?></th>
+                    <th class="act_sort" data-field="act"><?=gettext("Lease Type"); ?></th>
                     <th class="text-nowrap"></th>
                 </tr>
               </thead>
