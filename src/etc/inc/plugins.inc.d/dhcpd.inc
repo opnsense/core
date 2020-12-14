@@ -990,6 +990,12 @@ EOD;
         if (!empty($dhcpifconf['maxleasetime'])) {
             $dhcpdconf .= "  max-lease-time {$dhcpifconf['maxleasetime']};\n";
         }
+
+        // min-secs
+        if (!empty($dhcpifconf['minsecs'])) {
+            $dhcpdconf .= "  min-secs {$dhcpifconf['minsecs']};\n";
+        }
+
         // interface MTU
         if (!empty($dhcpifconf['interface_mtu'])) {
             $dhcpdconf .= "  option interface-mtu {$dhcpifconf['interface_mtu']};\n";
@@ -1499,6 +1505,11 @@ EOD;
         // max-lease-time
         if (!empty($dhcpv6ifconf['maxleasetime'])) {
             $dhcpdv6conf .= "  max-lease-time {$dhcpv6ifconf['maxleasetime']};\n";
+        }
+
+        // min-secs
+        if (!empty($dhcpv6ifconf['minsecs'])) {
+            $dhcpdv6conf .= "  min-secs {$dhcpv6ifconf['minsecs']};\n";
         }
 
         // ntp-servers

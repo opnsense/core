@@ -106,9 +106,13 @@ if [ -z "${pkg_running}" ]; then
           repository="revoked"
           connection="ok"
           timer=0
-	elif grep -q 'No signature found' ${outfile}; then
-	  # fingerprint not found
+        elif grep -q 'No signature found' ${outfile}; then
+          # fingerprint not found
           repository="unsigned"
+          connection="ok"
+          timer=0
+        elif grep -q 'Unable to update repository' ${outfile}; then
+          # repository not found
           connection="ok"
           timer=0
         fi
@@ -124,13 +128,13 @@ if [ -z "${pkg_running}" ]; then
 
         # now check what happens when we would go ahead
         if [ -z "${pkg_selected}" ]; then
-            daemon -p ${pidfile} -o ${outfile} pkg upgrade
+            daemon -p ${pidfile} -o ${outfile} pkg upgrade -n
         else
             # fetch before install lets us know more,
             # although not as fast as it should be...
             pkg fetch -y "${pkg_selected}" > /dev/null 2>&1
             daemon -p ${pidfile} -o ${outfile} pkg install -n "${pkg_selected}"
-	fi
+        fi
 
         while [ -n "${pkg_running}" -a $timer -ne 0 ]; do
           sleep 1
@@ -141,7 +145,7 @@ if [ -z "${pkg_running}" ]; then
         ## check if timeout is not reached
         if [ $timer -gt 0 ]; then
           # Check for additional repository errors
-          if ! grep 'Unable to update repository' ${outfile} 2> /dev/null; then
+          if ! grep -q 'Unable to update repository' ${outfile}; then
             # Repository can be used for updates
             repository="ok"
             updates=$(grep 'The following' ${outfile} | awk -F '[ ]' '{print $3}')

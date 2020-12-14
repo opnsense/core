@@ -75,7 +75,11 @@ class VirtualIPField extends BaseListField
                         }
                         if (!empty($vip->vhid)) {
                             $caption = sprintf(
-                                gettext("[%s] %s on %s (vhid %s)"), $vip->subnet, $vip->descr, $intf_name, $vip->vhid
+                                gettext("[%s] %s on %s (vhid %s)"),
+                                $vip->subnet,
+                                $vip->descr,
+                                $intf_name,
+                                $vip->vhid
                             );
                         } else {
                             $caption = sprintf(gettext("[%s] %s on %s"), $vip->subnet, $vip->descr, $intf_name);

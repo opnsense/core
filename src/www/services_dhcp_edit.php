@@ -140,27 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $parent_net = find_interface_network(get_real_interface($if));
 
-    /* make sure it's not within the dynamic subnet */
     if (!empty($pconfig['ipaddr'])) {
-        $dynsubnet_start = ip2ulong($config['dhcpd'][$if]['range']['from']);
-        $dynsubnet_end = ip2ulong($config['dhcpd'][$if]['range']['to']);
-        if (ip2ulong($pconfig['ipaddr']) >= $dynsubnet_start && ip2ulong($pconfig['ipaddr']) <= $dynsubnet_end) {
-            $input_errors[] = sprintf(gettext("The IP address must not be within the DHCP range for this interface."));
-        }
-
-        if (!empty($config['dhcpd'][$if]['pool'])) {
-            foreach ($config['dhcpd'][$if]['pool'] as $pidx => $p) {
-                if (is_inrange_v4($pconfig['ipaddr'], $p['range']['from'], $p['range']['to'])) {
-                    $input_errors[] = gettext("The IP address must not be within the range configured on a DHCP pool for this interface.");
-                    break;
-                }
-            }
-        }
-
-        if (!ip_in_subnet($pconfig['ipaddr'], $parent_net)) {
-            $ifcfgdescr = convert_friendly_interface_to_friendly_descr($if);
-            $input_errors[] = sprintf(gettext('The IP address must lie in the %s subnet.'), $ifcfgdescr);
-        }
+      if (!ip_in_subnet($pconfig['ipaddr'], $parent_net)) {
+          $ifcfgdescr = convert_friendly_interface_to_friendly_descr($if);
+          $input_errors[] = sprintf(gettext('The IP address must lie in the %s subnet.'), $ifcfgdescr);
+      }
     }
 
     if (!empty($pconfig['gateway']) && !is_ipaddrv4($pconfig['gateway'])) {
@@ -341,7 +325,7 @@ include("head.inc");
                   <td>
                     <input name="ipaddr" type="text" value="<?=$pconfig['ipaddr'];?>" />
                     <div class="hidden" data-for="help_for_ipaddr">
-                      <?=gettext("If an IPv4 address is entered, the address must be outside of the pool.");?>
+                      <?=gettext("If an IPv4 address is entered, the address must be within the interface subnet.");?>
                       <br />
                       <?=gettext("If no IPv4 address is given, one will be dynamically allocated from the pool.");?>
                     </div>

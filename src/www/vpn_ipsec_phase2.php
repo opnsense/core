@@ -407,7 +407,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['mobile'])) {
             $ph2ent['mobile'] = true;
         }
-
+        // attach or generate reqid
+        if ($p2index !== null && !empty($config['ipsec']['phase2'][$p2index]['reqid'])) {
+            $ph2ent['reqid'] = $config['ipsec']['phase2'][$p2index]['reqid'];
+        } else {
+            $reqids = [];
+            foreach ($config['ipsec']['phase2'] as $tmp) {
+                if (!empty($tmp['reqid'])) {
+                    $reqids[] = $tmp['reqid'];
+                }
+            }
+            for ($i=1; $i < 65535; $i++) {
+                if (!in_array($i, $reqids)) {
+                    $ph2ent['reqid'] = $i;
+                    break;
+                }
+            }
+        }
         // save to config
         if ($p2index !== null) {
             $config['ipsec']['phase2'][$p2index] = $ph2ent;

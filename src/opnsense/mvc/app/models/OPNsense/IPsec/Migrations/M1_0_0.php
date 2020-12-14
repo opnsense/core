@@ -26,37 +26,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IDS\Migrations;
+namespace OPNsense\IPsec\Migrations;
 
-use OPNsense\Base\FieldTypes\BaseField;
-use OPNsense\Core\Config;
 use OPNsense\Base\BaseModelMigration;
-use OPNSense\IDS\IDS;
+use OPNsense\Core\Config;
+use OPNsense\Core\Shell;
 
-class M1_0_6 extends BaseModelMigration
+class M1_0_0 extends BaseModelMigration
 {
     /**
-     * Migrate ruleset filters
-     * @param IDS $model
+     * setup initial reqid's in phase2 entries
      */
-    public function run($model)
+    public function post($model)
     {
-        $cfgObj = Config::getInstance()->object();
-        if (!isset($cfgObj->OPNsense->IDS->files->file)) {
-            return;
-        }
-        $rulesets = [];
-        foreach ($cfgObj->OPNsense->IDS->files->file as $file) {
-            if (!empty($file->filter) && !empty($file->enabled)) {
-                $rulesets[] = (string)$file->attributes()['uuid'];
+        $cnf = Config::getInstance()->object();
+        if (isset($cnf->ipsec->phase1) && isset($cnf->ipsec->phase2)) {
+            $reqids = [];
+            $last_seq = 1;
+            foreach ($cnf->ipsec->phase1 as $phase1) {
+                $p2sequence = 0;
+                foreach ($cnf->ipsec->phase2 as $phase2) {
+                    if ((string)$phase1->ikeid != (string)$phase2->ikeid) {
+                        continue;
+                    }
+                    if (empty($phase2->reqid)) {
+                        if ((string)$phase2->mode == "route-based") {
+                            // persist previous logic for route-based entries
+                            $phase2->reqid = (int)$phase1->ikeid * 1000 + $p2sequence;
+                        } else {
+                            // allocate next sequence in the list
+                            $phase2->reqid = (int)$last_seq;
+                        }
+                        $reqids[] = $last_seq;
+                        while (in_array($last_seq, $reqids)) {
+                            $last_seq++;
+                        }
+                    }
+                    $p2sequence++;
+                }
             }
-        }
-        if (!empty($rulesets)) {
-            $policy = $model->policies->policy->Add();
-            $policy->action = "alert";
-            $policy->new_action = "drop";
-            $policy->rulesets = implode(",", $rulesets);
-            $policy->description = "imported legacy import filter";
         }
     }
 }

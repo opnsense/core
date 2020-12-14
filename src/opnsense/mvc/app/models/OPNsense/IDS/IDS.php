@@ -63,6 +63,17 @@ class IDS extends BaseModel
     }
 
     /**
+     * check if rule overwrite exists
+     * @param string $sid unique id
+     * @return bool
+     */
+    public function hasRule($sid)
+    {
+        $this->updateSIDlist();
+        return array_key_exists($sid, $this->sid_list);
+    }
+
+    /**
      * get new or existing rule
      * @param string $sid unique id
      * @return mixed

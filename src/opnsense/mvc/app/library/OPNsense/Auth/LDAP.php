@@ -280,6 +280,26 @@ class LDAP extends Base implements IAuthConnector
         if (!empty($config['ldap_port'])) {
             $this->ldapBindURL .= ":{$config['ldap_port']}";
         }
+        if (!empty($config['caseInSensitiveUsernames'])) {
+            $this->caseInSensitiveUsernames = true;
+        }
+    }
+
+    /**
+     * retrieve configuration options
+     * @return array
+     */
+    public function getConfigurationOptions()
+    {
+        $options = array();
+        $options["caseInSensitiveUsernames"] = array();
+        $options["caseInSensitiveUsernames"]["name"] = gettext("Match case insensitive");
+        $options["caseInSensitiveUsernames"]["help"] = gettext("Allow mixed case input when gathering local user settings.");
+        $options["caseInSensitiveUsernames"]["type"] = "checkbox";
+        $options["caseInSensitiveUsernames"]["validate"] = function ($value) {
+            return array();
+        };
+        return $options;
     }
 
     /**

@@ -345,7 +345,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     if (payload.frm_DialogRule) {
                                         $.each(payload.frm_DialogRule, function(key, value){
                                             // ignore fixed fields and empty values
-                                            if (['sid', 'rev', 'action', 'action_default', 'installed_action',
+                                            if (['sid', 'rev', 'action', 'action_default',
                                                  'enabled', 'enabled_default', 'msg', 'reference'].includes(key)
                                                  || value === null) {
                                                 return;
@@ -542,7 +542,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                             );
 
                                             var row = $("<tr/>");
-                                            row.append( $("<td colspan=2/>").append($("<pre/>").html($("<code/>").text(data['payload_printable']))));
+                                            row.append( $("<td colspan=2/>").append($("<pre style='width:1100px'/>").html($("<code/>").text(data['payload_printable']))));
                                             tbl_tbody.append(row);
                                         }
 

@@ -67,5 +67,4 @@ class Base64Field extends TextField
         }
         return $validators;
     }
-
 }
