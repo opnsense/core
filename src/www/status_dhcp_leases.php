@@ -372,7 +372,7 @@ legacy_html_escape_form_data($leases);
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <td><?=gettext("Interface"); ?></td>
+                    <td class="act_sort" data-field="int"><?=gettext("Interface"); ?></td>
                     <td class="act_sort" data-field="ip"><?=gettext("IP address"); ?></td>
                     <td class="act_sort" data-field="mac"><?=gettext("MAC address"); ?></td>
                     <td class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></td>
