@@ -244,7 +244,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
+    if (isset($_GET['order'])){
+        if (in_array($_GET['order'], ['int', 'ip', 'mac', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
+            $order = $_GET['order'];
+        } else {
+            $order = 'ip';
+        }
+    } else {
+        $order = 'ip';
+    }
 
     if ($order === 'ip') {
         usort($leases, function ($a, $b) {
