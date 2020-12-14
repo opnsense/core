@@ -248,9 +248,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     usort($leases,
         function ($a, $b) use ($order) {
-            $cmp = strnatcasecmp($a[$order], $b[$order]);
+            $cmp = ($order === 'ip') ? 0 : strnatcasecmp($a[$order], $b[$order]);
             if ($cmp === 0) {
-                $cmp = strnatcasecmp($a['ip'], $b['ip']);
+                $cmp = ipcmp($a['ip'], $b['ip']);
             }
             return $cmp;
         }
