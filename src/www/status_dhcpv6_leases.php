@@ -470,7 +470,21 @@ endif;?>
                   $data['if'] = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($data['ip']));
                   $data['int'] = htmlspecialchars($interfaces[$data['if']]['descr']);
                 }
-                $mac = !empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";
+                if (!empty($ndpdata[$data['ip']])) {
+                    $mac = $ndpdata[$data['ip']]['mac'];
+                } else {
+                    $duid_type = substr($data['duid'], 0, 5);
+                    if ($duid_type === "00:01" || $duid_type === "00:03"){
+                        $duid_subtype = substr($data['duid'], 6, 5);
+                        if ($duid_subtype === "00:01") {
+                            $mac = substr($data['duid'], -17, 17);
+                        } else {
+                            $mac = "";
+                        }
+                    } else {
+                        $mac = "";
+                    }
+                }
                 $mac_hi = !empty($mac) ? strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]) : "";
                 ?>
                 <tr>
