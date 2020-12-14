@@ -388,8 +388,8 @@ include("head.inc");
                   <div class="hidden" data-for="help_for_persistent_duid">
                     <?= gettext('This field can be used to enter an explicit DUID for use by IPv6 DHCP clients.') ?><br/>
                     <?= gettext('The correct format for each DUID type is as follows, all entries to be in hex format "xx" separated by a colon.') ?><br/>
-                    <?= gettext('LLT: 4 bytes "00:01:00:01" followed by 4 bytes Unix time e.g. "00:01:02:03", followed by six bytes of the MAC address.') ?><br/>
-                    <?= gettext('LL: 4 bytes "00:03:00:01" followed by 4 bytes Unix time e.g. "00:01:02:03".') ?><br/>
+                    <?= gettext('LLT: 4 bytes "00:01:00:01" followed by 4 bytes Unix time e.g. "00:01:02:03", followed by 6 bytes of the MAC address.') ?><br/>
+                    <?= gettext('LL: 4 bytes "00:03:00:01" followed by 6 bytes of the MAC address.') ?><br/>
                     <?= gettext('UUID: 4 bytes "00:00:00:04" followed by 8 bytes of a universally unique identifier.') ?><br/>
                     <?= gettext('EN: 2 bytes "00:02" followed by 4 bytes of the enterprise number e.g. "00:00:00:01", ' .
                             'followed by a variable length identifier of hex values up to 122 bytes in length.') ?>
