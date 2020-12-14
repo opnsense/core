@@ -3776,7 +3776,7 @@ function guess_interface_from_ip($ipaddress)
             if (is_subnetv4($fields[0])) {
                 if (ip_in_subnet($ipaddress, $fields[0])) {
                     return $fields[5];
-                }                
+                }
             }
         }
     }
