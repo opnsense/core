@@ -454,7 +454,7 @@ endif;?>
                     foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
                         if (isset($dhcpifconf['staticmap'])) {
                             foreach ($dhcpifconf['staticmap'] as $staticent) {
-                                if ($data['ip'] == $staticent['ipaddr']) {
+                                if ($data['ip'] == $staticent['ipaddrv6']) {
                                     $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
                                     $data['if'] = $dhcpif;
                                     break;
