@@ -791,6 +791,7 @@ function unbound_hosts_generate()
     unbound_add_host_entries();
 
     killbypid('/var/run/unbound.pid', 'HUP');
+    configd_run("unbound load_dnsbl", true);
 }
 
 function unbound_local_zone_types()
