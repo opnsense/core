@@ -34,4 +34,4 @@ if [ ! -f /var/unbound/unbound_control.key ]; then
 fi
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf
-/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf local_datas < /var/unbound/etc/testDNSBL.list
+/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf local_datas < /var/unbound/etc/dnsbl.list
