@@ -307,11 +307,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if ($_GET['order']) {
-        usort($leases, function ($a, $b) {
-            return strcmp($a[$_GET['order']], $b[$_GET['order']]);
-        });
+    if (isset($_GET['order']) && 
+      in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
+        $order = $_GET['order'];
+    } else {
+        $order = 'ip';
     }
+
+    usort($leases,
+        function ($a, $b) use ($order) {
+            $cmp = ($order === 'ip') ? 0 : strnatcasecmp($a[$order], $b[$order]);
+            if ($cmp === 0) {
+                $cmp = ipcmp($a['ip'], $b['ip']);
+            }
+            return $cmp;
+        }
+    );
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
