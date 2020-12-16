@@ -42,7 +42,7 @@ function dpinger_services()
     }
 
     foreach ($config['gateways']['gateway_item'] as $gateway) {
-        if (isset($gateway['monitor_disable']) && $gateway['monitor_disable'] != '0') {
+        if (!empty($gateway['monitor_disable']) || isset($gateway['disabled'])) {
             continue;
         }
 
