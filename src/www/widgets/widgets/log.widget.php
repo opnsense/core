@@ -152,6 +152,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                         // may support ports, but needs IPv6 fixup
                                         log_td.text(record[column_name]);
                                         break;
+                                    case 'destination_port':
+                                        log_td.text(record[column_name]);
+                                        break;
                                     default:
                                         if (record[column_name] != undefined) {
                                             log_td.text(record[column_name]);
@@ -225,6 +228,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
       <td data-column-id="interface" data-type="interface" class="text-center"><strong><?= gettext('Interface') ?></strong></td>
       <td data-column-id="src" data-type="source_address"><strong><?= gettext('Source') ?></strong></td>
       <td data-column-id="dst" data-type="destination_address"><strong><?= gettext('Destination') ?></strong></td>
+      <td data-column-id="dstport" data-type="destination_port"><strong><?= gettext('Dest Port') ?></strong></td>
     </tr>
   </tbody>
 </table>
