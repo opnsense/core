@@ -443,14 +443,11 @@ function configure_interface_hardware($ifs)
 
 function legacy_get_interface_addresses($ifs, $ifconfig_details = null)
 {
+    $intf_details = array();
     if (empty($ifconfig_details)) {
         $intf_details = legacy_interface_details($ifs);
-    } else {
-        if (!empty($ifconfig_details[$ifs])) {
-            $intf_details = $ifconfig_details[$ifs];
-        } else {
-            $intf_details = array();
-        }
+    } else if (!empty($ifconfig_details[$ifs])) {
+        $intf_details = $ifconfig_details[$ifs];
     }
 
     $addrs = array("macaddr" => $intf_details['macaddr']);
