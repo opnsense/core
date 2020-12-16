@@ -187,6 +187,7 @@ include("head.inc");
                           <table class="table table-condensed">
                             <thead>
                               <tr>
+                                <th><?= gettext("Remote Host");?></th>
                                 <th><?= gettext("Local subnets");?></th>
                                 <th class="hidden-xs hidden-sm"><?= gettext("SPI(s)");?></th>
                                 <th><?= gettext("Remote subnets");?></th>
@@ -198,6 +199,9 @@ include("head.inc");
                             <?php foreach ($ipsec_conn['sas'] as $sa_key => $sa):?>
                               <?php foreach ($sa['child-sas'] as $child_sa_key => $child_sa):?>
                               <tr>
+                                <td>
+                                  <?= $sa['remote-host'] ?>
+                                </td>
                                 <td>
                                   <?= implode('<br/>', $child_sa['local-ts'])?>
                                 </td>
