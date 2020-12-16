@@ -153,7 +153,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                         log_td.text(record[column_name]);
                                         break;
                                     case 'destination_port':
-                                        log_td.text(record[column_name]);                                        
+                                        log_td.text(record[column_name]);
                                         break;
                                     default:
                                         if (record[column_name] != undefined) {
