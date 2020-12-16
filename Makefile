@@ -131,6 +131,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-markupsafe \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
