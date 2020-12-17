@@ -79,7 +79,7 @@ class Config extends Singleton
      */
     private function isArraySequential(&$arrayData)
     {
-        return ctype_digit(implode('', array_keys($arrayData)));
+        return is_array($arrayData) && ctype_digit(implode('', array_keys($arrayData)));
     }
 
     /**
@@ -208,7 +208,7 @@ class Config extends Singleton
             } elseif (is_numeric($itemKey)) {
                 // recurring tag (content), use parent tagname.
                 $childNode = $node->addChild($parentTagName);
-            } elseif (is_array($itemValue) && $this->isArraySequential($itemValue)) {
+            } elseif ($this->isArraySequential($itemValue)) {
                 // recurring tag, skip placeholder.
                 $childNode = $node;
             } else {
