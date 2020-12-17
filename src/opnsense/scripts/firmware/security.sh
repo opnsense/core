@@ -30,5 +30,6 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${PKG_PROGRESS_FILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${PKG_PROGRESS_FILE}
 pkg audit -F >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}

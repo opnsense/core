@@ -196,6 +196,8 @@ EOF
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
 
+echo "Currently running $(opnsense-version) at $(date)" >> ${PKG_PROGRESS_FILE}
+
 set_check kernel
 set_check base
 
