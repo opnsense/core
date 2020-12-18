@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -467,6 +467,7 @@ EOD;
     \$HTTP["host"] =~ "(.*)" {
         url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
     }
+    ssl.engine = "disable"
 }
 
 EOD;
