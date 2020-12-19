@@ -430,6 +430,7 @@
                                     <option value="srcport">{{ lang._('src_port') }}</option>
                                     <option value="dst">{{ lang._('dst') }}</option>
                                     <option value="dstport">{{ lang._('dst_port') }}</option>
+                                    <option value="proto">{{ lang._('proto') }}</option>
                                     <option value="protoname">{{ lang._('protoname') }}</option>
                                     <option value="label">{{ lang._('label') }}</option>
                                     <option value="rid">{{ lang._('rule id') }}</option>
