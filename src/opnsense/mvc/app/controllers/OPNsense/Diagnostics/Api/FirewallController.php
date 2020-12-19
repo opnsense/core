@@ -74,8 +74,10 @@ class FirewallController extends ApiControllerBase
                 } elseif ((string)$node->if == 'openvpn') {
                     continue;
                 }
-                $interfaces[] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+                $interfaces[$key] = !empty((string)$node->descr) ? (string)$node->descr : $key;
             }
+            natcasesort($interfaces);
+            $interfaces = array_values($interfaces);
         }
 
         return [
