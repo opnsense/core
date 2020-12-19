@@ -1,7 +1,7 @@
 # Help functions for compatibility between python version 2 and 3
 
 
-# From http://legacy.python.org/dev/peps/pep-0469
+# From https://legacy.python.org/dev/peps/pep-0469
 try:
     dict.iteritems
 except AttributeError:
