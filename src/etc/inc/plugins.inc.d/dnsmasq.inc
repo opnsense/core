@@ -232,6 +232,9 @@ function _dnsmasq_add_host_entries()
                     }
 
                     $domain = $config['system']['domain'];
+                    if (isset($config['dnsmasq']['regdhcpdomain'])) {
+                        $domain = $config['dnsmasq']['regdhcpdomain'];
+                    }
                     if ($host['domain']) {
                         $domain = $host['domain'];
                     } elseif ($dhcpifconf['domain']) {
@@ -252,6 +255,9 @@ function _dnsmasq_add_host_entries()
                         continue;
                     }
                     $domain = $config['system']['domain'];
+                    if (isset($config['dnsmasq']['regdhcpdomain'])) {
+                        $domain = $config['dnsmasq']['regdhcpdomain'];
+                    }
                     // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                     //      for backward compatibilty support both here.
                     if (!empty($host['domainsearchlist'])) {
