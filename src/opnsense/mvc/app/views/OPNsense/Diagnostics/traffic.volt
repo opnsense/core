@@ -232,7 +232,11 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         ajaxGet('/api/diagnostics/traffic/interface',{}, function(data, status){
             // XXX: startup selected interfaces load/save in localStorage in a future version
+            let tmp = window.localStorage.getItem("api.diagnostics.traffic.interface");
             let selected_interfaces = ['lan', 'wan'];
+            if (tmp !== null) {
+                selected_interfaces = tmp.split(',');
+            }
             let i = 1;
             Object.keys(data.interfaces).forEach(function(intf) {
                 let colors = Chart.colorschemes.tableau.Tableau20.length;
@@ -335,6 +339,10 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
                 });
             })();
+        });
+
+        $("#interfaces").change(function(){
+            window.localStorage.setItem("api.diagnostics.traffic.interface", $(this).val());
         });
 
     });
