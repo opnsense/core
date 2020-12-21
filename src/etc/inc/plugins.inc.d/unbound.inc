@@ -165,6 +165,7 @@ private-address: 2001:db8::/32   # Documentation network IPv6
 private-address: fc00::/8        # Unique local address (ULA) part of "fc00::/7", not defined yet
 private-address: fd00::/8        # Unique local address (ULA) part of "fc00::/7", "/48" prefix group
 private-address: fe80::/10       # Link-local address (LLA)
+
 EOF;
     }
 

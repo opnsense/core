@@ -203,6 +203,7 @@ function print_alert_box($msg, $alert = 'warning', $button = '')
     <div style="margin-top: 8px;">{$msg}</div>
   </div>
 </div>
+
 EOFnp;
 }
 
@@ -214,6 +215,7 @@ function print_content_box($msg)
      <tr><td>{$msg}</td></tr>
   </table>
 </div>
+
 EOFnp;
 }
 

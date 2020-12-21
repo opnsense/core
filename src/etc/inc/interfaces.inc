@@ -2039,6 +2039,7 @@ psk="{$wlcfg['wpa']['passphrase']}"
 pairwise={$wlcfg['wpa']['wpa_pairwise']}
 group={$wlcfg['wpa']['wpa_pairwise']}
 }
+
 EOD;
 
                 @file_put_contents("/var/etc/wpa_supplicant_{$if}.conf", $wpa);
