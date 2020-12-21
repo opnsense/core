@@ -67,14 +67,15 @@ function get_vip_config_section(): array
  * @param string $url backup url
  * @param string $username remote username
  * @param string $password remote password
- * @param string $method xmlrpc method to call
+ * @param boolean $debug enable debug output
  * @return boolean
  */
-function carp_check_version($url, $username, $password, $method = 'opnsense.firmware_version')
+function carp_check_version($url, $username, $password, $debug=false)
 {
-    $client = new SimpleXMLRPC_Client($url,240);
+    $client = new SimpleXMLRPC_Client($url, 240);
+    $client->debug = $debug;
     $client->setCredentials($username, $password);
-    if ($client->query($method)) {
+    if ($client->query('opnsense.firmware_version')) {
         $remote_version = $client->getResponse();
     } else {
         // propagate error to log
@@ -87,7 +88,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
     }
 
     if (!is_array($remote_version) && trim($remote_version) == "Authentication failed") {
-        $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
+        $error = "An authentication failure occurred while trying to access {$url} (opnsense.firmware_version).";
         log_error($error);
         file_notice($error);
         return false;
@@ -158,10 +159,10 @@ function copy_conf_section(&$cnf_structure_in, &$cnf_structure_out,  $reference)
  * @param string $username remote username
  * @param string $password remote password
  * @param array $sections sections to transfer
- * @param string $method xmlrpc method to call
+ * @param boolean $debug enable debug output
  * @return boolean
  */
-function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsense.restore_config_section')
+function carp_sync_xml($url, $username, $password, $sections, $debug)
 {
     global $config;
 
@@ -202,8 +203,9 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     }
 
     $client = new SimpleXMLRPC_Client($url,240);
+    $client->debug = $debug;
     $client->setCredentials($username, $password);
-    if ($client->query($method, $transport_data)) {
+    if ($client->query('opnsense.restore_config_section', $transport_data)) {
         $response = $client->getResponse();
     } else {
         // propagate error to log
@@ -216,7 +218,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     }
 
     if (!is_array($response) && trim($response) == "Authentication failed") {
-        $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
+        $error = "An authentication failure occurred while trying to access {$url} (opnsense.restore_config_section).";
         log_error($error);
         file_notice($error);
         exit;
@@ -231,6 +233,7 @@ if (file_exists('/var/run/booting')) {
 
 if (isset($config['hasync']) && is_array($config['hasync'])) {
     $hasync = $config['hasync'];
+    $enable_debug = count($argv) > 1 && $argv[1] == 'debug';
 
     if (empty($hasync['synchronizetoip'])) {
         log_error("Config sync not being done because of missing sync IP (this is normal on secondary systems).");
@@ -291,19 +294,13 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     }
 
     $username = empty($hasync['username']) ? "root" : $hasync['username'];
-    if (!carp_check_version($synchronizeto, $username, $hasync['password'])) {
+    if (!carp_check_version($synchronizeto, $username, $hasync['password'], $enable_debug)) {
         exit;
     }
 
-    carp_sync_xml($synchronizeto, $username, $hasync['password'], $sections);
-
-    if (count($argv) <= 1 || $argv[1] != 'restart' ) {
-        // only sync data, no reload
-        // TODO: config sync probably needs more thinking, but when we always force a reload
-        // TODO: the machine tends to get sloppy
-        exit;
-    }
+    carp_sync_xml($synchronizeto, $username, $hasync['password'], $sections, $enable_debug);
     $client = new SimpleXMLRPC_Client($synchronizeto, 240);
+    $client->debug = $enable_debug;
     $client->setCredentials($username, $hasync['password']);
     if ($client->query("opnsense.filter_configure")) {
         $response = $client->getResponse();
@@ -318,7 +315,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     }
 
     if (!is_array($response) && trim($response) == "Authentication failed") {
-        $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
+        $error = "An authentication failure occurred while trying to access {$url}.";
         log_error($error);
         file_notice($error);
         exit;
