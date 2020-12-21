@@ -66,7 +66,13 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
-    foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
+    if (isset($config['system']['webgui']['strictbind']) && $config['system']['webgui']['strictbind'] != '') {
+        $include_vips = false;
+    } else {
+        $include_vips = true;
+    }
+
+    foreach (interfaces_addresses($interfaces,null,null,$include_vips) as $tmpaddr => $info) {
         if ($info['scope']) {
             /* link-local does not seem to be supported */
             continue;

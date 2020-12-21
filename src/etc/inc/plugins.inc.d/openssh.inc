@@ -195,7 +195,13 @@ function openssh_configure_do($verbose = false, $interface = '')
 
     $listeners = array();
 
-    foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
+    if (isset($sshcfg['strictbind']) && $sshcfg['strictbind'] != '') {
+        $include_vips = false;
+    } else {
+        $include_vips = true;
+    }
+
+    foreach (interfaces_addresses($interfaces,null,null,$include_vips) as $tmpaddr => $info) {
         if ($info['scope']) {
             /* link-local does not seem to be supported */
             continue;

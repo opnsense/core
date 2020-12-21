@@ -41,6 +41,7 @@ $a_authmode = auth_get_authserver_list();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
+    $pconfig['webguistrictbind'] = isset($config['system']['webgui']['strictbind']);
     $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
     $pconfig['session_timeout'] = !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : null;
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
@@ -67,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
+    $pconfig['sshstrictbind'] = isset($config['system']['ssh']['strictbind']);
     $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : array();
     $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
@@ -126,7 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
-            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
+            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
+            ($pconfig['webguistrictbind'] == "yes") != !empty($config['system']['webgui']['strictbind']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
@@ -134,6 +137,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+
+        if ($pconfig['webguistrictbind'] == "yes") {
+            $config['system']['webgui']['strictbind'] = true;
+        } elseif (isset($config['system']['webgui']['strictbind'])) {
+            unset($config['system']['webgui']['strictbind']);
+        }
 
         if (!empty($pconfig['ssl-hsts'])) {
             $config['system']['webgui']['ssl-hsts'] = true;
@@ -244,6 +253,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
         $config['system']['ssh']['keys'] = !empty($pconfig['ssh-keys']) ? implode(',', $pconfig['ssh-keys']) : null;
+
+        if ($pconfig['sshstrictbind'] == "yes") {
+            $config['system']['ssh']['strictbind'] = true;
+        } elseif (isset($config['system']['ssh']['strictbind'])) {
+            unset($config['system']['ssh']['strictbind']);
+        }
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -387,6 +402,32 @@ $(document).ready(function() {
          }
      });
      $.webguiinterface_warned = $('#webguiinterface option:selected').length ? 1 : 0;
+
+     $('#webguistrictbind').change(function () {
+         if (!$('#webguistrictbind').prop('checked')) {
+             $.webguistrictbind_warned = 0;
+         } else if ($.webguistrictbind_warned != 1) {
+             $.webguistrictbind_warned = 1;
+             BootstrapDialog.confirm({
+                 title: '<?= html_safe(gettext('Warning!')) ?>',
+                 message: '<?= html_safe(gettext('Enabling strict interface binding of the web GUI may ' .
+                     'prevent you from accessing this page if you continue. It is recommended to keep ' .
+                     'this set to the default unless you know what you are doing.')) ?>',
+                 type: BootstrapDialog.TYPE_WARNING,
+                 btnOKClass: 'btn-warning',
+                 btnOKLabel: '<?= html_safe(gettext('I know what I am doing')) ?>',
+                 btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
+                 callback: function(result) {
+                     if (!result) {
+                         $('#webguistrictbind').prop('checked', false);
+                         $('#webguistrictbind').selectpicker('refresh');
+                         $.webguistrictbind_warned = 0;
+                     }
+                 }
+             });
+         }
+     });
+     $.webguistrictbind_warned = $('#webguistrictbind').prop('checked') ? 1 : 0;
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
@@ -637,6 +678,16 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_webguistrictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Strict Interface Binding') ?></td>
+                <td>
+                  <input id="webguistrictbind" name="webguistrictbind" type="checkbox" value="yes" <?= empty($pconfig['webguistrictbind']) ? '' : 'checked="checked"' ?> />
+                  <?=gettext("Do not bind on virtual IPs"); ?>
+                  <div class="hidden" data-for="help_for_webguistrictbind">
+                    <?= gettext('Only listen on primary interface addresses, ignoring all virtual IP addresses. Leave empty to listen on any interface address. Use with care.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
                 <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP_REFERER enforcement"); ?></td>
                 <td>
                   <input name="nohttpreferercheck" type="checkbox" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
@@ -722,6 +773,16 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_sshinterfaces">
                     <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_sshstrictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Strict Interface Binding') ?></td>
+                <td>
+                  <input id="sshstrictbind" name="sshstrictbind" type="checkbox" value="yes" <?= empty($pconfig['sshstrictbind']) ? '' : 'checked="checked"' ?> />
+                  <?=gettext("Do not bind on virtual IPs"); ?>
+                  <div class="hidden" data-for="help_for_webguistrictbind">
+                    <?= gettext('Only listen on primary interface addresses, ignoring all virtual IP addresses. Leave empty to listen on any interface address. Use with care.') ?>
                   </div>
                 </td>
               </tr>

@@ -4539,7 +4539,7 @@ function make_ipv6_64_address($prefix, $suffix)
     return implode(':', $prefix_array);
 }
 
-function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details = null)
+function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details = null, $include_vips = true)
 {
     global $config;
 
@@ -4581,6 +4581,14 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
             foreach ($intf_details[$realif][$proto] as $address) {
                 if (!empty($address['tunnel']) || empty($address['ipaddr'])) {
                     continue;
+                }
+                if (!$include_vips) {
+                    $vip_types = array('carp', 'ipalias');
+                    foreach (config_read_array('virtualip', 'vip') as $vip) {
+                        if ($vip['subnet'] == $address['ipaddr'] && in_array($vip['mode'], $vip_types)) {
+                            continue 2;
+                        }
+                    }
                 }
                 $scope = '';
                 if (!empty($address['link-local'])) {
