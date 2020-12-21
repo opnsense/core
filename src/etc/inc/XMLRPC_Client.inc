@@ -124,7 +124,7 @@ class SimpleXMLRPC_Client
 
         $this->request_send = $headers . $request_xml;
         if ($this->debug) {
-            echo ">>> send : \n" . $this->request_send . "\n";
+            echo sprintf(">>> send %d bytes: \n%s\n", strlen($this->request_send), $this->request_send);
         }
 
         // setup a stream context
@@ -147,7 +147,7 @@ class SimpleXMLRPC_Client
         }
 
         if ($this->debug) {
-            echo ">>> received : \n" . $this->response_received . "\n";
+            echo sprintf(">>> received %d bytes: \n%s\n", strlen($this->response_received), $this->response_received);
         }
 
         $this->message = new IXR_Message($this->response_received);
