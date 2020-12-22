@@ -210,7 +210,7 @@ class AliasContentField extends BaseField
                     !($ipaddr_count == 2 && $domain_alias_count == 0)
             ) {
                 $messages[] = sprintf(
-                    gettext('Entry "%s" is not a valid hostname or IP address.'),
+                    gettext('Entry "%s" is not a network.'),
                     $network
                 );
             }
