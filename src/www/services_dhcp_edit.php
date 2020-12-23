@@ -127,6 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* check for overlaps */
     if (!empty($pconfig['domain'])) {
         $this_fqdn = $pconfig['hostname'] . "." . $pconfig['domain'];
+    } elseif (!empty($if) && !empty($config['dhcpd'][$if]['domain'])) {
+        $this_fqdn = $pconfig['hostname'] . "." . $config['dhcpd'][$if]['domain'];
     } else {
         $this_fqdn = $pconfig['hostname'] . "." . $config['system']['domain'];
     }
@@ -138,6 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $fqdn = "";
         } elseif (!empty($mapent['domain'])) {
             $fqdn = $mapent['hostname'] . "." . $mapent['domain'];
+        } elseif (!empty($if) && !empty($config['dhcpd'][$if]['domain'])) {
+            $fqdn = $mapent['hostname'] . "." . $config['dhcpd'][$if]['domain'];
         } else {
             $fqdn = $mapent['hostname'] . "." . $config['system']['domain'];
         }
