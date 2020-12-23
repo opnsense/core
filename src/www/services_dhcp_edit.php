@@ -125,11 +125,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* check for overlaps */
+    if (!empty($pconfig['domain'])) {
+        $this_fqdn = $pconfig['hostname'] . "." . $pconfig['domain'];
+    } else {
+        $this_fqdn = $pconfig['hostname'] . "." . $config['system']['domain'];
+    }
     foreach ($a_maps as $mapent) {
         if (isset($id) && ($a_maps[$id] === $mapent)) {
             continue;
         }
-        if ((($mapent['hostname'] == $pconfig['hostname']) && $mapent['hostname'])  ||
+        if (empty($mapent['hostname'])) {
+            $fqdn = "";
+        } elseif (!empty($mapent['domain'])) {
+            $fqdn = $mapent['hostname'] . "." . $mapent['domain'];
+        } else {
+            $fqdn = $mapent['hostname'] . "." . $config['system']['domain'];
+        }
+
+        if (($fqdn == $this_fqdn)  ||
             (($mapent['mac'] == $pconfig['mac']) && $mapent['mac']) ||
             (($mapent['ipaddr'] == $pconfig['ipaddr']) && $mapent['ipaddr'] ) ||
             (($mapent['cid'] == $pconfig['cid']) && $mapent['cid'])) {
