@@ -45,6 +45,6 @@ class QueryFilter
      */
     public function filter($value)
     {
-        return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,.,\#]/", "", $value);
+        return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
     }
 }
