@@ -71,9 +71,11 @@ class TrafficController extends ApiControllerBase
         if (count($iflist) > 0) {
             $data = (new Backend())->configdpRun('interface show top', [implode(",", $iflist)]);
             $data = json_decode($data, true);
-            foreach ($data as $if => $content) {
-                if (isset($ifmap[$if])) {
-                    $response[$ifmap[$if]] = $content;
+            if (is_array($data)) {
+                foreach ($data as $if => $content) {
+                    if (isset($ifmap[$if])) {
+                        $response[$ifmap[$if]] = $content;
+                    }
                 }
             }
         }

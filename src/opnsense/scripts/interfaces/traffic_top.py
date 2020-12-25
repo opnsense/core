@@ -61,6 +61,18 @@ def local_addresses():
                 result.append(ip)
     return result
 
+def convert_bformat(value):
+    value = value.lower()
+    if value.endswith('kb'):
+        return decimal.Decimal(value[:-2]) * 1000
+    elif value.endswith('mb'):
+        return decimal.Decimal(value[:-2]) * 1000000
+    elif value.endswith('gb'):
+        return decimal.Decimal(value[:-2]) * 1000000000
+    elif value.endswith('b') and value[:-1].isdigit():
+        return decimal.Decimal(value[:-1])
+    return 0
+
 if __name__ == '__main__':
     result = dict()
     parser = argparse.ArgumentParser()
@@ -86,16 +98,14 @@ if __name__ == '__main__':
                 parts = line.split()
                 if parts[0].find('.') == -1 and parts[0].find(':') == -1:
                     parts.pop(0)
-                rate_bits = 0
-                if parts[2].endswith('Kb'):
-                    rate_bits = decimal.Decimal(parts[2][:-2]) * 1000
-                elif parts[2].endswith('Mb'):
-                    rate_bits = decimal.Decimal(parts[2][:-2]) * 1000000
-                elif parts[2].endswith('Gb'):
-                    rate_bits = decimal.Decimal(parts[2][:-2]) * 1000000000
-                elif parts[2].endswith('b') and parts[2][:-1].isdigit():
-                    rate_bits = decimal.Decimal(parts[2][:-1])
-                item = {'address': parts[0], 'rate': parts[2], 'rate_bits': rate_bits, 'tags': []}
+                item = {
+                    'address': parts[0],
+                    'rate': parts[2],
+                    'rate_bits': int(convert_bformat(parts[2])),
+                    'cumulative': parts[5],
+                    'cumulative_bytes': int(convert_bformat(parts[5])),
+                    'tags': []
+                }
                 # attach tags (type of address)
                 try:
                     ip = IPAddress(parts[0])
