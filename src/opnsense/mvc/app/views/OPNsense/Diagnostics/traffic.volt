@@ -228,6 +228,73 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         /**
+         * iftop (top talkers) update
+         */
+        function updateTopTable(data) {
+            let target = $("#rxTopTable > tbody");
+            let update_stamp = Math.trunc(Date.now() / 1000.0);
+            let update_stamp_iso = (new Date()).toISOString();
+            Object.keys(data).forEach(function(intf) {
+                let intf_label = $("#interfaces > option[value="+intf+"]").data('content');
+                ['in', 'out'].forEach(function(dir) {
+                    for (var i=0; i < data[intf][dir].length ; i++) {
+                        let item = data[intf][dir][i];
+                        let tr = target.find("tr[data-address='"+item.address+"']");
+                        if (tr.length === 0) {
+                            tr = $("<tr/>");
+                            tr.attr("data-address", item.address); // XXX: find matches on tag
+                            tr.data('bps_in', 0).data('bps_out', 0).data('bps_max_in', 0)
+                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0);
+                            tr.append($("<td/>").html(intf_label));
+                            tr.append($("<td/>").text(item.address));
+                            tr.append($("<td class='bps_in'/>").text("0b"));
+                            tr.append($("<td class='bps_out'/>").text("0b"));
+                            tr.append($("<td class='bps_max_in'/>").text("0b"));
+                            tr.append($("<td class='bps_max_out'/>").text("0b"));
+                            tr.append($("<td class='total_in'/>").text("0b"));
+                            tr.append($("<td class='total_out'/>").text("0b"));
+                            tr.append($("<td class='last_seen'/>"));
+                            target.append(tr);
+                        }
+                        tr.data('bps_'+dir, item.rate_bits);
+                        tr.data('total_'+ dir, tr.data('total_'+ dir) + item.cumulative_bytes);
+                        tr.data('last_seen', update_stamp);
+                        tr.find('td.last_seen').text(update_stamp_iso);
+                        if (parseInt(tr.data('bps_max_'+dir)) < item.rate_bits) {
+                              tr.data('bps_max_'+dir, item.rate_bits);
+                              tr.find('td.bps_max_'+dir).text(item.rate);
+                        }
+                        tr.find('td.bps_'+dir).text(item.rate);
+                        tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
+                    }
+                });
+            });
+            let ttl = 120; // keep visible for ttl seconds
+            target.find('tr').each(function(){
+                if (parseInt($(this).data('last_seen')) < (update_stamp - ttl)) {
+                    $(this).remove();
+                } else if (parseInt($(this).data('last_seen')) != update_stamp) {
+                    // reset measurements not in this set
+                    $(this).data('bps_in', 0);
+                    $(this).data('bps_out', 0);
+                    $(this).find('td.bps_in').text("0b");
+                    $(this).find('td.bps_out').text("0b");
+                }
+            });
+            // sort by current top consumer
+            target.find('tr').sort(function(a, b) {
+                let a_total = parseInt($(a).data('bps_in')) + parseInt($(a).data('bps_out'));
+                let b_total = parseInt($(b).data('bps_in')) + parseInt($(b).data('bps_out'));
+                if (b_total == 0 && a_total == 0) {
+                    // sort by age (last seen)
+                    return  parseInt($(b).data('last_seen')) - parseInt($(a).data('last_seen'));
+                } else {
+                    return  b_total - a_total;
+                }
+            }).appendTo(target);
+        }
+
+        /**
          * startup, fetch initial interface stats and create graphs
          */
         ajaxGet('/api/diagnostics/traffic/interface',{}, function(data, status){
@@ -333,6 +400,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
                     if (status == 'success') {
                         $( document ).trigger( "updateTrafficTopCharts", [ data ] );
+                        updateTopTable(data);
                         top_traffic_poller();
                     } else {
                         setTimeout(top_traffic_poller, 2000);
@@ -346,7 +414,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 window.localStorage.setItem("api.diagnostics.traffic.interface", $(this).val());
             }
         });
-
     });
 
 
@@ -357,46 +424,70 @@ POSSIBILITY OF SUCH DAMAGE.
   }
 </style>
 
-<div class="content-box">
-    <div class="content-box-main">
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li class="active"><a data-toggle="tab" id="graph_tab" href="#graph">{{ lang._('Graph') }}</a></li>
+    <li><a data-toggle="tab" id="gtid_tab" href="#toptalkers">{{ lang._('Top talkers') }}</a></li>
+    <div class="pull-right">
+        <select class="selectpicker" id="interfaces" multiple=multiple>
+        </select>
+        &nbsp;
+    </div>
+</ul>
+<div class="tab-content content-box">
+    <div id="graph" class="tab-pane fade in active">
         <div class="table-responsive">
-                <div class="row">
-                    <div class="col-sm-12">
-                      <div class="pull-right">
-                          <select class="selectpicker" id="interfaces" multiple=multiple>
-                          </select>
-                          &nbsp;
-                      </div>
-                    </div>
-                    <div class="col-xs-12 col-lg-6">
-                      <div class="chart-container">
-                          <canvas id="rxChart" data-src_field="bytes received"></canvas>
-                      </div>
-                    </div>
-                    <div class="col-xs-12 col-lg-6">
-                        <div class="chart-container">
-                            <canvas id="txChart" data-src_field="bytes transmitted"></canvas>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-sm-12">
                 </div>
-                <div class="row">
-                  <div class="col-xs-12">
-                      <hr/>
+                <div class="col-xs-12 col-lg-6">
+                  <div class="chart-container">
+                      <canvas id="rxChart" data-src_field="bytes received"></canvas>
                   </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12 col-lg-6">
-                        <div class="chart-container">
-                            <canvas id="rxTopChart" data-src_field="in"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-lg-6">
-                        <div class="chart-container">
-                            <canvas id="txTopChart" data-src_field="out"></canvas>
-                        </div>
+                <div class="col-xs-12 col-lg-6">
+                    <div class="chart-container">
+                        <canvas id="txChart" data-src_field="bytes transmitted"></canvas>
                     </div>
                 </div>
             </div>
+            <div class="row">
+              <div class="col-xs-12">
+                  <hr/>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-lg-6">
+                    <div class="chart-container">
+                        <canvas id="rxTopChart" data-src_field="in"></canvas>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-lg-6">
+                    <div class="chart-container">
+                        <canvas id="txTopChart" data-src_field="out"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toptalkers" class="tab-pane fade in">
+        <div class="col-xs-12 col-lg-12">
+            <table class="table table-condensed" id="rxTopTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ lang._('Address') }}</th>
+                        <th>{{ lang._('In (bps)') }}</th>
+                        <th>{{ lang._('Out (bps)') }}</th>
+                        <th>{{ lang._('In max(bps)') }}</th>
+                        <th>{{ lang._('Out max(bps)') }}</th>
+                        <th>{{ lang._('Total In') }}</th>
+                        <th>{{ lang._('Total Out') }}</th>
+                        <th>{{ lang._('Timestamp') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
