@@ -233,6 +233,7 @@ POSSIBILITY OF SUCH DAMAGE.
         function updateTopTable(data) {
             let target = $("#rxTopTable > tbody");
             let update_stamp = Math.trunc(Date.now() / 1000.0);
+            let update_stamp_iso = (new Date()).toISOString();
             Object.keys(data).forEach(function(intf) {
                 let intf_label = $("#interfaces > option[value="+intf+"]").data('content');
                 ['in', 'out'].forEach(function(dir) {
@@ -240,23 +241,31 @@ POSSIBILITY OF SUCH DAMAGE.
                         let item = data[intf][dir][i];
                         let tr = target.find("tr[data-address='"+item.address+"']");
                         if (tr.length === 0) {
-                            tr = $("<tr data-bps_in='0' data-bps_out='0' data-bps_max_in='0' data-bps_max_out='0'/>");
-                            tr.attr("data-address", item.address);
+                            tr = $("<tr/>");
+                            tr.attr("data-address", item.address); // XXX: find matches on tag
+                            tr.data('bps_in', 0).data('bps_out', 0).data('bps_max_in', 0)
+                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0);
                             tr.append($("<td/>").html(intf_label));
                             tr.append($("<td/>").text(item.address));
                             tr.append($("<td class='bps_in'/>").text("0b"));
                             tr.append($("<td class='bps_out'/>").text("0b"));
                             tr.append($("<td class='bps_max_in'/>").text("0b"));
                             tr.append($("<td class='bps_max_out'/>").text("0b"));
+                            tr.append($("<td class='total_in'/>").text("0b"));
+                            tr.append($("<td class='total_out'/>").text("0b"));
+                            tr.append($("<td class='last_seen'/>"));
                             target.append(tr);
                         }
-                        tr.attr('data-bps_'+dir, item.rate_bits);
-                        tr.attr('data-last_seen', update_stamp);
+                        tr.data('bps_'+dir, item.rate_bits);
+                        tr.data('total_'+ dir, tr.data('total_'+ dir) + item.cumulative_bytes);
+                        tr.data('last_seen', update_stamp);
+                        tr.find('td.last_seen').text(update_stamp_iso);
                         if (parseInt(tr.data('bps_max_'+dir)) < item.rate_bits) {
-                              tr.attr('data-bps_max_'+dir, item.rate_bits);
+                              tr.data('bps_max_'+dir, item.rate_bits);
                               tr.find('td.bps_max_'+dir).text(item.rate);
                         }
                         tr.find('td.bps_'+dir).text(item.rate);
+                        tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
                     }
                 });
             });
@@ -266,17 +275,22 @@ POSSIBILITY OF SUCH DAMAGE.
                     $(this).remove();
                 } else if (parseInt($(this).data('last_seen')) != update_stamp) {
                     // reset measurements not in this set
-                    $(this).attr('data-bps_in', 0);
-                    $(this).attr('data-bps_out', 0);
+                    $(this).data('bps_in', 0);
+                    $(this).data('bps_out', 0);
                     $(this).find('td.bps_in').text("0b");
                     $(this).find('td.bps_out').text("0b");
                 }
             });
             // sort by current top consumer
             target.find('tr').sort(function(a, b) {
-                let a_total = +$(a).data('bps_in') + $(a).data('bps_out');
-                let b_total = +$(b).data('bps_in') + $(b).data('bps_out');
-                return  b_total - a_total;
+                let a_total = parseInt($(a).data('bps_in')) + parseInt($(a).data('bps_out'));
+                let b_total = parseInt($(b).data('bps_in')) + parseInt($(b).data('bps_out'));
+                if (b_total == 0 && a_total == 0) {
+                    // sort by age (last seen)
+                    return  parseInt($(b).data('last_seen')) - parseInt($(a).data('last_seen'));
+                } else {
+                    return  b_total - a_total;
+                }
             }).appendTo(target);
         }
 
@@ -386,8 +400,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
                     if (status == 'success') {
                         $( document ).trigger( "updateTrafficTopCharts", [ data ] );
-                        top_traffic_poller();
                         updateTopTable(data);
+                        top_traffic_poller();
                     } else {
                         setTimeout(top_traffic_poller, 2000);
                     }
@@ -456,7 +470,7 @@ POSSIBILITY OF SUCH DAMAGE.
         </div>
     </div>
     <div id="toptalkers" class="tab-pane fade in">
-        <div class="col-xs-12 col-lg-6">
+        <div class="col-xs-12 col-lg-12">
             <table class="table table-condensed" id="rxTopTable">
                 <thead>
                     <tr>
@@ -466,6 +480,9 @@ POSSIBILITY OF SUCH DAMAGE.
                         <th>{{ lang._('Out (bps)') }}</th>
                         <th>{{ lang._('In max(bps)') }}</th>
                         <th>{{ lang._('Out max(bps)') }}</th>
+                        <th>{{ lang._('Total In') }}</th>
+                        <th>{{ lang._('Total Out') }}</th>
+                        <th>{{ lang._('Timestamp') }}</th>
                     </tr>
                 </thead>
                 <tbody>
