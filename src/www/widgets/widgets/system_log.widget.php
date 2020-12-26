@@ -28,67 +28,154 @@
 
 require_once("guiconfig.inc");
 
-$system_logfile = '/var/log/system.log';
 
 if (!$config['widgets']['systemlogfiltercount']){
-  $syslogEntriesToFetch = 20;
-} else {
-  $syslogEntriesToFetch = $config['widgets']['systemlogfiltercount'];
-}
+    $systemlogEntriesToFetch = 20;
+  } else {
+    $systemlogEntriesToFetch = $config['widgets']['systemlogfiltercount'];
+  }
+$input_errors = array();
 
-if (is_numeric($_POST['logfiltercount'])) {
-   $countReceived =  $_POST['logfiltercount'];
-   $config['widgets']['systemlogfiltercount'] = $countReceived;
-   write_config("Saved Widget System Log Filter Setting");
-   header(url_safe('Location: /index.php'));
-   exit;
+if (isset($_COOKIE['inputerrors'])) {
+  foreach ($_COOKIE['inputerrors'] as $i => $value) {
+      $input_errors[] = $value;
+      setcookie("inputerrors[$i]", "", time() - 3600);
+  }
 }
+  
+if ((is_numeric($_POST['systemlogfiltercount'])) && (is_numeric($_POST['systemlogentriesupdateinterval']))) {
+  $countReceived =  $_POST['systemlogfiltercount'];
+  $intervalReceived = $_POST['systemlogentriesupdateinterval'];
+  $filtervalReceived = $_POST['systemlogentriesfilter'];
+  if (!preg_match('/^[0-9,a-z,A-Z *\-_.\#]*$/', $filtervalReceived)) {
+    $input_errors[] = gettext("Query filter string is invalid");
+  }
+    
+  if (count($input_errors) == 0) {
+      $config['widgets']['systemlogfiltercount'] = $countReceived;
+      $config['widgets']['systemlogupdateinterval'] = $intervalReceived;
+      $config['widgets']['systemlogentriesfilter'] = $filtervalReceived;
+      write_config("Saved Widget System Log Filter Setting");
+      header(url_safe('Location: /index.php'));
+      exit;
+  }
+  for ($i = 0; $i < count($input_errors); $i++)  {
+      setcookie("inputerrors[$i]",$input_errors[$i],0,'/');
+  }
+
+  header(url_safe('Location: /index.php'));
+  exit;
+  
+}
+$systemlogupdateinterval = isset($config['widgets']['systemlogupdateinterval']) ? $config['widgets']['systemlogupdateinterval'] : 10;
+$systemlogentriesfilter = isset($config['widgets']['systemlogentriesfilter']) ? $config['widgets']['systemlogentriesfilter'] : "";
+
 ?>
 
 <div id="system_log-settings" class="widgetconfigdiv" style="display:none;">
+
   <form action="/widgets/widgets/system_log.widget.php" method="post" name="iform">
     <table class="table table-striped">
       <tr>
         <td><?=gettext("Number of Log lines to display");?>:</td>
         <td>
-          <select name="logfiltercount" id="logfiltercount">
+          <select name="systemlogfiltercount" id="systemlogfiltercount">
             <?php for ($i = 1; $i <= 50; $i++) {?>
-            <option value="<?= html_safe($i) ?>" <?php if ($syslogEntriesToFetch == $i) { echo "selected=\"selected\"";}?>><?= html_safe($i) ?></option>
+            <option value="<?= html_safe($i) ?>" <?php if ($systemlogEntriesToFetch == $i) { echo "selected=\"selected\"";}?>><?= html_safe($i) ?></option>
             <?php } ?>
-          </select>
+            </select>
         </td>
         <td>
-          <input id="submit_system_log_widget" name="submit_system_log_widget" type="submit" class="btn btn-primary formbtn" value="<?= html_safe(gettext('Save')) ?>">
+          <input id="submit_system_log_widget" name="submit_system_log_widget" type="submit" class="btn btn-primary formbtn" style="float: right;" value="<?= html_safe(gettext('Save')) ?>">
+        </td>
+      </tr>
+      <tr>
+        <td><?= gettext('Update interval in seconds:') ?><t/d>
+        <td>
+          <select id="systemlogentriesupdateinterval" name="systemlogentriesupdateinterval">
+<?php for ($i = 5; $i <= 30; $i++): ?>
+            <option value="<?= html_safe($i) ?>" <?= $systemlogupdateinterval == $i ? 'selected="selected"' : '' ?>><?= html_safe($i) ?></option>
+<?php endfor ?>
+          </select>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><?= gettext('Log query filter:') ?><t/d>
+        <td colspan="2">
+         <input id="systemlogentriesfilter" name="systemlogentriesfilter" type="text" value="<?=$systemlogentriesfilter?>" placeholder="<?=$systemlogentriesfilter?>" />
         </td>
       </tr>
     </table>
   </form>
 </div>
-
+<div style="overflow: overlay;">
+<?php
+    if (isset($input_errors) && count($input_errors) > 0) {
+        print_input_errors($input_errors);
+    }
+?>
+</div>
 <div id="system_log-widgets" class="content-box" style="overflow:scroll;">
-  <table class="table table-striped">
-      <tbody>
-<?php
-        $logdata = json_decode(
-            configdp_run("system diag log", [$syslogEntriesToFetch, 0, "", "core", "system"]),
-            true
-        );
-        $records = !empty($logdata) && !empty($logdata['rows']) ? $logdata['rows'] : [];
-        foreach($records as $record):?>
-        <tr>
-            <td style="width:150px;" class="text-nowrap"><?=$record['timestamp'];?></td>
-            <td><?=html_safe($record['line']);?></td>
-        </tr>
 
-<?php
-        endforeach;?>
-      </tbody>
-  </table>
+<table id="system_log_table" class="table table-striped">
+  <tbody></tbody>
+</table>
 </div>
 
-<!-- needed to display the widget settings menu -->
 <script>
-//<![CDATA[
-  $("#system_log-configure").removeClass("disabled");
-//]]>
+
+        function fetch_system_log(rowCount,refresh_interval_ms){
+            //it is more correct to pass the filter value to the function (without searching the value every time). but this method allows to "live" test the filter value before saving
+            var filterstring = "";
+            if ($("#systemlogentriesfilter").val()) {
+              filterstring = $("#systemlogentriesfilter").val();
+            }
+
+            $.ajax({
+               url: 'api/diagnostics/log/core/system',
+               data: 'current=1&rowCount=' + rowCount + '&searchPhrase=' + filterstring,
+               type: 'POST'
+            })
+               .done(function ( data, status ) {
+                  $( ".system_log_entry" ).remove();
+                  var entry;
+                  var system_log_tr="";
+                  while ((entry=data.rows.shift())) {
+                      var timestamp = entry['timestamp'];
+                      var process_name = entry['process_name'];
+                      var entryline = entry['line'];
+                      system_log_tr += '<tr class="system_log_entry"><td style="white-space: nowrap;">' + timestamp + '<br>'+ process_name.split('[')[0] + '</td><td>' + entryline + '</td></tr>';
+                  }
+                 $("#system_log_table tbody").append(system_log_tr);
+                 setTimeout(fetch_system_log, refresh_interval_ms,rowCount,refresh_interval_ms);
+               })
+               .fail(function( jqXHR, textStatus ) {
+                console.log( "Request failed: " + textStatus );
+                setTimeout(fetch_system_log, refresh_interval_ms,rowCount,refresh_interval_ms);
+               })
+        }
+
+
+       $( document ).ready(function() {
+        // needed to display the widget settings menu
+        // need document ready to use CSRF Token - not ready at window load
+        // exit if settings button enabled (second call because of .appendTo in widgets moving function)
+
+        if(!($("#system_log-configure").hasClass( "disabled" ))) {
+          return;
+        }
+        $("#system_log-configure").removeClass("disabled");
+        var rowCount = $("#systemlogfiltercount").val();
+        var refresh_interval_ms = parseInt($("#systemlogentriesupdateinterval").val()) * 1000;
+        refresh_interval_ms = (isNaN(refresh_interval_ms) || refresh_interval_ms < 5000 || refresh_interval_ms > 60000) ? 10000 : refresh_interval_ms;
+        var filterstring = "";
+        if ($("#systemlogentriesfilter").val()) {
+                filterstring = $("#systemlogentriesfilter").val();
+                $('section#system_log').find('h3').append(' filtered with "' + filterstring + '"');
+            }
+        fetch_system_log(rowCount,refresh_interval_ms);
+       })
+
 </script>
+
