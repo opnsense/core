@@ -342,6 +342,10 @@
             }
             setTimeout(poller, 1000);
         }
+        // manual refresh
+        $("#refresh").click(function(){
+            fetch_log();
+        });
 
         // fetch interface mappings on load
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
@@ -496,6 +500,9 @@
                         <option value="10000">10000</option>
                         <option value="20000">20000</option>
                     </select>
+                    <button id="refresh" type="button" class="btn btn-default">
+                        <span class="fa fa-refresh"></span>
+                    </button>
                   </div>
                 </div>
             </div>
