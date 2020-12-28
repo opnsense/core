@@ -195,11 +195,17 @@ function openssh_configure_do($verbose = false, $interface = '')
 
     $listeners = array();
 
-    foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
-        if ($info['scope']) {
-            /* link-local does not seem to be supported */
-            continue;
-        }
+    /* bind on (all/selected) interfaces or use specified IP */
+    if (isset($config['system']['ssh']['managementaccess']) &&
+        $config['system']['ssh']['managementaccess'] === 'ip' &&
+        isset($config['system']['ssh']['ip'])) {
+        $listeners[] = $config['system']['ssh']['ip'];
+    } else {
+        foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
+            if ($info['scope']) {
+                /* link-local does not seem to be supported */
+                continue;
+            }
 
         if (count($listeners) < 16) {
             $listeners[] = $tmpaddr;

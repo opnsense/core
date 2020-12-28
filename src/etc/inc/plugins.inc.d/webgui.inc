@@ -66,13 +66,20 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
-    foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
-        if ($info['scope']) {
-            /* link-local does not seem to be supported */
-            continue;
-        }
+    /* bind on (all/selected) interfaces or use specified IP */
+    if (isset($config['system']['webgui']['managementaccess']) &&
+        $config['system']['webgui']['managementaccess'] === 'ip' &&
+        isset($config['system']['webgui']['ip'])) {
+        $listeners[] = $config['system']['webgui']['ip'];
+    } else {
+        foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
+            if ($info['scope']) {
+                /* link-local does not seem to be supported */
+                continue;
+            }
 
-        $listeners[] = $tmpaddr;
+            $listeners[] = $tmpaddr;
+        }
     }
 
     chdir('/usr/local/www');

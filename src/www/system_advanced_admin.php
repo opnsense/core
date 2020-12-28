@@ -41,6 +41,8 @@ $a_authmode = auth_get_authserver_list();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
+    $pconfig['webguiip'] = !empty($config['system']['webgui']['ip']) ? $config['system']['webgui']['ip'] : null;
+    $pconfig['webgui_managementaccess'] = !empty($config['system']['webgui']['managementaccess']) ? $config['system']['webgui']['managementaccess'] : null;
     $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
     $pconfig['session_timeout'] = !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : null;
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
@@ -67,6 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
+    $pconfig['sship'] = !empty($config['system']['ssh']['ip']) ? $config['system']['ssh']['ip'] : null;
+    $pconfig['ssh_managementaccess'] = !empty($config['system']['ssh']['managementaccess']) ? $config['system']['ssh']['managementaccess'] : null;
     $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : array();
     $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
@@ -123,7 +127,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
+            $config['system']['webgui']['managementaccess'] != $pconfig['webgui_managementaccess'] ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
+            $config['system']['webgui']['ip'] != $pconfig['webguiip'] ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
@@ -132,8 +138,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
         $config['system']['webgui']['ssl-certref'] = $pconfig['ssl-certref'];
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
+        $config['system']['webgui']['managementaccess'] = $pconfig['webgui_managementaccess'];
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+
+        if (!empty($pconfig['webguiip'])) {
+            $config['system']['webgui']['ip'] = $pconfig['webguiip'];
+        } elseif (isset($config['system']['webgui']['ip'])) {
+            unset($config['system']['webgui']['ip']);
+        }
 
         if (!empty($pconfig['ssl-hsts'])) {
             $config['system']['webgui']['ssl-hsts'] = true;
@@ -239,6 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* always store setting to prevent installer auto-start */
         $config['system']['ssh']['noauto'] = 1;
 
+        $config['system']['ssh']['managementaccess'] = $pconfig['ssh_managementaccess'];
         $config['system']['ssh']['interfaces'] = !empty($pconfig['sshinterfaces']) ? implode(',', $pconfig['sshinterfaces']) : null;
         $config['system']['ssh']['kex'] = !empty($pconfig['ssh-kex']) ? implode(',', $pconfig['ssh-kex']) : null;
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
@@ -279,6 +293,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['ssh']['port'] = $_POST['sshport'];
         } elseif (isset($config['system']['ssh']['port'])) {
             unset($config['system']['ssh']['port']);
+        }
+
+        if (!empty($pconfig['sship'])) {
+            $config['system']['ssh']['ip'] = $pconfig['sship'];
+        } elseif (isset($config['system']['ssh']['ip'])) {
+            unset($config['system']['ssh']['ip']);
         }
 
         if (!empty($pconfig['sshdpermitrootlogin'])) {
@@ -362,6 +382,40 @@ $(document).ready(function() {
      });
      $(".proto").change();
 
+     // Show/hide options for WebGUI management access.
+     $("#webgui_managementaccess").change(function(){
+         var mgmt_type = 'webgui_managementaccess_' + $(this).val();
+         $(".webgui_managementaccess_choices").hide();
+         $("."+mgmt_type).show();
+     });
+     $("#webgui_managementaccess").change();
+
+     $('#webgui_managementaccess').change(function () {
+         if ($('#webgui_managementaccess option:selected').val() == 'interfaces') {
+             $.webgui_managementaccess_warned = 0;
+         } else if ($.webgui_managementaccess_warned != 1) {
+             $.webgui_managementaccess_warned = 1;
+             BootstrapDialog.confirm({
+                 title: '<?= html_safe(gettext('Warning!')) ?>',
+                 message: '<?= html_safe(gettext('Changing the management access configuration of the web GUI may ' .
+                     'prevent you from accessing this page if you continue. It is recommended to keep ' .
+                     'this set to the default unless you know what you are doing.')) ?>',
+                 type: BootstrapDialog.TYPE_WARNING,
+                 btnOKClass: 'btn-warning',
+                 btnOKLabel: '<?= html_safe(gettext('I know what I am doing')) ?>',
+                 btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
+                 callback: function(result) {
+                     if (!result) {
+                         $('#webgui_managementaccess option:selected').prop('selected', false);
+                         $('#webgui_managementaccess').selectpicker('refresh');
+                         $.webgui_managementaccess_warned = 0;
+                     }
+                 }
+             });
+         }
+     });
+     $.webgui_managementaccess_warned = $('#webguiinterface option:selected').val() == 'interfaces' ? 1 : 0;
+
      $('#webguiinterface').change(function () {
          if ($('#webguiinterface option:selected').text() == '') {
              $.webguiinterface_warned = 0;
@@ -387,6 +441,14 @@ $(document).ready(function() {
          }
      });
      $.webguiinterface_warned = $('#webguiinterface option:selected').length ? 1 : 0;
+
+     // Show/hide options for SSH management access.
+     $("#ssh_managementaccess").change(function(){
+         var mgmt_type = 'ssh_managementaccess_' + $(this).val();
+         $(".ssh_managementaccess_choices").hide();
+         $("."+mgmt_type).show();
+     });
+     $("#ssh_managementaccess").change();
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
@@ -624,6 +686,22 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_webgui_managementaccess" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Management Access') ?></td>
+                <td>
+                  <select id="webgui_managementaccess" name="webgui_managementaccess" class="selectpicker">
+                      <option value="interfaces" <?= empty($pconfig['webgui_managementaccess']) || $pconfig['webgui_managementaccess'] === 'interfaces' ? 'selected="selected"' : '';?>>
+                        <?=gettext("Choose Listen Interfaces");?>
+                      </option>
+                      <option value="ip" <?=$pconfig['webgui_managementaccess'] === 'ip' ? 'selected="selected"' : '';?>>
+                        <?=gettext("Specify Management IP");?>
+                      </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_webgui_managementaccess">
+                    <?= gettext('Choose how the WebGUI should be accessible. Use with care.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr class="webgui_managementaccess_choices webgui_managementaccess_interfaces">
                 <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                 <td>
                   <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
@@ -633,6 +711,16 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_webguiinterfaces">
                     <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr class="webgui_managementaccess_choices webgui_managementaccess_ip">
+                <td><a id="help_for_webguiip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Management IP") ?></td>
+                <td>
+                  <input name="webguiip" type="text" value="<?= $pconfig['webguiip'] ?>"/>
+                  <?=gettext("Only accept connections from the specified IP. Use with care."); ?>
+                  <div class="hidden" data-for="help_for_webguiip">
+                    <?= gettext('The WebGUI only listens on the selected IP address. You may need to manually add required firewall rules first. Use with care.') ?>
                   </div>
                 </td>
               </tr>
@@ -713,6 +801,22 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_ssh_managementaccess" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Management Access') ?></td>
+                <td>
+                  <select id="ssh_managementaccess" name="ssh_managementaccess" class="selectpicker">
+                      <option value="interfaces" <?= empty($pconfig['ssh_managementaccess']) || $pconfig['ssh_managementaccess'] === 'interfaces' ? 'selected="selected"' : '';?>>
+                        <?=gettext("Choose Listen Interfaces");?>
+                      </option>
+                      <option value="ip" <?=$pconfig['ssh_managementaccess'] === 'ip' ? 'selected="selected"' : '';?>>
+                        <?=gettext("Specify Management IP");?>
+                      </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_ssh_managementaccess">
+                    <?= gettext('Choose how the SSH service should be accessible. Use with care.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr class="ssh_managementaccess_choices ssh_managementaccess_interfaces">
                 <td><a id="help_for_sshinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
                 <td>
                   <select name="sshinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
@@ -722,6 +826,16 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_sshinterfaces">
                     <?= gettext('Only accept connections from the selected interfaces. Leave empty to listen globally. Use with care.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr class="ssh_managementaccess_choices ssh_managementaccess_ip">
+                <td><a id="help_for_sship" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Management IP") ?></td>
+                <td>
+                  <input name="sship" type="text" value="<?= $pconfig['sship'] ?>"/>
+                  <?=gettext("Only accept connections from the specified IP. Use with care."); ?>
+                  <div class="hidden" data-for="help_for_sship">
+                    <?= gettext('The SSH service only listens on the selected IP address. You may need to manually add required firewall rules first. Use with care.') ?>
                   </div>
                 </td>
               </tr>
