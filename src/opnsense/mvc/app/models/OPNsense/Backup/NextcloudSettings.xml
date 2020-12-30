@@ -1,6 +1,6 @@
 <model>
     <mount>//system/backup/nextcloud</mount>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <description>OPNsense Nextcloud Backup Settings</description>
     <items>
         <enabled type="BooleanField">
@@ -48,7 +48,7 @@
         </password_encryption>
         <backupdir type="TextField">
             <Required>Y</Required>
-            <mask>/^[\w\-][\w\-\/]+[\w\-]$/</mask>
+            <mask>/^([\w%+\-]+\/)*[\w+%\-]+$/</mask>
             <default>OPNsense-Backup</default>
             <ValidationMessage>The Backup Directory can only consist of alphanumeric characters, dash, underscores and slash. No leading or trailing slash.</ValidationMessage>
         </backupdir>
