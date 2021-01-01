@@ -75,7 +75,7 @@ CORE_WWW?=		https://opnsense.org/
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2020
+CORE_COPYRIGHT_YEARS?=	2014-2021
 
 CORE_DEPENDS_amd64?=	beep \
 			bsdinstaller \
