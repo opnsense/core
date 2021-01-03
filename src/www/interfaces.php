@@ -1411,9 +1411,73 @@ include("head.inc");
           } else {
               $("#allcfg").hide();
           }
+          toggle_wirelesscfg();
+      }
+      function toggle_wirelesscfg() {
+          switch ($("#mode").prop('value')) {
+              case 'hostap':
+                  $(".cfg-wireless-bss").hide();
+                  $(".cfg-wireless-adhoc").hide();
+                  $(".cfg-wireless-ap").show();
+                  break;
+              case 'bss':
+                  $(".cfg-wireless-ap").hide();
+                  $(".cfg-wireless-adhoc").hide();
+                  $(".cfg-wireless-bss").show();
+                  break;
+              case 'adhoc':
+                  $(".cfg-wireless-ap").hide();
+                  $(".cfg-wireless-bss").hide();
+                  $(".cfg-wireless-adhoc").show();
+                  break;
+          }
+
+          if ($("#wep_enable").prop('checked')) {
+              $(".cfg-wireless-wep").show();
+          }
+          else {
+              $(".cfg-wireless-wep").hide();
+          }
+
+          if ($("#wpa_enable").prop('checked')) {
+              $(".cfg-wireless-wpa").show();
+              if ($("#mode").prop('value') == "hostap") {
+                $(".cfg-wireless-ap-wpa").show();
+              }
+              else {
+                $(".cfg-wireless-ap-wpa").hide();
+              }
+          }
+          else {
+              $(".cfg-wireless-wpa").hide();
+              $(".cfg-wireless-ap-wpa").hide();
+          }
+
+          if ($("#wpa_enable").prop('checked') &&
+            $("#wpa_key_mgmt").prop('value') == "WPA-EAP" &&
+            $("#mode").prop('value') == "bss") {
+              $(".cfg-wireless-eap").show();
+          }
+          else {
+              $(".cfg-wireless-eap").hide();
+          }
+
+          if ($("#mode").prop('value') == "hostap" &&
+            $("#wpa_enable").prop('checked') &&
+            $("#ieee8021x").prop('checked')) {
+              $(".cfg-wireless-ieee8021x").show();
+          }
+          else {
+              $(".cfg-wireless-ieee8021x").hide();
+          }
       }
       // when disabled, hide settings.
       $("#enable").click(toggle_allcfg);
+      $("#mode").change(toggle_wirelesscfg);
+      $("#wep_enable").click(toggle_wirelesscfg);
+      $("#wpa_enable").click(toggle_wirelesscfg);
+      $("#wpa_key_mgmt").change(toggle_wirelesscfg);
+      $("#ieee8021x").click(toggle_wirelesscfg);
       toggle_allcfg();
 
       //
@@ -3227,7 +3291,7 @@ include("head.inc");
                         </tr>
 <?php
                         endif; ?>
-                        <tr>
+                        <tr class="cfg-wireless-ap">
                           <td><a id="help_for_apbridge_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow intra-BSS communication"); ?></td>
                           <td>
                             <input name="apbridge_enable" type="checkbox" value="yes"  id="apbridge_enable" <?=!empty($pconfig['apbridge_enable']) ? "checked=\"checked\"" : "";?> />
@@ -3247,7 +3311,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ap cfg-wireless-adhoc">
                           <td><a id="help_for_hidessid_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable Hide SSID"); ?></td>
                           <td>
                             <input name="hidessid_enable" type="checkbox" id="hidessid_enable" value="yes" <?=!empty($pconfig['hidessid_enable']) ? "checked=\"checked\"" : "";?> />
@@ -3260,8 +3324,8 @@ include("head.inc");
                           <td><a id="help_for_wep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WEP"); ?></td>
                           <td>
                             <input name="wep_enable" type="checkbox" id="wep_enable" value="yes" <?= $pconfig['wep_enable'] ? "checked=\"checked\"" : ""; ?> />
-                            <strong><?=gettext("Enable WEP"); ?></strong>
-                            <table class="table table-condensed">
+                            <label for="wep_enable"><strong><?=gettext("Enable WEP"); ?></strong></label>
+                            <table class="table table-condensed cfg-wireless-wep">
                               <tr>
                                 <td></td>
                                 <td></td>
@@ -3314,10 +3378,10 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA"); ?></td>
                           <td>
                             <input name="wpa_enable" type="checkbox" id="wpa_enable" value="yes" <?php if ($pconfig['wpa_enable']) echo "checked=\"checked\""; ?> />
-                            <strong><?=gettext("Enable WPA"); ?></strong>
+                            <label for="wpa_enable"><strong><?=gettext("Enable WPA"); ?></strong></label>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-eap">
                           <td><a id="help_for_wpa_identity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA EAP Identity"); ?></td>
                           <td>
                             <input name="identity" type="text" id="identity" value="<?=$pconfig['identity'];?>" />
@@ -3326,7 +3390,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_passphrase" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA Pre-Shared Key/EAP Password"); ?></td>
                           <td>
                             <input name="passphrase" type="text" id="passphrase" value="<?=$pconfig['passphrase'];?>" />
@@ -3335,7 +3399,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA Mode"); ?></td>
                           <td>
                             <select name="wpa_mode" class="selectpicker" data-style="btn-default" id="wpa_mode">
@@ -3345,7 +3409,7 @@ include("head.inc");
                             </select>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA Key Management Mode"); ?></td>
                           <td>
                             <select name="wpa_key_mgmt" class="selectpicker" data-style="btn-default" id="wpa_key_mgmt">
@@ -3355,7 +3419,7 @@ include("head.inc");
                             </select>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-eap">
                           <td><a id="help_for_eap_method" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP Method"); ?></td>
                           <td>
                             <select name="wpa_eap_method" class="selectpicker" data-style="btn-default" id="wpa_eap_method">
@@ -3368,7 +3432,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-eap">
                           <td><a id="help_for_p2_auth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP Phase 2 Authentication"); ?></td>
                           <td>
                             <select name="wpa_eap_p2_auth" class="selectpicker" data-style="btn-default" id="eap_p2_auth">
@@ -3380,7 +3444,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-eap">
                           <td><a id="help_for_cacertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP TLS CA Certificate"); ?></td>
                           <td>
                             <select name="wpa_eap_cacertref" class="selectpicker" data-style="btn-default">
@@ -3401,7 +3465,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-eap">
                           <td><a id="help_for_clientcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP TLS Client Certificate"); ?></td>
                           <td>
                             <select name="wpa_eap_cltcertref" class="selectpicker" data-style="btn-default">
@@ -3424,7 +3488,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ap">
                           <td><a id="help_for_auth_algs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access Point Authentication"); ?></td>
                           <td>
                             <select name="auth_algs" class="selectpicker" data-style="btn-default" id="auth_algs">
@@ -3437,7 +3501,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA Pairwise"); ?></td>
                           <td>
                             <select name="wpa_pairwise" class="selectpicker" data-style="btn-default" id="wpa_pairwise">
@@ -3447,7 +3511,7 @@ include("head.inc");
                             </select>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_group_rekey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key Rotation"); ?></td>
                           <td>
                             <input name="wpa_group_rekey" type="text" id="wpa_group_rekey" value="<?=!empty($pconfig['wpa_group_rekey']) ? $pconfig['wpa_group_rekey'] : "60";?>" />
@@ -3456,7 +3520,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_gmk_rekey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Master Key Regeneration"); ?></td>
                           <td>
                             <input name="wpa_gmk_rekey" type="text" id="wpa_gmk_rekey" value="<?=!empty($pconfig['wpa_gmk_rekey']) ? $pconfig['wpa_gmk_rekey'] : "3600";?>" />
@@ -3465,7 +3529,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_strict_rekey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict Key Regeneration"); ?></td>
                           <td>
                             <input name="wpa_strict_rekey" type="checkbox" value="yes"  id="wpa_strict_rekey" <?php if ($pconfig['wpa_strict_rekey']) echo "checked=\"checked\""; ?> />
@@ -3474,7 +3538,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ap-wpa">
                           <td><a id="help_for_ieee8021x" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable IEEE802.1X Authentication"); ?></td>
                           <td>
                             <input name="ieee8021x" type="checkbox" value="yes"  id="ieee8021x" <?=!empty($pconfig['ieee8021x']) ? "checked=\"checked\"" : "";?> />
@@ -3484,7 +3548,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server IP Address"); ?></td>
                           <td>
                             <input name="auth_server_addr" id="auth_server_addr" type="text" value="<?=$pconfig['auth_server_addr'];?>" />
@@ -3493,7 +3557,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server Port"); ?></td>
                           <td>
                             <input name="auth_server_port" id="auth_server_port" type="text" value="<?=$pconfig['auth_server_port'];?>" />
@@ -3502,13 +3566,13 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("802.1X Server Shared Secret"); ?></td>
                           <td>
                             <input name="auth_server_shared_secret" id="auth_server_shared_secret" type="text" value="<?=$pconfig['auth_server_shared_secret'];?>" />
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_addr2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server IP Address (2)"); ?></td>
                           <td>
                             <input name="auth_server_addr2" id="auth_server_addr2" type="text" value="<?=$pconfig['auth_server_addr2'];?>" />
@@ -3518,7 +3582,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_port2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server Port (2)"); ?></td>
                           <td>
                             <input name="auth_server_port2" id="auth_server_port2" type="text" value="<?=$pconfig['auth_server_port2'];?>" />
@@ -3528,7 +3592,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_shared_secret2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server Shared Secret (2)"); ?></td>
                           <td>
                             <input name="auth_server_shared_secret2" id="auth_server_shared_secret2" type="text" value="<?=$pconfig['auth_server_shared_secret2'];?>" />
@@ -3537,7 +3601,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("802.1X Roaming Preauth"); ?></td>
                           <td>
                             <input name="rsn_preauth" id="rsn_preauth" type="checkbox" value="yes" <?=!empty($pconfig['rsn_preauth']) ? "checked=\"checked\"" : ""; ?> />
