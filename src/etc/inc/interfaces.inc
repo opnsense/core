@@ -1225,7 +1225,8 @@ function interface_ppps_configure($interface)
     $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : array();
     $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : array();
 
-    /* We bring up the parent interface first because if DHCP is configured on the parent we need
+    /*
+     * We bring up the parent interface first because if DHCP is configured on the parent we need
      * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
      */
     foreach ($ports as $pid => $port) {
@@ -2173,9 +2174,11 @@ EOD;
 
     fclose($fd_set);
 
-    /* Making sure regulatory settings have actually changed
-   * before applying, because changing them requires bringing
-   * down all wireless networks on the interface. */
+    /*
+     * Making sure regulatory settings have actually changed
+     * before applying, because changing them requires bringing
+     * down all wireless networks on the interface.
+     */
     exec("{$ifconfig} " . escapeshellarg($if), $output);
     $ifconfig_str = implode($output);
     unset($output);
@@ -2396,9 +2399,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    /* Disable Accepting router advertisements unless specifically requested */
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
-
     /* wireless configuration? */
     if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
         interface_wireless_configure($realif, $wancfg, $wancfg['wireless']);
@@ -2459,6 +2459,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_static_configure($interface, $wancfg);
             break;
     }
+
+    /* disable accepting router advertisements unless specifically requested */
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv', array($realif));
 
     if (isset($wancfg['ipaddrv6'])) {
         switch ($wancfg['ipaddrv6']) {
