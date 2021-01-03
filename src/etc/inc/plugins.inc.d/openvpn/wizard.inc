@@ -532,7 +532,7 @@ function step12_submitphpaction()
 
     if (!is_array($config['wizardtemp'])) {
         $message = "No configuration found please retry again.";
-        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s' . array($message)));
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s', array($message)));
         exit;
     }
 
