@@ -2024,7 +2024,57 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
     /* generate wpa_supplicant/hostap config if wpa is enabled */
     switch ($wlcfg['mode']) {
         case 'bss':
+            $authentication = array();
             if (isset($wlcfg['wpa']['enable'])) {
+                if ($wlcfg['wpa']['wpa_key_mgmt'] == 'WPA-EAP' && isset($wlcfg['wpa']['wpa_eap_method'])) {
+                    switch ($wlcfg['wpa']['wpa_eap_method']) {
+                        case 'PEAP':
+                        case 'TTLS':
+                            $authentication[] = "password=\"{$wlcfg['wpa']['passphrase']}\"";
+                            switch ($wlcfg['wpa']['wpa_eap_p2_auth']) {
+                                case 'MD5':
+                                    $authentication[] = "phase2=\"auth=MD5\"";
+                                    break;
+                                case 'MSCHAPv2':
+                                    $authentication[] = "phase1=\"peaplabel=0\"";
+                                    $authentication[] = "phase2=\"auth=MSCHAPV2\"";
+                                    break;
+                            }
+                            /* fallthrough */
+                        case 'TLS':
+                            $authentication[] = "identity=\"{$wlcfg['wpa']['identity']}\"";
+                            $authentication[] = "eap={$wlcfg['wpa']['wpa_eap_method']}";
+
+                            $all_certs = [];
+                            // Generate CA cert and client cert to file
+                            foreach ($config['ca'] as $ca) {
+                                if ($wlcfg['wpa']['wpa_eap_cacertref'] == $ca['refid']) {
+                                    $all_certs["/var/etc/wpa_supplicant_{$if}_ca.crt"] =
+                                        base64_decode($ca['crt']);
+                                    $authentication[] = "ca_cert=\"/var/etc/wpa_supplicant_{$if}_ca.crt\"";
+                                }
+                            }
+                            foreach ($config['cert'] as $cert) {
+                                if ($wlcfg['wpa']['wpa_eap_cltcertref'] == $cert['refid']) {
+                                    $all_certs["/var/etc/wpa_supplicant_{$if}_clt.crt"] =
+                                        base64_decode($cert['crt']);
+                                    $all_certs["/var/etc/wpa_supplicant_{$if}_clt.key"] =
+                                        base64_decode($cert['prv']);
+                                    $authentication[] = "client_cert=\"/var/etc/wpa_supplicant_{$if}_clt.crt\"";
+                                    $authentication[] = "private_key=\"/var/etc/wpa_supplicant_{$if}_clt.key\"";
+                                }
+                            }
+                            foreach ($all_certs as $filename => $content) {
+                                @file_put_contents($filename, $content);
+                                @chmod($filename, "0600");
+                            }
+                            break;
+                    }
+                }
+                else {
+                    $authentication[] = "psk=\"{$wlcfg['wpa']['passphrase']}\"";
+                }
+                $authentication = implode("\n", $authentication);
                 $wpa = <<<EOD
 ctrl_interface=/var/run/wpa_supplicant
 ctrl_interface_group=0
@@ -2035,7 +2085,7 @@ ssid="{$wlcfg['ssid']}"
 scan_ssid=1
 priority=5
 key_mgmt={$wlcfg['wpa']['wpa_key_mgmt']}
-psk="{$wlcfg['wpa']['passphrase']}"
+$authentication
 pairwise={$wlcfg['wpa']['wpa_pairwise']}
 group={$wlcfg['wpa']['wpa_pairwise']}
 }

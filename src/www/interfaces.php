@@ -310,6 +310,9 @@ $ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
 
+$a_cert = isset($config['cert']) ? $config['cert'] : array();
+$a_ca = isset($config['ca']) ? $config['ca'] : array();
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
         $if = $_GET['if'];
@@ -508,8 +511,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (isset($a_interfaces[$if]['wireless']['wpa']) && is_array($a_interfaces[$if]['wireless']['wpa'])) {
             $std_wl_wpa_copy_fieldnames = array(
-              'debug_mode', 'macaddr_acl', 'auth_algs', 'wpa_mode', 'wpa_key_mgmt', 'wpa_pairwise',
-              'wpa_group_rekey', 'wpa_gmk_rekey', 'passphrase', 'ext_wpa_sw'
+              'debug_mode', 'macaddr_acl', 'auth_algs', 'wpa_mode', 'wpa_eap_method', 'wpa_eap_p2_auth', 'wpa_key_mgmt', 'wpa_pairwise',
+              'wpa_eap_cacertref', 'wpa_eap_cltcertref', 'wpa_group_rekey', 'wpa_gmk_rekey', 'identity', 'passphrase', 'ext_wpa_sw'
             );
             foreach ($std_wl_wpa_copy_fieldnames as $fieldname) {
                 $pconfig[$fieldname] = isset($a_interfaces[$if]['wireless']['wpa'][$fieldname]) ? $a_interfaces[$if]['wireless']['wpa'][$fieldname] : null;
@@ -1261,9 +1264,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['wireless']['wpa']['auth_algs'] = $pconfig['auth_algs'];
                 $new_config['wireless']['wpa']['wpa_mode'] = $pconfig['wpa_mode'];
                 $new_config['wireless']['wpa']['wpa_key_mgmt'] = $pconfig['wpa_key_mgmt'];
+                $new_config['wireless']['wpa']['wpa_eap_method'] = $pconfig['wpa_eap_method'];
+                $new_config['wireless']['wpa']['wpa_eap_p2_auth'] = $pconfig['wpa_eap_p2_auth'];
+                $new_config['wireless']['wpa']['wpa_eap_cacertref'] = $pconfig['wpa_eap_cacertref'];
+                $new_config['wireless']['wpa']['wpa_eap_cltcertref'] = $pconfig['wpa_eap_cltcertref'];
                 $new_config['wireless']['wpa']['wpa_pairwise'] = $pconfig['wpa_pairwise'];
                 $new_config['wireless']['wpa']['wpa_group_rekey'] = $pconfig['wpa_group_rekey'];
                 $new_config['wireless']['wpa']['wpa_gmk_rekey'] = $pconfig['wpa_gmk_rekey'];
+                $new_config['wireless']['wpa']['identity'] = $pconfig['identity'];
                 $new_config['wireless']['wpa']['passphrase'] = $pconfig['passphrase'];
                 $new_config['wireless']['wpa']['ext_wpa_sw'] = $pconfig['ext_wpa_sw'];
                 $new_config['wireless']['wpa']['mac_acl_enable'] = !empty($pconfig['mac_acl_enable']);
@@ -3146,9 +3154,20 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="tab-content content-box col-xs-12 __mb">
+                  <div class="table-responsive">
+                    <table class="table table-striped opnsense_standard_table_form">
+                      <thead>
                         <tr>
                           <th colspan="2"><?=gettext("Network-specific wireless configuration");?></th>
                         </tr>
+                      </thead>
+                      <tbody>
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Mode"); ?></td>
                           <td>
@@ -3292,14 +3311,26 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_wpa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA"); ?></td>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA"); ?></td>
                           <td>
                             <input name="wpa_enable" type="checkbox" id="wpa_enable" value="yes" <?php if ($pconfig['wpa_enable']) echo "checked=\"checked\""; ?> />
                             <strong><?=gettext("Enable WPA"); ?></strong>
-                            <hr/>
-                            <?=gettext("WPA Pre-Shared Key"); ?><br/>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_wpa_identity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA EAP Identity"); ?></td>
+                          <td>
+                            <input name="identity" type="text" id="identity" value="<?=$pconfig['identity'];?>" />
+                            <div class="hidden" data-for="help_for_wpa_identity">
+                              <?=gettext("Only relevant when Extended Authentication Protocol (EAP) is used."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_wpa_passphrase" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA Pre-Shared Key/EAP Password"); ?></td>
+                          <td>
                             <input name="passphrase" type="text" id="passphrase" value="<?=$pconfig['passphrase'];?>" />
-                            <div class="hidden" data-for="help_for_wpa_enable">
+                            <div class="hidden" data-for="help_for_wpa_passphrase">
                               <?=gettext("Passphrase must be from 8 to 63 characters."); ?>
                             </div>
                           </td>
@@ -3319,13 +3350,82 @@ include("head.inc");
                           <td>
                             <select name="wpa_key_mgmt" class="selectpicker" data-style="btn-default" id="wpa_key_mgmt">
                               <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-PSK' ? "selected=\"selected\"" : "";?> value="WPA-PSK"><?=gettext("Pre-Shared Key"); ?></option>
-                              <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-EAP' ? "selected=\"selected\"" : "";?> value="WPA-EAP"><?=gettext("Extensible Authentication Protocol"); ?></option>
+                              <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-EAP' ? "selected=\"selected\"" : "";?> value="WPA-EAP"><?=gettext("Extensible Authentication Protocol (EAP)"); ?></option>
                               <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-PSK WPA-EAP' ? "selected=\"selected\"" : "";?> value="WPA-PSK WPA-EAP"><?=gettext("Both"); ?></option>
                             </select>
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_auth_algs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication"); ?></td>
+                          <td><a id="help_for_eap_method" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP Method"); ?></td>
+                          <td>
+                            <select name="wpa_eap_method" class="selectpicker" data-style="btn-default" id="wpa_eap_method">
+                              <option <?=$pconfig['wpa_eap_method'] == 'PEAP' ? "selected=\"selected\"" : "";?> value="PEAP"><?=gettext("Protected Extensible Authentication Protocol (PEAP)"); ?></option>
+                              <option <?=$pconfig['wpa_eap_method'] == 'TLS' ? "selected=\"selected\"" : "";?> value="TLS"><?=gettext("Transport Layer Security (TLS)"); ?></option>
+                              <option <?=$pconfig['wpa_eap_method'] == 'TTLS' ? "selected=\"selected\"" : "";?> value="TTLS"><?=gettext("Tunneled Transport Layer Security (TTLS)"); ?></option>
+                            </select>
+                            <div class="hidden" data-for="help_for_eap_method">
+                              <?=gettext("Note: Only relevant for infrastructure mode (BSS) and if Extensible Authentication Protocol (EAP) is used for key management."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_p2_auth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP Phase 2 Authentication"); ?></td>
+                          <td>
+                            <select name="wpa_eap_p2_auth" class="selectpicker" data-style="btn-default" id="eap_p2_auth">
+                              <option <?=$pconfig['wpa_eap_p2_auth'] == 'MD5' ? "selected=\"selected\"" : "";?> value="MD5"><?=gettext("MD5"); ?></option>
+                              <option <?=$pconfig['wpa_eap_p2_auth'] == 'MSCHAPv2' ? "selected=\"selected\"" : "";?> value="MSCHAPv2"><?=gettext("MSCHAPv2"); ?></option>
+                            </select>
+                            <div class="hidden" data-for="help_for_p2_auth">
+                              <?=gettext("Note: Only relevant for infrastructure mode (BSS) and if Extensible Authentication Protocol (EAP) is used for key management."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_cacertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP TLS CA Certificate"); ?></td>
+                          <td>
+                            <select name="wpa_eap_cacertref" class="selectpicker" data-style="btn-default">
+                              <option value="" <?=empty($pconfig['wpa_eap_cacertref']) ? "selected=\"selected\"" : "";?>><?=gettext("Do not verify server"); ?></option>
+          <?php foreach ($a_ca as $ca): ?>
+                              <option value="<?=$ca['refid'];?>" <?=$pconfig['wpa_eap_cacertref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>>
+                                <?=$ca['descr'];?>
+                              </option>
+          <?php endforeach ?>
+                            </select>
+                            <div class='hidden' data-for="help_for_cacertref">
+                              <?=gettext('Certificate authority used to verify the access point\'s TLS certificate. Only relevant for infrastructure mode (BSS) if Extensible Authentication Protocol (EAP) is used for key management.');?><br />
+                              <?=sprintf(
+                                gettext('The %scertificate authority manager%s can be used to ' .
+                                'create or import certificat authorities if required.'),
+                                '<a href="/system_camanager.php">', '</a>'
+                              );?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_clientcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP TLS Client Certificate"); ?></td>
+                          <td>
+                            <select name="wpa_eap_cltcertref" class="selectpicker" data-style="btn-default">
+                              <option value="" <?=empty($pconfig['wpa_eap_cltcertref']) ? "selected=\"selected\"" : "";?>><?=gettext("none"); ?></option>
+          <?php foreach ($a_cert as $cert): ?>
+          <?php if (isset($cert['prv'])): ?>
+                              <option value="<?=$cert['refid'];?>" <?=$pconfig['wpa_eap_cltcertref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
+                                <?=$cert['descr'];?>
+                              </option>
+          <?php endif ?>
+          <?php endforeach ?>
+                            </select>
+                            <div class='hidden' data-for="help_for_clientcertref">
+                              <?=gettext('Certificate used for authentication towards the access point. Only relevant for infrastructure mode (BSS) if EAP with TLS is used for key management.');?><br />
+                              <?=sprintf(
+                                gettext('The %scertificate manager%s can be used to ' .
+                                'create or import certificates if required.'),
+                                '<a href="/system_certmanager.php">', '</a>'
+                              );?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_auth_algs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access Point Authentication"); ?></td>
                           <td>
                             <select name="auth_algs" class="selectpicker" data-style="btn-default" id="auth_algs">
                               <option <?=$pconfig['auth_algs'] == '1' ? "selected=\"selected\"" : "";?> value="1"><?=gettext("Open System Authentication"); ?></option>
@@ -3333,7 +3433,7 @@ include("head.inc");
                               <option <?=$pconfig['auth_algs'] == '3' ? "selected=\"selected\"" : "";?> value="3"><?=gettext("Both"); ?></option>
                             </select>
                             <div class="hidden" data-for="help_for_auth_algs">
-                              <?=gettext("Note: Shared Key Authentication requires WEP."); ?>
+                              <?=gettext("Note: Shared Key Authentication requires WEP. Only relevant for access point mode."); ?>
                             </div>
                           </td>
                         </tr>
