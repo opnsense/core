@@ -374,8 +374,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-        /* add DNS servers */
-        $dnslist_tmp = array();
+        $dnslist_tmp = [];
+
         if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
             $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
@@ -389,12 +389,18 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         } elseif (!empty($config['system']['dnsserver'][0])) {
             $dnslist_tmp = $config['system']['dnsserver'];
         }
-        $dnslist = array();
+
+        $dnslist = [];
+
         foreach ($dnslist_tmp as $server) {
             if (is_ipaddrv6($server)) {
                 $dnslist[] = $server;
             }
         }
+
+        if (isset($dhcpv6ifconf['radisablerdnss'])) {
+            $dnslist = [];
+	}
 
         if (count($dnslist) > 0) {
             $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " {\n";

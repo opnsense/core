@@ -57,8 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
+    $pconfig['radisablerdnss'] = isset($config['dhcpdv6'][$if]['radisablerdnss']);
     $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
 
     // defaults
@@ -159,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['dhcpdv6'][$if]['rainterface']);
         }
 
-        # flipped in GUI on purpose
+        /* flipped in GUI on purpose */
         if (empty($pconfig['radefault'])) {
             $config['dhcpdv6'][$if]['ranodefault'] = true;
         } elseif (isset($config['dhcpdv6'][$if]['ranodefault'])) {
@@ -175,6 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dhcpdv6'][$if]['radnsserver'][] = $pconfig['radns2'];
         }
         $config['dhcpdv6'][$if]['rasamednsasdhcp6'] = !empty($pconfig['rasamednsasdhcp6']);
+        $config['dhcpdv6'][$if]['radisablerdnss'] = !empty($pconfig['radisablerdnss']);
 
         if (count($pconfig['raroutes'])) {
             $config['dhcpdv6'][$if]['raroutes'] = implode(',', $pconfig['raroutes']);
@@ -401,7 +404,10 @@ include("head.inc");
                       </div>
                       <br />
                       <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <strong><?= gettext("Use the DNS settings of the DHCPv6 server"); ?></strong>
+                      <?= gettext('Use the DNS settings of the DHCPv6 server') ?>
+                      <br />
+                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
+                      <?= gettext('Do not send DNS settings to clients') ?>
                     </td>
                   </tr>
                   <tr>
