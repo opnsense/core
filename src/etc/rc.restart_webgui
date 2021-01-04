@@ -8,9 +8,13 @@ require_once('util.inc');
 require_once('system.inc');
 require_once('plugins.inc.d/webgui.inc');
 
-if (count($argv) > 1 && is_numeric($argv[1])) {
-    // starting delayed.
-    sleep($argv[1]);
+if (count($argv) > 1) {
+    if (is_numeric($argv[1])) {
+        /* starting delayed */
+        sleep($argv[1]);
+    } elseif ($argv[1] == 'renew') {
+        webgui_create_selfsigned(true);
+    }
 }
 
 webgui_configure_do(true);

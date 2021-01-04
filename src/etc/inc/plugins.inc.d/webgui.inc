@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -91,32 +91,13 @@ function webgui_configure_do($verbose = false, $interface = '')
     if ($config['system']['webgui']['protocol'] == "https") {
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         if (!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
-            $a_ca = &config_read_array('ca');
-            $a_cert = &config_read_array('cert');
-            log_error("Creating SSL certificate for this host");
-            $cert = array();
-            $cert['refid'] = uniqid();
-            $cert['descr'] = 'Web GUI SSL certificate';
-            mwexec(
-                /* XXX ought to be replaced by PHP calls */
-                '/usr/local/bin/openssl req -new -extensions server_cert ' .
-                '-config /usr/local/etc/ssl/opnsense.cnf ' .
-                '-newkey rsa:4096 -sha256 -days 825 -nodes -x509 ' .
-                '-subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense" ' .
-                '-keyout /tmp/ssl.key -out /tmp/ssl.crt'
-            );
-            $crt = file_get_contents('/tmp/ssl.crt');
-            $key = file_get_contents('/tmp/ssl.key');
-            unlink('/tmp/ssl.key');
-            unlink('/tmp/ssl.crt');
-            cert_import($cert, $crt, $key);
-            $a_cert[] = $cert;
-            $config['system']['webgui']['ssl-certref'] = $cert['refid'];
-            write_config('Created web GUI SSL certificate');
-        } else {
-            $crt = base64_decode($cert['crt']);
-            $key = base64_decode($cert['prv']);
+            /* XXX for now only if a certificate is not availabe */
+            webgui_create_selfsigned(false);
+            $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         }
+
+        $crt = base64_decode($cert['crt']);
+        $key = base64_decode($cert['prv']);
 
         if (!$config['system']['webgui']['port']) {
             $portarg = '443';
@@ -158,6 +139,52 @@ function webgui_configure_do($verbose = false, $interface = '')
         if ($verbose) {
             echo "done.\n";
         }
+    }
+}
+
+function webgui_create_selfsigned($verbose = false)
+{
+    global $config;
+
+    $a_ca = &config_read_array('ca');
+    $a_cert = &config_read_array('cert');
+
+    if ($verbose) {
+        echo 'Creating self-signed web GUI certificate...';
+        flush();
+    }
+
+    log_error('Creating TLS certificate for this host');
+
+    $cert = array();
+    $cert['refid'] = uniqid();
+    $cert['descr'] = 'Web GUI TLS certificate';
+
+    mwexec(
+        /* XXX ought to be replaced by PHP calls */
+        '/usr/local/bin/openssl req -new -extensions server_cert ' .
+        '-config /usr/local/etc/ssl/opnsense.cnf ' .
+        '-newkey rsa:4096 -sha256 -days 397 -nodes -x509 ' .
+        '-subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense" ' .
+        '-keyout /tmp/ssl.key -out /tmp/ssl.crt'
+    );
+
+    $crt = file_get_contents('/tmp/ssl.crt');
+    $key = file_get_contents('/tmp/ssl.key');
+
+    unlink('/tmp/ssl.key');
+    unlink('/tmp/ssl.crt');
+
+    cert_import($cert, $crt, $key);
+
+    $a_cert[] = $cert;
+
+    $config['system']['webgui']['ssl-certref'] = $cert['refid'];
+
+    write_config('Created web GUI TLS certificate');
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -376,7 +403,7 @@ EOD;
         $lighty_config .= "     \"HTTPS\" => \"on\"\n";
         $lighty_config .= ")\n";
 
-        // Harden SSL a bit for PCI conformance testing
+        /* Harden TLS a bit for PCI conformance testing */
         $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
         $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
         $lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
