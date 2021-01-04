@@ -396,12 +396,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-        if (count($dnslist) > 0) {
-            $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " {\n";
-            if (!empty($dhcpv6ifconf['AdvRDNSSLifetime'])) {
-                $radvdconf .= "\t\tAdvRDNSSLifetime {$dhcpv6ifconf['AdvRDNSSLifetime']};\n";
-            }
-            $radvdconf .= "\t};\n";
+        if (!isset($dhcpv6ifconf['dhcpv6disablerdnss'])) {
+          if (count($dnslist) > 0) {
+              $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " {\n";
+              if (!empty($dhcpv6ifconf['AdvRDNSSLifetime'])) {
+                  $radvdconf .= "\t\tAdvRDNSSLifetime {$dhcpv6ifconf['AdvRDNSSLifetime']};\n";
+              }
+              $radvdconf .= "\t};\n";
+          }
         }
 
         if (!empty($dhcpv6ifconf['radomainsearchlist'])) {

@@ -60,6 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
     $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
+    $pconfig['radisablerdnss'] = isset($config['dhcpdv6'][$if]['radisablerdnss']);
+
 
     // defaults
     if (empty($pconfig['ramininterval'])) {
@@ -166,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['dhcpdv6'][$if]['ranodefault']);
         }
 
+        $config['dhcpdv6'][$if]['radisablerdnss'] = !empty($pconfig['radisablerdnss']);
         $config['dhcpdv6'][$if]['radomainsearchlist'] = $pconfig['radomainsearchlist'];
         $config['dhcpdv6'][$if]['radnsserver'] = array();
         if (!empty($pconfig['radns1'])) {
@@ -402,6 +405,15 @@ include("head.inc");
                       <br />
                       <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
                       <strong><?= gettext("Use the DNS settings of the DHCPv6 server"); ?></strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i></a> <?=gettext("Disable RDNSS"); ?></td>
+                      <td>
+                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? "checked=\"checked\"" : ""; ?> />
+                      <strong>
+                        <?=gettext("Disable RDNSS send"); ?>
+                      </strong>                        
                     </td>
                   </tr>
                   <tr>
