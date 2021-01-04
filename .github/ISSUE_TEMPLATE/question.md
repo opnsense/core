@@ -13,6 +13,6 @@ Our forum is located at https://forum.opnsense.org , please consider joining dis
 
 Before you ask a new question, we ask you kindly to acknowledge the following:
 
-[-] I have read the contributing guide lines at https://github.com/opnsense/core/blob/master/CONTRIBUTING.md
+- [ ] I have read the contributing guide lines at https://github.com/opnsense/core/blob/master/CONTRIBUTING.md
 
-[-] I have searched the existing issues and I'm convinced that mine is new.
+- [ ] I have searched the existing issues and I'm convinced that mine is new.
