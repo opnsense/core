@@ -283,8 +283,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['csr_keytype'] = "RSA";
         $pconfig['csr_keylen'] = "2048";
         $pconfig['csr_digest_alg'] = "sha256";
-        $pconfig['lifetime'] = "825";
-        $pconfig['lifetime_sign_csr'] = "825";
+        $pconfig['lifetime'] = "397";
+        $pconfig['lifetime_sign_csr'] = "397";
         $pconfig['cert_type'] = "usr_cert";
         $pconfig['cert'] = null;
         $pconfig['key'] = null;
