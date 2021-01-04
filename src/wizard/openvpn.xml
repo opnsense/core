@@ -511,10 +511,10 @@
             <field>
                 <name>lifetime</name>
                 <displayname>Lifetime</displayname>
-                <description>Lifetime in days. This is commonly set to 825 (approximately 2 years).</description>
+                <description>Lifetime in days. This is commonly set to 397 (approximately 1 year).</description>
                 <type>input</type>
                 <size>10</size>
-                <value>825</value>
+                <value>397</value>
                 <bindstofield>wizardtemp->step9->lifetime</bindstofield>
             </field>
             <field>
