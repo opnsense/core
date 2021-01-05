@@ -331,41 +331,16 @@ function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
     return true;
 }
 
-function csr_get_subject($str_crt, $decode = true)
+function certs_build_name($dn)
 {
-    if ($decode) {
-        $str_crt = base64_decode($str_crt);
+    if (empty($dn) || !is_array($dn)) {
+        return 'unknown';
     }
 
-    $components = openssl_csr_get_subject($str_crt);
-    if (empty($components) || !is_array($components)) {
-        return "unknown";
-    }
-
-    ksort($components);
-    foreach ($components as $a => $v) {
-        $subject = strlen($subject) ? "{$a}={$v}, {$subject}" : "{$a}={$v}";
-    }
-
-    return $subject;
-}
-
-function cert_get_subject($str_crt, $decode = true)
-{
-    if ($decode) {
-        $str_crt = base64_decode($str_crt);
-    }
-
-    $inf_crt = openssl_x509_parse($str_crt);
-    $components = $inf_crt['subject'];
-
-    if (empty($components) || !is_array($components)) {
-        return "unknown";
-    }
-
-    ksort($components);
     $subject = '';
-    foreach ($components as $a => $v) {
+    ksort($dn);
+
+    foreach ($dn as $a => $v) {
         if (is_array($v)) {
             ksort($v);
             foreach ($v as $w) {
@@ -377,6 +352,29 @@ function cert_get_subject($str_crt, $decode = true)
     }
 
     return $subject;
+}
+
+function csr_get_subject($str_crt, $decode = true)
+{
+    if ($decode) {
+        $str_crt = base64_decode($str_crt);
+    }
+
+    $components = openssl_csr_get_subject($str_crt);
+
+    return certs_build_name($components);
+}
+
+function cert_get_subject($str_crt, $decode = true)
+{
+    if ($decode) {
+        $str_crt = base64_decode($str_crt);
+    }
+
+    $inf_crt = openssl_x509_parse($str_crt);
+    $components = $inf_crt['subject'];
+
+    return certs_build_name($components);
 }
 
 function cert_get_subject_array($crt)
@@ -398,34 +396,16 @@ function cert_get_subject_array($crt)
     return $subject_array;
 }
 
-
 function cert_get_issuer($str_crt, $decode = true)
 {
     if ($decode) {
         $str_crt = base64_decode($str_crt);
     }
+
     $inf_crt = openssl_x509_parse($str_crt);
     $components = $inf_crt['issuer'];
 
-    if (empty($components) || !is_array($components)) {
-        return "unknown";
-    }
-    ksort($components);
-    $issuer = '';
-    foreach ($components as $a => $v) {
-        if (is_array($v)) {
-            ksort($v);
-            foreach ($v as $w) {
-                $aissuer = "{$a}={$w}";
-                $issuer = strlen($issuer) ? "{$aissuer}, {$issuer}" : $aissuer;
-            }
-        } else {
-            $aissuer = "{$a}={$v}";
-            $issuer = strlen($issuer) ? "{$aissuer}, {$issuer}" : $aissuer;
-        }
-    }
-
-    return $issuer;
+    return certs_build_name($components);
 }
 
 /* this function works on x509 (crt), rsa key (prv), and req(csr) */
