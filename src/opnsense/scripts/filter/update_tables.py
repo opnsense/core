@@ -137,13 +137,8 @@ if __name__ == '__main__':
                     alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
                     alias_content += rel_alias.resolve()
         # when the alias or any of it's dependencies has changed, generate new
-        if alias_changed_or_expired:
-            alias_content_txt = '\n'.join(sorted(alias_content))
-            open('/var/db/aliastables/%s.txt' % alias_name, 'w').write(alias_content_txt)
-        elif os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
-            alias_content_txt = open('/var/db/aliastables/%s.txt' % alias_name, 'r').read()
-        else:
-            alias_content_txt = ""
+        if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
+            open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
 
         alias_pf_content = list()
         sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
