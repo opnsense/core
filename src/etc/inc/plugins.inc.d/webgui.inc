@@ -259,9 +259,6 @@ EOD;
 #
 ############ Options you really have to take care of ####################
 
-server.event-handler  = "freebsd-kqueue"
-server.network-backend  = "writev"
-
 ## modules to load
 server.modules              =   (
   "mod_access", "mod_expire", "mod_deflate", "mod_redirect", "mod_setenv",
@@ -394,42 +391,36 @@ EOD;
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
-        $lighty_config .= "ssl.disable-client-renegotiation = \"enable\"\n";
-        $lighty_config .= "ssl.dh-file = \"" . get_dh_parameters(4096) . "\"\n";
-        $lighty_config .= "ssl.ec-curve = \"secp384r1\"\n";
         $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
         if (!empty($ca)) {
             $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n";
         }
-        $lighty_config .= "setenv.add-environment = (\n";
-        $lighty_config .= "     \"HTTPS\" => \"on\"\n";
-        $lighty_config .= ")\n";
 
-        /* Harden TLS a bit for PCI conformance testing */
-        $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
-        $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
-        $lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
-            $ciphers = array(
-                'ECDHE-ECDSA-AES256-GCM-SHA384',
-                'ECDHE-RSA-AES256-GCM-SHA384',
-                'ECDHE-ECDSA-CHACHA20-POLY1305',
-                'ECDHE-RSA-CHACHA20-POLY1305',
-                'ECDHE-ECDSA-AES128-GCM-SHA256',
-                'ECDHE-RSA-AES128-GCM-SHA256',
-                'ECDHE-ECDSA-AES256-SHA384',
-                'ECDHE-RSA-AES256-SHA384',
-                'ECDHE-ECDSA-AES128-SHA256',
-                'ECDHE-RSA-AES128-SHA256'
-            );
-            $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
+            /* harden TLS for PCI conformance */
+            $lighty_config .= <<<EOD
+ssl.openssl.ssl-conf-cmd = (
+    "MinProtocol" => "TLSv1.2",
+    "Options" => "-ServerPreference",
+    "CipherString" => "EECDH+AESGCM:AES256+EECDH:CHACHA20:!SHA1:!SHA256:!SHA384"
+)
+
+EOD;
         } else {
-            $lighty_config .= 'ssl.cipher-list = "' . $config['system']['webgui']['ssl-ciphers'] . '"' . PHP_EOL;
+            $lighty_config .= <<<EOD
+
+ssl.openssl.ssl-conf-cmd = (
+    "MinProtocol" => "TLSv1.1",
+    "CipherString" => "{$config['system']['webgui']['ssl-ciphers']}"
+)
+
+EOD;
         }
+
         if (!empty($config['system']['webgui']['ssl-hsts'])) {
-            $lighty_config .= "setenv.add-response-header  = (\n";
-            $lighty_config .= "    \"Strict-Transport-Security\" => \"max-age=15768000;\"\n";
-            $lighty_config .= ")\n";
+            $lighty_config .= "\$HTTP[\"scheme\"] == \"https\" {\n";
+            $lighty_config .= "    setenv.add-response-header = (\"Strict-Transport-Security\" => \"max-age=15768000\" )\n";
+            $lighty_config .= "}\n";
         }
 
         $lighty_config .= "\n";
