@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -519,12 +519,17 @@ if ($config['system']['webgui']['protocol'] == 'https') {
     if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?', 'n')) {
         $config['system']['webgui']['protocol'] = 'http';
         $restart_webgui = true;
+    } elseif (console_prompt_for_yn('Do you want to generate a new self-signed web GUI certificate?', 'n')) {
+        unset($config['system']['webgui']['ssl-certref']);
+        $restart_webgui = true;
     }
 }
 
 if (isset($config['system']['webgui']['noantilockout'])) {
     unset($config['system']['webgui']['noantilockout']);
 }
+
+/* XXX it might be useful to reset interface binding for web GUI here too */
 
 if ($config['interfaces']['lan']) {
     if ($config['dhcpd']) {
