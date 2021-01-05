@@ -410,7 +410,7 @@ EOD;
             $lighty_config .= <<<EOD
 
 ssl.openssl.ssl-conf-cmd = (
-    "MinProtocol" => "TLSv1.1",
+    "MinProtocol" => "TLSv1",
     "CipherString" => "{$config['system']['webgui']['ssl-ciphers']}"
 )
 
