@@ -257,10 +257,10 @@ class Nextcloud extends Base implements IBackupProvider
             if ($backupdir == ".") {
                 // We cannot create root, if we reached here there's some other problem
                 syslog(LOG_ERR, "Check Nextcloud configuration parameters");
-                return FALSE;
+                return false;
             }
             // If error assume dir doesn't exist. Create parent folder
-            if ($this->create_directory($url, $username, $password, $internal_username, $parent_path) === FALSE) {
+            if ($this->create_directory($url, $username, $password, $internal_username, $parent_path) === false) {
                 throw new \Exception();
             }
         }

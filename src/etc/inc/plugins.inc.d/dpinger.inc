@@ -130,7 +130,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
             $gwifip = null;
-            if (!empty($ifconfig_details[$gateway['if']]) &&
+            if (
+                !empty($ifconfig_details[$gateway['if']]) &&
                 !empty($ifconfig_details[$gateway['if']]['ipv4']) &&
                 !empty($gateway['gateway'])
             ) {
@@ -148,7 +149,6 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                     $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0];
                     log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
                 }
-
             }
             if (!is_ipaddrv4($gwifip)) {
                 log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));

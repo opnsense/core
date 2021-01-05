@@ -446,7 +446,7 @@ function legacy_get_interface_addresses($ifs, $ifconfig_details = null)
     $intf_details = array();
     if (empty($ifconfig_details)) {
         $intf_details = legacy_interface_details($ifs);
-    } else if (!empty($ifconfig_details[$ifs])) {
+    } elseif (!empty($ifconfig_details[$ifs])) {
         $intf_details = $ifconfig_details[$ifs];
     }
 
