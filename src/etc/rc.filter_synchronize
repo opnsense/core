@@ -70,7 +70,7 @@ function get_vip_config_section(): array
  * @param boolean $debug enable debug output
  * @return boolean
  */
-function carp_check_version($url, $username, $password, $debug=false)
+function carp_check_version($url, $username, $password, $debug = false)
 {
     $client = new SimpleXMLRPC_Client($url, 240);
     $client->debug = $debug;

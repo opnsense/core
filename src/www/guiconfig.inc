@@ -303,7 +303,7 @@ function get_std_save_message($plain = false)
     }
 }
 
-function get_specialnets($only_enabled=false)
+function get_specialnets($only_enabled = false)
 {
     $specialnets = array();
     $specialnets["any"] = gettext("any");
@@ -411,7 +411,7 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
     }
 }
 
-function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $pendport=0)
+function pconfig_to_address(&$adr, $padr, $pmask, $pnot = false, $pbeginport = 0, $pendport = 0)
 {
     $adr = array();
     if ($padr == "any") {

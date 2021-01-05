@@ -29,7 +29,7 @@
 require_once("guiconfig.inc");
 require_once("XMLRPC_Client.inc") ;
 
-function xmlrpc_exec($method, $params=array(), $debug=false)
+function xmlrpc_exec($method, $params = [], $debug = false)
 {
     global $config;
     $synchronizeto = null;

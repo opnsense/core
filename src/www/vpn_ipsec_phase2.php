@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* mobile client */
         if (isset($_GET['mobile'])) {
-            $pconfig['mobile']=true;
+            $pconfig['mobile'] = true;
         }
         // init empty
         foreach (explode(",", $phase2_fields) as $fieldname) {

@@ -39,7 +39,7 @@ require_once 'auth.inc';
 /**
  * retrieve config property by path (e.g. system.firmware), return simple type or json
  */
-function get_config_prop($path, $cnf=null)
+function get_config_prop($path, $cnf = null)
 {
     global $config;
     $cnf = $cnf === null ? $config : $cnf;

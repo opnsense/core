@@ -87,7 +87,7 @@ include("head.inc");
                         </th>
 <?php
                         if (!isset($first_row)):
-                          $first_row=false; ?>
+                          $first_row = false; ?>
                         <th id="collapse_all" style="cursor: pointer; padding-left: .5em; padding-right: .5em" data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>">
                           <div class="pull-right">
                             <i class="fa fa-expand"></i>

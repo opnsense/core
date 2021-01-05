@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($_GET['dup']) && isset($a_gateway_groups[$_GET['dup']])) {
         $configId = $_GET['dup'];
     }
-    $pconfig=array();
+    $pconfig = [];
     if (isset($configId)) {
         $pconfig['name'] = $a_gateway_groups[$configId]['name'];
         $pconfig['item'] = &$a_gateway_groups[$configId]['item'];

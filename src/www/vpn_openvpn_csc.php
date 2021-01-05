@@ -39,9 +39,9 @@ $all_form_fields = "custom_options,disable,common_name,block,description
     ,wins_server2,ovpn_servers";
 
 $a_csc = &config_read_array('openvpn', 'openvpn-csc');
-
 $vpnid = 0;
-$act=null;
+$act = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     if (isset($_GET['dup']) && isset($a_csc[$_GET['dup']]))  {
