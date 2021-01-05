@@ -344,11 +344,7 @@ function csr_get_subject($str_crt, $decode = true)
 
     ksort($components);
     foreach ($components as $a => $v) {
-        if (!strlen($subject)) {
-            $subject = "{$a}={$v}";
-        } else {
-            $subject = "{$a}={$v}, {$subject}";
-        }
+        $subject = strlen($subject) ? "{$a}={$v}, {$subject}" : "{$a}={$v}";
     }
 
     return $subject;
@@ -373,12 +369,10 @@ function cert_get_subject($str_crt, $decode = true)
         if (is_array($v)) {
             ksort($v);
             foreach ($v as $w) {
-                $asubject = "{$a}={$w}";
-                $subject = (isset($subject)) ? "{$asubject}, {$subject}" : $asubject;
+                $subject = strlen($subject) ? "{$a}={$w}, {$subject}" : "{$a}={$w}";
             }
         } else {
-            $asubject = "{$a}={$v}";
-            $subject = (isset($subject)) ? "{$asubject}, {$subject}" : $asubject;
+            $subject = strlen($subject) ? "{$a}={$v}, {$subject}" : "{$a}={$v}";
         }
     }
 
@@ -423,11 +417,11 @@ function cert_get_issuer($str_crt, $decode = true)
             ksort($v);
             foreach ($v as $w) {
                 $aissuer = "{$a}={$w}";
-                $issuer = (isset($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
+                $issuer = strlen($issuer) ? "{$aissuer}, {$issuer}" : $aissuer;
             }
         } else {
             $aissuer = "{$a}={$v}";
-            $issuer = (isset($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
+            $issuer = strlen($issuer) ? "{$aissuer}, {$issuer}" : $aissuer;
         }
     }
 
