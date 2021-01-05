@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -175,7 +175,7 @@ if [ -z "${pkg_running}" ]; then
                     else
                       i=$(echo $i | tr -d :)
                       if [ -z "$packages_downgraded" ]; then
-                        packages_downgraded=$packages_downgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
+                        packages_downgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
                       fi
@@ -224,19 +224,21 @@ if [ -z "${pkg_running}" ]; then
                   fi
                   ;;
                 REMOVED:)
-                  if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                    if [ "${i%-*}" = "${i}" ]; then
+                  if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
+                    if [ "${i%:*}" = "${i}" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                       MODE=
                     else
-                      name=${i%-*}
-                      version=${i##*-}
-                      itemcount="$(expr $itemcount + 1)" # get ready for next item
-                      if [ -n "$packages_remove" ]; then
-                        packages_remove=$packages_remove"," # separator for next item
+                      i=$(echo $i | tr -d :)
+                      if [ -n "$packages_removed" ]; then
+                        packages_removed=$packages_removed","
                       fi
-                      packages_remove=$packages_remove"{\"name\":\"$name\",\"version\":\"$version\"}"
+                      packages_removed=$packages_removed"{\"name\":\"$i\","
                     fi
+                  fi
+                  if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                    packages_removed=$packages_removed"\"version\":\"$i\"}"
+                    itemcount=$(expr $itemcount + 2) # get ready for next item
                   fi
                   ;;
                 UPGRADED:)
@@ -251,7 +253,7 @@ if [ -z "${pkg_running}" ]; then
                           # prevents leaking base / kernel advertising here
                           pkg_upgraded="yes"
                         fi
-                        packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a separator
+                        packages_upgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
                       fi
@@ -270,11 +272,11 @@ if [ -z "${pkg_running}" ]; then
                 linecount=$(expr $linecount + 1)
 
                 case $i in
-                INSTALLED:)
+                INSTALLED:|REMOVED:)
                   itemcount=$(expr $linecount + 2)
                   MODE=$i
                   ;;
-                REINSTALLED:|REMOVED:)
+                REINSTALLED:)
                   itemcount=$(expr $linecount + 1)
                   MODE=$i
                   ;;
@@ -300,7 +302,7 @@ if [ -z "${pkg_running}" ]; then
               base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
               if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
                 if [ -z "${packages_upgraded}" ]; then
-                  packages_upgraded=$packages_upgraded"{\"name\":\"base\"," # If it is the first item then we do not want a separator
+                  packages_upgraded="{\"name\":\"base\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"base\","
                 fi
@@ -326,7 +328,7 @@ if [ -z "${pkg_running}" ]; then
               kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
               if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
                 if [ -z "${packages_upgraded}" ]; then
-                  packages_upgraded=$packages_upgraded"{\"name\":\"kernel\"," # If it is the first item then we do not want a separator
+                  packages_upgraded="{\"name\":\"kernel\"," # If it is the first item then we do not want a separator
                 else
                   packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
                 fi
@@ -370,7 +372,7 @@ cat << EOF
 	"product_name":"$product_name",
 	"product_version":"$product_version",
 	"reinstall_packages":[$packages_reinstall],
-	"remove_packages":[$packages_remove],
+	"remove_packages":[$packages_removed],
 	"repository":"$repository",
 	"updates":"$updates",
 	"upgrade_major_message":"$upgrade_major_message",
