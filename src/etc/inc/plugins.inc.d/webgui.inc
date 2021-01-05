@@ -377,8 +377,7 @@ EOD;
         $lighty_config .= ")\n";
 
         // Harden SSL a bit for PCI conformance testing
-        $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
-        $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
+        $lighty_config .= "ssl.openssl.ssl-conf-cmd = (\"MinProtocol\" => \"TLSv1\")\n";
         $lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
             $ciphers = array(
