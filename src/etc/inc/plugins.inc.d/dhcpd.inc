@@ -1533,7 +1533,7 @@ EOD;
                     $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
                 } else {
                     $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} {$itemv6['value']};\n";
-                }              
+                }
             }
         }
 
