@@ -1529,7 +1529,11 @@ EOD;
         if (isset($dhcpv6ifconf['numberoptions']['item'])) {
             $dhcpdv6conf .= "\n";
             foreach ($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
-                $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
+              if (empty($itemv6['type']) || $itemv6['type'] == "text") {
+                    $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
+                } else {
+                    $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} {$itemv6['value']};\n";
+                }              
             }
         }
 
