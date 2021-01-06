@@ -623,7 +623,7 @@ $( document ).ready(function() {
 <?php include("fbegin.inc"); ?>
   <div class="hidden">
     <div id="category_block" style="z-index:-100;">
-        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
+        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
 <?php
             // collect unique list of categories and append to option list
             $categories = array();
