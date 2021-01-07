@@ -836,7 +836,7 @@ $(document).ready(function() {
                   <input name="sship" type="text" value="<?= $pconfig['sship'] ?>"/>
                   <?=gettext("Only accept connections on the specified IP address. Use with care."); ?>
                   <div class="hidden" data-for="help_for_sship">
-                    <?= gettext('The SSH service only listens on the selected IP address. You may need to manually add required firewall rules first. Use with care.') ?>
+                    <?= gettext('The SSH service only listens on the specified IP address. You may need to manually add required firewall rules first. Use with care.') ?>
                   </div>
                 </td>
               </tr>
