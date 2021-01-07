@@ -408,6 +408,7 @@ $(document).ready(function() {
                      if (!result) {
                          $('#webgui_managementaccess option:selected').prop('selected', false);
                          $('#webgui_managementaccess').selectpicker('refresh');
+                         $("#webgui_managementaccess").change();
                          $.webgui_managementaccess_warned = 0;
                      }
                  }
