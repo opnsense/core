@@ -304,7 +304,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('filter');
-        //header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         $response = array("id" => $id);
         $response["new_label"] = isset($a_filter[$id]['log']) ?  gettext("Disable Log") : gettext("Enable Log");
         $response["new_state"] = isset($a_filter[$id]['log']) ;
