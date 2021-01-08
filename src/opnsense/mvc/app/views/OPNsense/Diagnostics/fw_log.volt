@@ -436,7 +436,6 @@
                                     <option value="dstport">{{ lang._('dst_port') }}</option>
                                     <option value="protoname">{{ lang._('protoname') }}</option>
                                     <option value="label">{{ lang._('label') }}</option>
-                                    <option value="dst">{{ lang._('dst') }}</option>
                                     <option value="rid">{{ lang._('rule id') }}</option>
                                     <option value="tcpflags">{{ lang._('tcpflags') }}</option>
                                 </select>
