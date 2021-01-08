@@ -268,21 +268,24 @@
                 }
                 let is_matched = !filter_or_type;
                 for (let i=0; i < filters.length; i++) {
-                    let filter_tag = filters[i].tag;
                     let filter_value = filters[i].value.toLowerCase();
                     let filter_condition = filters[i].condition;
-                    let this_condition_match = true;
-                    if (this_data[filter_tag] === undefined) {
-                        this_condition_match = false;
-                    } else if (filter_condition === '=' && this_data[filter_tag].toLowerCase() != filter_value) {
-                        this_condition_match = false;
-                    } else if (filter_condition === '~' && !this_data[filter_tag].toLowerCase().match(filter_value)) {
-                        this_condition_match = false;
-                    } else if (filter_condition === '!=' && this_data[filter_tag].toLowerCase() == filter_value) {
-                        this_condition_match = false;
-                    } else if (filter_condition === '!~' && this_data[filter_tag].toLowerCase().match(filter_value)) {
-                        this_condition_match = false;
-                    }
+                    let this_condition_match = false;
+                    filters[i].tag.forEach(function(filter_tag){
+                        if (this_condition_match) {
+                            return;
+                        } else if (this_data[filter_tag] === undefined) {
+                            this_condition_match = false;
+                        } else if (filter_condition === '=' && this_data[filter_tag].toLowerCase() == filter_value) {
+                            this_condition_match = true;
+                        } else if (filter_condition === '~' && this_data[filter_tag].toLowerCase().match(filter_value)) {
+                            this_condition_match = true;
+                        } else if (filter_condition === '!=' && this_data[filter_tag].toLowerCase() != filter_value) {
+                            this_condition_match = true;
+                        } else if (filter_condition === '!~' && !this_data[filter_tag].toLowerCase().match(filter_value)) {
+                            this_condition_match = true;
+                        }
+                    });
 
                     if (!this_condition_match && !filter_or_type) {
                         // normal AND condition, exit when one of the criteria is not met
@@ -307,14 +310,14 @@
             }
             let $new_filter = $("<span/>").addClass("badge");
             $new_filter.data('filter', {
-                tag:$("#filter_tag").val(),
+                tag:$("#filter_tag").val().split(','),
                 condition:$("#filter_condition").val(),
                 value:$("#filter_value").val(),
               }
             );
             $new_filter.text($("#filter_tag").val() + $("#filter_condition").val() + $("#filter_value").val());
             $new_filter.click(function(){
-                $("#filter_tag").val($(this).data('filter').tag);
+                $("#filter_tag").val($(this).data('filter').tag.join(','));
                 $("#filter_condition").val($(this).data('filter').condition);
                 $("#filter_value").val($(this).data('filter').value);
                 $(this).remove();
@@ -434,6 +437,8 @@
                                     <option value="srcport">{{ lang._('src_port') }}</option>
                                     <option value="dst">{{ lang._('dst') }}</option>
                                     <option value="dstport">{{ lang._('dst_port') }}</option>
+                                    <option value="src,dst">{{ lang._('host') }}</option>
+                                    <option value="srcport,dstport">{{ lang._('port') }}</option>
                                     <option value="protoname">{{ lang._('protoname') }}</option>
                                     <option value="label">{{ lang._('label') }}</option>
                                     <option value="rid">{{ lang._('rule id') }}</option>
