@@ -513,8 +513,6 @@ function console_configure_dhcpd($version = 4)
 console_configure_dhcpd(4);
 console_configure_dhcpd(6);
 
-//*****************************************************************************
-
 if ($config['system']['webgui']['protocol'] == 'https') {
     if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?', 'n')) {
         $config['system']['webgui']['protocol'] = 'http';
@@ -525,11 +523,18 @@ if ($config['system']['webgui']['protocol'] == 'https') {
     }
 }
 
-if (isset($config['system']['webgui']['noantilockout'])) {
-    unset($config['system']['webgui']['noantilockout']);
+if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
+    if (isset($config['system']['webgui']['noantilockout'])) {
+        unset($config['system']['webgui']['noantilockout']);
+    }
+    if (isset($config['system']['webgui']['interfaces'])) {
+        unset($config['system']['webgui']['interfaces']);
+    }
+    if (isset($config['system']['webgui']['ssl-ciphers'])) {
+        unset($config['system']['webgui']['ssl-ciphers']);
+    }
+    $restart_webgui = true;
 }
-
-/* XXX it might be useful to reset interface binding for web GUI here too */
 
 if ($config['interfaces']['lan']) {
     if ($config['dhcpd']) {
