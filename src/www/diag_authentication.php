@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $authName = 'Local Database';
         }
 
-        $authFactory = new OPNsense\Auth\AuthenticationFactory;
+        $authFactory = new OPNsense\Auth\AuthenticationFactory();
         $authenticator = $authFactory->get($authName);
         if ($authenticator->authenticate($_POST['username'], $_POST['password'])) {
             $savemsg = gettext("User") . ": " . $_POST['username'] . " " . gettext("authenticated successfully.");
