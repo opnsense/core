@@ -129,7 +129,20 @@ class AliasUtilController extends ApiControllerBase
             }
             return $item;
         }, array_slice($entry_keys, $offset, $itemsPerPage));
-
+        
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !array_key_exists('ip', $this->request->getPost('sort'))
+        ) {
+            $sortcolumn = array_key_first($this->request->getPost('sort'));
+            $sort_order = SORT_ASC;
+            if ($this->request->getPost('sort')[$sortcolumn] === 'desc') {
+                $sort_order = SORT_DESC;
+            }
+            array_multisort(array_column($formatted, $sortcolumn), $sort_order, $formatted);
+        }
+   
         return [
             'total' => count($entry_keys),
             'rowCount' => $itemsPerPage,
