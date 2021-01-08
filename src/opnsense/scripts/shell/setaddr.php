@@ -526,14 +526,16 @@ if ($config['system']['webgui']['protocol'] == 'https') {
 if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
     if (isset($config['system']['webgui']['noantilockout'])) {
         unset($config['system']['webgui']['noantilockout']);
+        $restart_webgui = true;
     }
     if (isset($config['system']['webgui']['interfaces'])) {
         unset($config['system']['webgui']['interfaces']);
+        $restart_webgui = true;
     }
     if (isset($config['system']['webgui']['ssl-ciphers'])) {
         unset($config['system']['webgui']['ssl-ciphers']);
+        $restart_webgui = true;
     }
-    $restart_webgui = true;
 }
 
 if ($config['interfaces']['lan']) {
