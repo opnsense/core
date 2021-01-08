@@ -278,6 +278,10 @@
                         this_condition_match = false;
                     } else if (filter_condition === '~' && !this_data[filter_tag].toLowerCase().match(filter_value)) {
                         this_condition_match = false;
+                    } else if (filter_condition === '!=' && this_data[filter_tag].toLowerCase() == filter_value) {
+                        this_condition_match = false;
+                    } else if (filter_condition === '!~' && this_data[filter_tag].toLowerCase().match(filter_value)) {
+                        this_condition_match = false;
                     }
 
                     if (!this_condition_match && !filter_or_type) {
@@ -441,6 +445,8 @@
                                 <select id="filter_condition" class="condition"  data-width="120px">
                                     <option value="~" selected=selected>{{ lang._('contains') }}</option>
                                     <option value="=">{{ lang._('is') }}</option>
+                                    <option value="!~">{{ lang._('does not contain') }}</option>
+                                    <option value="!=">{{ lang._('is not') }}</option>
                                 </select>
                               </td>
                               <td>
