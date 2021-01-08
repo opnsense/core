@@ -761,29 +761,6 @@ function is_macaddr($macaddr, $partial = false)
     return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){' . $repeat . '}$/i', $macaddr) == 1 ? true : false;
 }
 
-/* returns true if $name is a valid name for an alias
-   returns NULL if a reserved word is used
-   returns FALSE for bad chars in the name - this allows calling code to determine what the problem was.
-   aliases cannot be:
-  bad chars: anything except a-z 0-9 and underscore
-  bad names: empty string, pure numeric, pure underscore
-  reserved words: pre-defined service/protocol/port names which should not be ambiguous and pf keywords */
-
-function is_validaliasname($name)
-{
-    $reserved = array('all', 'pass', 'block', 'out', 'queue', 'max', 'min', 'pptp', 'pppoe', 'L2TP', 'OpenVPN', 'IPsec');
-
-    if (!is_string($name) || strlen($name) >= 32 || preg_match('/(^_*$|^\d*$|[^a-z0-9_])/i', $name)) {
-        return false;
-    }
-
-    if (in_array($name, $reserved, true) || getservbyname($name, 'tcp') || getservbyname($name, 'udp') || getprotobyname($name)) {
-        return null;
-    }
-
-    return true;
-}
-
 /* returns true if $port is a valid TCP/UDP port */
 function is_port($port)
 {

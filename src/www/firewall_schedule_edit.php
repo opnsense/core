@@ -117,11 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Schedule may not use a blank name.');
     }
 
-    $valid = is_validaliasname($pconfig['name']);
-    if ($valid === false) {
+    if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $pconfig['name'])) {
         $input_errors[] = sprintf(gettext('The schedule name must be less than 32 characters long and may only consist of the following characters: %s'), 'a-z, A-Z, 0-9, _');
-    } elseif ($valid === null) {
-        $input_errors[] = sprintf(gettext('The schedule name cannot be the internally reserved keyword "%s".'), $pconfig['name']);
     }
 
     /* check for name conflicts */
