@@ -195,6 +195,19 @@ function updateServiceControlUI(serviceName)
 
         $('#service_status_container').html(status_html + " " + buttons);
 
+        if (data['widget'] !== undefined) {
+            // tooltip service action widgets
+            ['stop', 'start', 'restart'].forEach(function(action){
+                let obj = $("#" + action + "Service");
+                if (obj.length > 0) {
+                    obj.tooltip({
+                        'placement': 'bottom',
+                        'title': data['widget']['caption_' + action]
+                    });
+                }
+            });
+        }
+
         const commands = ["start", "restart", "stop"];
         commands.forEach(function(command) {
             $("#" + command + "Service").click(function(){

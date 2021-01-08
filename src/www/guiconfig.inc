@@ -581,7 +581,8 @@ function service_control_links($service, $xs = false)
     $service_id = isset($service['id']) ? $service['id'] : '';
 
     $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
-    $template .= 'class="btn btn-%s btn-default %s"><i class="%s"></i></span>' . PHP_EOL;
+    $template .= 'class="btn btn-%s btn-default %s" data-toggle="tooltip" data-placement="bottom" ';
+    $template .= 'title="%s"><i class="%s"></i></span>' . PHP_EOL;
 
     $output = '';
 
@@ -593,6 +594,7 @@ function service_control_links($service, $xs = false)
             $service['name'],
             $xs ? 'xs' : 'sm',
             'srv_status_act',
+            gettext("restart service"),
             'fa fa-refresh fa-fw'
         );
         if (empty($service['nocheck'])) {
@@ -603,6 +605,7 @@ function service_control_links($service, $xs = false)
                 $service['name'],
                 $xs ? 'xs' : 'sm',
                 'srv_status_act',
+                gettext("stop service"),
                 'fa fa-stop fa-fw'
             );
         }
@@ -614,6 +617,7 @@ function service_control_links($service, $xs = false)
             $service['name'],
             $xs ? 'xs' : 'sm',
             'srv_status_act',
+            gettext("start service"),
             'fa fa-play fa-fw'
         );
     }

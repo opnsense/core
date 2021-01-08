@@ -221,6 +221,13 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             $status = 'unknown';
         }
 
-        return array('status' => $status);
+        return array(
+          'status' => $status,
+          'widget' => array(
+              'caption_stop' => gettext("stop service"),
+              'caption_start' => gettext("start service"),
+              'caption_restart' => gettext("restart service")
+          )
+        );
     }
 }
