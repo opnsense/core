@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2020 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -403,10 +403,15 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
 
-diff:
+ensure-stable:
+	@if ! git show-ref --verify --quiet refs/heads/stable/${CORE_ABI}; then \
+		git update-ref refs/heads/stable/${CORE_ABI} refs/remotes/origin/stable/${CORE_ABI}; \
+	fi
+
+diff: ensure-stable
 	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
 
-mfc: clean-mfcdir
+mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
 .if exists(${MFC})
 	@cp -r ${MFC} ${MFCDIR}
