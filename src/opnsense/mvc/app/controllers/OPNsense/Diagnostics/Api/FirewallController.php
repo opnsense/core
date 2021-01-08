@@ -77,7 +77,7 @@ class FirewallController extends ApiControllerBase
                 $interfaces[] = !empty((string)$node->descr) ? (string)$node->descr : $key;
             }
         }
-
+        sort($interfaces, SORT_NATURAL | SORT_FLAG_CASE);
         return [
             "interface_name" => $interfaces,
             "dir" => ["in", "out"],
