@@ -131,16 +131,16 @@ $(document).ready(function () {
             $('.brand-logo').css('display', 'none');
             $('.brand-icon').css('display', 'inline-block');
             trigger_sidebar();
-            if (store && window.sessionStorage) {
-                sessionStorage.setItem('toggle_sidebar_preset', 1);
+            if (store && window.localStorage) {
+                localStorage.setItem('toggle_sidebar_preset', 1);
                 transition_duration(0);
             }
         } else {
             $('.brand-icon').css('display', 'none');
             $('.brand-logo').css('display', 'inline-block');
             $('#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs').css('width', '');
-            if (store && window.sessionStorage) {
-                sessionStorage.setItem('toggle_sidebar_preset', 0);
+            if (store && window.localStorage) {
+                localStorage.setItem('toggle_sidebar_preset', 0);
                 mouse_events_off();
                 transition_duration(350);
             }
@@ -196,7 +196,7 @@ $(document).ready(function () {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
                 toggle_btn.show();
-                if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
+                if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
                     opnsense_sidebar_toggle(false);
                 }
             }
@@ -206,7 +206,7 @@ $(document).ready(function () {
         toggle_btn.show();
 
         /* auto-collapse if previously requested */
-        if (window.sessionStorage && sessionStorage.getItem('toggle_sidebar_preset') == 1) {
+        if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
             opnsense_sidebar_toggle(false);
         }
     }
