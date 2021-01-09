@@ -726,8 +726,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     if ($settings['strictusercn']) {
                         $strictusercn = "true";
                     }
-                    $conf .= "auth-user-pass-verify \"/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify " .
-                        "user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\" via-env\n";
+                    $conf .= "plugin /usr/local/lib/openvpn/plugins/openvpn-plugin-auth-script.so " .
+                        "/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify " .
+                        "user '{$settings['authmode']}' '{$strictusercn}' '{$mode_id}'\n";
                 }
                 break;
         }
