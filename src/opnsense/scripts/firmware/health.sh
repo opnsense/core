@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2020 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -122,9 +122,16 @@ core_check()
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
+	if [ -z "$(pkg query %n ${CORE})" ]; then
+		echo "Core package \"${CORE}\" not known to package database." >> ${PKG_PROGRESS_FILE}
+		return
+	fi
+
+	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." >> ${PKG_PROGRESS_FILE}
+
 	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
-			echo -n "Checking core packages: ." >> ${PKG_PROGRESS_FILE}
+			echo -n "Checking packages: ." >> ${PKG_PROGRESS_FILE}
 			PROGRESS=1
 		else
 			echo -n "." >> ${PKG_PROGRESS_FILE}
@@ -201,7 +208,7 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${PKG_PROGRESS_FILE}
 set_check kernel
 set_check base
 
-echo ">>> Check for and install missing package dependencies" >> ${PKG_PROGRESS_FILE}
+echo ">>> Check for missing package dependencies" >> ${PKG_PROGRESS_FILE}
 pkg check -dan >> ${PKG_PROGRESS_FILE} 2>&1
 
 echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}
