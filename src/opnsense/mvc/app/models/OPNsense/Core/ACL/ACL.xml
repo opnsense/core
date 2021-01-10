@@ -205,9 +205,10 @@
         <name>Firewall: Aliases</name>
         <patterns>
             <pattern>ui/firewall/alias/*</pattern>
+            <pattern>api/firewall/alias/export</pattern>
             <pattern>api/firewall/alias/search*</pattern>
             <pattern>api/firewall/alias/list*</pattern>
-            <pattern>api/firewall/alias/getItem*</pattern>
+            <pattern>api/firewall/alias/get*</pattern>
         </patterns>
     </page-firewall-aliases>
     <page-firewall-nat-1-1>
