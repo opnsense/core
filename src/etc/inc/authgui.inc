@@ -101,7 +101,6 @@ function session_auth(&$Login_Error)
             $authenticator = $authFactory->lastUsedAuth;
             // Generate a new id to avoid session fixation
             session_regenerate_id();
-            // XXX: eventually we should replace the login flow for a service based one (IService).
             $_SESSION['Username'] = $authenticator->getUserName($_POST['usernamefld']);
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
