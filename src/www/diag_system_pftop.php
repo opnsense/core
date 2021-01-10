@@ -151,7 +151,7 @@ $( document ).ready(function() {
                       <option value='200' selected="selected">200</option>
                       <option value='500'>500</option>
                       <option value='1000'>1000</option>
-                      <option value='9999999999'><?= gettext('all') ?></option>
+                      <option value='99999999999'><?= gettext('all') ?></option>
                     </select>
                   </div>
                 </td>
