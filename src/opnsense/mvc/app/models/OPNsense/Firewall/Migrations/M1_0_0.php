@@ -32,6 +32,7 @@ namespace OPNsense\Firewall\Migrations;
 
 use OPNsense\Core\Config;
 use OPNsense\Base\BaseModelMigration;
+use OPNsense\Firewall\Alias;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -41,50 +42,52 @@ class M1_0_0 extends BaseModelMigration
      */
     public function run($model)
     {
-        $cfgObj = Config::getInstance()->object();
-        if (!empty($cfgObj->aliases) && !empty($cfgObj->aliases->alias)) {
-            foreach ($cfgObj->aliases->alias as $alias) {
-                // find node by name or create a new one, aliases should be unique by name
-                $node = null;
-                foreach ($model->aliases->alias->iterateItems() as $new_alias) {
-                    if ((string)$new_alias->name == (string)$alias->name) {
-                        $node = $new_alias;
-                        break;
+        if ($model instanceof Alias) {
+            $cfgObj = Config::getInstance()->object();
+            if (!empty($cfgObj->aliases) && !empty($cfgObj->aliases->alias)) {
+                foreach ($cfgObj->aliases->alias as $alias) {
+                    // find node by name or create a new one, aliases should be unique by name
+                    $node = null;
+                    foreach ($model->aliases->alias->iterateItems() as $new_alias) {
+                        if ((string)$new_alias->name == (string)$alias->name) {
+                            $node = $new_alias;
+                            break;
+                        }
                     }
-                }
-                if ($node === null) {
-                    $node = $model->aliases->alias->Add();
-                }
-                // set alias properties
-                $node->description = substr(preg_replace(
-                    "/[^\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]/u",
-                    " ",
-                    (string)$alias->descr
-                ), 0, 255);
-                $node->name = (string)$alias->name;
-                $node->type = (string)$alias->type;
-                if (in_array((string)$alias->type, array('urltable_ports', 'url_ports'))) {
-                    // unsupported, replace with empty port alias
-                    $node->type = "port";
-                } elseif ($alias->url) {
-                    // url content only contains a single item
-                    $node->content = (string)$alias->url;
-                } elseif ($alias->aliasurl) {
-                    // aliasurl in legacy config could consist of multiple <aliasurl> entries
-                    $content = array();
-                    foreach ($alias->aliasurl as $url) {
-                        $content[] = (string)$url;
+                    if ($node === null) {
+                        $node = $model->aliases->alias->Add();
                     }
-                    $node->content = implode("\n", $content);
-                } elseif ($alias->address) {
-                    // address entries
-                    $node->content = str_replace(" ", "\n", trim((string)$alias->address));
-                }
-                if ($alias->proto) {
-                    $node->proto = (string)$alias->proto;
-                }
-                if ($alias->updatefreq) {
-                    $node->updatefreq = (string)$alias->updatefreq;
+                    // set alias properties
+                    $node->description = substr(preg_replace(
+                        "/[^\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]/u",
+                        " ",
+                        (string)$alias->descr
+                    ), 0, 255);
+                    $node->name = (string)$alias->name;
+                    $node->type = (string)$alias->type;
+                    if (in_array((string)$alias->type, array('urltable_ports', 'url_ports'))) {
+                        // unsupported, replace with empty port alias
+                        $node->type = "port";
+                    } elseif ($alias->url) {
+                        // url content only contains a single item
+                        $node->content = (string)$alias->url;
+                    } elseif ($alias->aliasurl) {
+                        // aliasurl in legacy config could consist of multiple <aliasurl> entries
+                        $content = array();
+                        foreach ($alias->aliasurl as $url) {
+                            $content[] = (string)$url;
+                        }
+                        $node->content = implode("\n", $content);
+                    } elseif ($alias->address) {
+                        // address entries
+                        $node->content = str_replace(" ", "\n", trim((string)$alias->address));
+                    }
+                    if ($alias->proto) {
+                        $node->proto = (string)$alias->proto;
+                    }
+                    if ($alias->updatefreq) {
+                        $node->updatefreq = (string)$alias->updatefreq;
+                    }
                 }
             }
         }
@@ -96,7 +99,9 @@ class M1_0_0 extends BaseModelMigration
      */
     public function post($model)
     {
-        $cfgObj = Config::getInstance()->object();
-        unset($cfgObj->aliases);
+        if ($model instanceof Alias) {
+            $cfgObj = Config::getInstance()->object();
+            unset($cfgObj->aliases);
+        }
     }
 }

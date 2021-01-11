@@ -1,0 +1,25 @@
+<model>
+    <mount>//OPNsense/Firewall/Category</mount>
+    <version>1.0.0</version>
+    <description>
+        Firewall categories
+    </description>
+    <items>
+        <categories>
+            <category type="ArrayField">
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A category with this name already exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </name>
+                <auto type="BooleanField">
+                    <default>0</default>
+                </auto>
+            </category>
+        </categories>
+    </items>
+</model>
