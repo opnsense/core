@@ -29,7 +29,7 @@ all:
 .include "Mk/defaults.mk"
 
 CORE_ABI?=	20.7
-CORE_PHP?=	72
+CORE_PHP?=	73
 CORE_PYTHON?=	37
 
 .if exists(${GIT}) && exists(${GITVERSION})
