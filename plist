@@ -489,6 +489,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
