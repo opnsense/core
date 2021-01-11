@@ -133,13 +133,16 @@ function openvpn_verbosity_level()
     );
 }
 
-function openvpn_compression_modes()
+function openvpn_compression_algos()
 {
     return array(
-        '' => gettext('No Preference'),
-        'no' => gettext('Disabled - No Compression'),
-        'adaptive' => gettext('Enabled with Adaptive Compression'),
-        'yes' => gettext('Enabled without Adaptive Compression'),
+        '' => gettext('Disabled - No Compression & Framing'),
+        'pfc' => gettext('Partial - Packet Framing for Compression'),
+        'lz4' => gettext('Enabled - LZ4 Algorithm'),
+        'lz4-v2' => gettext('Enabled - LZ4 v2 Algorithm'),
+        'lzo' => gettext('Enabled - LZO Algorithm'),
+        'stub' => gettext('Enabled - Stub Algorithm'),
+        'stub-v2' => gettext('Enabled - Stub v2 Algorithm'),
     );
 }
 
@@ -908,7 +911,11 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (!empty($settings['compression'])) {
-        $conf .= "comp-lzo {$settings['compression']}\n";
+        if ($settings['compression'] === 'pfc') {
+            $conf .= "compress\n";
+        } else {
+            $conf .= "compress {$settings['compression']}\n";
+        }
     }
 
     if ($settings['passtos']) {

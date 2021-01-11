@@ -408,7 +408,7 @@ function step10_stepbeforeformdisplay()
             }
         } elseif ($field['name'] == "compression") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            foreach (openvpn_compression_modes() as $name => $desc) {
+            foreach (openvpn_compression_algos() as $name => $desc) {
                 $opt = array();
                 $opt['name'] = $desc;
                 $opt['value'] = $name;
