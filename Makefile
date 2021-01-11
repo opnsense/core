@@ -28,13 +28,13 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	20.7
+CORE_ABI?=	21.1
 CORE_PHP?=	73
 CORE_PYTHON?=	37
 
 .if exists(${GIT}) && exists(${GITVERSION})
-. if ${CORE_ABI} == "20.7"
-CORE_COMMIT!=	${GITVERSION} --exclude=21.1.r\*
+. if ${CORE_ABI} == "21.1"
+CORE_COMMIT!=	${GITVERSION} --exclude=21.7.r\*
 . else
 CORE_COMMIT!=	${GITVERSION}
 . endif
@@ -62,9 +62,9 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
-CORE_MESSAGE?=		Carry on my wayward son
-CORE_NAME?=		opnsense-devel
-CORE_TYPE?=		development
+CORE_MESSAGE?=		TBA
+CORE_NAME?=		opnsense
+CORE_TYPE?=		release
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
 CORE_MAINTAINER?=	project@opnsense.org
