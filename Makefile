@@ -406,7 +406,8 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 ensure-stable:
 	@if ! git show-ref --verify --quiet refs/heads/stable/${CORE_ABI}; then \
 		git update-ref refs/heads/stable/${CORE_ABI} refs/remotes/origin/stable/${CORE_ABI}; \
-		git config branch.stable/20.7.merge refs/heads/stable/${CORE_ABI}; \
+		git config branch.stable/${CORE_ABI}.merge refs/heads/stable/${CORE_ABI}; \
+		git config branch.stable/${CORE_ABI}.remote origin; \
 	fi
 
 diff: ensure-stable
