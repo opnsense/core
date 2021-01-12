@@ -42,12 +42,19 @@ class Category extends BaseModel
 {
     public function getByName($name)
     {
-        foreach ($this->categories->category->iterateItems() as $alias) {
-            if ((string)$alias->name == $name) {
-                return $alias;
+        foreach ($this->categories->category->iterateItems() as $category) {
+            if ((string)$category->name == $name) {
+                return $category;
             }
         }
         return null;
+    }
+
+    public function iterateCategories()
+    {
+        foreach ($this->categories->category->iterateItems() as $category) {
+            yield ['name' => (string)$category->name];
+        }
     }
 
     /**
@@ -71,8 +78,12 @@ class Category extends BaseModel
             }
             if ($cfgsection != null) {
                 foreach ($cfgsection as $node) {
-                    if (!empty($node->category) && !in_array((string)$node->category, $used_categories)) {
-                        $used_categories[] = (string)$node->category;
+                    if (!empty($node->category)) {
+                        foreach (explode(",", (string)$node->category) as $cat) {
+                            if (!in_array($cat, $used_categories)) {
+                                $used_categories[] = $cat;
+                            }
+                        }
                     }
                 }
             }

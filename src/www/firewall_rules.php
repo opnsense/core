@@ -512,7 +512,14 @@ $( document ).ready(function() {
           }
       });
       $(".rule").each(function(){
-          if (selected_values.indexOf($(this).data('category')) == -1 && selected_values.length > 0) {
+          let rule_categories = $(this).data('category').split(',');
+          let is_selected = false;
+          rule_categories.forEach(function(item){
+              if (selected_values.indexOf(item) > -1) {
+                  is_selected = true;
+              }
+          });
+          if (!is_selected && selected_values.length > 0) {
               $(this).hide();
               $(this).find("input").prop('disabled', true);
           } else {
@@ -624,17 +631,12 @@ $( document ).ready(function() {
     <div id="category_block" style="z-index:-100;">
         <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
 <?php
-            // collect unique list of categories and append to option list
-            $categories = array();
-            foreach ($a_filter as $tmp_rule) {
-              if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                  $categories[] = $tmp_rule['category'];
-              }
-            }
-            foreach ($categories as $category):?>
-                <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
+          foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):?>
+              <option value="<?=$category['name'];?>" <?=in_array($category['name'], $selected_category) ? "selected=\"selected\"" : "" ;?>>
+                <?=$category['name'];?>
+              </option>
 <?php
-            endforeach;?>
+          endforeach;?>
         </select>
         <button id="btn_inspect" class="btn btn-default hidden-xs">
           <i class="fa fa-eye" aria-hidden="true"></i>
