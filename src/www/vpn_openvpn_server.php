@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $vpnid = 0;
     $pconfig['verbosity_level'] = 1;
     $pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
+    $pconfig['tlsauth'] = "crypt";
     $pconfig['autokey_enable'] = "yes";
     $pconfig['autotls_enable'] = "yes";
     if (isset($configId) && isset($a_server[$configId])) {
@@ -67,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain,local_group
-            ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
+            ,client_mgmt_port,verbosity_level,tlsauth,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
@@ -89,15 +90,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $pconfig['shared_key'] = null;
         }
-        if (!empty($a_server[$configId]['tls'])) {
-            $pconfig['tlsauth_enable'] = "yes";
-            $pconfig['tls'] = base64_decode($a_server[$configId]['tls']);
+        if (!empty($a_server[$configId]['tlskey'])) {
+            $pconfig['tlskey'] = base64_decode($a_server[$configId]['tlskey']);
         } else {
-            $pconfig['tls'] = null;
-            $pconfig['tlsauth_enable'] = null;
+            $pconfig['tlskey'] = null;
+            $pconfig['tlsauth'] = null;
         }
     } elseif ($act == "new") {
-        $pconfig['tlsauth_enable'] = "yes";
         $pconfig['dh_length'] = 2048;
         $pconfig['dev_mode'] = "tun";
         $pconfig['interface'] = 'any';
@@ -115,8 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain
-            ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
+            ,client_mgmt_port,verbosity_level,tlsauth,caref,crlref,certref,dh_length
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tlskey,reneg-sec,use-common-name
             ,cso_login_matching";
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -238,10 +237,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if ($tls_mode && !empty($pconfig['tlsauth_enable']) && empty($pconfig['autotls_enable'])) {
-            if (!strstr($pconfig['tls'], "-----BEGIN OpenVPN Static key V1-----") ||
-                !strstr($pconfig['tls'], "-----END OpenVPN Static key V1-----")) {
-                $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid");
+        if ($tls_mode && !empty($pconfig['tlsauth']) && empty($pconfig['autotls_enable'])) {
+            if (!strstr($pconfig['tlskey'], "-----BEGIN OpenVPN Static key V1-----") ||
+                !strstr($pconfig['tlskey'], "-----END OpenVPN Static key V1-----")) {
+                $input_errors[] = gettext("The field 'TLS Shared Key' does not appear to be valid");
             }
         }
 
@@ -395,11 +394,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $server['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
 
             if ($tls_mode) {
-                if ($pconfig['tlsauth_enable']) {
+                if ($pconfig['tlsauth']) {
                     if (!empty($pconfig['autotls_enable'])) {
-                        $pconfig['tls'] = openvpn_create_key();
+                        $pconfig['tlskey'] = openvpn_create_key();
                     }
-                    $server['tls'] = base64_encode($pconfig['tls']);
+                    $server['tlskey'] = base64_encode($pconfig['tlskey']);
                 }
                 foreach (array("caref","crlref",
                       "certref","dh_length","cert_depth") as $cpKey) {
@@ -533,19 +532,29 @@ $( document ).ready(function() {
       });
       $("#autokey_enable").change();
 
-      $("#tlsauth_enable,#autotls_enable").change(function(){
-          if ($("#autotls_enable").is(':checked') || !$("#tlsauth_enable").is(':checked')) {
-              $("#tls").parent().hide();
+      $("#autotls_enable").change(function(){
+          if($("#autotls_enable").is(":checked")) {
+              $("#autotls_opts").hide();
           } else {
-              $("#tls").parent().show();
-          }
-          if ($("#tlsauth_enable").is(':checked')) {
-              $("#autotls_enable").parent().show();
-          } else {
-              $("#autotls_enable").parent().hide();
+              $("#autotls_opts").show();
           }
       });
-      $("#tlsauth_enable").change();
+      $("#autotls_enable").change();
+
+      $("#tlsauth").change(function(){
+          if (this.value != "") {
+              if ($("#autotls_enable").val() != undefined) {
+                  $("#autotls_enable").prop("disabled", false);
+              }
+              $("#tlskey").prop("disabled", false);
+          } else {
+              if ($("#autotls_enable").val() != undefined) {
+                  $("#autotls_enable").prop("disabled", true);
+              }
+              $("#tlskey").prop("disabled", true);
+          }
+      });
+      $("#tlsauth").change();
 
       $("#dns_domain_enable").change(function(){
           if ($("#dns_domain_enable").is(':checked')) {
@@ -808,21 +817,29 @@ $( document ).ready(function() {
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
                       <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
                       <td style="width:78%">
-                        <div>
-                          <input name="tlsauth_enable" id="tlsauth_enable" type="checkbox" value="yes" <?=!empty($pconfig['tlsauth_enable']) ? "checked=\"checked\"" : "" ;?>/>
-                          <?=gettext("Enable authentication of TLS packets"); ?>.
-                        </div>
-                        <?php if (!$pconfig['tls']) :
-?>
-                        <div>
-                          <input name="autotls_enable" id="autotls_enable" type="checkbox" value="yes" <?=!empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "" ;?>  />
-                          <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
-                         </div>
-                        <?php
-endif; ?>
-                        <div>
-                          <textarea id="tls" name="tls" cols="65" rows="7" class="formpre"><?=$pconfig['tls'];?></textarea>
-                          <?=gettext("Paste your shared key here"); ?>.
+                        <select name='tlsauth' class="form-control">
+                            <option value="" <?= empty($pconfig['tlsauth']) ? "selected=\"selected\"" : "";?>>
+                                <?=gettext("Disabled");?>
+                            </option>
+                            <option value="auth" <?= $pconfig['tlsauth'] === "auth" ? "selected=\"selected\"" : "";?>>
+                                <?=gettext("Enabled - Authentication only");?>
+                            </option>
+                            <option value="crypt" <?= $pconfig['tlsauth'] === "crypt" ? "selected=\"selected\"" : "";?>>
+                                <?=gettext("Enabled - Authentication & encryption");?>
+                            </option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Shared Key"); ?></td>
+                      <td>
+                        <?php if (!$pconfig['tlskey']) :?>
+                        <input name="autotls_enable" id="autotls_enable" type="checkbox" value="yes" <?=!empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "" ;?>  />
+                        <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
+                        <?php endif; ?>
+                        <div id="autotls_opts">
+                          <textarea id="tlskey" name="tlskey" cols="65" rows="7" class="formpre"><?=$pconfig['tlskey'];?></textarea>
+                          <p class="text-muted"><em><small><?=gettext("Paste your shared key here"); ?>.</small></em></p>
                         </div>
                       </td>
                     </tr>

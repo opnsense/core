@@ -731,7 +731,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 }
                 break;
         }
-        if (!isset($settings['cert_depth']) && (strstr($settings['mode'], 'tls'))) {
+        if (!isset($settings['cert_depth']) && (strstr($settings['mode'], 'tlskey'))) {
             $settings['cert_depth'] = 1;
         }
         if (is_numeric($settings['cert_depth'])) {
@@ -896,13 +896,19 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 crl_update($crl);
                 openvpn_add_keyfile($crl['text'], $conf, $mode_id, "crl-verify");
             }
-            if ($settings['tls']) {
-                if ($mode == "server") {
-                    $tlsopt = 0;
+            if ($settings['tlskey']) {
+                if ($settings['tlsauth'] == "crypt") {
+                    $tlsauth = "tls-crypt";
+                    $tlsopt = '';
                 } else {
-                    $tlsopt = 1;
+                    $tlsauth = "tls-auth";
+                    if ($mode == "server") {
+                        $tlsopt = 0;
+                    } else {
+                        $tlsopt = 1;
+                    }
                 }
-                openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-auth", $tlsopt);
+                openvpn_add_keyfile($settings['tlskey'], $conf, $mode_id, $tlsauth, $tlsopt);
             }
             break;
     }

@@ -154,17 +154,24 @@ class TheGreenBow extends BaseExporter implements IExportProvider
         }
 
         $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->RenegSeconds = $this->config['reneg-sec'];
-        if (!empty($this->config['tls'])) {
+        if (!empty($this->config['tlskey'])) {
             $tls = array("\n-----BEGIN Static key-----");
-            foreach (explode("\n", trim(base64_decode($this->config['tls']))) as $line) {
+            foreach (explode("\n", trim(base64_decode($this->config['tlskey']))) as $line) {
                 if (!empty($line) && !in_array($line[0], ['-', '#'])) {
                     $tls[] = $line;
                 }
             }
             $tls[] = "-----END Static key-----\n";
-
-            $output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth->key = (string)implode("\n", $tls);
+            if ($this->config['tlsauth'] === 'crypt') {
+                $output->cfg_ssl->cfg_sslconnection->cfg_TlsCrypt->key = (string)implode("\n", $tls);
+                unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth);
+                unset($output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->KeyDirection);
+            } else {
+                $output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth->key = (string)implode("\n", $tls);
+                unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsCrypt);
+            }
         } else {
+            unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsCrypt);
             unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth);
             unset($output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->KeyDirection);
         }
