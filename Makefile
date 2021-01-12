@@ -64,9 +64,9 @@ CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 
 CORE_MESSAGE?=		The lion sleeps tonight
 CORE_NAME?=		opnsense
-CORE_TYPE?=		release
+CORE_TYPE?=		production
 
-CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
