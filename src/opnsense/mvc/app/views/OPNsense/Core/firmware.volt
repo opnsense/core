@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -406,6 +406,7 @@
                     '<td>' + row['name'] + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['repository'] + '</td>' +
                     '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
@@ -457,6 +458,7 @@
                     '<tr>' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
                     '<td>' + bold_on + row['version'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['repository'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
@@ -860,6 +862,7 @@
                           <th>{{ lang._('Name') }}</th>
                           <th>{{ lang._('Version') }}</th>
                           <th>{{ lang._('Size') }}</th>
+                          <th>{{ lang._('Repository') }}</th>
                           <th>{{ lang._('Comment') }}</th>
                           <th></th>
                         </tr>
@@ -875,6 +878,7 @@
                               <th>{{ lang._('Name') }}</th>
                               <th>{{ lang._('Version') }}</th>
                               <th>{{ lang._('Size') }}</th>
+                              <th>{{ lang._('Repository') }}</th>
                               <th>{{ lang._('License') }}</th>
                               <th>{{ lang._('Comment') }}</th>
                               <th></th>
