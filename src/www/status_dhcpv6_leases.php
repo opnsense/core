@@ -488,7 +488,9 @@ endif;?>
                   </td>
                   <td><?=$data['act'];?></td>
                   <td class="text-nowrap">
-<?php if (!empty($data['if'])): ?>
+<?php if (!empty($config['interfaces'][$data['if']])): ?>
+<?php if (empty($config['interfaces'][$data['if']]['virtual']) && isset($config['interfaces'][$data['if']]['enable'])): ?>
+<?php if (is_ipaddrv6($config['interfaces'][$data['if']]['ipaddrv6']) || !empty($config['interfaces'][$data['if']]['dhcpd6track6allowoverride'])): ?>
 <?php if ($data['type'] == 'dynamic'): ?>
                         <a class="btn btn-default btn-xs" href="services_dhcpv6_edit.php?if=<?=$data['if'];?>&amp;duid=<?=$data['duid'];?>&amp;hostname=<?=$data['hostname'];?>">
                           <i class="fa fa-plus fa-fw"></i>
@@ -497,6 +499,8 @@ endif;?>
                     <a class="act_delete btn btn-default btn-xs" href="#" data-deleteip="<?=$data['ip'];?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
                       <i class="fa fa-trash fa-fw"></i>
                     </a>
+<?php endif ?>
+<?php endif ?>
 <?php endif ?>
 <?php endif ?>
 <?php endif ?>
