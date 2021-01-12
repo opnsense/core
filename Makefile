@@ -66,7 +66,7 @@ CORE_MESSAGE?=		Carry on my wayward son
 CORE_NAME?=		opnsense-devel
 CORE_TYPE?=		development
 
-CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} package
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
