@@ -313,8 +313,13 @@
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
             if (data['log'] != undefined) {
+                var autoscroll = $('#update_status')[0].scrollTop +
+                    $('#update_status')[0].clientHeight ===
+                    $('#update_status')[0].scrollHeight;
                 $('#update_status').html(data['log']);
-                $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
+                if (autoscroll) {
+                    $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
+                }
             }
             if (data['status'] == 'done') {
                 $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
