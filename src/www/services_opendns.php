@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2008 Tellnet AG
  * All rights reserved.
  *
@@ -36,6 +36,7 @@ config_read_array('opendns');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable'] = isset($config['opendns']['enable']);
+    $pconfig['standalone'] = isset($config['opendns']['standalone']);
     $pconfig['username'] = !empty($config['opendns']['username']) ? $config['opendns']['username'] : null;
     $pconfig['password'] = !empty($config['opendns']['password']) ? $config['opendns']['password'] : null;
     $pconfig['host'] = !empty($config['opendns']['host']) ? $config['opendns']['host'] : null;
@@ -63,10 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $test_results = explode("\r\n", opendns_register($pconfig));
     } elseif (count($input_errors) == 0) {
         $config['opendns']['enable'] = !empty($pconfig['enable']);
+        $config['opendns']['standalone'] = !empty($pconfig['standalone']);
         $config['opendns']['username'] = $pconfig['username'];
         $config['opendns']['password'] = $pconfig['password'];
         $config['opendns']['host'] = $pconfig['host'];
-        if ($config['opendns']['enable']) {
+        if ($config['opendns']['standalone']) {
+            /* nothing to do, keep system state */
+        } elseif ($config['opendns']['enable']) {
             $config['system']['dnsserver'] = array();
             $v4_server = array('208.67.222.222', '208.67.220.220');
             $v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
@@ -137,7 +141,7 @@ include 'head.inc';
                   <td><a id="help_for_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Enable'); ?></td>
                   <td>
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
-                    <strong><?=gettext('Filter DNS requests using OpenDNS'); ?></strong>
+                    <?= gettext('Filter DNS requests using OpenDNS') ?>
                     <div class="hidden" data-for="help_for_enable">
                       <?= sprintf(gettext(
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
@@ -145,6 +149,19 @@ include 'head.inc';
                         'by DHCP/PPP on WAN and use the DNS servers from %s instead.'),
                         '<a href="http://www.opendns.com" target="_blank">OpenDNS.com</a>'
                       ) ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_standalone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Standalone'); ?></td>
+                  <td>
+                    <input name="standalone" type="checkbox" id="standalone" value="yes" <?=!empty($pconfig['standalone']) ? 'checked="checked"' : "";?> />
+                    <?= gettext('Do not alter system DNS server settings') ?>
+                    <div class="hidden" data-for="help_for_standalone">
+                      <?= sprintf(gettext(
+                        'Enable this mode when the OpenDNS servers are used by a different ' .
+			'network component but the periodic update behaviour is still desired.'
+                      )) ?>
                     </div>
                   </td>
                 </tr>
