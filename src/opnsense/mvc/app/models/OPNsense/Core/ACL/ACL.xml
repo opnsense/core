@@ -239,6 +239,7 @@
         <name>Firewall: NAT: Outbound</name>
         <patterns>
             <pattern>firewall_nat_out.php*</pattern>
+            <pattern>api/firewall/category/searchItem*</pattern>
         </patterns>
     </page-firewall-nat-outbound>
     <page-firewall-nat-outbound-edit>
@@ -251,6 +252,7 @@
         <name>Firewall: NAT: Port Forward</name>
         <patterns>
             <pattern>firewall_nat.php*</pattern>
+            <pattern>api/firewall/category/searchItem*</pattern>
         </patterns>
     </page-firewall-nat-portforward>
     <page-firewall-nat-portforward-edit>
@@ -263,6 +265,7 @@
         <name>Firewall: Rules</name>
         <patterns>
             <pattern>firewall_rules.php*</pattern>
+            <pattern>api/firewall/category/searchItem*</pattern>
         </patterns>
     </page-firewall-rules>
     <page-firewall-rules-edit>

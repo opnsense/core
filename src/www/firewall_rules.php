@@ -317,11 +317,6 @@ if (isset($_GET['if'])) {
     $selected_if = htmlspecialchars($_GET['if']);
 }
 
-$selected_category = [];
-if (isset($_GET['category'])) {
-    $selected_category = !is_array($_GET['category']) ? array($_GET['category']) : $_GET['category'];
-}
-
 include("head.inc");
 
 $main_buttons = array(
@@ -499,63 +494,6 @@ $( document ).ready(function() {
   // watch scroll position and set to last known on page load
   watchScrollPosition();
 
-  // link category select/search
-  $("#fw_category").change(function(){
-      var selected_values = [];
-      $("#fw_category > option:selected").each(function(){
-          if ($(this).val() != "") {
-              selected_values.push($(this).val());
-          } else {
-              // select all when "Filter by category" is selected
-              selected_values = [];
-              return false;
-          }
-      });
-      $(".rule").each(function(){
-          let rule_categories = $(this).data('category').split(',');
-          let is_selected = false;
-          rule_categories.forEach(function(item){
-              if (selected_values.indexOf(item) > -1) {
-                  is_selected = true;
-              }
-          });
-          if (!is_selected && selected_values.length > 0) {
-              $(this).hide();
-              $(this).find("input").prop('disabled', true);
-          } else {
-              $(this).find("input").prop('disabled', false);
-              $(this).show();
-          }
-      });
-
-      // hook into tab changes, keep selected category/categories when following link
-      $("#Firewall_Rules > .menu-level-3-item").each(function(){
-          var add_link = "";
-          if (selected_values.length > 0) {
-              add_link = "&" + $.param({'category': selected_values});
-          }
-          if ($(this).is('A')) {
-              if ($(this).data('link') == undefined) {
-                  // move link to data tag
-                  $(this).data('link', $(this).attr('href'));
-              }
-              $(this).attr('href', $(this).data('link') + add_link);
-          } else if ($(this).is('OPTION')) {
-            if ($(this).data('link') == undefined) {
-                // move link to data tag
-                $(this).data('link', $(this).val());
-            }
-            $(this).val($(this).data('link') + add_link);
-          }
-      });
-      $(".opnsense-rules").change();
-  });
-
-  // hide category search when not used
-  if ($("#fw_category > option").length == 0) {
-      $("#fw_category").addClass('hidden');
-  }
-
   // select All
   $("#selectAll").click(function(){
       $(".rule_select").prop("checked", $(this).prop("checked"));
@@ -581,6 +519,9 @@ $( document ).ready(function() {
       $(this).blur();
   });
 
+  // hook category functionality
+  hook_firewall_categories();
+
   // expand internal auto generated rules
   if ($("tr.internal-rule").length > 0) {
       $("#expand-internal-rules").show();
@@ -605,7 +546,6 @@ $( document ).ready(function() {
       });
   });
   //
-  $("#fw_category").change();
   $("#expand-internal").click(function(event){
       event.preventDefault();
       $(".internal-rule").toggle();
@@ -630,13 +570,6 @@ $( document ).ready(function() {
   <div class="hidden">
     <div id="category_block" style="z-index:-100;">
         <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
-<?php
-          foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):?>
-              <option value="<?=$category['name'];?>" <?=in_array($category['name'], $selected_category) ? "selected=\"selected\"" : "" ;?>>
-                <?=$category['name'];?>
-              </option>
-<?php
-          endforeach;?>
         </select>
         <button id="btn_inspect" class="btn btn-default hidden-xs">
           <i class="fa fa-eye" aria-hidden="true"></i>

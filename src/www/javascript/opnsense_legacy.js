@@ -168,3 +168,55 @@ function window_highlight_table_option()
         });
     }
 }
+
+
+/**
+ * load fireall categories and hook change events.
+ * in order to use this partial the html template should contain the following:
+ * - a <select> with the id "fw_category" to load categories in
+ * - <tr/> entities with class "rule" to identify the rows to filter
+ * - on the <tr/> tag a data element named "category", which contains a comma seperated list of categories this rule belongs to
+ * - a <table/> with id "opnsense-rules" which contains the rules
+ */
+function hook_firewall_categories() {
+    let cat_select = $("#fw_category");
+    ajaxCall('/api/firewall/category/searchItem', {}, function(data){
+        if (data.rows !== undefined && data.rows.length > 0) {
+            for (let i=0; i < data.rows.length ; ++i) {
+                cat_select.append($("<option/>").val(data.rows[i].name).html(data.rows[i].name));
+            }
+        }
+        cat_select.selectpicker('refresh');
+        // hide category search when not used
+        if (cat_select.find("option").length == 0) {
+            cat_select.addClass('hidden');
+        } else {
+            let tmp = window.sessionStorage ? window.sessionStorage.getItem("firewall.selected.categories").split(',') : [];
+            cat_select.val(tmp);
+        }
+
+        cat_select.change(function(){
+            if (window.sessionStorage) {
+                window.sessionStorage.setItem("firewall.selected.categories", cat_select.val().join(','));
+            }
+            let selected_values = cat_select.val();
+            $(".rule").each(function(){
+                let is_selected = false;
+                $(this).data('category').split(',').forEach(function(item){
+                    if (selected_values.indexOf(item) > -1) {
+                        is_selected = true;
+                    }
+                });
+                if (!is_selected && selected_values.length > 0) {
+                    $(this).hide();
+                    $(this).find("input").prop('disabled', true);
+                } else {
+                    $(this).find("input").prop('disabled', false);
+                    $(this).show();
+                }
+            });
+            $(".opnsense-rules").change();
+        });
+        cat_select.change();
+    });
+}
