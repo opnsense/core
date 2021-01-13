@@ -160,7 +160,7 @@ include 'head.inc';
                     <div class="hidden" data-for="help_for_standalone">
                       <?= sprintf(gettext(
                         'Enable this mode when the OpenDNS servers are used by a different ' .
-			'network component but the periodic update behaviour is still desired.'
+                        'network component but the periodic update behaviour is still desired.'
                       )) ?>
                     </div>
                   </td>
