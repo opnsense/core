@@ -191,7 +191,10 @@ function hook_firewall_categories() {
         if (cat_select.find("option").length == 0) {
             cat_select.addClass('hidden');
         } else {
-            let tmp = window.sessionStorage ? window.sessionStorage.getItem("firewall.selected.categories").split(',') : [];
+            let tmp  = [];
+            if (window.sessionStorage && window.sessionStorage.getItem("firewall.selected.categories")) {
+                tmp = window.sessionStorage.getItem("firewall.selected.categories").split(',');
+            }
             cat_select.val(tmp);
         }
 
