@@ -183,7 +183,8 @@ function hook_firewall_categories() {
     ajaxCall('/api/firewall/category/searchItem', {}, function(data){
         if (data.rows !== undefined && data.rows.length > 0) {
             for (let i=0; i < data.rows.length ; ++i) {
-                cat_select.append($("<option/>").val(data.rows[i].name).html(data.rows[i].name));
+                let opt_val = $('<div/>').html(data.rows[i].name).text();
+                cat_select.append($("<option/>").val(opt_val).html(data.rows[i].name));
             }
         }
         cat_select.selectpicker('refresh');
@@ -192,7 +193,7 @@ function hook_firewall_categories() {
             cat_select.addClass('hidden');
         } else {
             let tmp  = [];
-            if (window.sessionStorage && window.sessionStorage.getItem("firewall.selected.categories")) {
+            if (window.sessionStorage && window.sessionStorage.getItem("firewall.selected.categories") !== null) {
                 tmp = window.sessionStorage.getItem("firewall.selected.categories").split(',');
             }
             cat_select.val(tmp);
