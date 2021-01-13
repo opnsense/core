@@ -1215,12 +1215,10 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
                     <td>
-                      <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px">
+                      <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-sortable="false" data-width="334px" data-live-search="true">
 <?php
                       foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):?>
-                        <option value="<?=$category['name'];?>"  <?=in_array($category['name'], $pconfig['category']) ? 'selected="selected"' : '';?> >
-                          <?=$category['name'];?>
-                        </option>
+                        <option value="<?=$category['name'];?>"  <?=in_array($category['name'], $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$category['name'];?></option>
 <?php
                       endforeach;?>
                       </select>
