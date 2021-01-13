@@ -153,7 +153,10 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
-    filter_configure_sync(false, isset($config['system']['ip_change_kill_states']));
+
+    $kill_states_interfaces = !empty($config['system']['ip_change_kill_states_interfaces']) ? explode(',', $config['system']['ip_change_kill_states_interfaces']) : array();
+    $kill_states = isset($config['system']['ip_change_kill_states']) && in_array($interface, $kill_states_interfaces);
+    filter_configure_sync(false, $kill_states);
 
     if (is_ipaddr($ip)) {
         @file_put_contents($cacheip_file, $ip);

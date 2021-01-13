@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
+    $pconfig['ip_change_kill_states_interfaces'] = !empty($config['system']['ip_change_kill_states_interfaces']) ? explode(',', $config['system']['ip_change_kill_states_interfaces']) : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -220,6 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ip_change_kill_states']);
         }
 
+        $config['system']['ip_change_kill_states_interfaces'] = !empty($pconfig['ip_change_kill_states_interfaces']) ? implode(',', $pconfig['ip_change_kill_states_interfaces']) : null;
+
         write_config();
 
         $savemsg = get_std_save_message();
@@ -228,6 +231,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         filter_configure();
     }
 }
+
+$interfaces = get_configured_interface_with_descr();
 
 legacy_html_escape_form_data($pconfig);
 
@@ -683,10 +688,23 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_ip_change_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dynamic state reset') ?></td>
                 <td>
-                  <input name="ip_change_kill_states" type="checkbox" value="yes" <?=!empty($pconfig['ip_change_kill_states']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Reset all states when a dynamic IP address changes.') ?>
-                  <div class="hidden" data-for="help_for_ip_change_kill_states">
-                    <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
+                  <div>
+                    <input name="ip_change_kill_states" type="checkbox" value="yes" <?=!empty($pconfig['ip_change_kill_states']) ? 'checked="checked"' : '' ?> />
+                    <?= gettext('Reset all states when a dynamic IP address changes.') ?>
+                    <div class="hidden" data-for="help_for_ip_change_kill_states">
+                      <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
+                    </div>
+                  </div>
+                  <br>
+                  <div>
+                    <select name="ip_change_kill_states_interfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php foreach ($interfaces as $iface => $ifacename): ?>
+                      <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['ip_change_kill_states_interfaces']) && in_array($iface, $pconfig['ip_change_kill_states_interfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
+<?php endforeach ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_ip_change_kill_states">
+                      <?=gettext("Only flush the entire state table on IPv4 address changes on the selected interfaces.");?>
+                    </div>
                   </div>
                 </td>
               </tr>
