@@ -67,7 +67,7 @@ class Category extends BaseModel
     {
         $has_changed = false;
         $cfgObj = Config::getInstance()->object();
-        $source = [array('filter', 'rule')];
+        $source = [['filter', 'rule'], ['nat', 'rule']];
         $used_categories = [];
         foreach ($source as $aliasref) {
             $cfgsection = $cfgObj;
@@ -96,6 +96,7 @@ class Category extends BaseModel
                 unset($used_categories[array_search((string)$category->name, $used_categories)]);
             }
         }
+
         foreach ($used_categories as $name) {
             $node = $this->categories->category->add();
             $node->name = $name;
