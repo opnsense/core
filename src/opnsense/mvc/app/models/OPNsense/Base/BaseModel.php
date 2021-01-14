@@ -235,8 +235,15 @@ abstract class BaseModel
 
                 if ($fieldObject->isArrayType()) {
                     // handle Array types, recurring items
-                    if ($config_section_data != null && !empty((string)$config_section_data)) {
+                    $node_count = 0;
+                    if ($config_section_data != null) {
                         foreach ($config_section_data as $conf_section) {
+                            if ($conf_section->count() == 0) {
+                                // skip empty nodes: prevents legacy empty tags from being treated as invalid content items
+                                // (migration will drop these anyways)
+                                continue;
+                            }
+                            $node_count++;
                             // Array items are identified by a UUID, read from attribute or create a new one
                             if (isset($conf_section->attributes()->uuid)) {
                                 $tagUUID = $conf_section->attributes()['uuid']->__toString();
@@ -256,7 +263,8 @@ abstract class BaseModel
                             }
                             $fieldObject->addChildNode($tagUUID, $child_node);
                         }
-                    } else {
+                    }
+                    if ($node_count == 0) {
                         // There's no content in config.xml for this array node.
                         $tagUUID = $internal_data->generateUUID();
                         $child_node = $fieldObject->newContainerField(
