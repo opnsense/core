@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // load data from config
         foreach (array('protocol','sourceport','dstport','natport','target','targetip'
                 ,'targetip_subnet','poolopts','poolopts_sourcehashkey','interface','descr','nonat','log'
-                ,'disabled','staticnatport','nosync','ipprotocol','tag','tagged') as $fieldname) {
+                ,'disabled','staticnatport','nosync','ipprotocol','tag','tagged', 'category') as $fieldname) {
               if (isset($a_out[$configId][$fieldname])) {
                   $pconfig[$fieldname] = $a_out[$configId][$fieldname];
               }
@@ -137,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (empty($pconfig['targetip'])) {
         $pconfig['targetip'] = $pconfig['target'];
     }
+    $pconfig['category'] = !empty($pconfig['category']) ? explode(",", $pconfig['category']) : [];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -218,6 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['source'] = array();
         $natent['destination'] = array();
         $natent['descr'] = $pconfig['descr'];
+        $natent['category'] = implode(",", $pconfig['category']);
         $natent['interface'] = $pconfig['interface'];
         $natent['tag'] = $pconfig['tag'];
         $natent['tagged'] = $pconfig['tagged'];
@@ -326,6 +328,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_out[] = $natent;
             }
         }
+        OPNsense\Core\Config::getInstance()->fromArray($config);
+        $catmdl = new OPNsense\Firewall\Category();
+        if ($catmdl->sync()) {
+            $catmdl->serializeToConfig();
+            $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
+        }
         write_config();
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat_out.php'));
@@ -339,6 +347,9 @@ include("head.inc");
 
 ?>
 <body>
+  <script src="<?= cache_safe('/ui/js/tokenize2.js') ?>"></script>
+  <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/tokenize2.css')) ?>">
+  <script src="<?= cache_safe('/ui/js/opnsense_ui.js') ?>"></script>
   <script>
   $( document ).ready(function() {
 
@@ -387,6 +398,7 @@ include("head.inc");
 
     // IPv4/IPv6 select
     hook_ipv4v6('ipv4v6net', 'network-id');
+    formatTokenizersUI();
   });
   </script>
 
@@ -799,6 +811,21 @@ include("head.inc");
                       <?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
                     </div>
                   </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                  <td>
+                    <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
+<?php
+                    foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
+                      $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
+                      <option value="<?=$catname;?>" <?=in_array($catname, $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$catname;?></option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <div class="hidden" data-for="help_for_category">
+                      <?=gettext("You may enter or select a category here to group firewall rules (not parsed)."); ?>
+                    </div>
                 </tr>
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
