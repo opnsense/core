@@ -278,7 +278,7 @@ function formatTokenizersUI() {
             // re-init tokenizer items
             sender.tokenize2().trigger('tokenize:clear');
             for (let i=0 ; i < items.length ; ++i) {
-              sender.tokenize2().trigger('tokenize:tokens:add', items[i]);
+                sender.tokenize2().trigger('tokenize:tokens:add', items[i]);
             }
             sender.tokenize2().trigger('tokenize:select');
             sender.tokenize2().trigger('tokenize:dropdown:hide');
