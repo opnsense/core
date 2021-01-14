@@ -141,6 +141,7 @@
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
 /usr/local/etc/rc.syshook.d/stop/90-backup
 /usr/local/etc/rc.syshook.d/stop/99-config
+/usr/local/etc/rc.syshook.d/update/10-refresh
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/libexec/opnsense-auth

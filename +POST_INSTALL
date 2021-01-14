@@ -33,9 +33,4 @@ rm -f /etc/rc.shutdown.bak
 
 /usr/local/etc/rc.d/configd start
 
-/usr/local/etc/rc.configure_firmware
-
 /usr/local/etc/rc.syshook update
-
-# create a unique timestamp for our asset caching
-touch /usr/local/opnsense/www/index.php
