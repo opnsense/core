@@ -282,8 +282,8 @@
      */
     Tokenize2.prototype.tokenAdd = function(value, text, force){
 
-        value = this.escape(value);
-        text = this.escape(text) || value;
+        text = text || value;
+        selector_value = $.escapeSelector(value);
         force = force || false;
         this.resetInput();
 
@@ -300,17 +300,17 @@
         }
 
         // Check duplicate token
-        if($('li.token[data-value="' + value + '"]', this.tokensContainer).length > 0){
+        if($('li.token[data-value="' + selector_value + '"]', this.tokensContainer).length > 0){
             this.trigger('tokenize:tokens:error:duplicate', [value, text]);
             return this;
         }
 
-        if($('option[value="' + value + '"]', this.element).length) {
-            $('option[value="' + value + '"]', this.element).attr('selected', 'selected').prop('selected', true);
+        if($('option[value="' + selector_value + '"]', this.element).length) {
+            $('option[value="' + selector_value + '"]', this.element).attr('selected', 'selected').prop('selected', true);
         } else if(force){
-            this.element.append($('<option selected />').val(value).html(text));
+            this.element.append($('<option selected />').val(value).text(text));
         } else if(this.options.tokensAllowCustom){
-            this.element.append($('<option selected data-type="custom" />').val(value).html(text));
+            this.element.append($('<option selected data-type="custom" />').val(value).text(text));
         } else {
             this.trigger('tokenize:tokens:error:notokensAllowCustom');
             return this;
@@ -318,7 +318,7 @@
 
         $('<li class="token" />')
             .attr('data-value', value)
-            .append('<span>' + text + '</span>')
+            .append($('<span>').html(this.escape(text)))
             .prepend($('<a class="dismiss" />').on('mousedown touchstart', {}, $.proxy(function(e){
                 e.preventDefault();
                 if(e.which == 1){
@@ -342,7 +342,8 @@
      */
     Tokenize2.prototype.tokenRemove = function(v){
 
-        var $item = $('option[value="' + v + '"]', this.element);
+        var selector_v = $.escapeSelector(v);
+        var $item = $('option[value="' + selector_v + '"]', this.element);
 
         if($item.attr('data-type') === 'custom'){
             $item.remove();
@@ -350,7 +351,7 @@
             $item.removeAttr('selected').prop('selected', false);
         }
 
-        $('li.token[data-value="' + v + '"]', this.tokensContainer).remove();
+        $('li.token[data-value="' + selector_v + '"]', this.tokensContainer).remove();
 
         this.trigger('tokenize:tokens:reorder');
         return this;
@@ -845,8 +846,6 @@
             if(item.hasOwnProperty('text')){
                 item.text = this.escape(item.text);
             }
-            item.value = this.escape(item.value);
-
             var $li = $('<li class="dropdown-item" />').html(this.dropdownItemFormat(item))
                 .on('mouseover', $.proxy(function(e){
                     e.preventDefault();
