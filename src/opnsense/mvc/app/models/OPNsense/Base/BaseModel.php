@@ -556,7 +556,7 @@ abstract class BaseModel
         // create logger to save possible consistency issues to
         $logger = new Syslog("config", array(
             'option' => LOG_PID,
-            'facility' => LOG_LOCAL4
+            'facility' => LOG_LOCAL2
         ));
 
         // Perform validation, collect all messages and raise exception if validation is not disabled.
@@ -636,7 +636,7 @@ abstract class BaseModel
         ) {
             $upgradePerfomed = false;
             $migObjects = array();
-            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
+            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL2));
             $class_info = new ReflectionClass($this);
             // fetch version migrations
             $versions = array();
