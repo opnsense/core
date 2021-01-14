@@ -1217,8 +1217,9 @@ include("head.inc");
                     <td>
                       <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-sortable="false" data-width="334px" data-live-search="true">
 <?php
-                      foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):?>
-                        <option value="<?=$category['name'];?>"  <?=in_array($category['name'], $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$category['name'];?></option>
+                      foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
+                        $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
+                        <option value="<?=$catname;?>" <?=in_array($catname, $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$catname;?></option>
 <?php
                       endforeach;?>
                       </select>
