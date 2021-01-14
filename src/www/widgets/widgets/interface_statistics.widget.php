@@ -80,8 +80,8 @@ $ifvalues = array(
           // fill in stats, use column index to determine td location
           var item_index = $("#interface_statistics_widget_intf_" + interface_data['descr']).index();
           if (item_index != -1) {
-              $("#interface_statistics_widget_val_pkg_in > td:eq("+item_index+")").html(interface_data['inpkts']);
-              $("#interface_statistics_widget_val_pkg_out > td:eq("+item_index+")").html(interface_data['outpkts']);
+              $("#interface_statistics_widget_val_pkg_in > td:eq("+item_index+")").html(parseInt(interface_data['inpkts']).toLocaleString());
+              $("#interface_statistics_widget_val_pkg_out > td:eq("+item_index+")").html(parseInt(interface_data['outpkts']).toLocaleString());
               $("#interface_statistics_widget_val_bytes_in > td:eq("+item_index+")").html(interface_data['inbytes_frmt']);
               $("#interface_statistics_widget_val_bytes_out > td:eq("+item_index+")").html(interface_data['outbytes_frmt']);
               $("#interface_statistics_widget_val_errors_in > td:eq("+item_index+")").html(interface_data['inerrs']);
