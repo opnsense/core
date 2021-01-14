@@ -60,25 +60,28 @@ function remove_duplicate($array, $field)
 
 function parse_duid($duid_string)
 {
-    $parsed_duid = array();
-    for ($i=0; $i < strlen($duid_string); $i++) {
+    $parsed_duid = [];
+
+    for ($i = 0; $i < strlen($duid_string); $i++) {
         $s = substr($duid_string, $i, 1);
         if ($s == '\\') {
-            $n = substr($duid_string, $i+1, 1);
-            if (($n == '\\') || ($n == '"')) {
-                $parsed_duid[] = sprintf("%02x", ord($n));
+            $n = substr($duid_string, $i + 1, 1);
+            if ($n == '\\' || $n == '"') {
+                $parsed_duid[] = sprintf('%02x', ord($n));
                 $i += 1;
             } elseif (is_numeric($n)) {
-                $parsed_duid[] = sprintf("%02x", octdec(substr($duid_string, $i+1, 3)));
+                $parsed_duid[] = sprintf('%02x', octdec(substr($duid_string, $i + 1, 3)));
                 $i += 3;
             }
         } else {
-            $parsed_duid[] = sprintf("%02x", ord($s));
+            $parsed_duid[] = sprintf('%02x', ord($s));
         }
     }
+
     $iaid = array_slice($parsed_duid, 0, 4);
     $duid = array_slice($parsed_duid, 4);
-    return array($iaid, $duid);
+
+    return [$iaid, $duid];
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
@@ -132,11 +135,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         preg_match('/ia-.. "(.*)" { (.*)/ ', $leases_content[$i], $duid_split);
         if (!empty($duid_split[1])) {
             $iaid_duid = parse_duid($duid_split[1]);
-            $entry['iaid'] = hexdec(implode("", array_reverse($iaid_duid[0])));
-            $entry['duid'] = implode(":", $iaid_duid[1]);
-            $data = explode(" ", $duid_split[2]);
+            $entry['iaid'] = hexdec(implode('', array_reverse($iaid_duid[0])));
+            $entry['duid'] = implode(':', $iaid_duid[1]);
+            $data = explode(' ', $duid_split[2]);
         } else {
-            $data = explode(" ", $leases_content[$i]);
+            $data = explode(' ', $leases_content[$i]);
         }
         /* walk the fields */
         $f = 0;
