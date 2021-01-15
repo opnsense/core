@@ -58,10 +58,11 @@ def uri_reader(uri):
                 break
             else:
                 parts = (prev_chop + chop).split('\n')
-                if len(parts) > chop.find('\n'):
-                     prev_chop = parts.pop()
+                if parts[-1] != "\n":
+                    prev_chop = parts.pop()
                 else:
                     prev_chop = ''
+                    parts.pop()
                 for part in parts:
                     yield part
     else:
