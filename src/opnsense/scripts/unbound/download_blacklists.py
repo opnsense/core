@@ -62,7 +62,6 @@ def uri_reader(uri):
                     prev_chop = parts.pop()
                 else:
                     prev_chop = ''
-                    parts.pop()
                 for part in parts:
                     yield part
     else:
