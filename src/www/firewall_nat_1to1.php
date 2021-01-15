@@ -220,11 +220,43 @@ $main_buttons = array(
 
     // watch scroll position and set to last known on page load
     watchScrollPosition();
+
+    // move category block
+    $("#category_block").detach().appendTo($(".page-content-head > .container-fluid > .list-inline"));
+    $("#category_block").addClass("pull-right");
+
+    // our usual zebra striping doesn't respect hidden rows, hook repaint on .opnsense-rules change() and fire initially
+    $(".opnsense-rules > tbody > tr").each(function(){
+        // save zebra color
+        let tr_color = $(this).children(0).css("background-color");
+        if (tr_color != 'transparent' && !tr_color.includes('(0, 0, 0')) {
+            $("#fw_category").data('stripe_color', tr_color);
+        }
+    });
+    $(".opnsense-rules").removeClass("table-striped");
+    $(".opnsense-rules").change(function(){
+        $(".opnsense-rules > tbody > tr:visible").each(function (index) {
+            $(this).css("background-color", "inherit");
+            if ( index % 2 == 0) {
+                $(this).css("background-color", $("#fw_category").data('stripe_color'));
+            }
+        });
+    });
+
+    // hook category functionality
+    hook_firewall_categories();
+
   });
   </script>
 
 
 <?php include("fbegin.inc"); ?>
+  <div class="hidden">
+    <div id="category_block" style="z-index:-100;">
+        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
+        </select>
+    </div>
+  </div>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -242,7 +274,7 @@ $main_buttons = array(
             <form method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="action" value="" />
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed opnsense-rules">
                 <thead>
                   <tr>
                     <th><input type="checkbox" id="selectAll"></th>
@@ -260,7 +292,7 @@ $main_buttons = array(
                 $i = 0;
                 foreach ($a_1to1 as $natent):
 ?>
-                  <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+                  <tr class="rule <?=isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
                     <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>" />
                     </td>

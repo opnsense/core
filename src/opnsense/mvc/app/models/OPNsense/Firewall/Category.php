@@ -67,7 +67,13 @@ class Category extends BaseModel
     {
         $has_changed = false;
         $cfgObj = Config::getInstance()->object();
-        $source = [['filter', 'rule'], ['nat', 'rule']];
+        $source = [
+            ['filter', 'rule'],
+            ['nat', 'rule'],
+            ['nat', 'onetoone'],
+            ['nat', 'outbound', 'rule'],
+            ['nat', 'npt'],
+          ];
         $used_categories = [];
         foreach ($source as $aliasref) {
             $cfgsection = $cfgObj;

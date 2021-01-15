@@ -241,6 +241,28 @@ include("head.inc");
 
     // watch scroll position and set to last known on page load
     watchScrollPosition();
+
+    // our usual zebra striping doesn't respect hidden rows, hook repaint on .opnsense-rules change() and fire initially
+    $(".opnsense-rules > tbody > tr").each(function(){
+        // save zebra color
+        let tr_color = $(this).children(0).css("background-color");
+        if (tr_color != 'transparent' && !tr_color.includes('(0, 0, 0')) {
+            $("#fw_category").data('stripe_color', tr_color);
+        }
+    });
+    $(".opnsense-rules").removeClass("table-striped");
+    $(".opnsense-rules").change(function(){
+        $(".opnsense-rules > tbody > tr:visible").each(function (index) {
+            $(this).css("background-color", "inherit");
+            if ( index % 2 == 0) {
+                $(this).css("background-color", $("#fw_category").data('stripe_color'));
+            }
+        });
+    });
+
+    // hook category functionality
+    hook_firewall_categories();
+
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -259,7 +281,7 @@ include("head.inc");
           <input type="hidden" id="action" name="act" value="" />
           <section class="col-xs-12">
             <div class="content-box">
-              <table class="table table-striped">
+              <table class="table table-striped table-condensed">
                 <thead>
                   <tr>
                     <th colspan="4"><?=gettext("Mode"); ?></th>
@@ -331,9 +353,17 @@ include("head.inc");
         <section class="col-xs-12">
           <div class="__mb"></div>
           <div class="table-responsive content-box">
-            <table class="table table-striped">
+            <table class="table table-striped table-condensed opnsense-rules">
               <thead>
-                <tr><th colspan="12"><?=gettext("Manual rules"); ?></th></tr>
+                <tr>
+                  <th colspan="12">
+                    <?=gettext("Manual rules"); ?>
+                    <div id="category_block" class="pull-right">
+                        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
+                        </select>
+                    </div>
+                  </th>
+                </tr>
                 <tr>
                     <th><input type="checkbox" id="selectAll"></th>
                     <th>&nbsp;</th>
@@ -354,7 +384,7 @@ include("head.inc");
                 $i = 0;
                 foreach ($a_out as $natent):
 ?>
-                  <tr <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled'])?"class=\"text-muted\"":"";?> ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+                  <tr  class="rule <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>"  ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
                     <td>
                       <input class="rule_select" type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
