@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -32,6 +32,18 @@ PACKAGE=$1
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO INSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
+if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
+	COREPKG=$(opnsense-version -n)
+	COREVER=$(opnsense-version -v)
+	REPOVER=$(pkg rquery %v ${COREPKG})
+
+	# plugins must pass a version check on up-to-date core package
+	if [ "${REPOVER%_*}" != "${COREVER%_*}" ]; then
+		echo "Installation is out of date: please install system updates first." >> ${PKG_PROGRESS_FILE} 2>&1
+		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+		exit
+	fi
+fi
 pkg install -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
 pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
