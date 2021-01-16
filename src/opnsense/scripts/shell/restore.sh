@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2017-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -52,17 +52,18 @@ for BACKUP in ${BACKUPS}; do
 "
 done
 
-SORTED="$(echo -n "${DATED}" | sort -r | head -n 18)"
+SORTED="$(echo -n "${DATED}" | sort -r | head -n 19)"
 INDEX=0
-
 RESTORE=
 
 while [ -z "${RESTORE}" ]; do
 	echo "${SORTED}" | while read SORT DATETIME BACKUP; do
+		if [ ${INDEX} -ne 0 ]; then
+			# carefully crafted whitespace pattern with
+			# embedded alignment tab, edit carefully
+			echo "    ${INDEX}.	$(date -r ${DATETIME})"
+		fi
 		INDEX=$((INDEX+1))
-		# carefully crafted whitespace pattern with
-		# embedded alignment tab, edit carefully
-		echo "    ${INDEX}.	$(date -r ${DATETIME})"
 	done
 
 	echo
@@ -73,17 +74,17 @@ while [ -z "${RESTORE}" ]; do
 	fi
 
 	RESTORE="$(echo "${SORTED}" | while read SORT DATETIME BACKUP; do
-		INDEX=$((INDEX+1))
-		if [ "${INDEX}" = "${SELECT}" ]; then
+		if [ ${INDEX} -ne 0 -a ${INDEX} = "${SELECT}" ]; then
 			echo "${BACKUP}"
 			break
 		fi
+		INDEX=$((INDEX+1))
 	done)"
 
 	echo
 done
 
-cp /conf/backup/${RESTORE} /conf/config.xml
+echo cp /conf/backup/${RESTORE} /conf/config.xml
 
 read -p "Do you want to reboot to apply the backup cleanly? [y/N]: " YN
 
