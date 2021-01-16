@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -68,6 +68,20 @@ case ${YN} in
 	;;
 ${NAME})
 	ARGS="upgrade ${NAME}"
+	;;
+[sS])
+	echo
+	/usr/local/opnsense/scripts/firmware/launcher.sh security
+	echo
+	read -p "Press any key to return to menu." WAIT
+	exit 0
+	;;
+[hH])
+	echo
+	/usr/local/opnsense/scripts/firmware/launcher.sh health
+	echo
+	read -p "Press any key to return to menu." WAIT
+	exit 0
 	;;
 *)
 	exit 0

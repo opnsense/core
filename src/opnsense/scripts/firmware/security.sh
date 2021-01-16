@@ -33,8 +33,7 @@ rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${LOCKFILE}
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-echo "Currently running $(opnsense-version) at $(date)" > ${PIPEFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 pkg audit -F > ${PIPEFILE} 2>&1
 sleep 1 # give the system time to flush the buffer to console

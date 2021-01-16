@@ -234,8 +234,7 @@ EOF
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${LOCKFILE}
 
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-echo "Currently running $(opnsense-version) at $(date)" > ${PIPEFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 set_check kernel
 set_check base
