@@ -24,13 +24,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+LOCKFILE="/tmp/pkg_upgrade.progress"
 MTREE="mtree -e -p /"
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+TEE="/usr/bin/tee -a"
 TMPFILE=/tmp/pkg_check.exclude
 UPSTREAM="OPNsense"
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
+rm -f ${PIPEFILE}
+mkfifo ${PIPEFILE}
 
 MTREE_PATTERNS="
 ./etc/group
@@ -67,30 +70,38 @@ set_check()
 
 	VER=$(opnsense-version -v ${SET})
 
-	echo ">>> Check installed ${SET} version" >> ${PKG_PROGRESS_FILE}
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	echo ">>> Check installed ${SET} version" > ${PIPEFILE}
 
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
-		echo "Failed to determine version info." >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Failed to determine version info." > ${PIPEFILE}
 	elif [ "${VER}" != "${VERSION}" ]; then
-		echo "Version ${VER} is incorrect, expected: ${VERSION}" >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Version ${VER} is incorrect, expected: ${VERSION}" > ${PIPEFILE}
 	else
-		echo "Version ${VER} is correct." >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Version ${VER} is correct." > ${PIPEFILE}
 	fi
 
 	FILE=/usr/local/opnsense/version/${SET}.mtree
 
 	if [ ! -f ${FILE} ]; then
-		echo "Cannot verify ${SET}: missing ${FILE}" >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Cannot verify ${SET}: missing ${FILE}" > ${PIPEFILE}
 		return
 	fi
 
 	if [ ! -f ${FILE}.sig ]; then
-		echo "Cannot verify ${SET}: missing ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Cannot verify ${SET}: missing ${FILE}.sig" > ${PIPEFILE}
 	elif ! opnsense-verify -q ${FILE}; then
-		echo "Cannot verify ${SET}: invalid ${FILE}.sig" >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Cannot verify ${SET}: invalid ${FILE}.sig" > ${PIPEFILE}
 	fi
 
-	echo ">>> Check for missing or altered ${SET} files" >> ${PKG_PROGRESS_FILE}
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	echo ">>> Check for missing or altered ${SET} files" > ${PIPEFILE}
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
@@ -102,14 +113,19 @@ set_check()
 
 	if [ ${MTREE_RET} -eq 0 ]; then
 		if [ "${MTREE_MIA}" = "0" ]; then
-			echo "No problems detected." >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "No problems detected." > ${PIPEFILE}
 		else
-			echo "Missing files: ${MTREE_MIA}" >> ${PKG_PROGRESS_FILE}
-			echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "Missing files: ${MTREE_MIA}" > ${PIPEFILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "${MTREE_OUT}" > ${PIPEFILE}
 		fi
 	else
-		echo "Error ${MTREE_RET} ocurred." >> ${PKG_PROGRESS_FILE}
-		echo "${MTREE_OUT}" >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Error ${MTREE_RET} ocurred." > ${PIPEFILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "${MTREE_OUT}" > ${PIPEFILE}
 	fi
 
 	rm ${TMPFILE}
@@ -117,24 +133,28 @@ set_check()
 
 core_check()
 {
-	echo ">>> Check for core packages consistency" >> ${PKG_PROGRESS_FILE}
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	echo ">>> Check for core packages consistency" > ${PIPEFILE}
 
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
 	if [ -z "$(pkg query %n ${CORE})" ]; then
-		echo "Core package \"${CORE}\" not known to package database." >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo "Core package \"${CORE}\" not known to package database." > ${PIPEFILE}
 		return
 	fi
 
-	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." >> ${PKG_PROGRESS_FILE}
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." > ${PIPEFILE}
 
 	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
 		if [ -z "${PROGRESS}" ]; then
-			echo -n "Checking packages: ." >> ${PKG_PROGRESS_FILE}
+			echo -n "Checking packages: ." > ${PIPEFILE}
 			PROGRESS=1
 		else
-			echo -n "." >> ${PKG_PROGRESS_FILE}
+			echo -n "." > ${PIPEFILE}
 		fi
 
 		read REPO LVER AUTO VITA << EOF
@@ -143,24 +163,30 @@ EOF
 
 		if [ "${REPO}" != ${UPSTREAM} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo >> ${PKG_PROGRESS_FILE}
+				${TEE} ${LOCKFILE} < ${PIPEFILE} &
+				echo > ${PIPEFILE}
 			fi
-			echo "${DEP}-${LVER} repository mismatch: ${REPO}" >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "${DEP}-${LVER} repository mismatch: ${REPO}" > ${PIPEFILE}
 			PROGRESS=
 		fi
 
 		RVER=$(pkg rquery -r ${UPSTREAM} %v ${DEP})
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo >> ${PKG_PROGRESS_FILE}
+				${TEE} ${LOCKFILE} < ${PIPEFILE} &
+				echo > ${PIPEFILE}
 			fi
-			echo "${DEP}-${LVER} has no upstream equivalent" >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "${DEP}-${LVER} has no upstream equivalent" > ${PIPEFILE}
 			PROGRESS=
 		elif [ "${RVER}" != "${LVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo >> ${PKG_PROGRESS_FILE}
+				${TEE} ${LOCKFILE} < ${PIPEFILE} &
+				echo > ${PIPEFILE}
 			fi
-			echo "${DEP}-${LVER} version mismatch, expected ${RVER}" >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "${DEP}-${LVER} version mismatch, expected ${RVER}" > ${PIPEFILE}
 			PROGRESS=
 		fi
 
@@ -181,39 +207,51 @@ EOF
 
 		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo >> ${PKG_PROGRESS_FILE}
+				${TEE} ${LOCKFILE} < ${PIPEFILE} &
+				echo > ${PIPEFILE}
 			fi
-			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" > ${PIPEFILE}
 			PROGRESS=
 		fi
 
 		if [ "${VITA}" != ${VITAEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo >> ${PKG_PROGRESS_FILE}
+				${TEE} ${LOCKFILE} < ${PIPEFILE} &
+				echo > ${PIPEFILE}
 			fi
-			echo "${DEP}-${LVER} is ${VITASET} to vital" >> ${PKG_PROGRESS_FILE}
+			${TEE} ${LOCKFILE} < ${PIPEFILE} &
+			echo "${DEP}-${LVER} is ${VITASET} to vital" > ${PIPEFILE}
 			PROGRESS=
 		fi
 	done
 
 	if [ -n "${PROGRESS}" ]; then
-		echo " done" >> ${PKG_PROGRESS_FILE}
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		echo " done" > ${PIPEFILE}
 	fi
 }
 
-echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${LOCKFILE}
 
-echo "Currently running $(opnsense-version) at $(date)" >> ${PKG_PROGRESS_FILE}
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+echo "Currently running $(opnsense-version) at $(date)" > ${PIPEFILE}
 
 set_check kernel
 set_check base
 
-echo ">>> Check for missing package dependencies" >> ${PKG_PROGRESS_FILE}
-pkg check -dan >> ${PKG_PROGRESS_FILE} 2>&1
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+echo ">>> Check for missing package dependencies" > ${PIPEFILE}
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+pkg check -dan 2>&1 > ${PIPEFILE}
 
-echo ">>> Check for missing or altered package files" >> ${PKG_PROGRESS_FILE}
-pkg check -sa >> ${PKG_PROGRESS_FILE} 2>&1
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+echo ">>> Check for missing or altered package files" > ${PIPEFILE}
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+pkg check -sa 2>&1 > ${PIPEFILE}
 
 core_check
 
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+sleep 1 # give the system time to flush the buffer to console
+
+echo '***DONE***' >> ${LOCKFILE}
