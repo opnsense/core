@@ -23,6 +23,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+DEFAULTS="\${product_name} \${product_version}"
 VERSIONDIR="/usr/local/opnsense/version"
 OPENSSL="/usr/local/bin/openssl"
 PKG="/usr/local/sbin/pkg-static"
@@ -87,12 +88,14 @@ if [ ! -f ${VERSION} ]; then
 	exit 1
 fi
 
+if grep -q '[{}]' ${VERSION}; then
+	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
+fi
+
 case "${TARGET}" in
 core)
-	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
-
 	if [ -z "${OUTPUT}" ]; then
-		OUTPUT="\${product_name} \${product_version} \(\${product_arch}/\${product_flavour}\)"
+		OUTPUT="${DEFAULTS} \(\${product_arch}/\${product_flavour}\)"
 	fi
 
 	if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
@@ -106,20 +109,36 @@ core)
 	;;
 *)
 	if [ -z "${OUTPUT}" ]; then
-		OUTPUT="\${product_version}"
+		if [ -n "${product_name}" ]; then
+			OUTPUT=${DEFAULTS}
+		else
+			OUTPUT="\${product_version}"
+		fi
 	fi
 
-	# mock ID target, there is no .name file
-	product_id=${TARGET}
-
-	if [ -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
-		product_version=$(cat ${VERSION})
+	if [ -z "${product_version}" -a -z "${OUTPUT%%*product_version*}" -a -f ${VERSION} ]; then
+		if [ -z "${product_version}" ]; then
+			product_version=$(cat ${VERSION})
+		fi
 	fi
-	if [ -z "${OUTPUT%%*product_size*}" -a -f ${VERSION}.size ]; then
-		product_size=$(cat ${VERSION}.size)
+	if [ -z "${OUTPUT%%*product_size*}" ]; then
+		if [ -n "${product_id}" ]; then
+			RESULT=$(${PKG} info -s ${product_id})
+			product_size=${RESULT##* }
+		elif [ -f ${VERSION}.size ]; then
+			product_size=$(cat ${VERSION}.size)
+		fi
 	fi
-	if [ -z "${OUTPUT%%*product_arch*}" -a -f ${VERSION}.arch ]; then
-		product_arch=$(cat ${VERSION}.arch)
+	if [ -z "${OUTPUT%%*product_arch*}" ]; then
+		if [ -z "${product_arch}" -a -f ${VERSION}.arch ]; then
+			product_arch=$(cat ${VERSION}.arch)
+		fi
+	fi
+	if [ -z "${OUTPUT%%*product_id*}" ]; then
+		if [ -z "${product_id}" ]; then
+			# mock ID target, there is no .name file
+			product_id=${TARGET}
+		fi
 	fi
 	;;
 esac
