@@ -243,12 +243,12 @@ set_check base
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 echo ">>> Check for missing package dependencies" > ${PIPEFILE}
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg check -dan 2>&1 > ${PIPEFILE}
+pkg check -dan > ${PIPEFILE} 2>&1
 
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 echo ">>> Check for missing or altered package files" > ${PIPEFILE}
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg check -sa 2>&1 > ${PIPEFILE}
+pkg check -sa > ${PIPEFILE} 2>&1
 
 core_check
 

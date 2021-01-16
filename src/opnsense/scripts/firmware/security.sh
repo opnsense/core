@@ -36,6 +36,6 @@ echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${LOCKFILE}
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 echo "Currently running $(opnsense-version) at $(date)" > ${PIPEFILE}
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg audit -F 2>&1 > ${PIPEFILE}
+pkg audit -F > ${PIPEFILE} 2>&1
 sleep 1 # give the system time to flush the buffer to console
 echo '***DONE***' >> ${LOCKFILE}
