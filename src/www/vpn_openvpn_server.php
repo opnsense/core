@@ -1466,7 +1466,7 @@ endif; ?>
                         <div id="netbios_data">
                           <span>
                             <?=gettext("Node Type"); ?>:&nbsp;
-                          </span>
+                          </span><br>
                           <select name='netbios_ntype' class="selectpicker">
 <?php
                           foreach ($netbios_nodetypes as $type => $name) :
@@ -1484,7 +1484,7 @@ endif; ?>
                                                         "(point-to-point name queries to a WINS server), " .
                                                         "m-node (broadcast then query name server), and " .
                                                         "h-node (query name server, then broadcast)."); ?>
-                          </div>
+                          </div><br>
                           <span>
                             <?=gettext("Scope ID"); ?>:&nbsp;
                           </span>
