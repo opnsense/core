@@ -300,6 +300,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
@@ -572,6 +574,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traffic.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
