@@ -154,6 +154,7 @@
         <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
+        <Categories url="/ui/firewall/category" cssClass="fa fa-list-alt fa-fw"/>
         <Groups url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
             <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
         </Groups>

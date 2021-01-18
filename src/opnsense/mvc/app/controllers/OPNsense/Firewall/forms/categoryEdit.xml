@@ -1,0 +1,14 @@
+<form>
+    <field>
+        <id>category.auto</id>
+        <label>automatic</label>
+        <type>checkbox</type>
+        <help>Automatically added, will be removed when used</help>
+    </field>
+    <field>
+        <id>category.name</id>
+        <label>name</label>
+        <type>text</type>
+        <help>Enter a name for this category.</help>
+    </field>
+</form>

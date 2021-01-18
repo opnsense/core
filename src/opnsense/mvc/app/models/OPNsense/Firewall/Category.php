@@ -57,15 +57,8 @@ class Category extends BaseModel
         }
     }
 
-    /**
-     * collect unique categories from rules and updates the model with auto generated items.
-     * XXX: if this operation turns out to be a bottleneck, we should move the maintance responsibiliy to the caller
-     *      for the item in question (rule update)
-     * @return bool true if changed
-     */
-    public function sync()
+    private function ruleIterator()
     {
-        $has_changed = false;
         $cfgObj = Config::getInstance()->object();
         $source = [
             ['filter', 'rule'],
@@ -73,8 +66,7 @@ class Category extends BaseModel
             ['nat', 'onetoone'],
             ['nat', 'outbound', 'rule'],
             ['nat', 'npt'],
-          ];
-        $used_categories = [];
+        ];
         foreach ($source as $aliasref) {
             $cfgsection = $cfgObj;
             foreach ($aliasref as $cfgName) {
@@ -85,12 +77,59 @@ class Category extends BaseModel
             if ($cfgsection != null) {
                 foreach ($cfgsection as $node) {
                     if (!empty($node->category)) {
-                        foreach (explode(",", (string)$node->category) as $cat) {
-                            if (!in_array($cat, $used_categories)) {
-                                $used_categories[] = $cat;
-                            }
-                        }
+                        yield $node;
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * refactor category usage (replace category in rules)
+     */
+    public function refactor($oldname, $newname)
+    {
+        $has_changed = false;
+        foreach ($this->ruleIterator() as $node) {
+            $cats = explode(",", (string)$node->category);
+            if (in_array($oldname, $cats)) {
+                  unset($cats[array_search((string)$oldname, $cats)]);
+                  $cats[] = $newname;
+                  $node->category = implode(",", $cats);
+                  $has_changed = true;
+            }
+        }
+        return $has_changed;
+    }
+
+    /**
+     * refactor category usage (replace category in rules)
+     */
+    public function isUsed($name)
+    {
+        foreach ($this->ruleIterator() as $node) {
+            if (in_array($name, explode(",", (string)$node->category))) {
+                  return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * collect unique categories from rules and updates the model with auto generated items.
+     * XXX: if this operation turns out to be a bottleneck, we should move the maintance responsibiliy to the caller
+     *      for the item in question (rule update)
+     * @return bool true if changed
+     */
+    public function sync()
+    {
+        $has_changed = false;
+        $used_categories = [];
+        foreach ($this->ruleIterator() as $node) {
+            foreach (explode(",", (string)$node->category) as $cat) {
+                if (!in_array($cat, $used_categories)) {
+                    $used_categories[] = $cat;
                 }
             }
         }
@@ -102,7 +141,6 @@ class Category extends BaseModel
                 unset($used_categories[array_search((string)$category->name, $used_categories)]);
             }
         }
-
         foreach ($used_categories as $name) {
             $node = $this->categories->category->add();
             $node->name = $name;

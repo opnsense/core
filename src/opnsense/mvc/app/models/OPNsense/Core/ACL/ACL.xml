@@ -211,6 +211,13 @@
             <pattern>api/firewall/alias/get*</pattern>
         </patterns>
     </page-firewall-aliases>
+    <page-firewall-categories>
+        <name>Firewall: Categories</name>
+        <patterns>
+            <pattern>ui/firewall/category/*</pattern>
+            <pattern>api/firewall/category/*</pattern>
+        </patterns>
+    </page-firewall-categories>
     <page-firewall-nat-1-1>
         <name>Firewall: NAT: 1:1</name>
         <patterns>

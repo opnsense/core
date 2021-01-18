@@ -51,7 +51,7 @@ class CategoryController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase("categories.category", array('name'), "name");
+        return $this->searchBase("categories.category", array('name', 'auto'), "name");
     }
 
     /**
@@ -63,7 +63,15 @@ class CategoryController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
-        // XXX: handle renames?
+        $node = $this->getModel()->getNodeByReference('categories.category.' . $uuid);
+        $old_name = $node != null ? (string)$node->name : null;
+        if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("category")) {
+            $new_name = $this->request->getPost("category")['name'];
+            if ($new_name != $old_name) {
+                // replace categories, setBase() will synchronise the changes to disk
+                $this->getModel()->refactor($old_name, $new_name);
+            }
+        }
         return $this->setBase("category", "categories.category", $uuid);
     }
 
@@ -101,7 +109,12 @@ class CategoryController extends ApiMutableModelControllerBase
     public function delItemAction($uuid)
     {
         Config::getInstance()->lock();
-        // XXX : check if used and throw error
+        $node = $this->getModel()->getNodeByReference('categories.category.' . $uuid);
+        $node_name = $node != null ? (string)$node->name : null;
+        if ($node_name != null && $this->getModel()->isUsed($node_name)) {
+            $message = gettext("Cannot delete a category which is still in use.");
+            throw new \OPNsense\Base\UserException($message, gettext("Category in use"));
+        }
         return $this->delBase("categories.category", $uuid);
     }
 }
