@@ -182,12 +182,33 @@ function hook_firewall_categories() {
     let cat_select = $("#fw_category");
     ajaxCall('/api/firewall/category/searchItem', {}, function(data){
         if (data.rows !== undefined && data.rows.length > 0) {
+            let category_count = {};
+            $(".rule").each(function(){
+                $(this).data('category').split(',').forEach(function(item){
+                    if (category_count[item] === undefined) {
+                        category_count[item] = 0 ;
+                    }
+                    category_count[item] += 1;
+                });
+            });
             for (let i=0; i < data.rows.length ; ++i) {
                 let opt_val = $('<div/>').html(data.rows[i].name).text();
-                cat_select.append($("<option/>").val(opt_val).html(data.rows[i].name));
+                let option = $("<option/>");
+                let bgcolor = '#31708f;'; // XXX: set category color
+                if (category_count[data.rows[i].name] != undefined) {
+                    option.data(
+                      'content',
+                      "<span>"+opt_val + "</span>"+
+                      "<span style='background:"+bgcolor+";' class='badge pull-right'>"+
+                      category_count[data.rows[i].name]+"</span>"
+                    );
+                }
+                cat_select.append(option.val(opt_val).html(data.rows[i].name));
             }
         }
         cat_select.selectpicker('refresh');
+        // remove text class preventing sticking badges to the right
+        $('#category_block  span.text').removeClass('text');
         // hide category search when not used
         if (cat_select.find("option").length == 0) {
             cat_select.addClass('hidden');
