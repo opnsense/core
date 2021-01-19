@@ -497,9 +497,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if ($autotype == 'slaac') {
                 /* XXX also of interest in the future, see hardcoded prefix above */
                 $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
-                $radvdconf .= "\t\tDeprecatePrefix on;\n";
             }
-            /* XXX DeprecatePrefix on crashes radvd on 12.1 */
+            $radvdconf .= "\t\tDeprecatePrefix on;\n";
             $radvdconf .= "\t\tAdvOnLink on;\n";
             $radvdconf .= "\t\tAdvAutonomous on;\n";
             $radvdconf .= "\t};\n";
