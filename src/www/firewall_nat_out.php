@@ -513,7 +513,7 @@ include("head.inc");
                     <td>
                       <?=isset($natent['staticnatport']) ? gettext("YES") : gettext("NO");?>
                     </td>
-                    <td>
+                    <td class="rule-description">
                       <?=htmlspecialchars($natent['descr']);?>&nbsp;
                     </td>
                     <td>

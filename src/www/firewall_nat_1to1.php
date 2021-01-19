@@ -340,7 +340,7 @@ $main_buttons = array(
                         <?=htmlspecialchars(pprint_address($natent['destination']));?>
 <?php                 endif; ?>
                     </td>
-                    <td>
+                    <td class="rule-description">
                       <?=$natent['descr'];?> &nbsp;
                     </td>
                     <td>

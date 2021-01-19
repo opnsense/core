@@ -51,7 +51,7 @@ class CategoryController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase("categories.category", array('name', 'auto'), "name");
+        return $this->searchBase("categories.category", array('name', 'auto', 'color'), "name");
     }
 
     /**

@@ -182,24 +182,38 @@ function hook_firewall_categories() {
     let cat_select = $("#fw_category");
     ajaxCall('/api/firewall/category/searchItem', {}, function(data){
         if (data.rows !== undefined && data.rows.length > 0) {
+            let color_map = {};
+            for (let i=0; i < data.rows.length ; ++i) {
+                if (data.rows[i].color != "") {
+                    color_map[data.rows[i].name] = data.rows[i].color;
+                }
+            }
             let category_count = {};
             $(".rule").each(function(){
+                let row = $(this);
                 $(this).data('category').split(',').forEach(function(item){
                     if (category_count[item] === undefined) {
                         category_count[item] = 0 ;
                     }
                     category_count[item] += 1;
+                    if (color_map[item] !== undefined) {
+                        // suffix category color in the description td
+                        let td = row.find('td.rule-description');
+                        if (td.length > 0) {
+                            td.append($("<i class='fa fa-circle'/>").css('color', '#'+color_map[item]));
+                        }
+                    }
                 });
             });
             for (let i=0; i < data.rows.length ; ++i) {
                 let opt_val = $('<div/>').html(data.rows[i].name).text();
                 let option = $("<option/>");
-                let bgcolor = '#31708f;'; // XXX: set category color
+                let bgcolor = data.rows[i].color != "" ? data.rows[i].color : '31708f;'; // set category color
                 if (category_count[data.rows[i].name] != undefined) {
                     option.data(
                       'content',
                       "<span>"+opt_val + "</span>"+
-                      "<span style='background:"+bgcolor+";' class='badge pull-right'>"+
+                      "<span style='background:#"+bgcolor+";' class='badge pull-right'>"+
                       category_count[data.rows[i].name]+"</span>"
                     );
                 }

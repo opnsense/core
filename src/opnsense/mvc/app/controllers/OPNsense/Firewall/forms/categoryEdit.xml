@@ -11,4 +11,11 @@
         <type>text</type>
         <help>Enter a name for this category.</help>
     </field>
+    <field>
+        <id>category.color</id>
+        <label>color</label>
+        <type>text</type>
+        <style>pick-a-color</style>
+        <help>pick a color to use.</help>
+    </field>
 </form>

@@ -845,7 +845,7 @@ $( document ).ready(function() {
                     <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : gettext('N/A') ?></td>
                     <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
                     <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
-                    <td>
+                    <td  class="rule-description">
                       <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
                           <small><?=$rule_hash;?></small>

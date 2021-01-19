@@ -24,6 +24,11 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+{% set theme_name = ui_theme|default('opnsense') %}
+<link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/pick-a-color-1.2.3.min.css', theme_name)) }}">
+<script src="{{ cache_safe('/ui/js/pick-a-color-1.2.3.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/tinycolor-1.4.1.min.js') }}"></script>
+
 <script>
 
     $( document ).ready(function() {
@@ -31,13 +36,51 @@
          * link grid actions
          *************************************************************************************************************/
         $("#grid-categories").UIBootgrid(
-                {   'search':'/api/firewall/category/searchItem',
-                    'get':'/api/firewall/category/getItem/',
-                    'set':'/api/firewall/category/setItem/',
-                    'add':'/api/firewall/category/addItem/',
-                    'del':'/api/firewall/category/delItem/'
+                {   search:'/api/firewall/category/searchItem',
+                    get:'/api/firewall/category/getItem/',
+                    set:'/api/firewall/category/setItem/',
+                    add:'/api/firewall/category/addItem/',
+                    del:'/api/firewall/category/delItem/',
+                    options:{
+                        formatters:{
+                            color: function (column, row) {
+                                if (row.color != "") {
+                                    return "<i style='color:#"+row.color+";' class='fa fa-circle'></i>";
+                                }
+                            },
+                            commands: function (column, row) {
+                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
+                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-copy\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-clone\"></span></button>" +
+                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
+                            },
+                            boolean: function (column, row) {
+                                if (parseInt(row[column.id], 2) === 1) {
+                                    return "<span class=\"fa fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                                } else {
+                                    return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                                }
+                            },
+                        }
+                    }
+
                 }
         );
+        $(".pick-a-color").pickAColor({
+            showSpectrum: true,
+            showSavedColors: true,
+            saveColorsPerElement: true,
+            fadeMenuToggle: true,
+            showAdvanced : false,
+            showBasicColors: true,
+            showHexInput: true,
+            allowBlank: true,
+            inlineDropdown: true
+        });
+        $("#category\\.color").change(function(){
+            // update color picker
+            $(this).blur().blur();
+        });
+
     });
 
 </script>
@@ -51,6 +94,7 @@
         <table id="grid-categories" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
             <thead>
             <tr>
+                <th data-column-id="color" data-width="2em" data-type="string" data-formatter="color"></th>
                 <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                 <th data-column-id="auto" data-width="6em" data-type="string" data-formatter="boolean">{{ lang._('Auto') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>

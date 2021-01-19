@@ -261,7 +261,7 @@ $main_buttons = array(
                       <td>
                           <?= pprint_address($natent['source']) ;?>
                       </td>
-                      <td>
+                      <td class="rule-description">
                           <?=$natent['descr'];?>
                       </td>
                       <td>

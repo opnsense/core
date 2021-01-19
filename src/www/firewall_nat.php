@@ -493,7 +493,7 @@ $( document ).ready(function() {
 <?php                   endif; ?>
                       </td>
 
-                      <td>
+                      <td class="rule-description">
                         <?=$natent['descr'];?>
                       </td>
 
