@@ -1497,6 +1497,7 @@
 /usr/local/opnsense/www/css/jqtree.css
 /usr/local/opnsense/www/css/jquery.bootgrid.css
 /usr/local/opnsense/www/css/nv.d3.css
+/usr/local/opnsense/www/css/pick-a-color-1.2.3.min.css
 /usr/local/opnsense/www/css/tokenize2.css
 /usr/local/opnsense/www/fonts/FontAwesome.otf
 /usr/local/opnsense/www/fonts/fontawesome-webfont.eot
@@ -1541,9 +1542,13 @@
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_theme.js
 /usr/local/opnsense/www/js/opnsense_ui.js
+/usr/local/opnsense/www/js/pick-a-color-1.2.3.LICENSE
+/usr/local/opnsense/www/js/pick-a-color-1.2.3.js
+/usr/local/opnsense/www/js/pick-a-color-1.2.3.min.js
 /usr/local/opnsense/www/js/polyfills.js
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/theme.js
+/usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tree.jquery.min.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
