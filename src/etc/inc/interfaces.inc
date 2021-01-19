@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -4621,7 +4621,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
     $interfaces_a = config_read_array('interfaces');
 
     foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
-        if ($info['family'] != 'inet6') {
+        if ($info['family'] != 'inet6' || $info['deprecated']) {
             continue;
         }
 

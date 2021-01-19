@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -279,12 +279,19 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tinet6 ") !== false) {
             // IPv6 information
             $addr = strtok($line_parts[1], '%');
-            $tmp = array('ipaddr' => $addr, 'link-local' => strpos($addr, 'fe80:') === 0, 'tunnel' => false);
+            $tmp = array(
+                'deprecated' => false,
+                'ipaddr' => $addr,
+                'link-local' => strpos($addr, 'fe80:') === 0,
+                'tunnel' => false,
+            );
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
                     $tmp['subnetbits'] = intval($line_parts[$i + 1]);
                 } elseif ($line_parts[$i] == 'vhid') {
                     $tmp['vhid'] = $line_parts[$i + 1];
+                } elseif ($line_parts[$i] == 'deprecated') {
+                    $tmp['deprectated'] = true;
                 }
                 if ($line_parts[$i] == '-->') {
                     $tmp['tunnel'] = true;
