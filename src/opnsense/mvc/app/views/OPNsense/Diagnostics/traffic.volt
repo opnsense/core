@@ -397,15 +397,17 @@ POSSIBILITY OF SUCH DAMAGE.
                 setTimeout(traffic_poller, 2000);
             })();
             (function top_traffic_poller(){
-                ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
-                    if (status == 'success') {
-                        $( document ).trigger( "updateTrafficTopCharts", [ data ] );
-                        updateTopTable(data);
-                        top_traffic_poller();
-                    } else {
-                        setTimeout(top_traffic_poller, 2000);
-                    }
-                });
+                if ($("#interfaces").val().length > 0) {
+                    ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
+                        if (status == 'success') {
+                            $( document ).trigger( "updateTrafficTopCharts", [ data ] );
+                            updateTopTable(data);
+                            top_traffic_poller();
+                        } else {
+                            setTimeout(top_traffic_poller, 2000);
+                        }
+                    });
+                }
             })();
         });
 
