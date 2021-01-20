@@ -145,8 +145,8 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                         break;
                     }
                 }
-                if ($gwifip == null) {
-                    $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0];
+                if ($gwifip == null && !empty($ifconfig_details[$gateway['if']]['ipv4'][0])) {
+                    $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0]['ipaddr'];
                     log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
                 }
             }
