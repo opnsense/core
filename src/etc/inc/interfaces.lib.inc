@@ -291,7 +291,7 @@ function legacy_interfaces_details($intf = null)
                 } elseif ($line_parts[$i] == 'vhid') {
                     $tmp['vhid'] = $line_parts[$i + 1];
                 } elseif ($line_parts[$i] == 'deprecated') {
-                    $tmp['deprectated'] = true;
+                    $tmp['deprecated'] = true;
                 }
                 if ($line_parts[$i] == '-->') {
                     $tmp['tunnel'] = true;
