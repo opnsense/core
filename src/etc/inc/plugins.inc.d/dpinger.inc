@@ -130,11 +130,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
             $gwifip = null;
-            if (
-                !empty($ifconfig_details[$gateway['if']]) &&
-                !empty($ifconfig_details[$gateway['if']]['ipv4']) &&
-                !empty($gateway['gateway'])
-            ) {
+            if (!empty($ifconfig_details[$gateway['if']]['ipv4'][0]) && !empty($gateway['gateway'])) {
                 $ifdetails = $ifconfig_details[$gateway['if']];
                 $match = ip2ulong($gateway['gateway']);
                 foreach ($ifdetails['ipv4'] as $ipv4) {
@@ -145,7 +141,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                         break;
                     }
                 }
-                if ($gwifip == null && !empty($ifconfig_details[$gateway['if']]['ipv4'][0])) {
+                if ($gwifip == null) {
                     $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0]['ipaddr'];
                     log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
                 }
