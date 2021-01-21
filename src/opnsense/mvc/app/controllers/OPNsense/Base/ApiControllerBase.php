@@ -46,9 +46,9 @@ class ApiControllerBase extends ControllerRoot
      */
     private function parseJsonBodyData()
     {
-        switch ($this->request->getHeader('CONTENT_TYPE')) {
+        switch (strtolower(str_replace(' ', '', $this->request->getHeader('CONTENT_TYPE')))) {
             case 'application/json':
-            case 'application/json;charset=UTF-8':
+            case 'application/json;charset=utf-8':
                 $jsonRawBody = $this->request->getJsonRawBody(true);
                 if (empty($this->request->getRawBody()) && empty($jsonRawBody)) {
                     return "Invalid JSON syntax";
