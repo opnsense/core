@@ -55,6 +55,15 @@ class ApiControllerBase extends ControllerRoot
                 }
                 $_POST = $jsonRawBody;
                 break;
+            case 'application/x-www-form-urlencoded':
+            case 'application/x-www-form-urlencoded;charset=utf-8':
+                // valid non parseable content
+                break;
+            default:
+                if (!empty($this->request->getRawBody())) {
+                    $this->getLogger()->warning('unparsable Content-Type:'. $this->request->getHeader('CONTENT_TYPE').' received');
+                }
+                break;
         }
         return null;
     }
