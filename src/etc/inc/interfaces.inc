@@ -3765,33 +3765,25 @@ function get_real_interface($interface = 'wan', $family = 'all')
 
 function guess_interface_from_ip($ipaddress)
 {
-    if (!is_ipaddr($ipaddress)) {
-        return false;
-    }
     if (is_ipaddrv4($ipaddress)) {
-        /* create a route table we can search */
-        exec("/usr/bin/netstat -rnWf inet", $output, $ret);
-        foreach ($output as $line) {
-            $fields = preg_split("/[ ]+/", $line);
-            if (is_subnetv4($fields[0])) {
-                if (ip_in_subnet($ipaddress, $fields[0])) {
-                    return $fields[5];
-                }
+        $family = "inet";
+    } elseif (is_ipaddrv6($ipaddress)) {
+    	$family = "inet6";
+    } else {
+    	return false;
+    }
+
+    /* create a route table we can search */
+    exec("/usr/bin/netstat -rnWf ".$family, $output, $ret);
+    foreach ($output as $line) {
+        $fields = preg_split("/\s+/", $line);
+        if (is_subnet($fields[0])) {
+            if (ip_in_subnet($ipaddress, $fields[0])) {
+                return $fields[5];
             }
         }
     }
-    if (is_ipaddrv6($ipaddress)) {
-        /* create a route table we can search */
-        exec("/usr/bin/netstat -rnWf inet6", $output, $ret);
-        foreach ($output as $line) {
-            $fields = preg_split("/[ ]+/", $line);
-            if (is_subnetv6($fields[0])) {
-                if (ip_in_subnet($ipaddress, $fields[0])) {
-                    return $fields[5];
-                }
-            }
-        }
-    }
+
     $ret = exec_command("/sbin/route -n get {$ipaddress} | /usr/bin/awk '/interface/ { print \$2; };'");
     if (empty($ret)) {
         return false;
