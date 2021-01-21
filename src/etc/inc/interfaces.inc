@@ -3768,7 +3768,7 @@ function guess_interface_from_ip($ipaddress)
     if (is_ipaddrv4($ipaddress)) {
         $family = "inet";
     } elseif (is_ipaddrv6($ipaddress)) {
-    	$family = "inet6";
+        $family = "inet6";
     } else {
     	return false;
     }
