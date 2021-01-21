@@ -115,9 +115,9 @@ function legacy_interface_destroy($ifs)
     }
 }
 
-function legacy_interface_setaddress($ifs, $addr)
+function legacy_interface_setaddress($ifs, $addr, $family = 4)
 {
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' alias ' . escapeshellarg($addr);
+    $cmd = implode(' ', ['/sbin/ifconfig', escapeshellarg($ifs), $family == 6 ? 'inet6' : 'inet', escapeshellarg($addr), 'alias']);
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
@@ -125,9 +125,9 @@ function legacy_interface_setaddress($ifs, $addr)
     }
 }
 
-function legacy_interface_deladdress($ifs, $addr)
+function legacy_interface_deladdress($ifs, $addr, $family = 4)
 {
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' -alias ' . escapeshellarg($addr);
+    $cmd = implode(' ', ['/sbin/ifconfig', escapeshellarg($ifs), $family == 6 ? 'inet6' : 'inet', escapeshellarg($addr), '-alias']);
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {

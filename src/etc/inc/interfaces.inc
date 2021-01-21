@@ -959,18 +959,12 @@ function interface_vip_bring_down($vip)
             killbypid("/var/run/choparp_{$vipif}.pid");
             break;
         case 'ipalias':
-            if (does_interface_exist($vipif)) {
-                if (is_ipaddrv6($vip['subnet'])) {
-                    mwexec("/sbin/ifconfig {$vipif} inet6 " . escapeshellarg($vip['subnet']) . " -alias");
-                } else {
-                    legacy_interface_deladdress($vipif, $vip['subnet']);
-                }
-            }
-            break;
         case 'carp':
             if (does_interface_exist($vipif)) {
-                legacy_interface_deladdress($vipif, $vip['subnet']);
+                legacy_interface_deladdress($vipif, $vip['subnet'], is_ipaddrv6($vip['subnet']) ? 6 : 4);
             }
+            break;
+        default:
             break;
     }
 }
@@ -1656,17 +1650,18 @@ function interface_ipalias_configure(&$vip)
     }
 
     if (is_ipaddrv6($vip['subnet'])) {
-        $if = escapeshellarg(get_real_interface($vip['interface'], 'inet6'));
+        $if = get_real_interface($vip['interface'], 'inet6');
         $af = 'inet6';
     } else {
-        $if = escapeshellarg(get_real_interface($vip['interface']));
+        $if = get_real_interface($vip['interface']);
         $af = 'inet';
     }
 
     $vhid = !empty($vip['vhid']) ? 'vhid ' . escapeshellarg($vip['vhid']) : '';
     $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
 
-    mwexec("/sbin/ifconfig " . $if . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
+    /* XXX use legacy_interface_setaddress */
+    mwexec("/sbin/ifconfig " . escapeshellarg($if). " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
 }
 
 function interface_carp_configure(&$vip)
@@ -1677,15 +1672,8 @@ function interface_carp_configure(&$vip)
         return;
     }
 
-    // when CARP is temporary disabled, don't try to configure on any interface-up events
+    /* when CARP is temporary disabled do not try to configure on any interface up events */
     if (get_single_sysctl('net.inet.carp.allow') == '0') {
-        return;
-    }
-
-    /* NOTE: Maybe its useless nowdays */
-    $realif = get_real_interface($vip['interface']);
-    if (!does_interface_exist($realif)) {
-        file_notice(sprintf(gettext("Interface specified for the virtual IP address %s does not exist. Skipping this VIP."), $vip['subnet']));
         return;
     }
 
@@ -1704,6 +1692,7 @@ function interface_carp_configure(&$vip)
 
     mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$advskew} {$advbase} {$password}");
 
+    /* XXX use legacy_interface_setaddress */
     if (is_ipaddrv4($vip['subnet'])) {
         mwexec("/sbin/ifconfig {$realif} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
     } elseif (is_ipaddrv6($vip['subnet'])) {
@@ -2341,19 +2330,18 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         /* remove all IPv4 and IPv6 addresses */
         foreach (array_keys(interfaces_addresses($realif, true)) as $tmpiface) {
-            if (is_ipaddrv6($tmpiface) || is_subnetv6($tmpiface)) {
-                if (!is_linklocal($tmpiface)) {
-                    mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$tmpiface} delete");
-                }
-            } else {
-                if (is_subnetv4($tmpiface)) {
-                    $tmpip = explode('/', $tmpiface);
-                    $tmpip = $tmpip[0];
-                } else {
-                    $tmpip = $tmpiface;
-                }
-                legacy_interface_deladdress($realif, $tmpip);
+            $tmpip = $tmpiface;
+            $family = 4;
+
+            if (is_linklocal($tmpip)) {
+                continue;
+            } elseif (is_ipaddrv6($tmpip) || is_subnetv6($tmpip)) {
+                $family = 6;
+            } elseif (is_subnetv4($tmpiface)) {
+                $tmpip = explode('/', $tmpiface)[0];
             }
+
+            legacy_interface_deladdress($realif, $tmpip, $family);
         }
 
         /* only bring down the interface when both v4 and v6 are set to NONE */
