@@ -235,6 +235,7 @@ POSSIBILITY OF SUCH DAMAGE.
             let update_stamp = Math.trunc(Date.now() / 1000.0);
             let update_stamp_iso = (new Date()).toISOString();
             Object.keys(data).forEach(function(intf) {
+              if ($('#interfaces').val().includes(intf)) {
                 let intf_label = $("#interfaces > option[value="+intf+"]").data('content');
                 ['in', 'out'].forEach(function(dir) {
                     for (var i=0; i < data[intf][dir].length ; i++) {
@@ -269,11 +270,11 @@ POSSIBILITY OF SUCH DAMAGE.
                         tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
                     }
                 });
+              }
             });
             let ttl = 120; // keep visible for ttl seconds
-            let intsshow = $('#interfaces').val();
             target.find('tr').each(function(){
-                if ((parseInt($(this).data('last_seen')) < (update_stamp - ttl)) || (!intsshow.includes($(this).data('intf')))) {
+                if (parseInt($(this).data('last_seen')) < (update_stamp - ttl)) {
                     $(this).remove();
                 } else if (parseInt($(this).data('last_seen')) != update_stamp) {
                     // reset measurements not in this set
@@ -399,17 +400,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 setTimeout(traffic_poller, 2000);
             })();
             (function top_traffic_poller(){
-                if ($("#interfaces").val().length > 0) {
-                    ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
-                        if (status == 'success') {
-                            $( document ).trigger( "updateTrafficTopCharts", [ data ] );
-                            updateTopTable(data);
-                            top_traffic_poller();
-                        } else {
-                            setTimeout(top_traffic_poller, 2000);
-                        }
-                    });
-                }
+                ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
+                    if (status == 'success') {
+                        $( document ).trigger( "updateTrafficTopCharts", [ data ] );
+                        updateTopTable(data);
+                        top_traffic_poller();
+                    } else {
+                        setTimeout(top_traffic_poller, 2000);
+                    }
+                });
             })();
         });
 
@@ -417,6 +416,12 @@ POSSIBILITY OF SUCH DAMAGE.
             if (window.localStorage) {
                 window.localStorage.setItem("api.diagnostics.traffic.interface", $(this).val());
             }
+            let intsshow = $(this).val();         
+            $('#rxTopTable').find('tr').each(function(){
+               if (!intsshow.includes($(this).data('intf'))) {
+                    $(this).remove();
+                }
+            });
         });
     });
 
