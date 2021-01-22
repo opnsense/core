@@ -287,7 +287,7 @@ if (!isset($_GET['act'])) {
                           <td>
                             <select name="acl_networks_mask[]" data-network-id="acl_network_<?=$item_idx;?>" class="ipv4v6net" id="mask<?=$item_idx;?>">
 <?php
-                              for ($i = 128; $i > 0; $i--):?>
+                              for ($i = 128; $i >= 0; $i--):?>
                               <option value="<?=$i;?>" <?= $item['mask'] == $i ? 'selected="selected"' : ''?>>
                                 <?=$i;?>
                               </option>
