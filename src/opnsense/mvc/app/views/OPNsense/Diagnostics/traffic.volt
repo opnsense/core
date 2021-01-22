@@ -244,7 +244,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             tr = $("<tr/>");
                             tr.attr("data-address", item.address); // XXX: find matches on tag
                             tr.data('bps_in', 0).data('bps_out', 0).data('bps_max_in', 0)
-                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0);
+                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0)
+                              .data('intf', intf);
                             tr.append($("<td/>").html(intf_label));
                             tr.append($("<td/>").text(item.address));
                             tr.append($("<td class='bps_in'/>").text("0b"));
@@ -270,8 +271,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
             });
             let ttl = 120; // keep visible for ttl seconds
+            let intsshow = $('#interfaces').val();
             target.find('tr').each(function(){
-                if (parseInt($(this).data('last_seen')) < (update_stamp - ttl)) {
+                if ((parseInt($(this).data('last_seen')) < (update_stamp - ttl)) || (!intsshow.includes($(this).data('intf')))) {
                     $(this).remove();
                 } else if (parseInt($(this).data('last_seen')) != update_stamp) {
                     // reset measurements not in this set
