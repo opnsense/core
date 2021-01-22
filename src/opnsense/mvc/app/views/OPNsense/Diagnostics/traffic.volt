@@ -419,7 +419,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 window.localStorage.setItem("api.diagnostics.traffic.interface", $(this).val());
             }
             let intsshow = $(this).val();         
-            $('#rxTopTable').find('tr').each(function(){
+            $('#rxTopTable > tbody').find('tr').each(function(){
                if (!intsshow.includes($(this).data('intf'))) {
                     $(this).remove();
                 }
