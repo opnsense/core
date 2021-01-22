@@ -48,17 +48,17 @@ echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 if [ -z "${RELEASE}" ]; then
 	# upgrade all packages if possible
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	opnsense-update -p 2>&1 > ${PIPEFILE}
+	opnsense-update -p > ${PIPEFILE} 2>&1
 
 	# trigger a webgui restart to cope with changes
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	/usr/local/etc/rc.restart_webgui 2>&1 > ${PIPEFILE}
+	/usr/local/etc/rc.restart_webgui > ${PIPEFILE} 2>&1
 
 	# if we can update base, we'll do that as well
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -c 2>&1 > ${PIPEFILE}; then
+	if opnsense-update -c > ${PIPEFILE} 2>&1; then
 		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		if opnsense-update -bk 2>&1 > ${PIPEFILE}; then
+		if opnsense-update -bk > ${PIPEFILE} 2>&1; then
 			echo '***REBOOT***' >> ${LOCKFILE}
 			sleep 5
 			/usr/local/etc/rc.reboot
@@ -67,7 +67,7 @@ if [ -z "${RELEASE}" ]; then
 else
 	# upgrade to a major release
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -ur ${RELEASE} 2>&1 > ${PIPEFILE}; then
+	if opnsense-update -ur ${RELEASE} > ${PIPEFILE} 2>&1; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot
