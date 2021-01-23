@@ -244,7 +244,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             tr = $("<tr/>");
                             tr.attr("data-address", item.address); // XXX: find matches on tag
                             tr.data('bps_in', 0).data('bps_out', 0).data('bps_max_in', 0)
-                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0);
+                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0)
+                              .data('intf', intf);
                             tr.append($("<td/>").html(intf_label));
                             tr.append($("<td/>").text(item.address));
                             tr.append($("<td class='bps_in'/>").text("0b"));
@@ -292,6 +293,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     return  b_total - a_total;
                 }
             }).appendTo(target);
+            // cleanup deselected interface rows
+            let intsshow = $("#interfaces").val();
+            $('#rxTopTable > tbody').find('tr').each(function(){
+               if (!intsshow.includes($(this).data('intf'))) {
+                    $(this).remove();
+                }
+            });
         }
 
         /**
