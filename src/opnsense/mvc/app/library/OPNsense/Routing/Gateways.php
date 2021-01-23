@@ -200,6 +200,7 @@ class Gateways
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
+                    $isuffix = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'], ['6to4', '6rd']) ? '_stf' : '';
                     $fsuffix = $ipproto == "inet6" ? "v6" : "";
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
@@ -211,7 +212,7 @@ class Gateways
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
                         "monitor_disable" => true, // disable monitoring by default
-                        "if" => $ifcfg['if'],
+                        "if" => "{$ifcfg['if']}{$isuffix}",
                         "dynamic" => true,
                         "virtual" => true
                     ];
@@ -237,8 +238,8 @@ class Gateways
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         // if name is already taken, don't try to add a new (virtual) entry
                         null;
-                    } elseif (file_exists("/tmp/{$ifcfg['if']}_router" . $fsuffix)) {
-                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}_router" . $fsuffix));
+                    } elseif (file_exists("/tmp/{$ifcfg['if']}{$isuffix}_router{$fsuffix}")) {
+                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}{$isuffix}_router{$fsuffix}"));
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
