@@ -806,10 +806,10 @@ $(document).ready(function() {
                 <td>
                   <select id="ssh_managementaccess" name="ssh_managementaccess" class="selectpicker">
                       <option value="interfaces" <?= empty($pconfig['ssh_managementaccess']) || $pconfig['ssh_managementaccess'] === 'interfaces' ? 'selected="selected"' : '';?>>
-                        <?=gettext("Choose Listen Interfaces");?>
+                        <?=gettext("Listen on specified interfaces (recommended)");?>
                       </option>
                       <option value="ip" <?=$pconfig['ssh_managementaccess'] === 'ip' ? 'selected="selected"' : '';?>>
-                        <?=gettext("Specify Management IP");?>
+                        <?=gettext("Listen on specified IP address");?>
                       </option>
                   </select>
                   <div class="hidden" data-for="help_for_ssh_managementaccess">
