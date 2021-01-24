@@ -691,10 +691,10 @@ $(document).ready(function() {
                 <td>
                   <select id="webgui_managementaccess" name="webgui_managementaccess" class="selectpicker">
                       <option value="interfaces" <?= empty($pconfig['webgui_managementaccess']) || $pconfig['webgui_managementaccess'] === 'interfaces' ? 'selected="selected"' : '';?>>
-                        <?=gettext("Choose Listen Interfaces");?>
+                        <?=gettext("Listen on specified interfaces (recommended)");?>
                       </option>
                       <option value="ip" <?=$pconfig['webgui_managementaccess'] === 'ip' ? 'selected="selected"' : '';?>>
-                        <?=gettext("Specify Management IP");?>
+                        <?=gettext("Listen on specified IP address");?>
                       </option>
                   </select>
                   <div class="hidden" data-for="help_for_webgui_managementaccess">
