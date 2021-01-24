@@ -61,7 +61,7 @@ class ApiControllerBase extends ControllerRoot
                 break;
             default:
                 if (!empty($this->request->getRawBody())) {
-                    $this->getLogger()->warning('unparsable Content-Type:'. $this->request->getHeader('CONTENT_TYPE').' received');
+                    $this->getLogger()->warning('unparsable Content-Type:' . $this->request->getHeader('CONTENT_TYPE') . ' received');
                 }
                 break;
         }

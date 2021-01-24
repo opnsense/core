@@ -1661,7 +1661,7 @@ function interface_ipalias_configure(&$vip)
     $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
 
     /* XXX use legacy_interface_setaddress */
-    mwexec("/sbin/ifconfig " . escapeshellarg($if). " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
+    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
 }
 
 function interface_carp_configure(&$vip)
@@ -3766,7 +3766,7 @@ function guess_interface_from_ip($ipaddress)
     }
 
     /* create a route table we can search */
-    exec("/usr/bin/netstat -rnWf ".$family, $output, $ret);
+    exec("/usr/bin/netstat -rnWf " . $family, $output, $ret);
     foreach ($output as $line) {
         $fields = preg_split("/\s+/", $line);
         if (is_subnet($fields[0])) {

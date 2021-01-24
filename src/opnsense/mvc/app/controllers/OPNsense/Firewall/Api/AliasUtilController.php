@@ -129,7 +129,7 @@ class AliasUtilController extends ApiControllerBase
             }
             return $item;
         }, array_slice($entry_keys, $offset, $itemsPerPage));
-        
+
         if (
             $this->request->hasPost('sort') &&
             is_array($this->request->getPost('sort')) &&
@@ -137,11 +137,11 @@ class AliasUtilController extends ApiControllerBase
         ) {
             $sortcolumn = array_key_first($this->request->getPost('sort'));
             $sort_order = $this->request->getPost('sort')[$sortcolumn];
-            if (!empty(array_column($formatted, $sortcolumn))){
+            if (!empty(array_column($formatted, $sortcolumn))) {
                 array_multisort(array_column($formatted, $sortcolumn), $sort_order == 'asc' ? SORT_ASC : SORT_DESC, $formatted);
             }
         }
-   
+
         return [
             'total' => count($entry_keys),
             'rowCount' => $itemsPerPage,
