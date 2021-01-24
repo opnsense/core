@@ -200,7 +200,7 @@ class Gateways
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $isuffix = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'], ['6to4', '6rd']) ? '_stf' : '';
+                    $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'], ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
                     $fsuffix = $ipproto == "inet6" ? "v6" : "";
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
@@ -212,12 +212,12 @@ class Gateways
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
                         "monitor_disable" => true, // disable monitoring by default
-                        "if" => "{$ifcfg['if']}{$isuffix}",
+                        "if" => $realif,
                         "dynamic" => true,
                         "virtual" => true
                     ];
                     // set default priority
-                    if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
+                    if (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
                         // consider tunnel type interfaces least attractive by default
                         $thisconf['priority'] = 255;
                     } else {
@@ -238,14 +238,14 @@ class Gateways
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         // if name is already taken, don't try to add a new (virtual) entry
                         null;
-                    } elseif (file_exists("/tmp/{$ifcfg['if']}{$isuffix}_router{$fsuffix}")) {
-                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$ifcfg['if']}{$isuffix}_router{$fsuffix}"));
+                    } elseif (file_exists("/tmp/{$realif}_router{$fsuffix}")) {
+                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$realif}_router{$fsuffix}"));
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (!empty($ifcfg['gateway_interface']) || substr($ifcfg['if'], 0, 5) == "ovpnc") {
+                    } elseif (!empty($ifcfg['gateway_interface']) || substr($realif, 0, 5) == 'ovpnc') {
                         // XXX: ditch ovpnc in a major upgrade in the future, supersede with interface setting
                         //      gateway_interface
 
