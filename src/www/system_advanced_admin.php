@@ -719,7 +719,7 @@ $(document).ready(function() {
                 <td><a id="help_for_webguiip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Management IP") ?></td>
                 <td>
                   <input name="webguiip" type="text" value="<?= $pconfig['webguiip'] ?>"/>
-                  <?=gettext("Only accept connections from the specified IP. Use with care."); ?>
+                  <?=gettext("Web GUI only listen on specified IP address. Use with care."); ?>
                   <div class="hidden" data-for="help_for_webguiip">
                     <?= gettext('The WebGUI only listens on the selected IP address. You may need to manually add required firewall rules first. Use with care.') ?>
                   </div>
