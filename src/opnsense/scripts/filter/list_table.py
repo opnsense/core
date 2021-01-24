@@ -53,7 +53,7 @@ if __name__ == '__main__':
                         pkts=int(parts[3])
                         bytes=int(parts[5])
                         topic = parts[0].lower().replace('/', '_').replace(':', '')
-                        if pkts > 0:
+                        if pkts >= 0:
                             statistics['%s_p' % topic] = pkts
                             statistics['%s_b' % topic] = bytes
 
