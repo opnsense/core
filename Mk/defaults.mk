@@ -67,7 +67,7 @@ _CORE_PYTHON!=	${PYTHONLINK} -V
 CORE_PYTHON?=	${_CORE_PYTHON:[2]:S/./ /g:[1..2]:tW:S/ //}
 .endif
 
-.if exists(${PKG})
+.if exists(${PKG}) && ${PKG} != "/usr/bin/pkg"
 _CORE_SYSLOGNG!= ${PKG} query %v syslog-ng
 CORE_SYSLOGNG?=  ${_CORE_SYSLOGNG:S/./ /g:[1..2]:tW:S/ /./g}
 .endif
