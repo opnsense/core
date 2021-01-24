@@ -70,7 +70,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     if (isset($config['system']['webgui']['managementaccess']) &&
         $config['system']['webgui']['managementaccess'] === 'ip' &&
         isset($config['system']['webgui']['ip'])) {
-        $listeners[] = $config['system']['webgui']['ip'];
+        $listeners = array($config['system']['webgui']['ip']);
     } else {
         foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
             if ($info['scope']) {
