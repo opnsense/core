@@ -180,7 +180,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchServiceAction()
     {
-        return $this->searchBase("service", array("enabled", "name", "type"), "name");
+        return $this->searchBase("service", array("enabled", "name", "type", "description"), "name");
     }
 
     /**
