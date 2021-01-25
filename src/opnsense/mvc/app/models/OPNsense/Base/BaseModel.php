@@ -336,11 +336,10 @@ abstract class BaseModel
         $this->parseXml($model_xml->items, $config_array, $this->internalData);
         // root may contain a version, store if found
         if (empty($config_array)) {
-            $this->internal_current_model_version = null;
+            // new node, reset
+            $this->internal_current_model_version = "0.0.0";
         } elseif (!empty($config_array->attributes()['version'])) {
             $this->internal_current_model_version = (string)$config_array->attributes()['version'];
-        } else {
-            $this->internal_current_model_version = "0.0.0";
         }
 
         // trigger post loading event
@@ -630,10 +629,7 @@ abstract class BaseModel
      */
     public function runMigrations()
     {
-        if (
-            $this->internal_current_model_version !== null &&
-            version_compare($this->internal_current_model_version, $this->internal_model_version, '<')
-        ) {
+        if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
             $upgradePerfomed = false;
             $migObjects = array();
             $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL2));
