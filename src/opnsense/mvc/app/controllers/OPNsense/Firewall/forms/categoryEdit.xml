@@ -1,19 +1,19 @@
 <form>
     <field>
         <id>category.auto</id>
-        <label>automatic</label>
+        <label>Automatic</label>
         <type>checkbox</type>
         <help>Automatically added, will be removed when used</help>
     </field>
     <field>
         <id>category.name</id>
-        <label>name</label>
+        <label>Name</label>
         <type>text</type>
         <help>Enter a name for this category.</help>
     </field>
     <field>
         <id>category.color</id>
-        <label>color</label>
+        <label>Color</label>
         <type>text</type>
         <style>pick-a-color</style>
         <help>pick a color to use.</help>

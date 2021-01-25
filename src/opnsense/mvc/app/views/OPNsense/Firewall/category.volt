@@ -87,7 +87,7 @@
 
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#grid-categories">{{ lang._('categories') }}</a></li>
+    <li class="active"><a data-toggle="tab" href="#grid-categories">{{ lang._('Categories') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="categories" class="tab-pane fade in active">
