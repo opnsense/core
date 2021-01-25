@@ -2721,6 +2721,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
 
     /* create the long prefix notation for math, save the prefix length */
     $rd6prefix = explode("/", $wancfg['prefix-6rd']);
+    $rd6prefix_isp = $rd6prefix[0];
     $rd6prefixlen = $rd6prefix[1];
     $rd6prefix = Net_IPv6::uncompress($rd6prefix[0]);
 
@@ -2737,7 +2738,8 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
     $rd6prefix = convert_128bit_to_ipv6($rd6prefixbin);
 
-    $rd6brgw = "{$rd6prefix}{$wancfg['gateway-6rd']}";
+    /* use gateway inside original prefix to avoid routing issues */
+    $rd6brgw = "{$rd6prefix_isp}{$wancfg['gateway-6rd']}";
 
     $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
@@ -2752,7 +2754,8 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     }
     legacy_interface_mtu($stfiface, $mtu);
 
-    mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen + 32 - $wancfg['prefix-6rd-v4plen']));
+    # use original prefix length for network address to avoid setting the same subnet as on the LAN side (/64 prefix)
+    mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
 
