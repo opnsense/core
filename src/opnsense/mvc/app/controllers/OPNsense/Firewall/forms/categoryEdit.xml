@@ -3,7 +3,7 @@
         <id>category.auto</id>
         <label>Automatic</label>
         <type>checkbox</type>
-        <help>Automatically added, will be removed when used</help>
+        <help>Automatically added, will be removed when unused</help>
     </field>
     <field>
         <id>category.name</id>
