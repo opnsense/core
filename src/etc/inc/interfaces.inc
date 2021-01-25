@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -959,18 +959,12 @@ function interface_vip_bring_down($vip)
             killbypid("/var/run/choparp_{$vipif}.pid");
             break;
         case 'ipalias':
-            if (does_interface_exist($vipif)) {
-                if (is_ipaddrv6($vip['subnet'])) {
-                    mwexec("/sbin/ifconfig {$vipif} inet6 " . escapeshellarg($vip['subnet']) . " -alias");
-                } else {
-                    legacy_interface_deladdress($vipif, $vip['subnet']);
-                }
-            }
-            break;
         case 'carp':
             if (does_interface_exist($vipif)) {
-                legacy_interface_deladdress($vipif, $vip['subnet']);
+                legacy_interface_deladdress($vipif, $vip['subnet'], is_ipaddrv6($vip['subnet']) ? 6 : 4);
             }
+            break;
+        default:
             break;
     }
 }
