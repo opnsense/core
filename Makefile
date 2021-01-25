@@ -62,7 +62,7 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
 
-CORE_MESSAGE?=		TBA
+CORE_MESSAGE?=		What are you looking at?
 CORE_NAME?=		opnsense
 CORE_TYPE?=		production
 

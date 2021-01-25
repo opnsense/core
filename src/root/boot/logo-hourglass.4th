@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"    21.1    ``Prerelease''     #[m" logo+
+	s"  21.1  ``Marvelous Meerkat''  #[m" logo+
 
 	2drop
 ;
