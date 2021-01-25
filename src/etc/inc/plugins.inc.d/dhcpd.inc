@@ -400,7 +400,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         if (isset($dhcpv6ifconf['radisablerdnss'])) {
             $dnslist = [];
-	}
+        }
 
         if (count($dnslist) > 0) {
             $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " {\n";
