@@ -437,7 +437,7 @@ $( document ).ready(function() {
   $(".act_toggle").click(function(event){
       event.preventDefault();
       let target = $(this);
-      target.removeClass('fa-play').addClass('fa-spinner fa-pulse');
+      target.addClass('fa-spinner fa-pulse');
       let id = target.attr("id").split('_').pop(-1);
       $.ajax("firewall_rules.php",{
           type: 'post',
@@ -446,7 +446,7 @@ $( document ).ready(function() {
           data: {'act': 'toggle', 'id': id},
           success: function(response) {
               target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
-              target.removeClass('fa-spinner fa-pulse').addClass('fa-play');
+              target.removeClass('fa-spinner fa-pulse');
               if (response['new_state']) {
                   target.removeClass('text-muted').addClass('text-success');
               } else {
@@ -457,7 +457,7 @@ $( document ).ready(function() {
               $("#fw-alert-changes").removeClass("hidden");
           },
           error: function () {
-              target.removeClass('fa-spinner fa-pulse').addClass('fa-play');
+              target.removeClass('fa-spinner fa-pulse');
           }
       });
   });
