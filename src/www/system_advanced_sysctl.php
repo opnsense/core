@@ -114,6 +114,10 @@ foreach ($a_tunable as &$tunable) {
     }
 }
 
+usort($a_tunable, function($a, $b) {
+    return strnatcmp($a['tunable'], $b['tunable']);
+});
+
 legacy_html_escape_form_data($a_tunable);
 
 if ($act != 'edit') {
