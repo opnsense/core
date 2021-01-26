@@ -78,7 +78,7 @@ function get_default_sysctl_value($id)
         'hw.ibrs_disable' => '0',
         'hw.ixl.enable_head_writeback' => '0',
         'hw.syscons.kbd_reboot' => '0',
-        'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(),
+        'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(), /* XXX support comconsole_port if needed */
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
         'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
