@@ -334,7 +334,7 @@ include_once("head.inc");
 <?php endforeach ?>
                           </select>
                           <div class="hidden" data-for="help_for_local_zone_type">
-                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %sunbound.conf(5)%s manual page. The default is \'transparent\'.'), '<a target="_blank" href="https://www.unbound.net/documentation/unbound.conf.html">', '</a>');?>
+                            <?=sprintf(gettext('The local zone type used for the system domain. Type descriptions are available under "local-zone:" in the %sunbound.conf(5)%s manual page. The default is \'transparent\'.'), '<a target="_blank" href="https://nlnetlabs.nl/documentation/unbound/unbound.conf/#local-zone">', '</a>');?>
                           </div>
                         </td>
                       </tr>
