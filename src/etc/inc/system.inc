@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -72,10 +72,13 @@ function system_powerd_configure($verbose = false)
 
 function get_default_sysctl_value($id)
 {
+    global $config;
+
     $sysctls = array(
         'hw.ibrs_disable' => '0',
-        'hw.syscons.kbd_reboot' => '0',
         'hw.ixl.enable_head_writeback' => '0',
+        'hw.syscons.kbd_reboot' => '0',
+        'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(),
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
         'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
@@ -131,6 +134,7 @@ function system_sysctl_get()
 
     $sysctls = array(
         'hw.ixl.enable_head_writeback' => 'default',
+        'hw.uart.console' => 'default',
         'net.enc.in.ipsec_bpf_mask' => 'default',
         'net.enc.in.ipsec_filter_mask' => 'default',
         'net.enc.out.ipsec_bpf_mask' => 'default',
@@ -1059,6 +1063,19 @@ function system_console_types()
     );
 }
 
+function system_console_speed()
+{
+    global $config;
+
+    $speed = 115200;
+
+    if (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) {
+        $speed = $config['system']['serialspeed'];
+    }
+
+    return $speed;
+}
+
 function system_login_configure($verbose = false)
 {
     global $config;
@@ -1073,7 +1090,7 @@ function system_login_configure($verbose = false)
 
     configd_run('template reload OPNsense/Auth');
 
-    $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
+    $serialspeed = system_console_speed();
 
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
