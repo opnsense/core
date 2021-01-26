@@ -38,6 +38,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
+$aftr = isset($argv[2]) ? trim($argv[2]) : '';
 
 if (file_exists('/var/run/booting')) {
     log_error("IP renewal deferred during boot on '{$argument}'");
@@ -62,6 +63,20 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
+/* Check that we actually have a valid AFTR address either by auto-discovery from DHCPv6 or configured manually */
+if ($config['interfaces'][$interface]['ipaddr'] == "dslite") {
+    // convert the raw argument, which is hex, to a string
+    if (!empty($aftr)) {
+        $aftr = pack("*H", $aftr);
+    }
+    if (!empty(trim($config['interfaces'][$interface]['dslite_aftr_addr']))) {
+        $aftr = trim($config['interfaces'][$interface]['dslite_aftr_addr']);
+    }
+    if (empty($aftr)) {
+        log_error("DS-Lite selected on interface '{$interface}' but no AFTR address is discovered or configured, ignoring tunnel for now.");
+    }
+}
+
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
 log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
@@ -80,6 +95,7 @@ $configip = $config['interfaces'][$interface]['ipaddrv6'];
 
 $searchdomain_file = "/var/etc/searchdomain_v6{$interface_real}";
 $nameserver_file = "/var/etc/nameserver_v6{$interface_real}";
+$dslite_tunnel_file = "/tmp/dslite_${interface}.state";
 $cacheip_file = "/var/db/{$interface}_cacheipv6";
 $ip_file = "/var/db/{$interface}_ipv6";
 
@@ -132,7 +148,17 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
         }
     }
 
+    // Make sure to recreate the DS-Lite tunnel before we forge the new tunnel and routes
+    if ($config['interfaces'][$interface]['ipaddr'] == "dslite") {
+        destroy_dslite_tunnel(false, $interface);
+    }
+
     @unlink($cacheip_file);
+    @unlink($dslite_tunnel_file);
+
+    if ($config['interfaces'][$interface]['ipaddr'] == "dslite" && !empty($aftr)) {
+        setup_dslite_tunnel(false, $interface, $aftr);
+    }
 
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
