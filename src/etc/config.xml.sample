@@ -140,6 +140,11 @@
       <value>default</value>
     </item>
     <item>
+      <descr><![CDATA[Hint at default settings for serial console in case the autodetect is not working]]></descr>
+      <tunable>hw.uart.console</tunable>
+      <value>default</value>
+    </item>
+    <item>
       <descr><![CDATA[Enable TCP extended debugging]]></descr>
       <tunable>net.inet.tcp.log_debug</tunable>
       <value>default</value>
