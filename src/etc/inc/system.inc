@@ -132,9 +132,9 @@ function system_sysctl_get()
 {
     global $config;
 
+    /* list of unconditional sysctls not necessarily present in config */
     $sysctls = array(
         'hw.ixl.enable_head_writeback' => 'default',
-        'hw.uart.console' => 'default',
         'net.enc.in.ipsec_bpf_mask' => 'default',
         'net.enc.in.ipsec_filter_mask' => 'default',
         'net.enc.out.ipsec_bpf_mask' => 'default',
