@@ -418,9 +418,9 @@ mfc: ensure-stable clean-mfcdir
 .if exists(${MFC})
 	@cp -r ${MFC} ${MFCDIR}
 	@git checkout stable/${CORE_ABI}
-	@rm -r ${MFC}
+	@rm -rf ${MFC}
 	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
-	@git add .
+	@git add -f .
 	@if ! git diff --quiet HEAD; then \
 		git commit -m "${MFC}: sync with master"; \
 	fi
