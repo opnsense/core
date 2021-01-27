@@ -74,6 +74,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20200122
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20200313
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210104
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
@@ -238,6 +239,8 @@
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ZERO_SIZE_OBJECT.html
 /usr/local/opnsense/data/proxy/template_error_pages/error-details.txt
 /usr/local/opnsense/data/proxy/template_error_pages/errorpage.css
+/usr/local/opnsense/firmware-message
+/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
