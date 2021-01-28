@@ -51,6 +51,7 @@
             <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
             <pattern>api/diagnostics/firewall/log</pattern>
             <pattern>api/monit/status/get/xml</pattern>
+            <pattern>api/diagnostics/traffic/interface</pattern>
         </patterns>
     </page-dashboard-all>
     <page-dashboard-widgets>
