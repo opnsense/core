@@ -33,8 +33,9 @@ FETCH="fetch -qT 5"
 
 changelog_remove()
 {
-	rm -rf ${DESTDIR}
 	mkdir -p ${DESTDIR}
+	touch ${DESTDIR}/index.json
+	rm -rf ${DESTDIR}/*
 }
 
 changelog_fetch()
