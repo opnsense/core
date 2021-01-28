@@ -33,10 +33,10 @@ CORE_PHP?=	73
 CORE_PYTHON?=	37
 
 .if exists(${GIT}) && exists(${GITVERSION})
-. if ${CORE_ABI} == "20.7"
-CORE_COMMIT!=	${GITVERSION} --exclude=21.1.r\*
-. elif ${CORE_ABI} == "21.1"
+. if ${CORE_ABI} == "21.1"
 CORE_COMMIT!=	${GITVERSION} --exclude=21.7.r\*
+. elif ${CORE_ABI} == "20.7"
+CORE_COMMIT!=	${GITVERSION} --exclude=21.1.r\*
 . else
 CORE_COMMIT!=	${GITVERSION}
 . endif
