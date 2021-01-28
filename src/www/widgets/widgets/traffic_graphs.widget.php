@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2014-2021 Deciso B.V.
     Copyright (C) 2007 Scott Dale
     Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
     Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
@@ -30,146 +30,210 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+require_once("widgets/include/interface_list.inc");
+require_once("interfaces.inc");
+
+$interfaces = get_configured_interface_with_descr();
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $pconfig = array();
+    $pconfig['traffic_graphs_interfaces'] = !empty($config['widgets']['traffic_graphs_interfaces']) ?
+        explode(',', $config['widgets']['traffic_graphs_interfaces']) : ['lan', 'wan'];
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
+    if (!empty($pconfig['traffic_graphs_interfaces'])) {
+        $config['widgets']['traffic_graphs_interfaces'] = implode(',', $pconfig['traffic_graphs_interfaces']);
+    } elseif (isset($config['widgets']['traffic_graphs_interfaces'])) {
+        unset($config['widgets']['traffic_graphs_interfaces']);
+    }
+    write_config("Saved Widget Interface List via Dashboard");
+    header(url_safe('Location: /index.php'));
+    exit;
+}
+
 ?>
+<script src="<?=cache_safe('/ui/js/moment-with-locales.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chart.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chartjs-plugin-streaming.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chartjs-plugin-colorschemes.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?=cache_safe(get_themed_filename('/css/chart.css'));?>" rel="stylesheet" />
 
 <script>
-  var traffic_graph_widget_data = [];
-  var traffic_graph_widget_chart_in = null;
-  var traffic_graph_widget_chart_data_in = null;
-  var traffic_graph_widget_chart_out = null;
-  var traffic_graph_widget_chart_data_out = null;
-
-  function traffic_widget_update(sender, data, max_measures)
-  {
-      if (max_measures == undefined) {
-          max_measures = 100;
-      }
-      // push new measurement, keep a maximum of max_measures measures in
-      traffic_graph_widget_data.push(data);
-      if (traffic_graph_widget_data.length > max_measures) {
-          traffic_graph_widget_data.shift();
-      } else if (traffic_graph_widget_data.length == 1) {
-          traffic_graph_widget_data.push(data);
-      }
-
-      let chart_data_in = [];
-      let chart_data_out = [];
-      let chart_data_keys = {};
-      for (var i=traffic_graph_widget_data.length-1 ; i > 0 ; --i) {
-          var elapsed_time = traffic_graph_widget_data[i]['time'] - traffic_graph_widget_data[i-1]['time'];
-          for (var key in traffic_graph_widget_data[i]['interfaces']) {
-              var intf_item = traffic_graph_widget_data[i]['interfaces'][key];
-              var prev_intf_item = traffic_graph_widget_data[i-1]['interfaces'][key];
-              if (chart_data_keys[key] == undefined && intf_item['name'] != undefined) {
-                  // only show configured interfaces
-                  chart_data_keys[key] = chart_data_in.length;
-                  chart_data_in[chart_data_in.length] = {'key': intf_item['name'], 'values': []};
-                  chart_data_out[chart_data_out.length] = {'key': intf_item['name'], 'values': []};
-              }
-              if (chart_data_keys[key] != undefined) {
-                  let bps_in, bps_out;
-                  if (elapsed_time > 0) {
-                      bps_in = ((parseInt(intf_item['bytes received']) - parseInt(prev_intf_item['bytes received']))/elapsed_time)*8;
-                      bps_out = ((parseInt(intf_item['bytes transmitted']) - parseInt(prev_intf_item['bytes transmitted']))/elapsed_time)*8;
-                  } else {
-                      bps_in = 0;
-                      bps_out = 0;
-                  }
-                  chart_data_in[chart_data_keys[key]]['values'].push([traffic_graph_widget_data[i]['time']*1000, bps_in]);
-                  chart_data_out[chart_data_keys[key]]['values'].push([traffic_graph_widget_data[i]['time']*1000, bps_out]);
-              }
-          }
-      }
-      // get selections
-      var deselected_series_in = [];
-      var deselected_series_out = [];
-      d3.select("#traffic_graph_widget_chart_in").selectAll(".nv-series").each(function(d, i) {
-          if (d.disabled) {
-              deselected_series_in.push(d.key);
-          }
-      });
-      d3.select("#traffic_graph_widget_chart_out").selectAll(".nv-series").each(function(d, i) {
-          if (d.disabled) {
-              deselected_series_out.push(d.key);
-          }
-      });
-
-      // load data
-      traffic_graph_widget_chart_data_in.datum(chart_data_in).transition().duration(500).call(traffic_graph_widget_chart_in);
-      if (traffic_graph_widget_chart_data_out !== null) {
-          traffic_graph_widget_chart_data_out.datum(chart_data_out).transition().duration(500).call(traffic_graph_widget_chart_out);
-      }
-
-      // set selection
-      d3.selectAll("#traffic_graph_widget_chart_in").selectAll(".nv-series").each(function(d, i) {
-          if (deselected_series_in.indexOf(d.key) > -1) {
-              d3.select(this).on("click").apply(this, [d, i]);
-          }
-      });
-      d3.selectAll("#traffic_graph_widget_chart_out").selectAll(".nv-series").each(function(d, i) {
-          if (deselected_series_out.indexOf(d.key) > -1) {
-              d3.select(this).on("click").apply(this, [d, i]);
-          }
-      });
-  }
   /**
    * page setup
    */
   $(window).on("load", function() {
-      // draw traffic in graph
-      nv.addGraph(function() {
-          traffic_graph_widget_chart_in = nv.models.lineChart()
-              .x(function(d) { return d[0] })
-              .y(function(d) { return d[1] })
-              .useInteractiveGuideline(false)
-              .interactive(true)
-              .showLegend(true)
-              .showXAxis(false)
-              .clipEdge(true)
-              .margin({top:5,right:5,bottom:5,left:50})
-              ;
-          traffic_graph_widget_chart_in.yAxis.tickFormat(d3.format(',.2s'));
-          traffic_graph_widget_chart_in.xAxis.tickFormat(function(d) {
-              return d3.time.format('%b %e %H:%M:%S')(new Date(d));
+        function format_field(value) {
+            if (!isNaN(value) && value > 0) {
+                let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+                let ndx = Math.floor(Math.log(value) / Math.log(1000) );
+                if (ndx > 0) {
+                    return  (value / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+                } else {
+                    return value.toFixed(2);
+                }
+            } else {
+                return "";
+            }
+        }
+        /**
+         * create new traffic chart
+         */
+        function traffic_graph(target, init_data) {
+            // setup legend
+            let all_datasets = [];
+            Object.keys(init_data.interfaces).forEach(function(intf) {
+                all_datasets.push({
+                    label: init_data.interfaces[intf].name,
+                    hidden: true,
+                    borderColor: init_data.interfaces[intf].color,
+                    backgroundColor: init_data.interfaces[intf].color,
+                    pointHoverBackgroundColor: init_data.interfaces[intf].color,
+                    pointHoverBorderColor: init_data.interfaces[intf].color,
+                    pointBackgroundColor: init_data.interfaces[intf].color,
+                    pointBorderColor: init_data.interfaces[intf].color,
+                    intf: intf,
+                    last_time: init_data.time,
+                    last_data: init_data.interfaces[intf][target.data('src_field')],
+                    src_field: target.data('src_field'),
+                    data: []
+                });
+            });
+            // new chart
+            var ctx = target[0].getContext('2d');
+            var config = {
+                  type: 'line',
+                  data: {
+                      datasets: all_datasets
+                  },
+                  options: {
+                      legend: {
+                          display: false,
+                      },
+                      title: {
+                          display: false
+                      },
+                      maintainAspectRatio: false,
+                      scales: {
+                          xAxes: [{
+                              type: 'realtime',
+                              realtime: {
+                                  duration: 50000,
+                                  refresh: 5000,
+                                  delay: 5000
+                              },
+                          }],
+                          yAxes: [{
+                              ticks: {
+                                  callback: function (value, index, values) {
+                                      return format_field(value);
+                                  }
+                              }
+                          }]
+                      },
+                      tooltips: {
+                          mode: 'nearest',
+                          intersect: false,
+                          callbacks: {
+                              label: function(tooltipItem, data) {
+                                  let ds = data.datasets[tooltipItem.datasetIndex];
+                                  return ds.label + " : " + format_field(ds.data[tooltipItem.index].y).toString();
+                              }
+                          }
+                      },
+                      hover: {
+                          mode: 'nearest',
+                          intersect: false
+                      },
+                      plugins: {
+                          streaming: {
+                              frameRate: 30
+                          },
+                          colorschemes: {
+                              scheme: 'brewer.Paired12'
+                          }
+                      }
+                  }
+            };
+            return new Chart(ctx, config);
+        }
+        // register traffic update event
+        ajaxGet('/api/diagnostics/traffic/interface',{}, function(data, status){
+          $( document ).on( "updateTrafficCharts", {
+              charts: [
+                  traffic_graph($("#rxChart"), data),
+                  traffic_graph($("#txChart"), data)
+              ]
+          }, function( event, data) {
+              let charts = event.data.charts;
+              for (var i =0 ; i < charts.length; ++i) {
+                  let this_chart = charts[i];
+                  Object.keys(data.interfaces).forEach(function(intf) {
+                      this_chart.config.data.datasets.forEach(function(dataset) {
+                          if (dataset.intf == intf) {
+                              let calc_data = data.interfaces[intf][dataset.src_field];
+                              let elapsed_time = data.time - dataset.last_time;
+                              dataset.hidden = !$("#traffic_graphs_interfaces").val().includes(intf);
+                              dataset.data.push({
+                                  x: Date.now(),
+                                  y: Math.round(((calc_data - dataset.last_data) / elapsed_time) * 8, 0)
+                              });
+                              dataset.last_time = data.time;
+                              dataset.last_data = calc_data;
+                              return;
+                          }
+                      });
+                  });
+                  this_chart.update();
+              }
           });
 
-          traffic_graph_widget_chart_data_in = d3.select("#traffic_graph_widget_chart_in svg").datum([{'key':'', 'values':[[0, 0]]}]);
-          traffic_graph_widget_chart_data_in.transition().duration(500).call(traffic_graph_widget_chart_in);
-      });
-      // draw traffic out graph
-      nv.addGraph(function() {
-          traffic_graph_widget_chart_out = nv.models.lineChart()
-              .x(function(d) { return d[0] })
-              .y(function(d) { return d[1] })
-              .useInteractiveGuideline(false)
-              .interactive(true)
-              .showLegend(true)
-              .showXAxis(false)
-              .clipEdge(true)
-              .margin({top:5,right:5,bottom:5,left:50})
-              ;
-          traffic_graph_widget_chart_out.yAxis.tickFormat(d3.format(',.2s'));
-          traffic_graph_widget_chart_out.xAxis.tickFormat(function(d) {
-              return d3.time.format('%b %e %H:%M:%S')(new Date(d));
-          });
-
-          traffic_graph_widget_chart_data_out = d3.select("#traffic_graph_widget_chart_out svg").datum([{'key':'', 'values':[[0, 0]]}]);
-          traffic_graph_widget_chart_data_out.transition().duration(500).call(traffic_graph_widget_chart_out);
-      });
+          /**
+           * poll for new stats and update selected charts
+           */
+          (function traffic_poller(){
+              ajaxGet("/api/diagnostics/traffic/interface", {}, function(data, status) {
+                  if (data.interfaces !== undefined) {
+                      console.log(data);
+                      $( document ).trigger( "updateTrafficCharts", [ data ] );
+                  }
+              });
+              setTimeout(traffic_poller, 5000);
+          })();
+        });
+        // needed to display the widget settings menu
+        $("#traffic_graphs-configure").removeClass("disabled");
   });
 </script>
 
 
+<div id="traffic_graphs-settings" class="widgetconfigdiv" style="display:none;">
+  <form action="/widgets/widgets/traffic_graphs.widget.php" method="post" name="iformd">
+    <table class="table table-condensed">
+      <tr>
+        <td>
+          <select id="traffic_graphs_interfaces" name="traffic_graphs_interfaces[]" multiple="multiple" class="selectpicker_widget">
+<?php foreach ($interfaces as $iface => $ifacename): ?>
+            <option value="<?= html_safe($iface) ?>" <?= in_array($iface, $pconfig['traffic_graphs_interfaces']) ? 'selected="selected"' : '' ?>><?= html_safe($ifacename) ?></option>
+<?php endforeach ?>
+          </select>
+          <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
 <!-- traffic graph table -->
-<table class="table table-condensed" data-plugin="traffic" data-callback="traffic_widget_update">
+<table class="table table-condensed">
     <tbody>
       <tr>
         <td><?=gettext("In (bps)");?></td>
       </tr>
       <tr>
         <td>
-          <div id="traffic_graph_widget_chart_in">
-            <svg style="height:150px;"></svg>
+          <div class="chart-container">
+              <canvas id="rxChart" data-src_field="bytes received"></canvas>
           </div>
         </td>
       </tr>
@@ -178,8 +242,8 @@
       </tr>
       <tr>
         <td>
-          <div id="traffic_graph_widget_chart_out">
-            <svg style="height:150px;"></svg>
+          <div class="chart-container">
+              <canvas id="txChart" data-src_field="bytes transmitted"></canvas>
           </div>
         </td>
       </tr>
