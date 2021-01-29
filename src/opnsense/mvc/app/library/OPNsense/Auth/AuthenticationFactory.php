@@ -197,7 +197,7 @@ class AuthenticationFactory
                     if ($authenticator->authenticate($service->getUserName(), $password)) {
                         if ($service->checkConstraints()) {
                             syslog(LOG_NOTICE, sprintf(
-                                "user %s authenticated successfully for %s [using %s + %s]\n",
+                                "user %s authenticated successfully for %s [using %s + %s]",
                                 $username,
                                 $service_name,
                                 get_class($service),
