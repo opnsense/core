@@ -1814,7 +1814,6 @@
 /usr/local/www/widgets/api/plugins/interfaces.inc
 /usr/local/www/widgets/api/plugins/system.inc
 /usr/local/www/widgets/api/plugins/temperature.inc
-/usr/local/www/widgets/api/plugins/traffic.inc
 /usr/local/www/widgets/include/carp_status.inc
 /usr/local/www/widgets/include/cpu_usage.inc
 /usr/local/www/widgets/include/gateways.inc
