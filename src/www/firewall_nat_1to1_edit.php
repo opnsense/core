@@ -425,7 +425,7 @@ include("head.inc");
   <?php
                       foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
                         $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
-                        <option value="<?=$catname;?>" <?=in_array($catname, $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$catname;?></option>
+                        <option value="<?=$catname;?>" <?=!empty($pconfig['category']) && in_array($catname, $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$catname;?></option>
   <?php
                       endforeach;?>
                       </select>
