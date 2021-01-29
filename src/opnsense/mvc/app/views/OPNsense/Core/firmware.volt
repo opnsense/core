@@ -936,7 +936,7 @@
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
                                     <div class="hidden" data-for="help_for_type">
-                                        {{ lang._('Select the release type. Use with care.') }}
+                                        {{ lang._('Select the release type.') }}
                                     </div>
                                 </td>
                                 <td></td>
