@@ -350,8 +350,10 @@ if [ -z "${pkg_running}" ]; then
         fi
       fi
 
+      # XXX use opnsense-update -SRp to check for download size before advertising
       upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
       upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+
       product_version=$(opnsense-version -v)
       product_name=$(opnsense-version -n)
       os_version=$(uname -sr)

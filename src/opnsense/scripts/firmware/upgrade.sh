@@ -54,6 +54,7 @@ elif [ "$PACKAGE" == "maj" ]; then
 	fi
 	# perform first half of major upgrade
 	# (download all + kernel install)
+	# XXX use opnsense-update -uR at least unless we can imply -R later
 	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
 		REBOOT=1
 	fi
