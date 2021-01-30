@@ -327,7 +327,7 @@ include("head.inc");
                       <td>
 <?php
                         foreach($ifinfo['ipv6'] as $ipv6):
-                            if ($ipv6['ipaddr'] != $ifinfo['ipaddrv6'] && !$ipv6['link-local']):?>
+                            if (!$ipv6['link-local']):?>
                             <?=$ipv6['ipaddr'];?>/<?=$ipv6['subnetbits'];?> <?= !empty($ipv6['vhid']) ? 'vhid ' . $ipv6['vhid'] : "" ;?> <?= $ipv6['deprecated'] ? 'deprecated' : '' ?>
                             <br />
 <?php
