@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent = array();
         // 1-on-1 copy
         $natent['external'] = $pconfig['external'];
-        $natent['category'] = implode(",", $pconfig['category']);
+        $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
         $natent['descr'] = $pconfig['descr'];
         $natent['interface'] = $pconfig['interface'];
         $natent['type'] = $pconfig['type'];
