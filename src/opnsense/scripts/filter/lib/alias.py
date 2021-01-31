@@ -140,6 +140,9 @@ class Alias(object):
         req_opts['url'] = url
         req_opts['stream'] = True
         req_opts['timeout'] = self._timeout
+        req_opts['headers'] = {
+            'User-Agent': 'OPNsense/20.7.8_4',
+        }
         if self._ssl_no_verify:
             req_opts['verify'] = False
         # fetch data
