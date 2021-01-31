@@ -212,8 +212,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($pconfig['protocol'] != 'any') {
             $natent['protocol'] = $pconfig['protocol'];
         }
-        $natent['interface'] = implode(",", $pconfig['interface']);
-        $natent['category'] = implode(",", $pconfig['category']);
+        $natent['interface'] = !empty($pconfig['interface']) ? implode(",", $pconfig['interface']) : null;
+        $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
         $natent['descr'] = $pconfig['descr'];
         $natent['tag'] = $pconfig['tag'];

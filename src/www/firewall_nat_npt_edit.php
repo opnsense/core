@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $natent = array();
 
       $natent['disabled'] = isset($pconfig['disabled']) ? true:false;
-      $natent['category'] = implode(",", $pconfig['category']);
+      $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
       $natent['descr'] = $pconfig['descr'];
       $natent['interface'] = $pconfig['interface'];
       pconfig_to_address(

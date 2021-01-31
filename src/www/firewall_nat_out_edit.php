@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['source'] = array();
         $natent['destination'] = array();
         $natent['descr'] = $pconfig['descr'];
-        $natent['category'] = implode(",", $pconfig['category']);
+        $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
         $natent['interface'] = $pconfig['interface'];
         $natent['tag'] = $pconfig['tag'];
         $natent['tagged'] = $pconfig['tagged'];
