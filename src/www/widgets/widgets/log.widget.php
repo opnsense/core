@@ -88,14 +88,15 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         function fetch_log(){
             var record_spec = [];
             // read heading, contains field specs
-            $("#filter-log-entries > tbody > tr:first > td").each(function () {
+            $("#filter-log-entries > thead > tr > th").each(function () {
                 record_spec.push({
                     'column-id': $(this).data('column-id'),
                     'type': $(this).data('type'),
                     'class': $(this).attr('class')
                 });
             });
-            ajaxGet('/api/diagnostics/firewall/log/', {'limit': 100}, function(data, status) {
+            var last_digest = $("#filter-log-entries > tbody > tr:first > td:first").text();
+            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': 100}, function(data, status) {
                 var filtact = [];
 
                 if ($("#actpass").is(':checked')) {
@@ -114,7 +115,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                     }
 
                     if ($("#filterlogentriesinterfaces").val() == "" || $("#filterlogentriesinterfaces").val() == intf) {
-                        if (filtact.length == 0 || filtact.indexOf(record['action']) !== -1 ) {
+                        if ((filtact.length == 0 || filtact.indexOf(record['action']) !== -1) && record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             log_tr.hide();
                             $.each(record_spec, function(idx, field){
@@ -162,11 +163,11 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                 }
                                 log_tr.append(log_td);
                             });
-                            $("#filter-log-entries > tbody > tr:first").after(log_tr);
+                            $("#filter-log-entries > tbody > tr:first").before(log_tr);
                         }
                     }
                 }
-                $("#filter-log-entries > tbody > tr:gt("+(parseInt($("#filterlogentries").val()))+")").remove();
+                $("#filter-log-entries > tbody > tr:gt("+(parseInt($("#filterlogentries").val() - 1))+")").remove();
                 $("#filter-log-entries > tbody > tr").show();
             });
 
@@ -210,8 +211,8 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
             <tr>
               <td><label for="actblock"><input id="actblock" name="actblock" type="checkbox" value="Block" <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?> />Block</label></td>
               <td><label for="actreject"><input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?> />Reject</label></td>
-              <td><button name="submit_firewall_logs_widget" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
               <td><label for="actpass"><input id="actpass" name="actpass" type="checkbox" value="Pass" <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?> />Pass</label></td>
+              <td><button name="submit_firewall_logs_widget" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
             </tr>
           </table>
         </td>
@@ -221,14 +222,18 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 </div>
 
 <table class="table table-striped table-condensed" id="filter-log-entries">
-  <tbody>
+  <thead>
     <tr>
-      <td data-column-id="action" data-type="icon" class="text-center"><strong><?= gettext('Act') ?></strong></td>
-      <td data-column-id="__timestamp__" data-type="time"><strong><?= gettext('Time') ?></strong></td>
-      <td data-column-id="interface" data-type="interface" class="text-center"><strong><?= gettext('Interface') ?></strong></td>
-      <td data-column-id="src" data-type="source_address"><strong><?= gettext('Source') ?></strong></td>
-      <td data-column-id="dst" data-type="destination_address"><strong><?= gettext('Destination') ?></strong></td>
-      <td data-column-id="dstport" data-type="destination_port"><strong><?= gettext('Dest Port') ?></strong></td>
+      <th data-column-id="__digest__" data-type="string" class="hidden"><?= gettext('Hash') ?></th>
+      <th data-column-id="action" data-type="icon" class="text-center"><?= gettext('Act') ?></th>
+      <th data-column-id="__timestamp__" data-type="time"><?= gettext('Time') ?></th>
+      <th data-column-id="interface" data-type="interface" class="text-center"><?= gettext('Interface') ?></th>
+      <th data-column-id="src" data-type="source_address"><?= gettext('Source') ?></th>
+      <th data-column-id="dst" data-type="destination_address"><?= gettext('Destination') ?></th>
+      <th data-column-id="dstport" data-type="destination_port"><?= gettext('Dest Port') ?></th>
     </tr>
+  </thead>
+  <tbody>
+    <tr></tr>
   </tbody>
 </table>
