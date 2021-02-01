@@ -3,10 +3,11 @@
 # Perform major updates
 
 if opnsense-update -B; then
+	# reroot only, we swapped the base files
 	reboot -r
 fi
 
 if opnsense-update -P; then
-	# XXX omit eventually?
+	# reboot to load properly including boot screen
 	reboot
 fi
