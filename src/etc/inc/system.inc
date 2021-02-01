@@ -1209,7 +1209,7 @@ function reset_factory_defaults($sync = true)
     mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
     disable_security_checks();
 
-    mwexec('/usr/local/sbin/beep.sh stop');
+    mwexec('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
     $shutdown_cmd = '/sbin/shutdown -op now';
