@@ -1676,6 +1676,7 @@
 /usr/local/sbin/opnsense-version
 /usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
+/usr/local/share/man/man8/opnsense-beep.8.gz
 /usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/share/man/man8/opnsense-installer.8.gz
 /usr/local/share/man/man8/opnsense-shell.8.gz

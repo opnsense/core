@@ -32,6 +32,17 @@ LOW="200"
 START="500 400 600 800 800"
 STOP="600 800 500 400 400"
 
+while getopts "" OPT; do
+        case ${OPT} in
+        *)
+                echo "Usage: man ${0##*/}" >&2
+                exit 1
+                ;;
+        esac
+done
+
+shift $((${OPTIND} - 1))
+
 if [ ! -c "/dev/speaker" ]; then
 	exit
 fi
