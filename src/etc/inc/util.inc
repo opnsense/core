@@ -1513,3 +1513,27 @@ function get_dyndns_ip($int, $ipver = 4)
 
     return $ip_address;
 }
+/* returns ISP assigned PD Info */
+function get_isp_pdinfo($wanif, $type = 'full')
+{
+  $realwanif = get_real_interface($wanif);
+
+  if(file_exists("/tmp/{$realwanif}_pdinfo")) {
+    $file_pdinfo = file_get_contents("/tmp/{$realwanif}_pdinfo");
+  // Maybe multiple prefixes with multiwan
+	$pd_array = explode(' ',$file_pdinfo);
+	foreach($pd_array as $i =>$key) {
+		if(strstr($key,$realwanif)) {
+			$pdstring = explode(".",$key);
+			$pdinfo = explode('/',$pdstring[1]);			
+				if($type != 'len') {
+					return $pdstring[1];
+				} else {
+					return $pdinfo[1];
+				}
+			}
+    }
+  } else {
+		return false;
+	}
+}

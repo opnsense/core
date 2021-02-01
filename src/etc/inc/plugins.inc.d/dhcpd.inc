@@ -503,8 +503,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if ($autotype == 'slaac') {
                 /* XXX also of interest in the future, see hardcoded prefix above */
                 $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
+                $radvdconf .= "\t\tDeprecatePrefix on;\n";
             }
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
+            /* XXX DeprecatePrefix on crashes radvd on 12.1 */
             $radvdconf .= "\t\tAdvOnLink on;\n";
             $radvdconf .= "\t\tAdvAutonomous on;\n";
             $radvdconf .= "\t};\n";
@@ -1282,6 +1283,10 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
         flush();
     }
 
+    $interface_count = 0;
+    $pd_one_pass = 0;
+    $check_wanif_array = array();
+
     /* we add a fake entry for interfaces that are set to track6 another WAN */
     foreach (array_keys($iflist) as $ifname) {
         /* Do not put in the config an interface which is down */
@@ -1295,40 +1300,39 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             }
 
             $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
-            $ifcfgipv6arr = explode(':', $ifcfgipv6);
 
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
+
                 /* mock a real server */
                 $dhcpdv6cfg[$ifname] = array();
                 $dhcpdv6cfg[$ifname]['enable'] = true;
 
-                /* fixed range */
-                $ifcfgipv6arr[7] = '1000';
-                $dhcpdv6cfg[$ifname]['range'] = array();
-                $dhcpdv6cfg[$ifname]['range']['from'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
-                $ifcfgipv6arr[7] = '2000';
-                $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
+                /* Only need to call gen_ipv6_prefix_ranges on the first pass for each set of tracked interfaces */
+                /* However, if the tracked interface changes, call it agaain. It means we have multiple */
+                /* tracked WANs - This works on single pass, but dhcpd_dhcp6_configure() gets called multiple  */
+                /* times on a single interface save */
 
-                /* with enough room we can add dhcp6 prefix delegation */
-                $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
-                if ($pdlen > 2) {
-                    $pdlenmax = $pdlen;
-                    $pdlenhalf = $pdlenmax - 1;
-                    $pdlenmin = 64 - ceil($pdlenhalf / 4);
-                    $dhcpdv6cfg[$ifname]['prefixrange'] = array();
-                    $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $pdlenmin;
+                /* find the tracked interface */
+                $wanif = $config['interfaces'][$ifname]['track6-interface'];
 
-                    /* set the delegation start to half the current address block */
-                    $range = Net_IPv6::parseAddress($ifcfgipv6, (64 - $pdlenmax));
-                    $range['start'] = Net_IPv6::getNetmask($range['end'], (64 - $pdlenhalf));
-
-                    /* set the end range to a multiple of the prefix delegation size, required by dhcpd */
-                    $range = Net_IPv6::parseAddress($range['end'], (64 - $pdlenhalf));
-                    $range['end'] = Net_IPv6::getNetmask($range['end'], (64 - round($pdlen / 2)));
-
-                    $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($range['start']);
-                    $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($range['end']);
+                if(!in_array( $wanif, $check_wanif_array)) {
+                  $check_wanif_array[] = $wanif;
+                  $wanif_check = $wanif;
+                  $pd_one_pass = 0;
                 }
+
+                if ($pd_one_pass == 0) {
+                  $dhcpv6addresses = gen_ipv6_prefix_ranges($ifname);
+                  $pd_one_pass++;
+                }
+                $tracking_id = $config['interfaces'][$ifname]['track6-prefix-id'];
+                log_error("check {$ifname} {$dhcpv6addresses[$tracking_id]['start']}");
+                $dhcpdv6cfg[$ifname]['range']['from'] = Net_IPv6::compress($dhcpv6addresses[$tracking_id]['start']);
+                $dhcpdv6cfg[$ifname]['range']['to'] = Net_IPv6::compress($dhcpv6addresses[$tracking_id]['end']);
+                $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($dhcpv6addresses[$tracking_id]['pd_start']);
+                $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($dhcpv6addresses[$tracking_id]['pd_end']);
+                $dhcpdv6cfg[$ifname]['prefixrange']['prefixlength'] = $dhcpv6addresses[$tracking_id]['pd_mask'];
+                $interface_count++;
             } else {
                 if (!empty($dhcpdv6cfg[$ifname]['range']['from']) && !empty($dhcpdv6cfg[$ifname]['range']['to'])) {
                     /* get config entry and marry it to the live prefix */
@@ -1397,6 +1401,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             }
         }
     }
+    unset($check_wanif_array);
 
     $custoptionsv6 = "";
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
@@ -1888,4 +1893,174 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+function get_tracking_interfaces_count($interface)
+{
+  /* Give any LAN interface and get the number of other LAN interfaces using the same track. */
+  global $config;
+
+  $info = array();
+  $wanif = $config['interfaces'][$interface]['track6-interface'];
+  $count = 0;
+
+  foreach (config_read_array('interfaces') as $if => $ifconf) {
+    if ( $ifconf['track6-interface'] == $wanif && isset($ifconf['enable']) && $ifconf['ipaddrv6'] == 'track6' ) {
+      if($ifconf['track6-prefix-id'] > $track_interface_id_max) {
+       $track_interface_id_max = $ifconf['track6-prefix-id'];
+       $info[$count]['track6-prefix-id'] = $ifconf['track6-prefix-id'];
+      log_error("track id = {$info[$count]['track6-prefix-id']}");
+      }
+      $count++;
+    }
+  }
+
+  $info['count'] = $count;  
+  $info['prefix'] = get_isp_pdinfo($wanif, $type = 'len');
+  $info['interface'] = $wanif;
+  return $info;
+}
+
+function ipv6_prefix_calc($ipaddrv6, $pd_mask, $prefix)
+{
+  $ipaddrv6_un = Net_IPv6::uncompress($ipaddrv6,TRUE);
+
+  /* find the start nibble */
+  $start_nibble = floor($prefix/4) + floor((64-$prefix)%4); 
+  $prefixes = 1 << ($pd_mask-$prefix);
+
+  /* how much to shift the increment by? */
+  $shift = 64 - $pd_mask;
+
+  /* take the network supplied and make it a big number */
+  $ipv6_address_raw =  trim(substr(str_replace(':','',$ipaddrv6_un),0,$start_nibble),' ');
+  $ipv6_address_pad = substr(str_pad($ipv6_address_raw,16,'0',STR_PAD_RIGHT),0,16); 
+
+  $prefix_array = array();
+
+  for($x = 0; $x < $prefixes; $x++) {
+
+    $to_add = $x << $shift;
+    $new_address_raw = str_pad(dechex(hexdec($ipv6_address_pad) + $to_add),32,'0',STR_PAD_RIGHT);
+    $new_address = implode(':',str_split($new_address_raw,4));    
+    $prefix_array[$x] = Net_IPv6::compress($new_address);
+  }
+  return $prefix_array;
+}
+
+function gen_ipv6_prefix_ranges($ifname, $info_only = 'false')
+{
+  /* Call the function to get the real WAN pd supplied by dhcp6c */
+  $prefix_info = get_tracking_interfaces_count($ifname);
+  $subnets = $prefix_info['count'];
+  $prefix = $prefix_info['prefix'];
+
+  $prefixes = array();
+
+  if($prefix_info['prefix'] == false) {
+    return $prefixes;
+  }
+
+  list ($ipaddrv6) = interfaces_primary_address6($ifname, null, $ifconfig_details);
+  if (!is_ipaddrv6($ipaddrv6)) {
+        return $prefixes;
+  }
+
+  /* $subnets is the number of tracking interfaces */
+  $pds = $subnets*2;
+
+  /* To do - add option to declare whether tracked interfaces should also have a pd   */
+  /* we'll assume they do for now - We'll auto divide the available prefixes and give */
+  /* the maximum later in with the divisor at line 2047 */
+  
+  $total_networks = $pds+$subnets;
+
+  /* For the /64 networks we can just inc the base, then we need room to add the PDs.
+  /* Now we have the total we need to find the netmask that will fit */
+  /* so we can work out the new mask - We should be able to handle anything, but lets limit it to above a /48! */
+  /* This is DHCP6 and we are not expecting to be used by an ISP! At /48 we might need too much memory as php  */
+  /* is not the most efficient at garbage collection */
+
+  $max_entries = 1;
+  /* find the smallest prefix that will fit all of the interface and PD requirements. */
+  for($count = 0; $count < 48; $count++) {
+    if($total_networks <= $max_entries) {
+      break;
+    }
+    $max_entries = $max_entries*2;
+  }
+
+  $pd_mask = $prefix+$count;
+  $available_prefixes = 1 << $pd_mask - $prefix;
+
+  /* Can we get the total networks into the prefix range and we do not allow split 64s*/
+
+  if( $available_prefixes < $total_networks || $pd_mask > 64)
+  {   
+      log_error("DHCPDv6 - Available prefix range too small for amount of subnets {$pd_mask} {$available_prefixes} {$total_networks} {$v}");
+      return $prefixes;
+  }
+
+  /* create an array ready to push our usable prefixes */
+  $prefix_array = array();
+
+  /* We'll csll the function that creates a basic array containing all the prefixes, might also be useful to display this in the GUI */
+  /* call the function with 'true' as third param to return this array. It will give all the prefixes available */
+  /* for the tracked interface */
+ 
+  $prefix_array = ipv6_prefix_calc($ipaddrv6, $pd_mask, $prefix );
+
+  if($prefix_array == null) {
+    /* Failed to get an array, return empty array */
+    return $prefix_array;
+  }
+
+  if( $info_only == 'true') {
+      return $prefix_array;
+  }
+
+   /* now create the /64 ranges for the interfaces themselves - They are always in the first block */
+  $count = 0;  
+  $lan_prefix = $prefix_array[0];
+  $high_prefix = 0;
+
+  /* need to increment the value between the prefix and /64 boundary. So lets get that string now */
+  $lan_subnets =  Net_IPv6::uncompress($prefix_array[0],TRUE);
+  $lan_prefix_substr = substr($lan_subnets,15,4);
+
+  for ( $i=0; $i < $subnets; $i++) {
+
+    /* We must also use the prefix ID as the array pointer, we know the first address in available prefixes would be 0 */
+    /* i.e. $ff00 but the track6-prefix-id's might not be sequential or start a 0, so may not be $ff01. */
+    $new_word = dechex(hexdec($lan_prefix_substr) + hexdec($prefix_info[$i]['track6-prefix-id'])).'::';
+    $new_substr = str_pad($new_word, 5-strlen($new_word),'0',STR_PAD_LEFT);
+    $lan_prefix = Net_IPv6::compress(substr_replace($lan_prefix,$new_substr,15));
+
+    $range = Net_IPv6::parseAddress($lan_prefix,'64'); 
+    $prefixes[$prefix_info[$i]['track6-prefix-id']]['start'] = $range['start'];
+    $prefixes[$prefix_info[$i]['track6-prefix-id']]['end'] = $range['end'];
+    
+    /* while we're looping here, get the highest track6-prefix-id value */
+    /* we need it for the base of the pd loop */
+    if ( $prefix_info[$i]['track6-prefix-id'] > $high_prefix ) {
+      $high_prefix = $prefix_info[$i]['track6-prefix-id'];
+    }
+  }
+
+  /* So how many delegations can we give to each interface? We need to use the high prefix 
+     previously obtained as the base of our number. We need to use a continuous range. If the user
+     has used a silly prefix id that is higher than the max prefixes-1 then we will not be able to
+     return any prefixes delegations */
+
+  $prefix_count = $high_prefix+1;
+  $max_prefixes = floor(($available_prefixes - $prefix_count)/$subnets);
+
+  for ( $j=0; $j < $subnets; $j++) {
+    $prefixes[$prefix_info[$j]['track6-prefix-id']]['pd_start'] = $prefix_array[$prefix_count];
+    $prefix_count = $prefix_count+$max_prefixes-1;
+    $prefixes[$prefix_info[$j]['track6-prefix-id']]['pd_end'] = $prefix_array[$prefix_count];    
+    $prefixes[$prefix_info[$j]['track6-prefix-id']]['pd_mask'] = $pd_mask;
+    $prefix_count++;
+  }
+  return $prefixes;
 }
