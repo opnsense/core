@@ -664,7 +664,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <div class="alert alert-warning" role="alert">
         {{ lang._('Local data collection is not enabled at the moment, please configure netflow first') }}
         <br/>
-        <a href="/ui/diagnostics/netflow/">{{ lang._('Go to netflow configuration') }} </a>
+        <a href="/ui/diagnostics/netflow">{{ lang._('Go to netflow configuration') }} </a>
       </div>
     </div>
     <div id="totals" class="tab-pane fade in active">
