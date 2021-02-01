@@ -2,12 +2,8 @@
 
 # Perform major updates
 
-if opnsense-update -B; then
-	# reroot only, we swapped the base files
-	reboot -r
-fi
+# reroot only when we swapped the base files
+if opnsense-update -B; then reboot -r; fi
 
-if opnsense-update -P; then
-	# reboot to load properly including boot screen
-	reboot
-fi
+# reboot fully to start up including boot screen
+if opnsense-update -P; then reboot; fi
