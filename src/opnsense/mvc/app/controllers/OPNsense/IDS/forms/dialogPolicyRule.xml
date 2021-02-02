@@ -1,0 +1,19 @@
+<form>
+    <field>
+        <id>rule.sid</id>
+        <label>SID</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule.</help>
+    </field>
+    <field>
+        <id>rule.action</id>
+        <label>Action</label>
+        <type>dropdown</type>
+        <help>Rule configured action</help>
+    </field>
+</form>

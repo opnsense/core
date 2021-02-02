@@ -39,6 +39,7 @@ class PolicyController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogPolicy = $this->getForm("dialogPolicy");
+        $this->view->formDialogPolicyRule = $this->getForm("dialogPolicyRule");
         $this->view->pick('OPNsense/IDS/policy');
     }
 }
