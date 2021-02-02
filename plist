@@ -307,6 +307,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/PolicyController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogPolicy.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogPolicyRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogRuleset.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogUserDefined.xml
