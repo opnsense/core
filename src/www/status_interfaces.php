@@ -338,7 +338,7 @@ include("head.inc");
 <?php endif ?>
 <?php if (array_key_exists('pdinfo', $ifinfo)): ?>
                     <tr>
-                      <td><?= gettext('Delegated prefix') ?></td>
+                      <td><?= gettext('IPv6 delegated prefix') ?></td>
                       <td><?= $ifinfo['pdinfo'] ?></td>
                     </tr>
 <?php endif ?>
