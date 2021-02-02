@@ -4149,10 +4149,21 @@ function get_interfaces_info()
             $ifinfo = array_merge($ifinfo, $all_intf_details[$ifinfo['if']]);
         }
 
-        /* XXX apparently we ignore a different IPv6 realif completely... */
+        if (!empty($ifinfo['ipv4'])) {
+            $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
+            $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+        }
+
+        if (!empty($all_intf_details[$ifinfo['ifv6']]['ipv6'])) {
+            /* rewrite always as it can be a different interface */
+            $ifinfo['ipv6'] = $all_intf_details[$ifinfo['ifv6']]['ipv6'];
+        } elseif ($ifinfo['if'] != !$ifinfo['ifv6']) {
+            /* clear on a mismatch to avoid wrong data here */
+            $ifinfo['ipv6'] = [];
+        }
+
         if (!empty($ifinfo['ipv6'])) {
-            /* XXX ... so avoid intermediate breakage by using IPv4 realif here */
-            list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $ifinfo['if'], $all_intf_details);
+            list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $ifinfo['ifv6'], $all_intf_details);
             if (!empty($primary6)) {
                 $ifinfo['ipaddrv6'] = $primary6;
                 $ifinfo['subnetv6'] = $subnet6;
@@ -4165,11 +4176,6 @@ function get_interfaces_info()
                     $ifinfo['subnetv6'] = $ipv6addr['subnetbits'];
                 }
             }
-        }
-
-        if (!empty($ifinfo['ipv4'])) {
-            $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
-            $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
         }
 
         /* XXX there are more magic files */

@@ -309,14 +309,14 @@ include("head.inc");
                     endif;
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
-                      <td><?= gettext("Gateway IPv4") ?></td>
+                      <td><?= gettext('IPv4 gateway') ?></td>
                       <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway']) ?> <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['linklocal'])): ?>
                     <tr>
-                      <td><?= gettext("IPv6 Link Local") ?></td>
+                      <td><?= gettext("IPv6 link-local") ?></td>
                       <td><?= $ifinfo['linklocal'] ?>/64
                     </tr>
 <?php
@@ -344,7 +344,7 @@ include("head.inc");
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
-                      <td><?= gettext("Gateway IPv6") ?></td>
+                      <td><?= gettext('IPv6 gateway') ?></td>
                       <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
