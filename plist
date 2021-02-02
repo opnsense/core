@@ -62,6 +62,7 @@
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20170721
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20150402
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160104
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
@@ -72,7 +73,6 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20181218
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20190702
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20200119
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20180627
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/opnsense-update.deciso.com.20200122
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20200313
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210104
