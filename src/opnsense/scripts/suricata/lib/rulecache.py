@@ -110,8 +110,8 @@ class RuleCache(object):
             cnf = ConfigParser()
             cnf.read(rule_config_fn)
             for section in cnf.sections():
-                if section[0:5] == 'rule_':
-                    sid = section[5:]
+                if section[0:5] == 'rule_' and cnf.has_option(section, 'sid'):
+                    sid = cnf.get(section, 'sid')
                     # mark rule policies as __manual__ so we can filter them easily
                     rule_updates[sid] = {'mtime': policy_config_mtime, 'policy_id': None, 'policy': "__manual__"}
                     for rule_item in cnf.items(section):
