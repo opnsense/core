@@ -36,7 +36,13 @@
             $('#updatelist').show();
         }
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Checking, please wait...') }}");
+        $('.updatestatus').html("{{ lang._('Checking, please wait...') }}");
+    }
+
+    function updateDismiss() {
+        $('#infotab > a').tab('show');
+        $('#updatelist').hide();
+        $('#update_status_container').show();
     }
 
     /**
@@ -53,7 +59,7 @@
         // request status
         ajaxGet('/api/core/firmware/status', {}, function(data,status){
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
-            $('#updatestatus').html(data['status_msg']);
+            $('.updatestatus').html(data['status_msg']);
 
             if (data['status'] == "ok") {
                 $.upgrade_action = data['status_upgrade_action'];
@@ -67,7 +73,6 @@
 
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
-                $("#audit_all").attr("style","display:none");
 
                 // show upgrade list
                 $('#update_status_container').hide();
@@ -98,7 +103,6 @@
                 $('#update_status_container').hide();
                 $('#updatelist').show();
                 $("#upgrade").attr("style","display:none");
-                $("#audit_all").attr("style","");
 
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
@@ -125,8 +129,7 @@
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
-        $("#audit_all").attr("style","display:none");
+        $('.updatestatus').html("{{ lang._('Updating, please wait...') }}");
         let maj_suffix = '';
         if ($.upgrade_action == 'maj') {
             maj_suffix = '_maj';
@@ -149,10 +152,8 @@
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
-        $("#audit_all").attr("style","");
-        $("#audit_progress").removeClass("caret");
-        $("#audit_progress").addClass("fa fa-spinner fa-pulse");
+        $('.updatestatus').html("{{ lang._('Auditing, please wait...') }}");
+        $('#updatetab_progress').addClass("fa fa-cog fa-spin");
 
         ajaxCall('/api/core/firmware/' + $type, {}, function () {
             $('#updatelist > tbody, #updatelist > thead').empty();
@@ -252,7 +253,7 @@
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
+        $('.updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name, {}, function() {
@@ -324,10 +325,8 @@
             if (data['status'] == 'done') {
                 $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
-                $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
-                $("#audit_progress").addClass("caret");
+                $('#updatetab_progress').removeClass("fa fa-cog fa-spin");
                 $("#upgrade").attr("style","display:none");
-                $("#audit_all").attr("style","");
                 $('#major-upgrade').hide();
                 $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'pkg') {
@@ -336,11 +335,11 @@
                     setTimeout(updateStatus, 1000);
                 } else {
                     if ($.upgrade_action == 'audit') {
-                        $('#updatestatus').html("{{ lang._('Audit done.') }}");
+                        $('.updatestatus').html("{{ lang._('Audit done.') }}");
                     } else if ($.upgrade_action == 'action') {
-                        $('#updatestatus').html("{{ lang._('Action done.') }}");
+                        $('.updatestatus').html("{{ lang._('Action done.') }}");
                     } else {
-                        $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
+                        $('.updatestatus').html("{{ lang._('Upgrade done.') }}");
                     }
                     packagesInfo(true);
                 }
@@ -628,6 +627,7 @@
         // link event handlers
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
+        $('#upgrade_dismiss').click(updateDismiss);
         $('#audit').click(function () { audit('audit'); });
         $('#health').click(function () { audit('health'); });
         $('#upgrade_maj').click(function () {
@@ -820,21 +820,10 @@
 </style>
 <div class="container-fluid">
     <div class="row">
-        <div id="minor-upgrade" class="alert alert-info" role="alert" style="min-height:65px;">
-            <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
-            <div class="btn-group pull-right">
-                <button type="button" id="audit_all" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    {{ lang._('Audit now') }} <i id="audit_progress" class="caret"></i>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a id="audit" href="#">{{ lang._('Security') }}</a></li>
-                    <li><a id="health" href="#">{{ lang._('Health') }}</a></li>
-                </ul>
-            </div>
-            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
-            <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
-        </div>
-        <div id="major-upgrade" class="alert alert-warning" role="alert" style="min-height:65px;display:none;">
+        <div id="major-upgrade" class="alert alert-warning alert-dismissible" role="alert" style="min-height:65px;display:none;">
+            <button type="button" class="close pull-right" style="margin-top: 8px;" data-dismiss="alert" aria-label="{{ lang._('Close') }}">
+               <span aria-hidden="true">&times;</span>
+            </button>
             <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
             <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock this upgrade') }}</button>
             <div style="margin-top: 8px;">
@@ -852,61 +841,105 @@
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
-                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
+                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }} <i id="updatetab_progress"></i></a></li>
             </ul>
             <div class="tab-content content-box">
-                <div id="updates" class="tab-pane fade in">
+                <div id="updates" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
                         <thead></thead>
                         <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td colspan="2" style="vertical-align:middle">
+                                    <div class="updatestatus">{{ lang._('Click to check for updates.')}}</div>
+                                </td>
+                                <td style="vertical-align:middle">
+                                    <button class="btn btn-primary" id="upgrade">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
+                                    <button class="btn btn-default" id="upgrade_dismiss">{{ lang._('Dismiss') }}</button>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                     <div id="update_status_container">
                       <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
                       <i id="btn_update_status_copy" class="copy-logo fa fa-clipboard fa-2x" data-toggle="tooltip" title="{{lang._('Copy to clipboard')}}"  style="padding: 5px 5px 5px 5px; cursor: pointer;"></i>
                     </div>
                 </div>
-                <div id="info" class="tab-pane fade in active">
+                <div id="info" class="tab-pane active">
                     <table class="table table-striped table-condensed table-responsive">
                         <tbody>
                             <tr>
+                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Type') }}</td>
                                 <td id="product_id"></td>
                                 <td></td>
                             </tr>
                             <tr>
+                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Version') }}</td>
                                 <td id="product_version"></td>
                                 <td></td>
                             </tr>
                             <tr>
+                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Architecture') }}</td>
                                 <td id="product_arch"></td>
                                 <td></td>
                             </tr>
                             <tr>
+                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Flavour') }}</td>
                                 <td id="product_crypto"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 150px;">{{ lang._('Commit identifier') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Commit hash') }}</td>
                                 <td id="product_hash"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 150px;">{{ lang._('Installation date') }}</td>
-                                <td id="product_time"></td>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Mirror URL') }}</td>
+                                <td id="product_mirror"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 150px;">{{ lang._('Mirror URL') }}</td>
-                                <td id="product_mirror"></td>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Last update') }}</td>
+                                <td id="product_time"></td>
+                                <td></td>
+                            </tr>
+                            <tr class="text-danger">
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">REMOVE ME</td>
+                                <td>
+                                    <div class="updatestatus">{{ lang._('Click to check for updates.')}}</div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;"></td>
+                                <td>
+                                    <button class="btn btn-info" id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            {{ lang._('Run an audit') }} <i class="caret"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a id="audit" href="#">{{ lang._('Security') }}</a></li>
+                                            <li><a id="health" href="#">{{ lang._('Health') }}</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
                                 <td></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div id="plugins" class="tab-pane fade in">
+                <div id="plugins" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
                       <thead>
                         <tr>
@@ -922,7 +955,7 @@
                       </tbody>
                     </table>
                 </div>
-                <div id="packages" class="tab-pane fade in">
+                <div id="packages" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
                         <thead>
                           <tr>
@@ -939,13 +972,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="changelog" class="tab-pane fade in">
+                <div id="changelog" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="changeloglist">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="settings" class="tab-pane fade in">
+                <div id="settings" class="tab-pane">
                     <table class="table table-striped table-responsive">
                         <tbody>
                             <tr>
