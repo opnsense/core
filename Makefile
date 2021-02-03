@@ -302,7 +302,7 @@ upgrade-check:
 		exit 1; \
 	fi
 
-upgrade: upgrade-check clean-pkgdir package
+upgrade: clean-pkgdir package upgrade-check
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.${PKG_FORMAT}
 	@pluginctl webgui
