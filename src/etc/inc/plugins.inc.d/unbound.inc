@@ -466,6 +466,8 @@ function unbound_configure_do($verbose = false, $interface = '')
 
 function unbound_add_domain_overrides($pvt = false)
 {
+    global $config;
+
     $domains = config_read_array('unbound', 'domainoverrides');
 
     usort($domains, function ($a, $b) {
