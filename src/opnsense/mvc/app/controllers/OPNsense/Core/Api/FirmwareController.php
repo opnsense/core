@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -902,7 +902,7 @@ class FirmwareController extends ApiControllerBase
         /* also pull in changelogs from here */
         $changelogs = json_decode(trim($backend->configdRun('firmware changelog list')), true);
         if ($changelogs == null) {
-            $changelogs = array();
+            $changelogs = [];
         } else {
             /* development strategy for changelog slightly differs from above */
             $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $response['product_version']) ? true : false;
@@ -925,6 +925,13 @@ class FirmwareController extends ApiControllerBase
         }
 
         $response['changelog'] = $changelogs;
+
+        $product = json_decode(trim($backend->configdRun('firmware product')), true);
+        if ($product == null) {
+            $product = [];
+        }
+
+        $response['product'] = $product;
 
         return $response;
     }

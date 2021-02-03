@@ -38,12 +38,13 @@
             </History>
         </Configuration>
         <Firmware cssClass="fa fa-building-o fa-fw">
-            <Updates order="10" url="/ui/core/firmware#updates"/>
-            <Plugins order="20" url="/ui/core/firmware#plugins"/>
-            <Packages order="30" url="/ui/core/firmware#packages"/>
-            <Changelog order="40" url="/ui/core/firmware#changelog"/>
-            <Settings order="50" url="/ui/core/firmware#settings"/>
-            <Reporter order="60" url="/crash_reporter.php"/>
+            <Information order="10" url="/ui/core/firmware#info"/>
+            <Settings order="20" url="/ui/core/firmware#settings"/>
+            <Plugins order="30" url="/ui/core/firmware#plugins"/>
+            <Packages order="40" url="/ui/core/firmware#packages"/>
+            <Changelog order="50" url="/ui/core/firmware#changelog"/>
+            <Updates order="60" url="/ui/core/firmware#updates"/>
+            <Reporter order="80" url="/crash_reporter.php"/>
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">

@@ -377,6 +377,10 @@
             $('#pluginlist > tbody').empty();
             var installed = {};
 
+            $.each(data['product'], function(key, value) {
+                $('#' + key).text(value);
+            });
+
             if (reset === true) {
                 ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
                     if (data['log'] != undefined && data['log'] != '') {
@@ -843,14 +847,15 @@
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a> </li>
+                <li id="infotab" class="active"><a data-toggle="tab" href="#info">{{ lang._('Information') }}</a></li>
+                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
-                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
+                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
             </ul>
             <div class="tab-content content-box">
-                <div id="updates" class="tab-pane fade in active">
+                <div id="updates" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
                         <thead></thead>
                         <tbody></tbody>
@@ -859,6 +864,47 @@
                       <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
                       <i id="btn_update_status_copy" class="copy-logo fa fa-clipboard fa-2x" data-toggle="tooltip" title="{{lang._('Copy to clipboard')}}"  style="padding: 5px 5px 5px 5px; cursor: pointer;"></i>
                     </div>
+                </div>
+                <div id="info" class="tab-pane fade in active">
+                    <table class="table table-striped table-condensed table-responsive">
+                        <tbody>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Type') }}</td>
+                                <td id="product_id"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Version') }}</td>
+                                <td id="product_version"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Architecture') }}</td>
+                                <td id="product_arch"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Flavour') }}</td>
+                                <td id="product_crypto"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Commit identifier') }}</td>
+                                <td id="product_hash"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Installation date') }}</td>
+                                <td id="product_time"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Mirror URL') }}</td>
+                                <td id="product_mirror"></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
