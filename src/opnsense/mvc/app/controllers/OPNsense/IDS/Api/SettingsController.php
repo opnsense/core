@@ -107,7 +107,7 @@ class SettingsController extends ApiMutableModelControllerBase
             foreach ($_POST as $key => $value) {
                 $key = $filter->sanitize($key, "string");
                 $value = $filter->sanitize($value, "string");
-                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase', 'action' ,'status'])) {
+                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase'])) {
                     $searchPhrase .= " {$key}/\"{$value}\" ";
                 }
             }
@@ -123,12 +123,6 @@ class SettingsController extends ApiMutableModelControllerBase
             if ($data != null && array_key_exists("rows", $data)) {
                 $result = array();
                 $result['rows'] = $data['rows'];
-                // update rule status with own administration
-                foreach ($result['rows'] as &$row) {
-                    $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
-                    $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
-                }
-
                 $result['rowCount'] = empty($result['rows']) || !is_array($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
                 $result['parameters'] = $data['parameters'];
