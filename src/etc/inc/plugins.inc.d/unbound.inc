@@ -487,7 +487,7 @@ function unbound_add_domain_overrides($pvt = false)
         if ($pvt == true) {
             $domain_entries .= "private-domain: \"$domain\"\n";
             $domain_entries .= "domain-insecure: \"$domain\"\n";
-            if (preg_match('/.+\.in-addr\.arpa\.?$/', $domain)) {
+            if (preg_match('/.+\.(in-addr|ip6)\.arpa\.?$/', $domain)) {
                 $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
             }
         } else {
