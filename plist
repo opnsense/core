@@ -125,7 +125,7 @@
 /usr/local/etc/rc.syshook.d/backup/20-netflow
 /usr/local/etc/rc.syshook.d/backup/20-rrd
 /usr/local/etc/rc.syshook.d/carp/20-openvpn
-/usr/local/etc/rc.syshook.d/early/05-update
+/usr/local/etc/rc.syshook.d/early/05-upgrade
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
 /usr/local/etc/rc.syshook.d/early/20-backup

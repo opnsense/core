@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# Perform major updates
-
-# reroot only when we swapped the base files
-if opnsense-update -B; then reboot -r; fi
-
-# reboot fully to start up including boot screen
-if opnsense-update -P; then reboot; fi
