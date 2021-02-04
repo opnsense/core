@@ -766,6 +766,7 @@
             }
             ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
+                packagesInfo(true);
             });
         });
 
