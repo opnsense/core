@@ -384,7 +384,7 @@
 
             var local_count = 0;
             var plugin_count = 0;
-            var missing_plugin_count = 0;
+            var missing_plugins = 0;
             var changelog_count = 0;
             var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
@@ -436,15 +436,19 @@
                 let status_text = '';
                 let bold_on = '';
                 let bold_off = '';
-                if (row['installed'] == "1") {
-                    status_text = ' ({{ lang._('installed') }})';
+                if (row['installed'] == "1" && row['configured'] == "0") {
+                    status_text = ' ({{ lang._('misconfigured') }})';
                     bold_on = '<b>';
                     bold_off = '</b>';
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
-                    bold_on = '<span class="text-danger plugin_missing">';
-                    bold_off = '</span>';
-                    missing_plugin_count += 1;
+                    bold_on = '<span class="text-danger plugin_missing"><b>';
+                    bold_off = '</b></span>';
+                    missing_plugins = 1;
+                } else if (row['installed'] == "1") {
+                    status_text = ' ({{ lang._('installed') }})';
+                    bold_on = '<b>';
+                    bold_off = '</b>';
                 }
                 if (row['provided'] == "0" && row['installed'] == "1") {
                     // this state overwrites installed on purpose
@@ -459,7 +463,7 @@
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
-                        (row['installed'] == "1" || row['configured'] == "1" ?
+                        (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="{{ lang._('Remove') }}">' +
                         '<i class="fa fa-trash fa-fw">' +
@@ -476,22 +480,14 @@
                 $('#pluginlist > tbody').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
-            } else if (missing_plugin_count > 0) {
-                let $tr = $("<tr id='plugin_install_tr'/>");
-                let $td = $("<td colspan=5 style='text-align:center;'>");
-                $td.append('<button class="btn btn-default reinstall_missing_plugins"><i class="fa fa-refresh"></i>&nbsp; {{ lang._('Install missing plugins') }}</button>');
-                $tr.append($td);
-                $('#pluginlist > tbody').prepend($tr);
-                $(".reinstall_missing_plugins").tooltip({
-                  'title': '{{ lang._('According to the configuration there is a mismatch between the installed and configured plugins') }}'
-                });
-                $(".reinstall_missing_plugins").click(function(){
-                    $(".reinstall_missing_plugins > i.fa").addClass("fa-pulse");
-                    ajaxCall('/api/core/firmware/installConfiguredPlugins', {}, function(data,status) {
-                        $(".plugin_missing").removeClass("text-warning");
-                        $("#plugin_install_tr").remove();
-                    });
-                });
+            }
+
+            $('#audit_actions').show();
+
+            if (missing_plugins) {
+                $('#plugin_actions').show();
+            } else {
+                $('#plugin_actions').hide();
             }
 
             $("#changeloglist > tbody").empty();
@@ -605,8 +601,11 @@
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
         $('#upgrade_dismiss').click(updateDismiss);
-        $('#audit').click(function () { audit('audit'); });
-        $('#health').click(function () { audit('health'); });
+        $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
+        $("#plugin_get").click(function () { audit('syncPlugins'); });
+        $("#plugin_set").click(function () { audit('resyncPlugins'); });
+        $('#audit_security').click(function () { audit('audit'); });
+        $('#audit_health').click(function () { audit('health'); });
         $('#upgrade_maj').click(function () {
             $.upgrade_needs_reboot = 1;
             $.upgrade_action = 'maj';
@@ -901,14 +900,24 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;"></td>
                                 <td>
-                                    <button class="btn btn-info" id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
-                                    <div class="btn-group">
+                                    <button class="btn btn-info" id="checkupdate">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
+                                    <div class="btn-group" id="audit_actions" style="display:none;">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             {{ lang._('Run an audit') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a id="audit" href="#">{{ lang._('Security') }}</a></li>
-                                            <li><a id="health" href="#">{{ lang._('Health') }}</a></li>
+                                            <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
+                                            <li><a id="audit_health" href="#">{{ lang._('Health') }}</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-group" id="plugin_actions" style="display:none;">
+                                        <button type="button" class="btn btn-defaul dropdown-toggle" data-toggle="dropdown">
+                                            {{ lang._('Resolve plugin conflicts') }} <i class="caret"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a id="plugin_see" href="#">{{ lang._('View and edit local conflicts') }}</a></li>
+                                            <li><a id="plugin_get" href="#">{{ lang._('Run the automatic resolver') }}</a></li>
+                                            <li><a id="plugin_set" href="#">{{ lang._('Unregister missing plugins') }}</a></li>
                                         </ul>
                                     </div>
                                 </td>

@@ -62,67 +62,6 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * process plugins for config-bound cache (name only)
-     * @param string $name to process
-     * @param string $action taken
-     */
-    protected function processPlugin($name, $action)
-    {
-        if (strpos($name, 'os-') !== 0) {
-            /* not a plugin, don't care */
-            return;
-        }
-
-        $config = Config::getInstance()->object();
-
-        if (!isset($config->system->firmware)) {
-            $config->system->addChild('firmware');
-        }
-
-        $plugins = array();
-        if (!isset($config->system->firmware->plugins)) {
-            $config->system->firmware->addChild('plugins');
-        } else {
-            $plugins = explode(',', (string)$config->system->firmware->plugins);
-        }
-        $plugins = array_flip($plugins);
-
-        switch ($action) {
-            case 'install':
-            case 'reinstall':
-                /* find the development/stable equivalent */
-                $other = preg_replace('/-devel$/', '', $name);
-                if ($other == $name) {
-                    $other = "$name-devel";
-                }
-                if (isset($plugins[$other])) {
-                    unset($plugins[$other]);
-                }
-                $plugins[$name] = 'hello';
-                break;
-            case 'remove':
-                if (isset($plugins[$name])) {
-                    unset($plugins[$name]);
-                }
-                break;
-            default:
-                break;
-        }
-
-        $config->system->firmware->plugins = implode(',', array_keys($plugins));
-
-        if (empty($config->system->firmware->plugins)) {
-            unset($config->system->firmware->plugins);
-        }
-
-        if (!@count($config->system->firmware->children())) {
-            unset($config->system->firmware);
-        }
-
-        Config::getInstance()->save();
-    }
-
-    /**
      * retrieve available updates
      * @return array
      */
@@ -529,7 +468,6 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
-            $this->processPlugin($pkg_name, 'reinstall');
         } else {
             $response['status'] = 'failure';
         }
@@ -539,11 +477,10 @@ class FirmwareController extends ApiControllerBase
 
     /**
      * install missing configured plugins
-     * @param string $pkg_name package name to reinstall
      * @return array status
      * @throws \Exception
      */
-    public function installConfiguredPluginsAction()
+    public function syncPluginsAction()
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
@@ -551,6 +488,26 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             $response['status'] = strtolower(trim($backend->configdRun('firmware sync')));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * reset missing configured plugins
+     * @return array status
+     * @throws \Exception
+     */
+    public function resyncPluginsAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = strtolower(trim($backend->configdRun('firmware resync')));
         } else {
             $response['status'] = 'failure';
         }
@@ -580,7 +537,6 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware install", array($pkg_name), true));
-            $this->processPlugin($pkg_name, 'install');
         } else {
             $response['status'] = 'failure';
         }
@@ -610,7 +566,6 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware remove", array($pkg_name), true));
-            $this->processPlugin($pkg_name, 'remove');
         } else {
             $response['status'] = 'failure';
         }
@@ -841,17 +796,17 @@ class FirmwareController extends ApiControllerBase
                     $plugins[$missing][$key] = gettext('N/A');
                 }
                 $plugins[$missing]['path'] = gettext('N/A');
-                $plugins[$missing]['configured'] = "1";
-                $plugins[$missing]['installed'] = "0";
-                $plugins[$missing]['provided'] = "0";
+                $plugins[$missing]['configured'] = '1';
+                $plugins[$missing]['installed'] = '0';
+                $plugins[$missing]['provided'] = '0';
                 $plugins[$missing]['name'] = $missing;
             }
         }
 
         uasort($plugins, function ($a, $b) {
             return strnatcasecmp(
-                ($a['configured'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
-                ($b['configured'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
+                ($a['configured'] && !$a['installed'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['configured'] && !$b['installed'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
             );
         });
 

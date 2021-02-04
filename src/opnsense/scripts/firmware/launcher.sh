@@ -36,6 +36,7 @@ reinstall
 remove
 security
 sync
+resync
 type
 unlock
 upgrade

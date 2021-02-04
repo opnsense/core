@@ -39,4 +39,4 @@ if ($ret != null) {
     $ret = [];
 }
 
-echo json_encode($ret, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES). PHP_EOL;
+echo json_encode($ret, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;

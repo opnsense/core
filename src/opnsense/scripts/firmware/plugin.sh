@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2017-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -26,17 +26,10 @@
 # SUCH DAMAGE.
 
 PLUGIN=${1}
-PREFIX="os-"
-SUFFIX="-devel"
 RETURN="0"
 
-# Return "1" if the plugin is installed.  It will fuzzy-match the
-# development version, unless specifically given the development
-# version (os-plugin-devel-devel doesn't match obviously).
-
-if pkg query %n "${PREFIX}${PLUGIN}" > /dev/null; then
-	RETURN="1"
-elif pkg query %n "${PREFIX}${PLUGIN}${SUFFIX}" > /dev/null; then
+# Return "1" if the plugin is installed (stable or development).
+if [ -f "/usr/local/opnsense/version/${PLUGIN}" ]; then
 	RETURN="1"
 fi
 

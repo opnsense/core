@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
-# Copyright (C) 2014 Deciso B.V.
+# Copyright (C) 2021 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,25 +25,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO INSTALL: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
-if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
-	COREPKG=$(opnsense-version -n)
-	COREVER=$(opnsense-version -v)
-	REPOVER=$(pkg rquery %v ${COREPKG})
-
-	# plugins must pass a version check on up-to-date core package
-	if [ "${REPOVER%_*}" != "${COREVER%_*}" ]; then
-		echo "Installation is out of date: please install system updates first." >> ${PKG_PROGRESS_FILE} 2>&1
-		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
-		exit
-	fi
-fi
-pkg install -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
-/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE}
+echo "***GOT REQUEST TO RESYNC***" >> ${PKG_PROGRESS_FILE}
+/usr/local/opnsense/scripts/firmware/register.php resync >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
