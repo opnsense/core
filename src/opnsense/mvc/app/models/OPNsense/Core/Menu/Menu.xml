@@ -38,7 +38,7 @@
             </History>
         </Configuration>
         <Firmware cssClass="fa fa-building-o fa-fw">
-            <Information order="10" url="/ui/core/firmware#info"/>
+            <Status order="10" url="/ui/core/firmware#status"/>
             <Settings order="20" url="/ui/core/firmware#settings"/>
             <Plugins order="30" url="/ui/core/firmware#plugins"/>
             <Packages order="40" url="/ui/core/firmware#packages"/>

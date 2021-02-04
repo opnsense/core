@@ -559,45 +559,6 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * install missing configured plugins
-     * @param string $pkg_name package name to reinstall
-     * @return array status
-     * @throws \Exception
-     */
-    public function acceptConfiguredPluginsAction()
-    {
-        $this->sessionClose(); // long running action, close session
-        $response = array();
-
-        if ($this->request->isPost()) {
-            $info = $this->infoAction();
-            $installed_plugins = array();
-            if (isset($info['plugin'])) {
-                foreach ($info['plugin'] as $plugin) {
-                    if (!empty($plugin['installed']) && !empty($plugin['provided'])) {
-                        $installed_plugins[] = $plugin['name'];
-                    }
-                }
-            }
-            $config = Config::getInstance()->object();
-            if (!isset($config->system->firmware)) {
-                $config->system->addChild('firmware');
-            }
-            if (!isset($config->system->firmware->plugins)) {
-                $config->system->firmware->addChild('plugins');
-            }
-            $config->system->firmware->plugins = implode(",", $installed_plugins);
-            $response['plugins'] = $installed_plugins;
-            $response['status'] = "ok";
-            Config::getInstance()->save();
-        } else {
-            $response['status'] = 'failure';
-        }
-
-        return $response;
-    }
-
-    /**
      * install package
      * @param string $pkg_name package name to install
      * @return array status

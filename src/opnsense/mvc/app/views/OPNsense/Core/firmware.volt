@@ -36,13 +36,13 @@
             $('#updatelist').show();
         }
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('.updatestatus').html("{{ lang._('Checking, please wait...') }}");
     }
 
     function updateDismiss() {
-        $('#infotab > a').tab('show');
+        $('#statustab > a').tab('show');
         $('#updatelist').hide();
         $('#update_status_container').show();
+        $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
     }
 
     /**
@@ -70,9 +70,6 @@
                 }
 
                 $.upgrade_show_log = '';
-
-                // unhide upgrade button
-                $("#upgrade").attr("style","");
 
                 // show upgrade list
                 $('#update_status_container').hide();
@@ -102,10 +99,9 @@
             } else {
                 $('#update_status_container').hide();
                 $('#updatelist').show();
-                $("#upgrade").attr("style","display:none");
 
                 // update list so plugins sync as well (all)
-                packagesInfo(true);
+                packagesInfo(true, true);
             }
 
             if ('upgrade_major_message' in data) {
@@ -129,13 +125,11 @@
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('.updatestatus').html("{{ lang._('Updating, please wait...') }}");
-        let maj_suffix = '';
+        $('#updatetab_progress').addClass("fa fa-cog fa-spin");
         if ($.upgrade_action == 'maj') {
-            maj_suffix = '_maj';
+            $("#upgrade_maj").attr("style","");
+            $("#upgrade_progress_maj").addClass("fa fa-spinner fa-pulse");
         }
-        $("#upgrade" + maj_suffix).attr("style","");
-        $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade', {upgrade:$.upgrade_action}, function() {
             $('#updatelist > tbody, #updatelist > thead').empty();
@@ -152,7 +146,6 @@
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('.updatestatus').html("{{ lang._('Auditing, please wait...') }}");
         $('#updatetab_progress').addClass("fa fa-cog fa-spin");
 
         ajaxCall('/api/core/firmware/' + $type, {}, function () {
@@ -252,8 +245,8 @@
         $('#updatelist').hide();
         $('#update_status').html('');
         $('#update_status_container').show();
+        $('#updatetab_progress').addClass("fa fa-cog fa-spin");
         $('#updatetab > a').tab('show');
-        $('.updatestatus').html("{{ lang._('Executing, please wait...') }}");
         $.upgrade_action = 'action';
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name, {}, function() {
@@ -313,7 +306,7 @@
      */
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
-            if (data['log'] != undefined) {
+            if (data['log'] != '') {
                 var autoscroll = $('#update_status')[0].scrollTop +
                     $('#update_status')[0].clientHeight ===
                     $('#update_status')[0].scrollHeight;
@@ -324,9 +317,7 @@
             }
             if (data['status'] == 'done') {
                 $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
-                $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $('#updatetab_progress').removeClass("fa fa-cog fa-spin");
-                $("#upgrade").attr("style","display:none");
                 $('#major-upgrade').hide();
                 $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'pkg') {
@@ -334,13 +325,6 @@
                     updateStatusPrepare(true);
                     setTimeout(updateStatus, 1000);
                 } else {
-                    if ($.upgrade_action == 'audit') {
-                        $('.updatestatus').html("{{ lang._('Audit done.') }}");
-                    } else if ($.upgrade_action == 'action') {
-                        $('.updatestatus').html("{{ lang._('Action done.') }}");
-                    } else {
-                        $('.updatestatus').html("{{ lang._('Upgrade done.') }}");
-                    }
                     packagesInfo(true);
                 }
             } else if (data['status'] == 'reboot') {
@@ -370,7 +354,7 @@
     /**
      * show package info
      */
-    function packagesInfo(reset) {
+    function packagesInfo(reset, keep) {
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
@@ -392,6 +376,10 @@
 
                 $('#update_status_container').show();
                 $('#updatelist').hide();
+
+                if (keep !== true) {
+                    $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
+                }
             }
 
             var local_count = 0;
@@ -471,7 +459,7 @@
                     '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
-                        (row['installed'] == "1" ?
+                        (row['installed'] == "1" || row['configured'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="{{ lang._('Remove') }}">' +
                         '<i class="fa fa-trash fa-fw">' +
@@ -492,25 +480,14 @@
                 let $tr = $("<tr id='plugin_install_tr'/>");
                 let $td = $("<td colspan=5 style='text-align:center;'>");
                 $td.append('<button class="btn btn-default reinstall_missing_plugins"><i class="fa fa-refresh"></i>&nbsp; {{ lang._('Install missing plugins') }}</button>');
-                $td.append('&nbsp;');
-                $td.append('<button class="btn btn-default accept_plugins"><i class="fa fa-check"></i>&nbsp; {{ lang._('Accept plugins') }}</button>');
                 $tr.append($td);
                 $('#pluginlist > tbody').prepend($tr);
                 $(".reinstall_missing_plugins").tooltip({
                   'title': '{{ lang._('According to the configuration there is a mismatch between the installed and configured plugins') }}'
                 });
-                $(".accept_plugins").tooltip({
-                  'title': '{{ lang._('Accept current state, capture installed plugins to config') }}'
-                });
                 $(".reinstall_missing_plugins").click(function(){
                     $(".reinstall_missing_plugins > i.fa").addClass("fa-pulse");
                     ajaxCall('/api/core/firmware/installConfiguredPlugins', {}, function(data,status) {
-                        $(".plugin_missing").removeClass("text-warning");
-                        $("#plugin_install_tr").remove();
-                    });
-                });
-                $(".accept_plugins").click(function(){
-                    ajaxCall('/api/core/firmware/acceptConfiguredPlugins', {}, function(data,status) {
                         $(".plugin_missing").removeClass("text-warning");
                         $("#plugin_install_tr").remove();
                     });
@@ -824,8 +801,8 @@
             <button type="button" class="close pull-right" style="margin-top: 8px;" data-dismiss="alert" aria-label="{{ lang._('Close') }}">
                <span aria-hidden="true">&times;</span>
             </button>
-            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock this upgrade') }}</button>
+            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade') }} <i id="upgrade_progress_maj"></i> </button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock') }}</button>
             <div style="margin-top: 8px;">
                 {{ lang._('This software release has reached its designated end of life.') }}
                 {{ lang._('The next major release is:') }}
@@ -836,7 +813,7 @@
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="infotab" class="active"><a data-toggle="tab" href="#info">{{ lang._('Information') }}</a></li>
+                <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }}</a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
@@ -852,10 +829,10 @@
                             <tr>
                                 <td></td>
                                 <td colspan="2" style="vertical-align:middle">
-                                    <div class="updatestatus">{{ lang._('Click to check for updates.')}}</div>
+                                    <strong><div class="updatestatus"></div></strong>
                                 </td>
                                 <td style="vertical-align:middle">
-                                    <button class="btn btn-primary" id="upgrade">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
+                                    <button class="btn btn-primary" id="upgrade">{{ lang._('Update') }}</button>
                                     <button class="btn btn-default" id="upgrade_dismiss">{{ lang._('Dismiss') }}</button>
                                 </td>
                             </tr>
@@ -866,7 +843,7 @@
                       <i id="btn_update_status_copy" class="copy-logo fa fa-clipboard fa-2x" data-toggle="tooltip" title="{{lang._('Copy to clipboard')}}"  style="padding: 5px 5px 5px 5px; cursor: pointer;"></i>
                     </div>
                 </div>
-                <div id="info" class="tab-pane active">
+                <div id="status" class="tab-pane active">
                     <table class="table table-striped table-condensed table-responsive">
                         <tbody>
                             <tr>
@@ -907,15 +884,15 @@
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('Last update') }}</td>
+                                <td style="width: 150px;">{{ lang._('Updated on') }}</td>
                                 <td id="product_time"></td>
                                 <td></td>
                             </tr>
-                            <tr class="text-danger">
+                            <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;">REMOVE ME</td>
+                                <td style="width: 150px;">{{ lang._('Message') }}</td>
                                 <td>
-                                    <div class="updatestatus">{{ lang._('Click to check for updates.')}}</div>
+                                    <div class="updatestatus">{{ lang._('Fetching current system status, please wait...')}}</div>
                                 </td>
                                 <td></td>
                             </tr>
@@ -979,10 +956,11 @@
                     </table>
                 </div>
                 <div id="settings" class="tab-pane">
-                    <table class="table table-striped table-responsive">
+                    <table class="table table-striped table-condensed table-responsive">
                         <tbody>
                             <tr>
-                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Mirror') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Mirror') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
                                     </select>
@@ -996,7 +974,8 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Flavour') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Flavour') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
@@ -1010,7 +989,8 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Release Type') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Type') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
@@ -1021,6 +1001,7 @@
                                 <td></td>
                             </tr>
                             <tr>
+                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
@@ -1031,16 +1012,20 @@
                                 <td></td>
                             </tr>
                             <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Usage') }}</td>
+                                <td>
+                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
                                 <td></td>
                                 <td>
                                     <button class="btn btn-primary" id="change_mirror" type="button">{{ lang._('Save') }} <i id="change_mirror_progress"></i></button>
                                 </td>
                                 <td></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
-                                </td>
                             </tr>
                         </tbody>
                     </table>
