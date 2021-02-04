@@ -80,10 +80,21 @@ function plugins_set($config, $plugins)
     Config::getInstance()->save();
 }
 
-function plugins_found($name)
+function plugins_found($name, $found = [])
 {
     $bare = preg_replace('/^os-|-devel$/', '', $name);
-    return file_exists('/usr/local/opnsense/version/' . $bare);
+
+    if (file_exists('/usr/local/opnsense/version/' . $bare)) {
+        if (!isset($found[$bare])) {
+            /* backwards compat with non-JSON, remove in 21.7 */
+            return true;
+        }
+        if ($found[$bare] == $name) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function plugins_remove_sibling($name, $plugins)
@@ -120,26 +131,39 @@ switch ($action) {
         $plugins = plugins_remove_sibling($name, $plugins);
         break;
     case 'resync':
-        $unknown = [];
+        $found = [];
         foreach (glob('/usr/local/opnsense/version/*') as $name) {
-            $name = basename($name);
-            if (strpos($name, 'base') === 0) {
+            $filename = basename($name);
+            if (strpos($filename, 'base') === 0) {
                 continue;
             }
-            if (strpos($name, 'kernel') === 0) {
+            if (strpos($filename, 'kernel') === 0) {
                 continue;
             }
-            if (strpos($name, 'core') === 0) {
+            if (strpos($filename, 'core') === 0) {
                 continue;
             }
-            /* XXX when we have JSON data we can read the package name and pick it up */
-            $unknown[] = "os-{$name}";
+
+            $ret = json_decode(@file_get_contents($name), true);
+            if ($ret == null || !isset($ret['product_id'])) {
+                /* ignore files without valid metadata */
+                continue;
+            }
+
+            $found[$filename] = $ret['product_id'];
         }
         foreach (array_keys($plugins) as $name) {
-            if (!plugins_found($name)) {
-                echo "Unregistering plugin: $name" . PHP_EOL;
+            if (!plugins_found($name, $found)) {
+                echo "Unregistering missing plugin: $name" . PHP_EOL;
                 unset($plugins[$name]);
             }
+        }
+        foreach ($found as $name) {
+            if (!isset($plugins[$name])) {
+                echo "Registering misconfigured plugin: $name" . PHP_EOL;
+                $plugins[$name] = 'yep';
+            }
+            $plugins = plugins_remove_sibling($name, $plugins);
         }
         break;
     default:

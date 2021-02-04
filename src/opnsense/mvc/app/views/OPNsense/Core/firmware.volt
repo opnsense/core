@@ -35,7 +35,7 @@
             $('#update_status_container').hide();
             $('#updatelist').show();
         }
-        $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
+        $("#checkupdate_progress").addClass("fa-pulse");
     }
 
     function updateDismiss() {
@@ -58,7 +58,7 @@
 
         // request status
         ajaxGet('/api/core/firmware/status', {}, function(data,status){
-            $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
+            $("#checkupdate_progress").removeClass("fa-pulse");
             $('.updatestatus').html(data['status_msg']);
 
             if (data['status'] == "ok") {
@@ -128,7 +128,7 @@
         $('#updatetab_progress').addClass("fa fa-cog fa-spin");
         if ($.upgrade_action == 'maj') {
             $("#upgrade_maj").attr("style","");
-            $("#upgrade_progress_maj").addClass("fa fa-spinner fa-pulse");
+            $('#updatetab_progress').addClass("fa fa-cog fa-spin");
         }
 
         ajaxCall('/api/core/firmware/upgrade', {upgrade:$.upgrade_action}, function() {
@@ -316,7 +316,6 @@
                 }
             }
             if (data['status'] == 'done') {
-                $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
                 $('#updatetab_progress').removeClass("fa fa-cog fa-spin");
                 $('#major-upgrade').hide();
                 $('#upgrade_maj').prop('disabled', true);
@@ -801,8 +800,8 @@
             <button type="button" class="close pull-right" style="margin-top: 8px;" data-dismiss="alert" aria-label="{{ lang._('Close') }}">
                <span aria-hidden="true">&times;</span>
             </button>
-            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade') }} <i id="upgrade_progress_maj"></i> </button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock') }}</button>
+            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
+            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i class="fa fa-unlock-alt"></i> {{ lang._('Unlock') }}</button>
             <div style="margin-top: 8px;">
                 {{ lang._('This software release has reached its designated end of life.') }}
                 {{ lang._('The next major release is:') }}
@@ -832,8 +831,8 @@
                                     <strong><div class="updatestatus"></div></strong>
                                 </td>
                                 <td style="vertical-align:middle">
-                                    <button class="btn btn-primary" id="upgrade">{{ lang._('Update') }}</button>
-                                    <button class="btn btn-default" id="upgrade_dismiss">{{ lang._('Dismiss') }}</button>
+                                    <button class="btn btn-primary" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
+                                    <button class="btn btn-default" id="upgrade_dismiss"><i class="fa fa-times"></i> {{ lang._('Dismiss') }}</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -900,10 +899,10 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;"></td>
                                 <td>
-                                    <button class="btn btn-info" id="checkupdate">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
+                                    <button class="btn btn-primary" id="checkupdate"><i id="checkupdate_progress" class="fa fa-refresh"></i> {{ lang._('Check for updates') }}</button>
                                     <div class="btn-group" id="audit_actions" style="display:none;">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                            {{ lang._('Run an audit') }} <i class="caret"></i>
+                                            <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
@@ -912,12 +911,12 @@
                                     </div>
                                     <div class="btn-group" id="plugin_actions" style="display:none;">
                                         <button type="button" class="btn btn-defaul dropdown-toggle" data-toggle="dropdown">
-                                            {{ lang._('Resolve plugin conflicts') }} <i class="caret"></i>
+                                            <i class="fa fa-exclamation-triangle"></i> {{ lang._('Resolve plugin conflicts') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a id="plugin_see" href="#">{{ lang._('View and edit local conflicts') }}</a></li>
                                             <li><a id="plugin_get" href="#">{{ lang._('Run the automatic resolver') }}</a></li>
-                                            <li><a id="plugin_set" href="#">{{ lang._('Unregister missing plugins') }}</a></li>
+                                            <li><a id="plugin_set" href="#">{{ lang._('Reset the local conflicts') }}</a></li>
                                         </ul>
                                     </div>
                                 </td>
