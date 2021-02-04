@@ -528,7 +528,6 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost("action")) {
-
             $this->sessionClose();
             if ($this->request->hasPost('enabled')) {
                 $this->toggleRuleAction($sid, $this->request->getPost("enabled", "int", null));
@@ -768,16 +767,15 @@ class SettingsController extends ApiMutableModelControllerBase
             // changing some rules by sid doesn't matter, a lot inflates the config.xml beyond reasonable limits.
             $result['status'] = 'warning';
             $result['message'] = sprintf(
-              gettext("We strongly advise to use policies instead of ".
-              "single rule based changes to limit the size of the configuration. " .
-              "A list of all manual changes can be revised in the policy editor (available %s here %s)"
-              ),
-              "<a href='/ui/ids/policy#rules'>", "</a>"
+                gettext("We strongly advise to use policies instead of " .
+                "single rule based changes to limit the size of the configuration. " .
+                "A list of all manual changes can be revised in the policy editor (available %s here %s)"),
+                "<a href='/ui/ids/policy#rules'>",
+                "</a>"
             );
         }
         // return unescaped content
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($result));
     }
-
 }
