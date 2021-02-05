@@ -29,7 +29,7 @@ PLUGIN=${1}
 RETURN="0"
 
 # Return "1" if the plugin is installed (stable or development).
-if [ -f "/usr/local/opnsense/version/${PLUGIN}" ]; then
+if opnsense-version -c "${PLUGIN}"; then
 	RETURN="1"
 fi
 

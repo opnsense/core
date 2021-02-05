@@ -30,13 +30,18 @@ PKG="/usr/local/sbin/pkg-static"
 TARGET="core"
 OUTPUT=
 
-while getopts AaefHNnsvw OPT; do
+DO_CHECK=
+
+while getopts AacefHNnsvw OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
 		;;
 	a)
 		OUTPUT="${OUTPUT} \${product_abi}"
+		;;
+	c)
+		DO_CHECK="-c"
 		;;
 	e)
 		OUTPUT="${OUTPUT} \${product_email}"
@@ -76,12 +81,20 @@ if [ -n "${1}" ]; then
 	shift
 fi
 
+VERSION="${VERSIONDIR}/${TARGET}"
+
+if [ -n "${DO_CHECK}" ]; then
+        RET=0
+	if [ ! -f ${VERSION} ]; then
+		RET=1
+	fi
+	exit ${RET}
+fi
+
 if [ -n "${*}" ]; then
 	echo "Additional arguments are not supported" >&2
 	exit 1
 fi
-
-VERSION="${VERSIONDIR}/${TARGET}"
 
 if [ ! -f ${VERSION} ]; then
 	echo "Missing ${VERSION}" >&2

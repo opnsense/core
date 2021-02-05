@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2018 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2018-2021 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd December 11, 2018
+.Dd February 5, 2021
 .Dt OPNSENSE-VERSION 8
 .Os
 .Sh NAME
@@ -33,6 +33,9 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl AaefHNnsvw
+.Op Ar package
+.Nm
+.Fl c
 .Op Ar package
 .Sh DESCRIPTION
 The
@@ -64,6 +67,9 @@ The options are as follows:
 Return the system architecture string.
 .It Fl a
 Return the firmware ABI string.
+.It Fl c
+Exit successfully if the package exists.
+Otherwise, exit with an error.
 .It Fl e
 Return the product contact e-mail address.
 .It Fl f
