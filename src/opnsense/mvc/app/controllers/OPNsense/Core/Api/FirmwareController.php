@@ -880,9 +880,9 @@ class FirmwareController extends ApiControllerBase
                     $plugins[$missing][$key] = gettext('N/A');
                 }
                 $plugins[$missing]['path'] = gettext('N/A');
-                $plugins[$missing]['configured'] = "1";
-                $plugins[$missing]['installed'] = "0";
-                $plugins[$missing]['provided'] = "0";
+                $plugins[$missing]['configured'] = '1';
+                $plugins[$missing]['installed'] = '0';
+                $plugins[$missing]['provided'] = '0';
                 $plugins[$missing]['name'] = $missing;
             }
         }
@@ -902,7 +902,7 @@ class FirmwareController extends ApiControllerBase
         /* also pull in changelogs from here */
         $changelogs = json_decode(trim($backend->configdRun('firmware changelog list')), true);
         if ($changelogs == null) {
-            $changelogs = array();
+            $changelogs = [];
         } else {
             /* development strategy for changelog slightly differs from above */
             $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $response['product_version']) ? true : false;
@@ -925,6 +925,13 @@ class FirmwareController extends ApiControllerBase
         }
 
         $response['changelog'] = $changelogs;
+
+        $product = json_decode(trim($backend->configdRun('firmware product')), true);
+        if ($product == null) {
+            $product = [];
+        }
+
+        $response['product'] = $product;
 
         return $response;
     }
