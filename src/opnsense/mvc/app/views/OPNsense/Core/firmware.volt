@@ -45,6 +45,19 @@
         $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
     }
 
+    /* XXX best effort at this point, rework later */
+    function reloadMenu() {
+        $.ajax({
+            type: 'GET',
+            url: '/ui/core/firmware',
+            dataType: 'html',
+            contentType: 'text/html',
+            success: function (data) {
+                $('#navigation').html($('#navigation', data));
+            }
+        });
+    }
+
     /**
      * retrieve update status from backend
      */
@@ -325,6 +338,7 @@
                     setTimeout(updateStatus, 1000);
                 } else {
                     packagesInfo(true);
+                    reloadMenu();
                 }
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
