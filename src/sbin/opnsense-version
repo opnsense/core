@@ -84,7 +84,7 @@ fi
 VERSION="${VERSIONDIR}/${TARGET}"
 
 if [ -n "${DO_CHECK}" ]; then
-        RET=0
+	RET=0
 	if [ ! -f ${VERSION} ]; then
 		RET=1
 	fi
