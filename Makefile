@@ -32,13 +32,25 @@ CORE_ABI?=	21.1
 CORE_PHP?=	73
 CORE_PYTHON?=	37
 
-.if exists(${GIT}) && exists(${GITVERSION})
-. if ${CORE_ABI} == "21.1"
-CORE_COMMIT!=	${GITVERSION} --match=21.7\*
-. elif ${CORE_ABI} == "20.7"
-CORE_COMMIT!=	${GITVERSION} --match=21.1.b
-. else
-CORE_COMMIT!=	${GITVERSION}
+_CORE_NEXT=	${CORE_ABI:C/\./ /}
+.if ${_CORE_NEXT:[2]} == 7
+CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
+CORE_NEXT:=	${CORE_NEXT}.1
+.else
+CORE_NEXT=	${_CORE_NEXT:[1]}
+CORE_NEXT:=	${CORE_NEXT}.7
+.endif
+
+.if exists(${GIT})
+. if exists(${GITVERSION})
+_NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
+_NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
+.  if !empty(_NEXTBETA)
+_NEXTMATCH=	--match=${CORE_NEXT}.b
+.  elif !empt(_NEXTDEVEL)
+_NEXTMATCH=	--match=${CORE_NEXT}\*
+.  endif
+CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
 . endif
 .else
 CORE_COMMIT=	unknown 0 undefined
