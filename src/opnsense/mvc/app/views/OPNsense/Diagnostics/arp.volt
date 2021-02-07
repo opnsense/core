@@ -32,31 +32,19 @@ POSSIBILITY OF SUCH DAMAGE.
          * fetch system arp table
          */
         function updateARP() {
-            var gridopt = {
-                ajax: false,
-                selection: false,
-                multiSelect: false
-            };
-            $("#grid-arp").bootgrid('destroy');
+            if ($("#grid-arp").hasClass('bootgrid-table')) {
+                $("#grid-arp").bootgrid('clear');
+            } else {
+                $("#grid-arp").bootgrid({
+                    ajax: false,
+                    selection: false,
+                    multiSelect: false
+                });
+            }
             ajaxGet("/api/diagnostics/interface/getArp", {}, function (data, status) {
                         if (status == "success") {
-                            var html = [];
-                            $.each(data, function (key, value) {
-                                var fields = ["ip", "mac", "manufacturer", "intf", "intf_description", "hostname"];
-                                let tr_str = '<tr>';
-                                for (var i = 0; i < fields.length; i++) {
-                                    if (value[fields[i]] != null) {
-                                        tr_str += '<td>' + value[fields[i]] + '</td>';
-                                    } else {
-                                        tr_str += '<td></td>';
-                                    }
-                                }
-                                tr_str += '</tr>';
-                                html.push(tr_str);
-                            });
-                            $("#grid-arp > tbody").html(html.join(''));
+                            $("#grid-arp").bootgrid('append', data);
                         }
-                        $("#grid-arp").bootgrid(gridopt);
                     }
             );
         }
