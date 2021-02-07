@@ -49,12 +49,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         if (status == "success") {
                             let table = [];
                             $("#grid-top > tbody").html('');
-                            $.each(data['details'], function (key, value) {
-                                var fields = ["PID", "USERNAME", "PRI", "NICE", "SIZE", "RES", "STATE", "C", "TIME", "WCPU", "COMMAND"];
-                                let record = {};
-                                for (var i = 0; i < fields.length; i++) {
-                                    record[fields[i]] = value[fields[i]] != null ? value[fields[i]] : "";
-                                }
+                            $.each(data['details'], function (key, record) {
                                 table.push(record);
                             });
                             $("#grid-top").bootgrid('append', table);
