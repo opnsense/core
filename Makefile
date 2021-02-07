@@ -34,7 +34,7 @@ CORE_PYTHON?=	37
 
 .if exists(${GIT}) && exists(${GITVERSION})
 . if ${CORE_ABI} == "21.1"
-CORE_COMMIT!=	${GITVERSION} --exclude=21.7.r\*
+CORE_COMMIT!=	${GITVERSION} --match=21.1\*
 . else
 CORE_COMMIT!=	${GITVERSION}
 . endif
