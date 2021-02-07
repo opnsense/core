@@ -41,17 +41,15 @@ CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
 .endif
 
-.if exists(${GIT})
-. if exists(${GITVERSION})
+.if exists(${GIT}) && exists(${GITVERSION})
 _NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
 _NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
-.  if !empty(_NEXTBETA)
+. if !empty(_NEXTBETA)
 _NEXTMATCH=	--match=${CORE_NEXT}.b
-.  elif !empt(_NEXTDEVEL)
+. elif !empt(_NEXTDEVEL)
 _NEXTMATCH=	--match=${CORE_NEXT}\*
-.  endif
-CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
 . endif
+CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
 .else
 CORE_COMMIT=	unknown 0 undefined
 .endif
