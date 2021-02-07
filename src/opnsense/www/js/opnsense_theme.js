@@ -43,7 +43,8 @@ $(document).ready(function () {
     mainmenu = $('#mainmenu'),
     countA = $('#mainmenu > div > a').length,
     footH = $('.page-foot').height(),
-    headerH = $('.navbar-header').height(),
+    headerH = $('.navbar').height(),
+		li_itemH = $('a.list-group-item').height(),
     navHeight = (countA * 70) + ((footH + headerH) - (20 + countA)),
     events = {
         mouseenter: function () {
@@ -60,7 +61,8 @@ $(document).ready(function () {
                 var thatTrigger = that.trigger('click');
                 close_submenu(this);
                 if (currentHeight > winHeight) {
-                    var result = that.next('div').css('margin-top', -divHeight - (that.is(layer1_a) ? 3 : 0));
+                    var divPos = ((divHeight - li_itemH) > divTop) ? -(((divHeight - li_itemH) - divTop)) : 3;
+										var viewresult = that.next('div').css('margin-top', -divHeight - (that.is(layer1_a) ? divPos : 0));
                 }
             }
         },
