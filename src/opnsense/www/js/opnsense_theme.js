@@ -62,7 +62,7 @@ $(document).ready(function () {
                 close_submenu(this);
                 if (currentHeight > (winHeight - li_itemH)) {
                     var divPos = ((divHeight - li_itemH) > divTop) ? -(((divHeight - li_itemH) - divTop)) : 3;
-		    var viewresult = that.next('div').css('margin-top', -divHeight - (that.is(layer1_a) ? divPos : 0));
+                    var viewresult = that.next('div').css('margin-top', -divHeight - (that.is(layer1_a) ? divPos : 0));
                 }
             }
         },
