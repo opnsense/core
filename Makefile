@@ -52,7 +52,7 @@ _NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
 _NEXTMATCH=	--match=${CORE_NEXT}.b
 .  else
 _NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
-.   if !empt(_NEXTDEVEL)
+.   if !empty(_NEXTDEVEL)
 _NEXTMATCH=	--match=${CORE_NEXT}\*
 .   endif
 .  endif
@@ -62,11 +62,13 @@ _NEXTSTABLE!=	${GIT} tag -l ${CORE_ABI}\*
 _NEXTMATCH=	--match=${CORE_ABI}\*
 .  endif
 . endif
+. if empty(_NEXTMATCH)
+. error Did not find appropriate tag for CORE_ABI=${CORE_ABI}
+. endif
 CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
-.else
-CORE_COMMIT=	unknown 0 undefined
 .endif
 
+CORE_COMMIT?=	unknown 0 undefined
 CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
