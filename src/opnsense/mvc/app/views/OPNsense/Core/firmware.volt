@@ -84,7 +84,7 @@
                     '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
                     row['reason'] + '</td></tr>');
 
-                    if (row['name'] == data['product_name']) {
+                    if (row['name'] == data['product_name'] && row['new'] != 'N/A') {
                         $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
                     }
                 });
