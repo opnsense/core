@@ -27,17 +27,6 @@
 
 <script>
 
-    /**
-     * prepare for checking update status
-     */
-    function updateStatusPrepare(rerun) {
-        if (rerun === false) {
-            $('#update_status_container').hide();
-            $('#updatelist').show();
-        }
-        $("#checkupdate_progress").addClass("fa-pulse");
-    }
-
     function updateDismiss() {
         $('#statustab > a').tab('show');
         $('#updatelist').hide();
@@ -63,7 +52,7 @@
      */
     function updateStatus() {
         // update UI
-        updateStatusPrepare(false);
+        $("#checkupdate_progress").addClass("fa-pulse");
         $('#major-upgrade').hide();
         $('#upgrade_maj').prop('disabled', true);
         $.upgrade_major_message = '';
@@ -85,8 +74,6 @@
                 $.upgrade_show_log = '';
 
                 // show upgrade list
-                $('#update_status_container').hide();
-                $('#updatelist').show();
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
                 $("#updatelist > thead").html("<tr><th>{{ lang._('Package Name') }}</th>" +
@@ -101,6 +88,8 @@
                         $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
                     }
                 });
+                $('#update_status_container').hide();
+                $('#updatelist').show();
 
                 // display the current changelog if one was found
                 if ($.upgrade_show_log != '') {
@@ -110,9 +99,6 @@
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
             } else {
-                $('#update_status_container').hide();
-                $('#updatelist').show();
-
                 // update list so plugins sync as well (all)
                 packagesInfo(true, true);
             }
@@ -134,8 +120,8 @@
      * perform upgrade, install poller to update status
      */
     function upgrade() {
-        $('#updatelist').hide();
         $('#update_status').html('');
+        $('#updatelist').hide();
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
         $('#updatetab_progress').addClass("fa fa-cog fa-spin");
@@ -255,8 +241,8 @@
      */
     function action(pkg_act, pkg_name)
     {
-        $('#updatelist').hide();
         $('#update_status').html('');
+        $('#updatelist').hide();
         $('#update_status_container').show();
         $('#updatetab_progress').addClass("fa fa-cog fa-spin");
         $('#updatetab > a').tab('show');
@@ -319,7 +305,7 @@
      */
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
-            if (data['log'] != '') {
+            if (data['log'] != undefined && data['log'] != '') {
                 var autoscroll = $('#update_status')[0].scrollTop +
                     $('#update_status')[0].clientHeight ===
                     $('#update_status')[0].scrollHeight;
@@ -334,7 +320,7 @@
                 $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'pkg') {
                     // update UI and delay update to avoid races
-                    updateStatusPrepare(true);
+                    $("#checkupdate_progress").addClass("fa-pulse");
                     setTimeout(updateStatus, 1000);
                 } else {
                     packagesInfo(true);
@@ -387,8 +373,8 @@
                     $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
                 });
 
-                $('#update_status_container').show();
                 $('#updatelist').hide();
+                $('#update_status_container').show();
 
                 if (keep !== true) {
                     $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
@@ -663,7 +649,7 @@
             // dashboard link: run check automatically
             } else if (window.location.hash == '#checkupdate') {
                 // update UI and delay update to avoid races
-                updateStatusPrepare(false);
+                $("#checkupdate_progress").addClass("fa-pulse");
                 setTimeout(updateStatus, 1000);
             }
         });
@@ -841,12 +827,12 @@
                         <tfoot>
                             <tr>
                                 <td></td>
-                                <td colspan="2" style="vertical-align:middle">
-                                    <strong><div class="updatestatus"></div></strong>
-                                </td>
                                 <td style="vertical-align:middle">
                                     <button class="btn btn-primary" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
                                     <button class="btn btn-default" id="upgrade_dismiss"><i class="fa fa-times"></i> {{ lang._('Dismiss') }}</button>
+                                </td>
+                                <td colspan="2" style="vertical-align:middle">
+                                    <strong><div class="updatestatus"></div></strong>
                                 </td>
                             </tr>
                         </tfoot>
