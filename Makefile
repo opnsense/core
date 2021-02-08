@@ -28,6 +28,10 @@ all:
 
 .include "Mk/defaults.mk"
 
+CORE_MESSAGE?=	What are you looking at?
+CORE_NAME?=	opnsense
+CORE_TYPE?=	production
+
 CORE_ABI?=	21.1
 CORE_PHP?=	73
 CORE_PYTHON?=	37
@@ -61,10 +65,6 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
-
-CORE_MESSAGE?=		What are you looking at?
-CORE_NAME?=		opnsense
-CORE_TYPE?=		production
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	project@opnsense.org
