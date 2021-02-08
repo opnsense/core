@@ -28,6 +28,10 @@ all:
 
 .include "Mk/defaults.mk"
 
+CORE_MESSAGE?=	Carry on my wayward son
+CORE_NAME?=	opnsense-devel
+CORE_TYPE?=	development
+
 CORE_ABI?=	21.1
 CORE_PHP?=	73
 CORE_PYTHON?=	37
@@ -42,12 +46,21 @@ CORE_NEXT:=	${CORE_NEXT}.7
 .endif
 
 .if exists(${GIT}) && exists(${GITVERSION})
+. if ${CORE_TYPE:M[Dd][Ee][Vv]*}
 _NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
-_NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
-. if !empty(_NEXTBETA)
+.  if !empty(_NEXTBETA)
 _NEXTMATCH=	--match=${CORE_NEXT}.b
-. elif !empt(_NEXTDEVEL)
+.  else
+_NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
+.   if !empt(_NEXTDEVEL)
 _NEXTMATCH=	--match=${CORE_NEXT}\*
+.   endif
+.  endif
+. else
+_NEXTSTABLE!=	${GIT} tag -l ${CORE_ABI}\*
+.  if !empty(_NEXTSTABLE)
+_NEXTMATCH=	--match=${CORE_ABI}\*
+.  endif
 . endif
 CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
 .else
@@ -73,10 +86,6 @@ CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif
-
-CORE_MESSAGE?=		Carry on my wayward son
-CORE_NAME?=		opnsense-devel
-CORE_TYPE?=		development
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	project@opnsense.org
