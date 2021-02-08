@@ -72,8 +72,12 @@ if __name__ == '__main__':
                         rule = rule[i:]
                 if 'action' in rule_updates[rule_info_record['metadata']['sid']]:
                     # (new) action in configuration
+                    flowbits_noalert = rule_info_record['rule'].replace(' ', '').find('flowbits:noalert;') > -1
                     new_action = rule_updates[rule_info_record['metadata']['sid']]['action']
-                    if rule[0] == '#':
+                    if flowbits_noalert:
+                        # prevent flowbits:noalert from being dropped
+                        pass
+                    elif rule[0] == '#':
                         rule = '#%s %s' % (new_action, ' '.join(rule.split(' ')[1:]))
                     else:
                         rule = '%s %s' % (new_action, ' '.join(rule.split(' ')[1:]))
