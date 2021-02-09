@@ -36,6 +36,15 @@ CORE_ABI?=	21.1
 CORE_PHP?=	73
 CORE_PYTHON?=	37
 
+_CORE_NEXT=	${CORE_ABI:C/\./ /}
+.if ${_CORE_NEXT:[2]} == 7
+CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
+CORE_NEXT:=	${CORE_NEXT}.1
+.else
+CORE_NEXT=	${_CORE_NEXT:[1]}
+CORE_NEXT:=	${CORE_NEXT}.7
+.endif
+
 .if exists(${GIT}) && exists(${GITVERSION})
 . if ${CORE_ABI} == "21.1"
 CORE_COMMIT!=	${GITVERSION} --match=21.1\*
