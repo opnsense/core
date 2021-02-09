@@ -620,21 +620,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dn = array();
             if (isset($pconfig['key_usage_sign_csr'])) {
                 $san_str = '';
-
-                for ($i = 0; $i < count($pconfig['altname_type_sign_csr']); ++$i) {
-                    if ($pconfig['altname_value_sign_csr'][$i] === '') {
-                        continue;
+                if (!empty($pconfig['altname_type_sign_csr'])) {
+                    for ($i = 0; $i < count($pconfig['altname_type_sign_csr']); ++$i) {
+                        if ($pconfig['altname_value_sign_csr'][$i] === '') {
+                            continue;
+                        }
+                        if (! is_valid_alt_value(array(
+                            'type' => $pconfig['altname_type_sign_csr'][$i],
+                            'value' => $pconfig['altname_value_sign_csr'][$i]), $input_errors
+                        )) {
+                            break;
+                        }
+                        if ($san_str !== '') {
+                            $san_str .= ', ';
+                        }
+                        $san_str .= $pconfig['altname_type_sign_csr'][$i] . ':' . $pconfig['altname_value_sign_csr'][$i];
                     }
-                    if (! is_valid_alt_value(array(
-                        'type' => $pconfig['altname_type_sign_csr'][$i],
-                        'value' => $pconfig['altname_value_sign_csr'][$i]), $input_errors
-                    )) {
-                        break;
-                    }
-                    if ($san_str !== '') {
-                        $san_str .= ', ';
-                    }
-                    $san_str .= $pconfig['altname_type_sign_csr'][$i] . ':' . $pconfig['altname_value_sign_csr'][$i];
                 }
                 if ($san_str !== '') {
                     $dn['subjectAltName'] = $san_str;
