@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $vpnid = 0;
     $pconfig['verbosity_level'] = 1;
     $pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
-    $pconfig['tlsmode'] = "crypt";
+    $pconfig['tlsmode'] = "auth";
     $pconfig['autokey_enable'] = "yes";
     $pconfig['autotls_enable'] = "yes";
     if (isset($configId) && isset($a_server[$configId])) {
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,push_block_outside_dns,dns_domain
             ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tlskey,reneg-sec,use-common-name
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
             ,cso_login_matching";
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);

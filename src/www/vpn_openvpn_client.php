@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set defaults
     $pconfig['autokey_enable'] = "yes"; // just in case the modes switch
     $pconfig['autotls_enable'] = "yes"; // just in case the modes switch
-    $pconfig['tlsmode'] = "crypt";
+    $pconfig['tlsmode'] = "auth";
     $pconfig['digest'] = "SHA1";
     $pconfig['verbosity_level'] = 1; // Default verbosity is 1
 
