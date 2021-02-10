@@ -229,7 +229,7 @@ class DomainSorter(object):
                     break
                 else:
                     set_content[line.split('|')[0]] = '|'.join(line.split('|')[1:])
-            for itemkey in sorted(set_content, reverse=True):
+            for itemkey in sorted(set_content, reverse=False):
                 yield set_content[itemkey]
 
     @staticmethod
@@ -262,9 +262,12 @@ class DomainSorter(object):
                         # duplicate, skip
                         continue
                     if self.is_domain(line):
-                        # prefix domain, if this domain is different then the previous one
-                        if prev_line is None or '.%s' % line not in prev_line:
+                        # write prefix for domain, but only if it is not a
+                        # subdomain of the previous entry - if so, skip
+                        if prev_line is None or '.%s' % prev_line not in line:
                             f_out.write(b'.')
+                        else:
+                            continue
                     f_out.write(line.encode())
                     prev_line = line
 
