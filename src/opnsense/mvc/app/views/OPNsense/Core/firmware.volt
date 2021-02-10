@@ -604,6 +604,7 @@
         $("#plugin_get").click(function () { audit('syncPlugins'); });
         $("#plugin_set").click(function () { audit('resyncPlugins'); });
         $('#audit_security').click(function () { audit('audit'); });
+        $('#audit_connection').click(function () { audit('connection'); });
         $('#audit_health').click(function () { audit('health'); });
         $('#upgrade_maj').click(function () {
             $.upgrade_needs_reboot = 1;
@@ -905,8 +906,9 @@
                                             <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
+                                            <li><a id="audit_connection" href="#">{{ lang._('Connectivity') }}</a></li>
                                             <li><a id="audit_health" href="#">{{ lang._('Health') }}</a></li>
+                                            <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
                                         </ul>
                                     </div>
                                     <div class="btn-group" id="plugin_actions" style="display:none;">

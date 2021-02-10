@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2021 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,32 +24,17 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
 LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-check
-connection
-health
-install
-lock
-reinstall
-remove
-resync
-security
-sync
-type
-unlock
-upgrade
-"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+TEE="/usr/bin/tee -a"
 
-SELECTED=${1}
-ARGUMENT=${2}
+: > ${LOCKFILE}
+rm -f ${PIPEFILE}
+mkfifo ${PIPEFILE}
 
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
-	fi
-
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
-done
+echo "***GOT REQUEST TO AUDIT CONNECTIVITY***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+pkg -d update -f > ${PIPEFILE} 2>&1
+sleep 1 # give the system time to flush the buffer to console
+echo '***DONE***' >> ${LOCKFILE}

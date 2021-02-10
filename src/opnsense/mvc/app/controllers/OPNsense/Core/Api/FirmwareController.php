@@ -405,6 +405,27 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * run a connection check
+     * @return array status
+     * @throws \Exception
+     */
+    public function connectionAction()
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun("firmware connection", true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * run a health check
      * @return array status
      * @throws \Exception
