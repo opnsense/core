@@ -117,8 +117,12 @@
     </flavours>
     <families>
         <family>
+            <name>business</name>
+            <description>Business</description>
+        </family>
+        <family>
             <name/>
-            <description>Production</description>
+            <description>Community</description>
         </family>
         <family>
             <name>devel</name>
