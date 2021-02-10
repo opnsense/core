@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set defaults
     $pconfig['autokey_enable'] = "yes"; // just in case the modes switch
     $pconfig['autotls_enable'] = "yes"; // just in case the modes switch
-    $pconfig['tlsauth'] = "crypt";
+    $pconfig['tlsmode'] = "crypt";
     $pconfig['digest'] = "SHA1";
     $pconfig['verbosity_level'] = 1; // Default verbosity is 1
 
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
-            ,custom_options,ns_cert_type,dev_mode,tlsauth,caref,certref,crypto,digest,engine
+            ,custom_options,ns_cert_type,dev_mode,tlsmode,caref,certref,crypto,digest,engine
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
             ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
@@ -80,11 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['interface'] = $pconfig['interface'] . '|' . $a_client[$configId]['ipaddr'];
         }
 
-        if (isset($a_client[$configId]['tlskey'])) {
-            $pconfig['tlskey'] = base64_decode($a_client[$configId]['tlskey']);
+        if (isset($a_client[$configId]['tls'])) {
+            $pconfig['tls'] = base64_decode($a_client[$configId]['tls']);
         } else {
-            $pconfig['tlskey'] = null;
-            $pconfig['tlsauth'] = null;
+            $pconfig['tls'] = null;
+            $pconfig['tlsmode'] = null;
         }
 
         if (isset($a_client[$configId]['shared_key'])) {
@@ -271,9 +271,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The field 'Shared Key' does not appear to be valid");
             }
         }
-        if ($tls_mode && !empty($pconfig['tlsauth']) && empty($pconfig['autotls_enable'])) {
-            if (!strstr($pconfig['tlskey'], "-----BEGIN OpenVPN Static key V1-----") ||
-                !strstr($pconfig['tlskey'], "-----END OpenVPN Static key V1-----")) {
+        if ($tls_mode && !empty($pconfig['tlsmode']) && empty($pconfig['autotls_enable'])) {
+            if (!strstr($pconfig['tls'], "-----BEGIN OpenVPN Static key V1-----") ||
+                !strstr($pconfig['tls'], "-----END OpenVPN Static key V1-----")) {
                 $input_errors[] = gettext("The field 'TLS Shared Key' does not appear to be valid");
             }
         }
@@ -334,11 +334,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($tls_mode) {
                 $client['caref'] = $pconfig['caref'];
                 $client['certref'] = $pconfig['certref'];
-                if (!empty($pconfig['tlsauth'])) {
+                if (!empty($pconfig['tlsmode'])) {
                     if (!empty($pconfig['autotls_enable'])) {
-                        $pconfig['tlskey'] = openvpn_create_key();
+                        $pconfig['tls'] = openvpn_create_key();
                     }
-                    $client['tlskey'] = base64_encode($pconfig['tlskey']);
+                    $client['tls'] = base64_encode($pconfig['tls']);
                 }
             } else {
                 $client['shared_key'] = base64_encode($pconfig['shared_key']);
@@ -515,20 +515,20 @@ $( document ).ready(function() {
   });
   $("#autotls_enable").change();
 
-  $("#tlsauth").change(function(){
+  $("#tlsmode").change(function(){
       if (this.value != "") {
           if ($("#autotls_enable").val() != undefined) {
               $("#autotls_enable").prop("disabled", false);
           }
-          $("#tlskey").prop("disabled", false);
+          $("#tls").prop("disabled", false);
       } else {
           if ($("#autotls_enable").val() != undefined) {
               $("#autotls_enable").prop("disabled", true);
           }
-          $("#tlskey").prop("disabled", true);
+          $("#tls").prop("disabled", true);
       }
   });
-  $("#tlsauth").change();
+  $("#tlsmode").change();
 });
 //]]>
 </script>
@@ -805,14 +805,14 @@ $( document ).ready(function() {
           <tr class="tls_option">
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
             <td>
-                <select id="tlsauth" name='tlsauth' class="form-control">
-                    <option value="" <?= empty($pconfig['tlsauth']) ? "selected=\"selected\"" : "";?>>
+                <select id="tlsmode" name='tlsmode' class="form-control">
+                    <option value="" <?= empty($pconfig['tlsmode']) ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Disabled");?>
                     </option>
-                    <option value="auth" <?= $pconfig['tlsauth'] === "auth" ? "selected=\"selected\"" : "";?>>
+                    <option value="auth" <?= $pconfig['tlsmode'] === "auth" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Enabled - Authentication only");?>
                     </option>
-                    <option value="crypt" <?= $pconfig['tlsauth'] === "crypt" ? "selected=\"selected\"" : "";?>>
+                    <option value="crypt" <?= $pconfig['tlsmode'] === "crypt" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Enabled - Authentication & encryption");?>
                     </option>
                 </select>
@@ -822,13 +822,13 @@ $( document ).ready(function() {
             <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Shared Key"); ?></td>
             <td>
 <?php
-              if (empty($pconfig['tlskey'])) :?>
+              if (empty($pconfig['tls'])) :?>
               <input name="autotls_enable" id="autotls_enable" type="checkbox" value="yes" <?= !empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "";?> >
               <?=gettext("Automatically generate a shared TLS authentication key"); ?>.
 <?php
               endif; ?>
               <div id="autotls_opts">
-                  <textarea id="tlskey" name="tlskey" cols="65" rows="7" class="formpre"><?=isset($pconfig['tlskey'])?$pconfig['tlskey']:"";?></textarea>
+                  <textarea id="tls" name="tls" cols="65" rows="7" class="formpre"><?=isset($pconfig['tls'])?$pconfig['tls']:"";?></textarea>
                     <p class="text-muted"><em><small><?=gettext("Paste your shared key here"); ?>.</small></em></p>
               </div>
             </td>

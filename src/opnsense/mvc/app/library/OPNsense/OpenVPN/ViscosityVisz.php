@@ -126,13 +126,13 @@ class ViscosityVisz extends PlainOpenVPN
                 $conf[] = "ca ca.crt";
             }
         }
-        if (!empty($this->config['tlskey'])) {
-            if ($this->config['tlsauth'] === 'crypt') {
+        if (!empty($this->config['tls'])) {
+            if ($this->config['tlsmode'] === 'crypt') {
                 $conf[] = "tls-crypt ta.key";
             } else {
                 $conf[] = "tls-auth ta.key 1";
             }
-            file_put_contents("{$content_dir}/ta.key", trim(base64_decode($this->config['tlskey'])));
+            file_put_contents("{$content_dir}/ta.key", trim(base64_decode($this->config['tls'])));
         }
         file_put_contents("{$content_dir}/config.conf", implode("\n", $conf));
 
