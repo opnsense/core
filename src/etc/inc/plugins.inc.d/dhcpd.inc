@@ -355,12 +355,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\t};\n";
         }
 
-        if (!empty($dhcpv6ifconf['rainterface'])) {
-            $radvdconf .= "\troute ::/0 {\n";
-            $radvdconf .= "\t\tRemoveRoute off;\n";
-            $radvdconf .= "\t};\n";
-        }
-
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
                 $radvdconf .= "\troute {$raroute} {\n";
