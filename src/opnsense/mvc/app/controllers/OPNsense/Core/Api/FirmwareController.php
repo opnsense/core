@@ -184,11 +184,7 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
 
-            if (count($args)) {
-                $response['status_msg'] = gettext('The release type requires an update.');
-                $response['status_upgrade_action'] = 'rel';
-                $response['status'] = 'ok';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'busy') {
+            if (array_key_exists('connection', $response) && $response['connection'] == 'busy') {
                 $response['status_msg'] = gettext('The package manager is not responding.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
@@ -215,12 +211,12 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
                 $response['status_msg'] = gettext('The repository has no fingerprint.');
                 $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete') {
+                $response['status_msg'] = sprintf(gettext('The package "%s" is not available on this repository.'), $args[0]);
+                $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
-                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
-                $response['status'] = 'none';
             } elseif (
                 array_key_exists(0, $response['upgrade_packages']) &&
                 $response['upgrade_packages'][0]['name'] == 'pkg'
@@ -228,30 +224,39 @@ class FirmwareController extends ApiControllerBase
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
-            } elseif (array_key_exists('updates', $response)) {
-                $response['status_upgrade_action'] = 'all';
-                $response['status'] = 'ok';
-                if ($response['updates'] == 1) {
-                    /* keep this dynamic for template translation even though %s is always '1' */
-                    $response['status_msg'] = sprintf(
-                        gettext('There is %s update available, total download size is %s.'),
-                        $response['updates'],
-                        $download_size
-                    );
+            } elseif (array_key_exists('updates', $response) && $response['updates'] != 0) {
+                if (count($args)) {
+                    $response['status_msg'] = gettext('The release type requires an update.');
+                    $response['status_upgrade_action'] = 'rel';
+                    $response['status'] = 'ok';
                 } else {
-                    $response['status_msg'] = sprintf(
-                        gettext('There are %s updates available, total download size is %s.'),
-                        $response['updates'],
-                        $download_size
-                    );
+                    $response['status_upgrade_action'] = 'all';
+                    $response['status'] = 'ok';
+                    if ($response['updates'] == 1) {
+                        /* keep this dynamic for template translation even though %s is always '1' */
+                        $response['status_msg'] = sprintf(
+                            gettext('There is %s update available, total download size is %s.'),
+                            $response['updates'],
+                            $download_size
+                        );
+                    } else {
+                        $response['status_msg'] = sprintf(
+                            gettext('There are %s updates available, total download size is %s.'),
+                            $response['updates'],
+                            $download_size
+                        );
+                    }
+                    if ($response['upgrade_needs_reboot'] == 1) {
+                        $response['status_msg'] = sprintf(
+                            '%s %s',
+                            $response['status_msg'],
+                            gettext('This update requires a reboot.')
+                        );
+                    }
                 }
-                if ($response['upgrade_needs_reboot'] == 1) {
-                    $response['status_msg'] = sprintf(
-                        '%s %s',
-                        $response['status_msg'],
-                        gettext('This update requires a reboot.')
-                    );
-                }
+            } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
+                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
+                $response['status'] = 'none';
             } else {
                 $response['status_msg'] = gettext('Unknown firmware status encountered.');
                 $response['status'] = 'unknown';

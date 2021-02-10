@@ -27,7 +27,7 @@
 
 # This script generates a json structured file with the following content:
 # connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
-# repository: error|untrusted|unsigned|revoked|ok
+# repository: error|untrusted|unsigned|revoked|incomplete|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
 # download_size: <size_of_total_downloads>
@@ -145,7 +145,11 @@ if [ -z "${pkg_running}" ]; then
         ## check if timeout is not reached
         if [ $timer -gt 0 ]; then
           # Check for additional repository errors
-          if ! grep -q 'Unable to update repository' ${outfile}; then
+          if grep -q 'Unable to update repository' ${outfile}; then
+            repository="error" # already set but reset here for clarity
+          elif grep -q "No packages available to install matching..${pkg_selected}" ${outfile}; then
+            repository="incomplete"
+          else
             # Repository can be used for updates
             repository="ok"
             updates=$(grep 'The following' ${outfile} | awk -F '[ ]' '{print $3}')
