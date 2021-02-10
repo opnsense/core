@@ -133,16 +133,19 @@ function openvpn_verbosity_level()
     );
 }
 
-function openvpn_compression_algos()
+function openvpn_compression_modes()
 {
     return array(
-        '' => gettext('Disabled - No Compression & Framing'),
-        'pfc' => gettext('Partial - Packet Framing for Compression'),
-        'lz4' => gettext('Enabled - LZ4 Algorithm'),
-        'lz4-v2' => gettext('Enabled - LZ4 v2 Algorithm'),
-        'lzo' => gettext('Enabled - LZO Algorithm'),
-        'stub' => gettext('Enabled - Stub Algorithm'),
-        'stub-v2' => gettext('Enabled - Stub v2 Algorithm'),
+        '' => gettext('No Preference'),
+        'pfc' => gettext('Partial - Packet Framing for Compression (--compress)'),
+        'lz4' => gettext('Enabled - LZ4 Algorithm (--compress lz4)'),
+        'lz4-v2' => gettext('Enabled - LZ4 v2 Algorithm (--compress lz4-v2)'),
+        'lzo' => gettext('Enabled - LZO Algorithm (--compress lzo, equivalent to --comp-lzo yes)'),
+        'stub' => gettext('Enabled - Stub Algorithm (--compress stub)'),
+        'stub-v2' => gettext('Enabled - Stub v2 Algorithm (--compress stub-v2)'),
+        'no' => gettext('Legacy - Disabled LZO Algorithm (--comp-lzo no)'),
+        'adaptive' => gettext('Legacy - Enabled LZO Algorithm with Adaptive Compression (--comp-lzo adaptive)'),
+        'yes' => gettext('Legacy - Enabled LZO Algorithm without Adaptive Compression (--comp-lzo yes)'),
     );
 }
 
@@ -911,10 +914,17 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (!empty($settings['compression'])) {
-        if ($settings['compression'] === 'pfc') {
-            $conf .= "compress\n";
-        } else {
-            $conf .= "compress {$settings['compression']}\n";
+        switch($settings['compression']){
+            case 'no':
+            case 'adaptive':
+            case 'yes':
+                $conf .= "comp-lzo {$settings['compression']}\n";
+                break;
+            case 'pfc':
+                $conf .= "compress\n";
+                break;
+            default:
+                $conf .= "compress {$settings['compression']}\n";
         }
     }
 
