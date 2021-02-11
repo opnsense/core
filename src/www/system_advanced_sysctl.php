@@ -114,7 +114,7 @@ foreach ($a_tunable as &$tunable) {
     }
 }
 
-usort($a_tunable, function($a, $b) {
+uasort($a_tunable, function($a, $b) {
     return strnatcmp($a['tunable'], $b['tunable']);
 });
 
