@@ -37,6 +37,7 @@ if ($ret != null) {
     $repos = explode("\n", trim(shell_exec('opnsense-verify -l')));
     sort($repos);
     $ret['product_repos'] = implode(', ', $repos);
+    $ret['product_check'] = json_decode(@file_get_contents('/tmp/pkg_upgrade.json'), true);
     ksort($ret);
 } else {
     $ret = [];

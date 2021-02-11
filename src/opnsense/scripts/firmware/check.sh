@@ -37,6 +37,8 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
+JSONFILE="/tmp/pkg_upgrade.json"
+
 base_to_reboot=""
 connection="error"
 download_size=""
@@ -367,7 +369,7 @@ else
 fi
 
 # write our json structure
-cat << EOF
+cat > ${JSONFILE} << EOF
 {
 	"connection":"$connection",
 	"downgrade_packages":[$packages_downgraded],
@@ -387,3 +389,5 @@ cat << EOF
 	"upgrade_packages":[$packages_upgraded]
 }
 EOF
+
+cat ${JSONFILE}
