@@ -62,6 +62,41 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * Run check for updates
+     * @return array
+     */
+    public function checkAction()
+    {
+        $response = array();
+
+        $config = Config::getInstance()->object();
+        $type_want = 'opnsense';
+        if (!empty($config->system->firmware->type)) {
+            $type_want .= '-' . (string)$config->system->firmware->type;
+        }
+
+        $this->sessionClose(); // long running action, close session
+
+        $backend = new Backend();
+        $type_have = trim($backend->configdRun('firmware type name'));
+        $backend->configdRun('firmware changelog fetch'); // XXX MOVE TO check.sh
+        $args = array();
+
+        if (!empty($type_have) && $type_have !== $type_want) {
+            $args[] = $type_want;
+        }
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdpRun('firmware checkbg', $args, true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * retrieve available updates
      * @return array
      */
@@ -73,20 +108,18 @@ class FirmwareController extends ApiControllerBase
             $type_want .= '-' . (string)$config->system->firmware->type;
         }
 
-        $this->sessionClose(); // long running action, close session
-
         $backend = new Backend();
         $type_have = trim($backend->configdRun('firmware type name'));
-        $backend->configdRun('firmware changelog fetch');
         $args = array();
 
         if (!empty($type_have) && $type_have !== $type_want) {
             $args[] = $type_want;
         }
 
-        $response = json_decode(trim($backend->configdpRun('firmware check', $args)), true);
+        $response = json_decode(trim($backend->configdRun('firmware product')), true);
+        if ($response != null && $response['product_check'] != null) {
+            $response = $response['product_check'];
 
-        if ($response != null) {
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
             $sets_size = 0;
 

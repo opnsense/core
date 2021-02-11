@@ -38,6 +38,10 @@
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
 JSONFILE="/tmp/pkg_upgrade.json"
+LOCKFILE="/tmp/pkg_upgrade.progress"
+
+rm -f ${JSONFILE}
+: > ${LOCKFILE}
 
 base_to_reboot=""
 connection="error"
@@ -59,6 +63,8 @@ upgrade_needs_reboot="0"
 
 pidfile=/tmp/pkg_update.pid
 outfile=/tmp/pkg_update.out
+
+echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 
 pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
 
@@ -391,3 +397,6 @@ cat > ${JSONFILE} << EOF
 EOF
 
 cat ${JSONFILE}
+cat ${JSONFILE} >> ${LOCKFILE}
+
+echo '***DONE***' >> ${LOCKFILE}

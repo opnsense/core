@@ -40,7 +40,6 @@
     }
 
     function updateDismiss() {
-        $('#statustab > a').tab('show');
         $('#updatelist').hide();
         $('#update_status_container').show();
         $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
@@ -64,7 +63,6 @@
      */
     function updateStatus() {
         // update UI
-        $("#checkupdate_progress").addClass("fa-pulse");
         $('#major-upgrade').hide();
         $('#upgrade_maj').prop('disabled', true);
         $.upgrade_major_message = '';
@@ -72,7 +70,6 @@
 
         // request status
         ajaxGet('/api/core/firmware/status', {}, function(data,status){
-            $("#checkupdate_progress").removeClass("fa-pulse");
             $('.updatestatus').html(data['status_msg']);
 
             if (data['status'] == "ok") {
@@ -129,37 +126,24 @@
     }
 
     /**
-     * perform upgrade, install poller to update status
+     * perform backend action and install poller to update status
      */
-    function upgrade() {
-        $('#update_status').html('');
-        $('#updatelist').hide();
-        $('#update_status_container').show();
-        $('#updatetab > a').tab('show');
-        $('#updatetab_progress').addClass("fa fa-cog fa-spin");
+    function backend(type, post = {}) {
         if ($.upgrade_action == 'maj') {
             $("#upgrade_maj").attr("style","");
             $('#updatetab_progress').addClass("fa fa-cog fa-spin");
-        }
-
-        ajaxCall('/api/core/firmware/upgrade', {upgrade:$.upgrade_action}, function() {
-            $('#updatelist > tbody, #updatelist > thead').empty();
-            setTimeout(trackStatus, 500);
-        });
-    }
-
-    /**
-     * perform audit, install poller to update status
-     */
-    function audit($type) {
-        $.upgrade_action = 'audit';
+        } else if (type == 'check') {
+            $.upgrade_action = 'check';
+        } else {
+            $.upgrade_action = 'backend';
+	}
         $('#updatelist').hide();
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
         $('#updatetab_progress').addClass("fa fa-cog fa-spin");
 
-        ajaxCall('/api/core/firmware/' + $type, {}, function () {
+        ajaxCall('/api/core/firmware/' + type, post, function () {
             $('#updatelist > tbody, #updatelist > thead').empty();
             setTimeout(trackStatus, 500);
         });
@@ -234,7 +218,7 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
-                        action(pkg_act, pkg_name);
+                        backend(pkg_act + "/" + pkg_name);
                     }
                 },{
                     label: "{{ lang._('Abort') }}",
@@ -244,26 +228,8 @@
                 }]
             });
         } else {
-            action(pkg_act, pkg_name);
+            backend(pkg_act + "/" + pkg_name);
         }
-    }
-
-    /**
-     * perform package action, install poller to update status
-     */
-    function action(pkg_act, pkg_name)
-    {
-        $('#update_status').html('');
-        $('#updatelist').hide();
-        $('#update_status_container').show();
-        $('#updatetab_progress').addClass("fa fa-cog fa-spin");
-        $('#updatetab > a').tab('show');
-        $.upgrade_action = 'action';
-
-        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name, {}, function() {
-            $('#updatelist > tbody, #updatelist > thead').empty();
-            setTimeout(trackStatus, 500);
-        });
     }
 
     /**
@@ -287,7 +253,7 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
-                        upgrade();
+                        backend('upgrade', {upgrade:$.upgrade_action});
                     }
                 },{
                     label: "{{ lang._('Abort') }}",
@@ -297,7 +263,7 @@
                 }]
             });
         } else {
-            upgrade();
+            backend('upgrade', {upgrade:$.upgrade_action});
         }
     }
 
@@ -337,8 +303,9 @@
                 $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'pkg') {
                     // update UI and delay update to avoid races
-                    $("#checkupdate_progress").addClass("fa-pulse");
                     setTimeout(updateStatus, 1000);
+                } else if ($.upgrade_action == 'check') {
+                    updateStatus();
                 } else {
                     packagesInfo(true);
                     reloadMenu();
@@ -556,15 +523,15 @@
             });
             $(".act_unlock").click(function(event) {
                 event.preventDefault();
-                action('unlock', $(this).data('package'));
+                backend('unlock/' + $(this).data('package'));
             });
             $(".act_lock").click(function(event) {
                 event.preventDefault();
-                action('lock', $(this).data('package'));
+                backend('lock/' + $(this).data('package'));
             });
             $(".act_remove").click(function(event) {
                 event.preventDefault();
-                action('remove', $(this).data('package'));
+                backend('remove/' + $(this).data('package'));
             });
             $(".act_details").click(function(event) {
                 event.preventDefault();
@@ -583,7 +550,7 @@
                             label: "{{ lang._('Install') }}",
                             action: function(dialogRef){
                                 dialogRef.close();
-                                action('install', package_name);
+                                backend('install/' + package_name);
                             }
                         }, {
                             label: "{{ lang._('Abort') }}",
@@ -593,7 +560,7 @@
                         }]
                     });
                 } else {
-                    action('install', package_name);
+                    backend('install/' + package_name);
                 }
             });
             $(".act_changelog").click(function(event) {
@@ -611,15 +578,15 @@
 
     $( document ).ready(function() {
         // link event handlers
-        $('#checkupdate').click(updateStatus);
+        $('#checkupdate').click(function () { backend('check'); });
         $('#upgrade').click(upgrade_ui);
         $('#upgrade_dismiss').click(updateDismiss);
         $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
-        $("#plugin_get").click(function () { audit('syncPlugins'); });
-        $("#plugin_set").click(function () { audit('resyncPlugins'); });
-        $('#audit_security').click(function () { audit('audit'); });
-        $('#audit_connection').click(function () { audit('connection'); });
-        $('#audit_health').click(function () { audit('health'); });
+        $("#plugin_get").click(function () { backend('syncPlugins'); });
+        $("#plugin_set").click(function () { backend('resyncPlugins'); });
+        $('#audit_security').click(function () { backend('audit'); });
+        $('#audit_connection').click(function () { backend('connection'); });
+        $('#audit_health').click(function () { backend('health'); });
         $('#upgrade_maj').click(function () {
             $.upgrade_needs_reboot = 1;
             $.upgrade_action = 'maj';
@@ -663,11 +630,10 @@
         ajaxGet('/api/core/firmware/running', {}, function(data, status) {
             // if action is already running reattach now...
             if (data['status'] == 'busy') {
-                upgrade();
+                backend('upgrade', {upgrade:$.upgrade_action});
             // dashboard link: run check automatically
             } else if (window.location.hash == '#checkupdate') {
                 // update UI and delay update to avoid races
-                $("#checkupdate_progress").addClass("fa-pulse");
                 setTimeout(updateStatus, 1000);
             }
         });
@@ -770,7 +736,7 @@
         });
 
         $("#change_mirror").click(function(){
-            $("#change_mirror_progress").addClass("fa fa-spinner fa-pulse");
+            $("#settingstab_progress").addClass("fa fa-cog fa-spin");
             var confopt = {};
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
@@ -781,7 +747,7 @@
                 confopt.subscription = null;
             }
             ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
-                $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#settingstab_progress").removeClass("fa fa-cog fa-spin");
                 packagesInfo(true);
             });
         });
@@ -831,7 +797,7 @@
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }}</a></li>
-                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
+                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }} <i id="settingstab_progress"></i></a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
@@ -923,7 +889,7 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;"></td>
                                 <td>
-                                    <button class="btn btn-primary" id="checkupdate"><i id="checkupdate_progress" class="fa fa-refresh"></i> {{ lang._('Check for updates') }}</button>
+                                    <button class="btn btn-primary" id="checkupdate"><i class="fa fa-refresh"></i> {{ lang._('Check for updates') }}</button>
                                     <div class="btn-group" id="audit_actions" style="display:none;">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
@@ -1055,7 +1021,7 @@
                                 <td style="width: 20px;"></td>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary" id="change_mirror" type="button">{{ lang._('Save') }} <i id="change_mirror_progress"></i></button>
+                                    <button class="btn btn-primary" id="change_mirror" type="button"><i class="fa fa-floppy-o"></i> {{ lang._('Save') }}</button>
                                 </td>
                                 <td></td>
                             </tr>
