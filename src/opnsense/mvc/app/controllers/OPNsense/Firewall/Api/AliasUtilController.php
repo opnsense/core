@@ -96,9 +96,9 @@ class AliasUtilController extends ApiControllerBase
     {
         $this->sessionClose();
 
-        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', -1));
         $currentPage = intval($this->request->getPost('current', 'int', 1));
-        $offset = ($currentPage - 1) * $itemsPerPage;
+        $offset = $itemsPerPage > 0 ? ($currentPage - 1) * $itemsPerPage : 0;
 
         $backend = new Backend();
         $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")), true);
@@ -128,7 +128,7 @@ class AliasUtilController extends ApiControllerBase
                 $item[$ekey] = $evalue;
             }
             return $item;
-        }, array_slice($entry_keys, $offset, $itemsPerPage));
+        }, array_slice($entry_keys, $offset, $itemsPerPage > 0 ? $itemsPerPage : null));
 
         if (
             $this->request->hasPost('sort') &&
