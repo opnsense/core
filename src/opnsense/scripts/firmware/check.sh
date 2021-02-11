@@ -42,6 +42,7 @@ LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
 PACKAGE=${1}
 TEE="/usr/bin/tee -a"
+UPSTREAM="OPNsense"
 
 rm -f ${JSONFILE}
 : > ${LOCKFILE}
@@ -144,7 +145,12 @@ fi
 
               MODE=
 
-              for i in $(cat ${OUTFILE} | tr '[' '(' | cut -d '(' -f1); do
+            while read LINE; do
+	      REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
+	      if [ -z "${REPO}" ]; then
+	          REPO=${UPSTREAM}
+	      fi
+              for i in $(echo "${LINE}" | tr '[' '(' | cut -d '(' -f1); do
                 case ${MODE} in
                 DOWNGRADED:)
                   if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
@@ -158,6 +164,7 @@ fi
                       else
                         packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
                       fi
+                      packages_downgraded=$packages_downgraded"\"repository\":\"${REPO}\","
                     fi
                   fi
                   if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
@@ -178,7 +185,7 @@ fi
                       if [ -n "$packages_new" ]; then
                         packages_new=$packages_new","
                       fi
-                      packages_new=$packages_new"{\"name\":\"$i\","
+                      packages_new=$packages_new"{\"name\":\"$i\",\"repository\":\"${REPO}\","
                     fi
                   fi
                   if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
@@ -198,7 +205,7 @@ fi
                       if [ -n "$packages_reinstall" ]; then
                         packages_reinstall=$packages_reinstall"," # separator for next item
                       fi
-                      packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\"}"
+                      packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\",\"repository\":\"${REPO}\"}"
                     fi
                   fi
                   ;;
@@ -232,6 +239,7 @@ fi
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
                       fi
+                      packages_upgraded=$packages_upgraded"\"repository\":\"${REPO}\","
                     fi
                   fi
                   if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
@@ -261,7 +269,8 @@ fi
                   ;;
                 esac
               done
-            fi
+	    done < ${OUTFILE}
+          fi
 
             # the main update from package will provide this during upgrade
             if [ -n "${PACKAGE}" ]; then

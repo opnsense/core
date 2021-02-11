@@ -167,6 +167,7 @@ class FirmwareController extends ApiControllerBase
                                     'old' => $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
+                                    'repository' => $value['repository'],
                                 );
                                 break;
                             case 'new_packages':
@@ -174,6 +175,7 @@ class FirmwareController extends ApiControllerBase
                                     'new' => $value['version'],
                                     'reason' => gettext('new'),
                                     'name' => $value['name'],
+                                    'repository' => $value['repository'],
                                     'old' => gettext('N/A'),
                                 );
                                 break;
@@ -182,6 +184,7 @@ class FirmwareController extends ApiControllerBase
                                     'reason' => gettext('reinstall'),
                                     'new' => $value['version'],
                                     'old' => $value['version'],
+                                    'repository' => $value['repository'],
                                     'name' => $value['name'],
                                 );
                                 break;
@@ -191,6 +194,7 @@ class FirmwareController extends ApiControllerBase
                                     'new' => gettext('N/A'),
                                     'old' => $value['version'],
                                     'name' => $value['name'],
+                                    'repository' => gettext('N/A'),
                                 );
                                 break;
                             case 'upgrade_packages':
@@ -199,6 +203,7 @@ class FirmwareController extends ApiControllerBase
                                     'old' => empty($value['current_version']) ?
                                         gettext('N/A') : $value['current_version'],
                                     'new' => $value['new_version'],
+                                    'repository' => $value['repository'],
                                     'name' => $value['name'],
                                 );
                                 break;

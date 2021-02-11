@@ -81,12 +81,12 @@
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
                 $("#updatelist > thead").html("<tr><th>{{ lang._('Package Name') }}</th>" +
-                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th>" +
-                "<th>{{ lang._('Required Action') }}</th></tr>");
+                "<th>{{ lang._('Repository') }}</th><th>{{ lang._('Current Version') }}</th>" +
+                "<th>{{ lang._('New Version') }}</th><th>{{ lang._('Required Action') }}</th></tr>");
                 $.each(data['all_packages'], function (index, row) {
                     $('#updatelist > tbody').append('<tr><td>'+row['name']+'</td>' +
-                    '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
-                    row['reason'] + '</td></tr>');
+                    '<td>'+row['repository']+'</td><td>'+row['old']+'</td><td>' +
+                    row['new']+'</td><td>'+row['reason'] + '</td></tr>');
 
                     if (row['name'] == data['product_name'] && row['new'] != 'N/A') {
                         $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
@@ -359,7 +359,7 @@
 
             var local_count = 0;
             var plugin_count = 0;
-            var missing_plugins = 0;
+            var broken_plugins = 0;
             var changelog_count = 0;
             var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
@@ -415,11 +415,12 @@
                     status_text = ' ({{ lang._('misconfigured') }})';
                     bold_on = '<b>';
                     bold_off = '</b>';
+                    broken_plugins = 1;
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
                     bold_on = '<span class="text-danger plugin_missing"><b>';
                     bold_off = '</b></span>';
-                    missing_plugins = 1;
+                    broken_plugins = 1;
                 } else if (row['installed'] == "1") {
                     status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
@@ -461,7 +462,7 @@
             $("#plugin_search").keyup();
             $("#package_search").keyup();
 
-            if (missing_plugins) {
+            if (broken_plugins) {
                 $('#plugin_actions').show();
             } else {
                 $('#plugin_actions').hide();
@@ -815,6 +816,7 @@
                                 <td colspan="2" style="vertical-align:middle">
                                     <strong><div class="updatestatus"></div></strong>
                                 </td>
+                                <td></td>
                             </tr>
                         </tfoot>
                     </table>
