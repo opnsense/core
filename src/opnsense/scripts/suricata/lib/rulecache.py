@@ -82,7 +82,14 @@ class RuleCache(object):
                                     # step into metadata
                                     src_pointer = src_pointer['metadata']
                                     src_section = section_name.split('metadata_', 1)[1]
-                                rule_data = src_pointer[src_section] if src_section in src_pointer else None
+
+                                if  src_section in src_pointer:
+                                    rule_data = src_pointer[src_section]
+                                elif src_section in rule['metadata']:
+                                    # metadata field is actually a rule field (category)
+                                    rule_data = rule['metadata'][src_section]
+                                else:
+                                    rule_data = None
                                 if rule_data not in configured_policies[policy_id][section_name]:
                                     is_matched = False
                         if is_matched:
