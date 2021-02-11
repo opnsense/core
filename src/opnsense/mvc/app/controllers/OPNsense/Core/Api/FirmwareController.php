@@ -79,7 +79,6 @@ class FirmwareController extends ApiControllerBase
 
         $backend = new Backend();
         $type_have = trim($backend->configdRun('firmware type name'));
-        $backend->configdRun('firmware changelog fetch'); // XXX MOVE TO check.sh
         $args = array();
 
         if (!empty($type_have) && $type_have !== $type_want) {
@@ -88,7 +87,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
-            $response['msg_uuid'] = trim($backend->configdpRun('firmware checkbg', $args, true));
+            $response['msg_uuid'] = trim($backend->configdpRun('firmware check', $args, true));
         } else {
             $response['status'] = 'failure';
         }
@@ -217,10 +216,7 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
 
-            if (array_key_exists('connection', $response) && $response['connection'] == 'busy') {
-                $response['status_msg'] = gettext('The package manager is not responding.');
-                $response['status'] = 'error';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
+            if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unauthenticated') {
@@ -250,13 +246,6 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (
-                array_key_exists(0, $response['upgrade_packages']) &&
-                $response['upgrade_packages'][0]['name'] == 'pkg'
-            ) {
-                $response['status_upgrade_action'] = 'pkg';
-                $response['status'] = 'ok';
-                $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
             } elseif (array_key_exists('updates', $response) && $response['updates'] != 0) {
                 if (count($args)) {
                     $response['status_msg'] = gettext('The release type requires an update.');
@@ -425,9 +414,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
         if ($this->request->hasPost('upgrade')) {
             $response['status'] = 'ok';
-            if ($this->request->getPost('upgrade') == 'pkg') {
-                $action = 'firmware upgrade pkg';
-            } elseif ($this->request->getPost('upgrade') == 'maj') {
+            if ($this->request->getPost('upgrade') == 'maj') {
                 $action = 'firmware upgrade maj';
             } elseif ($this->request->getPost('upgrade') == 'rel') {
                 $action = 'firmware type install ' . escapeshellarg($type_want);

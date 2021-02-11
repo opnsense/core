@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
-# connection: error|timeout|unauthenticated|misconfigured|unresolved|busy|ok
+# connection: error|timeout|unauthenticated|misconfigured|unresolved|ok
 # repository: error|untrusted|unsigned|revoked|incomplete|ok
 # last_ckeck: <date_time_stamp>
 # updates: <num_of_updates>
@@ -39,6 +39,9 @@
 
 JSONFILE="/tmp/pkg_upgrade.json"
 LOCKFILE="/tmp/pkg_upgrade.progress"
+OUTFILE="/tmp/pkg_update.out"
+PACKAGE=${1}
+TEE="/usr/bin/tee -a"
 
 rm -f ${JSONFILE}
 : > ${LOCKFILE}
@@ -53,119 +56,83 @@ linecount=0
 packages_downgraded=""
 packages_new=""
 packages_upgraded=""
-pkg_selected=${1}
-pkg_upgraded=""
 repository="error"
-timeout_update=30
-timeout_upgrade=60
 updates=""
 upgrade_needs_reboot="0"
 
-pidfile=/tmp/pkg_update.pid
-outfile=/tmp/pkg_update.out
-
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 
-pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
+echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
+if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
+	echo "done" >> ${LOCKFILE}
+fi
 
-if [ -z "${pkg_running}" ]; then
-      timer=${timeout_update}
-      pkg_running="started"
-      : > ${outfile}
+      : > ${OUTFILE}
+      (pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-      daemon -p ${pidfile} -o ${outfile} pkg update -f
+      (pkg upgrade -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
+      # XXX Do we have to upgrade again?
 
-      while [ -n "${pkg_running}" -a $timer -ne 0 ]; do
-        sleep 1
-        pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
-        timer=$(expr $timer - 1)
-      done
-
-      if [ $timer -eq 0 ]; then
-        # We have a connection issue and could not
-        # reach the pkg repository in timely fashion
-        # Kill all running pkg instances
-        pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
-        if [ -n "${pkg_running}" ]; then
-          pkill -F ${pidfile}
-        fi
-        connection="timeout"
-      else
         # parse early errors
-        if grep -q 'No address record' ${outfile}; then
+        if grep -q 'No address record' ${OUTFILE}; then
           # DNS resolution failed
           connection="unresolved"
-          timer=0
-        elif grep -q 'Cannot parse configuration' ${outfile}; then
+        elif grep -q 'Cannot parse configuration' ${OUTFILE}; then
           # configuration error
           connection="misconfigured"
-          timer=0
-        elif grep -q 'Authentication error' ${outfile}; then
+        elif grep -q 'Authentication error' ${OUTFILE}; then
           # TLS or authentication error
           connection="unauthenticated"
-          timer=0
-        elif grep -q 'No trusted public keys found' ${outfile}; then
+        elif grep -q 'No trusted public keys found' ${OUTFILE}; then
           # fingerprint mismatch
           repository="untrusted"
           connection="ok"
-          timer=0
-        elif grep -q 'At least one of the certificates has been revoked' ${outfile}; then
+        elif grep -q 'At least one of the certificates has been revoked' ${OUTFILE}; then
           # fingerprint mismatch
           repository="revoked"
           connection="ok"
-          timer=0
-        elif grep -q 'No signature found' ${outfile}; then
+        elif grep -q 'No signature found' ${OUTFILE}; then
           # fingerprint not found
           repository="unsigned"
           connection="ok"
-          timer=0
-        elif grep -q 'Unable to update repository' ${outfile}; then
+        elif grep -q 'Unable to update repository' ${OUTFILE}; then
           # repository not found
           connection="ok"
-          timer=0
-        fi
-      fi
+        elif [ 1 -eq 0 ]; then # XXX emulate timeouts
+          # We have a connection issue and could not
+          # reach the pkg repository in timely fashion
+          # Kill all running pkg instances
+          connection="timeout"
+	else
+          # connection is still ok
+          connection="ok"
 
-      if [ $timer -gt 0 ]; then
-        # connection is still ok
-        connection="ok"
-
-        timer=$timeout_upgrade
-        pkg_running="started"
-        : > ${outfile}
+        : > ${OUTFILE}
 
         # now check what happens when we would go ahead
-        if [ -z "${pkg_selected}" ]; then
-            daemon -p ${pidfile} -o ${outfile} pkg upgrade -n
-        else
+        if [ -n "${PACKAGE}" ]; then
             # fetch before install lets us know more,
             # although not as fast as it should be...
-            pkg fetch -y "${pkg_selected}" > /dev/null 2>&1
-            daemon -p ${pidfile} -o ${outfile} pkg install -n "${pkg_selected}"
+            (pkg fetch -Uy "${PACKAGE}" 2>&1) | ${TEE} ${LOCKFILE}
+            (pkg install -Un "${PACKAGE}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+        else
+            (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
         fi
 
-        while [ -n "${pkg_running}" -a $timer -ne 0 ]; do
-          sleep 1
-          pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
-          timer=$(expr $timer - 1)
-        done
-
-        ## check if timeout is not reached
-        if [ $timer -gt 0 ]; then
           # Check for additional repository errors
-          if grep -q 'Unable to update repository' ${outfile}; then
+          if grep -q 'Unable to update repository' ${OUTFILE}; then
             repository="error" # already set but reset here for clarity
-          elif grep -q "No packages available to install matching..${pkg_selected}" ${outfile}; then
+          elif grep -q "No packages available to install matching..${PACKAGE}" ${OUTFILE}; then
             repository="incomplete"
           else
             # Repository can be used for updates
             repository="ok"
-            updates=$(grep 'The following' ${outfile} | awk -F '[ ]' '{print $3}')
+            updates=$(grep 'The following' ${OUTFILE} | awk -F '[ ]' '{print $3}')
             if [ -z "${updates}" ]; then
               # There are no updates
               updates="0"
             else
-              download_size=$(grep 'to be downloaded' ${outfile} | awk -F '[ ]' '{print $1$2}')
+              download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}')
 
               # see if packages indicate a new version (not revision) of base / kernel
               LQUERY=$(pkg query %v opnsense-update)
@@ -177,7 +144,7 @@ if [ -z "${pkg_running}" ]; then
 
               MODE=
 
-              for i in $(cat ${outfile} | tr '[' '(' | cut -d '(' -f1); do
+              for i in $(cat ${OUTFILE} | tr '[' '(' | cut -d '(' -f1); do
                 case ${MODE} in
                 DOWNGRADED:)
                   if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
@@ -261,10 +228,6 @@ if [ -z "${pkg_running}" ]; then
                     else
                       i=$(echo $i | tr -d :)
                       if [ -z "$packages_upgraded" ]; then
-                        if [ "$i" = "pkg" ]; then
-                          # prevents leaking base / kernel advertising here
-                          pkg_upgraded="yes"
-                        fi
                         packages_upgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
@@ -301,7 +264,7 @@ if [ -z "${pkg_running}" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "${pkg_upgraded}${pkg_selected}" ]; then
+            if [ -n "${PACKAGE}" ]; then
               base_to_reboot=
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
@@ -327,7 +290,7 @@ if [ -z "${pkg_running}" ]; then
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "${pkg_upgraded}${pkg_selected}" ]; then
+            if [ -n "${PACKAGE}" ]; then
               kernel_to_reboot=
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
@@ -352,15 +315,7 @@ if [ -z "${pkg_running}" ]; then
               fi
             fi
           fi
-        else
-          # We have a connection issue and could not reach the pkg repository in timely fashion
-          # Kill all running pkg instances
-          pkg_running=$(pgrep -nF ${pidfile} 2> /dev/null)
-          if [ -n "${pkg_running}" ]; then
-            pkill -F ${pidfile}
-          fi
         fi
-      fi
 
       # XXX use opnsense-update -SRp to check for download size before advertising
       upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
@@ -370,9 +325,6 @@ if [ -z "${pkg_running}" ]; then
       product_name=$(opnsense-version -n)
       os_version=$(uname -sr)
       last_check=$(date)
-else
-  connection=busy
-fi
 
 # write our json structure
 cat > ${JSONFILE} << EOF
@@ -395,8 +347,5 @@ cat > ${JSONFILE} << EOF
 	"upgrade_packages":[$packages_upgraded]
 }
 EOF
-
-cat ${JSONFILE}
-cat ${JSONFILE} >> ${LOCKFILE}
 
 echo '***DONE***' >> ${LOCKFILE}

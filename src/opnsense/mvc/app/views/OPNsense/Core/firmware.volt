@@ -74,12 +74,7 @@
 
             if (data['status'] == "ok") {
                 $.upgrade_action = data['status_upgrade_action'];
-                if (data['status_upgrade_action'] != 'pkg') {
-                    $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
-                } else {
-                    $.upgrade_needs_reboot = 0;
-                }
-
+                $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
                 $.upgrade_show_log = '';
 
                 // show upgrade list
@@ -301,10 +296,7 @@
                 $('#updatetab_progress').removeClass("fa fa-cog fa-spin");
                 $('#major-upgrade').hide();
                 $('#upgrade_maj').prop('disabled', true);
-                if ($.upgrade_action == 'pkg') {
-                    // update UI and delay update to avoid races
-                    setTimeout(updateStatus, 1000);
-                } else if ($.upgrade_action == 'check') {
+                if ($.upgrade_action == 'check') {
                     updateStatus();
                 } else {
                     packagesInfo(true);

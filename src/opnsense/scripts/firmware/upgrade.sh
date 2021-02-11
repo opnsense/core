@@ -26,15 +26,15 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
+PACKAGE=${1}
 REBOOT=
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO UPGRADE: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO UPGRADE: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
 
-if [ "$PACKAGE" == "all" ]; then
+if [ "${PACKAGE}" == "all" ]; then
 	# update all installed packages
 	opnsense-update -p >> ${PKG_PROGRESS_FILE} 2>&1
 	# restart the web server
@@ -45,7 +45,7 @@ if [ "$PACKAGE" == "all" ]; then
 			REBOOT=1
 		fi
 	fi
-elif [ "$PACKAGE" == "maj" ]; then
+elif [ "${PACKAGE}" == "maj" ]; then
 	# extract info for major upgrade
 	UPGRADE="/usr/local/opnsense/firmware-upgrade"
 	NAME=unknown
@@ -60,10 +60,8 @@ elif [ "$PACKAGE" == "maj" ]; then
 	fi
 	# second half reboots multiple times,
 	# but will snap the GUI back when done
-elif [ "$PACKAGE" == "pkg" ]; then
-	pkg upgrade -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
 else
-	echo "Cannot update $PACKAGE" >> ${PKG_PROGRESS_FILE}
+	echo "Cannot update ${PACKAGE}" >> ${PKG_PROGRESS_FILE}
 fi
 
 if [ -n "${REBOOT}" ]; then
