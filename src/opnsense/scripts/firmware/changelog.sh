@@ -52,8 +52,6 @@ changelog_fetch()
 
 	URL="${URLPREFIX}/sets/changelog.txz"
 
-	echo $URL && exit 1
-
 	rm -rf ${WORKDIR}
 	mkdir -p ${WORKDIR}
 
