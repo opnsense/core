@@ -327,6 +327,7 @@
      * show package info
      */
     function packagesInfo(reset, keep) {
+        $("#statustab_progress").addClass("fa fa-cog fa-spin");
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
@@ -335,6 +336,8 @@
             $.each(data['product'], function(key, value) {
                 $('#' + key).text(value);
             });
+
+            $("#statustab_progress").removeClass("fa fa-cog fa-spin");
 
             if (reset === true) {
                 ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
@@ -790,7 +793,7 @@
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }}</a></li>
+                <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }} <i id="statustab_progress"></i></a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }} <i id="settingstab_progress"></i></a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
