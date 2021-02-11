@@ -131,7 +131,7 @@
             $.upgrade_action = 'check';
         } else {
             $.upgrade_action = 'backend';
-	}
+        }
         $('#updatelist').hide();
         $('#update_status').html('');
         $('#update_status_container').show();
@@ -455,6 +455,8 @@
             }
 
             $('#audit_actions').show();
+            $("#plugin_search").keyup();
+            $("#package_search").keyup();
 
             if (missing_plugins) {
                 $('#plugin_actions').show();
@@ -616,8 +618,8 @@
         // populate package information
         packagesInfo(true);
 
-        $("#plugin_search_box").keyup(function () { generic_search(this, 'plugin_entry'); });
-        $("#package_search_box").keyup(function () { generic_search(this, 'package_entry'); });
+        $("#plugin_search").keyup(function () { generic_search(this, 'plugin_entry'); });
+        $("#package_search").keyup(function () { generic_search(this, 'package_entry'); });
 
         ajaxGet('/api/core/firmware/running', {}, function(data, status) {
             // if action is already running reattach now...
@@ -912,7 +914,7 @@
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
                         <thead>
                             <tr>
-                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" id="plugin_search_box" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Size') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
@@ -927,7 +929,7 @@
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
                         <thead>
                             <tr>
-                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" id="package_search_box" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" autocomplete="off" id="package_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Size') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
