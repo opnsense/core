@@ -27,6 +27,18 @@
 
 <script>
 
+    function generic_search(that, entries) {
+        var search = $(that).val().toLowerCase();
+        $('.' + entries).each(function () {
+            let name = $(this).find('td').first().text().toLowerCase();
+            if (search.length != 0 && name.indexOf(search) == -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    }
+
     function updateDismiss() {
         $('#statustab > a').tab('show');
         $('#updatelist').hide();
@@ -399,7 +411,7 @@
                     return 1;
                 }
                 $('#packageslist > tbody').append(
-                    '<tr>' +
+                    '<tr class="package_entry">' +
                     '<td>' + row['name'] + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
@@ -456,7 +468,7 @@
                     status_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist > tbody').append(
-                    '<tr>' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
+                    '<tr class="plugin_entry">' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
                     '<td>' + bold_on + row['version'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['repository'] + bold_off + '</td>' +
@@ -644,6 +656,9 @@
 
         // populate package information
         packagesInfo(true);
+
+        $("#plugin_search_box").keyup(function () { generic_search(this, 'plugin_entry'); });
+        $("#package_search_box").keyup(function () { generic_search(this, 'package_entry'); });
 
         ajaxGet('/api/core/firmware/running', {}, function(data, status) {
             // if action is already running reattach now...
@@ -937,35 +952,33 @@
                 </div>
                 <div id="plugins" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
-                      <thead>
-                        <tr>
-                          <th>{{ lang._('Name') }}</th>
-                          <th>{{ lang._('Version') }}</th>
-                          <th>{{ lang._('Size') }}</th>
-                          <th>{{ lang._('Repository') }}</th>
-                          <th>{{ lang._('Comment') }}</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" id="plugin_search_box" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle">{{ lang._('Version') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Size') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Comment') }}</th>
+                                <th style="vertical-align:middle"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div id="packages" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
                         <thead>
-                          <tr>
-                              <th>{{ lang._('Name') }}</th>
-                              <th>{{ lang._('Version') }}</th>
-                              <th>{{ lang._('Size') }}</th>
-                              <th>{{ lang._('Repository') }}</th>
-                              <th>{{ lang._('License') }}</th>
-                              <th>{{ lang._('Comment') }}</th>
-                              <th></th>
+                            <tr>
+                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" id="package_search_box" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle">{{ lang._('Version') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Size') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('License') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Comment') }}</th>
+                                <th style="vertical-align:middle"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div id="changelog" class="tab-pane">
