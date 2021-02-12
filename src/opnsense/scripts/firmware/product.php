@@ -33,7 +33,7 @@ $ret = json_decode(@file_get_contents($metafile), true);
 if ($ret != null) {
     $ret['product_crypto'] = trim(shell_exec('opnsense-version -f'));
     $ret['product_mirror'] = preg_replace('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', '/subscription-key/', trim(shell_exec('opnsense-update -M')));
-    $ret['product_time'] = date(DATE_RFC2822, filemtime($metafile));
+    $ret['product_time'] = date('D M j G:i:s T Y', filemtime($metafile));
     $repos = explode("\n", trim(shell_exec('opnsense-verify -l')));
     sort($repos);
     $ret['product_repos'] = implode(', ', $repos);

@@ -28,9 +28,9 @@
 <script>
 
     function generic_search(that, entries) {
-        var search = $(that).val().toLowerCase();
+        let search = $(that).val();
         $('.' + entries).each(function () {
-            let name = $(this).find('td').first().text().toLowerCase();
+            let name = $(this).text();
             if (search.length != 0 && name.indexOf(search) == -1) {
                 $(this).hide();
             } else {
@@ -334,7 +334,15 @@
             var installed = {};
 
             $.each(data['product'], function(key, value) {
-                $('#' + key).text(value);
+                if (key == 'product_check') {
+                    if (value != null) {
+                        $('#product_time_check').text(value['last_check']);
+                    } else {
+                        $('#product_time_check').text("{{ lang._('N/A') }}");
+                    }
+                } else {
+                    $('#' + key).text(value);
+                }
             });
 
             $("#statustab_progress").removeClass("fa fa-cog fa-spin");
@@ -626,13 +634,12 @@
         $("#package_search").keyup(function () { generic_search(this, 'package_entry'); });
 
         ajaxGet('/api/core/firmware/running', {}, function(data, status) {
-            // if action is already running reattach now...
             if (data['status'] == 'busy') {
-                backend('upgrade', {upgrade:$.upgrade_action});
-            // dashboard link: run check automatically
+                // if action is already running reattach now...
+                backend('audit');
             } else if (window.location.hash == '#checkupdate') {
-                // update UI and delay update to avoid races
-                setTimeout(updateStatus, 1000);
+                // dashboard link: run check automatically after delay
+                setTimeout(function () { backend('check'); }, 1000);
             }
         });
 
@@ -854,8 +861,14 @@
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('Commit hash') }}</td>
+                                <td style="width: 150px;">{{ lang._('Commit') }}</td>
                                 <td id="product_hash"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Mirror') }}</td>
+                                <td id="product_mirror"></td>
                                 <td></td>
                             </tr>
                             <tr>
@@ -866,14 +879,14 @@
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('Mirror URL') }}</td>
-                                <td id="product_mirror"></td>
+                                <td style="width: 150px;">{{ lang._('Updated on') }}</td>
+                                <td id="product_time"></td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('Updated on') }}</td>
-                                <td id="product_time"></td>
+                                <td style="width: 150px;">{{ lang._('Checked on') }}</td>
+                                <td id="product_time_check"></td>
                                 <td></td>
                             </tr>
                             <tr>
