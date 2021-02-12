@@ -25,16 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
 
 : > ${LOCKFILE}
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg audit -F > ${PIPEFILE} 2>&1
-sleep 1 # give the system time to flush the buffer to console
+(pkg audit -F 2>&1) | ${TEE} ${LOCKFILE}
 echo '***DONE***' >> ${LOCKFILE}
