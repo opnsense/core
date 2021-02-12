@@ -1273,7 +1273,7 @@ endif; ?>
                         endforeach; ?>
                         </select>
                         <div class="hidden" data-for="help_for_compression">
-                            <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
+                            <?=gettext("Compress tunnel packets using the LZ4/LZO algorithm. The LZ4 generally offers the best preformance with least CPU usage. For backwards compatibility use the LZO (which is identical to the older option --comp-lzo yes). In the partial mode (the option --compress with an empty algorithm) compression is turned off, but the packet framing for compression is still enabled, allowing a different setting to be pushed later. The legacy LZO algorithm with adaptive compression mode will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
                         </div>
                       </td>
                     </tr>
