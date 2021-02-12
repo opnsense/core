@@ -282,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             !(is_ipaddrv4($pconfig['tunnel_local']) && is_ipaddrv4($pconfig['tunnel_remote'])) &&
             !(is_ipaddrv6($pconfig['tunnel_local']) && is_ipaddrv6($pconfig['tunnel_remote']))
         ) {
-            $input_errors[] = gettext('A valid local network IP address must be specified.');
+            $input_errors[] = gettext("A valid local network IP address must be specified.");
             $input_errors[] = gettext("A valid remote network IP address must be specified.");
         }
     }
@@ -312,7 +312,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         /* User is adding phase 2 for site-to-site phase1 */
         foreach ($config['ipsec']['phase2'] as $key => $name) {
-            if (!isset($name['mobile']) && $pconfig['ikeid'] == $name['ikeid'] && $pconfig['uniqid'] != $name['uniqid']) {
+            if (!isset($name['mobile']) && $pconfig['mode'] != 'route-based' &&
+                    $pconfig['ikeid'] == $name['ikeid'] && $pconfig['uniqid'] != $name['uniqid']) {
                 /* check duplicate subnets only for given phase1 */
                 $localid_data = ipsec_idinfo_to_cidr($name['localid'], false, $name['mode']);
                 $remoteid_data = ipsec_idinfo_to_cidr($name['remoteid'], false, $name['mode']);
