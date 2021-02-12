@@ -40,7 +40,6 @@
 JSONFILE="/tmp/pkg_upgrade.json"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
-PACKAGE=${1}
 TEE="/usr/bin/tee -a"
 UPSTREAM="OPNsense"
 
@@ -66,6 +65,12 @@ product_version=$(opnsense-version -v)
 os_version=$(uname -sr)
 last_check=$(date)
 
+SUFFIX="-$(pluginctl -g system.firmware.type)"
+if [ "${SUFFIX}" = "-" ]; then
+	SUFFIX=
+fi
+PACKAGE=opnsense${SUFFIX}
+
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 
 echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
@@ -73,9 +78,11 @@ if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; 
 	echo "done" >> ${LOCKFILE}
 fi
 
-if [ -n "${PACKAGE}" -a "${product_name}" = "${PACKAGE}" ]; then
+if [ "${product_name}" = "${PACKAGE}" ]; then
 	echo "A release type change is not required." >> ${LOCKFILE}
 	PACKAGE=
+else
+	echo "Targeting new release type: ${PACKAGE}" >> ${LOCKFILE}
 fi
 
       : > ${OUTFILE}

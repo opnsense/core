@@ -67,19 +67,12 @@ class FirmwareController extends ApiControllerBase
      */
     public function checkAction()
     {
-        $response = array();
-
-        $config = Config::getInstance()->object();
-        $type = 'opnsense';
-        if (!empty($config->system->firmware->type)) {
-            $type .= '-' . (string)$config->system->firmware->type;
-        }
-
         $this->sessionClose(); // long running action, close session
+        $response = [];
 
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $response['msg_uuid'] = trim($backend->configdpRun('firmware check', [ $type ], true));
+            $response['msg_uuid'] = trim($backend->configdRun('firmware check', true));
             $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
