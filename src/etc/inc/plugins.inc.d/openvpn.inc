@@ -137,9 +137,15 @@ function openvpn_compression_modes()
 {
     return array(
         '' => gettext('No Preference'),
-        'no' => gettext('Disabled - No Compression'),
-        'adaptive' => gettext('Enabled with Adaptive Compression'),
-        'yes' => gettext('Enabled without Adaptive Compression'),
+        'pfc' => sprintf(gettext('Partial - Packet framing for compression (%s)'), '--compress'),
+        'lz4' => sprintf(gettext('Enabled - LZ4 algorithm (%s)'), '--compress lz4'),
+        'lz4-v2' => sprintf(gettext('Enabled - LZ4 v2 algorithm (%s)'), '--compress lz4-v2'),
+        'lzo' => sprintf(gettext('Enabled - LZO algorithm (%s)'), '--compress lzo'),
+        'stub' => sprintf(gettext('Enabled - Stub algorithm (%s)'), '--compress stub'),
+        'stub-v2' => sprintf(gettext('Enabled - Stub v2 algorithm (%s)'), '--compress stub-v2'),
+        'no' => sprintf(gettext('Legacy - Disabled LZO algorithm (%s)'), '--comp-lzo no'),
+        'adaptive' => sprintf(gettext('Legacy - Enabled LZO algorithm with adaptive compression (%s)'), '--comp-lzo adaptive'),
+        'yes' => sprintf(gettext('Legacy - Enabled LZO algorithm without adaptive compression (%s)'), '--comp-lzo yes'),
     );
 }
 
@@ -908,7 +914,19 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (!empty($settings['compression'])) {
-        $conf .= "comp-lzo {$settings['compression']}\n";
+        switch ($settings['compression']) {
+            case 'no':
+            case 'adaptive':
+            case 'yes':
+                $conf .= "comp-lzo {$settings['compression']}\n";
+                break;
+            case 'pfc':
+                $conf .= "compress\n";
+                break;
+            default:
+                $conf .= "compress {$settings['compression']}\n";
+                break;
+        }
     }
 
     if ($settings['passtos']) {
