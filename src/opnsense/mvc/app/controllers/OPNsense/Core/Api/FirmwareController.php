@@ -70,24 +70,17 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         $config = Config::getInstance()->object();
-        $type_want = 'opnsense';
+        $type = 'opnsense';
         if (!empty($config->system->firmware->type)) {
-            $type_want .= '-' . (string)$config->system->firmware->type;
+            $type .= '-' . (string)$config->system->firmware->type;
         }
 
         $this->sessionClose(); // long running action, close session
 
-        $backend = new Backend();
-        $type_have = trim($backend->configdRun('firmware type name'));
-        $args = array();
-
-        if (!empty($type_have) && $type_have !== $type_want) {
-            $args[] = $type_want;
-        }
-
         if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response['msg_uuid'] = trim($backend->configdpRun('firmware check', [ $type ], true));
             $response['status'] = 'ok';
-            $response['msg_uuid'] = trim($backend->configdpRun('firmware check', $args, true));
         } else {
             $response['status'] = 'failure';
         }
@@ -101,12 +94,6 @@ class FirmwareController extends ApiControllerBase
      */
     public function statusAction()
     {
-        $config = Config::getInstance()->object();
-        $type_want = 'opnsense';
-        if (!empty($config->system->firmware->type)) {
-            $type_want .= '-' . (string)$config->system->firmware->type;
-        }
-
         $backend = new Backend();
         $args = [];
 
@@ -114,9 +101,8 @@ class FirmwareController extends ApiControllerBase
         if ($response != null && $response['product_check'] != null) {
             $response = $response['product_check'];
 
-            $type_have = $response['product_name'];
-            if (!empty($type_have) && $type_have !== $type_want) {
-                $args[] = $type_want;
+            if (!empty($response['check_package']) && $response['product_name'] != $response['check_package']) {
+                $args[] = $response['check_package'];
             }
 
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
@@ -245,7 +231,7 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
                 $response['status_msg'] = gettext('The repository has no fingerprint.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete') {
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete' && count($args)) {
                 $response['status_msg'] = sprintf(gettext('The package "%s" is not available on this repository.'), $args[0]);
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {

@@ -61,11 +61,21 @@ repository="error"
 updates=""
 upgrade_needs_reboot="0"
 
+product_name=$(opnsense-version -n)
+product_version=$(opnsense-version -v)
+os_version=$(uname -sr)
+last_check=$(date)
+
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 
 echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
 	echo "done" >> ${LOCKFILE}
+fi
+
+if [ -n "${PACKAGE}" -a "${product_name}" = "${PACKAGE}" ]; then
+	echo "A release type change is not required." >> ${LOCKFILE}
+	PACKAGE=
 fi
 
       : > ${OUTFILE}
@@ -329,11 +339,6 @@ fi
       # XXX use opnsense-update -SRp to check for download size before advertising
       upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
       upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
-
-      product_version=$(opnsense-version -v)
-      product_name=$(opnsense-version -n)
-      os_version=$(uname -sr)
-      last_check=$(date)
 
 # write our json structure
 cat > ${JSONFILE} << EOF
