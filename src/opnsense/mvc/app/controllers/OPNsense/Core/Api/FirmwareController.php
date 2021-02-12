@@ -396,23 +396,23 @@ class FirmwareController extends ApiControllerBase
     public function upgradeAction()
     {
         $config = Config::getInstance()->object();
-        $type_want = 'opnsense';
+        $type = 'opnsense';
         if (!empty($config->system->firmware->type)) {
-            $type_want .= '-' . (string)$config->system->firmware->type;
+            $type .= '-' . (string)$config->system->firmware->type;
         }
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
         if ($this->request->hasPost('upgrade')) {
-            $response['status'] = 'ok';
             if ($this->request->getPost('upgrade') == 'maj') {
                 $action = 'firmware upgrade maj';
             } elseif ($this->request->getPost('upgrade') == 'rel') {
-                $action = 'firmware type install ' . escapeshellarg($type_want);
+                $action = 'firmware upgrade ' . escapeshellarg($type);
             } else {
                 $action = 'firmware upgrade all';
             }
             $response['msg_uuid'] = trim($backend->configdRun($action, true));
+            $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
         }

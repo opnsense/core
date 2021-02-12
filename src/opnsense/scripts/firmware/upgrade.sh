@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -61,7 +61,10 @@ elif [ "${PACKAGE}" == "maj" ]; then
 	# second half reboots multiple times,
 	# but will snap the GUI back when done
 else
-	echo "Cannot update ${PACKAGE}" >> ${PKG_PROGRESS_FILE}
+	# change the release type
+	opnsense-update -t ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+	# restart the web server
+	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
 fi
 
 if [ -n "${REBOOT}" ]; then

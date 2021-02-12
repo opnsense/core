@@ -38,7 +38,6 @@ remove
 resync
 security
 sync
-type
 unlock
 upgrade
 "
