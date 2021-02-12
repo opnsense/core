@@ -26,14 +26,11 @@
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
 MTREE="mtree -e -p /"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
 TMPFILE=/tmp/pkg_check.exclude
 UPSTREAM="OPNsense"
 
 : > ${LOCKFILE}
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
 
 MTREE_PATTERNS="
 ./etc/group
@@ -70,38 +67,30 @@ set_check()
 
 	VER=$(opnsense-version -v ${SET})
 
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	echo ">>> Check installed ${SET} version" > ${PIPEFILE}
+	echo ">>> Check installed ${SET} version" | ${TEE} ${LOCKFILE}
 
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Failed to determine version info." > ${PIPEFILE}
+		echo "Failed to determine version info." | ${TEE} ${LOCKFILE}
 	elif [ "${VER}" != "${VERSION}" ]; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Version ${VER} is incorrect, expected: ${VERSION}" > ${PIPEFILE}
+		echo "Version ${VER} is incorrect, expected: ${VERSION}" | ${TEE} ${LOCKFILE}
 	else
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Version ${VER} is correct." > ${PIPEFILE}
+		echo "Version ${VER} is correct." | ${TEE} ${LOCKFILE}
 	fi
 
 	FILE=/usr/local/opnsense/version/${SET}.mtree
 
 	if [ ! -f ${FILE} ]; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Cannot verify ${SET}: missing ${FILE}" > ${PIPEFILE}
+		echo "Cannot verify ${SET}: missing ${FILE}" | ${TEE} ${LOCKFILE}
 		return
 	fi
 
 	if [ ! -f ${FILE}.sig ]; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Cannot verify ${SET}: missing ${FILE}.sig" > ${PIPEFILE}
+		echo "Cannot verify ${SET}: missing ${FILE}.sig" | ${TEE} ${LOCKFILE}
 	elif ! opnsense-verify -q ${FILE}; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Cannot verify ${SET}: invalid ${FILE}.sig" > ${PIPEFILE}
+		echo "Cannot verify ${SET}: invalid ${FILE}.sig" | ${TEE} ${LOCKFILE}
 	fi
 
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	echo ">>> Check for missing or altered ${SET} files" > ${PIPEFILE}
+	echo ">>> Check for missing or altered ${SET} files" | ${TEE} ${LOCKFILE}
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
@@ -113,19 +102,14 @@ set_check()
 
 	if [ ${MTREE_RET} -eq 0 ]; then
 		if [ "${MTREE_MIA}" = "0" ]; then
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "No problems detected." > ${PIPEFILE}
+			echo "No problems detected." | ${TEE} ${LOCKFILE}
 		else
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "Missing files: ${MTREE_MIA}" > ${PIPEFILE}
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "${MTREE_OUT}" > ${PIPEFILE}
+			echo "Missing files: ${MTREE_MIA}" | ${TEE} ${LOCKFILE}
+			echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
 		fi
 	else
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Error ${MTREE_RET} ocurred." > ${PIPEFILE}
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "${MTREE_OUT}" > ${PIPEFILE}
+		echo "Error ${MTREE_RET} ocurred." | ${TEE} ${LOCKFILE}
+		echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
 	fi
 
 	rm ${TMPFILE}
@@ -133,28 +117,24 @@ set_check()
 
 core_check()
 {
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	echo ">>> Check for core packages consistency" > ${PIPEFILE}
+	echo ">>> Check for core packages consistency" | ${TEE} ${LOCKFILE}
 
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
 	if [ -z "$(pkg query %n ${CORE})" ]; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo "Core package \"${CORE}\" not known to package database." > ${PIPEFILE}
+		echo "Core package \"${CORE}\" not known to package database." | ${TEE} ${LOCKFILE}
 		return
 	fi
 
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." > ${PIPEFILE}
+	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
 	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
 		if [ -z "${PROGRESS}" ]; then
-			echo -n "Checking packages: ." > ${PIPEFILE}
+			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
 			PROGRESS=1
 		else
-			echo -n "." > ${PIPEFILE}
+			echo -n "." | ${TEE} ${LOCKFILE}
 		fi
 
 		read REPO LVER AUTO VITA << EOF
@@ -163,30 +143,24 @@ EOF
 
 		if [ "${REPO}" != ${UPSTREAM} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				${TEE} ${LOCKFILE} < ${PIPEFILE} &
-				echo > ${PIPEFILE}
+				echo | ${TEE} ${LOCKFILE}
 			fi
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "${DEP}-${LVER} repository mismatch: ${REPO}" > ${PIPEFILE}
+			echo "${DEP}-${LVER} repository mismatch: ${REPO}" | ${TEE} ${LOCKFILE}
 			PROGRESS=
 		fi
 
 		RVER=$(pkg rquery -r ${UPSTREAM} %v ${DEP})
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				${TEE} ${LOCKFILE} < ${PIPEFILE} &
-				echo > ${PIPEFILE}
+				echo | ${TEE} ${LOCKFILE}
 			fi
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "${DEP}-${LVER} has no upstream equivalent" > ${PIPEFILE}
+			echo "${DEP}-${LVER} has no upstream equivalent" | ${TEE} ${LOCKFILE}
 			PROGRESS=
 		elif [ "${RVER}" != "${LVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				${TEE} ${LOCKFILE} < ${PIPEFILE} &
-				echo > ${PIPEFILE}
+				echo | ${TEE} ${LOCKFILE}
 			fi
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "${DEP}-${LVER} version mismatch, expected ${RVER}" > ${PIPEFILE}
+			echo "${DEP}-${LVER} version mismatch, expected ${RVER}" | ${TEE} ${LOCKFILE}
 			PROGRESS=
 		fi
 
@@ -207,28 +181,23 @@ EOF
 
 		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				${TEE} ${LOCKFILE} < ${PIPEFILE} &
-				echo > ${PIPEFILE}
+				echo | ${TEE} ${LOCKFILE}
 			fi
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" > ${PIPEFILE}
+			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" | ${TEE} ${LOCKFILE}
 			PROGRESS=
 		fi
 
 		if [ "${VITA}" != ${VITAEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				${TEE} ${LOCKFILE} < ${PIPEFILE} &
-				echo > ${PIPEFILE}
+				echo | ${TEE} ${LOCKFILE}
 			fi
-			${TEE} ${LOCKFILE} < ${PIPEFILE} &
-			echo "${DEP}-${LVER} is ${VITASET} to vital" > ${PIPEFILE}
+			echo "${DEP}-${LVER} is ${VITASET} to vital" | ${TEE} ${LOCKFILE}
 			PROGRESS=
 		fi
 	done
 
 	if [ -n "${PROGRESS}" ]; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		echo " done" > ${PIPEFILE}
+		echo " done" | ${TEE} ${LOCKFILE}
 	fi
 }
 
@@ -239,18 +208,12 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 set_check kernel
 set_check base
 
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-echo ">>> Check for missing package dependencies" > ${PIPEFILE}
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg check -dan > ${PIPEFILE} 2>&1
+echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
+(pkg check -dan 2>&1) | ${TEE} ${LOCKFILE}
 
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-echo ">>> Check for missing or altered package files" > ${PIPEFILE}
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg check -sa > ${PIPEFILE} 2>&1
+echo ">>> Check for missing or altered package files" | ${TEE} ${LOCKFILE}
+(pkg check -sa 2>&1) | ${TEE} ${LOCKFILE}
 
 core_check
-
-sleep 1 # give the system time to flush the buffer to console
 
 echo '***DONE***' >> ${LOCKFILE}
