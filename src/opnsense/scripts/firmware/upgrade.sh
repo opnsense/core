@@ -60,11 +60,18 @@ elif [ "${PACKAGE}" == "maj" ]; then
 	fi
 	# second half reboots multiple times,
 	# but will snap the GUI back when done
-else
+elif [ "${PACKAGE}" == "rel" ]; then
+	# figure out the release type from config
+	SUFFIX="-$(pluginctl -g system.firmware.type)"
+	if [ "${SUFFIX}" = "-" ]; then
+		SUFFIX=
+	fi
 	# change the release type
-	opnsense-update -t ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+	opnsense-update -t "opnsense${SUFFIX}" >> ${PKG_PROGRESS_FILE} 2>&1
 	# restart the web server
 	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
+else
+	echo "Cannot update ${PACKAGE}" >> ${PKG_PROGRESS_FILE}
 fi
 
 if [ -n "${REBOOT}" ]; then

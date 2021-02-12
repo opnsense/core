@@ -95,14 +95,14 @@ class FirmwareController extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
-        $args = [];
+        $type = null;
 
         $response = json_decode(trim($backend->configdRun('firmware product')), true);
         if ($response != null && $response['product_check'] != null) {
             $response = $response['product_check'];
 
             if (!empty($response['check_package']) && $response['product_name'] != $response['check_package']) {
-                $args[] = $response['check_package'];
+                $type = $response['check_package'];
             }
 
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
@@ -231,14 +231,14 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
                 $response['status_msg'] = gettext('The repository has no fingerprint.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete' && count($args)) {
-                $response['status_msg'] = sprintf(gettext('The package "%s" is not available on this repository.'), $args[0]);
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete' && !empty($type)) {
+                $response['status_msg'] = sprintf(gettext('The package "%s" is not available on this repository.'), $type);
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] != 0) {
-                if (count($args)) {
+                if (!empty($type)) {
                     $response['status_msg'] = gettext('The release type requires an update.');
                     $response['status_upgrade_action'] = 'rel';
                     $response['status'] = 'ok';
@@ -395,11 +395,6 @@ class FirmwareController extends ApiControllerBase
      */
     public function upgradeAction()
     {
-        $config = Config::getInstance()->object();
-        $type = 'opnsense';
-        if (!empty($config->system->firmware->type)) {
-            $type .= '-' . (string)$config->system->firmware->type;
-        }
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
@@ -407,7 +402,7 @@ class FirmwareController extends ApiControllerBase
             if ($this->request->getPost('upgrade') == 'maj') {
                 $action = 'firmware upgrade maj';
             } elseif ($this->request->getPost('upgrade') == 'rel') {
-                $action = 'firmware upgrade ' . escapeshellarg($type);
+                $action = 'firmware upgrade rel';
             } else {
                 $action = 'firmware upgrade all';
             }
