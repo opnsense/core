@@ -83,6 +83,13 @@ ${NAME})
 	read -p "Press any key to return to menu." WAIT
 	exit 0
 	;;
+[cC])
+	echo
+	/usr/local/opnsense/scripts/firmware/launcher.sh connection
+	echo
+	read -p "Press any key to return to menu." WAIT
+	exit 0
+	;;
 *)
 	exit 0
 	;;

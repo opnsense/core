@@ -25,16 +25,28 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
 
 : > ${LOCKFILE}
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
+
+URL=$(opnsense-update -M)
+HOST=${URL#*://}
+HOST=${HOST%%/*}
+IPV4=$(host -t A ${HOST} | head -n 1 | cut -d\  -f4)
+IPV6=$(host -t AAAA ${HOST} | head -n 1 | cut -d\  -f5)
 
 echo "***GOT REQUEST TO AUDIT CONNECTIVITY***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-pkg -d update -f > ${PIPEFILE} 2>&1
-sleep 1 # give the system time to flush the buffer to console
+echo "Checking connectivity for host: ${HOST}" | ${TEE} ${LOCKFILE}
+if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
+	(ping -c4 ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
+else
+	echo "No IPv4 address could be found." | ${TEE} ${LOCKFILE}
+fi
+if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
+	(ping6 -c4 ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
+else
+	echo "No IPv6 address could be found." | ${TEE} ${LOCKFILE}
+fi
+(pkg update -f 2>&1) | ${TEE} ${LOCKFILE}
 echo '***DONE***' >> ${LOCKFILE}
