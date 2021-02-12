@@ -47,12 +47,10 @@ echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
 if [ -z "${RELEASE}" ]; then
 	# upgrade all packages if possible
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	opnsense-update -p > ${PIPEFILE} 2>&1
+	(opnsense-update -p 2>&1) | ${TEE} ${LOCKFILE}
 
 	# trigger a webgui restart to cope with changes
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	/usr/local/etc/rc.restart_webgui > ${PIPEFILE} 2>&1
+	(/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
 
 	# if we can update base, we'll do that as well
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
