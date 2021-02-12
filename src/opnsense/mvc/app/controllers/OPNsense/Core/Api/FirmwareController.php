@@ -108,16 +108,16 @@ class FirmwareController extends ApiControllerBase
         }
 
         $backend = new Backend();
-        $type_have = trim($backend->configdRun('firmware type name'));
-        $args = array();
-
-        if (!empty($type_have) && $type_have !== $type_want) {
-            $args[] = $type_want;
-        }
+        $args = [];
 
         $response = json_decode(trim($backend->configdRun('firmware product')), true);
         if ($response != null && $response['product_check'] != null) {
             $response = $response['product_check'];
+
+            $type_have = $response['product_name'];
+            if (!empty($type_have) && $type_have !== $type_want) {
+                $args[] = $type_want;
+            }
 
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
             $sets_size = 0;
