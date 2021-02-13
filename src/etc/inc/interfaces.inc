@@ -212,8 +212,6 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
 
 function interface_vlan_configure(&$vlan, $intfs = null)
 {
-    global $config;
-
     if (!is_array($vlan)) {
         log_error('VLAN: called with wrong options. Problems with config!');
         return;
@@ -1666,8 +1664,6 @@ function interface_ipalias_configure(&$vip)
 
 function interface_carp_configure(&$vip)
 {
-    global $config;
-
     if ($vip['mode'] != 'carp') {
         return;
     }
@@ -4020,8 +4016,6 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 
 function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
 {
-    global $config;
-
     /* XXX maybe we should make a proper lookup */
     if (strstr($interface, '_vip')) {
         return get_configured_carp_interface_list($interface, 'inet6');
