@@ -810,11 +810,11 @@
                     <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
                         <thead>
                             <tr>
-			      <th style="width:20%">{{ lang._('Package name') }}</th>
-			      <th style="width:20%">{{ lang._('Repository') }}</th>
-			      <th style="width:20%">{{ lang._('Current version') }}</th>
-			      <th style="width:20%">{{ lang._('New version') }}</th>
-			      <th style="width:20%">{{ lang._('Required action') }}</th>
+                              <th style="width:20%">{{ lang._('Package name') }}</th>
+                              <th style="width:20%">{{ lang._('Repository') }}</th>
+                              <th style="width:20%">{{ lang._('Current version') }}</th>
+                              <th style="width:20%">{{ lang._('New version') }}</th>
+                              <th style="width:20%">{{ lang._('Required action') }}</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
