@@ -126,7 +126,7 @@
     function backend(type, post = {}) {
         if ($.upgrade_action == 'maj') {
             $("#upgrade_maj").attr("style","");
-            $('#updatetab_progress').addClass("fa fa-cog fa-spin");
+            $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
         } else if (type == 'check') {
             $.upgrade_action = 'check';
         } else {
@@ -136,7 +136,7 @@
         $('#update_status').html('');
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('#updatetab_progress').addClass("fa fa-cog fa-spin");
+        $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/' + type, post, function () {
             $('#updatelist > tbody, #updatelist > thead').empty();
@@ -293,7 +293,7 @@
                 }
             }
             if (data['status'] == 'done') {
-                $('#updatetab_progress').removeClass("fa fa-cog fa-spin");
+                $('#updatetab_progress').removeClass("fa fa-spinner fa-pulse");
                 $('#major-upgrade').hide();
                 $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'check') {
@@ -311,7 +311,7 @@
                         dialogRef.setClosable(false);
                         dialogRef.getModalBody().html(
                             "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
-                            ' <i class="fa fa-cog fa-spin"></i>'
+                            ' <i class="fa fa-spinner fa-pulse"></i>'
                         );
                         setTimeout(rebootWait, 45000);
                     },
@@ -327,7 +327,7 @@
      * show package info
      */
     function packagesInfo(reset, keep) {
-        $("#statustab_progress").addClass("fa fa-cog fa-spin");
+        $("#statustab_progress").addClass("fa fa-spinner fa-pulse");
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
@@ -345,7 +345,7 @@
                 }
             });
 
-            $("#statustab_progress").removeClass("fa fa-cog fa-spin");
+            $("#statustab_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (reset === true) {
                 ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
@@ -741,7 +741,7 @@
         });
 
         $("#change_mirror").click(function(){
-            $("#settingstab_progress").addClass("fa fa-cog fa-spin");
+            $("#settingstab_progress").addClass("fa fa-spinner fa-pulse");
             var confopt = {};
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
@@ -752,7 +752,7 @@
                 confopt.subscription = null;
             }
             ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
-                $("#settingstab_progress").removeClass("fa fa-cog fa-spin");
+                $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
                 packagesInfo(true);
             });
         });
