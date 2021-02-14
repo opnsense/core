@@ -38,6 +38,7 @@
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
 JSONFILE="/tmp/pkg_upgrade.json"
+JSONRETURN=${1}
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
 TEE="/usr/bin/tee -a"
@@ -60,29 +61,22 @@ repository="error"
 updates=""
 upgrade_needs_reboot="0"
 
-product_name=$(opnsense-version -n)
-product_version=$(opnsense-version -v)
-os_version=$(uname -sr)
-last_check=$(date)
-
-SUFFIX="-$(pluginctl -g system.firmware.type)"
-if [ "${SUFFIX}" = "-" ]; then
-	SUFFIX=
+product_suffix="-$(pluginctl -g system.firmware.type)"
+if [ "${product_suffix}" = "-" ]; then
+    product_suffix=
 fi
-PACKAGE=opnsense${SUFFIX}
+
+last_check=$(date)
+os_version=$(uname -sr)
+product_id=$(opnsense-version -n)
+product_target=opnsense${product_suffix}
+product_version=$(opnsense-version -v)
 
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 
 echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
-	echo "done" >> ${LOCKFILE}
-fi
-
-if [ "${product_name}" = "${PACKAGE}" ]; then
-	echo "A release type change is not required." >> ${LOCKFILE}
-	PACKAGE=
-else
-	echo "Targeting new release type: ${PACKAGE}" >> ${LOCKFILE}
+    echo "done" >> ${LOCKFILE}
 fi
 
       : > ${OUTFILE}
@@ -121,26 +115,28 @@ fi
           # reach the pkg repository in timely fashion
           # Kill all running pkg instances
           connection="timeout"
-	else
+        else
           # connection is still ok
           connection="ok"
 
         : > ${OUTFILE}
 
         # now check what happens when we would go ahead
-        if [ -n "${PACKAGE}" ]; then
+        if [ "${product_id}" != "${product_target}" ]; then
+            echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
             # fetch before install lets us know more,
             # although not as fast as it should be...
-            (pkg fetch -Uy "${PACKAGE}" 2>&1) | ${TEE} ${LOCKFILE}
-            (pkg install -Un "${PACKAGE}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+            (pkg fetch -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
+            (pkg install -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
         else
+            echo "A release type change is not required." | ${TEE} ${LOCKFILE}
             (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
         fi
 
           # Check for additional repository errors
           if grep -q 'Unable to update repository' ${OUTFILE}; then
             repository="error" # already set but reset here for clarity
-          elif grep -q "No packages available to install matching..${PACKAGE}" ${OUTFILE}; then
+          elif grep -q "No packages available to install matching..${product_target}" ${OUTFILE}; then
             repository="incomplete"
           else
             # Repository can be used for updates
@@ -163,10 +159,10 @@ fi
               MODE=
 
             while read LINE; do
-	      REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
-	      if [ -z "${REPO}" ]; then
-	          REPO=${UPSTREAM}
-	      fi
+              REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
+              if [ -z "${REPO}" ]; then
+                  REPO=${UPSTREAM}
+              fi
               for i in $(echo "${LINE}" | tr '[' '(' | cut -d '(' -f1); do
                 case ${MODE} in
                 DOWNGRADED:)
@@ -286,11 +282,11 @@ fi
                   ;;
                 esac
               done
-	    done < ${OUTFILE}
+            done < ${OUTFILE}
           fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "${PACKAGE}" ]; then
+            if [ "${product_id}" != "${product_target}" ]; then # XXX unhide later
               base_to_reboot=
             elif [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
@@ -316,7 +312,7 @@ fi
             fi
 
             # the main update from package will provide this during upgrade
-            if [ -n "${PACKAGE}" ]; then
+            if [ "${product_id}" != "${product_target}" ]; then # XXX unhide later
               kernel_to_reboot=
             elif [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
@@ -350,14 +346,14 @@ fi
 # write our json structure
 cat > ${JSONFILE} << EOF
 {
-	"check_package":"${PACKAGE}",
 	"connection":"$connection",
 	"downgrade_packages":[$packages_downgraded],
 	"download_size":"$download_size",
 	"last_check":"$last_check",
 	"new_packages":[$packages_new],
 	"os_version":"$os_version",
-	"product_name":"$product_name",
+	"product_target":"$product_target",
+	"product_id":"$product_id",
 	"product_version":"$product_version",
 	"reinstall_packages":[$packages_reinstall],
 	"remove_packages":[$packages_removed],
@@ -369,5 +365,9 @@ cat > ${JSONFILE} << EOF
 	"upgrade_packages":[$packages_upgraded]
 }
 EOF
+
+if [ -n "${JSONRETURN}" ]; then
+    cat ${JSONFILE}
+fi
 
 echo '***DONE***' >> ${LOCKFILE}

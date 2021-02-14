@@ -88,7 +88,7 @@
                     '<td>'+row['repository']+'</td><td>'+row['old']+'</td><td>' +
                     row['new']+'</td><td>'+row['reason'] + '</td></tr>');
 
-                    if (row['name'] == data['product_name'] && row['new'] != 'N/A') {
+                    if (row['name'] == data['product_target'] && row['new'] != 'N/A') {
                         $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
                     }
                 });
