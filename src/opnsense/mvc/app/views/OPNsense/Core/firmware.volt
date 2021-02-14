@@ -80,9 +80,6 @@
                 // show upgrade list
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
-                $("#updatelist > thead").html("<tr><th>{{ lang._('Package Name') }}</th>" +
-                "<th>{{ lang._('Repository') }}</th><th>{{ lang._('Current Version') }}</th>" +
-                "<th>{{ lang._('New Version') }}</th><th>{{ lang._('Required Action') }}</th></tr>");
                 $.each(data['all_packages'], function (index, row) {
                     $('#updatelist > tbody').append('<tr><td>'+row['name']+'</td>' +
                     '<td>'+row['repository']+'</td><td>'+row['old']+'</td><td>' +
@@ -139,7 +136,7 @@
         $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/' + type, post, function () {
-            $('#updatelist > tbody, #updatelist > thead').empty();
+            $('#updatelist > tbody').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -811,12 +808,20 @@
             <div class="tab-content content-box">
                 <div id="updates" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
-                        <thead></thead>
+                        <thead>
+                            <tr>
+			      <th style="width:20%">{{ lang._('Package name') }}</th>
+			      <th style="width:20%">{{ lang._('Repository') }}</th>
+			      <th style="width:20%">{{ lang._('Current version') }}</th>
+			      <th style="width:20%">{{ lang._('New version') }}</th>
+			      <th style="width:20%">{{ lang._('Required action') }}</th>
+                            </tr>
+                        </thead>
                         <tbody></tbody>
                         <tfoot>
                             <tr>
                                 <td></td>
-                                <td style="vertical-align:middle">
+                                <td style="white-space:nowrap;vertical-align:middle;">
                                     <button class="btn btn-primary" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
                                     <button class="btn btn-default" id="upgrade_dismiss"><i class="fa fa-times"></i> {{ lang._('Dismiss') }}</button>
                                 </td>

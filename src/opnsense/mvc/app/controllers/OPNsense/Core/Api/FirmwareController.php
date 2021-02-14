@@ -233,6 +233,8 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('updates', $response) && $response['updates'] != 0) {
                 if (!empty($target)) {
                     $response['status_msg'] = gettext('The release type requires an update.');
+                    $response['status_msg'] .= ' '; /* XXX eventually we should return all updates AND release type change to make this look normal */
+                    $response['status_msg'] .= gettext('All available updates must be installed in the background as well and this may include a reboot.');
                     $response['status_upgrade_action'] = 'rel';
                     $response['status'] = 'ok';
                 } else {
