@@ -140,6 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                    $input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
                }
             }
+            // prevent leading/trailing whitespace in carp password
+            $pconfig['password'] = trim($pconfig['password']);
             if (empty($pconfig['password'])) {
                 $input_errors[] = gettext("You must specify a CARP password that is shared between the two VHID members.");
             }
