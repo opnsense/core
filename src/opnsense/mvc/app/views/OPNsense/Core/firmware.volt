@@ -119,7 +119,7 @@
     /**
      * perform backend action and install poller to update status
      */
-    function backend(type, post = {}) {
+    function backend(type) {
         if ($.upgrade_action == 'maj') {
             $("#upgrade_maj").attr("style","");
             $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
@@ -134,7 +134,7 @@
         $('#updatetab > a').tab('show');
         $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/' + type, post, function () {
+        ajaxCall('/api/core/firmware/' + type, {}, function () {
             $('#updatelist > tbody').empty();
             setTimeout(trackStatus, 500);
         });

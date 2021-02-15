@@ -27,7 +27,7 @@
 
 set -e
 
-UPGRADE="/usr/local/opnsense/firmware-upgrade"
+UPGRADE=$(opnsense-update -vRp)
 PROMPT="[y/N]"
 NAME="y"
 ARGS=
@@ -42,8 +42,8 @@ echo "This will automatically fetch all available updates, apply them,"
 echo "and reboot if necessary."
 echo
 
-if [ -f ${UPGRADE} ]; then
-	NAME=$(cat ${UPGRADE})
+if [ -n "${UPGRADE}" -a "${UPGRADE}" != "unknown" ]; then
+	NAME=${UPGRADE}
 
 	echo "A major firmware upgrade is available for this installation: ${NAME}"
 	echo
@@ -67,7 +67,7 @@ case ${YN} in
 [yY])
 	;;
 ${NAME})
-	ARGS="upgrade ${NAME}"
+	ARGS="upgrade"
 	;;
 [sS])
 	echo

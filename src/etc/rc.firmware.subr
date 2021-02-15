@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,16 +27,18 @@
 
 set -e
 
-UPGRADEFILE="/usr/local/opnsense/firmware-upgrade"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
+RELEASE=$(opnsense-update -vRp)
 TEE="/usr/bin/tee -a"
-RELEASE=
 
-if [ "${1}" = "upgrade" -a -n "${2}" ]; then
-	RELEASE=${2}
-elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -f ${UPGRADEFILE} ]; then
-	RELEASE=$(cat ${UPGRADEFILE})
+if [ "${1}" = "upgrade" ]; then
+	: # ok, unconditional major upgrade
+elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -n "${RELEASE}" -a "${RELEASE}" != "unknown" ]; then
+	: # ok, conditional major upgrade
+else
+	# nope, only perform stable update
+	RELEASE=
 fi
 
 : > ${LOCKFILE}
@@ -65,7 +67,7 @@ if [ -z "${RELEASE}" ]; then
 else
 	# upgrade to a major release
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -ur ${RELEASE} > ${PIPEFILE} 2>&1; then
+	if opnsense-update -u > ${PIPEFILE} 2>&1; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot

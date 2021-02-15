@@ -33,7 +33,7 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 echo "***GOT REQUEST TO UPGRADE***" >> ${PKG_PROGRESS_FILE}
 
 # perform first half of major upgrade (download all + kernel install)
-if opnsense-update -uR >> ${PKG_PROGRESS_FILE} 2>&1; then
+if opnsense-update -u >> ${PKG_PROGRESS_FILE} 2>&1; then
 	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
 	# give the frontend some time to figure out that a reboot is coming
 	sleep 5
