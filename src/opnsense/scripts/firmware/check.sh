@@ -29,8 +29,7 @@
 # connection: error|timeout|unauthenticated|misconfigured|unresolved|ok
 # repository: error|untrusted|unsigned|revoked|incomplete|ok
 # last_ckeck: <date_time_stamp>
-# updates: <num_of_updates>
-# download_size: <size_of_total_downloads>
+# download_size: <size_of_total_downloads>[,<size_of_total_downloads>]
 # new_packages: array with { name: <package_name>, version: <package_version> }
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
 # remove_packages: array with { name: <package_name>, version: <package_version> }
@@ -59,7 +58,6 @@ packages_new=""
 packages_upgraded=""
 repository="error"
 sets_upgraded=""
-updates=""
 upgrade_needs_reboot="0"
 
 product_suffix="-$(pluginctl -g system.firmware.type)"
@@ -122,6 +120,8 @@ fi
 
         : > ${OUTFILE}
 
+        (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+
         # now check what happens when we would go ahead
         if [ "${product_id}" != "${product_target}" ]; then
             echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
@@ -131,7 +131,6 @@ fi
             (pkg install -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
         else
             echo "A release type change is not required." | ${TEE} ${LOCKFILE}
-            (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
         fi
 
           # Check for additional repository errors
@@ -142,12 +141,9 @@ fi
           else
             # Repository can be used for updates
             repository="ok"
-            updates=$(grep 'The following' ${OUTFILE} | awk -F '[ ]' '{print $3}')
-            if [ -z "${updates}" ]; then
-              # There are no updates
-              updates="0"
-            else
-              download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}')
+            if [ -n "$(grep 'The following' ${OUTFILE} | awk -F '[ ]' '{print $3}')" ]; then
+	      # if we run twice give values as CSV for later processing
+              download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
 
               # see if packages indicate a new version (not revision) of base / kernel
               LQUERY=$(pkg query %v opnsense-update)
@@ -233,7 +229,7 @@ fi
                       if [ -n "$packages_removed" ]; then
                         packages_removed=$packages_removed","
                       fi
-                      packages_removed=$packages_removed"{\"name\":\"$i\","
+                      packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
                     fi
                   fi
                   if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
@@ -305,7 +301,6 @@ fi
                 packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
-                updates=$(expr $updates + 1)
                 upgrade_needs_reboot="1"
               fi
             fi
@@ -329,7 +324,6 @@ fi
                 packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
-                updates=$(expr $updates + 1)
                 upgrade_needs_reboot="1"
               fi
             fi
@@ -372,7 +366,6 @@ cat > ${JSONFILE} << EOF
 	"reinstall_packages":[$packages_reinstall],
 	"remove_packages":[$packages_removed],
 	"repository":"$repository",
-	"updates":"$updates",
 	"upgrade_major_message":"$upgrade_major_message",
 	"upgrade_major_version":"$upgrade_major_version",
 	"upgrade_needs_reboot":"$upgrade_needs_reboot",

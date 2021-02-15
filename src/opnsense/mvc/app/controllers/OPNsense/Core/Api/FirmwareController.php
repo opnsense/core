@@ -87,6 +87,10 @@ class FirmwareController extends ApiControllerBase
      */
     public function statusAction()
     {
+        $active_array = [];
+        $active_count = 0;
+        $active_size = '';
+        $active_status = '';
         $backend = new Backend();
         $target = null;
 
@@ -98,39 +102,38 @@ class FirmwareController extends ApiControllerBase
                 $target = $response['product_target'];
             }
 
-            $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
+            $download_size = !empty($response['download_size']) ? $response['download_size'] : 0;
+
             $upgrade_size = 0;
-            $sets_size = 0;
+            $update_size = 0;
 
             if (!empty($response['upgrade_packages'])) {
                 foreach ($response['upgrade_packages'] as $listing) {
                     if (!empty($listing['size'])) {
-                        $sets_size += $listing['size'];
+                        $update_size += $listing['size'];
                     }
                 }
             }
 
-            if (preg_match('/\s*(\d+)\s*([a-z])/i', $packages_size, $matches)) {
-                $factor = 1;
-                switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
-                    case 'g':
-                        $factor *= 1024;
-                        /* FALLTROUGH */
-                    case 'm':
-                        $factor *= 1024;
-                        /* FALLTROUGH */
-                    case 'k':
-                        $factor *= 1024;
-                        /* FALLTROUGH */
-                    default:
-                        break;
+            foreach (explode(',', $download_size) as $size) {
+                if (preg_match('/\s*(\d+)\s*([a-z])/i', $size, $matches)) {
+                    $factor = 1;
+                    switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                        case 'g':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        case 'm':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        case 'k':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        default:
+                            break;
+                    }
+                    $update_size += $factor * $matches[1];
                 }
-                $packages_size = $factor * $matches[1];
-            } else {
-                $packages_size = 0;
             }
-
-            $download_size = $this->formatBytes($packages_size + $sets_size);
 
             $sorted = [];
 
@@ -174,7 +177,7 @@ class FirmwareController extends ApiControllerBase
                                     'new' => gettext('N/A'),
                                     'old' => $value['version'],
                                     'name' => $value['name'],
-                                    'repository' => gettext('N/A'),
+                                    'repository' => $value['repository'],
                                 );
                                 break;
                             case 'upgrade_packages':
@@ -201,6 +204,11 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
 
+            $active_count = count($response['all_packages']);
+            $active_array = &$response['all_packages'];
+            $active_size = $update_size;
+            $active_status = 'update';
+
             $sorted = [];
 
             if (isset($response['upgrade_sets'])) {
@@ -219,13 +227,18 @@ class FirmwareController extends ApiControllerBase
                 }
             }
 
-            $upgrade_size = $this->formatBytes($upgrade_size);
-
             uksort($sorted, function ($a, $b) {
                 return strnatcasecmp($a, $b);
             });
 
             $response['all_sets'] = $sorted;
+
+            if ($active_count == 0) {
+                $active_count = count($response['all_sets']);
+                $active_array = &$response['all_sets'];
+                $active_size = $upgrade_size;
+                $active_status = $upgrade_upgrade;
+            }
 
             if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
@@ -257,30 +270,20 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('updates', $response) && $response['updates'] != 0) {
-                if (!empty($target)) {
-                    /* XXX eventually we should return all updates AND release type change to make this look normal */
-                    $response['status_msg'] = gettext('The release type requires an update.');
+            } elseif ($active_count) {
+                if ($active_count == 1) {
+                    /* keep this dynamic for template translation even though %s is always '1' */
                     $response['status_msg'] = sprintf(
-                        '%s %s',
-                        $response['status_msg'],
-                        gettext('All available updates will be installed in the background as well.')
+                        gettext('There is %s update available, total download size is %s.'),
+                        $active_count,
+                        $this->formatBytes($active_size)
                     );
                 } else {
-                    if ($response['updates'] == 1) {
-                        /* keep this dynamic for template translation even though %s is always '1' */
-                        $response['status_msg'] = sprintf(
-                            gettext('There is %s update available, total download size is %s.'),
-                            $response['updates'],
-                            $download_size
-                        );
-                    } else {
-                        $response['status_msg'] = sprintf(
-                            gettext('There are %s updates available, total download size is %s.'),
-                            $response['updates'],
-                            $download_size
-                        );
-                    }
+                    $response['status_msg'] = sprintf(
+                        gettext('There are %s updates available, total download size is %s.'),
+                        $active_count,
+                        $this->formatBytes($active_size)
+                    );
                 }
                 if ($response['upgrade_needs_reboot'] == 1) {
                     $response['status_msg'] = sprintf(
@@ -289,25 +292,8 @@ class FirmwareController extends ApiControllerBase
                         gettext('This update requires a reboot.')
                     );
                 }
-                $response['status'] = 'update';
-            } elseif (array_key_exists('upgrade_sets', $response) && count($response['upgrade_sets'])) {
-                if (count($response['upgrade_sets']) == 1) {
-                    /* keep this dynamic for template translation even though %s is always '1' */
-                    $response['status_msg'] = sprintf(
-                        gettext('There is %s update available, total download size is %s.'),
-                        count($response['upgrade_sets']),
-                        $upgrade_size
-                    );
-                } else {
-                    $response['status_msg'] = sprintf(
-                        gettext('There are %s updates available, total download size is %s.'),
-                        count($response['upgrade_sets']),
-                        $upgrade_size
-                    );
-                }
-                $response['status_msg'] = sprintf( '%s %s', $response['status_msg'], gettext('This update requires multiple reboots.'));
-                $response['status'] = 'upgrade';
-            } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
+                $response['status'] = $active_status;
+            } elseif (!$active_count) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
             } else {
