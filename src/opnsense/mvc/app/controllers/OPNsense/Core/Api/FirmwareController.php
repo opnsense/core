@@ -99,6 +99,7 @@ class FirmwareController extends ApiControllerBase
             }
 
             $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
+            $upgrade_size = 0;
             $sets_size = 0;
 
             if (!empty($response['upgrade_packages'])) {
@@ -131,7 +132,7 @@ class FirmwareController extends ApiControllerBase
 
             $download_size = $this->formatBytes($packages_size + $sets_size);
 
-            $sorted = array();
+            $sorted = [];
 
             foreach (
                 array('new_packages', 'reinstall_packages', 'upgrade_packages',
@@ -200,6 +201,32 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
 
+            $sorted = [];
+
+            if (isset($response['upgrade_sets'])) {
+                foreach ($response['upgrade_sets'] as $value) {
+                    if (!empty($value['size'])) {
+                        $upgrade_size += $value['size'];
+                    }
+                    $sorted[$value['name']] = array(
+                        'reason' => gettext('upgrade'),
+                        'old' => empty($value['current_version']) ?
+                            gettext('N/A') : $value['current_version'],
+                        'new' => $value['new_version'],
+                        'repository' => $value['repository'],
+                        'name' => $value['name'],
+                    );
+                }
+            }
+
+            $upgrade_size = $this->formatBytes($upgrade_size);
+
+            uksort($sorted, function ($a, $b) {
+                return strnatcasecmp($a, $b);
+            });
+
+            $response['all_sets'] = $sorted;
+
             if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
                 $response['status'] = 'error';
@@ -262,7 +289,24 @@ class FirmwareController extends ApiControllerBase
                         gettext('This update requires a reboot.')
                     );
                 }
-                $response['status'] = 'ok';
+                $response['status'] = 'update';
+            } elseif (array_key_exists('upgrade_sets', $response) && count($response['upgrade_sets'])) {
+                if (count($response['upgrade_sets']) == 1) {
+                    /* keep this dynamic for template translation even though %s is always '1' */
+                    $response['status_msg'] = sprintf(
+                        gettext('There is %s update available, total download size is %s.'),
+                        count($response['upgrade_sets']),
+                        $upgrade_size
+                    );
+                } else {
+                    $response['status_msg'] = sprintf(
+                        gettext('There are %s updates available, total download size is %s.'),
+                        count($response['upgrade_sets']),
+                        $upgrade_size
+                    );
+                }
+                $response['status_msg'] = sprintf( '%s %s', $response['status_msg'], gettext('This update requires multiple reboots.'));
+                $response['status'] = 'upgrade';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';

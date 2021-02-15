@@ -61,19 +61,27 @@
      * retrieve update status from backend
      */
     function updateStatus() {
-        // update UI
-        $('#major-upgrade').hide();
-        $('#upgrade_maj').prop('disabled', true);
-        $.upgrade_major_message = '';
-        $.upgrade_major_version = '';
+        $('#upgrade_maj').hide();
+        $('#upgrade').hide();
 
-        // request status
         ajaxGet('/api/core/firmware/status', {}, function (data, status){
-            if (data['status'] == "ok") {
+            let upgrade_major_message = '';
+            let upgrade_major_version = '';
+
+            if ('upgrade_major_message' in data) {
+                upgrade_major_message = data['upgrade_major_message'];
+            }
+            if ('upgrade_major_version' in data) {
+                upgrade_major_version = data['upgrade_major_version'];
+            }
+
+            if (data['status'] == "update") {
+                let show_log = '';
+
                 $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
-                $.upgrade_show_log = '';
 
                 // show upgrade list
+                $('#upgrade').show();
                 $('#updatestatus').html(data['status_msg']);
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
@@ -83,23 +91,64 @@
                     row['reason']+'</td><td>'+row['repository'] + '</td></tr>');
 
                     if (row['name'] == data['product_target'] && row['new'] != 'N/A') {
-                        $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
+                        show_log = row['new'].replace(/[_-].*/, '');
                     }
                 });
                 $('#update_status_container').hide();
                 $('#updatelist').show();
 
                 // display the current changelog if one was found
-                if ($.upgrade_show_log != '') {
-                    changelog($.upgrade_show_log);
+                if (show_log != '') {
+                    changelog(show_log);
                 }
 
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
-            } else {
-	        // ok or an error of some sort: make this official
+            } else if (data['status'] == "upgrade") {
+                if (upgrade_major_message == '') {
+                    upgrade_major_message = '{{ lang._('This software release has reached its designated end of life.') }}';
+                    upgrade_major_message += ' {{ lang._('The next major release is:') }} ' + upgrade_major_version;
+                }
+
                 BootstrapDialog.show({
-                    type: data['status'] != "error" ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
+                    type: BootstrapDialog.TYPE_WARNING,
+                    title: '{{ lang._('Upgrade instructions') }}',
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    message: htmlDecode(upgrade_major_message),
+                    buttons: [{
+                        label: "{{ lang._('Unlock') }}",
+                        cssClass: 'btn-warning',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+
+                            // show upgrade list
+                            $('#upgrade_maj').show();
+                            $('#updatestatus').html(data['status_msg']);
+                            $('#updatelist > tbody').empty();
+                            $('#updatetab > a').tab('show');
+                            $.each(data['all_sets'], function (index, row) {
+                                $('#updatelist > tbody').append('<tr><td>'+row['name']+'</td>' +
+                                '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
+                                row['reason']+'</td><td>'+row['repository'] + '</td></tr>');
+                            });
+                            $('#update_status_container').hide();
+                            $('#updatelist').show();
+
+                            changelog(upgrade_major_version);
+                        }
+                    },{
+                        label: "{{ lang._('Cancel') }}",
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                    }]
+                });
+
+                // update list so plugins sync as well (all)
+                packagesInfo(true);
+            } else if (data['status'] == "error") {
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_DANGER,
                     title: "{{ lang._('Status') }}",
                     onshow:function(dialogRef){
                         dialogRef.getModalBody().html(data['status_msg']);
@@ -114,17 +163,27 @@
 
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
-            }
+            } else if (data['status'] == "none") {
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_SUCCESS,
+                    title: "{{ lang._('Status') }}",
+                    onshow:function(dialogRef){
+                        dialogRef.getModalBody().html(data['status_msg']);
+                    },
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
 
-            if ('upgrade_major_message' in data) {
-                $.upgrade_major_message = data['upgrade_major_message'];
-            }
-            if ('upgrade_major_version' in data) {
-                $.upgrade_major_version = data['upgrade_major_version'];
-            }
-            if ($.upgrade_major_version != '') {
-                $('#upgrade-version').text($.upgrade_major_version);
-                $('#major-upgrade').show();
+                // update list so plugins sync as well (all)
+                packagesInfo(true);
+            } else {
+                // in case new responses are added
+                console.log('Unknown check response');
+                console.log(data);
             }
         });
     }
@@ -134,8 +193,7 @@
      */
     function backend(type) {
         if ($.upgrade_action == 'maj') {
-            $("#upgrade_maj").attr("style","");
-            $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
+            // leave upgrade action as is
         } else if (type == 'check') {
             $.upgrade_action = 'check';
         } else {
@@ -308,8 +366,6 @@
             }
             if (data['status'] == 'done') {
                 $('#updatetab_progress').removeClass("fa fa-spinner fa-pulse");
-                $('#major-upgrade').hide();
-                $('#upgrade_maj').prop('disabled', true);
                 if ($.upgrade_action == 'check') {
                     updateStatus();
                 } else {
@@ -608,34 +664,6 @@
             $.upgrade_action = 'maj';
             upgrade_ui();
         });
-        $('#checkupdate_maj').click(function () {
-            if ($.upgrade_major_message == "") {
-                $('#upgrade_maj').prop('disabled', false);
-                changelog($.upgrade_major_version);
-            } else {
-                BootstrapDialog.show({
-                    type:BootstrapDialog.TYPE_WARNING,
-                    title: "{{ lang._('Upgrade instructions') }}",
-                    /* we trust this data, it was signed by us and secured by csrf */
-                    message: htmlDecode($.upgrade_major_message),
-                    buttons: [{
-                        label: "{{ lang._('Unlock') }}",
-                        cssClass: 'btn-warning',
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            $('#upgrade_maj').prop('disabled', false);
-                            changelog($.upgrade_major_version);
-                        }
-                    },{
-                        label: "{{ lang._('Cancel') }}",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                    }]
-                });
-                packagesInfo(true);
-            }
-        });
 
         // populate package information
         packagesInfo(true);
@@ -795,20 +823,6 @@
 </style>
 <div class="container-fluid">
     <div class="row">
-        <div id="major-upgrade" class="alert alert-warning alert-dismissible" role="alert" style="min-height:65px;display:none;">
-            <button type="button" class="close pull-right" style="margin-top: 8px;" data-dismiss="alert" aria-label="{{ lang._('Close') }}">
-               <span aria-hidden="true">&times;</span>
-            </button>
-            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;"><i class="fa fa-unlock-alt"></i> {{ lang._('Unlock') }}</button>
-            <div style="margin-top: 8px;">
-                {{ lang._('This software release has reached its designated end of life.') }}
-                {{ lang._('The next major release is:') }}
-                <span id="upgrade-version"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }} <i id="statustab_progress"></i></a></li>
@@ -835,7 +849,8 @@
                             <tr>
                                 <td></td>
                                 <td style="white-space:nowrap;vertical-align:middle;">
-                                    <button class="btn btn-primary" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
+                                    <button class="btn btn-info" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
+                                    <button class='btn btn-warning' id="upgrade_maj"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
                                     <button class="btn btn-default" id="upgrade_dismiss"><i class="fa fa-times"></i> {{ lang._('Dismiss') }}</button>
                                 </td>
                                 <td colspan="2" style="vertical-align:middle">
