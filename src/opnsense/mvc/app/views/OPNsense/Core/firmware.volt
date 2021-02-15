@@ -157,13 +157,8 @@
      * perform backend action and install poller to update status
      */
     function backend(type) {
-        if ($.upgrade_action == 'maj') {
-            // leave upgrade action as is
-        } else if (type == 'check') {
-            $.upgrade_action = 'check';
-        } else {
-            $.upgrade_action = 'backend';
-        }
+        $.upgrade_check = type == 'check'
+
         $('#updatelist').hide();
         $('#update_status').html('');
         $('#update_status_container').show();
@@ -277,12 +272,12 @@
     /**
      *  check if a reboot is required, warn user or just upgrade
      */
-    function upgrade_ui()
+    function upgrade_ui(major = false)
     {
         let reboot_msg = "";
-        if ( $.upgrade_needs_reboot == "1" ) {
+        if ( $.upgrade_needs_reboot == "1" || major === true) {
             reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
-            if ($.upgrade_action == 'maj') {
+            if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
             // reboot required, inform the user.
@@ -295,11 +290,7 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
-                        if ($.upgrade_action == 'maj') {
-                            backend('upgrade');
-                        } else {
-                            backend('update');
-                        }
+                        backend(major === true ? 'upgrade' : 'update');
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",
@@ -342,7 +333,7 @@
             }
             if (data['status'] == 'done') {
                 $('#updatetab_progress').removeClass("fa fa-spinner fa-pulse");
-                if ($.upgrade_action == 'check') {
+                if ($.upgrade_check === true) {
                     updateStatus();
                 } else {
                     packagesInfo(true);
@@ -628,6 +619,7 @@
         // link event handlers
         $('#checkupdate').click(function () { backend('check'); });
         $('#upgrade').click(upgrade_ui);
+        $('#upgrade_maj').click(function () { upgrade_ui(true); });
         $('#upgrade_cancel').click(cancel_update);
         $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
         $("#plugin_get").click(function () { backend('syncPlugins'); });
@@ -635,11 +627,6 @@
         $('#audit_security').click(function () { backend('audit'); });
         $('#audit_connection').click(function () { backend('connection'); });
         $('#audit_health').click(function () { backend('health'); });
-        $('#upgrade_maj').click(function () {
-            $.upgrade_needs_reboot = 1;
-            $.upgrade_action = 'maj';
-            upgrade_ui();
-        });
 
         // populate package information
         packagesInfo(true);
