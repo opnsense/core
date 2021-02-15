@@ -73,7 +73,6 @@
             $('.updatestatus').html(data['status_msg']);
 
             if (data['status'] == "ok") {
-                $.upgrade_action = data['status_upgrade_action'];
                 $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
                 $.upgrade_show_log = '';
 
@@ -246,7 +245,7 @@
                     action: function(dialogRef){
                         dialogRef.close();
                         if ($.upgrade_action == 'maj') {
-                            backend('upgrade', {upgrade:$.upgrade_action});
+                            backend('upgrade');
                         } else {
                             backend('update');
                         }
@@ -260,7 +259,7 @@
             });
         } else {
             if ($.upgrade_action == 'maj') {
-                backend('upgrade', {upgrade:$.upgrade_action});
+                backend('upgrade');
             } else {
                 backend('update');
             }

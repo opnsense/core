@@ -335,9 +335,11 @@ fi
           fi
         fi
 
-      # XXX use opnsense-update -SRp to check for download size before advertising
-      upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
-      upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+      packages_is_size="$(opnsense-update -SRp)"
+      if [ -n "${packages_is_size}" ]; then
+          upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
+          upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+      fi
 
 # write our json structure
 cat > ${JSONFILE} << EOF

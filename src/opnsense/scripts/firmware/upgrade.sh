@@ -26,55 +26,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=${1}
-REBOOT=
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO UPGRADE: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO UPGRADE***" >> ${PKG_PROGRESS_FILE}
 
-if [ "${PACKAGE}" == "all" ]; then
-	# update all installed packages
-	opnsense-update -p >> ${PKG_PROGRESS_FILE} 2>&1
-	# restart the web server
-	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
-	# if we can update base, we'll do that as well
-	if opnsense-update -c >> ${PKG_PROGRESS_FILE} 2>&1; then
-		if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
-			REBOOT=1
-		fi
-	fi
-elif [ "${PACKAGE}" == "maj" ]; then
-	# extract info for major upgrade
-	UPGRADE="/usr/local/opnsense/firmware-upgrade"
-	NAME=unknown
-	if [ -f ${UPGRADE} ]; then
-		NAME=$(cat ${UPGRADE})
-	fi
-	# perform first half of major upgrade
-	# (download all + kernel install)
-	# XXX use opnsense-update -uR at least unless we can imply -R later
-	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
-		REBOOT=1
-	fi
-	# second half reboots multiple times,
-	# but will snap the GUI back when done
-elif [ "${PACKAGE}" == "rel" ]; then
-	# figure out the release type from config
-	SUFFIX="-$(pluginctl -g system.firmware.type)"
-	if [ "${SUFFIX}" = "-" ]; then
-		SUFFIX=
-	fi
-	# change the release type
-	opnsense-update -t "opnsense${SUFFIX}" >> ${PKG_PROGRESS_FILE} 2>&1
-	# restart the web server
-	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
-else
-	echo "Cannot update ${PACKAGE}" >> ${PKG_PROGRESS_FILE}
-fi
-
-if [ -n "${REBOOT}" ]; then
+# perform first half of major upgrade (download all + kernel install)
+if opnsense-update -uR >> ${PKG_PROGRESS_FILE} 2>&1; then
 	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
 	# give the frontend some time to figure out that a reboot is coming
 	sleep 5

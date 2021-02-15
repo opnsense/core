@@ -239,10 +239,8 @@ class FirmwareController extends ApiControllerBase
                         $response['status_msg'],
                         gettext('All available updates will be installed in the background as well.')
                     );
-                    $response['status_upgrade_action'] = 'rel';
                     $response['status'] = 'ok';
                 } else {
-                    $response['status_upgrade_action'] = 'all';
                     $response['status'] = 'ok';
                     if ($response['updates'] == 1) {
                         /* keep this dynamic for template translation even though %s is always '1' */
@@ -403,24 +401,16 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * perform actual upgrade
+     * perform (major) upgrade
      * @return array status
      * @throws \Exception
      */
     public function upgradeAction()
     {
-        $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
-        if ($this->request->hasPost('upgrade')) {
-            if ($this->request->getPost('upgrade') == 'maj') {
-                $action = 'firmware upgrade maj';
-            } elseif ($this->request->getPost('upgrade') == 'rel') {
-                $action = 'firmware upgrade rel';
-            } else {
-                $action = 'firmware upgrade all';
-            }
-            $response['msg_uuid'] = trim($backend->configdRun($action, true));
+        if ($this->request->isPost()) {
+            $response['msg_uuid'] = trim($backend->configdRun('firmware upgrade', true));
             $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
