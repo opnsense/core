@@ -340,7 +340,7 @@ fi
       if [ -n "${packages_is_size}" ]; then
           upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
           upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
-          sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+          sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
           kernel_to_delete="$(opnsense-version -v kernel)"
           if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
               kernel_is_size="$(opnsense-update -SRk)"
