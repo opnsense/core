@@ -640,7 +640,7 @@
                 backend('audit');
             } else if (window.location.hash == '#checkupdate') {
                 // dashboard link: run check automatically after delay
-                setTimeout(function () { backend('check'); }, 1000);
+                setTimeout(function () { backend('check'); }, 2000);
             }
         });
 
