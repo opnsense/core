@@ -285,10 +285,7 @@ fi
             done < ${OUTFILE}
           fi
 
-            # the main update from package will provide this during upgrade
-            if [ "${product_id}" != "${product_target}" ]; then # XXX unhide later
-              base_to_reboot=
-            elif [ -z "$base_to_reboot" ]; then
+            if [ -z "$base_to_reboot" ]; then
               if opnsense-update -cbf; then
                   base_to_reboot="$(opnsense-update -v)"
               fi
@@ -304,6 +301,7 @@ fi
                   packages_upgraded=$packages_upgraded", {\"name\":\"base\","
                 fi
                 packages_upgraded=$packages_upgraded"\"size\":\"$base_is_size\","
+                packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
                 updates=$(expr $updates + 1)
@@ -311,10 +309,7 @@ fi
               fi
             fi
 
-            # the main update from package will provide this during upgrade
-            if [ "${product_id}" != "${product_target}" ]; then # XXX unhide later
-              kernel_to_reboot=
-            elif [ -z "$kernel_to_reboot" ]; then
+            if [ -z "$kernel_to_reboot" ]; then
               if opnsense-update -cfk; then
                   kernel_to_reboot="$(opnsense-update -v)"
               fi
@@ -330,6 +325,7 @@ fi
                   packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
                 fi
                 packages_upgraded=$packages_upgraded"\"size\":\"$kernel_is_size\","
+                packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
                 updates=$(expr $updates + 1)
@@ -352,8 +348,8 @@ cat > ${JSONFILE} << EOF
 	"last_check":"$last_check",
 	"new_packages":[$packages_new],
 	"os_version":"$os_version",
-	"product_target":"$product_target",
 	"product_id":"$product_id",
+	"product_target":"$product_target",
 	"product_version":"$product_version",
 	"reinstall_packages":[$packages_reinstall],
 	"remove_packages":[$packages_removed],

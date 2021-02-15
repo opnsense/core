@@ -245,7 +245,11 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
-                        backend('upgrade', {upgrade:$.upgrade_action});
+                        if ($.upgrade_action == 'maj') {
+                            backend('upgrade', {upgrade:$.upgrade_action});
+                        } else {
+                            backend('update');
+                        }
                     }
                 },{
                     label: "{{ lang._('Abort') }}",
@@ -255,7 +259,11 @@
                 }]
             });
         } else {
-            backend('upgrade', {upgrade:$.upgrade_action});
+            if ($.upgrade_action == 'maj') {
+                backend('upgrade', {upgrade:$.upgrade_action});
+            } else {
+                backend('update');
+            }
         }
     }
 
@@ -270,9 +278,6 @@
         });
     }
 
-    /**
-     * handle check/audit/upgrade status
-     */
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
            if (status != 'success') {

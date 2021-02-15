@@ -710,6 +710,7 @@
 /usr/local/opnsense/scripts/firmware/sets.sh
 /usr/local/opnsense/scripts/firmware/sync.sh
 /usr/local/opnsense/scripts/firmware/unlock.sh
+/usr/local/opnsense/scripts/firmware/update.sh
 /usr/local/opnsense/scripts/firmware/upgrade.sh
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/list_arp.py

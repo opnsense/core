@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,32 +25,36 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-check
-connection
-health
-install
-lock
-reinstall
-remove
-resync
-security
-sync
-unlock
-update
-upgrade
-"
+PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 
-SELECTED=${1}
-ARGUMENT=${2}
+# Truncate upgrade progress file
+: > ${PKG_PROGRESS_FILE}
 
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
+echo "***GOT REQUEST TO UPDATE***" >> ${PKG_PROGRESS_FILE}
+
+# figure out the release type from config
+SUFFIX="-$(pluginctl -g system.firmware.type)"
+if [ "${SUFFIX}" = "-" ]; then
+	SUFFIX=
+fi
+
+# update all installed packages
+opnsense-update -p >> ${PKG_PROGRESS_FILE} 2>&1
+
+# change the release type
+opnsense-update -t "opnsense${SUFFIX}" >> ${PKG_PROGRESS_FILE} 2>&1
+
+# restart the web server
+/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
+
+# if we can update base, we'll do that as well
+if opnsense-update -c >> ${PKG_PROGRESS_FILE} 2>&1; then
+	if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
+		echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
+		# give the frontend some time to figure out that a reboot is coming
+		sleep 5
+		/usr/local/etc/rc.reboot
 	fi
+fi
 
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
-done
+echo '***DONE***' >> ${PKG_PROGRESS_FILE}

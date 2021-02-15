@@ -232,9 +232,13 @@ class FirmwareController extends ApiControllerBase
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] != 0) {
                 if (!empty($target)) {
+                    /* XXX eventually we should return all updates AND release type change to make this look normal */
                     $response['status_msg'] = gettext('The release type requires an update.');
-                    $response['status_msg'] .= ' '; /* XXX eventually we should return all updates AND release type change to make this look normal */
-                    $response['status_msg'] .= gettext('All available updates must be installed in the background as well and this may include a reboot.');
+                    $response['status_msg'] = sprintf(
+                        '%s %s',
+                        $response['status_msg'],
+                        gettext('All available updates will be installed in the background as well.')
+                    );
                     $response['status_upgrade_action'] = 'rel';
                     $response['status'] = 'ok';
                 } else {
@@ -254,13 +258,13 @@ class FirmwareController extends ApiControllerBase
                             $download_size
                         );
                     }
-                    if ($response['upgrade_needs_reboot'] == 1) {
-                        $response['status_msg'] = sprintf(
-                            '%s %s',
-                            $response['status_msg'],
-                            gettext('This update requires a reboot.')
-                        );
-                    }
+                }
+                if ($response['upgrade_needs_reboot'] == 1) {
+                    $response['status_msg'] = sprintf(
+                        '%s %s',
+                        $response['status_msg'],
+                        gettext('This update requires a reboot.')
+                    );
                 }
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
@@ -372,6 +376,25 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             $response['msg_uuid'] = trim($backend->configdRun('firmware poweroff', true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * perform (stable) update
+     * @return array status
+     * @throws \Exception
+     */
+    public function updateAction()
+    {
+        $backend = new Backend();
+        $response = array();
+        if ($this->request->isPost()) {
+            $response['msg_uuid'] = trim($backend->configdRun('firmware update', true));
+            $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
         }
