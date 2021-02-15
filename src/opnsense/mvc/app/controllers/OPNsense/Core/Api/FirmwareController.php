@@ -239,9 +239,7 @@ class FirmwareController extends ApiControllerBase
                         $response['status_msg'],
                         gettext('All available updates will be installed in the background as well.')
                     );
-                    $response['status'] = 'ok';
                 } else {
-                    $response['status'] = 'ok';
                     if ($response['updates'] == 1) {
                         /* keep this dynamic for template translation even though %s is always '1' */
                         $response['status_msg'] = sprintf(
@@ -264,17 +262,18 @@ class FirmwareController extends ApiControllerBase
                         gettext('This update requires a reboot.')
                     );
                 }
+                $response['status'] = 'ok';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
             } else {
                 $response['status_msg'] = gettext('Unknown firmware status encountered.');
-                $response['status'] = 'unknown';
+                $response['status'] = 'error';
             }
         } else {
             $response = array(
                 'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
-                'status' => 'unknown',
+                'status' => 'error',
             );
         }
 
@@ -1059,7 +1058,7 @@ class FirmwareController extends ApiControllerBase
                 $backend = new Backend();
                 $backend->configdRun("firmware configure");
             } else {
-                $response['status'] = "failed";
+                $response['status'] = 'failure';
             }
         }
 

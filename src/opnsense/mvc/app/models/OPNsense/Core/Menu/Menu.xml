@@ -40,12 +40,12 @@
         <Firmware cssClass="fa fa-building-o fa-fw">
             <Status order="10" url="/ui/core/firmware#status"/>
             <Settings order="20" url="/ui/core/firmware#settings"/>
-            <Plugins order="30" url="/ui/core/firmware#plugins"/>
-            <Packages order="40" url="/ui/core/firmware#packages"/>
-            <Changelog order="50" url="/ui/core/firmware#changelog"/>
-            <Updates order="60" url="/ui/core/firmware#updates"/>
-            <Reporter order="80" url="/crash_reporter.php"/>
-            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
+            <Changelog order="30" url="/ui/core/firmware#changelog"/>
+            <Updates order="40" url="/ui/core/firmware#updates"/>
+            <Plugins order="50" url="/ui/core/firmware#plugins"/>
+            <Packages order="60" url="/ui/core/firmware#packages"/>
+            <Reporter order="70" url="/crash_reporter.php"/>
+            <LogFile order="80" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
             <Single order="10" url="/system_gateways.php">

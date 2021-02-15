@@ -42,7 +42,6 @@
     function updateDismiss() {
         $('#updatelist').hide();
         $('#update_status_container').show();
-        $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
     }
 
     /* XXX best effort at this point, rework later */
@@ -69,14 +68,13 @@
         $.upgrade_major_version = '';
 
         // request status
-        ajaxGet('/api/core/firmware/status', {}, function(data,status){
-            $('.updatestatus').html(data['status_msg']);
-
+        ajaxGet('/api/core/firmware/status', {}, function (data, status){
             if (data['status'] == "ok") {
                 $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
                 $.upgrade_show_log = '';
 
                 // show upgrade list
+                $('#updatestatus').html(data['status_msg']);
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
                 $.each(data['all_packages'], function (index, row) {
@@ -99,8 +97,23 @@
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
             } else {
+	        // ok or an error of some sort: make this official
+                BootstrapDialog.show({
+                    type: data['status'] != "error" ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
+                    title: "{{ lang._('Status') }}",
+                    onshow:function(dialogRef){
+                        dialogRef.getModalBody().html(data['status_msg']);
+                    },
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
+
                 // update list so plugins sync as well (all)
-                packagesInfo(true, true);
+                packagesInfo(true);
             }
 
             if ('upgrade_major_message' in data) {
@@ -327,7 +340,7 @@
     /**
      * show package info
      */
-    function packagesInfo(reset, keep) {
+    function packagesInfo(reset) {
         $("#statustab_progress").addClass("fa fa-spinner fa-pulse");
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
@@ -360,10 +373,6 @@
 
                 $('#updatelist').hide();
                 $('#update_status_container').show();
-
-                if (keep !== true) {
-                    $('.updatestatus').html("{{ lang._('Click to check for updates.') }}");
-                }
             }
 
             var local_count = 0;
@@ -804,10 +813,10 @@
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }} <i id="statustab_progress"></i></a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }} <i id="settingstab_progress"></i></a></li>
-                <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
-                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
                 <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }} <i id="updatetab_progress"></i></a></li>
+                <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
+                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
             </ul>
             <div class="tab-content content-box">
                 <div id="updates" class="tab-pane">
@@ -830,7 +839,7 @@
                                     <button class="btn btn-default" id="upgrade_dismiss"><i class="fa fa-times"></i> {{ lang._('Dismiss') }}</button>
                                 </td>
                                 <td colspan="2" style="vertical-align:middle">
-                                    <strong><div class="updatestatus"></div></strong>
+                                    <strong><div id="updatestatus"></div></strong>
                                 </td>
                                 <td></td>
                             </tr>
@@ -896,14 +905,6 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Checked on') }}</td>
                                 <td id="product_time_check"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('Message') }}</td>
-                                <td>
-                                    <div class="updatestatus">{{ lang._('Fetching current system status, please wait...')}}</div>
-                                </td>
                                 <td></td>
                             </tr>
                             <tr>
