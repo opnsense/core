@@ -81,8 +81,8 @@
                 $('#updatetab > a').tab('show');
                 $.each(data['all_packages'], function (index, row) {
                     $('#updatelist > tbody').append('<tr><td>'+row['name']+'</td>' +
-                    '<td>'+row['repository']+'</td><td>'+row['old']+'</td><td>' +
-                    row['new']+'</td><td>'+row['reason'] + '</td></tr>');
+                    '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
+                    row['reason']+'</td><td>'+row['repository'] + '</td></tr>');
 
                     if (row['name'] == data['product_target'] && row['new'] != 'N/A') {
                         $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
@@ -815,10 +815,10 @@
                         <thead>
                             <tr>
                               <th style="width:20%">{{ lang._('Package name') }}</th>
-                              <th style="width:20%">{{ lang._('Repository') }}</th>
                               <th style="width:20%">{{ lang._('Current version') }}</th>
                               <th style="width:20%">{{ lang._('New version') }}</th>
                               <th style="width:20%">{{ lang._('Required action') }}</th>
+                              <th style="width:20%">{{ lang._('Repository') }}</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
