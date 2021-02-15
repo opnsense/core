@@ -237,7 +237,7 @@ class FirmwareController extends ApiControllerBase
                 $active_count = count($response['all_sets']);
                 $active_array = &$response['all_sets'];
                 $active_size = $upgrade_size;
-                $active_status = $upgrade_upgrade;
+                $active_status = 'upgrade';
             }
 
             if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
@@ -265,7 +265,7 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('The repository has no fingerprint.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete' && !empty($target)) {
-                $response['status_msg'] = sprintf(gettext('The package "%s" is not available on this repository.'), $target);
+                $response['status_msg'] = sprintf(gettext('The release type "%s" is not available on this repository.'), $target);
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
