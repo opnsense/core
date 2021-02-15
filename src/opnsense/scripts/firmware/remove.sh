@@ -33,6 +33,6 @@ PACKAGE=$1
 
 echo "***GOT REQUEST TO REMOVE: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
 pkg remove -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
-/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE}
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}

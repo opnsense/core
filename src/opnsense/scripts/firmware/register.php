@@ -48,7 +48,7 @@ use OPNsense\Core\Config;
 
 $config = Config::getInstance()->object();
 
-function plugins_get($config)
+function plugins_config_get($config)
 {
     $plugins = [];
 
@@ -65,7 +65,7 @@ function plugins_get($config)
     return array_flip($plugins);
 }
 
-function plugins_set($config, $plugins)
+function plugins_config_set($config, $plugins)
 {
     $config->system->firmware->plugins = implode(',', array_keys($plugins));
 
@@ -80,21 +80,11 @@ function plugins_set($config, $plugins)
     Config::getInstance()->save();
 }
 
-function plugins_found($name, $found = [])
+function plugins_disk_found($name, $found)
 {
     $bare = preg_replace('/^os-|-devel$/', '', $name);
 
-    if (file_exists('/usr/local/opnsense/version/' . $bare)) {
-        if (!isset($found[$bare])) {
-            /* backwards compat with non-JSON, remove in 21.7 */
-            return true;
-        }
-        if ($found[$bare] == $name) {
-            return true;
-        }
-    }
-
-    return false;
+    return isset($found[$bare]) && $found[$bare] == $name;
 }
 
 function plugins_remove_sibling($name, $plugins)
@@ -111,49 +101,59 @@ function plugins_remove_sibling($name, $plugins)
     return $plugins;
 }
 
-$plugins = plugins_get($config);
+function plugins_disk_get()
+{
+    $found = [];
+
+    foreach (glob('/usr/local/opnsense/version/*') as $name) {
+        $filename = basename($name);
+        if (strpos($filename, 'base') === 0) {
+            continue;
+        }
+        if (strpos($filename, 'kernel') === 0) {
+            continue;
+        }
+        if (strpos($filename, 'core') === 0) {
+            continue;
+        }
+
+        $ret = json_decode(@file_get_contents($name), true);
+        if ($ret == null || !isset($ret['product_id'])) {
+            echo "Ignoring invalid metadata: $name" . PHP_EOL;
+            continue;
+        }
+
+        $found[$filename] = $ret['product_id'];
+    }
+
+    return $found;
+}
+
+$plugins = plugins_config_get($config);
+$found = plugins_disk_get();
 
 switch ($action) {
     case 'install':
-        if (!plugins_found($name)) {
+        if (!plugins_disk_found($name, $found)) {
             return;
         }
         $plugins = plugins_remove_sibling($name, $plugins);
         $plugins[$name] = 'hello';
         break;
     case 'remove':
-        if (plugins_found($name)) {
+        if (plugins_disk_found($name, $found)) {
             return;
         }
         if (isset($plugins[$name])) {
             unset($plugins[$name]);
         }
-        $plugins = plugins_remove_sibling($name, $plugins);
         break;
+    case 'resync_factory':
+        /* XXX handle core package */
+        /* FALLTHROUGH */
     case 'resync':
-        $found = [];
-        foreach (glob('/usr/local/opnsense/version/*') as $name) {
-            $filename = basename($name);
-            if (strpos($filename, 'base') === 0) {
-                continue;
-            }
-            if (strpos($filename, 'kernel') === 0) {
-                continue;
-            }
-            if (strpos($filename, 'core') === 0) {
-                continue;
-            }
-
-            $ret = json_decode(@file_get_contents($name), true);
-            if ($ret == null || !isset($ret['product_id'])) {
-                /* ignore files without valid metadata */
-                continue;
-            }
-
-            $found[$filename] = $ret['product_id'];
-        }
         foreach (array_keys($plugins) as $name) {
-            if (!plugins_found($name, $found)) {
+            if (!plugins_disk_found($name, $found)) {
                 echo "Unregistering missing plugin: $name" . PHP_EOL;
                 unset($plugins[$name]);
             }
@@ -170,4 +170,4 @@ switch ($action) {
         exit();
 }
 
-plugins_set($config, $plugins);
+plugins_config_set($config, $plugins);

@@ -35,7 +35,7 @@ echo "***GOT REQUEST TO SYNC: ${PACKAGES}***" >> ${PKG_PROGRESS_FILE}
 for PACKAGE in ${PACKAGES}; do
 	if ! pkg query %n ${PACKAGE} > /dev/null; then
 		pkg install -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-		/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE}
+		/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 	fi
 done
 pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1

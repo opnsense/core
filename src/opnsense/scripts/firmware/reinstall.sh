@@ -56,8 +56,8 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 	fi
 else
 	opnsense-revert -l ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+	/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
 	pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
-	/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE}
 fi
 
 if [ -n "${REBOOT}" ]; then
