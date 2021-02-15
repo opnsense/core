@@ -508,9 +508,9 @@ $( document ).ready(function() {
 
                 $('#downloadFile').ready(function() {
                     $('#downloadFile').get(0).click();
+                    // reload form after download
+                    setTimeout(window.location.reload.bind(window.location), 100);
                 });
-                // reload form
-                location.reload();
             }
         },'json');
     });
