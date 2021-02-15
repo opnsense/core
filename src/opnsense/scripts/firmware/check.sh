@@ -58,6 +58,7 @@ packages_downgraded=""
 packages_new=""
 packages_upgraded=""
 repository="error"
+sets_upgraded=""
 updates=""
 upgrade_needs_reboot="0"
 
@@ -339,6 +340,21 @@ fi
       if [ -n "${packages_is_size}" ]; then
           upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
           upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+          sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+          kernel_to_delete="$(opnsense-version -v kernel)"
+          if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
+              kernel_is_size="$(opnsense-update -SRk)"
+              if [ -n "${kernel_is_size}" ]; then
+                  sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+              fi
+          fi
+          base_to_delete="$(opnsense-version -v base)"
+          if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
+              base_is_size="$(opnsense-update -SRb)"
+              if [ -n "${base_is_size}" ]; then
+                  sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+              fi
+          fi
       fi
 
 # write our json structure
@@ -360,7 +376,8 @@ cat > ${JSONFILE} << EOF
 	"upgrade_major_message":"$upgrade_major_message",
 	"upgrade_major_version":"$upgrade_major_version",
 	"upgrade_needs_reboot":"$upgrade_needs_reboot",
-	"upgrade_packages":[$packages_upgraded]
+	"upgrade_packages":[$packages_upgraded],
+	"upgrade_sets":[$sets_upgraded]
 }
 EOF
 
