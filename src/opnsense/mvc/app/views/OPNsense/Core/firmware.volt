@@ -306,7 +306,7 @@
                         dialogRef.setClosable(false);
                         dialogRef.getModalBody().html(
                             "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
-                            ' <i class="fa fa-spinner fa-pulse"></i>'
+                            ' <i class="fa fa-cog fa-spin"></i>'
                         );
                         setTimeout(rebootWait, 45000);
                     },
