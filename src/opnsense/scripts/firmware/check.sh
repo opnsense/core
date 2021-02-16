@@ -157,82 +157,82 @@ else
                 fi
 
                 for i in $(echo "${LINE}" | tr '[' '(' | cut -d '(' -f1); do
-                  case ${MODE} in
-                  DOWNGRADED:)
-                    if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
-                      if [ "${i%:*}" = "${i}" ]; then
-                        itemcount=0 # This is not a valid item so reset item count
-                        MODE=
-                      else
-                        i=$(echo $i | tr -d :)
-                        if [ -z "$packages_downgraded" ]; then
-                          packages_downgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
-                        else
-                          packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
+                    case ${MODE} in
+                    DOWNGRADED:)
+                        if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
+                            if [ "${i%:*}" = "${i}" ]; then
+                                itemcount=0 # This is not a valid item so reset item count
+                                MODE=
+                            else
+                                i=$(echo $i | tr -d :)
+                                if [ -z "$packages_downgraded" ]; then
+                                    packages_downgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
+                                else
+                                    packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
+                                fi
+                                packages_downgraded=$packages_downgraded"\"repository\":\"${REPO}\","
+                            fi
                         fi
-                        packages_downgraded=$packages_downgraded"\"repository\":\"${REPO}\","
-                      fi
-                    fi
-                    if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
-                      packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
-                    fi
-                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                      packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
-                      itemcount=$(expr $itemcount + 4) # get ready for next item
-                    fi
-                    ;;
-                  INSTALLED:)
-                    if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
-                      if [ "${i%:*}" = "${i}" ]; then
-                        itemcount=0 # This is not a valid item so reset item count
-                        MODE=
-                      else
-                        i=$(echo $i | tr -d :)
-                        if [ -n "$packages_new" ]; then
-                          packages_new=$packages_new","
+                        if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
+                            packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
                         fi
-                        packages_new=$packages_new"{\"name\":\"$i\",\"repository\":\"${REPO}\","
-                      fi
-                    fi
-                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                      packages_new=$packages_new"\"version\":\"$i\"}"
-                      itemcount=$(expr $itemcount + 2) # get ready for next item
-                    fi
-                    ;;
-                  REINSTALLED:)
-                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                      if [ "${i%-*}" = "${i}" ]; then
-                        itemcount=0 # This is not a valid item so reset item count
-                        MODE=
-                      else
-                        name=${i%-*}
-                        version=${i##*-}
-                        itemcount="$(expr $itemcount + 1)" # get ready for next item
-                        if [ -n "$packages_reinstall" ]; then
-                          packages_reinstall=$packages_reinstall"," # separator for next item
+                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                            packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
+                            itemcount=$(expr $itemcount + 4) # get ready for next item
                         fi
-                        packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\",\"repository\":\"${REPO}\"}"
-                      fi
-                    fi
-                    ;;
-                  REMOVED:)
-                    if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
-                      if [ "${i%:*}" = "${i}" ]; then
-                        itemcount=0 # This is not a valid item so reset item count
-                        MODE=
-                      else
-                        i=$(echo $i | tr -d :)
-                        if [ -n "$packages_removed" ]; then
-                          packages_removed=$packages_removed","
+                        ;;
+                    INSTALLED:)
+                        if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
+                            if [ "${i%:*}" = "${i}" ]; then
+                                itemcount=0 # This is not a valid item so reset item count
+                                MODE=
+                            else
+                                i=$(echo $i | tr -d :)
+                                if [ -n "$packages_new" ]; then
+                                    packages_new=$packages_new","
+                                fi
+                                packages_new=$packages_new"{\"name\":\"$i\",\"repository\":\"${REPO}\","
+                            fi
                         fi
-                        packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
-                      fi
-                    fi
-                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                      packages_removed=$packages_removed"\"version\":\"$i\"}"
-                      itemcount=$(expr $itemcount + 2) # get ready for next item
-                    fi
-                    ;;
+                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                            packages_new=$packages_new"\"version\":\"$i\"}"
+                            itemcount=$(expr $itemcount + 2) # get ready for next item
+                        fi
+                        ;;
+                    REINSTALLED:)
+                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                            if [ "${i%-*}" = "${i}" ]; then
+                                itemcount=0 # This is not a valid item so reset item count
+                                MODE=
+                            else
+                                name=${i%-*}
+                                version=${i##*-}
+                                itemcount="$(expr $itemcount + 1)" # get ready for next item
+                                if [ -n "$packages_reinstall" ]; then
+                                    packages_reinstall=$packages_reinstall"," # separator for next item
+                                fi
+                                packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\",\"repository\":\"${REPO}\"}"
+                            fi
+                        fi
+                        ;;
+                    REMOVED:)
+                        if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
+                            if [ "${i%:*}" = "${i}" ]; then
+                                itemcount=0 # This is not a valid item so reset item count
+                                MODE=
+                            else
+                                i=$(echo $i | tr -d :)
+                                if [ -n "$packages_removed" ]; then
+                                    packages_removed=$packages_removed","
+                                fi
+                                packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
+                            fi
+                        fi
+                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                            packages_removed=$packages_removed"\"version\":\"$i\"}"
+                            itemcount=$(expr $itemcount + 2) # get ready for next item
+                        fi
+                        ;;
                     UPGRADED:)
                         if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
                             if [ "${i%:*}" = "${i}" ]; then
