@@ -81,7 +81,7 @@ fi
       : > ${OUTFILE}
       (pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-      (pkg upgrade -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
+      (pkg upgrade -r ${UPSTREAM} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
       # XXX Do we have to upgrade again?
 
         # parse early errors
@@ -127,8 +127,8 @@ fi
             echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
             # fetch before install lets us know more,
             # although not as fast as it should be...
-            (pkg fetch -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
-            (pkg install -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+            (pkg fetch -r ${UPSTREAM} -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
+            (pkg install -r ${UPSTREAM} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
         else
             echo "A release type change is not required." | ${TEE} ${LOCKFILE}
         fi
