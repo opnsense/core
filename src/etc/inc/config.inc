@@ -105,11 +105,19 @@ function convert_config($verbose = false)
     }
 
     /* chain the new migration into this function call */
-    $mvc_migration = '/usr/local/opnsense/mvc/script/run_migrations.php';
+    $cmd = '/usr/local/opnsense/mvc/script/run_migrations.php';
     if ($verbose) {
-        passthru($mvc_migration);
+        passthru($cmd);
     } else {
-        mwexecf($mvc_migration);
+        mwexecf($cmd);
+    }
+
+    /* factory reset on release type and plugins if necessary */
+    $cmd = '/usr/local/opnsense/scripts/firmware/register.php resync_factory';
+    if ($verbose) {
+        passthru($cmd);
+    } else {
+        mwexecf($cmd);
     }
 
     /* reload the config as it was rewritten and saved in the script context */

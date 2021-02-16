@@ -28,6 +28,7 @@
  */
 
 $action = $name = 'undefined';
+$type = ''; /* empty default */
 
 if (count($argv) > 1) {
     $action = $argv[1];
@@ -47,6 +48,10 @@ require_once('script/load_phalcon.php');
 use OPNsense\Core\Config;
 
 $config = Config::getInstance()->object();
+
+if ($action == 'resync_factory' && !isset($config->trigger_initial_wizard)) {
+    exit();
+}
 
 function plugins_config_get($config)
 {
@@ -103,6 +108,8 @@ function plugins_remove_sibling($name, $plugins)
 
 function plugins_disk_get()
 {
+    global $type;
+
     $found = [];
 
     foreach (glob('/usr/local/opnsense/version/*') as $name) {
@@ -113,13 +120,16 @@ function plugins_disk_get()
         if (strpos($filename, 'kernel') === 0) {
             continue;
         }
-        if (strpos($filename, 'core') === 0) {
-            continue;
-        }
-
         $ret = json_decode(@file_get_contents($name), true);
         if ($ret == null || !isset($ret['product_id'])) {
             echo "Ignoring invalid metadata: $name" . PHP_EOL;
+            continue;
+        }
+
+        if (strpos($filename, 'core') === 0) {
+            if (strpos($ret['product_id'], '-') !== false) {
+                $type = preg_replace('/[^-]+-/', '', $ret['product_id']);
+            }
             continue;
         }
 
@@ -149,18 +159,27 @@ switch ($action) {
         }
         break;
     case 'resync_factory':
-        /* XXX handle core package */
+        if (!isset($config->system->firmware->type)) {
+            $config->system->firmware->addChild('type');
+        }
+        if ($config->system->firmware->type != $type) {
+            echo "Registering release type: " . (!empty($type) ? $type : 'community') . PHP_EOL;
+            $config->system->firmware->type = $type;
+        }
+        if (empty($config->system->firmware->type)) {
+            unset($config->system->firmware->type);
+        }
         /* FALLTHROUGH */
     case 'resync':
         foreach (array_keys($plugins) as $name) {
             if (!plugins_disk_found($name, $found)) {
-                echo "Unregistering missing plugin: $name" . PHP_EOL;
+                echo "Unregistering plugin: $name" . PHP_EOL;
                 unset($plugins[$name]);
             }
         }
         foreach ($found as $name) {
             if (!isset($plugins[$name])) {
-                echo "Registering misconfigured plugin: $name" . PHP_EOL;
+                echo "Registering plugin: $name" . PHP_EOL;
                 $plugins[$name] = 'yep';
             }
             $plugins = plugins_remove_sibling($name, $plugins);
