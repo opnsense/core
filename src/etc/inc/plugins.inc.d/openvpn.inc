@@ -914,7 +914,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (!empty($settings['compression'])) {
-        switch($settings['compression']){
+        switch ($settings['compression']) {
             case 'no':
             case 'adaptive':
             case 'yes':

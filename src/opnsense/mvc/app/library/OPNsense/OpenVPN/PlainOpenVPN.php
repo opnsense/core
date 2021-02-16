@@ -141,7 +141,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         }
 
         if (!empty($this->config['compression'])) {
-            switch($this->config['compression']){
+            switch ($this->config['compression']) {
                 case 'no':
                 case 'adaptive':
                 case 'yes':
