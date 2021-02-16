@@ -165,12 +165,10 @@ else
                                 MODE=
                             else
                                 i=$(echo $i | tr -d :)
-                                if [ -z "$packages_downgraded" ]; then
-                                    packages_downgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
-                                else
-                                    packages_downgraded=$packages_downgraded", {\"name\":\"$i\","
+                                if [ -n "$packages_downgraded" ]; then
+                                    packages_downgraded=$packages_downgraded","
                                 fi
-                                packages_downgraded=$packages_downgraded"\"repository\":\"${REPO}\","
+                                packages_downgraded=$packages_downgraded"{\"name\":\"$i\",\"repository\":\"${REPO}\","
                             fi
                         fi
                         if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
@@ -240,12 +238,10 @@ else
                                 MODE=
                             else
                                 i=$(echo $i | tr -d :)
-                                if [ -z "$packages_upgraded" ]; then
-                                    packages_upgraded="{\"name\":\"$i\"," # If it is the first item then we do not want a separator
-                                else
-                                    packages_upgraded=$packages_upgraded", {\"name\":\"$i\","
+                                if [ -n "$packages_upgraded" ]; then
+                                    packages_upgraded=$packages_upgraded","
                                 fi
-                                packages_upgraded=$packages_upgraded"\"repository\":\"${REPO}\","
+                                packages_upgraded=$packages_upgraded"{\"name\":\"$i\",\"repository\":\"${REPO}\","
                             fi
                         fi
                         if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
@@ -288,12 +284,10 @@ else
             base_to_delete="$(opnsense-version -v base)"
             base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
             if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
-               if [ -z "${packages_upgraded}" ]; then
-                    packages_upgraded="{\"name\":\"base\"," # If it is the first item then we do not want a separator
-                else
-                    packages_upgraded=$packages_upgraded", {\"name\":\"base\","
+                if [ -n "${packages_upgraded}" ]; then
+                    packages_upgraded=$packages_upgraded","
                 fi
-                packages_upgraded=$packages_upgraded"\"size\":\"$base_is_size\","
+                packages_upgraded=$packages_upgraded"{\"name\":\"base\",\"size\":\"$base_is_size\","
                 packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
@@ -311,12 +305,10 @@ else
             kernel_to_delete="$(opnsense-version -v kernel)"
             kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
             if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
-                if [ -z "${packages_upgraded}" ]; then
-                    packages_upgraded="{\"name\":\"kernel\"," # If it is the first item then we do not want a separator
-                else
-                    packages_upgraded=$packages_upgraded", {\"name\":\"kernel\","
+                if [ -n "${packages_upgraded}" ]; then
+                    packages_upgraded=$packages_upgraded","
                 fi
-                packages_upgraded=$packages_upgraded"\"size\":\"$kernel_is_size\","
+                packages_upgraded=$packages_upgraded"{\"name\":\"kernel\",\"size\":\"$kernel_is_size\","
                 packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
@@ -352,23 +344,23 @@ fi
 # write our json structure
 cat > ${JSONFILE} << EOF
 {
-    "connection":"$connection",
-    "downgrade_packages":[$packages_downgraded],
-    "download_size":"$download_size",
-    "last_check":"$last_check",
-    "new_packages":[$packages_new],
-    "os_version":"$os_version",
-    "product_id":"$product_id",
-    "product_target":"$product_target",
-    "product_version":"$product_version",
-    "reinstall_packages":[$packages_reinstall],
-    "remove_packages":[$packages_removed],
-    "repository":"$repository",
-    "upgrade_major_message":"$upgrade_major_message",
-    "upgrade_major_version":"$upgrade_major_version",
-    "upgrade_needs_reboot":"$upgrade_needs_reboot",
-    "upgrade_packages":[$packages_upgraded],
-    "upgrade_sets":[$sets_upgraded]
+    "connection":"${connection}",
+    "downgrade_packages":[${packages_downgraded}],
+    "download_size":"${download_size}",
+    "last_check":"${last_check}",
+    "new_packages":[${packages_new}],
+    "os_version":"${os_version}",
+    "product_id":"${product_id}",
+    "product_target":"${product_target}",
+    "product_version":"${product_version}",
+    "reinstall_packages":[${packages_reinstall}],
+    "remove_packages":[${packages_removed}],
+    "repository":"${repository}",
+    "upgrade_major_message":"${upgrade_major_message}",
+    "upgrade_major_version":"${upgrade_major_version}",
+    "upgrade_needs_reboot":"${upgrade_needs_reboot}",
+    "upgrade_packages":[${packages_upgraded}],
+    "upgrade_sets":[${sets_upgraded}]
 }
 EOF
 
