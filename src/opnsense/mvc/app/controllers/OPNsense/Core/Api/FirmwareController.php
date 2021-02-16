@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -352,11 +352,7 @@ class FirmwareController extends ApiControllerBase
         if ($version == 'update') {
             $backend->configdRun('firmware changelog fetch');
         } else {
-            $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
             $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
-            if (!empty($text)) {
-                $response['text'] = $text;
-            }
             if (!empty($html)) {
                 $response['html'] = $html;
             }
