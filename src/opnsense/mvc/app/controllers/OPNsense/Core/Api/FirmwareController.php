@@ -249,9 +249,6 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'misconfigured') {
                 $response['status_msg'] = gettext('The current package configuration is invalid.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'timeout') {
-                $response['status_msg'] = gettext('Timeout while connecting to the selected mirror.');
-                $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] != 'ok') {
                 $response['status_msg'] = gettext('An error occurred while connecting to the selected mirror.');
                 $response['status'] = 'error';

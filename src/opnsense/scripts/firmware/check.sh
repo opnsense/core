@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
-# connection: error|timeout|unauthenticated|misconfigured|unresolved|ok
+# connection: error|unauthenticated|misconfigured|unresolved|ok
 # repository: error|untrusted|unsigned|revoked|incomplete|ok
 # last_ckeck: <date_time_stamp>
 # download_size: <size_of_total_downloads>[,<size_of_total_downloads>]
@@ -78,82 +78,77 @@ if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; 
     echo "done" >> ${LOCKFILE}
 fi
 
-      : > ${OUTFILE}
-      (pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+: > ${OUTFILE}
+(pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-      (pkg upgrade -r ${UPSTREAM} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
-      # XXX Do we have to upgrade again?
+(pkg upgrade -r ${UPSTREAM} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
+# XXX Do we have to upgrade again?
 
-        # parse early errors
-        if grep -q 'No address record' ${OUTFILE}; then
-          # DNS resolution failed
-          connection="unresolved"
-        elif grep -q 'Cannot parse configuration' ${OUTFILE}; then
-          # configuration error
-          connection="misconfigured"
-        elif grep -q 'Authentication error' ${OUTFILE}; then
-          # TLS or authentication error
-          connection="unauthenticated"
-        elif grep -q 'No trusted public keys found' ${OUTFILE}; then
-          # fingerprint mismatch
-          repository="untrusted"
-          connection="ok"
-        elif grep -q 'At least one of the certificates has been revoked' ${OUTFILE}; then
-          # fingerprint mismatch
-          repository="revoked"
-          connection="ok"
-        elif grep -q 'No signature found' ${OUTFILE}; then
-          # fingerprint not found
-          repository="unsigned"
-          connection="ok"
-        elif grep -q 'Unable to update repository' ${OUTFILE}; then
-          # repository not found
-          connection="ok"
-        elif [ 1 -eq 0 ]; then # XXX emulate timeouts
-          # We have a connection issue and could not
-          # reach the pkg repository in timely fashion
-          # Kill all running pkg instances
-          connection="timeout"
-        else
-          # connection is still ok
-          connection="ok"
+# parse early errors
+if grep -q 'No address record' ${OUTFILE}; then
+    # DNS resolution failed
+    connection="unresolved"
+elif grep -q 'Cannot parse configuration' ${OUTFILE}; then
+    # configuration error
+    connection="misconfigured"
+elif grep -q 'Authentication error' ${OUTFILE}; then
+    # TLS or authentication error
+    connection="unauthenticated"
+elif grep -q 'No trusted public keys found' ${OUTFILE}; then
+    # fingerprint mismatch
+    repository="untrusted"
+    connection="ok"
+elif grep -q 'At least one of the certificates has been revoked' ${OUTFILE}; then
+    # fingerprint mismatch
+    repository="revoked"
+    connection="ok"
+elif grep -q 'No signature found' ${OUTFILE}; then
+    # fingerprint not found
+    repository="unsigned"
+    connection="ok"
+elif grep -q 'Unable to update repository' ${OUTFILE}; then
+    # repository not found
+    connection="ok"
+else
+    # connection is still ok
+    connection="ok"
 
-        : > ${OUTFILE}
+    : > ${OUTFILE}
 
-        (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    # now check what happens when we would go ahead
+    (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-        # now check what happens when we would go ahead
-        if [ "${product_id}" != "${product_target}" ]; then
-            echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
-            # fetch before install lets us know more,
-            # although not as fast as it should be...
-            (pkg fetch -r ${UPSTREAM} -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
-            (pkg install -r ${UPSTREAM} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
-        else
-            echo "A release type change is not required." | ${TEE} ${LOCKFILE}
-        fi
+    if [ "${product_id}" != "${product_target}" ]; then
+        echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
+        # fetch before install lets us know more
+        (pkg fetch -r ${UPSTREAM} -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
+        (pkg install -r ${UPSTREAM} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    else
+        echo "A release type change is not required." | ${TEE} ${LOCKFILE}
+    fi
 
-          # Check for additional repository errors
-          if grep -q 'Unable to update repository' ${OUTFILE}; then
-            repository="error" # already set but reset here for clarity
-          elif grep -q "No packages available to install matching..${product_target}" ${OUTFILE}; then
-            repository="incomplete"
-          else
-            # Repository can be used for updates
-            repository="ok"
-            if [ -n "$(grep 'The following' ${OUTFILE} | awk -F '[ ]' '{print $3}')" ]; then
-	      # if we run twice give values as CSV for later processing
-              download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
+    # Check for additional repository errors
+    if grep -q 'Unable to update repository' ${OUTFILE}; then
+        repository="error" # already set but reset here for clarity
+    elif grep -q "No packages available to install matching..${product_target}" ${OUTFILE}; then
+        repository="incomplete"
+    else
+        # Repository can be used for updates
+        repository="ok"
 
-              # see if packages indicate a new version (not revision) of base / kernel
-              LQUERY=$(pkg query %v opnsense-update)
-              RQUERY=$(pkg rquery %v opnsense-update)
-              if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
+        if [ -n "$(grep 'The following' ${OUTFILE} | awk -F '[ ]' '{print $3}')" ]; then
+            # if we run twice give values as CSV for later processing
+            download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
+
+            # see if packages indicate a new version (not revision) of base / kernel
+            LQUERY=$(pkg query %v opnsense-update)
+            RQUERY=$(pkg rquery %v opnsense-update)
+            if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
                 kernel_to_reboot="${RQUERY%%_*}"
                 base_to_reboot="${RQUERY%%_*}"
-              fi
+            fi
 
-              MODE=
+            MODE=
 
             while read LINE; do
               REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
@@ -330,47 +325,49 @@ fi
           fi
         fi
 
-      packages_is_size="$(opnsense-update -SRp)"
-      if [ -n "${packages_is_size}" ]; then
-          upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
-          upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
-          sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
-          kernel_to_delete="$(opnsense-version -v kernel)"
-          if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
-              kernel_is_size="$(opnsense-update -SRk)"
-              if [ -n "${kernel_is_size}" ]; then
-                  sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
-              fi
-          fi
-          base_to_delete="$(opnsense-version -v base)"
-          if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
-              base_is_size="$(opnsense-update -SRb)"
-              if [ -n "${base_is_size}" ]; then
-                  sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
-              fi
-          fi
-      fi
+packages_is_size="$(opnsense-update -SRp)"
+if [ -n "${packages_is_size}" ]; then
+    upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
+    upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+    sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+
+    kernel_to_delete="$(opnsense-version -v kernel)"
+    if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
+        kernel_is_size="$(opnsense-update -SRk)"
+        if [ -n "${kernel_is_size}" ]; then
+            sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+        fi
+    fi
+
+    base_to_delete="$(opnsense-version -v base)"
+    if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
+        base_is_size="$(opnsense-update -SRb)"
+        if [ -n "${base_is_size}" ]; then
+            sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+        fi
+    fi
+fi
 
 # write our json structure
 cat > ${JSONFILE} << EOF
 {
-	"connection":"$connection",
-	"downgrade_packages":[$packages_downgraded],
-	"download_size":"$download_size",
-	"last_check":"$last_check",
-	"new_packages":[$packages_new],
-	"os_version":"$os_version",
-	"product_id":"$product_id",
-	"product_target":"$product_target",
-	"product_version":"$product_version",
-	"reinstall_packages":[$packages_reinstall],
-	"remove_packages":[$packages_removed],
-	"repository":"$repository",
-	"upgrade_major_message":"$upgrade_major_message",
-	"upgrade_major_version":"$upgrade_major_version",
-	"upgrade_needs_reboot":"$upgrade_needs_reboot",
-	"upgrade_packages":[$packages_upgraded],
-	"upgrade_sets":[$sets_upgraded]
+    "connection":"$connection",
+    "downgrade_packages":[$packages_downgraded],
+    "download_size":"$download_size",
+    "last_check":"$last_check",
+    "new_packages":[$packages_new],
+    "os_version":"$os_version",
+    "product_id":"$product_id",
+    "product_target":"$product_target",
+    "product_version":"$product_version",
+    "reinstall_packages":[$packages_reinstall],
+    "remove_packages":[$packages_removed],
+    "repository":"$repository",
+    "upgrade_major_message":"$upgrade_major_message",
+    "upgrade_major_version":"$upgrade_major_version",
+    "upgrade_needs_reboot":"$upgrade_needs_reboot",
+    "upgrade_packages":[$packages_upgraded],
+    "upgrade_sets":[$sets_upgraded]
 }
 EOF
 
