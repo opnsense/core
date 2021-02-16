@@ -31,7 +31,7 @@ PACKAGE=${1}
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO UNLOCK: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO UNLOCK***" >> ${PKG_PROGRESS_FILE}
 if [ "${PACKAGE}" = "base" ]; then
 	echo "Unlocking base set" >> ${PKG_PROGRESS_FILE}
 	opnsense-update -bU >> ${PKG_PROGRESS_FILE} 2>&1
