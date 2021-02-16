@@ -765,11 +765,11 @@
             });
         });
 
-        $("#btn_update_status_copy").click(function(){
+        $("#update_status_copy").click(function () {
             $("#update_status").select();
             document.execCommand("copy");
             document.getSelection().removeAllRanges();
-            $(this).toggleClass("fa-flip-horizontal");
+            setTimeout(function () { $("#update_status").blur(); }, 100);
         });
 
         // update history on tab state and implement navigation
@@ -784,13 +784,6 @@
         });
     });
 </script>
-<style>
-  .copy-logo {
-      position: absolute;
-      bottom: 5px;
-      right: 35px;
-  }
-</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12" id="content">
@@ -831,8 +824,17 @@
                         </tfoot>
                     </table>
                     <div id="update_status_container">
-                      <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
-                      <i id="btn_update_status_copy" class="copy-logo fa fa-clipboard fa-2x" data-toggle="tooltip" title="{{lang._('Copy to clipboard')}}"  style="padding: 5px 5px 5px 5px; cursor: pointer;"></i>
+                       <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
+                      <table class="table table-striped table-condensed table-responsive">
+                        <tbody>
+                          <tr>
+                            <td>
+                              {{ lang._('Output shown here for diagnostic purposes. There is no general need for manual system intervention.') }}
+                              <a id="update_status_copy">{{ lang._('Click here to copy to clipboard.') }}</a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                 </div>
                 <div id="status" class="tab-pane active">
