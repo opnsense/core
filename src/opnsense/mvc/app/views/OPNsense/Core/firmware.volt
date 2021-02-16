@@ -307,12 +307,14 @@
         });
     }
 
-    /**
-     * handle check/audit/upgrade status
-     */
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
-            if (data['log'] != undefined) {
+            if (status != 'success') {
+                // recover from temporary errors
+                setTimeout(trackStatus, 1000);
+                return;
+            }
+            if (data['log'] != undefined && data['log'] != '') {
                 var autoscroll = $('#update_status')[0].scrollTop +
                     $('#update_status')[0].clientHeight ===
                     $('#update_status')[0].scrollHeight;
@@ -362,9 +364,6 @@
                 // schedule next poll
                 setTimeout(trackStatus, 500);
             }
-        }).fail(function () {
-            // recover from temporary errors
-            setTimeout(trackStatus, 500);
         });
     }
 
