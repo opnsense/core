@@ -275,7 +275,7 @@
 
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
-           if (status != 'success') {
+            if (status != 'success') {
                 // recover from temporary errors
                 setTimeout(trackStatus, 1000);
                 return;
