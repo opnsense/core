@@ -32,7 +32,7 @@ REBOOT=
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO REINSTALL: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO REINSTALL***" >> ${PKG_PROGRESS_FILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then

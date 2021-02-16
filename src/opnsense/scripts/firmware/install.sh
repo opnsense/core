@@ -31,7 +31,7 @@ PACKAGE=$1
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO INSTALL: ${PACKAGE}***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO INSTALL***" >> ${PKG_PROGRESS_FILE}
 if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 	COREPKG=$(opnsense-version -n)
 	COREVER=$(opnsense-version -v)

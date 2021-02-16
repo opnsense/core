@@ -400,7 +400,8 @@
 
             var local_count = 0;
             var plugin_count = 0;
-            var broken_plugins = 0;
+            var misconfigured_plugins = 0;
+            var missing_plugins = 0;
             var changelog_count = 0;
             var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
@@ -421,7 +422,7 @@
                     '<td>' + row['repository'] + '</td>' +
                     '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' +
+                    '<td style="white-space:nowrap;vertical-align:middle;"><div class="input-group">' +
                     '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="{{ lang._('License') }}">' +
                     '<i class="fa fa-balance-scale fa-fw"></i></button> ' +
@@ -434,7 +435,7 @@
                         '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '" ' +
                         '  data-toggle="tooltip" title="{{ lang._('Lock') }}" >' +
                         '<i class="fa fa-unlock fa-fw"></i></button>'
-                    ) + '</td>' +
+                    ) + '</div></td>' +
                     '</tr>'
                 );
             });
@@ -456,12 +457,12 @@
                     status_text = ' ({{ lang._('misconfigured') }})';
                     bold_on = '<b>';
                     bold_off = '</b>';
-                    broken_plugins = 1;
+                    misconfigured_plugins = 1;
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
                     bold_on = '<span class="text-danger plugin_missing"><b>';
                     bold_off = '</b></span>';
-                    broken_plugins = 1;
+                    missing_plugins = 1;
                 } else if (row['installed'] == "1") {
                     status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
@@ -477,7 +478,8 @@
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['repository'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
-                    '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
+                    '<td style="white-space:nowrap;vertical-align:middle;"><div class="input-group">' +
+                    '<button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
@@ -489,7 +491,7 @@
                         'data-repository="'+row['repository']+'" data-toggle="tooltip" title="{{ lang._('Install') }}">' +
                         '<i class="fa fa-plus fa-fw">' +
                         '</i></button>'
-                    ) + '</td>' + '</tr>'
+                    ) + '</div></td>' + '</tr>'
                 );
             });
 
@@ -503,7 +505,12 @@
             $("#plugin_search").keyup();
             $("#package_search").keyup();
 
-            if (broken_plugins) {
+            if (misconfigured_plugins || missing_plugins) {
+                if (!missing_plugins) {
+                    $("#plugin_get").parent().hide();
+                } else {
+                    $("#plugin_get").parent().show();
+                }
                 $('#plugin_actions').show();
             } else {
                 $('#plugin_actions').hide();
@@ -907,7 +914,7 @@
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a id="plugin_see" href="#">{{ lang._('View and edit local conflicts') }}</a></li>
                                             <li><a id="plugin_get" href="#">{{ lang._('Run the automatic resolver') }}</a></li>
-                                            <li><a id="plugin_set" href="#">{{ lang._('Reset the local conflicts') }}</a></li>
+                                            <li><a id="plugin_set" href="#">{{ lang._('Reset all local conflicts') }}</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -920,7 +927,7 @@
                     <table class="table table-striped table-condensed table-responsive" id="pluginlist">
                         <thead>
                             <tr>
-                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Size') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
@@ -935,7 +942,7 @@
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
                         <thead>
                             <tr>
-                                <th style="vertical-align:middle"><input type="text" style="width: 250px;" class="input-sm" autocomplete="off" id="package_search" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="package_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Size') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
