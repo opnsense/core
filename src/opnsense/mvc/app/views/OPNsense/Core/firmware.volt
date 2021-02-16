@@ -95,55 +95,24 @@
                 packagesInfo(false);
             } else if (data['status'] == "upgrade") {
                 if (data['upgrade_major_message'] != '') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: '{{ lang._('Upgrade instructions') }}',
-                        /* we trust this data, it was signed by us and secured by csrf */
-                        message: htmlDecode(data['upgrade_major_message']),
-                        buttons: [{
-                            label: "{{ lang._('OK') }}",
-                            action: function (dialogRef) {
-                                dialogRef.close();
-                                show_upgrade(data);
-                            }
-                        }]
-                    });
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    stdDialogInform(
+                        '{{ lang._('Upgrade instructions') }}',
+                        htmlDecode(data['upgrade_major_message']),
+                        "{{ lang._('OK') }}",
+                        function () { show_upgrade(data) },
+                        'warning'
+                    );
                 } else {
                     show_upgrade(data);
                 }
 
                 packagesInfo(false);
             } else if (data['status'] == "error") {
-                BootstrapDialog.show({
-                    type: BootstrapDialog.TYPE_DANGER,
-                    title: "{{ lang._('Status') }}",
-                    onshow:function(dialogRef){
-                        dialogRef.getModalBody().html(data['status_msg']);
-                    },
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function(dialogRef){
-                            dialogRef.close();
-                        }
-                    }]
-                });
-
+                stdDialogInform( '{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'danger');
                 packagesInfo(true);
             } else if (data['status'] == "none") {
-                BootstrapDialog.show({
-                    type: BootstrapDialog.TYPE_SUCCESS,
-                    title: "{{ lang._('Status') }}",
-                    onshow:function(dialogRef){
-                        dialogRef.getModalBody().html(data['status_msg']);
-                    },
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function(dialogRef){
-                            dialogRef.close();
-                        }
-                    }]
-                });
-
+                stdDialogInform( '{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'success');
                 packagesInfo(true);
             } else {
                 // in case new responses are added
@@ -159,14 +128,13 @@
     function backend(type) {
         $.upgrade_check = type == 'check'
 
-        $('#updatelist').hide();
         $('#update_status').html('');
+        $('#updatelist').hide();
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
         $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/' + type, {}, function () {
-            $('#updatelist > tbody').empty();
             setTimeout(trackStatus, 500);
         });
     }
@@ -206,18 +174,8 @@
     {
         ajaxCall('/api/core/firmware/changelog/' + version, {}, function (data, status) {
             if (data['html'] != undefined) {
-                BootstrapDialog.show({
-                    type:BootstrapDialog.TYPE_PRIMARY,
-                    title: version,
-                    /* we trust this data, it was signed by us and secured by csrf */
-                    message: htmlDecode(data['html']),
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function(dialogRef){
-                            dialogRef.close();
-                        }
-                    }]
-                });
+                /* we trust this data, it was signed by us and secured by csrf */
+                stdDialogInform(version, htmlDecode(data['html']), "{{ lang._('Close') }}", undefined, 'primary');
             }
         });
     }
