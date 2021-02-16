@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
+PACKAGE=${1}
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
@@ -38,8 +38,8 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 	REPOVER=$(pkg rquery %v ${COREPKG})
 
 	# plugins must pass a version check on up-to-date core package
-	if [ "${REPOVER%_*}" != "${COREVER%_*}" ]; then
-		echo "Installation is out of date: please install system updates first." >> ${PKG_PROGRESS_FILE} 2>&1
+	if ! php -r "exit(version_compare('${COREVER}','${REPOVER}') >= 0 ? 0 : 1);"; then
+		echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." >> ${PKG_PROGRESS_FILE} 2>&1
 		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 		exit
 	fi
