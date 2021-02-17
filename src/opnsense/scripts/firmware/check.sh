@@ -41,7 +41,6 @@ JSONRETURN=${1}
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
 TEE="/usr/bin/tee -a"
-UPSTREAM="OPNsense"
 
 rm -f ${JSONFILE}
 : > ${LOCKFILE}
@@ -56,6 +55,7 @@ linecount=0
 packages_downgraded=""
 packages_new=""
 packages_upgraded=""
+product_repo="OPNsense"
 repository="error"
 sets_upgraded=""
 upgrade_needs_reboot="0"
@@ -81,8 +81,11 @@ fi
 : > ${OUTFILE}
 (pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-(pkg upgrade -r ${UPSTREAM} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
-# XXX Do we have to upgrade again?
+(pkg unlock -y pkg 2>&1) | ${TEE} ${LOCKFILE}
+(pkg upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
+(pkg lock -y pkg 2>&1) | ${TEE} ${LOCKFILE}
+
+# XXX do we have to call update again if pkg was updated?
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
@@ -121,8 +124,8 @@ else
     if [ "${product_id}" != "${product_target}" ]; then
         echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
         # fetch before install lets us know more
-        (pkg fetch -r ${UPSTREAM} -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
-        (pkg install -r ${UPSTREAM} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+        (pkg fetch -r ${product_repo} -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
+        (pkg install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     else
         echo "A release type change is not required." | ${TEE} ${LOCKFILE}
     fi
@@ -153,7 +156,7 @@ else
             while read LINE; do
                 REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
                 if [ -z "${REPO}" ]; then
-                    REPO=${UPSTREAM}
+                    REPO=${product_repo}
                 fi
 
                 for i in $(echo "${LINE}" | tr '[' '(' | cut -d '(' -f1); do
@@ -288,7 +291,7 @@ else
                     packages_upgraded=$packages_upgraded","
                 fi
                 packages_upgraded=$packages_upgraded"{\"name\":\"base\",\"size\":\"$base_is_size\","
-                packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
+                packages_upgraded=$packages_upgraded"\"repository\":\"${product_repo}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
                 upgrade_needs_reboot="1"
@@ -309,7 +312,7 @@ else
                     packages_upgraded=$packages_upgraded","
                 fi
                 packages_upgraded=$packages_upgraded"{\"name\":\"kernel\",\"size\":\"$kernel_is_size\","
-                packages_upgraded=$packages_upgraded"\"repository\":\"${UPSTREAM}\","
+                packages_upgraded=$packages_upgraded"\"repository\":\"${product_repo}\","
                 packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
                 packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
                 upgrade_needs_reboot="1"
@@ -322,13 +325,13 @@ packages_is_size="$(opnsense-update -SRp)"
 if [ -n "${packages_is_size}" ]; then
     upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
     upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
-    sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+    sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
 
     kernel_to_delete="$(opnsense-version -v kernel)"
     if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
         kernel_is_size="$(opnsense-update -SRk)"
         if [ -n "${kernel_is_size}" ]; then
-            sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+            sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
         fi
     fi
 
@@ -336,7 +339,7 @@ if [ -n "${packages_is_size}" ]; then
     if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
         base_is_size="$(opnsense-update -SRb)"
         if [ -n "${base_is_size}" ]; then
-            sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${UPSTREAM}\"}"
+            sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
         fi
     fi
 fi
