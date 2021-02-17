@@ -129,14 +129,20 @@ if __name__ == '__main__':
 
                 syslog.syslog(
                     syslog.LOG_NOTICE,
-                    'blacklist download %(uri)s (lines: %(lines)d exclude: %(skip)d black: %(blacklist)d' % file_stats
+                    'blacklist download %(uri)s (lines: %(lines)d exclude: %(skip)d black: %(blacklist)d)' % file_stats
                 )
+        
+        inform = False
+        if cnf.has_section('inform'): 
+            inform = True
 
     # write out results
     with open("/var/unbound/etc/dnsbl.conf", 'w') as unbound_outf:
         if blacklist_items:
             unbound_outf.write('server:\n')
             for entry in blacklist_items:
+                if inform:
+                   unbound_outf.write("local-zone: \"%s\" inform\n" % entry)    
                 unbound_outf.write("local-data: \"%s A 0.0.0.0\"\n" % entry)
 
     syslog.syslog(syslog.LOG_NOTICE, "blacklist download done in %0.2f seconds (%d records)" % (
