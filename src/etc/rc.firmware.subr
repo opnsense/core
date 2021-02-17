@@ -45,11 +45,18 @@ fi
 rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
 
-echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
-
 if [ -z "${RELEASE}" ]; then
+	# XXX essentially this is a copy of update.sh
+	echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
+
+	# figure out the release type from config
+	SUFFIX="-$(pluginctl -g system.firmware.type)"
+	if [ "${SUFFIX}" = "-" ]; then
+		SUFFIX=
+	fi
+
 	# upgrade all packages if possible
-	(opnsense-update -p 2>&1) | ${TEE} ${LOCKFILE}
+	(opnsense-update -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
 
 	# trigger a webgui restart to cope with changes
 	(/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
@@ -65,6 +72,9 @@ if [ -z "${RELEASE}" ]; then
 		fi
 	fi
 else
+	# XXX essentially this is a copy of upgrade.sh
+	echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
+
 	# upgrade to a major release
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
 	if opnsense-update -u > ${PIPEFILE} 2>&1; then

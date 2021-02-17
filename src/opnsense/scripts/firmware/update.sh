@@ -38,11 +38,8 @@ if [ "${SUFFIX}" = "-" ]; then
 	SUFFIX=
 fi
 
-# update all installed packages
-opnsense-update -p >> ${PKG_PROGRESS_FILE} 2>&1
-
-# change the release type
-opnsense-update -t "opnsense${SUFFIX}" >> ${PKG_PROGRESS_FILE} 2>&1
+# upgrade all packages if possible
+opnsense-update -pt "opnsense${SUFFIX}" >> ${PKG_PROGRESS_FILE} 2>&1
 
 # restart the web server
 /usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
