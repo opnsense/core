@@ -26,9 +26,9 @@
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
 MTREE="mtree -e -p /"
+PRODUCT="OPNsense"
 TEE="/usr/bin/tee -a"
 TMPFILE=/tmp/pkg_check.exclude
-UPSTREAM="OPNsense"
 
 : > ${LOCKFILE}
 
@@ -119,6 +119,7 @@ core_check()
 {
 	echo ">>> Check for core packages consistency" | ${TEE} ${LOCKFILE}
 
+	CRYPTO=$(opnsense-version -f | tr '[[:upper:]]' '[[:lower:]]')
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
@@ -129,7 +130,7 @@ core_check()
 
 	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
-	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
+	for DEP in $( (echo ${CORE} ${CRYPTO}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
 			PROGRESS=1
@@ -141,7 +142,16 @@ core_check()
 $(pkg query "%R %v %a %V" ${DEP})
 EOF
 
-		if [ "${REPO}" != ${UPSTREAM} ]; then
+		if [ -z "${REPO}${LVER}${AUTO}${VITA}" ]; then
+			if [ -n "${PROGRESS}" ]; then
+				echo | ${TEE} ${LOCKFILE}
+			fi
+			echo "Package not installed: ${DEP}" | ${TEE} ${LOCKFILE}
+			PROGRESS=
+			continue
+		fi
+
+		if [ "${REPO}" != ${PRODUCT} ]; then
 			if [ -n "${PROGRESS}" ]; then
 				echo | ${TEE} ${LOCKFILE}
 			fi
@@ -149,7 +159,7 @@ EOF
 			PROGRESS=
 		fi
 
-		RVER=$(pkg rquery -r ${UPSTREAM} %v ${DEP})
+		RVER=$(pkg rquery -r ${PRODUCT} %v ${DEP})
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
 				echo | ${TEE} ${LOCKFILE}
