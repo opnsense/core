@@ -31,7 +31,7 @@ PACKAGES=$(/usr/local/sbin/pluginctl -g system.firmware.plugins | /usr/bin/sed '
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO SYNC: ${PACKAGES}***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO SYNC***" >> ${PKG_PROGRESS_FILE}
 for PACKAGE in ${PACKAGES}; do
 	if ! pkg query %n ${PACKAGE} > /dev/null; then
 		pkg install -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
