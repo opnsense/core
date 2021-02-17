@@ -130,7 +130,7 @@ core_check()
 
 	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
-	for DEP in $( (echo ${CORE} ${CRYPTO}; pkg query %dn ${CORE}) | sort -u); do
+	for DEP in $( (echo ${CORE}; echo ${CRYPTO}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
 			PROGRESS=1
