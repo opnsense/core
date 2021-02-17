@@ -81,9 +81,8 @@ fi
 : > ${OUTFILE}
 (pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-(pkg unlock -y pkg 2>&1) | ${TEE} ${LOCKFILE}
+# always update pkg so we can see the real updates directly
 (pkg upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
-(pkg lock -y pkg 2>&1) | ${TEE} ${LOCKFILE}
 
 # XXX do we have to call update again if pkg was updated?
 
