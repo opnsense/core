@@ -1848,9 +1848,9 @@ function ipsec_get_configured_vtis()
                         $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
                         $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
                     }
-                    $mask = 128 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
+                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
                 } else {
-                    $mask = 32 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
+                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
                 }
 
                 $configured_intf[$intfnm]['networks'][] = [
