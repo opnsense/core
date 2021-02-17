@@ -50,6 +50,10 @@
         <lists type="CSVListField">
             <Required>N</Required>
         </lists>
+        <inform type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </inform>
         <whitelists type="CSVListField">
             <Required>N</Required>
         </whitelists>
