@@ -266,7 +266,7 @@
                 if (this_data === undefined) {
                     return;
                 }
-                let is_matched = !filter_or_type;
+                let is_matched = (filters.length > 0) ? !filter_or_type : true;
                 for (let i=0; i < filters.length; i++) {
                     let filter_value = filters[i].value.toLowerCase();
                     let filter_condition = filters[i].condition;
