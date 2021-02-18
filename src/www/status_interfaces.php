@@ -104,10 +104,14 @@ include("head.inc");
                   <tbody>
                     <tr>
                       <td style="width:22%"><?= gettext("Status") ?></td>
-                      <td style="width:78%"><?= $ifinfo['status'] ?></td>
+                      <td style="width:78%"><?= $ifinfo['status'] ?>
+<?php                   if (empty($ifcfg['enable'])): ?>
+                          <i class="fa fa-warning" title="<?=gettext("administrative disabled");?>" data-toggle="tooltip"></i>
+<?php                   endif; ?>
+                      </td>
                     </tr>
 <?php
-                    if (!empty($ifinfo['dhcplink'])): ?>
+                    if (!empty($ifinfo['dhcplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP");?></td>
                       <td>
@@ -122,7 +126,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['dhcp6link'])): ?>
+                    if (!empty($ifinfo['dhcp6link']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
@@ -137,7 +141,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['pppoelink'])): ?>
+                    if (!empty($ifinfo['pppoelink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
@@ -152,7 +156,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['pptplink'])): ?>
+                    if (!empty($ifinfo['pptplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?= gettext("PPTP") ?></td>
                       <td>
@@ -167,7 +171,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['l2tplink'])): ?>
+                    if (!empty($ifinfo['l2tplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
@@ -182,7 +186,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['ppplink'])): ?>
+                    if (!empty($ifinfo['ppplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPP"); ?></td>
                       <td>
