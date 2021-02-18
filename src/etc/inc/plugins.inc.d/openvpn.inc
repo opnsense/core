@@ -137,15 +137,15 @@ function openvpn_compression_modes()
 {
     return array(
         '' => gettext('No Preference'),
-        'pfc' => gettext('Partial - Packet Framing for Compression (--compress)'),
-        'lz4' => gettext('Enabled - LZ4 Algorithm (--compress lz4)'),
-        'lz4-v2' => gettext('Enabled - LZ4 v2 Algorithm (--compress lz4-v2)'),
-        'lzo' => gettext('Enabled - LZO Algorithm (--compress lzo, equivalent to --comp-lzo yes)'),
-        'stub' => gettext('Enabled - Stub Algorithm (--compress stub)'),
-        'stub-v2' => gettext('Enabled - Stub v2 Algorithm (--compress stub-v2)'),
-        'no' => gettext('Legacy - Disabled LZO Algorithm (--comp-lzo no)'),
-        'adaptive' => gettext('Legacy - Enabled LZO Algorithm with Adaptive Compression (--comp-lzo adaptive)'),
-        'yes' => gettext('Legacy - Enabled LZO Algorithm without Adaptive Compression (--comp-lzo yes)'),
+        'pfc' => sprintf(gettext('Partial - Packet framing for compression (%s)'), '--compress'),
+        'lz4' => sprintf(gettext('Enabled - LZ4 algorithm (%s)'), '--compress lz4'),
+        'lz4-v2' => sprintf(gettext('Enabled - LZ4 v2 algorithm (%s)'), '--compress lz4-v2'),
+        'lzo' => sprintf(gettext('Enabled - LZO algorithm (%s)'), '--compress lzo'),
+        'stub' => sprintf(gettext('Enabled - Stub algorithm (%s)'), '--compress stub'),
+        'stub-v2' => sprintf(gettext('Enabled - Stub v2 algorithm (%s)'), '--compress stub-v2'),
+        'no' => sprintf(gettext('Legacy - Disabled LZO algorithm (%s)'), '--comp-lzo no'),
+        'adaptive' => sprintf(gettext('Legacy - Enabled LZO algorithm with adaptive compression (%s)'), '--comp-lzo adaptive'),
+        'yes' => sprintf(gettext('Legacy - Enabled LZO algorithm without adaptive compression (%s)'), '--comp-lzo yes'),
     );
 }
 
