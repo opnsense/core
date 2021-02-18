@@ -119,14 +119,8 @@ else
 
     # now check what happens when we would go ahead
     (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
-
     if [ "${product_id}" != "${product_target}" ]; then
-        echo "Targeting new release type: ${product_target}" | ${TEE} ${LOCKFILE}
-        # fetch before install lets us know more
-        (pkg fetch -r ${product_repo} -Uy "${product_target}" 2>&1) | ${TEE} ${LOCKFILE}
         (pkg install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
-    else
-        echo "A release type change is not required." | ${TEE} ${LOCKFILE}
     fi
 
     # Check for additional repository errors
