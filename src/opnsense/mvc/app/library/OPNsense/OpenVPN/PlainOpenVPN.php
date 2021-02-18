@@ -152,6 +152,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
                     break;
                 default:
                     $conf[] = "compress " . $this->config['compression'];
+                    break;
             }
         }
 

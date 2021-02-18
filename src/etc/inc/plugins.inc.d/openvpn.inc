@@ -925,6 +925,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 break;
             default:
                 $conf .= "compress {$settings['compression']}\n";
+                break;
         }
     }
 
