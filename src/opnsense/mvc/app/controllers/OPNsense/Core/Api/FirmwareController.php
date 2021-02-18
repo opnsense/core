@@ -920,13 +920,15 @@ class FirmwareController extends ApiControllerBase
      */
     public function getFirmwareOptionsAction()
     {
+        $families = [];
+        $flavours = [];
+        $flavours_allow_custom = false;
+        $has_subscription = [];
+        $mirrors = [];
+        $mirrors_allow_custom = false;
+
         $this->sessionClose(); // long running action, close session
-        $mirrors = array();
-        $flavours = array();
-        $families = array();
-        $has_subscription = array();
-        $allow_custom = false;
-        // parse firmware options
+
         foreach (glob(__DIR__ . "/repositories/*.xml") as $xml) {
             $repositoryXml = simplexml_load_file($xml);
             if ($repositoryXml === false || $repositoryXml->getName() != 'firmware') {
@@ -934,7 +936,7 @@ class FirmwareController extends ApiControllerBase
             } else {
                 if (isset($repositoryXml->mirrors->mirror)) {
                     if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
-                        $allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
+                        $mirrors_allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
                     }
                     foreach ($repositoryXml->mirrors->mirror as $mirror) {
                         $mirrors[(string)$mirror->url] = (string)$mirror->description;
@@ -945,6 +947,9 @@ class FirmwareController extends ApiControllerBase
                     }
                 }
                 if (isset($repositoryXml->flavours->flavour)) {
+                    if (isset($repositoryXml->flavours->attributes()->allow_custom)) {
+                        $flavours_allow_custom = (strtolower($repositoryXml->flavours->attributes()->allow_custom) == "true");
+                    }
                     foreach ($repositoryXml->flavours->flavour as $flavour) {
                         $flavours[(string)$flavour->name] = (string)$flavour->description;
                     }
@@ -956,13 +961,14 @@ class FirmwareController extends ApiControllerBase
                 }
             }
         }
-        return array(
-            'has_subscription' => $has_subscription,
-            'flavours' => $flavours,
+        return [
             'families' => $families,
+            'flavours' => $flavours,
+            'flavours_allow_custom' => $flavours_allow_custom,
             'mirrors' => $mirrors,
-            'allow_custom' => $allow_custom
-        );
+            'mirrors_allow_custom' => $mirrors_allow_custom,
+            'mirrors_has_subscription' => $has_subscription,
+        ];
     }
 
     /**
@@ -971,28 +977,34 @@ class FirmwareController extends ApiControllerBase
      * @param $selectedFlavour selected flavour
      * @param $selectedType selected family type
      * @param $selSubscription selected subscription id
-     * @return array|bool is valid config
+     * @return array with validation failure messages
      */
     private function validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)
     {
         $validOptions = $this->getFirmwareOptionsAction();
-        if ($validOptions['allow_custom']) {
-            // custom options allowed, skip validations
-            return true;
-        } elseif (!isset($validOptions['flavours'][$selectedFlavour])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware flavour ' . $selectedFlavour);
-            return false;
-        } elseif (!isset($validOptions['families'][$selectedType])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware release type ' . $selectedFlavour);
-            return false;
-        } elseif (!isset($validOptions['mirrors'][$selectedMirror])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware mirror ' . $selectedMirror);
-            return false;
-        } elseif (!empty($selSubscription) && !in_array($selectedMirror, $validOptions['has_subscription'])) {
-            syslog(LOG_ERR, 'unable to set subscription for firmware mirror ' . $selectedMirror);
-            return false;
+        $invalid_msgs = [];
+
+        if (!$validOptions['mirrors_allow_custom'] && !isset($validOptions['mirrors'][$selectedMirror])) {
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware mirror: %s'), $selectedMirror);
         }
-        return true;
+
+        if (!$validOptions['flavours_allow_custom'] && !isset($validOptions['flavours'][$selectedFlavour])) {
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware flavour: %s'), $selectedFlavour);
+        }
+
+        if (!isset($validOptions['families'][$selectedType])) {
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware release type: %s'), $selectedType);
+        }
+
+        if (in_array($selectedMirror, $validOptions['mirrors_has_subscription'])) {
+            if (empty($selSubscription) || !preg_match('/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/i', $selSubscription)) {
+                $invalid_msgs[] = gettext('A valid subscription is required for this firmware mirror.');
+            }
+        } elseif (!empty($selSubscription)) {
+            $invalid_msgs[] = gettext('Unable to set subscription for non-subscription firmware mirror.');
+        }
+
+        return $invalid_msgs;
     }
 
     /**
@@ -1029,19 +1041,21 @@ class FirmwareController extends ApiControllerBase
      */
     public function setFirmwareConfigAction()
     {
-        $response = array("status" => "failure");
+        $response = ['status' => 'failure'];
 
         if ($this->request->isPost()) {
-            $config = Config::getInstance()->object();
-
-            $response['status'] = 'ok';
-
             $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
             $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
             $selectedType = filter_var($this->request->getPost("type", null, ""), FILTER_SANITIZE_URL);
             $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
 
-            if ($this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)) {
+            $ret = $this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription);
+            if (count($ret)) {
+                $response['status_msgs'] = $ret;
+            } else {
+                $config = Config::getInstance()->object();
+                $response['status'] = 'ok';
+
                 // config data without model, prepare xml structure and write data
                 if (!isset($config->system->firmware)) {
                     $config->system->addChild('firmware');
@@ -1084,8 +1098,6 @@ class FirmwareController extends ApiControllerBase
 
                 $backend = new Backend();
                 $backend->configdRun("firmware configure");
-            } else {
-                $response['status'] = 'failure';
             }
         }
 

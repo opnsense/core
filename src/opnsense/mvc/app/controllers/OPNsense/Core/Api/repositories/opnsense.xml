@@ -101,7 +101,7 @@
             <description>WJComms (HTTP, London, GB)</description>
         </mirror>
     </mirrors>
-    <flavours>
+    <flavours allow_custom="true">
         <flavour>
             <name/>
             <description>(default)</description>

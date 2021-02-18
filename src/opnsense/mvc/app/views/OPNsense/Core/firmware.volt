@@ -109,10 +109,10 @@
 
                 packagesInfo(false);
             } else if (data['status'] == "error") {
-                stdDialogInform( '{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'danger');
+                stdDialogInform('{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'danger');
                 packagesInfo(true);
             } else if (data['status'] == "none") {
-                stdDialogInform( '{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'success');
+                stdDialogInform('{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'success');
                 packagesInfo(true);
             } else {
                 // in case new responses are added
@@ -622,11 +622,11 @@
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
-                            .data("has_subscription", firmwareoptions['has_subscription'].indexOf(key) == 0)
+                            .data("has_subscription", firmwareoptions['mirrors_has_subscription'].indexOf(key) == 0)
                             .prop('selected', selected)
                     );
                 });
-                if (firmwareoptions['allow_custom']) {
+                if (firmwareoptions['mirrors_allow_custom']) {
                     $("#firmware_mirror").prepend($("<option/>")
                         .attr("value", firmwareconfig['mirror'])
                         .text("(other)")
@@ -657,7 +657,7 @@
                             .prop('selected', selected)
                     );
                 });
-                if (firmwareoptions['allow_custom']) {
+                if (firmwareoptions['flavours_allow_custom']) {
                     $("#firmware_flavour").prepend($("<option/>")
                         .attr("value", firmwareconfig['flavour'])
                         .text("(other)")
@@ -717,9 +717,19 @@
             } else {
                 confopt.subscription = null;
             }
-            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
+            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
-                packagesInfo(true);
+                if (data['status'] == 'ok') {
+                    packagesInfo(true);
+                } else {
+                    let validation_msgs = '<ul>';
+                    for (i = 0; i < data['status_msgs'].length; i++) {
+                        validation_msgs += '<li>' + $("<textarea/>").html(data['status_msgs'][i]).text() + '</li>';
+                    }
+                    validation_msgs += '</ul>';
+
+                    stdDialogInform('{{ lang._('Firmware status') }}', htmlDecode(validation_msgs), "{{ lang._('Close') }}", undefined, 'danger');
+                }
             });
         });
 
