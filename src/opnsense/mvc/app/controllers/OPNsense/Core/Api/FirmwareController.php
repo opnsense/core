@@ -921,11 +921,13 @@ class FirmwareController extends ApiControllerBase
     public function getFirmwareOptionsAction()
     {
         $families = [];
+        $families_has_subscription = [];
         $flavours = [];
         $flavours_allow_custom = false;
-        $has_subscription = [];
+        $flavours_has_subscription = [];
         $mirrors = [];
         $mirrors_allow_custom = false;
+        $mirrors_has_subscription = [];
 
         $this->sessionClose(); // long running action, close session
 
@@ -942,7 +944,7 @@ class FirmwareController extends ApiControllerBase
                         $mirrors[(string)$mirror->url] = (string)$mirror->description;
                         $attr = $mirror->attributes();
                         if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
-                            $has_subscription[] = (string)$mirror->url;
+                            $mirrors_has_subscription[] = (string)$mirror->url;
                         }
                     }
                 }
@@ -952,22 +954,34 @@ class FirmwareController extends ApiControllerBase
                     }
                     foreach ($repositoryXml->flavours->flavour as $flavour) {
                         $flavours[(string)$flavour->name] = (string)$flavour->description;
+                        $attr = $flavour->attributes();
+                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
+                            $flavours_has_subscription[] = (string)$flavour->name;
+                        }
                     }
                 }
                 if (isset($repositoryXml->families->family)) {
                     foreach ($repositoryXml->families->family as $family) {
                         $families[(string)$family->name] = (string)$family->description;
+                        $attr = $family->attributes();
+                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
+                            $families_has_subscription[] = (string)$family->name;
+                        }
                     }
                 }
             }
         }
         return [
+            /* provide a full set of data even though the frontend does not use it */
             'families' => $families,
+            'families_allow_custom' => 0,
+            'families_has_subscription' => $families_has_subscription,
             'flavours' => $flavours,
             'flavours_allow_custom' => $flavours_allow_custom,
+            'flavours_has_subscription' => $flavours_has_subscription,
             'mirrors' => $mirrors,
             'mirrors_allow_custom' => $mirrors_allow_custom,
-            'mirrors_has_subscription' => $has_subscription,
+            'mirrors_has_subscription' => $mirrors_has_subscription,
         ];
     }
 
@@ -993,15 +1007,23 @@ class FirmwareController extends ApiControllerBase
         }
 
         if (!isset($validOptions['families'][$selectedType])) {
-            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware release type: %s'), $selectedType);
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware release type: %s'), $validOptions['families'][$selectedType]);
         }
 
         if (in_array($selectedMirror, $validOptions['mirrors_has_subscription'])) {
-            if (empty($selSubscription) || !preg_match('/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/i', $selSubscription)) {
+            if (!preg_match('/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/i', $selSubscription)) {
                 $invalid_msgs[] = gettext('A valid subscription is required for this firmware mirror.');
             }
-        } elseif (!empty($selSubscription)) {
-            $invalid_msgs[] = gettext('Unable to set subscription for non-subscription firmware mirror.');
+            if (!in_array($selectedFlavour, $validOptions['flavours_has_subscription'])) {
+                $invalid_msgs[] = sprintf(gettext('Subscription requires the following flavour: %s'), $validOptions['flavours'][$validOptions['flavours_has_subscription'][0]]);
+            }
+            if (!in_array($selectedType, $validOptions['families_has_subscription'])) {
+                $invalid_msgs[] = sprintf(gettext('Subscription requires the following type: %s'), $validOptions['families'][$validOptions['families_has_subscription'][0]]);
+            }
+        } else {
+            if (!empty($selSubscription)) {
+                $invalid_msgs[] = gettext('Subscription cannot be set for non-subscription firmware mirror.');
+            }
         }
 
         return $invalid_msgs;
@@ -1095,6 +1117,8 @@ class FirmwareController extends ApiControllerBase
                 }
 
                 Config::getInstance()->save();
+
+                $this->sessionClose(); // long running action, close session
 
                 $backend = new Backend();
                 $backend->configdRun("firmware configure");

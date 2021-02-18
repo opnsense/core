@@ -12,7 +12,7 @@
             <url>https://opnsense.aivian.org</url>
             <description>Aivian (HTTPS, Shaoxing, CN)</description>
         </mirror>
-        <mirror has_subscription="True">
+        <mirror has_subscription="true">
             <url>https://opnsense-update.deciso.com</url>
             <description>Deciso (HTTPS, NL, Commercial)</description>
         </mirror>
@@ -110,13 +110,13 @@
             <name>libressl</name>
             <description>LibreSSL</description>
         </flavour>
-        <flavour>
+        <flavour has_subscription="true">
             <name>latest</name>
             <description>OpenSSL</description>
         </flavour>
     </flavours>
     <families>
-        <family>
+        <family has_subscription="true">
             <name>business</name>
             <description>Business</description>
         </family>

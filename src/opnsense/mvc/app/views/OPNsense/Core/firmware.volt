@@ -615,14 +615,13 @@
                 var other_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
-                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) == 0) || key == firmwareconfig['mirror']) {
+                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) != -1) || key == firmwareconfig['mirror']) {
                         selected = true;
                         other_selected = false;
                     }
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
-                            .data("has_subscription", firmwareoptions['mirrors_has_subscription'].indexOf(key) == 0)
                             .prop('selected', selected)
                     );
                 });
@@ -631,16 +630,10 @@
                         .attr("value", firmwareconfig['mirror'])
                         .text("(other)")
                         .data("other", 1)
-                        .data("has_subscription", false)
                         .prop('selected', other_selected)
                     );
                 }
 
-                if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                    $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
-                } else {
-                    $("#firmware_mirror_subscription").val("");
-                }
                 $("#firmware_mirror").selectpicker('refresh');
                 $("#firmware_mirror").change();
 
@@ -691,11 +684,6 @@
             } else {
                 $("#firmware_mirror_other").hide();
             }
-            if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                $("#firmware_mirror_subscription").parent().parent().show();
-            } else {
-                $("#firmware_mirror_subscription").parent().parent().hide();
-            }
         });
         $("#firmware_flavour").change(function() {
             $("#firmware_flavour_value").val($(this).val());
@@ -712,11 +700,7 @@
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
-            if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                confopt.subscription = $("#firmware_mirror_subscription").val();
-            } else {
-                confopt.subscription = null;
-            }
+            confopt.subscription = $("#firmware_mirror_subscription").val();
             ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
                 if (data['status'] == 'ok') {
