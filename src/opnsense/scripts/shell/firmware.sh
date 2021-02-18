@@ -27,10 +27,14 @@
 
 set -e
 
-UPGRADE=$(opnsense-update -vRp)
+RELEASE=$(opnsense-update -vR)
 PROMPT="[y/N]"
-NAME="y"
 ARGS=
+
+# XXX opnsense-update behaves better in the future
+if [ "${RELEASE}" = "unknown" ]; then
+	RELEASE=
+fi
 
 echo -n "Fetching change log information, please wait... "
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
@@ -38,14 +42,11 @@ if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
 fi
 
 echo
-echo "This will automatically fetch all available updates, apply them,"
-echo "and reboot if necessary."
+echo "This will automatically fetch all available updates and apply them."
 echo
 
-if [ -n "${UPGRADE}" -a "${UPGRADE}" != "unknown" ]; then
-	NAME=${UPGRADE}
-
-	echo "A major firmware upgrade is available for this installation: ${NAME}"
+if [ -n "${RELEASE}" ]; then
+	echo "A major firmware upgrade is available for this installation: ${RELEASE}"
 	echo
 	echo "Make sure you have read the release notes and migration guide before"
 	echo "attempting this upgrade.  Around 500MB will need to be downloaded and"
@@ -55,7 +56,7 @@ if [ -n "${UPGRADE}" -a "${UPGRADE}" != "unknown" ]; then
 	echo "Minor updates may be available, answer 'y' to run them instead."
 	echo
 
-	PROMPT="[${NAME}/y/N]"
+	PROMPT="[${RELEASE}/y/N]"
 elif /usr/local/opnsense/scripts/firmware/reboot.sh; then
 	echo "This update requires a reboot."
 	echo
@@ -66,7 +67,7 @@ read -p "Proceed with this action? ${PROMPT}: " YN
 case ${YN} in
 [yY])
 	;;
-${NAME})
+${RELEASE:-y})
 	ARGS="upgrade"
 	;;
 [sS])
