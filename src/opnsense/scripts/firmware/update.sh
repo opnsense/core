@@ -25,12 +25,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE="/tmp/pkg_upgrade.progress"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+TEE="/usr/bin/tee -a"
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO UPDATE***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
 
 # figure out the release type from config
 SUFFIX="-$(pluginctl -g system.firmware.type)"
@@ -39,19 +40,20 @@ if [ "${SUFFIX}" = "-" ]; then
 fi
 
 # upgrade all packages if possible
-opnsense-update -pt "opnsense${SUFFIX}" >> ${PKG_PROGRESS_FILE} 2>&1
+(opnsense-update -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
 
 # restart the web server
-/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
+(/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
 
 # if we can update base, we'll do that as well
-if opnsense-update -c >> ${PKG_PROGRESS_FILE} 2>&1; then
-	if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
-		echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
-		# give the frontend some time to figure out that a reboot is coming
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+if opnsense-update -c > ${PIPEFILE} 2>&1; then
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	if opnsense-update -bk > ${PIPEFILE} 2>&1; then
+		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot
 	fi
 fi
 
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo '***DONE***' >> ${LOCKFILE}

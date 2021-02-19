@@ -63,7 +63,7 @@ case ${YN} in
 [yY])
 	;;
 ${RELEASE:-y})
-	ARGS="upgrade"
+	ARGS="upgrade ${RELEASE}"
 	;;
 [sS])
 	echo

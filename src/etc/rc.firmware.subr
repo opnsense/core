@@ -27,13 +27,10 @@
 
 set -e
 
-LOCKFILE="/tmp/pkg_upgrade.progress"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
 RELEASE=$(opnsense-update -vR)
-TEE="/usr/bin/tee -a"
 
-if [ "${1}" = "upgrade" ]; then
-	: # ok, unconditional major upgrade
+if [ "${1}" = "upgrade" -a -n "${2}" ]; then
+	RELEASE=${2}
 elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -n "${RELEASE}" ]; then
 	: # ok, conditional major upgrade
 else
@@ -41,47 +38,10 @@ else
 	RELEASE=
 fi
 
-: > ${LOCKFILE}
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
-
 if [ -z "${RELEASE}" ]; then
-	# XXX essentially this is a copy of update.sh
-	echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
-
-	# figure out the release type from config
-	SUFFIX="-$(pluginctl -g system.firmware.type)"
-	if [ "${SUFFIX}" = "-" ]; then
-		SUFFIX=
-	fi
-
-	# upgrade all packages if possible
-	(opnsense-update -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
-
-	# trigger a webgui restart to cope with changes
-	(/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
-
-	# if we can update base, we'll do that as well
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -c > ${PIPEFILE} 2>&1; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		if opnsense-update -bk > ${PIPEFILE} 2>&1; then
-			echo '***REBOOT***' >> ${LOCKFILE}
-			sleep 5
-			/usr/local/etc/rc.reboot
-		fi
-	fi
+	# already locked here, ok to call without launcher.sh
+	/usr/local/opnsense/scripts/firmware/update.sh
 else
-	# XXX essentially this is a copy of upgrade.sh
-	echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
-
-	# upgrade to a major release
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -u > ${PIPEFILE} 2>&1; then
-		echo '***REBOOT***' >> ${LOCKFILE}
-		sleep 5
-		/usr/local/etc/rc.reboot
-	fi
+	# already locked here, ok to call without launcher.sh
+	/usr/local/opnsense/scripts/firmware/upgrade.sh
 fi
-
-echo '***DONE***' >> ${LOCKFILE}

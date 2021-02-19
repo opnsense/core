@@ -25,19 +25,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE="/tmp/pkg_upgrade.progress"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+TEE="/usr/bin/tee -a"
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO UPGRADE***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
-# perform first half of major upgrade (download all + kernel install)
-if opnsense-update -u >> ${PKG_PROGRESS_FILE} 2>&1; then
-	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
-	# give the frontend some time to figure out that a reboot is coming
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+if opnsense-update -u > ${PIPEFILE} 2>&1; then
+	echo '***REBOOT***' >> ${LOCKFILE}
 	sleep 5
 	/usr/local/etc/rc.reboot
 fi
 
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo '***DONE***' >> ${LOCKFILE}
