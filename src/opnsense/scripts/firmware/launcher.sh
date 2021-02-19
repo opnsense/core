@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -44,12 +44,17 @@ upgrade
 "
 
 SELECTED=${1}
-ARGUMENT=${2}
+shift
+
+if [ -f "${SELECTED}" ]; then
+	${FLOCK} ${LOCKFILE} ${SELECTED} "${@}"
+	exit ${?}
+fi
 
 for COMMAND in ${COMMANDS}; do
 	if [ "${SELECTED}" != ${COMMAND} ]; then
 		continue
 	fi
 
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
+	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh "${@}"
 done
