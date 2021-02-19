@@ -31,11 +31,6 @@ RELEASE=$(opnsense-update -vR)
 PROMPT="[y/N]"
 ARGS=
 
-# XXX opnsense-update behaves better in the future
-if [ "${RELEASE}" = "unknown" ]; then
-	RELEASE=
-fi
-
 echo -n "Fetching change log information, please wait... "
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
 	echo "done"

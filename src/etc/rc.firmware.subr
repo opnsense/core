@@ -32,11 +32,6 @@ PIPEFILE="/tmp/pkg_upgrade.pipe"
 RELEASE=$(opnsense-update -vR)
 TEE="/usr/bin/tee -a"
 
-# XXX opnsense-update behaves better in the future
-if [ "${RELEASE}" = "unknown" ]; then
-	RELEASE=
-fi
-
 if [ "${1}" = "upgrade" ]; then
 	: # ok, unconditional major upgrade
 elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -n "${RELEASE}" ]; then
