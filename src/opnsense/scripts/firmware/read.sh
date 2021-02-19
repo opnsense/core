@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2021 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock"
 
-touch ${LOCKFILE}
-
-(
-	if ${FLOCK} -n 9; then
-		echo "ready"
-	else
-		echo "busy"
-	fi
-) 9< ${LOCKFILE}
+if [ -f ${LOCKFILE} ]; then
+	cat ${LOCKFILE}
+fi
