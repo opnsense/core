@@ -700,6 +700,7 @@
 /usr/local/opnsense/scripts/firmware/lock.sh
 /usr/local/opnsense/scripts/firmware/plugin.sh
 /usr/local/opnsense/scripts/firmware/product.php
+/usr/local/opnsense/scripts/firmware/read.sh
 /usr/local/opnsense/scripts/firmware/reboot.sh
 /usr/local/opnsense/scripts/firmware/register.php
 /usr/local/opnsense/scripts/firmware/reinstall.sh
