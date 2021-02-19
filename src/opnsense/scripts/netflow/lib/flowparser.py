@@ -157,6 +157,8 @@ class FlowParser:
                 record['netflow_ver'] = record['agent_info'][3]
                 record['recv'] = record['recv_sec']
                 record['recv_usec'] = record['recv_time'][1]
+                record['if_ndx_in'] = -1
+                record['if_ndx_out'] = -1
                 if 'proto_flags_tos' in record:
                     record['tcp_flags'] = record['proto_flags_tos'][0]
                     record['protocol'] = record['proto_flags_tos'][1]
