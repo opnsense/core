@@ -25,14 +25,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE=/tmp/pkg_upgrade.progress
 PACKAGE=$1
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO REMOVE***" >> ${PKG_PROGRESS_FILE}
-pkg remove -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO REMOVE***" >> ${LOCKFILE}
+pkg remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
+/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${LOCKFILE} 2>&1
+pkg autoremove -y >> ${LOCKFILE} 2>&1
+echo '***DONE***' >> ${LOCKFILE}

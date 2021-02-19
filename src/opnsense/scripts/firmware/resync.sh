@@ -24,11 +24,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE=/tmp/pkg_upgrade.progress
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO RESYNC***" >> ${PKG_PROGRESS_FILE}
-/usr/local/opnsense/scripts/firmware/register.php resync >> ${PKG_PROGRESS_FILE} 2>&1
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO RESYNC***" >> ${LOCKFILE}
+/usr/local/opnsense/scripts/firmware/register.php resync >> ${LOCKFILE} 2>&1
+echo '***DONE***' >> ${LOCKFILE}

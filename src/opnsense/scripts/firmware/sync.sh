@@ -25,18 +25,17 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE=/tmp/pkg_upgrade.progress
 PACKAGES=$(/usr/local/sbin/pluginctl -g system.firmware.plugins | /usr/bin/sed 's/,/ /g')
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO SYNC***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO SYNC***" >> ${LOCKFILE}
 for PACKAGE in ${PACKAGES}; do
 	if ! pkg query %n ${PACKAGE} > /dev/null; then
-		pkg install -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-		/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+		pkg install -y ${PACKAGE} >> ${LOCKFILE} 2>&1
+		/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${LOCKFILE} 2>&1
 	fi
 done
-pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+pkg autoremove -y >> ${LOCKFILE} 2>&1
+echo '***DONE***' >> ${LOCKFILE}

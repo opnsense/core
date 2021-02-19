@@ -25,20 +25,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE=/tmp/pkg_upgrade.progress
 PACKAGE=${1}
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO LOCK***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO LOCK***" >> ${LOCKFILE}
 if [ "${PACKAGE}" = "base" ]; then
-	echo "Locking base set" >> ${PKG_PROGRESS_FILE}
-	opnsense-update -bL >> ${PKG_PROGRESS_FILE} 2>&1
+	echo "Locking base set" >> ${LOCKFILE}
+	opnsense-update -bL >> ${LOCKFILE} 2>&1
 elif [ "${PACKAGE}" = "kernel" ]; then
-	echo "Locking kernel set" >> ${PKG_PROGRESS_FILE}
-	opnsense-update -kL >> ${PKG_PROGRESS_FILE} 2>&1
+	echo "Locking kernel set" >> ${LOCKFILE}
+	opnsense-update -kL >> ${LOCKFILE} 2>&1
 else
-	pkg lock -y ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
+	pkg lock -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 fi
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo '***DONE***' >> ${LOCKFILE}

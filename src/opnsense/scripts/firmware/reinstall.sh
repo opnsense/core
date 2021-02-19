@@ -25,46 +25,45 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+LOCKFILE=/tmp/pkg_upgrade.progress
 PACKAGE=${1}
 REBOOT=
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
 
-echo "***GOT REQUEST TO REINSTALL***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO REINSTALL***" >> ${LOCKFILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
 		# force reinstall intended
-		if opnsense-update -bf >> ${PKG_PROGRESS_FILE} 2>&1; then
+		if opnsense-update -bf >> ${LOCKFILE} 2>&1; then
 			REBOOT=1
 		fi
 	else
 		# for locked message only
-		opnsense-update -b >> ${PKG_PROGRESS_FILE} 2>&1
+		opnsense-update -b >> ${LOCKFILE} 2>&1
 	fi
 elif [ "${PACKAGE}" = "kernel" ]; then
 	if opnsense-update -Tk; then
 		# force reinstall intended
-		if opnsense-update -kf >> ${PKG_PROGRESS_FILE} 2>&1; then
+		if opnsense-update -kf >> ${LOCKFILE} 2>&1; then
 			REBOOT=1
 		fi
 	else
 		# for locked message only
-		opnsense-update -k >> ${PKG_PROGRESS_FILE} 2>&1
+		opnsense-update -k >> ${LOCKFILE} 2>&1
 	fi
 else
-	opnsense-revert -l ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-	/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${PKG_PROGRESS_FILE} 2>&1
-	pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
+	opnsense-revert -l ${PACKAGE} >> ${LOCKFILE} 2>&1
+	/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${LOCKFILE} 2>&1
+	pkg autoremove -y >> ${LOCKFILE} 2>&1
 fi
 
 if [ -n "${REBOOT}" ]; then
-	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
+	echo '***REBOOT***' >> ${LOCKFILE}
 	# give the frontend some time to figure out that a reboot is coming
 	sleep 5
 	/usr/local/etc/rc.reboot
 fi
 
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo '***DONE***' >> ${LOCKFILE}
