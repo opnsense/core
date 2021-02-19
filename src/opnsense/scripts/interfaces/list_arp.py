@@ -37,6 +37,14 @@ sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
 
 if __name__ == '__main__':
+    # index mac database (shipped with netaddr)
+    macdb = dict()
+    with open("%s/eui/oui.txt" % os.path.dirname(netaddr.__file__)) as fh_macdb:
+        for line in fh_macdb:
+            if line[11:].startswith('(hex)'):
+                macprefix = line[0:8].replace('-', ':').lower()
+                macdb[macprefix] = line[18:].strip()
+
     result = []
 
     # import dhcp_leases (index by ip address)
@@ -64,11 +72,8 @@ if __name__ == '__main__':
             'manufacturer': '',
             'hostname': ''
         }
-        manufacturer_mac = netaddr.EUI(record['mac'])
-        try:
-            record['manufacturer'] = manufacturer_mac.oui.registration().org
-        except netaddr.NotRegisteredError:
-            pass
+        if record['mac'][0:8] in macdb:
+            record['manufacturer'] = macdb[record['mac'][0:8]]
         if record['ip'] in dhcp_leases:
             record['hostname'] = dhcp_leases[record['ip']]['hostname']
         result.append(record)
