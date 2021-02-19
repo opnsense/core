@@ -681,6 +681,13 @@ function unbound_add_host_entries()
                         continue;
                     }
 
+                   // XXX - When using manual overide on dhcpd6 we need to get the prefix and marry it to the suffix 
+                   // Get the prefix first.
+                   list ($ipaddrv6) = interfaces_primary_address6($dhcpif);
+                   if (!empty($ipaddrv6)) {
+                      $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6,$host['ipaddrv6']);
+                   }
+
                     $domain = $config['system']['domain'];
                     // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                     //      for backward compatibilty support both here.
