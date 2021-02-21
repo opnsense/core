@@ -2892,9 +2892,19 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid', 'TERM', true);
+    /* XXX issue with rtsold not sending on point to point interfaces. We need to get a list of outgoing interfaces and append them */
+    /* to the command rather than using the -a option. Let's get a list of all active outgoing interfaces ( WAN connections ) */
+    /* Might want more than just dhcp6 and slaac ? */
+
+    foreach (config_read_array('interfaces') as $if => $ifconf) {
+      if ( ($ifconf['ipaddrv6'] == 'dhcp6' || $ifconf['ipaddrv6'] == 'slaac') && isset($ifconf['enable']) ) {
+        $wanif_list = $wanif_list.' '.$ifconf['if'];
+      }
+    }
+    $wanif_list = trim($wanif_list,' ');
 
     $rtsoldcommand = exec_safe(
-        '/usr/sbin/rtsold -p %s -O %s -R %s -a',
+        '/usr/sbin/rtsold -p %s -O %s -R %s',
         array(
             '/var/run/rtsold.pid',
             '/var/etc/rtsold_script.sh',
@@ -2907,6 +2917,8 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
         $rtsoldcommand .= $mode[$syscfg['dhcp6_debug']];
     }
 
+    /* Append the interfaces, DO NOT USE -a */
+    $rtsoldcommand .= ' '.$wanif_list;
     /* fire up rtsold for IPv6 RAs first */
     mwexec($rtsoldcommand);
 
