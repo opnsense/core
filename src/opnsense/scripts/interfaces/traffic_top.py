@@ -31,6 +31,7 @@ import decimal
 import subprocess
 import os
 import sys
+import math
 import ujson
 import netaddr
 from concurrent.futures import ThreadPoolExecutor
@@ -61,7 +62,7 @@ def local_addresses():
                 result.append(ip)
     return result
 
-def convert_bformat(value):
+def from_bformat(value):
     value = value.lower()
     if value.endswith('kb'):
         return decimal.Decimal(value[:-2]) * 1000
@@ -72,6 +73,12 @@ def convert_bformat(value):
     elif value.endswith('b') and value[:-1].isdigit():
         return decimal.Decimal(value[:-1])
     return 0
+
+def to_bformat(value):
+    fileSizeTypes = ["b", "kb", "mb", "gb", "tb", "pb", "eb", "zb", "yb"]
+    ndx = math.floor(math.log(value) / math.log(1000)) if value > 0 else 0
+    return  "%s %s" % (round(value / math.pow(1000, ndx), 2), fileSizeTypes[ndx])
+
 
 if __name__ == '__main__':
     result = dict()
@@ -86,6 +93,7 @@ if __name__ == '__main__':
             executor.submit(iftop, intf.strip(), iftop_data)
 
     for intf in iftop_data:
+        agg_results = dict()
         result[intf] = {'in' : [], 'out': []}
         if iftop_data[intf] is None:
             result[intf]['status'] = 'timeout'
@@ -93,6 +101,7 @@ if __name__ == '__main__':
         else:
             result[intf]['status'] = 'ok'
 
+        other_end = None
         for line in iftop_data[intf].split('\n'):
             if line.find('=>') > -1 or line.find('<=') > -1:
                 parts = line.split()
@@ -101,9 +110,9 @@ if __name__ == '__main__':
                 item = {
                     'address': parts[0],
                     'rate': parts[2],
-                    'rate_bits': int(convert_bformat(parts[2])),
+                    'rate_bits': int(from_bformat(parts[2])),
                     'cumulative': parts[5],
-                    'cumulative_bytes': int(convert_bformat(parts[5])),
+                    'cumulative_bytes': int(from_bformat(parts[5])),
                     'tags': []
                 }
                 # attach tags (type of address)
@@ -116,13 +125,37 @@ if __name__ == '__main__':
                 except subprocess.TimeoutExpired:
                     pass
 
-                if parts[1] == '=>':
-                    result[intf]['out'].append(item)
-                else:
-                    result[intf]['in'].append(item)
+                if line.find('=>') > -1:
+                    other_end = item
+                elif other_end is not None:
+                    if item['address'] not in agg_results:
+                        agg_results[item['address']] = {
+                            'address': item['address'],
+                            'rate_bits_in': 0,
+                            'rate_bits_out': 0,
+                            'cumulative_bytes_in': 0,
+                            'cumulative_bytes_out': 0,
+                            'tags': item['tags'],
+                            'details': []
+                        }
+                    agg_results[item['address']]['rate_bits_out'] += item['rate_bits']
+                    agg_results[item['address']]['rate_bits_in'] += other_end['rate_bits']
+                    agg_results[item['address']]['cumulative_bytes_out'] += item['cumulative_bytes']
+                    agg_results[item['address']]['cumulative_bytes_in'] += other_end['cumulative_bytes']
+                    agg_results[item['address']]['details'].append(other_end)
 
         # XXX: sort output, limit output results to max 200 (safety precaution)
-        for sort_key in ['in', 'out']:
-            result[intf][sort_key] = sorted(result[intf][sort_key], key=lambda x: x['rate_bits'], reverse=True)[:200]
+        for direction in ['in', 'out']:
+            # XXX split in/out, we should probably change the output type later\
+            top_hosts = sorted(agg_results.values(), key=lambda x: x['rate_bits_%s' % direction], reverse=True)[:200]
+            for host in top_hosts:
+                result[intf][direction].append({
+                    'address': host['address'],
+                    'rate': to_bformat(host['rate_bits_%s' % direction]),
+                    'rate_bits': host['rate_bits_%s' % direction],
+                    'cumulative_bytes': host['cumulative_bytes_%s' % direction],
+                    'cumulative': to_bformat(host['cumulative_bytes_%s' % direction]),
+                    'tags': host['tags'],
+                })
 
     print(ujson.dumps(result))
