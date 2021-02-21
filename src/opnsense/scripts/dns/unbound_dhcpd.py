@@ -67,7 +67,7 @@ class UnboundLocalData:
             unbound_control(['list_local_data'], output_stream)
             for line in output_stream:
                 parts = line.decode().split()
-                if len(parts) > 4 and parts[3] == 'A':
+                if len(parts) > 4 and parts[3] == 'A' and parts[4] != '0.0.0.0':
                     self.add_address(parts[4], parts[0][:-1])
 
     def add_address(self, address, fqdn):
@@ -130,6 +130,9 @@ def run_watcher(target_filename, domain):
                         "dhcpd expired %s @ %s" % (cached_leases[address]['client-hostname'], address)
                     )
                     unbound_control(['local_data_remove',  cached_leases[address]['client-hostname']])
+                    fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
+                    if unbound_local_data.is_equal(address, fqdn):
+                        unbound_local_data.cleanup(address, fqdn)
                     del cached_leases[address]
                     dhcpd_changed = True
 
