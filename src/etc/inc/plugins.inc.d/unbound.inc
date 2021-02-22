@@ -217,7 +217,7 @@ EOF;
     }
 
     // Configure static Host entries
-    unbound_add_host_entries();
+    unbound_add_host_entries($ifconfig_details);
 
     // Configure Domain Overrides
     unbound_add_domain_overrides();
@@ -506,7 +506,7 @@ function unbound_add_domain_overrides($pvt = false)
     }
 }
 
-function unbound_add_host_entries()
+function unbound_add_host_entries($ifconfig_details = null)
 {
     global $config;
 
@@ -531,7 +531,6 @@ function unbound_add_host_entries()
     } else {
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
-    $ifconfig_details = legacy_interfaces_details();
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
@@ -675,18 +674,17 @@ function unbound_add_host_entries()
 
     if (isset($config['unbound']['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
         foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
+            list ($ipaddrv6) = isset($dhcpifconf['dhcpd6track6allowoverride']) ?
+                interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
             if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
                 foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddrv6'] || !$host['hostname']) {
+                    if (empty($host['ipaddrv6']) || empty($host['hostname'])) {
                         continue;
                     }
 
-                   // XXX - When using manual overide on dhcpd6 we need to get the prefix and marry it to the suffix 
-                   // Get the prefix first.
-                   list ($ipaddrv6) = interfaces_primary_address6($dhcpif);
-                   if (!empty($ipaddrv6)) {
-                      $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6,$host['ipaddrv6']);
-                   }
+                    if (!empty($ipaddrv6)) {
+                        $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+                    }
 
                     $domain = $config['system']['domain'];
                     // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
@@ -796,7 +794,8 @@ function unbound_hosts_generate()
         return;
     }
 
-    unbound_add_host_entries();
+    $ifconfig_details = legacy_interfaces_details();
+    unbound_add_host_entries($ifconfig_details);
 
     killbypid('/var/run/unbound.pid', 'HUP');
 }
