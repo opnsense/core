@@ -189,7 +189,7 @@ EOF;
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
-        $bindints .= "interface: ::0\n";
+        $bindints .= "interface: ::\n";
         $bindints .= "interface-automatic: yes\n";
     }
 
@@ -651,15 +651,16 @@ function unbound_add_host_entries($ifconfig_details = null)
         foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
             if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
                 foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddr'] || !$host['hostname']) {
+                    if (empty($host['ipaddr']) || empty($host['hostname'])) {
                         continue;
                     }
 
-                    $domain = $config['system']['domain'];
                     if ($host['domain']) {
                         $domain = $host['domain'];
                     } elseif ($dhcpifconf['domain']) {
                         $domain = $dhcpifconf['domain'];
+                    } else {
+                        $domain = $config['system']['domain'];
                     }
 
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$domain}\"\n";
@@ -674,9 +675,9 @@ function unbound_add_host_entries($ifconfig_details = null)
 
     if (isset($config['unbound']['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
         foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-            list ($ipaddrv6) = isset($dhcpifconf['dhcpd6track6allowoverride']) ?
-                interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
             if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
+                list ($ipaddrv6) = isset($dhcpifconf['dhcpd6track6allowoverride']) ?
+                    interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
                 foreach ($dhcpifconf['staticmap'] as $host) {
                     if (empty($host['ipaddrv6']) || empty($host['hostname'])) {
                         continue;
@@ -686,7 +687,6 @@ function unbound_add_host_entries($ifconfig_details = null)
                         $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
                     }
 
-                    $domain = $config['system']['domain'];
                     // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                     //      for backward compatibilty support both here.
                     if (!empty($host['domainsearchlist'])) {
@@ -697,7 +697,10 @@ function unbound_add_host_entries($ifconfig_details = null)
                         $domain = $dhcpifconf['domainsearchlist'];
                     } elseif (!empty($dhcpifconf['domain'])) {
                         $domain = $dhcpifconf['domain'];
+                    } else {
+                        $domain = $config['system']['domain'];
                     }
+
                     $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$domain}\"\n";
                     $unbound_entries .= "local-data: \"{$host['hostname']}.{$domain} IN AAAA {$host['ipaddrv6']}\"\n";

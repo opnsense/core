@@ -227,7 +227,7 @@ function _dnsmasq_add_host_entries()
         foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
             if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
                 foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddr'] || !$host['hostname']) {
+                    if (empty($host['ipaddr']) || empty($host['hostname'])) {
                         continue;
                     }
 
@@ -248,12 +248,21 @@ function _dnsmasq_add_host_entries()
     }
 
     if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
+        $ifconfig_details = legacy_interfaces_details();
+
         foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
             if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
+                list ($ipaddrv6) = isset($dhcpifconf['dhcpd6track6allowoverride']) ?
+                    interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
                 foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddrv6'] || !$host['hostname']) {
+                    if (empty($host['ipaddrv6']) || empty($host['hostname'])) {
                         continue;
                     }
+
+                    if (!empty($ipaddrv6)) {
+                        $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+                    }
+
                     // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                     //      for backward compatibilty support both here.
                     if (!empty($host['domainsearchlist'])) {
