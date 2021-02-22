@@ -371,7 +371,8 @@ EOD;
         if (!empty($ca) && strlen(trim($ca))) {
             $chain .= "\n" . $ca;
         }
-        file_put_contents($cert_location, $chain).
+
+        file_put_contents($cert_location, $chain);
         file_put_contents($key_location, $key);
         chmod($key_location, 0600);
 
