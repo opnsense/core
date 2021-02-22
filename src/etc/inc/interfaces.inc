@@ -1069,7 +1069,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                         break;
                     }
                 }
-                return;
             }
             break;
         case 'dhcp':
