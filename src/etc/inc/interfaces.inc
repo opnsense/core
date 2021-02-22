@@ -1033,6 +1033,25 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         kill_hostapd($realif);
     }
 
+    $track6 = link_interface_to_track6($interface);
+    if (count($track6)) {
+        /* bring down radvd and dhcp6 on these interfaces */
+        plugins_configure('dhcp', false, array('inet6', $track6));
+    }
+
+    switch ($ifcfg['ipaddrv6']) {
+        case 'slaac':
+        case 'dhcp6':
+            interface_dhcpv6_prepare($interface, $ifcfg, true);
+            killbypid('/var/run/dhcp6c.pid', 'HUP');
+            break;
+        case 'track6':
+            interface_track6_configure($interface, $ifcfg, false, true);
+            break;
+        default:
+            break;
+    }
+
     switch ($ifcfg['ipaddr']) {
         case 'ppp':
         case 'pppoe':
@@ -1055,25 +1074,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             break;
         case 'dhcp':
             killbypid("/var/run/dhclient.{$realif}.pid", 'TERM', true);
-            break;
-        default:
-            break;
-    }
-
-    $track6 = link_interface_to_track6($interface);
-    if (count($track6)) {
-        /* bring down radvd and dhcp6 on these interfaces */
-        plugins_configure('dhcp', false, array('inet6', $track6));
-    }
-
-    switch ($ifcfg['ipaddrv6']) {
-        case 'slaac':
-        case 'dhcp6':
-            interface_dhcpv6_prepare($interface, $ifcfg, true);
-            killbypid('/var/run/dhcp6c.pid', 'HUP');
-            break;
-        case 'track6':
-            interface_track6_configure($interface, $ifcfg, false, true);
             break;
         default:
             break;
