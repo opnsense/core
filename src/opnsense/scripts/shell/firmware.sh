@@ -29,8 +29,18 @@ set -e
 
 SCRIPTSDIR="/usr/local/opnsense/scripts/firmware"
 RELEASE=$(opnsense-update -vR)
-PROMPT="[y/N]"
+PROMPT="y/N"
 ARGS=
+
+run_action()
+{
+	echo
+	if ! ${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/${1}.sh; then
+		echo "A firmware action is currently in progress."
+	fi
+	echo
+	read -p "Press any key to return to menu." WAIT
+}
 
 echo -n "Fetching change log information, please wait... "
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
@@ -52,13 +62,13 @@ if [ -n "${RELEASE}" ]; then
 	echo "Minor updates may be available, answer 'y' to run them instead."
 	echo
 
-	PROMPT="[${RELEASE}/y/N]"
+	PROMPT="${RELEASE}/${PROMPT}"
 elif /usr/local/opnsense/scripts/firmware/reboot.sh; then
 	echo "This update requires a reboot."
 	echo
 fi
 
-read -p "Proceed with this action? ${PROMPT}: " YN
+read -p "Proceed with this action? [${PROMPT}]: " YN
 
 case ${YN} in
 [yY])
@@ -67,24 +77,15 @@ ${RELEASE:-y})
 	ARGS="upgrade ${RELEASE}"
 	;;
 [sS])
-	echo
-	${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/security.sh
-	echo
-	read -p "Press any key to return to menu." WAIT
+	run_action security
 	exit 0
 	;;
 [hH])
-	echo
-	${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/health.sh
-	echo
-	read -p "Press any key to return to menu." WAIT
+	run_action health
 	exit 0
 	;;
 [cC])
-	echo
-	${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/connection.sh
-	echo
-	read -p "Press any key to return to menu." WAIT
+	run_action connection
 	exit 0
 	;;
 *)
