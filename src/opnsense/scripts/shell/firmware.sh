@@ -27,6 +27,7 @@
 
 set -e
 
+SCRIPTSDIR="/usr/local/opnsense/scripts/firmware"
 RELEASE=$(opnsense-update -vR)
 PROMPT="[y/N]"
 ARGS=
@@ -67,21 +68,21 @@ ${RELEASE:-y})
 	;;
 [sS])
 	echo
-	/usr/local/opnsense/scripts/firmware/launcher.sh security
+	${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/security.sh
 	echo
 	read -p "Press any key to return to menu." WAIT
 	exit 0
 	;;
 [hH])
 	echo
-	/usr/local/opnsense/scripts/firmware/launcher.sh health
+	${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/health.sh
 	echo
 	read -p "Press any key to return to menu." WAIT
 	exit 0
 	;;
 [cC])
 	echo
-	/usr/local/opnsense/scripts/firmware/launcher.sh connection
+	${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/connection.sh
 	echo
 	read -p "Press any key to return to menu." WAIT
 	exit 0
