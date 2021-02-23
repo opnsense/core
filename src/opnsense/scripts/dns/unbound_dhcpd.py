@@ -130,10 +130,10 @@ def run_watcher(target_filename, domain):
                         "dhcpd expired %s @ %s" % (cached_leases[address]['client-hostname'], address)
                     )
                     unbound_control(['local_data_remove',  cached_leases[address]['client-hostname']])
-                    del cached_leases[address]
                     fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
                     if unbound_local_data.is_equal(address, fqdn):
                         unbound_local_data.cleanup(address, fqdn)
+                    del cached_leases[address]
                     dhcpd_changed = True
 
         if dhcpd_changed:
