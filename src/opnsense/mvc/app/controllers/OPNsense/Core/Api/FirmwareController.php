@@ -315,13 +315,13 @@ class FirmwareController extends ApiControllerBase
      */
     public function changelogAction($version)
     {
-        $this->sessionClose(); // long running action, close session
-        $backend = new Backend();
-        $response = array();
+        $response = ['status' => 'failure'];
 
         if (!$this->request->isPost()) {
             return $response;
         }
+
+        $this->sessionClose(); // long running action, close session
 
         $filter = new \Phalcon\Filter();
         $filter->add('version', function ($value) {
@@ -329,14 +329,13 @@ class FirmwareController extends ApiControllerBase
         });
         $version = $filter->sanitize($version, 'version');
 
-        if ($version == 'update') {
-            $backend->configdRun('firmware changelog fetch');
-        } else {
-            $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
-            if (!empty($html)) {
-                $response['html'] = $html;
-            }
+        $backend = new Backend();
+        $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+        if (!empty($html)) {
+            $response['status'] = 'ok';
+            $response['html'] = $html;
         }
+
 
         return $response;
     }
