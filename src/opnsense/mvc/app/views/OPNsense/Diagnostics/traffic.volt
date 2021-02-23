@@ -236,9 +236,8 @@ POSSIBILITY OF SUCH DAMAGE.
             let update_stamp_iso = (new Date()).toISOString();
             Object.keys(data).forEach(function(intf) {
                 let intf_label = $("#interfaces > option[value="+intf+"]").data('content');
-                ['in', 'out'].forEach(function(dir) {
-                    for (var i=0; i < data[intf][dir].length ; i++) {
-                        let item = data[intf][dir][i];
+                    for (var i=0; i < data[intf]['records'].length ; i++) {
+                        let item = data[intf]['records'][i];
                         let tr = target.find("tr[data-address='"+item.address+"']");
                         if (tr.length === 0) {
                             tr = $("<tr/>");
@@ -257,18 +256,19 @@ POSSIBILITY OF SUCH DAMAGE.
                             tr.append($("<td class='last_seen'/>"));
                             target.append(tr);
                         }
-                        tr.data('bps_'+dir, item.rate_bits);
-                        tr.data('total_'+ dir, tr.data('total_'+ dir) + item.cumulative_bytes);
-                        tr.data('last_seen', update_stamp);
-                        tr.find('td.last_seen').text(update_stamp_iso);
-                        if (parseInt(tr.data('bps_max_'+dir)) < item.rate_bits) {
-                              tr.data('bps_max_'+dir, item.rate_bits);
-                              tr.find('td.bps_max_'+dir).text(item.rate);
-                        }
-                        tr.find('td.bps_'+dir).text(item.rate);
-                        tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
+                        ['in', 'out'].forEach(function(dir) {
+                            tr.data('bps_'+dir, item['rate_bits'+dir]);
+                            tr.data('total_'+ dir, tr.data('total_'+ dir) + item.cumulative_bytes);
+                            tr.data('last_seen', update_stamp);
+                            tr.find('td.last_seen').text(update_stamp_iso);
+                            if (parseInt(tr.data('bps_max_'+dir)) < item['rate_bits_'+dir]) {
+                                  tr.data('bps_max_'+dir, item['rate_bits_'+dir]);
+                                  tr.find('td.bps_max_'+dir).text(item['rate_'+dir]);
+                            }
+                            tr.find('td.bps_'+dir).text(item['rate_'+dir]);
+                            tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
+                        });
                     }
-                });
             });
             let ttl = 120; // keep visible for ttl seconds
             target.find('tr').each(function(){
@@ -374,14 +374,14 @@ POSSIBILITY OF SUCH DAMAGE.
                     Object.keys(data).forEach(function(intf) {
                         this_chart.config.data.datasets.forEach(function(dataset) {
                             if (dataset.intf == intf) {
-                                let calc_data = data[intf][dataset.src_field];
+                                let calc_data = data[intf]['records'];
                                 dataset.hidden = !$("#interfaces").val().includes(intf);
-                                for (var i=0; i < data[intf][dataset.src_field].length ; ++i) {
+                                for (var i=0; i < data[intf]['records'].length ; ++i) {
                                     dataset.data.push({
                                         x: Date.now(),
-                                        y: data[intf][dataset.src_field][i]['rate_bits'],
+                                        y: data[intf]['records'][i]['rate_bits_' + dataset.src_field],
                                         r: 4,
-                                        address: data[intf][dataset.src_field][i]['address']
+                                        address: data[intf]['records'][i]['address']
                                     });
                                 }
                                 return;

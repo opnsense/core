@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     for intf in iftop_data:
         agg_results = dict()
-        result[intf] = {'in' : [], 'out': []}
+        result[intf] = {'records' : []}
         if iftop_data[intf] is None:
             result[intf]['status'] = 'timeout'
             continue
@@ -133,29 +133,32 @@ if __name__ == '__main__':
                             'address': item['address'],
                             'rate_bits_in': 0,
                             'rate_bits_out': 0,
+                            'rate_bits': 0,
                             'cumulative_bytes_in': 0,
                             'cumulative_bytes_out': 0,
+                            'cumulative_bytes': 0,
                             'tags': item['tags'],
                             'details': []
                         }
                     agg_results[item['address']]['rate_bits_out'] += item['rate_bits']
                     agg_results[item['address']]['rate_bits_in'] += other_end['rate_bits']
+                    agg_results[item['address']]['rate_bits'] += (item['rate_bits'] + other_end['rate_bits'])
                     agg_results[item['address']]['cumulative_bytes_out'] += item['cumulative_bytes']
                     agg_results[item['address']]['cumulative_bytes_in'] += other_end['cumulative_bytes']
+                    agg_results[item['address']]['cumulative_bytes'] += (
+                        item['cumulative_bytes'] + other_end['cumulative_bytes']
+                    )
                     agg_results[item['address']]['details'].append(other_end)
 
         # XXX: sort output, limit output results to max 200 (safety precaution)
-        for direction in ['in', 'out']:
-            # XXX split in/out, we should probably change the output type later\
-            top_hosts = sorted(agg_results.values(), key=lambda x: x['rate_bits_%s' % direction], reverse=True)[:200]
-            for host in top_hosts:
-                result[intf][direction].append({
-                    'address': host['address'],
-                    'rate': to_bformat(host['rate_bits_%s' % direction]),
-                    'rate_bits': host['rate_bits_%s' % direction],
-                    'cumulative_bytes': host['cumulative_bytes_%s' % direction],
-                    'cumulative': to_bformat(host['cumulative_bytes_%s' % direction]),
-                    'tags': host['tags'],
-                })
+        top_hosts = sorted(agg_results.values(), key=lambda x: x['rate_bits'], reverse=True)[:200]
+        for host in top_hosts:
+            host['rate_in'] = to_bformat(host['rate_bits_in'])
+            host['rate_out'] = to_bformat(host['rate_bits_out'])
+            host['rate'] = to_bformat(host['rate_bits'])
+            host['cumulative_in'] = to_bformat(host['cumulative_bytes_in'])
+            host['cumulative_out'] = to_bformat(host['cumulative_bytes_out'])
+            host['cumulative'] = to_bformat(host['cumulative_bytes'])
+            result[intf]['records'].append(host)
 
     print(ujson.dumps(result))
