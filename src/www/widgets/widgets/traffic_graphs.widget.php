@@ -64,6 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
    * page setup
    */
   $(window).on("load", function() {
+        // XXX: since dashboard widgets may have changed the dom, prevent on load being executed multiple times.
+        //      it's not very pretty, but prevents mangled graphs
+        if (window.traffic_graph_widget_loaded !== undefined) {
+            return;
+        }
+        window.traffic_graph_widget_loaded = true;
         function format_field(value) {
             if (!isNaN(value) && value > 0) {
                 let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
@@ -195,7 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           (function traffic_poller(){
               ajaxGet("/api/diagnostics/traffic/interface", {}, function(data, status) {
                   if (data.interfaces !== undefined) {
-                      console.log(data);
                       $( document ).trigger( "updateTrafficCharts", [ data ] );
                   }
               });
