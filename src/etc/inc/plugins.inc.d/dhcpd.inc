@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -1882,4 +1882,56 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+function dhcpd_staticmap($inet = 4, $domain_fallback = 'not.found', $ifconfig_details = null)
+{
+    $root = $inet == 6 ? 'dhcpdv6' : 'dhcpd';
+    $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
+    $staticmap = [];
+
+    foreach (config_read_array($root) as $dhcpif => $dhcpifconf) {
+        if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
+            continue;
+        }
+
+        $ifconf = config_read_array('interfaces', $dhcpif);
+        list ($ipaddrv6) = $inet == 6 && isset($ifconf['dhcpd6track6allowoverride']) ?
+            interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
+
+        foreach ($dhcpifconf['staticmap'] as $host) {
+            if (empty($host[$ipaddr]) || empty($host['hostname'])) {
+                continue;
+            }
+
+            if (!empty($ipaddrv6)) {
+                $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+            }
+
+            // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
+            //      for backward compatibilty support both here.
+            if (!empty($host['domainsearchlist'])) {
+                $domain = $host['domainsearchlist'];
+            } elseif (!empty($host['domain'])) {
+                $domain = $host['domain'];
+            } elseif (!empty($dhcpifconf['domainsearchlist'])) {
+                $domain = $dhcpifconf['domainsearchlist'];
+            } elseif (!empty($dhcpifconf['domain'])) {
+                $domain = $dhcpifconf['domain'];
+            } else {
+                $domain = $domain_fallback;
+            }
+
+            $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
+
+            $staticmap[$dhcpif] = [
+                'descr' => $host['descr'],
+                'domain' => $domain,
+                'hostname' => $host['hostname'],
+                $ipaddr => $host[$ipaddr],
+            ];
+        }
+    }
+
+    return $staticmap;
 }
