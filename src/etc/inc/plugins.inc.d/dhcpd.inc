@@ -1924,7 +1924,7 @@ function dhcpd_staticmap($inet = 4, $domain_fallback = 'not.found', $ifconfig_de
 
             $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
 
-            $staticmap[$dhcpif] = [
+            $staticmap[] = [
                 'descr' => $host['descr'],
                 'domain' => $domain,
                 'hostname' => $host['hostname'],

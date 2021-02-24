@@ -233,11 +233,11 @@ function _dnsmasq_add_host_entries()
 
         $ifconfig_details = legacy_interfaces_details();
 
-        foreach (dhcpd_staticmap(4, $domain, $ifconfig_details) as $dhcpif => $host) {
+        foreach (dhcpd_staticmap(4, $domain, $ifconfig_details) as $host) {
             $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
         }
 
-        foreach (dhcpd_staticmap(6, $domain, $ifconfig_details) as $dhcpif => $host) {
+        foreach (dhcpd_staticmap(6, $domain, $ifconfig_details) as $host) {
             $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
         }
     }
