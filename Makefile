@@ -46,15 +46,29 @@ CORE_NEXT:=	${CORE_NEXT}.7
 .endif
 
 .if exists(${GIT}) && exists(${GITVERSION})
-. if ${CORE_ABI} == "21.1"
-CORE_COMMIT!=	${GITVERSION} --match=21.1\*
+. if ${CORE_TYPE:M[Dd][Ee][Vv]*}
+_NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
+.  if !empty(_NEXTBETA)
+_NEXTMATCH=	--match=${CORE_NEXT}.b
+.  else
+_NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
+.   if !empty(_NEXTDEVEL)
+_NEXTMATCH=	--match=${CORE_NEXT}\*
+.   endif
+.  endif
 . else
-CORE_COMMIT!=	${GITVERSION}
+_NEXTSTABLE!=	${GIT} tag -l ${CORE_ABI}\*
+.  if !empty(_NEXTSTABLE)
+_NEXTMATCH=	--match=${CORE_ABI}\*
+.  endif
 . endif
-.else
-CORE_COMMIT=	unknown 0 undefined
+. if empty(_NEXTMATCH)
+. error Did not find appropriate tag for CORE_ABI=${CORE_ABI}
+. endif
+CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
 .endif
 
+CORE_COMMIT?=	unknown 0 undefined
 CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
