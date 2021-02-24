@@ -502,8 +502,8 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                           </tbody>
                         </table>
                         <div class="hidden" data-for="help_for_range">
-                            <?= gettext("When using a static WAN address, the range should be entered using the full IPv6 address. " .
-                            "When using a dynamic WAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
+                            <?= gettext("When using a static LAN address, the range should be entered using the full IPv6 address. " .
+                            "When using a delegated LAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
                       </td>
                     </tr>
                     <tr>
