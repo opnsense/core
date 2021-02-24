@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $command = '/sbin/ping';
         switch ($pconfig['ipproto']) {
             case 'ipv6':
+                list ($ifaddr) = interfaces_primary_address6($$pconfig['interface']);
                 $command .= '6';
-                $ifaddr = find_interface_ipv6(get_real_interface($pconfig['interface'], 'inet6'));
                 break;
             case 'ipv6-ll':
                 $command .= '6';

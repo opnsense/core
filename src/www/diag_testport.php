@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         switch ($pconfig['ipprotocol']) {
             case 'ipv6':
-                $ifaddr = find_interface_ipv6(get_real_interface($pconfig['interface'], 'inet6'));
+                list ($ifaddr) = interfaces_primary_address6($$pconfig['interface']);
                 $nc_args .= " -6";
                 break;
             case 'ipv6-ll':
