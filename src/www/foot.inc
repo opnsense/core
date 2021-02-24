@@ -36,8 +36,8 @@
               $widgettitlelink = $widgetItem['name'] . "_title_link";?>
               <tr id="add_widget_<?=$widgetItem['name']; ?>">
 <?php
-              if (isset($$widgettitle)):?>
-                  <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?=$$widgettitle; ?></td>
+              if (isset($widgettitle)):?>
+                  <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?=$widgettitle; ?></td>
 <?php
               elseif (!empty($widgetItem['display_name'])): ?>
                   <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?=$widgetItem['display_name']; ?></td>

@@ -380,12 +380,12 @@ include("fbegin.inc");?>
                 <ul class="list-inline __nomb">
                   <li><h3>
 <?php
-                    if (isset($$widgettitlelink)):?>
-                        <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
+                    if (isset($widgettitlelink)):?>
+                        <u><span onclick="location.href='/<?= $widgettitlelink ?>'" style="cursor:pointer">
 <?php
                     endif;
-                        echo empty($$widgettitle) ?   $widgetItem['display_name'] : $$widgettitle;
-                    if (isset($$widgettitlelink)):?>
+                        echo empty($widgettitle) ?   $widgetItem['display_name'] : $widgettitle;
+                    if (isset($widgettitlelink)):?>
                         </span></u>
 <?php
                     endif;?>
