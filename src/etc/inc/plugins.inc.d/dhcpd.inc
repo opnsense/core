@@ -1884,52 +1884,61 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     }
 }
 
-function dhcpd_staticmap($inet = 4, $domain_fallback = 'not.found', $ifconfig_details = null)
+function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null)
 {
-    $root = $inet == 6 ? 'dhcpdv6' : 'dhcpd';
-    $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
     $staticmap = [];
 
-    foreach (config_read_array($root) as $dhcpif => $dhcpifconf) {
-        if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
-            continue;
-        }
+    foreach ([4, 6] as $inet) {
+        $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
 
-        $ifconf = config_read_array('interfaces', $dhcpif);
-        list ($ipaddrv6) = $inet == 6 && isset($ifconf['dhcpd6track6allowoverride']) ?
-            interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
-
-        foreach ($dhcpifconf['staticmap'] as $host) {
-            if (empty($host[$ipaddr]) || empty($host['hostname'])) {
+        foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
+            if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
                 continue;
             }
 
-            if (!empty($ipaddrv6)) {
-                $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+            $ifconf = config_read_array('interfaces', $dhcpif);
+            list ($ipaddrv6) = $inet == 6 && isset($ifconf['dhcpd6track6allowoverride']) ?
+                interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
+
+            foreach ($dhcpifconf['staticmap'] as $host) {
+                if (empty($host[$ipaddr]) || empty($host['hostname'])) {
+                    continue;
+                }
+
+                if (!empty($ipaddrv6)) {
+                    $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+                }
+
+                // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
+                //      for backward compatibilty support both here.
+                if (!empty($host['domainsearchlist'])) {
+                    $domain = $host['domainsearchlist'];
+                } elseif (!empty($host['domain'])) {
+                    $domain = $host['domain'];
+                } elseif (!empty($dhcpifconf['domainsearchlist'])) {
+                    $domain = $dhcpifconf['domainsearchlist'];
+                } elseif (!empty($dhcpifconf['domain'])) {
+                    $domain = $dhcpifconf['domain'];
+                } else {
+                    $domain = $domain_fallback;
+                }
+
+                $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
+
+                $entry = [
+                    'descr' => $host['descr'],
+                    'domain' => $domain,
+                    'hostname' => $host['hostname'],
+                    'interface' => $dhcpif,
+                    $ipaddr => $host[$ipaddr],
+                ];
+
+                if (isset($host['duid'])) {
+                    $entry['duid'] = $host['duid'];
+                }
+
+                $staticmap[] = $entry;
             }
-
-            // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
-            //      for backward compatibilty support both here.
-            if (!empty($host['domainsearchlist'])) {
-                $domain = $host['domainsearchlist'];
-            } elseif (!empty($host['domain'])) {
-                $domain = $host['domain'];
-            } elseif (!empty($dhcpifconf['domainsearchlist'])) {
-                $domain = $dhcpifconf['domainsearchlist'];
-            } elseif (!empty($dhcpifconf['domain'])) {
-                $domain = $dhcpifconf['domain'];
-            } else {
-                $domain = $domain_fallback;
-            }
-
-            $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
-
-            $staticmap[] = [
-                'descr' => $host['descr'],
-                'domain' => $domain,
-                'hostname' => $host['hostname'],
-                $ipaddr => $host[$ipaddr],
-            ];
         }
     }
 

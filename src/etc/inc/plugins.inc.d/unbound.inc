@@ -650,17 +650,14 @@ function unbound_add_host_entries($ifconfig_details = null)
     if (isset($config['unbound']['regdhcpstatic'])) {
         require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
 
-        foreach (dhcpd_staticmap(4, $config['system']['domain'], $ifconfig_details) as $host) {
-            $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
-            $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";
-            if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
-                $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
+        foreach (dhcpd_staticmap($config['system']['domain'], $ifconfig_details) as $host) {
+            if (isset($host['ipaddr'])) {
+                $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
+                $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";
+            } else {
+                $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
+                $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
             }
-        }
-
-        foreach (dhcpd_staticmap(6, $config['system']['domain'], $ifconfig_details) as $host) {
-            $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
-            $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
             if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
                 $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
             }

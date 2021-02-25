@@ -231,14 +231,12 @@ function _dnsmasq_add_host_entries()
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
 
-        $ifconfig_details = legacy_interfaces_details();
-
-        foreach (dhcpd_staticmap(4, $domain, $ifconfig_details) as $host) {
-            $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-        }
-
-        foreach (dhcpd_staticmap(6, $domain, $ifconfig_details) as $host) {
-            $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+        foreach (dhcpd_staticmap($domain, legacy_interfaces_details()) as $host) {
+            if (isset($host['ipaddr'])) {
+                $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+            } else {
+                $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+            }
         }
     }
 
