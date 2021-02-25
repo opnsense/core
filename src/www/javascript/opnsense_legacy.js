@@ -200,11 +200,13 @@ function hook_firewall_categories() {
                         // suffix category color in the description td
                         let td = row.find('td.rule-description');
                         if (td.length > 0) {
-                            td.append($("<i class='fa fa-circle'/>").css('color', '#'+color_map[item]));
+                            td.append($("<i class='fa fa-circle' title='"+item+"'/>").css('color', '#'+color_map[item]));
                         }
                     }
                 });
             });
+            let no_opt = $('<div/>').html("(No Category)").text();
+            cat_select.append($('<option/>').val(no_opt).html("(No Category)"));
             for (let i=0; i < data.rows.length ; ++i) {
                 let opt_val = $('<div/>').html(data.rows[i].name).text();
                 let option = $("<option/>");
@@ -242,6 +244,11 @@ function hook_firewall_categories() {
             $(".rule").each(function(){
                 let is_selected = false;
                 $(this).data('category').split(',').forEach(function(item){
+                    console.log(selected_values);
+                    if (selected_values.indexOf("(No Category)") > -1 && item === "") {
+                        // No category for this rule
+                        is_selected = true;
+                    }
                     if (selected_values.indexOf(item) > -1) {
                         is_selected = true;
                     }
