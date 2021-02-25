@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 # generate altered rule
                 if 'enabled' in rule_updates[rule_info_record['metadata']['sid']]:
                     # enabled / disabled in configuration
-                    if (rule_updates[rule_info_record['metadata']['sid']]['enabled']) == '0':
+                    if not rule_updates[rule_info_record['metadata']['sid']]['enabled']:
                         rule = ('#%s' % rule[i:])
                     else:
                         rule = rule[i:]
