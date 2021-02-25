@@ -340,6 +340,7 @@ fi
 # write our json structure
 cat > ${JSONFILE} << EOF
 {
+    "api_version":"2",
     "connection":"${connection}",
     "downgrade_packages":[${packages_downgraded}],
     "download_size":"${download_size}",
