@@ -159,6 +159,9 @@ class FlowParser:
                 record['recv_usec'] = record['recv_time'][1]
                 record['if_ndx_in'] = -1
                 record['if_ndx_out'] = -1
+                record['src_port'] = 0
+                record['dst_port'] = 0
+                record['protocol'] = 0
                 if 'proto_flags_tos' in record:
                     record['tcp_flags'] = record['proto_flags_tos'][0]
                     record['protocol'] = record['proto_flags_tos'][1]
