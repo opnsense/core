@@ -263,6 +263,9 @@ include("fbegin.inc");?>
       // rearrange widgets to stored column
       $(".widgetdiv").each(function(){
           var widget = $(this);
+          widget.find('script').each(function(){
+              $(this).remove();
+          });
           var container = $(this).parent();
           var target_col = widget.data('sortkey').split('-')[1];
           if (target_col != undefined) {
