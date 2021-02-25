@@ -205,8 +205,6 @@ function hook_firewall_categories() {
                     }
                 });
             });
-            //let no_opt = $('<div/>').html("(No Category)").text();
-            //cat_select.append($('<option/>').val(no_opt).html("(No Category)"));
             for (let i=0; i < data.rows.length ; ++i) {
                 let opt_val = $('<div/>').html(data.rows[i].name).text();
                 let option = $("<option/>");
