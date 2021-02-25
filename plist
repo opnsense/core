@@ -701,14 +701,16 @@
 /usr/local/opnsense/scripts/firmware/product.php
 /usr/local/opnsense/scripts/firmware/read.sh
 /usr/local/opnsense/scripts/firmware/reboot.sh
+/usr/local/opnsense/scripts/firmware/register.php
 /usr/local/opnsense/scripts/firmware/reinstall.sh
 /usr/local/opnsense/scripts/firmware/remove.sh
+/usr/local/opnsense/scripts/firmware/resync.sh
 /usr/local/opnsense/scripts/firmware/running.sh
 /usr/local/opnsense/scripts/firmware/security.sh
 /usr/local/opnsense/scripts/firmware/sets.sh
 /usr/local/opnsense/scripts/firmware/sync.sh
-/usr/local/opnsense/scripts/firmware/type.sh
 /usr/local/opnsense/scripts/firmware/unlock.sh
+/usr/local/opnsense/scripts/firmware/update.sh
 /usr/local/opnsense/scripts/firmware/upgrade.sh
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/list_arp.py

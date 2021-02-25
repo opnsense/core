@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
-# Copyright (C) 2014 Deciso B.V.
+# Copyright (C) 2021 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +25,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
 
 : > ${LOCKFILE}
 
-echo "***GOT REQUEST TO REMOVE***" >> ${LOCKFILE}
-pkg remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
-/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${LOCKFILE} 2>&1
-pkg autoremove -y >> ${LOCKFILE} 2>&1
+echo "***GOT REQUEST TO RESYNC***" >> ${LOCKFILE}
+/usr/local/opnsense/scripts/firmware/register.php resync >> ${LOCKFILE} 2>&1
 echo '***DONE***' >> ${LOCKFILE}
