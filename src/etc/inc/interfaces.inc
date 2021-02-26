@@ -734,6 +734,8 @@ function interface_gre_configure(&$gre, $grekey = "")
         file_put_contents("/tmp/{$greif}_routerv6", $gre['tunnel-remote-addr']);
     }
 
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $greif) {
             if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
