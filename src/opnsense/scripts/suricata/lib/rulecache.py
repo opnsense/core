@@ -123,6 +123,10 @@ class RuleCache(object):
                     rule_updates[sid] = {'mtime': policy_config_mtime, 'policy_id': None, 'policy': "__manual__"}
                     for rule_item in cnf.items(section):
                         rule_updates[sid][rule_item[0]] = rule_item[1]
+                    status = False
+                    if cnf.get(section, 'enabled') == '1':
+                       status = True
+                    rule_updates[sid]['enabled'] = status
         return rule_updates
 
     @staticmethod
