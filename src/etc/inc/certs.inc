@@ -727,6 +727,7 @@ function create_temp_openssl_config(&$dn)
             $template_dn = $dnTag . ' = ' . str_replace(array("\r", "\n"), '', $dn[$dnTag]);
             // Overwrite the placeholders for this property
             $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
+            unset($dn[$dnTag]);
         }
     }
     file_put_contents($configFilename, $template);
