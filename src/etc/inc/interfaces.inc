@@ -714,8 +714,6 @@ function interface_gre_configure(&$gre, $grekey = "")
         legacy_interface_flags($greif, 'link2');
     }
 
-    interfaces_bring_up($greif);
-
     if (isset($gre['link1']) && $gre['link1']) {
         mwexecf(
             '/sbin/route add %s/%s %s',
@@ -727,6 +725,8 @@ function interface_gre_configure(&$gre, $grekey = "")
         );
     }
 
+    interfaces_bring_up($greif);
+
     if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
         file_put_contents("/tmp/{$greif}_router", $gre['tunnel-remote-addr']);
     }
@@ -734,7 +734,14 @@ function interface_gre_configure(&$gre, $grekey = "")
         file_put_contents("/tmp/{$greif}_routerv6", $gre['tunnel-remote-addr']);
     }
 
-    interfaces_bring_up($greif);
+    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
+        if ($config['interfaces'][$ifname]['if'] == $greif) {
+            if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
+                system_routing_configure(false, $ifname);
+                break;
+            }
+        }
+    }
 
     return $greif;
 }
@@ -837,16 +844,9 @@ function interface_gif_configure(&$gif, $gifkey = "")
         legacy_interface_flags($gifif, 'link1');
     }
 
-    interfaces_bring_up($gifif);
+    system_host_route($gif['remote-addr'], $realifgw);
 
-    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
-        if ($config['interfaces'][$ifname]['if'] == $gifif) {
-            if ($gateways->getInterfaceGateway($ifname, "inet") || $gateways->getInterfaceGateway($ifname, "inet6")) {
-                system_routing_configure(false, $ifname);
-                break;
-            }
-        }
-    }
+    interfaces_bring_up($gifif);
 
     if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
         file_put_contents("/tmp/{$gifif}_router", $gif['tunnel-remote-addr']);
@@ -855,8 +855,14 @@ function interface_gif_configure(&$gif, $gifkey = "")
         file_put_contents("/tmp/{$gifif}_routerv6", $gif['tunnel-remote-addr']);
     }
 
-    system_host_route($gif['remote-addr'], $realifgw);
-    interfaces_bring_up($gifif);
+    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
+        if ($config['interfaces'][$ifname]['if'] == $gifif) {
+            if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
+                system_routing_configure(false, $ifname);
+                break;
+            }
+        }
+    }
 
     return $gifif;
 }
