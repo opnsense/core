@@ -682,7 +682,7 @@ function interface_gre_configure(&$gre, $grekey = "")
 
     interfaces_bring_up($realif);
 
-    if (file_exists("/var/run/booting") || !(empty($gre['greif']))) {
+    if (file_exists("/var/run/booting") || !empty($gre['greif'])) {
         legacy_interface_destroy($gre['greif']);
         legacy_interface_create($gre['greif']);
         $greif = $gre['greif'];
@@ -758,7 +758,7 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
 
     foreach ($config['gifs']['gif'] as $i => $gif) {
         if (empty($gif['gifif'])) {
-            $gre['gifif'] = "gif{$i}";
+            $gif['gifif'] = "gif{$i}";
         }
 
         if (!empty($realif) && $realif != $gif['gifif']) {
@@ -810,7 +810,7 @@ function interface_gif_configure(&$gif, $gifkey = "")
 
     interfaces_bring_up($realif);
 
-    if (file_exists("/var/run/booting") || !(empty($gif['gifif']))) {
+    if (file_exists("/var/run/booting") || !empty($gif['gifif'])) {
         legacy_interface_destroy($gif['gifif']);
         legacy_interface_create($gif['gifif']);
         $gifif = $gif['gifif'];
