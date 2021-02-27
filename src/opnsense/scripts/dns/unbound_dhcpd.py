@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     watch dhcp lease file and build include file for unbound
 """
+import ipaddress
 import os
 import sys
 import subprocess
@@ -40,18 +41,25 @@ from daemonize import Daemonize
 import watchers.dhcpd
 
 
-def unbound_control(commands, output_stream=None):
+def unbound_control(commands, input=None, output_stream=None):
     """ execute (chrooted) unbound-control command
         :param commands: command list (parameters)
+        :param input: (optional ) list of lines to be sent to input stream
         :param output_stream: (optional)output stream
         :return: None
     """
-    if output_stream is None:
-        output_stream = open(os.devnull, 'w')
-    subprocess.check_call(['/usr/sbin/chroot', '-u', 'unbound', '-g', 'unbound', '/',
-                           '/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf'] + commands,
-                          stdout=output_stream, stderr=subprocess.STDOUT)
-    output_stream.seek(0)
+    input_string=None
+    if input:
+        nl='\n'
+        input_string = f'{nl.join(input)}{nl}'
+
+    subprocess.run(['/usr/sbin/chroot', '-u', 'unbound', '-g', 'unbound', '/',
+                    '/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf'] + commands,
+                   input=input_string, stdout=output_stream, stderr=subprocess.STDOUT,
+                   text=True, check=True)
+
+    if output_stream:
+        output_stream.seek(0)
 
 
 class UnboundLocalData:
@@ -64,7 +72,7 @@ class UnboundLocalData:
         self._map_by_address = dict()
         self._map_by_fqdn = dict()
         with tempfile.NamedTemporaryFile() as output_stream:
-            unbound_control(['list_local_data'], output_stream)
+            unbound_control(['list_local_data'], output_stream=output_stream)
             for line in output_stream:
                 parts = line.decode().split()
                 if len(parts) > 4 and parts[3] == 'A' and parts[4] != '0.0.0.0':
@@ -119,6 +127,9 @@ def run_watcher(target_filename, domain):
                     and 'client-hostname' in lease and 'address' in lease and lease['client-hostname']:
                 cached_leases[lease['address']] = lease
                 dhcpd_changed = True
+
+        remove_rr = list()
+        add_rr = list()
         if time.time() - last_cleanup > cleanup_interval:
             # cleanup every x seconds
             last_cleanup = time.time()
@@ -129,8 +140,9 @@ def run_watcher(target_filename, domain):
                         syslog.LOG_NOTICE,
                         "dhcpd expired %s @ %s" % (cached_leases[address]['client-hostname'], address)
                     )
-                    unbound_control(['local_data_remove',  cached_leases[address]['client-hostname']])
                     fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
+                    remove_rr += [ ipaddress.ip_address(address).reverse_pointer,
+                                   fqdn ]
                     if unbound_local_data.is_equal(address, fqdn):
                         unbound_local_data.cleanup(address, fqdn)
                     del cached_leases[address]
@@ -150,13 +162,20 @@ def run_watcher(target_filename, domain):
             for address in cached_leases:
                 fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
                 if not unbound_local_data.is_equal(address, fqdn):
+                    remove_rr.append(ipaddress.ip_address(address).reverse_pointer)
                     for tmp_fqdn in unbound_local_data.all_fqdns(address, fqdn):
                         syslog.syslog(syslog.LOG_NOTICE, 'dhcpd entry changed %s @ %s.' % (tmp_fqdn, address))
-                        unbound_control(['local_data_remove', tmp_fqdn])
+                        remove_rr.append(tmp_fqdn)
                     unbound_local_data.cleanup(address, fqdn)
-                    unbound_control(['local_data', address, 'PTR', fqdn])
-                    unbound_control(['local_data', fqdn, 'IN A', address])
+                    add_rr += [ f'{ipaddress.ip_address(address).reverse_pointer} PTR {fqdn}',
+                                f'{fqdn} IN A {address}' ]
                     unbound_local_data.add_address(address, fqdn)
+
+        # Updated unbound
+        if remove_rr:
+            unbound_control(['local_datas_remove'], input=remove_rr)
+        if add_rr:
+            unbound_control(['local_datas'], input=add_rr)
 
         # wait for next cycle
         time.sleep(1)
