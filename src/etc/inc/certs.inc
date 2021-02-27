@@ -717,16 +717,16 @@ function cert_get_cn($crt, $isref = false)
  */
 function create_temp_openssl_config(&$extns)
 {
-    // define temp filename to use for openssl.cnf
+    // define temp filename to use for openssl.cnf and add extensions values to it
     $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
 
     $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
 
     foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $extnTag) {
         if (isset($extns[$extnTag])) {
-            $template_dn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
+            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
             // Overwrite the placeholders for this property
-            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_dn, $template);
+            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
         }
     }
     file_put_contents($configFilename, $template);
