@@ -41,23 +41,24 @@ from daemonize import Daemonize
 import watchers.dhcpd
 
 
-def unbound_control(commands, input=None, output_stream=None):
+def unbound_control(commands, input=list(), output_stream=None):
     """ execute (chrooted) unbound-control command
         :param commands: command list (parameters)
-        :param input: (optional )text to be sent to input stream
+        :param input: (optional ) list of lines to be sent to input stream
         :param output_stream: (optional)output stream
         :return: None
     """
-    stderr=None
-    if output_stream is None:
-        stderr=subprocess.STDOUT
+    input_string=None
+    if input:
+        nl='\n'
+        input_string = f'{nl.join(input)}{nl}'
 
     subprocess.run(['/usr/sbin/chroot', '-u', 'unbound', '-g', 'unbound', '/',
                     '/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf'] + commands,
-                   input=input, stdout=output_stream, stderr=stderr,
+                   input=input_string, stdout=output_stream, stderr=subprocess.STDOUT,
                    text=True, check=True)
 
-    if output_stream is not None:
+    if output_stream:
         output_stream.seek(0)
 
 
@@ -127,8 +128,8 @@ def run_watcher(target_filename, domain):
                 cached_leases[lease['address']] = lease
                 dhcpd_changed = True
 
-        remove_rr = ''
-        add_rr = ''
+        remove_rr = list()
+        add_rr = list()
         if time.time() - last_cleanup > cleanup_interval:
             # cleanup every x seconds
             last_cleanup = time.time()
@@ -140,7 +141,8 @@ def run_watcher(target_filename, domain):
                         "dhcpd expired %s @ %s" % (cached_leases[address]['client-hostname'], address)
                     )
                     fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
-                    remove_rr += f'{fqdn}\n{ipaddress.ip_address(address).reverse_pointer}\n'
+                    remove_rr += [ ipaddress.ip_address(address).reverse_pointer,
+                                   fqdn ]
                     if unbound_local_data.is_equal(address, fqdn):
                         unbound_local_data.cleanup(address, fqdn)
                     del cached_leases[address]
@@ -160,13 +162,13 @@ def run_watcher(target_filename, domain):
             for address in cached_leases:
                 fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
                 if not unbound_local_data.is_equal(address, fqdn):
-                    remove_rr += f'{ipaddress.ip_address(address).reverse_pointer}\n'
+                    remove_rr.append(ipaddress.ip_address(address).reverse_pointer)
                     for tmp_fqdn in unbound_local_data.all_fqdns(address, fqdn):
                         syslog.syslog(syslog.LOG_NOTICE, 'dhcpd entry changed %s @ %s.' % (tmp_fqdn, address))
-                        remove_rr += f'{tmp_fqdn}\n'
+                        remove_rr.append(tmp_fqdn)
                     unbound_local_data.cleanup(address, fqdn)
-                    add_rr += f'{ipaddress.ip_address(address).reverse_pointer} PTR {fqdn}\n'
-                    add_rr += f'{fqdn} IN A {address}\n'
+                    add_rr += [ f'{ipaddress.ip_address(address).reverse_pointer} PTR {fqdn}',
+                                f'{fqdn} IN A {address}' ]
                     unbound_local_data.add_address(address, fqdn)
 
         # Updated unbound
