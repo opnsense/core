@@ -53,6 +53,8 @@ arp_flush() {
 		sh >/dev/null 2>&1
 }
 
+/* Disabled: taken care of by rc.newwanip
+
 delete_old_states() {
 	$LOGGER "Starting delete_old_states()"
 	_FLUSHED=0
@@ -82,6 +84,7 @@ delete_old_states() {
 		fi
 	fi
 }
+*/
 
 delete_old_address() {
 	rm -f /var/db/${interface}_ip
@@ -335,7 +338,7 @@ MEDIUM)
 PREINIT)
 	delete_old_alias
 	$IFCONFIG $interface inet alias 0.0.0.0 netmask 255.0.0.0 broadcast 255.255.255.255 up
-	delete_old_states
+	// delete_old_states
 	rm -f /tmp/${interface}_router
 	;;
 
@@ -345,9 +348,13 @@ ARPCHECK|ARPSEND)
 BOUND|RENEW|REBIND|REBOOT)
 	check_hostname
 	changes="no"
+
+	/*
 	if [ "$old_ip_address" != "$new_ip_address" ]; then
 		delete_old_states
 	fi
+	*/
+
 	if [ -n "$old_ip_address" ]; then
 		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
@@ -381,7 +388,7 @@ BOUND|RENEW|REBIND|REBOOT)
 
 EXPIRE|FAIL)
 	delete_old_alias
-	delete_old_states
+	// delete_old_states
 	if [ -n "$old_ip_address" ]; then
 		delete_old_address
 		delete_old_routes
@@ -429,7 +436,7 @@ TIMEOUT)
 		fi
 	fi
 	eval "$IFCONFIG $interface inet -alias $new_ip_address $medium"
-	delete_old_states
+	// delete_old_states
 	delete_old_routes
 	exit_with_hooks 1
 	;;

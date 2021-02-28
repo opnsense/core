@@ -155,9 +155,10 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     plugins_configure('monitor');
     filter_configure_sync(false, isset($config['system']['ip_change_kill_states']));
 
-    // Remove states with previous IP address as source, that were not cleared correctly (particularly UDP SIP connections), when ip_change_kill_states is disabled
-    if (is_ipaddr($cacheip) && !isset($config['system']['ip_change_kill_states'])) {
-	$retval = mwexecf('/sbin/pfctl -k ' . $cacheip);
+    // Clear states on ip change
+    if (is_ipaddr($cacheip) && ($ip != $cacheip) && !isset($config['system']['ip_change_kill_states'])) {
+	log_error("IP address change detected, killing states of old ip $cacheip");
+	mwexec('/sbin/pfctl -k ' . $cacheip);
     }
 
     if (is_ipaddr($ip)) {
@@ -167,6 +168,4 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
     rrd_configure();
-
-
 }

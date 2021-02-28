@@ -54,6 +54,7 @@ if (isset($_POST['filter']) && isset($_POST['killfilter'])) {
     if (!empty($tokill)) {
         mwexec("/sbin/pfctl -k {$tokill} -k 0/0");
         mwexec("/sbin/pfctl -k 0.0.0.0/0 -k {$tokill}");
+        mwexec("/sbin/pfctl -k {$tokill}");
     }
 }
 
