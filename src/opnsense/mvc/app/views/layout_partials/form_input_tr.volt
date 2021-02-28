@@ -67,8 +67,8 @@
             <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
         {% elseif type == "checkbox" %}
             <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}">
-        {% elseif type == "select_multiple" %}
-            <select multiple="multiple"
+        {% elseif type in ["select_multiple", "dropdown"] %}
+            <select {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
                     {% if size|default(false) %}data-size="{{size}}"{% endif %}
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
@@ -80,8 +80,6 @@
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
             ></select>{% if style|default('selectpicker') != "tokenize" %}<br />{% endif %}
             <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
-        {% elseif type == "dropdown" %}
-            <select data-size="{{size|default(10)}}" id="{{ id }}" class="{{style|default('selectpicker')}}" data-width="{{width|default("334px")}}"></select>
         {% elseif type == "password" %}
             <input type="password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}
