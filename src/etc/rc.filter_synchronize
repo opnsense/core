@@ -233,7 +233,30 @@ if (file_exists('/var/run/booting')) {
 
 if (isset($config['hasync']) && is_array($config['hasync'])) {
     $hasync = $config['hasync'];
-    $enable_debug = count($argv) > 1 && $argv[1] == 'debug';
+    $enable_debug = in_array('debug', $argv);
+    $restart_services = in_array('restart_services', $argv);
+    $pre_check_master = in_array('pre_check_master', $argv);
+    if (in_array('-h', $argv)) {
+        // show help and exit
+        echo "rc.filter_synchronize [debug] [restart_services] [pre_check_master]\n";
+        echo "debug - enable debug output\n";
+        echo "restart_services - restart remote configured services\n";
+        echo "pre_check_master - exit when carp is not in master mode\n";
+        exit;
+    }
+
+    if ($pre_check_master) {
+        foreach (legacy_interfaces_details() as $intf) {
+            if (!empty($intf['carp'])) {
+                foreach ($intf['carp'] as $carp) {
+                    if ($carp['status'] !== 'MASTER') {
+                        echo "pre_check_master: backup mode, exit\n";
+                        exit;
+                    }
+                }
+            }
+        }
+    }
 
     if (empty($hasync['synchronizetoip'])) {
         log_error("Config sync not being done because of missing sync IP (this is normal on secondary systems).");
@@ -319,6 +342,18 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
         log_error($error);
         file_notice($error);
         exit;
+    }
+
+    if ($restart_services) {
+        $client->query('opnsense.configd_reload_all_templates', []);
+        if ($client->query('opnsense.list_services', [])) {
+            foreach ($client->getResponse() as $service) {
+                $client->query('opnsense.restart_service', [
+                    "service" => $service['name'],
+                    "id" => isset($service['id']) ? $service['name'] : ""
+                ]);
+            }
+        }
     }
 
     log_error("Filter sync successfully completed with {$synchronizeto}.");
