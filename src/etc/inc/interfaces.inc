@@ -2458,6 +2458,16 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         switch ($wancfg['ipaddrv6']) {
             case 'slaac':
             case 'dhcp6':
+                $realifv6 = get_real_interface($interface, 'inet6');
+
+                /* accept router advertisements for this interface */
+                set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
+                log_error("Accept router advertisements on interface {$realifv6}");
+                mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
+
+                /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
+                set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
+
                 if (!isset($wancfg['dhcp6usev4iface'])) {
                     interface_dhcpv6_prepare($interface, $wancfg);
                     interface_dhcpv6_configure($interface, $wancfg);
@@ -2478,6 +2488,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 }
                 break;
         }
+
+        /* XXX we do not disable accept_rtadv on $realifv6 != $realif where unused */
     }
 
     if (!empty($wancfg['mtu'])) {
@@ -2884,14 +2896,6 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
 
     $realifv6 = get_real_interface($interface, 'inet6');
-
-    /* accept router advertisements for this interface */
-    set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-    log_error("Accept router advertisements on interface {$realifv6}");
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
-
-    /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
-    set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
 
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid', 'TERM', true);
