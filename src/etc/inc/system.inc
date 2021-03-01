@@ -1123,7 +1123,14 @@ function system_login_configure($verbose = false)
     }
 
     if ($serial_enabled) {
-        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
+        $serial_options = ["-S{$serialspeed}"];
+        if ($console_selection[0] == 'comconsole') {
+            $serial_options[] = '-h';
+        }
+        if (in_array('vidconsole', $console_selection)) {
+            $serial_options[] = '-D';
+        }
+        @file_put_contents('/boot.config', join(' ', $serial_options) . "\n");
         $new_boot_config['comconsole_speed'] = '"' . $serialspeed . '"';
         $new_boot_config['boot_serial'] = '"YES"';
     } elseif (!$output_enabled) {
