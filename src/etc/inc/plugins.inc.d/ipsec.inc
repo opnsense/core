@@ -1734,7 +1734,9 @@ EOD;
                         }
                     } else {
                         $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                        $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][0]);
+                        if (!isset($ph1ent['mobile'])) {
+                            $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][0]);
+                        }
                         if (!empty($parsed_phase2['rightsubnets'])) {
                             $tmpconf .= "\trightsubnet = " . join(',', $parsed_phase2['rightsubnets']) . "\n";
                         }
