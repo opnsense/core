@@ -2401,14 +2401,17 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * which triggers the interface config again, which attempts to
      * spoof the MAC again which cycles the link again...
      */
-    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif))) {
-        mwexecf('/sbin/ifconfig %s link %s', array($realhwif, $wancfg['spoofmac']));
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realif))) {
+        mwexecf('/sbin/ifconfig %s link %s', array($realif, $wancfg['spoofmac']));
 
-        /* All vlans need to spoof their parent mac address, too. */
-        if (isset($config['vlans']['vlan'])) {
+        /* A MAC address change on a parent interface resets all VLANs to the parent MAC, so we have to restore spoofed VLAN MACs. */
+        if (!stristr($realif, "_vlan") && isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 if ($vlan['if'] == $realhwif) {
-                    mwexecf('/sbin/ifconfig %s link %s', array($vlan['vlanif'], $wancfg['spoofmac']));
+                    $friendly_vlanif = convert_real_interface_to_friendly_interface_name($vlan['vlanif']);
+                    if (!empty($friendly_vlanif) && !empty($config['interfaces'][$friendly_vlanif]['spoofmac'])) {
+                        mwexecf('/sbin/ifconfig %s link %s', array($vlan['vlanif'], $config['interfaces'][$friendly_vlanif]['spoofmac']));
+                    }
                 }
             }
         }
