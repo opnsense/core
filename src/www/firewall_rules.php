@@ -448,9 +448,9 @@ $( document ).ready(function() {
               target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
               target.removeClass('fa-spinner fa-pulse');
               if (response['new_state']) {
-                  target.removeClass('text-muted').addClass('text-success');
+                  target.removeClass('text-muted').addClass(target.hasClass('fa-play') ? 'text-success' : 'text-danger');
               } else {
-                  target.removeClass('text-success').addClass('text-muted');
+                  target.removeClass('text-success text-danger').addClass('text-muted');
               }
               $("#fw-alert-box").removeClass("hidden");
               $(".fw-alert-messages").addClass("hidden");
