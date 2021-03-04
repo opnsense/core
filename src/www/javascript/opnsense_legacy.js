@@ -180,7 +180,7 @@ function window_highlight_table_option()
  */
 function hook_firewall_categories() {
     let cat_select = $("#fw_category");
-    ajaxCall('/api/firewall/category/searchItem', {}, function(data){
+    ajaxCall('/api/firewall/category/searchNoCategoryItem', {}, function(data){
         if (data.rows !== undefined && data.rows.length > 0) {
             let color_map = {};
             for (let i=0; i < data.rows.length ; ++i) {
@@ -205,8 +205,8 @@ function hook_firewall_categories() {
                     }
                 });
             });
-            let no_opt = $('<div/>').html("(No Category)").text();
-            cat_select.append($('<option/>').val(no_opt).html("(No Category)"));
+            //let no_opt = $('<div/>').html("(No Category)").text();
+            //cat_select.append($('<option/>').val(no_opt).html("(No Category)"));
             for (let i=0; i < data.rows.length ; ++i) {
                 let opt_val = $('<div/>').html(data.rows[i].name).text();
                 let option = $("<option/>");
@@ -244,7 +244,6 @@ function hook_firewall_categories() {
             $(".rule").each(function(){
                 let is_selected = false;
                 $(this).data('category').split(',').forEach(function(item){
-                    console.log(selected_values);
                     if (selected_values.indexOf("(No Category)") > -1 && item === "") {
                         // No category for this rule
                         is_selected = true;
