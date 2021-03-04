@@ -200,7 +200,7 @@ function hook_firewall_categories() {
                         // suffix category color in the description td
                         let td = row.find('td.rule-description');
                         if (td.length > 0) {
-                            td.append($("<i class='fa fa-circle' title='"+item+"'/>").css('color', '#'+color_map[item]));
+                            td.append($("<i class='fa fa-circle' data-toggle='tooltip' title='"+item+"'/>").css('color', '#'+color_map[item]));
                         }
                     }
                 });
