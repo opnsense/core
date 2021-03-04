@@ -286,18 +286,6 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
 
     // map configuration directives to config sections
     $section_cnf = array();
-    $section_cnf['synchronizerules'] = 'filter';
-    $section_cnf['synchronizenat'] = 'nat';
-    $section_cnf['synchronizealiases'] = 'OPNsense.Firewall.Alias';
-    $section_cnf['synchronizedhcpd'] = 'dhcpd';
-    $section_cnf['synchronizestaticroutes'] = 'staticroutes,gateways';
-    $section_cnf['synchronizevirtualip'] = 'virtualip';
-    $section_cnf['synchronizecerts'] = 'cert,ca,crl';
-    $section_cnf['synchronizeusers'] = 'system.user,system.group';
-    $section_cnf['synchronizeauthservers'] = 'system.authserver';
-    $section_cnf['synchronizeschedules'] = 'schedules';
-    $section_cnf['synchronizewidgets'] = 'widgets';
-
     foreach (plugins_xmlrpc_sync() as $syncid => $syncconf) {
         $section_cnf['synchronize'.$syncid] = $syncconf['section'];
     }

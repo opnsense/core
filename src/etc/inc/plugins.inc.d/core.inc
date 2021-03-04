@@ -251,11 +251,76 @@ function core_xmlrpc_sync()
     $result = array();
 
     $result[] = array(
+        'description' => gettext('Dashboard'),
+        'help' => gettext('Synchronize dashboard widgets.'),
+        'section' => 'widgets',
+        'id' => 'widgets',
+    );
+    $result[] = array(
+        'description' => gettext('Users and Groups'),
+        'help' => gettext('Synchronize the users and groups over to the other HA host.'),
+        'section' => 'system.user,system.group',
+        'id' => 'users',
+    );
+    $result[] = array(
+        'description' => gettext('Auth Servers'),
+        'help' => gettext('Synchronize the authentication servers (e.g. LDAP, RADIUS) over to the other HA host.'),
+        'section' => 'system.authserver',
+        'id' => 'authservers',
+    );
+    $result[] = array(
+        'description' => gettext('Certificates'),
+        'help' => gettext('Synchronize the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host.'),
+        'section' => 'cert,ca,crl',
+        'id' => 'certs',
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Rules'),
+        'help' => gettext('Synchronize the firewall rules to the other HA host.'),
+        'section' => 'filter',
+        'id' => 'rules',
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Schedules'),
+        'help' => gettext('Synchronize the firewall schedules to the other HA host.'),
+        'section' => 'schedules',
+        'id' => 'schedules',
+    );
+    $result[] = array(
+        'description' => gettext('Aliases'),
+        'help' => gettext('Synchronize the aliases over to the other HA host.'),
+        'section' => 'OPNsense.Firewall.Alias',
+        'id' => 'aliases',
+    );
+    $result[] = array(
+        'description' => gettext('NAT'),
+        'help' => gettext('Synchronize the NAT rules over to the other HA host.'),
+        'section' => 'nat',
+        'id' => 'nat',
+    );
+    $result[] = array(
+        'description' => gettext('DHCPD'),
+        'help' => gettext('Synchronize the DHCP Server settings over to the other HA host. This only applies to DHCP for IPv4.'),
+        'section' => 'dhcpd',
+        'id' => 'dhcpd',
+    );
+    $result[] = array(
+        'description' => gettext('Static Routes'),
+        'help' => gettext('Synchronize the CARP Virtual IPs to the other HA host.'),
+        'section' => 'virtualip',
+        'id' => 'virtualip',
+    );
+    $result[] = array(
+        'description' => gettext('Virtual IPs'),
+        'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
+        'section' => 'staticroutes,gateways',
+        'id' => 'staticroutes',
+    );
+    $result[] = array(
         'description' => gettext('Network Time'),
         'section' => 'ntpd,system.timeservers',
         'id' => 'ntpd',
     );
-
     return $result;
 }
 
