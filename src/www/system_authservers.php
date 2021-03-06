@@ -449,15 +449,19 @@ $( document ).ready(function() {
             $.post('system_usermanager_settings_ldapacpicker.php', request_data, function(data) {
                 var tbl = $("<table/>");
                 var tbl_body = $("<tbody/>");
-                for (var i=0; i < data.length ; ++i) {
-                    var tr = $("<tr/>");
-                    tr.append($("<td/>").append(
-                        $("<input type='checkbox' class='ldap_item_select'>")
-                            .prop('checked', data[i].selected)
-                            .prop('value', data[i].value)
-                    ));
-                    tr.append($("<td/>").text(data[i].value));
-                    tbl_body.append(tr);
+                if (data.length > 0) {
+                    for (var i=0; i < data.length ; ++i) {
+                       var tr = $("<tr/>");
+                       tr.append($("<td/>").append(
+                           $("<input type='checkbox' class='ldap_item_select'>")
+                               .prop('checked', data[i].selected)
+                               .prop('value', data[i].value)
+                       ));
+                       tr.append($("<td/>").text(data[i].value));
+                       tbl_body.append(tr);
+                    }
+                } else {
+                    tbl_body.append("<tr><td><?=gettext("No results. Check General log for details"); ?></td></tr>");
                 }
                 tbl.append(tbl_body);
                 BootstrapDialog.show({
