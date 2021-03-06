@@ -128,6 +128,11 @@ class LDAP extends Base implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
+     * @var array internal list of LDAP errors 
+     */
+    private $lastAuthErrors = array();
+
+    /**
      * close ldap handle if open
      */
     private function closeLDAPHandle()
@@ -195,8 +200,8 @@ class LDAP extends Base implements IAuthConnector
         if ($this->ldapHandle !== false) {
             ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
             syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
-            $this->lastAuthProperties['error'] = $error_string;
-            $this->lastAuthProperties['ldap_error'] = ldap_error($this->ldapHandle);
+            $this->lastAuthErrors['error'] = $error_string;
+            $this->lastAuthErrors['ldap_error'] = ldap_error($this->ldapHandle);
         } else {
             syslog(LOG_ERR, $message);
         }
@@ -454,6 +459,14 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
+     * @return array of LDAP errors
+     */
+    public function getLastAuthErrors()
+    {
+        return $this->lastAuthErrors;
+    }
+
+    /**
      * update user group policies when configured
      * @param string $username authenticated username
      */
@@ -564,7 +577,7 @@ class LDAP extends Base implements IAuthConnector
                     $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
                 } else {
-                    $this->lastAuthProperties['error'] = "User DN not found";
+                    $this->lastAuthErrors['error'] = "User DN not found";
                 }
             }
         }
