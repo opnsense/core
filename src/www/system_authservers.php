@@ -688,8 +688,8 @@ endif; ?>
                     </ul>
                     <br/>
                     <div class="hidden" data-for="help_for_ldapauthcontainers">
-                        <br/><?= gettext('Semicolon-separated list of distinguished names optionally containing DC= components.') ?>
-                        <br/><?=gettext("Example:");?> OU=Freelancers,O=Company,DC=example,DC=com;CN=Users,OU=Staff,O=Company
+                        <br/><?= gettext('Semicolon-separated list of distinguished names containing DC= components.') ?>
+                        <br/><?=gettext("Example:");?> OU=Freelancers,O=Company,DC=example,DC=com;CN=Users,OU=Staff,O=Company,DC=example,DC=com
                     </div>
                   </td>
                 </tr>
