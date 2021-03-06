@@ -199,7 +199,7 @@ class LDAP extends Base implements IAuthConnector
         $error_string = "";
         if ($this->ldapHandle !== false) {
             ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
-            syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+            syslog(LOG_ERR, sprintf($message . " [%s; %s]", str_replace(array("\n","\r","\t"), ' ', $error_string), ldap_error($this->ldapHandle)));
             $this->lastAuthErrors['error'] = $error_string;
             $this->lastAuthErrors['ldap_error'] = ldap_error($this->ldapHandle);
         } else {
@@ -438,6 +438,7 @@ class LDAP extends Base implements IAuthConnector
         if ($this->ldapHandle !== false) {
             $searchResults = $this->search("(|(ou=*)(cn=Users))");
             if ($searchResults !== false) {
+                $this->logLdapError("LDAP containers search result count: " . $searchResults["count"]);
                 for ($i = 0; $i < $searchResults["count"]; $i++) {
                     $result[] = $searchResults[$i]['dn'];
                 }
