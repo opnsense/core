@@ -466,14 +466,18 @@ $( document ).ready(function() {
                   message: tbl,
                   buttons: [{
                             label: "<?= gettext("Save");?>",
+                            cssClass: 'btn-primary',
                             action: function(dialogRef) {
                                 var values = $(".ldap_item_select:checked").map(function(){
                                     return $(this).val();
                                 }).get().join(';');
                                 $("#ldapauthcontainers").val(values);
                                 dialogRef.close();
-                            }
-                        }]
+                            }}, {
+                            label: "<?= gettext("Cancel");?>",
+                            action: function(dialogRef) {
+                                dialogRef.close();
+                        }}]
                 });
             }, "json");
         }
