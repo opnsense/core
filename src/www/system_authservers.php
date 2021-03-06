@@ -465,7 +465,7 @@ $( document ).ready(function() {
                   title: "<?=gettext("Please select which containers to Authenticate against:");?>",
                   message: tbl,
                   buttons: [{
-                            label: "<?= gettext("Close");?>",
+                            label: "<?= gettext("Save");?>",
                             action: function(dialogRef) {
                                 var values = $(".ldap_item_select:checked").map(function(){
                                     return $(this).val();
