@@ -73,6 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         } else {
             $input_errors[] = gettext("Authentication failed.");
+            foreach ($authenticator->getLastAuthProperties() as $attr_name => $attr_value) {
+                if (is_array($attr_value)) {
+                    $attr_value = implode(",", $attr_value);
+                }
+                $input_errors[] = "{$attr_name}: {$attr_value}";
+            }
         }
     }
 }
