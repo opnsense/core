@@ -195,6 +195,8 @@ class LDAP extends Base implements IAuthConnector
         if ($this->ldapHandle !== false) {
             ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
             syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+            $this->lastAuthProperties['error'] = $error_string;
+            $this->lastAuthProperties['ldap_error'] = ldap_error($this->ldapHandle);
         } else {
             syslog(LOG_ERR, $message);
         }
@@ -561,6 +563,8 @@ class LDAP extends Base implements IAuthConnector
                 if ($result !== false && count($result) > 0) {
                     $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
+                } else {
+                    $this->lastAuthProperties['error'] = "User DN not found";
                 }
             }
         }
