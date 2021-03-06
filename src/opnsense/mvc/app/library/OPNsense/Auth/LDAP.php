@@ -128,6 +128,11 @@ class LDAP extends Base implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
+     * @var array internal list of LDAP errors 
+     */
+    private $lastAuthErrors = array();
+
+    /**
      * close ldap handle if open
      */
     private function closeLDAPHandle()
@@ -194,7 +199,10 @@ class LDAP extends Base implements IAuthConnector
         $error_string = "";
         if ($this->ldapHandle !== false) {
             ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
-            syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+            $error_string = str_replace(array("\n","\r","\t"), ' ', $error_string);
+            syslog(LOG_ERR, sprintf($message . " [%s; %s]", $error_string, ldap_error($this->ldapHandle)));
+            $this->lastAuthErrors['error'] = $error_string;
+            $this->lastAuthErrors['ldap_error'] = ldap_error($this->ldapHandle);
         } else {
             syslog(LOG_ERR, $message);
         }
@@ -431,6 +439,7 @@ class LDAP extends Base implements IAuthConnector
         if ($this->ldapHandle !== false) {
             $searchResults = $this->search("(|(ou=*)(cn=Users))");
             if ($searchResults !== false) {
+                $this->logLdapError("LDAP containers search result count: " . $searchResults["count"]);
                 for ($i = 0; $i < $searchResults["count"]; $i++) {
                     $result[] = $searchResults[$i]['dn'];
                 }
@@ -449,6 +458,14 @@ class LDAP extends Base implements IAuthConnector
     public function getLastAuthProperties()
     {
         return $this->lastAuthProperties;
+    }
+
+    /**
+     * @return array of LDAP errors
+     */
+    public function getLastAuthErrors()
+    {
+        return $this->lastAuthErrors;
     }
 
     /**
@@ -561,6 +578,8 @@ class LDAP extends Base implements IAuthConnector
                 if ($result !== false && count($result) > 0) {
                     $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
+                } else {
+                    $this->lastAuthErrors['error'] = "User DN not found";
                 }
             }
         }
