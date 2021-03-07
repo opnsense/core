@@ -468,7 +468,7 @@ function local_sync_accounts()
     }
 }
 
-function local_user_set(&$user, $force_password = false, $userattrs=null)
+function local_user_set(&$user, $force_password = false, $userattrs = null)
 {
     global $config;
 
