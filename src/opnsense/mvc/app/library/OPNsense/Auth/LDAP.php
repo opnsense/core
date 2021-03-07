@@ -201,7 +201,9 @@ class LDAP extends Base implements IAuthConnector
             ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
             $error_string = str_replace(array("\n","\r","\t"), ' ', $error_string);
             syslog(LOG_ERR, sprintf($message . " [%s; %s]", $error_string, ldap_error($this->ldapHandle)));
-            $this->lastAuthErrors['error'] = $error_string;
+            if (!empty($error_string)) {
+                $this->lastAuthErrors['error'] = $error_string;
+            }
             $this->lastAuthErrors['ldap_error'] = ldap_error($this->ldapHandle);
         } else {
             syslog(LOG_ERR, $message);
