@@ -128,7 +128,7 @@ class LDAP extends Base implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
-     * @var array internal list of LDAP errors 
+     * @var array internal list of LDAP errors
      */
     private $lastAuthErrors = array();
 
