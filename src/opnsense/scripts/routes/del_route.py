@@ -48,7 +48,11 @@ if __name__ == '__main__':
                 # route entry found, try to delete
                 print ("found")
                 inet = '-6' if parts[0].find(':') > 0 else '-4'
-                subprocess.run(['/sbin/route', inet, 'delete', parts[0], parts[1]], capture_output=True)
+                if len(parts[1].replace(':', '')) == 12 and parts[1].count(':') == 5:
+                    # gateway is a mac address, remove entry directly assigned to an interface
+                    subprocess.run(['/sbin/route', inet, 'delete', parts[0]], capture_output=True)
+                else:
+                    subprocess.run(['/sbin/route', inet, 'delete', parts[0], parts[1]], capture_output=True)
                 sys.exit(0)
 
     # not found
