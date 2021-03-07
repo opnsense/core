@@ -60,7 +60,7 @@ class Alias extends BaseModel
         $sources[] = array(array('nat', 'onetoone'), array('destination', 'address'));
         $sources[] = array(array('nat', 'outbound', 'rule'), array('source', 'network'));
         $sources[] = array(array('nat', 'outbound', 'rule'), array('sourceport'));
-        $sources[] = array(array('nat', 'outbound', 'rule'), array('destination', 'address'));
+        $sources[] = array(array('nat', 'outbound', 'rule'), array('destination', 'network'));
         $sources[] = array(array('nat', 'outbound', 'rule'), array('dstport'));
         $sources[] = array(array('nat', 'outbound', 'rule'), array('target'));
         $sources[] = array(array('load_balancer', 'lbpool'), array('port'));
