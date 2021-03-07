@@ -32,6 +32,8 @@ import subprocess
 import sys
 import ujson
 import argparse
+import ipaddress
+
 
 if __name__ == '__main__':
     # parse input arguments
@@ -48,7 +50,13 @@ if __name__ == '__main__':
                 # route entry found, try to delete
                 print ("found")
                 inet = '-6' if parts[0].find(':') > 0 else '-4'
-                subprocess.run(['/sbin/route', inet, 'delete', parts[0], parts[1]], capture_output=True)
+                try:
+                    ipaddress.ip_address(parts[1])
+                    # gateway is an ip address (v4/v6)
+                    subprocess.run(['/sbin/route', inet, 'delete', parts[0], parts[1]], capture_output=True)
+                except ValueError:
+                    subprocess.run(['/sbin/route', inet, 'delete', parts[0]], capture_output=True)
+
                 sys.exit(0)
 
     # not found
