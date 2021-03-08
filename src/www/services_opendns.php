@@ -147,7 +147,7 @@ include 'head.inc';
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
                         'via the General Setup page as well as ignore any DNS servers learned ' .
                         'by DHCP/PPP on WAN and use the DNS servers from %s instead.'),
-                        '<a href="http://www.opendns.com" target="_blank">OpenDNS.com</a>'
+                        '<a href="https://www.opendns.com/" target="_blank">OpenDNS.com</a>'
                       ) ?>
                     </div>
                   </td>

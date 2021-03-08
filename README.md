@@ -36,7 +36,7 @@ License
 
 OPNsense is and will always be available under the 2-Clause BSD license:
 
-http://opensource.org/licenses/BSD-2-Clause
+https://opensource.org/licenses/BSD-2-Clause
 
 Every contribution made to the project must be licensed under the
 same conditions in order to keep OPNsense truly free and accessible

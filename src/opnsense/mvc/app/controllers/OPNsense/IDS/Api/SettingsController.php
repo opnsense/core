@@ -178,7 +178,7 @@ class SettingsController extends ApiMutableModelControllerBase
                             substr($ref, 8), $item_html);
                         $item_html = str_replace("%ref%", "bugtraq " . substr($ref, 8), $item_html);
                     } elseif (substr($ref, 0, 4) == "cve,") {
-                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
+                        $item_html = str_replace("%url%", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
                             substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
                     } elseif (substr($ref, 0, 7) == "nessus,") {

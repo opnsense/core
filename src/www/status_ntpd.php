@@ -280,7 +280,7 @@ include("head.inc");
                 </tr>
 <?php if (isset($gps_lon) && isset($gps_lat)): ?>
                 <tr>
-                  <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
+                  <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="https://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
                 </tr>
 <?php endif ?>
               </tbody>

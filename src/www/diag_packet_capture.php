@@ -367,7 +367,7 @@ include("fbegin.inc");
                     <td>
                       <input name="promiscuous" type="checkbox" <?= !empty($pconfig['promiscuous']) ? " checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_promiscuous">
-                        <?=gettext("If checked, the");?> <a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=tcpdump&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+8.3-stable&amp;arch=default&amp;format=html"><?= gettext("packet capture")?></a> <?= gettext("will be performed using promiscuous mode.");?>
+                        <?=gettext("If checked, the");?> <a target="_blank" href="https://www.freebsd.org/cgi/man.cgi?query=tcpdump&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+8.3-stable&amp;arch=default&amp;format=html"><?= gettext("packet capture")?></a> <?= gettext("will be performed using promiscuous mode.");?>
                         <br /><b><?=gettext("Note");?>: </b><?=gettext("Some network adapters do not support or work well in promiscuous mode.");?>
                       </div>
                   </td>
