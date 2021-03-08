@@ -2138,7 +2138,7 @@ include("head.inc");
                               </label>
                             </div>
                             <div class="hidden" data-for="help_for_dhcpprotocol_timing">
-                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease."),'<a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
+                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease."),'<a target="_blank" href="https://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
                             </div>
                           </td>
                         </tr>
@@ -2146,7 +2146,7 @@ include("head.inc");
                           <td><a id="help_for_dhcp_lease_requirements_and_requests" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lease Requirements");?> </td>
                           <td>
                             <div class="hidden" data-for="help_for_dhcp_lease_requirements_and_requests">
-                              <?=sprintf(gettext("More detailed information about lease requirements and requests can be found in the %sFreeBSD Manual%s."),'<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">','</a>')?><br/>
+                              <?=sprintf(gettext("More detailed information about lease requirements and requests can be found in the %sFreeBSD Manual%s."),'<a target="FreeBSD_DHCP" href="https://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">','</a>')?><br/>
                               <hr/>
                             </div>
                             <?=gettext("Send Options"); ?><br />

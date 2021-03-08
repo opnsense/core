@@ -39,7 +39,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--format', help='format',choices=['full', 'key_value'], default='full')
     inputargs = parser.parse_args()
-    # source http://www.iana.org/assignments/tls-parameters/tls-parameters-4.csv
+    # source https://www.iana.org/assignments/tls-parameters/tls-parameters-4.csv
     rfc5246_file = '%s/rfc5246_cipher_suites.csv' % os.path.dirname(os.path.realpath(__file__))
     rfc5246 = dict()
     if os.path.isfile(rfc5246_file):
