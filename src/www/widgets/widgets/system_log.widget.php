@@ -160,11 +160,7 @@ $systemlogentriesfilter = isset($config['widgets']['systemlogentriesfilter']) ? 
        $( document ).ready(function() {
         // needed to display the widget settings menu
         // need document ready to use CSRF Token - not ready at window load
-        // exit if settings button enabled (second call because of .appendTo in widgets moving function)
-
-        if(!($("#system_log-configure").hasClass( "disabled" ))) {
-          return;
-        }
+        
         $("#system_log-configure").removeClass("disabled");
         var rowCount = $("#systemlogfiltercount").val();
         var refresh_interval_ms = parseInt($("#systemlogentriesupdateinterval").val()) * 1000;
