@@ -263,6 +263,9 @@ include("fbegin.inc");?>
       // rearrange widgets to stored column
       $(".widgetdiv").each(function(){
           var widget = $(this);
+          widget.find('script').each(function(){
+              $(this).remove();
+          });
           var container = $(this).parent();
           var target_col = widget.data('sortkey').split('-')[1];
           if (target_col != undefined) {
@@ -277,6 +280,9 @@ include("fbegin.inc");?>
 
       // show dashboard widgets after initial rendering
       $("#dashboard_container").show();
+
+      // trigger WidgetsReady event
+      $("#dashboard_container").trigger("WidgetsReady");
 
       // sortable widgets
       $(".dashboard_grid_column").sortable({
