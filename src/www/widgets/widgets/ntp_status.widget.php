@@ -150,7 +150,7 @@ endif; ?>
       <tr>
         <td style="width:40%"><?= gettext('Clock location') ?></td>
         <td style="width:60%">
-          <a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">
+          <a target="_gmaps" href="https://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">
           <?php
                     echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
           </a>
