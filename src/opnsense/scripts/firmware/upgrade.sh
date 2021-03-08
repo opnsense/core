@@ -30,6 +30,8 @@ PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
 
 : > ${LOCKFILE}
+rm -f ${PIPEFILE}
+mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
