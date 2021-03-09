@@ -80,6 +80,7 @@
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
             ></select>{% if style|default('selectpicker') != "tokenize" %}<br />{% endif %}
             <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
+            {% if style|default('selectpicker') == "tokenize" %}&nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_{{ id }}"><i class="fa fa-clipboard"></i> <small>{{ lang._('Copy to clipboard') }}</small></a>{% endif %}
         {% elseif type == "password" %}
             <input type="password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}
