@@ -334,6 +334,29 @@ function addMultiSelectClearUI() {
             });
         });
     });
+    $('[id*="copy-options"]').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            var currentFocus = document.activeElement;
+            const id = $(this).attr("id").replace(/_*copy-options_*/, '');
+            let element = $('select[id="' + id + '"]');
+            let copycontent = element.val().join('\n');
+            let target = document.createElement("textarea");
+            target.style.opacity = "0";
+            target.id = "hiddenCopy_";
+            element.after(target)
+            target.textContent = copycontent;
+            target.select();
+            target.focus();
+            document.execCommand("copy");
+            target.remove();
+            if (currentFocus && typeof currentFocus.focus === "function") {
+                currentFocus.focus();
+            }
+        console.log("done");
+        });
+    });
+
 }
 
 
