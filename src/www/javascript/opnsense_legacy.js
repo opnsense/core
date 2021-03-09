@@ -261,5 +261,6 @@ function hook_firewall_categories() {
             $(".opnsense-rules").change();
         });
         cat_select.change();
+        $('[data-toggle="tooltip"]').tooltip();
     });
 }
