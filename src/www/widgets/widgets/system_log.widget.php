@@ -139,16 +139,17 @@ $systemlogentriesfilter = isset($config['widgets']['systemlogentriesfilter']) ? 
             })
                .done(function ( data, status ) {
                   $( ".system_log_entry" ).remove();
-                  var entry;
-                  var system_log_tr="";
-                  while ((entry=data.rows.shift())) {
-                      var timestamp = entry['timestamp'];
-                      var process_name = entry['process_name'];
-                      var entryline = entry['line'];
-                      system_log_tr += '<tr class="system_log_entry"><td style="white-space: nowrap;">' + timestamp + '<br>'+ process_name.split('[')[0] + '</td><td>' + entryline + '</td></tr>';
+                  let entry;
+                  let system_log_tr="";
+                  if (typeof data.rows !== "undefined"){
+                      while ((entry=data.rows.shift())) {
+                         system_log_tr += '<tr class="system_log_entry"><td style="white-space: nowrap;">' + entry['timestamp'] + '<br>'+ entry['process_name'].split('[')[0] + '</td><td>' + entry['line'] + '</td></tr>';
+                      }
+                  } else {
+                      system_log_tr += '<tr class="system_log_entry"><td style="white-space: nowrap;"></td><td><?=gettext("An empty response from the server."); ?></td></tr>';
                   }
-                 $("#system_log_table tbody").append(system_log_tr);
-                 setTimeout(fetch_system_log, refresh_interval_ms,rowCount,refresh_interval_ms);
+                  $("#system_log_table tbody").append(system_log_tr);
+                  setTimeout(fetch_system_log, refresh_interval_ms,rowCount,refresh_interval_ms);
                })
                .fail(function( jqXHR, textStatus ) {
                 console.log( "Request failed: " + textStatus );
