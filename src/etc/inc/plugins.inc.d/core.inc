@@ -305,13 +305,13 @@ function core_xmlrpc_sync()
         'id' => 'dhcpd',
     );
     $result[] = array(
-        'description' => gettext('Static Routes'),
+        'description' => gettext('Virtual IPs'),
         'help' => gettext('Synchronize the CARP Virtual IPs to the other HA host.'),
         'section' => 'virtualip',
         'id' => 'virtualip',
     );
     $result[] = array(
-        'description' => gettext('Virtual IPs'),
+        'description' => gettext('Static Routes'),
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
         'section' => 'staticroutes,gateways',
         'id' => 'staticroutes',
