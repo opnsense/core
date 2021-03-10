@@ -372,7 +372,7 @@ function addMultiSelectClearUI() {
                      });
                  })
                     .catch(err => {
-                     console.error('Failed to read clipboard contents: ', err);
+                         console.error('Failed to paste clipboard contents: ', err);
                     });
         });
     });
