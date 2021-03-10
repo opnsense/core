@@ -195,7 +195,7 @@
         $("#alias\\.type").change(function(){
             $(".alias_type").hide();
             $("#row_alias\\.updatefreq").hide();
-            $("#copy-options_alias\\.content").hide();
+            $("#copy-paste").hide();
             switch ($(this).val()) {
                 case 'geoip':
                     $("#alias_type_geoip").show();
@@ -212,7 +212,7 @@
                 default:
                     $("#alias_type_default").show();
                     $("#alias\\.proto").selectpicker('hide');
-                    $("#copy-options_alias\\.content").show();
+                    $("#copy-paste").show();
                     break;
             }
             if ($(this).val() === 'port') {
@@ -681,9 +681,11 @@
                                         </table>
 
                                         <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
-                                        <small>{{lang._('Clear All')}}</small></a>
-                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-clipboard"></i>
-                                        <small>{{ lang._('Copy to clipboard') }}</small></a>
+                                        <small>{{lang._('Clear All')}}</small></a></a><span id="copy-paste">
+                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
+                                        <small>{{ lang._('Copy') }}</small></a>
+                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
+                                        <small>{{ lang._('Paste') }}</small></a><span>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
