@@ -444,11 +444,11 @@ class LDAP extends Base implements IAuthConnector
                 $this->logLdapError("LDAP containers search result count: " . $searchResults["count"]);
                 for ($i = 0; $i < $searchResults["count"]; $i++) {
                     $result[] = $searchResults[$i]['dn'];
-                } else {
-                    $this->logLdapError("LDAP containers search returned no results");
                 }
 
                 return $result;
+            } else {
+                   $this->logLdapError("LDAP containers search returned no results");
             }
         }
 
