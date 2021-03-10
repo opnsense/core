@@ -296,6 +296,10 @@ function formatTokenizersUI() {
  * clear multiselect boxes on click event, works on standard and tokenized versions
  */
 function addMultiSelectClearUI() {
+    //enable Paste if supported
+    if (typeof navigator.clipboard.readText === 'function') {
+        $('.fa-paste').parent().show();
+    }
     $('[id*="clear-options"]').each(function() {
         $(this).click(function() {
             const id = $(this).attr("id").replace(/_*clear-options_*/, '');
@@ -356,7 +360,22 @@ function addMultiSelectClearUI() {
         console.log("done");
         });
     });
-
+    $('[id*="paste-options"]').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            const id = $(this).attr("id").replace(/_*paste-options_*/, '');
+            navigator.clipboard.readText()
+                .then(cbtext => {
+                     let values = $.trim(cbtext).replace(/\n|\r/g, ",").split(",");
+                     $.each(values, function( index, value ) {
+                         $('select[id="' + id + '"]').tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                     });
+                 })
+                    .catch(err => {
+                     console.error('Failed to read clipboard contents: ', err);
+                    });
+        });
+    });
 }
 
 
