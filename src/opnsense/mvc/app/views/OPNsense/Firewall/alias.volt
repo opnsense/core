@@ -681,7 +681,7 @@
                                         </table>
 
                                         <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
-                                        <small>{{lang._('Clear All')}}</small></a></a><span id="copy-paste">
+                                        <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">
                                         &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
                                         <small>{{ lang._('Copy') }}</small></a>
                                         &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
