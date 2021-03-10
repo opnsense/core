@@ -357,7 +357,6 @@ function addMultiSelectClearUI() {
             if (currentFocus && typeof currentFocus.focus === "function") {
                 currentFocus.focus();
             }
-        console.log("done");
         });
     });
     $('[id*="paste-options"]').each(function() {
@@ -370,10 +369,10 @@ function addMultiSelectClearUI() {
                      $.each(values, function( index, value ) {
                          $('select[id="' + id + '"]').tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
                      });
-                 })
-                    .catch(err => {
-                         console.error('Failed to paste clipboard contents: ', err);
-                    });
+                })
+                .catch(err => {
+                    console.error('Failed to paste clipboard contents: ', err);
+                });
         });
     });
 }
