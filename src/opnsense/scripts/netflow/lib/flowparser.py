@@ -191,7 +191,7 @@ class FlowParser:
                 record['flow_end'] = record['recv_sec'] - (record['sys_uptime_ms'] - record['flow_finish']) / 1000.0
                 record['duration_ms'] = (record['flow_finish'] - record['flow_start'])
                 record['flow_start'] = record['flow_end'] - record['duration_ms'] / 1000.0
-                if 'packets' not in record or 'octets' not in record:
+                if 'packets' not in record or 'octets' not in record or 'src_addr' not in record or 'dst_addr' not in record:
                     # this can't be useful data, skip record
                     continue
 
