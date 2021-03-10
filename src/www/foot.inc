@@ -38,10 +38,10 @@
 <?php
               // XXX: ${$} is intentional here, the widgets leave global vars [widget_name]_title_link and [widget_name]_title
               if (isset(${$widgettitle})):?>
-                  <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?= ${$widgettitle} ?></td>
+                  <td style="cursor: pointer;" onclick='return addWidget("<?= html_safe($widgetItem['name']) ?>")'><?= ${$widgettitle} ?></td>
 <?php
               elseif (!empty($widgetItem['display_name'])): ?>
-                  <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?=$widgetItem['display_name']; ?></td>
+                  <td style="cursor: pointer;" onclick='return addWidget("<?= html_safe($widgetItem['name']) ?>")'><?= $widgetItem['display_name'] ?></td>
 <?php
               endif;?>
               </tr>
