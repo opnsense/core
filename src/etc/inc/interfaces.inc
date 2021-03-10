@@ -1680,6 +1680,8 @@ function interface_carp_configure(&$vip)
         return;
     }
 
+    $realif = get_real_interface($vip['interface']);
+
     $vip_password = $vip['password'];
     $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip_password)));
     if ($vip['password'] != "") {
