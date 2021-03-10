@@ -384,11 +384,11 @@ include("fbegin.inc");?>
                   <li><h3>
 <?php
                     // XXX: ${$} is intentional here, the widgets leave global vars [widget_name]_title_link and [widget_name]_title
-                    if (isset($$widgettitlelink)):?>
-                        <u><span onclick="location.href='/<?= ${$widgettitlelink} ?>'" style="cursor:pointer">
+                    if (isset(${$widgettitlelink})):?>
+                        <u><span onclick="location.href='/<?= html_safe(${$widgettitlelink}) ?>'" style="cursor:pointer">
 <?php
                     endif;
-                        echo empty($$widgettitle) ?   $widgetItem['display_name'] : ${$widgettitle};
+                        echo empty(${$widgettitle}) ? $widgetItem['display_name'] : ${$widgettitle};
                     if (isset(${$widgettitlelink})):?>
                         </span></u>
 <?php
