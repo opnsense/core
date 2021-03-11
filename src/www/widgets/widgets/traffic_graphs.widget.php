@@ -63,13 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   /**
    * page setup
    */
-  $(window).on("load", function() {
-        // XXX: since dashboard widgets may have changed the dom, prevent on load being executed multiple times.
-        //      it's not very pretty, but prevents mangled graphs
-        if (window.traffic_graph_widget_loaded !== undefined) {
-            return;
-        }
-        window.traffic_graph_widget_loaded = true;
+  $("#dashboard_container").on("WidgetsReady", function() {
         function format_field(value) {
             if (!isNaN(value) && value > 0) {
                 let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
