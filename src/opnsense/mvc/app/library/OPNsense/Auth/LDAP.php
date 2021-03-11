@@ -447,6 +447,8 @@ class LDAP extends Base implements IAuthConnector
                 }
 
                 return $result;
+            } else {
+                   $this->logLdapError("LDAP containers search returned no results");
             }
         }
 
