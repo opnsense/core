@@ -685,7 +685,7 @@
                                         &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
                                         <small>{{ lang._('Copy') }}</small></a>
                                         &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
-                                        <small>{{ lang._('Paste') }}</small></a><span>
+                                        <small>{{ lang._('Paste') }}</small></a></span>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
