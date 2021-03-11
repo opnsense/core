@@ -180,7 +180,7 @@ function window_highlight_table_option()
  */
 function hook_firewall_categories() {
     let cat_select = $("#fw_category");
-    ajaxCall('/api/firewall/category/searchItem', {}, function(data){
+    ajaxCall('/api/firewall/category/searchNoCategoryItem', {}, function(data){
         if (data.rows !== undefined && data.rows.length > 0) {
             let color_map = {};
             for (let i=0; i < data.rows.length ; ++i) {
@@ -200,7 +200,7 @@ function hook_firewall_categories() {
                         // suffix category color in the description td
                         let td = row.find('td.rule-description');
                         if (td.length > 0) {
-                            td.append($("<i class='fa fa-circle'/>").css('color', '#'+color_map[item]));
+                            td.append($("<i class='fa fa-circle selector-item'  title='"+item+"'/>").css('color', '#'+color_map[item]));
                         }
                     }
                 });
@@ -239,9 +239,14 @@ function hook_firewall_categories() {
                 window.sessionStorage.setItem("firewall.selected.categories", cat_select.val().join(','));
             }
             let selected_values = cat_select.val();
+            let no_cat = cat_select.find("option")[0].value;
             $(".rule").each(function(){
                 let is_selected = false;
                 $(this).data('category').split(',').forEach(function(item){
+                    if (selected_values.indexOf(no_cat) > -1 && item === "") {
+                        // No category for this rule
+                        is_selected = true;
+                    }
                     if (selected_values.indexOf(item) > -1) {
                         is_selected = true;
                     }
@@ -257,5 +262,6 @@ function hook_firewall_categories() {
             $(".opnsense-rules").change();
         });
         cat_select.change();
+        $('.selector-item').tooltip();
     });
 }
