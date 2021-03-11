@@ -217,7 +217,7 @@
     /**
      *  check if a reboot is required, warn user or just upgrade
      */
-    function upgrade_ui(major = false)
+    function upgrade_ui(major)
     {
         let reboot_msg = "";
         if ( $.upgrade_needs_reboot == "1" || major === true) {
@@ -569,7 +569,7 @@
     $( document ).ready(function() {
         // link event handlers
         $('#checkupdate').click(function () { backend('check'); });
-        $('#upgrade').click(upgrade_ui);
+        $('#upgrade').click(function () { upgrade_ui(false); });
         $('#upgrade_maj').click(function () { upgrade_ui(true); });
         $('#upgrade_cancel').click(cancel_update);
         $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
