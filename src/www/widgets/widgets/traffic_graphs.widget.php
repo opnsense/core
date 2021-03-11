@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   /**
    * page setup
    */
-  $(window).on("load", function() {
+  $("#dashboard_container").on("WidgetsReady", function() {
         // XXX: since dashboard widgets may have changed the dom, prevent on load being executed multiple times.
         //      it's not very pretty, but prevents mangled graphs
         if (window.traffic_graph_widget_loaded !== undefined) {
