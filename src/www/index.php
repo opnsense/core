@@ -281,6 +281,9 @@ include("fbegin.inc");?>
       // show dashboard widgets after initial rendering
       $("#dashboard_container").show();
 
+      // trigger WidgetsReady event
+      $("#dashboard_container").trigger("WidgetsReady");
+
       // sortable widgets
       $(".dashboard_grid_column").sortable({
         handle: '.widget-sort-handle',
