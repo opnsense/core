@@ -297,7 +297,7 @@ function formatTokenizersUI() {
  */
 function addMultiSelectClearUI() {
     //enable Paste if supported
-    if (typeof navigator.clipboard.readText === 'function') {
+    if ((typeof navigator.clipboard === 'object') && (typeof navigator.clipboard.readText === 'function')) {
         $('.fa-paste').parent().show();
     }
     $('[id*="clear-options"]').each(function() {
@@ -363,16 +363,14 @@ function addMultiSelectClearUI() {
         $(this).click(function(e) {
             e.preventDefault();
             const id = $(this).attr("id").replace(/_*paste-options_*/, '');
-            navigator.clipboard.readText()
-                .then(cbtext => {
-                     let values = $.trim(cbtext).replace(/\n|\r/g, ",").split(",");
-                     $.each(values, function( index, value ) {
-                         $('select[id="' + id + '"]').tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
-                     });
-                })
-                .catch(err => {
-                    console.error('Failed to paste clipboard contents: ', err);
+            var cpb = navigator.clipboard.readText();
+            //need to use $.when because of IE. can switch to plain ES6 after IE support drop
+            $.when(cpb).then(function(cbtext) { 
+                let values = $.trim(cbtext).replace(/\n|\r/g, ",").split(",");
+                $.each(values, function( index, value ) {
+                     $('select[id="' + id + '"]').tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
                 });
+            });
         });
     });
 }
