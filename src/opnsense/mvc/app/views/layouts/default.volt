@@ -289,7 +289,7 @@
     <script src="{{ cache_safe('/ui/js/bootstrap-dialog.min.js') }}"></script>
     <script>
     /* hook translations  when all JS modules are loaded*/
-    Object.assign(jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels, {
+    $.extend(jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels, {
         all: "{{ lang._('All') }}",
         infos: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
         loading: "{{ lang._('Loading...') }}",
@@ -297,16 +297,16 @@
         refresh: "{{ lang._('Refresh') }}",
         search: "{{ lang._('Search') }}"
     });
-    Object.assign(jQuery.fn.selectpicker.Constructor.DEFAULTS, {
+    $.extend(jQuery.fn.selectpicker.Constructor.DEFAULTS, {
         noneSelectedText: "{{ lang._('Nothing selected') }}",
         noneResultsText: "{{ lang._('No results matched {0}') }}",
         selectAllText: "{{ lang._('Select All') }}",
         deselectAllText: "{{ lang._('Deselect All') }}"
     });
-    Object.assign(jQuery.fn.UIBootgrid.defaults, {
+    $.extend(jQuery.fn.UIBootgrid.defaults, {
         removeWarningText: "{{ lang._('Remove selected item(s)?') }}"
     });
-    Object.assign(stdDialogRemoveItem.defaults, {
+    $.extend(stdDialogRemoveItem.defaults, {
         title: "{{ lang._('Remove') }}",
         accept: "{{ lang._('Yes') }}",
         decline: "{{ lang._('Cancel') }}"
