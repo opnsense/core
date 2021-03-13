@@ -77,6 +77,24 @@
                       <local7>locally used (7)</local7>
                   </OptionValues>
                 </facility>
+                <flags type="OptionField">
+                  <Required>N</Required>
+                  <Multiple>Y</Multiple>
+                  <OptionValues>
+                      <assume-utf8>assume-utf8</assume-utf8>
+                      <empty-lines>empty-lines</empty-lines>
+                      <expect-hostname>expect-hostname</expect-hostname>
+                      <kernel>kernel</kernel>
+                      <no-hostname>no-hostname</no-hostname>
+                      <no-multi-line>no-multi-line</no-multi-line>
+                      <no-parse>no-parse</no-parse>
+                      <dont-store-legacy-msghdr>dont-store-legacy-msghdr</dont-store-legacy-msghdr>
+                      <sanitize-utf8>sanitize-utf8</sanitize-utf8>
+                      <store-raw-message>store-raw-message</store-raw-message>
+                      <syslog-protocol>syslog-protocol</syslog-protocol>
+                      <validate-utf8>validate-utf8</validate-utf8>
+                  </OptionValues>
+                </flags>
                 <hostname type="HostnameField">
                     <Required>Y</Required>
                 </hostname>
