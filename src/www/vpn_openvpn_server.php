@@ -264,12 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['ntp_server2']) && !is_ipaddr(trim($pconfig['ntp_server2']))) {
             $input_errors[] = gettext("The field 'NTP Server #2' must contain a valid IP address");
         }
-        if (!empty($pconfig['ntp_server3']) && !is_ipaddr(trim($pconfig['ntp_server3']))) {
-            $input_errors[] = gettext("The field 'NTP Server #3' must contain a valid IP address");
-        }
-        if (!empty($pconfig['ntp_server4']) && !is_ipaddr(trim($pconfig['ntp_server4']))) {
-            $input_errors[] = gettext("The field 'NTP Server #4' must contain a valid IP address");
-        }
 
         if (!empty($pconfig['wins_server_enable'])) {
             if (!empty($pconfig['wins_server1']) && !is_ipaddr(trim($pconfig['wins_server1']))) {
