@@ -122,13 +122,13 @@ class AliasUtilController extends ApiControllerBase
             sort($entry_keys);
         }
 
-        $formatted = array_map(function ($value) use (&$entries) {
+        $formatted_full = array_map(function ($value) use (&$entries) {
             $item = ['ip' => $value];
             foreach ($entries[$value] as $ekey => $evalue) {
                 $item[$ekey] = $evalue;
             }
             return $item;
-        }, array_slice($entry_keys, $offset, $itemsPerPage > 0 ? $itemsPerPage : null));
+        }, $entry_keys);
 
         if (
             $this->request->hasPost('sort') &&
@@ -137,10 +137,12 @@ class AliasUtilController extends ApiControllerBase
         ) {
             $sortcolumn = array_key_first($this->request->getPost('sort'));
             $sort_order = $this->request->getPost('sort')[$sortcolumn];
-            if (!empty(array_column($formatted, $sortcolumn))) {
-                array_multisort(array_column($formatted, $sortcolumn), $sort_order == 'asc' ? SORT_ASC : SORT_DESC, $formatted);
+            if (!empty(array_column($formatted_full, $sortcolumn))) {
+                array_multisort(array_column($formatted_full, $sortcolumn), $sort_order == 'asc' ? SORT_ASC : SORT_DESC, $formatted_full);
             }
         }
+        
+        $formatted = array_slice($formatted_full, $offset, $itemsPerPage > 0 ? $itemsPerPage : null);
 
         return [
             'total' => count($entry_keys),
