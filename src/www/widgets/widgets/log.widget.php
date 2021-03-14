@@ -82,8 +82,13 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         const field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'rdr': 'fa-exchange', 'nat': 'fa-exchange'};
 
         var interface_descriptions = {};
+        var selected_description = "";
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
+            if ($("#filterlogentriesinterfaces").val() !== "") {
+                selected_description = $("#filterlogentriesinterfaces option:selected").text().trim().toLowerCase();
+            }
+            fetch_log();
         });
         function fetch_log(){
             var record_spec = [];
@@ -114,7 +119,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                         intf = interface_descriptions[record['interface']].toLowerCase();
                     }
 
-                    if ($("#filterlogentriesinterfaces").val() == "" || $("#filterlogentriesinterfaces").val() == intf) {
+                    if ($("#filterlogentriesinterfaces").val() == "" || $("#filterlogentriesinterfaces").val() == intf || selected_description == intf) {
                         if ((filtact.length == 0 || filtact.indexOf(record['action']) !== -1) && record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             log_tr.hide();
@@ -177,7 +182,6 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
             setTimeout(fetch_log, update_interval_ms);
         }
 
-        fetch_log();
     });
 </script>
 
