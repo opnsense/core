@@ -141,7 +141,7 @@ class AliasUtilController extends ApiControllerBase
                 array_multisort(array_column($formatted_full, $sortcolumn), $sort_order == 'asc' ? SORT_ASC : SORT_DESC, $formatted_full);
             }
         }
-        
+
         $formatted = array_slice($formatted_full, $offset, $itemsPerPage > 0 ? $itemsPerPage : null);
 
         return [
