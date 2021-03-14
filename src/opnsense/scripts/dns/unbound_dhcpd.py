@@ -41,7 +41,7 @@ from daemonize import Daemonize
 import watchers.dhcpd
 
 
-def unbound_control(commands, input=list(), output_stream=None):
+def unbound_control(commands, input=None, output_stream=None):
     """ execute (chrooted) unbound-control command
         :param commands: command list (parameters)
         :param input: (optional ) list of lines to be sent to input stream
