@@ -85,9 +85,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
         var selected_description = "";
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
-            if ($("#filterlogentriesinterfaces").val() !== "") {
-                selected_description = $("#filterlogentriesinterfaces option:selected").text().trim().toLowerCase();
-            }
+            selected_description = ($("#filterlogentriesinterfaces").val() === "") ? "" : $("#filterlogentriesinterfaces option:selected").text().trim().toLowerCase();
             fetch_log();
         });
         function fetch_log(){
