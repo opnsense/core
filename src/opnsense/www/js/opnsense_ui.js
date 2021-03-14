@@ -342,16 +342,11 @@ function addMultiSelectClearUI() {
         $(this).click(function(e) {
             e.preventDefault();
             var currentFocus = document.activeElement;
-            const id = $(this).attr("id").replace(/_*copy-options_*/, '');
-            let element = $('select[id="' + id + '"]');
-            let copycontent = element.val().join('\n');
-            let target = document.createElement("textarea");
-            target.style.opacity = "0";
-            target.id = "hiddenCopy_";
-            element.after(target)
-            target.textContent = copycontent;
-            target.select();
-            target.focus();
+            let src_id = $(this).attr("id").replace(/_*copy-options_*/, '');
+            let element = $('select[id="' + src_id + '"]');
+            let target = $("<textarea style='opacity:0;'/>").val(element.val().join('\n')) ;
+            element.after(target);
+            target.select().focus();
             document.execCommand("copy");
             target.remove();
             if (currentFocus && typeof currentFocus.focus === "function") {
@@ -362,14 +357,15 @@ function addMultiSelectClearUI() {
     $('[id*="paste-options"]').each(function() {
         $(this).click(function(e) {
             e.preventDefault();
-            const id = $(this).attr("id").replace(/_*paste-options_*/, '');
+            let id = $(this).attr("id").replace(/_*paste-options_*/, '');
+            let target = $('select[id="' + id + '"]');
             var cpb = navigator.clipboard.readText();
-            //need to use $.when because of IE. can switch to plain ES6 after IE support drop
-            $.when(cpb).then(function(cbtext) { 
+            $.when(cpb).then(function(cbtext) {
                 let values = $.trim(cbtext).replace(/\n|\r/g, ",").split(",");
                 $.each(values, function( index, value ) {
-                     $('select[id="' + id + '"]').tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                     target.tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
                 });
+                target.change(); // signal subscribers about changed data
             });
         });
     });
