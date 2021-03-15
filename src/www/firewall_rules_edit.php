@@ -836,7 +836,7 @@ include("head.inc");
                                    "filter inbound traffic, which means the policy applies to the interface on which ".
                                    "the traffic is originally received by the firewall from the source. This is more ".
                                    "efficient from a traffic processing perspective. In most cases, the default ".
-                                   "policy will the most appropriate.") ?>
+                                   "policy will be the most appropriate.") ?>
                       </div>
                     </td>
                   <tr>
