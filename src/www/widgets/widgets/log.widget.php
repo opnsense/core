@@ -58,7 +58,7 @@ if (is_numeric($pconfig['filterlogentries'])) {
     }
 
     if (!empty($pconfig['filterlogentriesinterfaces'])) {
-        $config['widgets']['filterlogentriesinterfaces'] = $pconfig['filterlogentriesinterfaces'];
+        $config['widgets']['filterlogentriesinterfaces'] = implode(',', $pconfig['filterlogentriesinterfaces']);
     } elseif (isset($config['widgets']['filterlogentriesinterfaces'])) {
         unset($config['widgets']['filterlogentriesinterfaces']);
     }
@@ -75,15 +75,21 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 
 ?>
 <script>
-    $(window).on("load", function() {
+    $("#dashboard_container").on("WidgetsReady", function() {
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
         const field_type_icons = {'pass': 'fa-play', 'block': 'fa-ban', 'rdr': 'fa-exchange', 'nat': 'fa-exchange'};
 
         var interface_descriptions = {};
+        var nentriesinterfaces =  "<?= $nentriesinterfaces ?>".split(",");
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
+            $.each(interface_descriptions, function(i_d, i_name){
+                $('#filterlogentriesinterfaces').append($.inArray(i_d, nentriesinterfaces) > -1 ? $('<option>', {value:i_d, text:i_name, selected: "selected" }) : $('<option>', {value:i_d, text:i_name }));
+            });
+            $('#filterlogentriesinterfaces').selectpicker('refresh');
+            fetch_log();
         });
         function fetch_log(){
             var record_spec = [];
@@ -107,14 +113,10 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                 }
 
                 let record;
+                let showinterfaces = $("#filterlogentriesinterfaces").val();
                 while ((record=data.pop()) != null) {
                     var intf = record['interface'];
-
-                    if (interface_descriptions[record['interface']] != undefined) {
-                        intf = interface_descriptions[record['interface']].toLowerCase();
-                    }
-
-                    if ($("#filterlogentriesinterfaces").val() == "" || $("#filterlogentriesinterfaces").val() == intf) {
+                    if (showinterfaces.length == 0 || $.inArray(intf, showinterfaces) > -1) {
                         if ((filtact.length == 0 || filtact.indexOf(record['action']) !== -1) && record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
                             log_tr.hide();
@@ -126,13 +128,17 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                     case 'icon':
                                         var icon = field_type_icons[record[column_name]];
                                         if (icon != undefined) {
-                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i>');
+                                            // prepare popover content
+                                            let popContent = "@" + record.rulenr;
+                                            popContent += record.label.length > 0 ? " Label: " + record.label : '';
+                                            popContent += "<br><sub><?= gettext('click the Act icon to track this rule in Live View') ?></sub>"
+                                            log_td.html('<a target="_blank" href="/ui/diagnostics/firewall/log?rid=' + record.rid + '" type="button" data-toggle="popover" data-trigger="hover" \
+                                                        data-html="true" data-title="<?= gettext('Matched rule') ?>" data-content="' + popContent + '"><i class="fa ' + icon + '" aria-hidden="true"></i></a>');
                                             if (record[column_name] == 'pass') {
-                                                log_td.addClass('text-success');
+                                                log_td.find('a').addClass('text-success');
                                             } else {
-                                                log_td.addClass('text-danger');
+                                                log_td.find('a').addClass('text-danger');
                                             }
-
                                         }
                                         break;
                                     case 'time':
@@ -167,8 +173,16 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                         }
                     }
                 }
+                //hide popover before elem remove
+                $('[data-toggle="popover"]').popover('hide');
                 $("#filter-log-entries > tbody > tr:gt("+(parseInt($("#filterlogentries").val() - 1))+")").remove();
                 $("#filter-log-entries > tbody > tr").show();
+                //enable popover with full width for long descriptions
+                $('[data-toggle="popover"]').popover({
+                    container: 'body'
+                }).on('show.bs.popover', function() {
+                    $(this).data("bs.popover").tip().css("max-width", "100%")
+                });
             });
 
             // schedule next fetch
@@ -177,7 +191,6 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
             setTimeout(fetch_log, update_interval_ms);
         }
 
-        fetch_log();
     });
 </script>
 
@@ -199,13 +212,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 <?php endfor ?>
           </select><br/>
           <label for="filterlogentriesinterfaces"><?= gettext('Interfaces to display:'); ?></label><br/>
-          <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="selectpicker_widget">
-            <option value=""><?= gettext('All') ?></option>
-<?php foreach (get_configured_interface_with_descr() as $iface => $ifacename): ?>
-            <option value="<?= html_safe($iface) ?>" <?= $nentriesinterfaces == $iface ? 'selected="selected"' : '' ?>>
-              <?= html_safe($ifacename) ?>
-            </option>
-<?php endforeach ?>
+          <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces[]" class="selectpicker_widget" multiple="multiple" title=<?= gettext('All'); ?>>
           </select><br/><br/>
           <table style="width:348px">
             <tr>
