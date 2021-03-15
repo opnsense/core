@@ -75,7 +75,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 
 ?>
 <script>
-    $(window).on("load", function() {
+    $("#dashboard_container").on("WidgetsReady", function() {
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
         // icons
