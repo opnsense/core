@@ -261,7 +261,8 @@ EOD;
 ## modules to load
 server.modules              =   (
   "mod_access", "mod_expire", "mod_deflate", "mod_redirect", "mod_setenv",
-  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
+  "mod_cgi", "mod_fastcgi", "mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules},
+  "mod_extforward"
 )
 
 server.max-keep-alive-requests = 15
@@ -479,6 +480,9 @@ EOD;
         }
     }
 
+    /* include conf for mod_extforward module */
+    $lighty_config .= "include \"/usr/local/etc/lighttpd_extforward.d/extforward.conf\"\n";
+    
     if (false === file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config)) {
         log_error('Error: cannot write configuration');
         return 0;
