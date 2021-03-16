@@ -151,6 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // list items
     $pconfig['range_from'] = !empty($dhcpdconf['range']['from']) ? $dhcpdconf['range']['from'] : "";
     $pconfig['range_to'] = !empty($dhcpdconf['range']['to']) ? $dhcpdconf['range']['to'] : "";
+    $pconfig['dhcp_class'] = !empty($dhcpdconf['dhcp_class']) ? $dhcpdconf['dhcp_class'] : "";
     $pconfig['wins1'] = !empty($dhcpdconf['winsserver'][0]) ? $dhcpdconf['winsserver'][0] : "";
     $pconfig['wins2'] = !empty($dhcpdconf['winsserver'][1]) ? $dhcpdconf['winsserver'][1] : "";
     $pconfig['dns1'] = !empty($dhcpdconf['dnsserver'][0]) ? $dhcpdconf['dnsserver'][0] : "";
@@ -418,6 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdconf['range']['from'] = $pconfig['range_from'];
             $dhcpdconf['range']['to'] = $pconfig['range_to'];
 
+            $dhcpdconf['dhcp_class'] = $pconfig['dhcp_class'];
             // array types
             $dhcpdconf['winsserver'] = [];
             if (!empty($pconfig['wins1'])) {
@@ -782,6 +784,17 @@ include("head.inc");
                     </tr>
 <?php
                     endif; ?>
+                    <tr>
+                      <td><a id="help_for_class" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Vendor class identifier string");?></td>
+                      <td>
+                        <input name="dhcp_class" type="text" value="<?=$pconfig['dhcp_class'];?>" />
+                        <div class="hidden" data-for="help_for_class">
+                          <?= gettext('The class field allows you to enter an option 61 text field. When a client specifies a string that matches this entry then it will get an address from this pool.') ?>
+                          <?= gettext('When no identifier string is entered then any client will get an address from this pool. With multiple pools there must only be one with') ?>
+                          <?= gettext('no identifier.') ?>
+                        </div>
+                      </td>
+                    </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WINS servers");?></td>
                       <td>

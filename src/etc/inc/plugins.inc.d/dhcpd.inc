@@ -643,10 +643,24 @@ EOD;
      * loop through and determine if we need
      * to setup failover peer "bleh" entries
      */
+    $classlist = array();       
+    $all_pools = array(); 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable'])) {
             continue;
         }
+
+        $all_pools[] = $dhcpifconf;
+        if (!empty($dhcpifconf['pool'])) {
+            $all_pools = array_merge($all_pools, $dhcpifconf['pool']);
+        }
+        foreach ($all_pools as $poolconf) {
+          if (!empty($poolconf['dhcp_class'])) {
+            array_push($classlist, $poolconf['dhcp_class'] );
+          }
+        }
+        unset($all_pools);
+
         if (!empty($config['dhcpd'][$dhcpif]['staticmap'])) {
             interfaces_staticarp_configure($dhcpif);
         }
@@ -708,6 +722,13 @@ EOPP;
     $iflist = get_configured_interface_with_descr();
     $gwObject = new \OPNsense\Routing\Gateways($ifconfig_details);
 
+    if( count($classlist) > 0) {
+      foreach ($classlist as $class ){
+        $dhcpdconf .= "\nclass \"".str_replace(' ','',$class)."\""." {\n";
+        $dhcpdconf .= " match if option vendor-class-identifier = "."\"".$class."\"".";\n";
+        $dhcpdconf .= "}\n";
+      }
+    } 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
             continue;
@@ -781,6 +802,7 @@ EOPP;
          * Join them into one big comma-separated string then split
          * them all up.
          */
+        $dhcp_class_list = array();
         $all_mac_strings = array();
         foreach ($all_pools as $poolconf) {
             if (!empty($poolconf['mac_allow'])) {
@@ -788,8 +810,10 @@ EOPP;
             }
             if (!empty($poolconf['mac_deny'])) {
                 $all_mac_strings[] = $poolconf['mac_deny'];
-            }
+            }           
+            array_push($dhcp_class_list,$poolconf['dhcp_class']);
         }
+
         $all_mac_list = array_unique(explode(',', implode(',', $all_mac_strings)));
         foreach ($all_mac_list as $mac) {
             if (!empty($mac)) {
@@ -812,6 +836,30 @@ EOPP;
                     $dhcpdconf .= ",{$poolconf['dnsserver'][1]}";
                 }
                 $dhcpdconf .= ";\n";
+            }
+            /* allow class option  */
+
+            
+            if (!empty($poolconf['dhcp_class'])) {
+              foreach($dhcp_class_list as $class) {
+                if($class == $poolconf['dhcp_class']){
+                  $dhcpdconf .= "    allow members of \"" . str_replace(' ','',$poolconf['dhcp_class']). "\";\n" ;                  
+                }
+              }
+            } else {
+              /* Iterate the pools again as this is the default pool */
+              foreach ($all_pools as $denypools) {
+                if (!empty($denypools['dhcp_class'])) {
+                  foreach($dhcp_class_list as $class) {
+                    if($class == $denypools['dhcp_class']){
+                      $deny_list .= "    deny members of \"" . str_replace(' ','',$denypools['dhcp_class']). "\";\n";
+                    }
+                  }
+                }
+              }
+              if ($deny_list != "") {
+                $dhcpdconf .= $deny_list;
+              }
             }
 
             /* allow/deny MACs */
