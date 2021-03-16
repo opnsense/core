@@ -1,0 +1,15 @@
+Use extforward.conf in this directory to configure trusted IPs for the mod_extforward module in lighttpd.
+The mod_extforward module extracts the "real" IPs of clients connecting to the OPNsense webgui
+through a reverse proxy, using (by default) the Forwarded-For and X-Forwarded-For headers. This is
+useful for ensuring that the OPNsense webgui logs the "real" IPs of the clients rather than the IP(s)
+of the reverse proxy.
+
+The format for extforward.conf is as follows:
+
+extforward.forwarder = (                                                                
+  "xxx.xxx.xxx.xxx" => "trust",                                                         
+  "xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx" => "trust"                                 
+)
+
+In this example, the "xxx" and "xxxx" entries represent the IPv4 and IPv6 IPs of the reverse proxy. Include 
+as many IPs (IPv4 and/or IPv6) as are relevant.
