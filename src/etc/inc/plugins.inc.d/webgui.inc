@@ -481,7 +481,7 @@ EOD;
     }
 
     /* include conf for mod_extforward module */
-    $lighty_config .= "include \"/usr/local/etc/lighttpd_extforward.d/extforward.conf\"\n";
+    $lighty_config .= "include \"/usr/local/etc/lighttpd_extforward.d/*.conf\"\n";
     
     if (false === file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config)) {
         log_error('Error: cannot write configuration');
