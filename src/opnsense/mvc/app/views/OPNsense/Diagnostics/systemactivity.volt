@@ -99,7 +99,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <th data-column-id="SIZE" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
                         <th data-column-id="RES" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
                         <th data-column-id="STATE" data-type="string">{{ lang._('STATE') }}</th>
-                        <th data-column-id="C" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('C') }}</th>
+                        <th data-column-id="C" data-type="string" data-searchable="false" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('C') }}</th>
                         <th data-column-id="TIME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('TIME') }}</th>
                         <th data-column-id="WCPU" data-type="string">{{ lang._('WCPU') }}</th>
                         <th data-column-id="COMMAND" data-type="string">{{ lang._('COMMAND') }}</th>
