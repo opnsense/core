@@ -55,7 +55,7 @@ if __name__ == '__main__':
                 fieldnames = line.split()
             else:
                 tmp = line.split()
-                record = {'C': 0}
+                record = {'C': '0'}
                 for field_id in range(len(fieldnames)):
                     fieldname = fieldnames[field_id]
                     if field_id == len(fieldnames)-1:
