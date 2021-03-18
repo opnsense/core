@@ -1107,7 +1107,7 @@ EOD;
                     $dhcpdconf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
-                if (!empty($sm['gateway']) && ($sm['gateway'] != $dhcpifconf['gateway'])) {
+                if (!empty($sm['gateway']) && $sm['gateway'] != "none" && ($sm['gateway'] != $dhcpifconf['gateway'])) {
                     $dhcpdconf .= "  option routers {$sm['gateway']};\n";
                 }
 
