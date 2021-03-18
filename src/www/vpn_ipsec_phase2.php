@@ -344,6 +344,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (!empty($pconfig['ikeid'])) {
+        foreach ($config['ipsec']['phase1'] as $phase1ent) {
+            if ($phase1ent['ikeid'] == $pconfig['ikeid'] &&
+                $pconfig['mode'] == 'route-based' &&
+                empty($phase1ent['noinstallpolicy'])
+            ) {
+                $input_errors[] = gettext(
+                    "Install policy on phase1 is not a valid option when using Route-based phase 2 entries."
+                );
+                break;
+            }
+        }
+    }
+
     /* For ESP protocol, handle encryption algorithms */
     if ($pconfig['protocol'] == "esp") {
         $ealgos = pconfig_to_ealgos($pconfig);
