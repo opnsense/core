@@ -86,8 +86,10 @@ set_check()
 
 	if [ ! -f ${FILE}.sig ]; then
 		echo "Cannot verify ${SET}: missing ${FILE}.sig" | ${TEE} ${LOCKFILE}
+		return
 	elif ! opnsense-verify -q ${FILE}; then
 		echo "Cannot verify ${SET}: invalid ${FILE}.sig" | ${TEE} ${LOCKFILE}
+		return
 	fi
 
 	echo ">>> Check for missing or altered ${SET} files" | ${TEE} ${LOCKFILE}
