@@ -380,6 +380,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+
+    if (!empty($pconfig['ikeid']) && !empty($pconfig['installpolicy'])) {
+        foreach ($config['ipsec']['phase2'] as $phase2ent) {
+            if ($phase2ent['ikeid'] == $pconfig['ikeid'] && $phase2ent['mode'] == 'route-based') {
+                $input_errors[] = gettext(
+                    "Install policy on phase1 is not a valid option when using Route-based phase 2 entries."
+                );
+                break;
+            }
+        }
+    }
+
+
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout
