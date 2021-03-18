@@ -85,11 +85,9 @@ set_check()
 	fi
 
 	if [ ! -f ${FILE}.sig ]; then
-		echo "Cannot verify ${SET}: missing ${FILE}.sig" | ${TEE} ${LOCKFILE}
-		return
+		echo "Unverified hashes for ${SET}: missing ${FILE}.sig" | ${TEE} ${LOCKFILE}
 	elif ! opnsense-verify -q ${FILE}; then
-		echo "Cannot verify ${SET}: invalid ${FILE}.sig" | ${TEE} ${LOCKFILE}
-		return
+		echo "Unverified hashes for ${SET}: invalid ${FILE}.sig" | ${TEE} ${LOCKFILE}
 	fi
 
 	echo ">>> Check for missing or altered ${SET} files" | ${TEE} ${LOCKFILE}
