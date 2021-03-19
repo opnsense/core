@@ -265,7 +265,7 @@ server.modules              =   (
 )
 
 ## additional optional modules to load or additional module configurations
-$lighty_config .= "include \"/usr/local/etc/lighttpd_webgui/conf.d/*.conf\"\n";
+include "/usr/local/etc/lighttpd_webgui/conf.d/*.conf"
 
 server.max-keep-alive-requests = 15
 server.max-keep-alive-idle = 30
