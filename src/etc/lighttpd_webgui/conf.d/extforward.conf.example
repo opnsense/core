@@ -1,0 +1,35 @@
+#######################################################################
+##
+## This is an example configuration file for enabling and configuring
+## the mod_extforward module
+##
+## This module will extract the client's "real" IP from the relevant
+## header which is added by Squid or other proxies. It is useful for
+## logging the "real" IP of clients connecting to the OPNsense webgui
+## behind reverse proxy servers
+##
+## Options: https://redmine.lighttpd.net/projects/1/wiki/Docs_ModExtForward
+##
+
+##
+## Enable the mod_extforward module
+##
+server.modules += ( "mod_extforward" )
+
+##
+## Specify the headers to check. Default if not specified are
+## Forwarded-For and X-Forwarded-For headers
+##
+extforward.headers = ( "X-Forwarded-For", "Forwarded-For", "X-Real-IP" )
+
+##
+## Specify the trusted IPs of the reverse proxy server, comma separated
+## For example, to trust the IPs 10.0.0.1 and fd00:1234:abcd:efgh::1
+##
+extforward.forwarder = (
+  "10.0.0.1" => "trust",
+  "fd00:1234:abcd:efgh::1" => "trust"
+)
+
+##
+#######################################################################
