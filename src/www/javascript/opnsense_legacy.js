@@ -191,7 +191,7 @@ function hook_firewall_categories() {
             let category_count = {};
             $(".rule").each(function(){
                 let row = $(this);
-                $(this).data('category').split(',').forEach(function(item){
+                $(this).data('category').toString().split(',').forEach(function(item){
                     if (category_count[item] === undefined) {
                         category_count[item] = 0 ;
                     }
@@ -242,7 +242,7 @@ function hook_firewall_categories() {
             let no_cat = cat_select.find("option")[0].value;
             $(".rule").each(function(){
                 let is_selected = false;
-                $(this).data('category').split(',').forEach(function(item){
+                $(this).data('category').toString().split(',').forEach(function(item){
                     if (selected_values.indexOf(no_cat) > -1 && item === "") {
                         // No category for this rule
                         is_selected = true;
