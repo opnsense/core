@@ -14,7 +14,7 @@ To use the functionality of this directory:
 - if necessary, enable the applicable lighttpd module in that file by including:
 
     server.modules += ( "mod_[NAME]" )
-  
+
   (for example: server.modules += ( "mod_extforward" )
 
 - specify the relevant configurations for the module, according to the lighttpd documentation

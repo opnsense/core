@@ -26,9 +26,9 @@ extforward.headers = ( "X-Forwarded-For", "Forwarded-For", "X-Real-IP" )
 ## Specify the trusted IPs of the reverse proxy server, comma separated
 ## For example, to trust the IPs 10.0.0.1 and fd00:1234:abcd:efgh::1
 ##
-extforward.forwarder = (                                                                
-  "10.0.0.1" => "trust",                                                         
-  "fd00:1234:abcd:efgh::1" => "trust"                                 
+extforward.forwarder = (
+  "10.0.0.1" => "trust",
+  "fd00:1234:abcd:efgh::1" => "trust"
 )
 
 ##
