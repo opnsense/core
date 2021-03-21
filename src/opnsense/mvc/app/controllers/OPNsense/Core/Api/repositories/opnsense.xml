@@ -29,6 +29,10 @@
             <description>Cloudfence (HTTPS, Sao Paulo, Brazil)</description>
         </mirror>
         <mirror>
+            <url>https://mirror.surf/opnsense</url>
+            <description>mirror.surf (HTTPS, Nizhny Novgorod, RU)</description>
+        </mirror>
+        <mirror>
             <url>https://ftp.yzu.edu.tw/opnsense</url>
             <description>Dept. of CSE, Yuan Ze University (HTTPS, Taoyuan City, TW)</description>
         </mirror>
