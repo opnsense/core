@@ -383,19 +383,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext("You must disable the DHCP relay on the %s interface before enabling the DHCP server."),
                                   !empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));
             }
-
-            $dynsubnet_start = ip2ulong($pconfig['range_from']);
-            $dynsubnet_end = ip2ulong($pconfig['range_to']);
-            foreach ($a_maps as $map) {
-                if (empty($map['ipaddr'])) {
-                    continue;
-                }
-                if ((ip2ulong($map['ipaddr']) > $dynsubnet_start) &&
-                  (ip2ulong($map['ipaddr']) < $dynsubnet_end)) {
-                    $input_errors[] = sprintf(gettext("The DHCP range cannot overlap any static DHCP mappings."));
-                    break;
-                }
-            }
         }
         // save data
         if (count($input_errors) == 0) {
