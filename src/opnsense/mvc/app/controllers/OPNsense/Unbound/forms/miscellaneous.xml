@@ -13,6 +13,6 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of nameservers to use for DoT. Use syntax ip@port like 9.9.9.9@853</help>
+        <help>List of nameservers to use for DoT. Use syntax ip@port like 9.9.9.9@853 or ip@port#fqdn like 9.9.9.9@853#dns.quad9.net to validate the server certificate.</help>
     </field>
 </form>
