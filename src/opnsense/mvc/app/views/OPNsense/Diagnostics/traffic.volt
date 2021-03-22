@@ -104,6 +104,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                   minUnit: 'second',
                                   displayFormats: {
                                       second: 'HH:mm:ss',
+                                      minute: 'HH:mm:ss'
                                   }
                               },
                               type: 'realtime',
