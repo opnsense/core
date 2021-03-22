@@ -123,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                   minUnit: 'second',
                                   displayFormats: {
                                       second: 'HH:mm:ss',
+                                      minute: 'HH:mm:ss'
                                   }
                               },
                               type: 'realtime',
