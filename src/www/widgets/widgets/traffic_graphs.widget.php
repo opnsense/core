@@ -118,6 +118,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       scales: {
                           xAxes: [{
                               type: 'realtime',
+                              time: {
+                                  unit: 'second',
+                                  minUnit: 'seconds',
+                                  displayFormats: {
+                                      second: 'HH:mm:ss',
+                                      minute: 'HH:mm:ss'
+                                  }
+                              },
                               realtime: {
                                   duration: 50000,
                                   refresh: 5000,
@@ -138,8 +146,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           callbacks: {
                               label: function(tooltipItem, data) {
                                   let ds = data.datasets[tooltipItem.datasetIndex];
-                                  return ds.label + " : " + format_field(ds.data[tooltipItem.index].y).toString();
-                              }
+                                  if (ds.data[tooltipItem.index].y) {
+                                      return moment.unix(ds.data[tooltipItem.index].x/1000).format('HH:mm:ss') + " : " +
+                                             format_field(ds.data[tooltipItem.index].y).toString();
+                                  }
+                              },
+                              title: function(tooltipItem, data) {
+                                  return "";
+                              },
                           }
                       },
                       hover: {
