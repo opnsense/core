@@ -117,6 +117,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       maintainAspectRatio: false,
                       scales: {
                           xAxes: [{
+                              time: {
+                                  tooltipFormat:'HH:mm:ss',
+                                  unit: 'second',
+                                  minUnit: 'second',
+                                  displayFormats: {
+                                      second: 'HH:mm:ss',
+                                      minute: 'HH:mm:ss'
+                                  }
+                              },
                               type: 'realtime',
                               realtime: {
                                   duration: 50000,
