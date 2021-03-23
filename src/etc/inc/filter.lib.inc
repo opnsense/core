@@ -607,7 +607,7 @@ function filter_core_rules_system($fw, $defaults)
                     if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(
                             100000,
-                            array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
+                            array('from' => "({$ifcfg['if']})", 'direction' => 'out', 'gateway' => $gwname,
                             'destination' => array('network' => $ifdescr, "not" => true),
                             'statetype' => 'keep',
                             'allowopts' => true,
