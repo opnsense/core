@@ -67,6 +67,7 @@ function suricata_xmlrpc_sync()
         'description' => gettext('Intrusion Detection'),
         'section' => 'OPNsense.IDS',
         'id' => 'suricata',
+        'services' => ["suricata"],
     );
 
     return $result;

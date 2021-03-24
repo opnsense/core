@@ -81,6 +81,7 @@ function dnsmasq_xmlrpc_sync()
         'description' => gettext('Dnsmasq DNS'),
         'section' => 'dnsmasq',
         'id' => 'dnsforwarder',
+        'services' => ["dnsmasq"],
     );
 
     return $result;

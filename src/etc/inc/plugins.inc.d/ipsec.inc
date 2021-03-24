@@ -333,6 +333,7 @@ function ipsec_xmlrpc_sync()
         'description' => gettext('IPsec'),
         'section' => 'ipsec',
         'id' => 'ipsec',
+        'services' => ["strongswan"],
     );
 
     return $result;

@@ -56,11 +56,13 @@ function ipfw_xmlrpc_sync()
         'description' => gettext('Shaper'),
         'section' => 'OPNsense.TrafficShaper',
         'id' => 'shaper',
+        'services' => ["ipfw"],
     );
     $result[] = array(
         'description' => gettext('Captive Portal'),
         'section' => 'OPNsense.captiveportal',
         'id' => 'captiveportal',
+        'services' => ["ipfw"],
     );
 
     return $result;

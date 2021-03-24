@@ -63,6 +63,24 @@ function openssh_services()
     return $services;
 }
 
+/**
+ *  sync configuration via xmlrpc
+ * @return array
+ */
+function openssh_xmlrpc_sync()
+{
+    $result = [];
+    $result[] = array(
+        'description' => gettext('OpenSSH'),
+        'section' => 'system.ssh',
+        'id' => 'ssh',
+        'services' => ["openssh"],
+    );
+
+    return $result;
+}
+
+
 function openssh_stop()
 {
     /* if run from a shell session, `-af' and the full path is needed */
