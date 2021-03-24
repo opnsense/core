@@ -465,6 +465,8 @@ EOD;
         !isset($config['system']['webgui']['disablehttpredirect'])
     ) {
         $redirectport = $lighty_port != "443" ? ":{$lighty_port}" : '';
+        $host_name = strtolower($config['system']['hostname']);
+        $domain_name = $config['system']['domain'];
         foreach ($listeners as $listener) {
             if (is_ipaddrv6($listener)) {
                 $listener = "[{$listener}]";
@@ -474,6 +476,9 @@ EOD;
 \$SERVER["socket"] == "{$listener}:80" {
     \$HTTP["host"] =~ "(.*)" {
         url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
+    }
+    \$HTTP["host"] =~ "^({$host_name}|wpad)$" {
+        url.redirect = ( "^/(.*)" => "https://%1.{$domain_name}{$redirectport}/$1" )
     }
     ssl.engine = "disable"
 }
