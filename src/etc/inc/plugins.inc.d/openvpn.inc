@@ -110,6 +110,7 @@ function openvpn_xmlrpc_sync()
         'description' => gettext('OpenVPN'),
         'section' => 'openvpn',
         'id' => 'openvpn',
+        'services' => ["openvpn"],
     );
 
     return $result;

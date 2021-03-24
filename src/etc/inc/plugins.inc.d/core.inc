@@ -79,6 +79,32 @@ function core_services()
         'name' => 'login',
     );
 
+    $services[] = array(
+        'description' => gettext('System routing'),
+        'php' => array(
+            "restart" => array('system_routing_configure')
+        ),
+        'nocheck' => true,
+        'name' => 'routing',
+    );
+
+    $services[] = array(
+        'description' => gettext('System tunables'),
+        'php' => array(
+            "restart" => array('system_sysctl_configure')
+        ),
+        'nocheck' => true,
+        'name' => 'sysctl',
+    );
+
+    $services[] = array(
+        'description' => gettext('Cron'),
+        'php' => array(
+            "restart" => array('system_cron_configure')
+        ),
+        'name' => 'cron',
+    );
+
     if (empty($config['syslog']['disable_clog'])) {
         $services[] = array(
             'description' => gettext('Legacy Syslog Daemon'),
@@ -101,6 +127,16 @@ function core_services()
         ),
         'pidfile' => '/var/run/syslog-ng.pid',
         'name' => 'syslog-ng',
+    );
+
+    $services[] = array(
+        'pidfile' => '/var/run/lighty-webConfigurator.pid',
+        'description' => gettext('WebGui'),
+        'configd' => array(
+            'restart' => array('webgui restart')
+        ),
+        'locked' => true,
+        'name' => 'webgui',
     );
 
     return $services;
@@ -261,12 +297,14 @@ function core_xmlrpc_sync()
         'help' => gettext('Synchronize the users and groups over to the other HA host.'),
         'section' => 'system.user,system.group',
         'id' => 'users',
+        'services' => ["login"],
     );
     $result[] = array(
         'description' => gettext('Auth Servers'),
         'help' => gettext('Synchronize the authentication servers (e.g. LDAP, RADIUS) over to the other HA host.'),
         'section' => 'system.authserver',
         'id' => 'authservers',
+        'services' => ["login"],
     );
     $result[] = array(
         'description' => gettext('Certificates'),
@@ -279,30 +317,59 @@ function core_xmlrpc_sync()
         'help' => gettext('Synchronize the firewall rules to the other HA host.'),
         'section' => 'filter',
         'id' => 'rules',
+        'services' => ["pf"],
     );
     $result[] = array(
         'description' => gettext('Firewall Schedules'),
         'help' => gettext('Synchronize the firewall schedules to the other HA host.'),
         'section' => 'schedules',
         'id' => 'schedules',
+        'services' => ["pf"],
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Categories'),
+        'section' => 'OPNsense.Firewall.Category',
+        'id' => 'categories'
     );
     $result[] = array(
         'description' => gettext('Aliases'),
         'help' => gettext('Synchronize the aliases over to the other HA host.'),
         'section' => 'OPNsense.Firewall.Alias',
         'id' => 'aliases',
+        'services' => ["pf"],
     );
     $result[] = array(
         'description' => gettext('NAT'),
         'help' => gettext('Synchronize the NAT rules over to the other HA host.'),
         'section' => 'nat',
         'id' => 'nat',
+        'services' => ["pf"],
     );
     $result[] = array(
         'description' => gettext('DHCPD'),
         'help' => gettext('Synchronize the DHCP Server settings over to the other HA host. This only applies to DHCP for IPv4.'),
         'section' => 'dhcpd',
         'id' => 'dhcpd',
+        'services' => ["dhcpd"],
+    );
+    $result[] = array(
+        'description' => gettext('DHCPv4: Relay'),
+        'section' => 'dhcrelay',
+        'id' => 'dhcrelay',
+        'services' => ["dhcrelay"],
+    );
+    $result[] = array(
+        'description' => gettext('DHCPDv6'),
+        'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
+        'section' => 'dhcpdv6',
+        'id' => 'dhcpdv6',
+        'services' => ["dhcpdv6", "radvd"],
+    );
+    $result[] = array(
+        'description' => gettext('DHCPv6: Relay'),
+        'section' => 'dhcrelay6',
+        'id' => 'dhcrelay6',
+        'services' => ["dhcrelay6"],
     );
     $result[] = array(
         'description' => gettext('Virtual IPs'),
@@ -315,12 +382,39 @@ function core_xmlrpc_sync()
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
         'section' => 'staticroutes,gateways',
         'id' => 'staticroutes',
+        'services' => ["routing"],
     );
     $result[] = array(
         'description' => gettext('Network Time'),
         'section' => 'ntpd,system.timeservers',
         'id' => 'ntpd',
+        'services' => ["ntpd"],
     );
+    $result[] = array(
+        'description' => gettext('Syslog'),
+        'section' => 'syslog,OPNsense.Syslog',
+        'id' => 'syslog',
+        'services' => ["syslogd"],
+    );
+    $result[] = array(
+        'description' => gettext('Cron'),
+        'section' => 'OPNsense.cron',
+        'id' => 'cron',
+        'services' => ["cron"],
+    );
+    $result[] = array(
+        'description' => gettext('System Tunables'),
+        'section' => 'sysctl',
+        'id' => 'sysctl',
+        'services' => ["sysctl"],
+    );
+    $result[] = array(
+        'description' => gettext('WebGui'),
+        'section' => 'system.webgui',
+        'id' => 'webgui',
+        'services' => ["webgui"],
+    );
+
     return $result;
 }
 
