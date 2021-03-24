@@ -73,3 +73,20 @@ function netflow_services()
 
     return $services;
 }
+
+/**
+ *  sync configuration via xmlrpc
+ * @return array
+ */
+function netflow_xmlrpc_sync()
+{
+    $result = [];
+    $result[] = array(
+        'description' => gettext('Netflow / Insight'),
+        'section' => 'OPNsense.Netflow',
+        'id' => 'syslog',
+        'services' => ["samplicate", "flowd_aggregate"],
+    );
+
+    return $result;
+}
