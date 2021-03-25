@@ -393,6 +393,17 @@
             });
         });
 
+        // get and apply url params. ie11 compat
+        let urlvars = window.location.search.substring(1).split("&");
+        if (urlvars.length >= 1 && urlvars[0] !== "") {
+            urlvars.forEach(function(value) {
+                $("#filter_tag").val(value.split("=")[0]);
+                $("#filter_condition").val("=");
+                $("#filter_value").val(value.split("=")[1]);
+                $("#add_filter_condition").click();
+            });
+        }
+
         // startup poller
         poller();
     });
