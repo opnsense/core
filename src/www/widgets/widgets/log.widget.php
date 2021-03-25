@@ -128,13 +128,17 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                     case 'icon':
                                         var icon = field_type_icons[record[column_name]];
                                         if (icon != undefined) {
-                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i>');
+                                            // prepare popover content
+                                            let popContent = "@" + record.rulenr;
+                                            popContent += record.label.length > 0 ? " Label: " + record.label : '';
+                                            popContent += "<br><sub><?= gettext('click the Act icon to track this rule in Live View') ?></sub>"
+                                            log_td.html('<a target="_blank" href="/ui/diagnostics/firewall/log?rid=' + record.rid + '" type="button" data-toggle="popover" data-trigger="hover" \
+                                                        data-html="true" data-title="<?= gettext('Matched rule') ?>" data-content="' + popContent + '"><i class="fa ' + icon + '" aria-hidden="true"></i></a>');
                                             if (record[column_name] == 'pass') {
-                                                log_td.addClass('text-success');
+                                                log_td.find('a').addClass('text-success');
                                             } else {
-                                                log_td.addClass('text-danger');
+                                                log_td.find('a').addClass('text-danger');
                                             }
-
                                         }
                                         break;
                                     case 'time':
@@ -169,8 +173,16 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                         }
                     }
                 }
+                //hide popover before elem remove
+                $('[data-toggle="popover"]').popover('hide');
                 $("#filter-log-entries > tbody > tr:gt("+(parseInt($("#filterlogentries").val() - 1))+")").remove();
                 $("#filter-log-entries > tbody > tr").show();
+                //enable popover with full width for long descriptions
+                $('[data-toggle="popover"]').popover({
+                    container: 'body'
+                }).on('show.bs.popover', function() {
+                    $(this).data("bs.popover").tip().css("max-width", "100%")
+                });
             });
 
             // schedule next fetch
