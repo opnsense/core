@@ -127,6 +127,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			ntp \
 			openssh-portable \
 			openvpn \
+			openvpn-auth-script \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \

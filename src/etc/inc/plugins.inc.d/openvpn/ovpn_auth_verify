@@ -2,13 +2,28 @@
 
 if [ "$1" = "tls" ]; then
 	/usr/local/bin/php /usr/local/etc/inc/plugins.inc.d/openvpn/tls-verify.php -d "$2" "$3"
+	exit $?
 else
 	# Single quoting $password breaks getting the value from the variable.
 	# XXX I really don't like going through openssl for this...
 	password=$(echo -n "${password}" | /usr/local/bin/openssl enc -base64 | sed -e 's/=/%3D/g')
 	username=$(echo -n "${username}" | /usr/local/bin/openssl enc -base64 | sed -e 's/=/%3D/g')
 
-	/usr/local/bin/php /usr/local/etc/inc/plugins.inc.d/openvpn/auth-user.php "$username" "$password" "$common_name" "$3" "$2" "$4"
-fi
+	# has to be done before the script call. otherwise $? will be the result of the assignment,
+	# instead of the return value of the auth script
+	auth_success="0"
 
-exit $?
+	# do the actual authentication
+	/usr/local/bin/php /usr/local/etc/inc/plugins.inc.d/openvpn/auth-user.php "$username" "$password" "$common_name" "$3" "$2" "$4"
+
+	if [ $? = 0 ]; then
+		auth_success="1"
+	fi
+
+	# auth_control_file is provided by the plugin
+	printf "%s" "${auth_success}" > "${auth_control_file}"
+
+	# the authentication result is passed on to the plugin via the file,
+	# but the script itself should always return successfully here
+	exit 0
+fi
