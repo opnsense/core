@@ -38,6 +38,11 @@ function webgui_configure()
     );
 }
 
+function webgui_configure_delayed()
+{
+    configd_run('webgui restart 3', true);
+}
+
 function webgui_configure_do($verbose = false, $interface = '')
 {
     global $config;
