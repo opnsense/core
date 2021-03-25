@@ -132,8 +132,8 @@ function core_services()
     $services[] = array(
         'pidfile' => '/var/run/lighty-webConfigurator.pid',
         'description' => gettext('WebGui'),
-        'configd' => array(
-            'restart' => array('webgui restart')
+        'php' => array(
+            'restart' => array('webgui_configure_delayed')
         ),
         'locked' => true,
         'name' => 'webgui',
