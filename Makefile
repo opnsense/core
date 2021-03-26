@@ -449,7 +449,9 @@ mfc: ensure-stable clean-mfcdir
 	fi
 .else
 	@git checkout stable/${CORE_ABI}
-	@git cherry-pick -x ${MFC}
+	@if ! git cherry-pick -x ${MFC}; then \
+		git cherry-pick --abort; \
+	fi
 .endif
 	@git checkout master
 .endfor
