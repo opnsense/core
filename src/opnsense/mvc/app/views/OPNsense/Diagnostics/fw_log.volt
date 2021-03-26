@@ -393,16 +393,32 @@
             });
         });
 
-        // get and apply url params. ie11 compat
-        let urlvars = window.location.search.substring(1).split("&");
-        if (urlvars.length >= 1 && urlvars[0] !== "") {
-            urlvars.forEach(function(value) {
-                $("#filter_tag").val(value.split("=")[0]);
-                $("#filter_condition").val("=");
-                $("#filter_value").val(value.split("=")[1]);
-                $("#add_filter_condition").click();
+        /**
+         * set new selection
+         * @param items list of lexical expressions
+         */
+        function set_selection(items)
+        {
+            // remove old selection
+            $("#filters > span.badge").click();
+            // collect valid condition types
+            let conditions = [];
+            $("#filter_condition > option").each(function(){
+                conditions.push($(this).val());
+            });
+            items.forEach(function(value) {
+                let parts = value.split(new RegExp("("+conditions.join("|")+")(.+)$"));
+                if (parts.length >= 3 && $("#filter_tag").val(parts[0]).val() === parts[0] ) {
+                    $("#filter_tag").val(parts[0]);
+                    $("#filter_condition").val(parts[1]);
+                    $("#filter_value").val(parts[2]);
+                    $("#add_filter_condition").click();
+                }
             });
         }
+
+        // get and apply url params. ie11 compat
+        set_selection(window.location.search.substring(1).split("&"));
 
         // startup poller
         poller();
