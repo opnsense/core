@@ -102,7 +102,7 @@ CORE_COPYRIGHT_YEARS?=	2014-2021
 
 CORE_DEPENDS_amd64?=	beep \
 			bsdinstaller \
-			suricata
+			suricata-devel
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			ca_root_nss \
