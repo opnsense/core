@@ -380,7 +380,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-
     if (!empty($pconfig['ikeid']) && !empty($pconfig['installpolicy'])) {
         foreach ($config['ipsec']['phase2'] as $phase2ent) {
             if ($phase2ent['ikeid'] == $pconfig['ikeid'] && $phase2ent['mode'] == 'route-based') {
@@ -391,7 +390,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
-
 
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
