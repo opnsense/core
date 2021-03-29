@@ -65,14 +65,14 @@ class FirmwareController extends ApiControllerBase
      * Run check for updates
      * @return array
      */
-    public function checkAction()
+    public function checkAction($sync)
     {
         $this->sessionClose(); // long running action, close session
         $response = [];
 
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $response['msg_uuid'] = trim($backend->configdRun('firmware check', true));
+            $response['msg_uuid'] = trim($backend->configdRun('firmware check', empty($sync) ? true : false));
             $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
