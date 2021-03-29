@@ -94,6 +94,13 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $target = null;
 
+        $this->sessionClose(); // long running action, close session
+
+        if ($this->request->isPost()) {
+            /* run a synchronous check prior to the result fetch */
+            $backend->configdRun('firmware probe');
+        }
+
         $response = json_decode(trim($backend->configdRun('firmware product')), true);
         if ($response != null && $response['product_check'] != null) {
             $response = $response['product_check'];
