@@ -97,7 +97,8 @@ class FirmwareController extends ApiControllerBase
         $this->sessionClose(); // long running action, close session
 
         if ($this->request->isPost()) {
-            $backend->configdRun('firmware check');
+            /* run a synchronous check prior to the result fetch */
+            $backend->configdRun('firmware probe');
         }
 
         $response = json_decode(trim($backend->configdRun('firmware product')), true);
