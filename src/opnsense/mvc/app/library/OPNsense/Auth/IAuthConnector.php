@@ -49,6 +49,12 @@ interface IAuthConnector
     public function getLastAuthProperties();
 
     /**
+     * after authentication, you can call this method to retrieve optional authentication errors
+     * @return array of auth errors
+     */
+    public function getLastAuthErrors();
+
+    /**
      * authenticate user
      * @param string $username username to authenticate
      * @param string $password user password
