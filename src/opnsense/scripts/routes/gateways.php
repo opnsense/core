@@ -36,7 +36,11 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
 $ret = array();
 
 foreach ($gateways as $gateway) {
-    $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
+    if (is_ipaddr($gateway['gateway'])) {
+        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
+    } else {
+        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
+    }
 }
 
 echo json_encode($ret) . PHP_EOL;
