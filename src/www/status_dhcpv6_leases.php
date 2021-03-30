@@ -353,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             @unlink($leasesfile);
             @rename($leasesfile.".new", $leasesfile);
 
-            dhcpd_dhcp_configure(false, 'inet6');
+            dhcpd_dhcp6_configure();
         }
     }
     exit;

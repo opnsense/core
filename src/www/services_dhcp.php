@@ -89,7 +89,7 @@ function reconfigure_dhcpd()
     dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    dhcpd_dhcp_configure(false, 'inet');
+    dhcpd_dhcp4_configure();
     clear_subsystem_dirty('staticmaps');
 }
 
