@@ -38,7 +38,7 @@ function reconfigure_dhcpd()
 {
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    dhcpd_dhcp_configure(false, 'inet6');
+    dhcpd_dhcp6_configure();
     clear_subsystem_dirty('staticmaps');
 }
 
