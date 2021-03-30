@@ -622,6 +622,7 @@
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
+                            .data("has_subscription", firmwareoptions['families_has_subscription'].length > 0)
                             .prop('selected', selected)
                     );
                 });
@@ -632,6 +633,12 @@
                         .data("other", 1)
                         .prop('selected', other_selected)
                     );
+                }
+
+                if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
+                    $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
+                } else {
+                    $("#firmware_mirror_subscription").val("");
                 }
 
                 $("#firmware_mirror").selectpicker('refresh');
