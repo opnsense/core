@@ -131,7 +131,7 @@ function core_services()
 
     $services[] = array(
         'pidfile' => '/var/run/lighty-webConfigurator.pid',
-        'description' => gettext('WebGui'),
+        'description' => gettext('Web GUI'),
         'php' => array(
             'restart' => array('webgui_configure_delayed')
         ),
@@ -409,7 +409,7 @@ function core_xmlrpc_sync()
         'services' => ["sysctl"],
     );
     $result[] = array(
-        'description' => gettext('WebGui'),
+        'description' => gettext('Web GUI'),
         'section' => 'system.webgui',
         'id' => 'webgui',
         'services' => ["webgui"],
