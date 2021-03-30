@@ -44,6 +44,11 @@ abstract class Base
     protected $caseInSensitiveUsernames = false;
 
     /**
+     * @var array internal list of LDAP errors
+     */
+    protected $lastAuthErrors = array();
+
+    /**
      * return group memberships
      * @param string $username username to find
      * @return array
@@ -148,4 +153,13 @@ abstract class Base
             return $username;
         }
     }
+
+    /**
+     * @return array of auth errors
+     */
+    public function getLastAuthErrors()
+    {
+        return $this->lastAuthErrors;
+    }
+
 }

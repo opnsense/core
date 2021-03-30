@@ -128,11 +128,6 @@ class LDAP extends Base implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
-     * @var array internal list of LDAP errors
-     */
-    private $lastAuthErrors = array();
-
-    /**
      * close ldap handle if open
      */
     private function closeLDAPHandle()
@@ -462,14 +457,6 @@ class LDAP extends Base implements IAuthConnector
     public function getLastAuthProperties()
     {
         return $this->lastAuthProperties;
-    }
-
-    /**
-     * @return array of LDAP errors
-     */
-    public function getLastAuthErrors()
-    {
-        return $this->lastAuthErrors;
     }
 
     /**
