@@ -28,9 +28,9 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_MESSAGE?=	What are you looking at?
-CORE_NAME?=	opnsense
-CORE_TYPE?=	production
+CORE_MESSAGE?=	Business as usual
+CORE_NAME?=	opnsense-business
+CORE_TYPE?=	business
 
 CORE_ABI?=	21.1
 CORE_PHP?=	73
