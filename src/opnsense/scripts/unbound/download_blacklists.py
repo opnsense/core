@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
                 syslog.syslog(
                     syslog.LOG_NOTICE,
-                    'blacklist download %(uri)s (lines: %(lines)d exclude: %(skip)d black: %(blacklist)d' % file_stats
+                    'blacklist download %(uri)s (lines: %(lines)d exclude: %(skip)d black: %(blacklist)d)' % file_stats
                 )
 
     # write out results
