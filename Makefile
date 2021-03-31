@@ -30,7 +30,7 @@ all:
 
 CORE_MESSAGE?=	What are you looking at?
 CORE_NAME?=	opnsense
-CORE_TYPE?=	production
+CORE_TYPE?=	community
 
 CORE_ABI?=	21.1
 CORE_PHP?=	73
