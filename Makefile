@@ -56,6 +56,8 @@ _NEXTDEVEL!=	${GIT} tag -l ${CORE_NEXT}\*
 _NEXTMATCH=	--match=${CORE_NEXT}\*
 .   endif
 .  endif
+. elif ${CORE_TYPE:M[Bb][Uu][Ss]*}
+_NEXTMATCH= 	'' # XXX verbatim match for now
 . else
 _NEXTSTABLE!=	${GIT} tag -l ${CORE_ABI}\*
 .  if !empty(_NEXTSTABLE)
