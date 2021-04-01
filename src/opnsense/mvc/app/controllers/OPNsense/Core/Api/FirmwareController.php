@@ -780,7 +780,7 @@ class FirmwareController extends ApiControllerBase
 
         $config = Config::getInstance()->object();
         $configPlugins = array();
-        if (isset($config->system->firmware->plugins)) {
+        if (!empty($config->system->firmware->plugins)) {
             $configPlugins = explode(",", $config->system->firmware->plugins);
         }
 
