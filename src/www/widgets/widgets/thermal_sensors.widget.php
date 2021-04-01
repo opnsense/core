@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 <?= gettext('Only show first found CPU core temperature') ?>
             </td>
         </tr>
-         <tr>
+        <tr>
             <td></td>
             <td>
                 <input type="checkbox" id="thermal_sensors_widget_show_temp_in_fahrenheit" name="thermal_sensors_widget_show_temp_in_fahrenheit" <?=$pconfig['thermal_sensors_widget_show_temp_in_fahrenheit'] ? 'checked="checked"' : ''; ?>/>
