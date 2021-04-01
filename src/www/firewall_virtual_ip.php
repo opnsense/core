@@ -256,14 +256,14 @@ include("head.inc");
                     <td><?=gettext("Type");?></td>
                     <td><?=gettext("Description");?></td>
                     <td>
+                      <a href="firewall_virtual_ip_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <i class="fa fa-plus fa-fw"></i> <?= $button['label'] ?>
+                      </a>
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected virtual IPs to end")) ?>" class="act_move btn btn-default btn-xs">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </a>
                       <a id="del_x" title="<?= html_safe(gettext('delete selected virtual IPs')) ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
                         <i class="fa fa-trash fa-fw"></i>
-                      </a>
-                      <a href="firewall_virtual_ip_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
-                        <i class="fa fa-plus fa-fw"></i> <?= $button['label'] ?>
                       </a>
                     </td>
                   </tr>
