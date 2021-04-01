@@ -63,7 +63,7 @@ function plugins_config_get($config)
 
     if (!isset($config->system->firmware->plugins)) {
         $config->system->firmware->addChild('plugins');
-    } else {
+    } elseif (!empty($config->system->firmware->plugins)) {
         $plugins = explode(',', (string)$config->system->firmware->plugins);
     }
 
