@@ -129,11 +129,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     .removeClass('progress-bar-danger')
                     .addClass('progress-bar-success');
             }
+
             // update bar
-            if($('#thermal_sensors_widget_show_temp_in_fahrenheit').attr('checked') === 'checked') {  
+            if ($('#thermal_sensors_widget_show_temp_in_fahrenheit').attr('checked') === 'checked') {
                 progressBar.html(Number.parseFloat(1.8 * sensor['temperature'] + 32).toFixed(1) + ' &deg;F');
             } else {
-                progressBar.html(sensor['temperature'] + ' &deg;C');                
+                progressBar.html(sensor['temperature'] + ' &deg;C');
             }
             progressBar.css("width", tempIntValue + "%").attr("aria-valuenow", tempIntValue + "%");
 
