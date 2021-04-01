@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // update bar
             
             if($('#thermal_sensors_widget_show_temp_in_fahrenheit').attr('checked') === 'checked') {  
-                progressBar.html((Number.parseFloat(((1.8) * sensor['temperature']+(32))).toFixed(1)) + ' &deg;F');
+                progressBar.html(Number.parseFloat(1.8 * sensor['temperature'] + 32).toFixed(1) + ' &deg;F');
             } else {
                 progressBar.html(sensor['temperature'] + ' &deg;C');                
             }
