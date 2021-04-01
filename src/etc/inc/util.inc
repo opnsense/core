@@ -905,7 +905,8 @@ function get_configured_ip_addresses()
             if (!empty($if[$iptype])) {
                 foreach ($if[$iptype] as $addr) {
                     if (!empty($addr['ipaddr'])) {
-                        $ip_array[$addr['ipaddr']] = $ifname;
+                        $scope = $addr['link-local'] ? "%{$ifname}" : '';
+                        $ip_array[$addr['ipaddr'] . $scope] = $ifname;
                     }
                 }
             }
