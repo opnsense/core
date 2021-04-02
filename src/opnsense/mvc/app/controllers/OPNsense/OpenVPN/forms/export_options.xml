@@ -16,7 +16,7 @@
         <label>Hostname</label>
         <type>text</type>
         <help>
-            Address(es) or hostname(s) to which this client should connect to, use comma's to provide more then one
+            Address(es) or hostname(s) to which this client should connect to, use comma's to provide more than one
         </help>
     </field>
     <field>
