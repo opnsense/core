@@ -27,6 +27,7 @@
 """
 
 import os
+import sys
 import re
 import syslog
 import tempfile
@@ -80,6 +81,10 @@ if __name__ == '__main__':
         # already running, exit status 99
         sys.exit(99)
 
+    domain_pattern = re.compile(
+        r'(([\da-zA-Z])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
+        r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))'
+    )
 
     startup_time = time.time()
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
@@ -121,11 +126,13 @@ if __name__ == '__main__':
                         if entry not in ['127.0.0.1', '0.0.0.0']:
                             break
                     if entry:
+                        domain = entry.lower()
                         if whitelist_pattern.match(entry):
                             file_stats['skip'] += 1
                         else:
-                            file_stats['blacklist'] += 1
-                            blacklist_items.add(entry)
+                            if domain_pattern.match(domain):
+                                file_stats['blacklist'] += 1
+                                blacklist_items.add(entry)
 
                 syslog.syslog(
                     syslog.LOG_NOTICE,
