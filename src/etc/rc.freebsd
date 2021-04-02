@@ -117,6 +117,11 @@ if [ "${1}" == "start" ]; then
 	done
 fi
 
+if [ "${1}" == "stop" ]; then
+	rc_filenames=$(echo "${rc_filenames}" | tail -r)
+	rc_filenames_defer=$(echo "${rc_filenames_defer}" | tail -r)
+fi
+
 # pass all commands to script now
 for rc_filename in ${rc_filenames} ${rc_filenames_defer}; do
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
