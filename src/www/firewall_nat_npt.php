@@ -229,7 +229,7 @@ $main_buttons = array(
                       <th style="width:2%">&nbsp;</th>
                       <th><?=gettext("Interface"); ?></th>
                       <th><?=gettext("External Prefix"); ?></th>
-                      <th><?=gettext("Internal prefix"); ?></th>
+                      <th><?=gettext("Internal Prefix"); ?></th>
                       <th><?=gettext("Description"); ?></th>
                       <th></th>
                     </tr>

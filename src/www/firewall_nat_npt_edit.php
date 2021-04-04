@@ -53,18 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
       // load attributes with some kind of logic
       address_to_pconfig(
-          $a_npt[$configId]['source'], $pconfig['src'],$pconfig['srcmask'], $pconfig['srcnot'],
-          $pconfig['__unused__'],$pconfig['__unused__']
+          $a_npt[$configId]['source'], $pconfig['src'], $pconfig['srcmask'],
+          $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
       );
 
       address_to_pconfig(
-          $a_npt[$configId]['destination'], $pconfig['dst'],$pconfig['dstmask'], $pconfig['dstnot'],
-          $pconfig['__unused__'],$pconfig['__unused__']
+          $a_npt[$configId]['destination'], $pconfig['dst'],
+          $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
       );
     }
 
     // initialize empty form values
-    foreach (array('disabled','interface','descr','src','srcmask','dst','dstmask','srcnot','dstnot') as $fieldname) {
+    foreach (array('disabled','interface','descr','src','srcmask','dst') as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
@@ -107,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $natent['descr'] = $pconfig['descr'];
       $natent['interface'] = $pconfig['interface'];
       pconfig_to_address(
-          $natent['source'], trim($pconfig['src']),$pconfig['srcmask'], !empty($pconfig['srcnot'])
+          $natent['source'], trim($pconfig['src']), $pconfig['srcmask']
       );
 
       pconfig_to_address(
-          $natent['destination'], trim($pconfig['dst']),$pconfig['dstmask'], !empty($pconfig['dstnot'])
+          $natent['destination'], trim($pconfig['dst']), $pconfig['srcmask']
       );
 
       if (isset($id)) {
@@ -158,7 +158,7 @@ $( document ).ready(function() {
               <form method="post" name="iform" id="iform">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td><?=gettext("Edit NAT NPTv6 entry"); ?></td>
+                    <td><?=gettext("Edit NPTv6 entry"); ?></td>
                     <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -194,24 +194,12 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                      <td colspan="2"><?=gettext("Internal IPv6 Prefix"); ?></td>
-                  </tr>
-                  <tr>
-                      <td><a id="help_for_srcnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
-                      <td>
-                        <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" :"";?> />
-                        <div class="hidden" data-for="help_for_srcnot">
-                            <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
-                      </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ". gettext("Address:"); ?></td>
+                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Internal IPv6 Prefix"); ?></td>
                     <td>
                       <table style="border:0;">
                         <tr>
                           <td style="width:348px">
-                            <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
+                            <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Internal IPv6 Prefix");?>"/>
                           </td>
                           <td>
                             <select name="srcmask" class="selectpicker" data-size="5"  data-width="auto">
@@ -223,41 +211,16 @@ $( document ).ready(function() {
                         </tr>
                       </table>
                       <div class="hidden" data-for="help_for_src">
-                        <?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the external prefix.");?>
+                        <?=gettext("Enter the internal (LAN) IPv6 prefix for the Network Prefix Translation. The prefix size specified for the internal prefix will also be applied to the external prefix.");?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                      <td colspan="2"><?=gettext("Destination IPv6 Prefix"); ?></td>
-                  </tr>
-                  <tr>
-                      <td><a id="help_for_dstnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
-                      <td>
-                        <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" :"";?> />
-                        <div class="hidden" data-for="help_for_dstnot">
-                            <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
-                      </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ". gettext("Address:"); ?></td>
+                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("External IPv6 Prefix"); ?></td>
                     <td>
-                      <table style="border:0;">
-                        <tr>
-                          <td style="width:348px">
-                            <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          </td>
-                          <td>
-                            <select name="dstmask" class="selectpicker" data-size="5"  data-width="auto">
-                              <?php for ($i = 128; $i > 0; $i--): ?>
-                                <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                              <?php endfor; ?>
-                            </select>
-                          </td>
-                        </tr>
-                      </table>
+                      <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("External IPv6 Prefix");?>"/>
                       <div class="hidden" data-for="help_for_dst">
-                        <?=gettext("Enter the Global Unicast routable IPv6 prefix here"); ?>
+                        <?=gettext("Enter the external (WAN) IPv6 prefix for the Network Prefix Translation. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
                       </div>
                     </td>
                   </tr>
