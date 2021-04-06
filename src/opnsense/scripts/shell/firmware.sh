@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,10 +27,20 @@
 
 set -e
 
-UPGRADE="/usr/local/opnsense/firmware-upgrade"
-PROMPT="[y/N]"
-NAME="y"
+SCRIPTSDIR="/usr/local/opnsense/scripts/firmware"
+RELEASE=$(opnsense-update -vR)
+PROMPT="y/N"
 ARGS=
+
+run_action()
+{
+	echo
+	if ! ${SCRIPTSDIR}/launcher.sh ${SCRIPTSDIR}/${1}.sh; then
+		echo "A firmware action is currently in progress."
+	fi
+	echo
+	read -p "Press any key to return to menu." WAIT
+}
 
 echo -n "Fetching change log information, please wait... "
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
@@ -38,14 +48,11 @@ if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
 fi
 
 echo
-echo "This will automatically fetch all available updates, apply them,"
-echo "and reboot if necessary."
+echo "This will automatically fetch all available updates and apply them."
 echo
 
-if [ -f ${UPGRADE} ]; then
-	NAME=$(cat ${UPGRADE})
-
-	echo "A major firmware upgrade is available for this installation: ${NAME}"
+if [ -n "${RELEASE}" ]; then
+	echo "A major firmware upgrade is available for this installation: ${RELEASE}"
 	echo
 	echo "Make sure you have read the release notes and migration guide before"
 	echo "attempting this upgrade.  Around 500MB will need to be downloaded and"
@@ -55,19 +62,31 @@ if [ -f ${UPGRADE} ]; then
 	echo "Minor updates may be available, answer 'y' to run them instead."
 	echo
 
-	PROMPT="[${NAME}/y/N]"
+	PROMPT="${RELEASE}/${PROMPT}"
 elif /usr/local/opnsense/scripts/firmware/reboot.sh; then
 	echo "This update requires a reboot."
 	echo
 fi
 
-read -p "Proceed with this action? ${PROMPT}: " YN
+read -p "Proceed with this action? [${PROMPT}]: " YN
 
 case ${YN} in
 [yY])
 	;;
-${NAME})
-	ARGS="upgrade ${NAME}"
+${RELEASE:-y})
+	ARGS="upgrade ${RELEASE}"
+	;;
+[sS])
+	run_action security
+	exit 0
+	;;
+[hH])
+	run_action health
+	exit 0
+	;;
+[cC])
+	run_action connection
+	exit 0
 	;;
 *)
 	exit 0

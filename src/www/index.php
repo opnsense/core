@@ -263,6 +263,9 @@ include("fbegin.inc");?>
       // rearrange widgets to stored column
       $(".widgetdiv").each(function(){
           var widget = $(this);
+          widget.find('script').each(function(){
+              $(this).remove();
+          });
           var container = $(this).parent();
           var target_col = widget.data('sortkey').split('-')[1];
           if (target_col != undefined) {
@@ -277,6 +280,9 @@ include("fbegin.inc");?>
 
       // show dashboard widgets after initial rendering
       $("#dashboard_container").show();
+
+      // trigger WidgetsReady event
+      $("#dashboard_container").trigger("WidgetsReady");
 
       // sortable widgets
       $(".dashboard_grid_column").sortable({
@@ -380,12 +386,13 @@ include("fbegin.inc");?>
                 <ul class="list-inline __nomb">
                   <li><h3>
 <?php
-                    if (isset($$widgettitlelink)):?>
-                        <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
+                    // XXX: ${$} is intentional here, the widgets leave global vars [widget_name]_title_link and [widget_name]_title
+                    if (isset(${$widgettitlelink})):?>
+                        <u><span onclick="location.href='/<?= html_safe(${$widgettitlelink}) ?>'" style="cursor:pointer">
 <?php
                     endif;
-                        echo empty($$widgettitle) ?   $widgetItem['display_name'] : $$widgettitle;
-                    if (isset($$widgettitlelink)):?>
+                        echo empty(${$widgettitle}) ? $widgetItem['display_name'] : ${$widgettitle};
+                    if (isset(${$widgettitlelink})):?>
                         </span></u>
 <?php
                     endif;?>

@@ -1,0 +1,25 @@
+<model>
+    <mount>//system/firmware</mount>
+    <version>1.0.0</version>
+    <description>
+        OPNsense Firmware settings
+    </description>
+    <items>
+        <mirror type="TextField">
+            <Required>N</Required>
+            <default></default>
+        </mirror>
+        <flavour type="TextField">
+            <Required>N</Required>
+            <default></default>
+        </flavour>
+        <plugins type="TextField">
+            <Required>N</Required>
+            <default></default>
+        </plugins>
+        <type type="TextField">
+            <Required>N</Required>
+            <default></default>
+        </type>
+    </items>
+</model>

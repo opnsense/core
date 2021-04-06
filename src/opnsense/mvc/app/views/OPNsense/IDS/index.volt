@@ -661,6 +661,12 @@ POSSIBILITY OF SUCH DAMAGE.
             history.pushState(null, null, e.target.hash);
         });
 
+        ajaxGet('/api/ids/settings/checkPolicyRule', {}, function(data, status) {
+            if (data.status === 'warning') {
+                $("#policyRuleMessage").html(data.message);
+                $("#policyRuleMessage").show();
+            }
+        });
         // delete selected alert log
         $("#actDeleteLog").click(function(){
             var selected_log = $("#alert-logfile > option:selected");
@@ -691,7 +697,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 </script>
+<div id="policyRuleMessage" class="alert alert-warning" style="display: none" role="alert">
 
+</div>
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#download_settings" id="download_settings_tab">{{ lang._('Download') }}</a></li>

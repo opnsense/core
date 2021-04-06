@@ -18,5 +18,9 @@
               description="URLhaus"
               documentation_url="https://urlhaus.abuse.ch/"
         >abuse.ch.urlhaus.rules</file>
+        <file url="https://threatfox.abuse.ch/downloads/threatfox_suricata.rules"
+              description="ThreatFox"
+              documentation_url="https://threatfox.abuse.ch/"
+        >abuse.ch.threatfox.rules</file>
     </files>
 </ruleset>

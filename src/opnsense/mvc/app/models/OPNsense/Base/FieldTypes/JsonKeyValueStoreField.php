@@ -124,23 +124,30 @@ class JsonKeyValueStoreField extends BaseListField
                 $sourcefile = $this->internalSourceFile;
             }
             if (!empty($this->internalConfigdPopulateAct)) {
-                // execute configd action when provided
-                if (!is_file($sourcefile)) {
-                    $muttime = 0;
+                if (is_file($sourcefile)) {
+                    $sourcehandle = fopen($sourcefile, "r+");
                 } else {
-                    $stat = stat($sourcefile);
-                    // ignore empty files
-                    $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
+                    $sourcehandle = fopen($sourcefile, "w");
                 }
-                if (time() - $muttime > $this->internalConfigdPopulateTTL) {
-                    $act = $this->internalConfigdPopulateAct;
-                    $backend = new Backend();
-                    $response = $backend->configdRun($act, false, 20);
-                    if (!empty($response) && json_decode($response) !== null) {
-                        // only store parsable results
-                        file_put_contents($sourcefile, $response);
+                if (flock($sourcehandle, LOCK_EX)) {
+                    // execute configd action when provided
+                    $stat = fstat($sourcehandle);
+                    $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
+                    if (time() - $muttime > $this->internalConfigdPopulateTTL) {
+                        $act = $this->internalConfigdPopulateAct;
+                        $backend = new Backend();
+                        $response = $backend->configdRun($act, false, 20);
+                        if (!empty($response) && json_decode($response) !== null) {
+                            // only store parsable results
+                            fseek($sourcehandle, 0);
+                            ftruncate($sourcehandle, 0);
+                            fwrite($sourcehandle, $response);
+                            fflush($sourcehandle);
+                        }
                     }
                 }
+                flock($sourcehandle, LOCK_UN);
+                fclose($sourcehandle);
             }
             if (is_file($sourcefile)) {
                 $data = json_decode(file_get_contents($sourcefile), true);

@@ -76,9 +76,7 @@ class Plugin
      */
     public function setInterfaceMapping(&$mapping)
     {
-        $this->interfaceMapping = array();
-        $this->interfaceMapping['loopback'] = array('if' => 'lo0', 'descr' => 'loopback');
-        $this->interfaceMapping = array_merge($this->interfaceMapping, $mapping);
+        $this->interfaceMapping = $mapping;
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {

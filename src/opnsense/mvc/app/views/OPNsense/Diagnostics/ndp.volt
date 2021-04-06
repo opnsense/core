@@ -32,31 +32,19 @@ POSSIBILITY OF SUCH DAMAGE.
          * fetch system NDP table
          */
         function updateNDP() {
-            var gridopt = {
-                ajax: false,
-                selection: false,
-                multiSelect: false
-            };
-            $("#grid-ndp").bootgrid('destroy');
+            if ($("#grid-ndp").hasClass('bootgrid-table')) {
+                $("#grid-ndp").bootgrid('clear');
+            } else {
+                $("#grid-ndp").bootgrid({
+                    ajax: false,
+                    selection: false,
+                    multiSelect: false
+                });
+            }
             ajaxGet("/api/diagnostics/interface/getNdp", {}, function (data, status) {
                         if (status == "success") {
-                            var html = [];
-                            $.each(data, function (key, value) {
-                                var fields = ["ip", "mac", "manufacturer", "intf", "intf_description"];
-                                let tr_str = '<tr>';
-                                for (var i = 0; i < fields.length; i++) {
-                                    if (value[fields[i]] != null) {
-                                        tr_str += '<td>' + value[fields[i]] + '</td>';
-                                    } else {
-                                        tr_str += '<td></td>';
-                                    }
-                                }
-                                tr_str += '</tr>';
-                                html.push(tr_str);
-                            });
-                            $("#grid-ndp > tbody").html(html.join(''));
+                            $("#grid-ndp").bootgrid('append', data);
                         }
-                        $("#grid-ndp").bootgrid(gridopt);
                     }
             );
         }

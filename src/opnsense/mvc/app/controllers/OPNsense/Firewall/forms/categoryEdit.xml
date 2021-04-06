@@ -1,0 +1,21 @@
+<form>
+    <field>
+        <id>category.auto</id>
+        <label>Automatic</label>
+        <type>checkbox</type>
+        <help>Automatically added, will be removed when unused</help>
+    </field>
+    <field>
+        <id>category.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Enter a name for this category.</help>
+    </field>
+    <field>
+        <id>category.color</id>
+        <label>Color</label>
+        <type>text</type>
+        <style>pick-a-color</style>
+        <help>pick a color to use.</help>
+    </field>
+</form>

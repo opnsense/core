@@ -1,0 +1,6 @@
+{% macro convert_address(rule, attribute) -%}
+{% if rule[attribute] and rule[attribute].find(',') > -1
+%}table(__rule__{{ rule['@uuid'] }}__{{attribute}}){%
+else %}{{rule[attribute]}}{%
+endif
+%}{%- endmacro %}

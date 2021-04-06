@@ -30,6 +30,10 @@ Steps to reproduce the behavior:
 
 A clear and concise description of what you expected to happen.
 
+**Describe alternatives you considered**
+
+A clear and concise description of any alternative solutions or workaround you considered.
+
 **Screenshots**
 
 If applicable, add screenshots to help explain your problem.

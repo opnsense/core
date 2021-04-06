@@ -42,13 +42,79 @@ class Category extends BaseModel
 {
     public function getByName($name)
     {
-        foreach ($this->categories->category->iterateItems() as $alias) {
-            if ((string)$alias->name == $name) {
-                return $alias;
+        foreach ($this->categories->category->iterateItems() as $category) {
+            if ((string)$category->name == $name) {
+                return $category;
             }
         }
         return null;
     }
+
+    public function iterateCategories()
+    {
+        foreach ($this->categories->category->iterateItems() as $category) {
+            yield ['name' => (string)$category->name];
+        }
+    }
+
+    private function ruleIterator()
+    {
+        $cfgObj = Config::getInstance()->object();
+        $source = [
+            ['filter', 'rule'],
+            ['nat', 'rule'],
+            ['nat', 'onetoone'],
+            ['nat', 'outbound', 'rule'],
+            ['nat', 'npt'],
+        ];
+        foreach ($source as $aliasref) {
+            $cfgsection = $cfgObj;
+            foreach ($aliasref as $cfgName) {
+                if ($cfgsection != null) {
+                    $cfgsection = $cfgsection->$cfgName;
+                }
+            }
+            if ($cfgsection != null) {
+                foreach ($cfgsection as $node) {
+                    if (!empty($node->category)) {
+                        yield $node;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * refactor category usage (replace category in rules)
+     */
+    public function refactor($oldname, $newname)
+    {
+        $has_changed = false;
+        foreach ($this->ruleIterator() as $node) {
+            $cats = explode(",", (string)$node->category);
+            if (in_array($oldname, $cats)) {
+                  unset($cats[array_search((string)$oldname, $cats)]);
+                  $cats[] = $newname;
+                  $node->category = implode(",", $cats);
+                  $has_changed = true;
+            }
+        }
+        return $has_changed;
+    }
+
+    /**
+     * refactor category usage (replace category in rules)
+     */
+    public function isUsed($name)
+    {
+        foreach ($this->ruleIterator() as $node) {
+            if (in_array($name, explode(",", (string)$node->category))) {
+                  return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * collect unique categories from rules and updates the model with auto generated items.
@@ -59,21 +125,11 @@ class Category extends BaseModel
     public function sync()
     {
         $has_changed = false;
-        $cfgObj = Config::getInstance()->object();
-        $source = [array('filter', 'rule')];
         $used_categories = [];
-        foreach ($source as $aliasref) {
-            $cfgsection = $cfgObj;
-            foreach ($aliasref as $cfgName) {
-                if ($cfgsection != null) {
-                    $cfgsection = $cfgsection->$cfgName;
-                }
-            }
-            if ($cfgsection != null) {
-                foreach ($cfgsection as $node) {
-                    if (!empty($node->category) && !in_array((string)$node->category, $used_categories)) {
-                        $used_categories[] = (string)$node->category;
-                    }
+        foreach ($this->ruleIterator() as $node) {
+            foreach (explode(",", (string)$node->category) as $cat) {
+                if (!in_array($cat, $used_categories)) {
+                    $used_categories[] = $cat;
                 }
             }
         }

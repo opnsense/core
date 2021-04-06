@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function traffic_api()
+namespace OPNsense\Firewall;
+
+use OPNsense\Base\IndexController;
+
+/**
+ * @package OPNsense\Firewall
+ */
+class CategoryController extends IndexController
 {
-    $result = array();
-    $result['interfaces'] = legacy_interface_stats();
-    $temp = gettimeofday();
-    $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
-    // collect user friendly interface names
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $interfaceKey => $interfaceData) {
-        if (array_key_exists($interfaceData['if'], $result['interfaces'])) {
-            $result['interfaces'][$interfaceData['if']]['name'] = !empty($interfaceData['descr']) ? $interfaceData['descr'] : $interfaceKey;
-        }
+    public function indexAction($selected = null)
+    {
+        $this->view->formDialogEdit = $this->getForm("categoryEdit");
+        $this->view->pick('OPNsense/Firewall/category');
     }
-    if (!empty($result['interfaces']['enc0'])) {
-        $result['interfaces']['enc0']['name'] = "IPsec";
-    }
-    return $result;
 }

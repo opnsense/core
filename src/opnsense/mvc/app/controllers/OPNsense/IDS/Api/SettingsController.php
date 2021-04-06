@@ -107,7 +107,7 @@ class SettingsController extends ApiMutableModelControllerBase
             foreach ($_POST as $key => $value) {
                 $key = $filter->sanitize($key, "string");
                 $value = $filter->sanitize($value, "string");
-                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase', 'action' ,'status'])) {
+                if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase'])) {
                     $searchPhrase .= " {$key}/\"{$value}\" ";
                 }
             }
@@ -123,12 +123,6 @@ class SettingsController extends ApiMutableModelControllerBase
             if ($data != null && array_key_exists("rows", $data)) {
                 $result = array();
                 $result['rows'] = $data['rows'];
-                // update rule status with own administration
-                foreach ($result['rows'] as &$row) {
-                    $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
-                    $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
-                }
-
                 $result['rowCount'] = empty($result['rows']) || !is_array($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
                 $result['parameters'] = $data['parameters'];
@@ -184,7 +178,7 @@ class SettingsController extends ApiMutableModelControllerBase
                             substr($ref, 8), $item_html);
                         $item_html = str_replace("%ref%", "bugtraq " . substr($ref, 8), $item_html);
                     } elseif (substr($ref, 0, 4) == "cve,") {
-                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
+                        $item_html = str_replace("%url%", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
                             substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
                     } elseif (substr($ref, 0, 7) == "nessus,") {
@@ -507,10 +501,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     } else {
                         $new_state = 0;
                     }
-                    if ($ruleinfo['enabled_default'] == $new_state && $current_action == $ruleinfo['action_default']) {
-                        // if we're switching back to default, remove alter rule
-                        $this->getModel()->removeRule($sid);
-                    } elseif ($new_state == 1) {
+                    if ($new_state == 1) {
                         $this->getModel()->enableRule($sid)->action = $current_action;
                     } else {
                         $this->getModel()->disableRule($sid)->action = $current_action;
@@ -545,16 +536,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $newAction = $this->request->getPost("action", "striptags", null);
             if (!empty($ruleinfo)) {
                 $mdlIDS = $this->getModel();
-                if (
-                    $ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
-                    $ruleinfo['action_default'] == $newAction
-                ) {
-                    // if we're switching back to default, remove alter rule
-                    $mdlIDS->removeRule($sid);
-                } else {
-                    $mdlIDS->setAction($sid, $newAction);
-                }
-
+                $mdlIDS->setAction($sid, $newAction);
                 $validations = $mdlIDS->validate();
                 if (!empty($validations)) {
                     $result['validations'] = $validations;
@@ -702,5 +684,98 @@ class SettingsController extends ApiMutableModelControllerBase
     public function togglePolicyAction($uuid, $enabled = null)
     {
         return $this->toggleBase("policies.policy", $uuid, $enabled);
+    }
+
+    /**
+     * Search policy rule adjustment
+     * @return array list of found user rules
+     * @throws \ReflectionException when not bound to model
+     */
+    public function searchPolicyRuleAction()
+    {
+        return $this->searchBase("rules.rule", array("sid", "enabled", "action"), "sid");
+    }
+
+    /**
+     * Update policy rule adjustment
+     * @param string $uuid internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function setPolicyRuleAction($uuid)
+    {
+        return $this->setBase("rule", "rules.rule", $uuid);
+    }
+
+    /**
+     * Add new policy rule adjustment
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function addPolicyRuleAction()
+    {
+        return $this->addBase("rule", "rules.rule");
+    }
+
+    /**
+     * Get properties of a policy rule adjustment
+     * @param null|string $uuid internal id
+     * @return array user defined properties
+     * @throws \ReflectionException when not bound to model
+     */
+    public function getPolicyRuleAction($uuid = null)
+    {
+        return $this->getBase("rule", "rules.rule", $uuid);
+    }
+
+    /**
+     * Delete policy rule adjustment item
+     * @param string $uuid internal id
+     * @return array save status
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function delPolicyRuleAction($uuid)
+    {
+        return  $this->delBase("rules.rule", $uuid);
+    }
+
+    /**
+     * Toggle policy rule adjustment by uuid (enable/disable)
+     * @param $uuid user internal id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array save result
+     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \ReflectionException when not bound to model
+     */
+    public function togglePolicyRuleAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase("rules.rule", $uuid, $enabled);
+    }
+
+    /**
+     * return then number of custom defined policy rules
+     */
+    public function checkPolicyRuleAction()
+    {
+        $result = ['status' => 'ok'];
+        $mdlIDS = $this->getModel();
+        $result['count'] = count(iterator_to_array($mdlIDS->rules->rule->iterateItems()));
+        if ($result['count'] > 100) {
+            // changing some rules by sid doesn't matter, a lot inflates the config.xml beyond reasonable limits.
+            $result['status'] = 'warning';
+            $result['message'] = sprintf(
+                gettext("We strongly advise to use policies instead of " .
+                "single rule based changes to limit the size of the configuration. " .
+                "A list of all manual changes can be revised in the policy editor (available %s here %s)"),
+                "<a href='/ui/ids/policy#rules'>",
+                "</a>"
+            );
+        }
+        // return unescaped content
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($result));
     }
 }

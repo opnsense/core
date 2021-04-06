@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.8</version>
+   <version>1.0.9</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -193,6 +193,9 @@
                </check001>
             </Constraints>
          </name>
+         <description type="TextField">
+            <Required>N</Required>
+         </description>
          <type type="OptionField">
             <Required>Y</Required>
             <OptionValues>

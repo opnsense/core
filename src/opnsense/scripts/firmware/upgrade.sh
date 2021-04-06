@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -25,51 +25,21 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
-REBOOT=
+LOCKFILE="/tmp/pkg_upgrade.progress"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+TEE="/usr/bin/tee -a"
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+: > ${LOCKFILE}
+rm -f ${PIPEFILE}
+mkfifo ${PIPEFILE}
 
-echo "***GOT REQUEST TO UPGRADE: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
-if [ "$PACKAGE" == "all" ]; then
-	# update all installed packages
-	opnsense-update -p >> ${PKG_PROGRESS_FILE} 2>&1
-	# restart the web server
-	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE} 2>&1
-	# if we can update base, we'll do that as well
-	if opnsense-update -c >> ${PKG_PROGRESS_FILE} 2>&1; then
-		if opnsense-update -bk >> ${PKG_PROGRESS_FILE} 2>&1; then
-			REBOOT=1
-		fi
-	fi
-elif [ "$PACKAGE" == "maj" ]; then
-	# extract info for major upgrade
-	UPGRADE="/usr/local/opnsense/firmware-upgrade"
-	NAME=unknown
-	if [ -f ${UPGRADE} ]; then
-		NAME=$(cat ${UPGRADE})
-	fi
-	# perform first half of major upgrade
-	# (download all + kernel install)
-	if opnsense-update -ur "${NAME}" >> ${PKG_PROGRESS_FILE} 2>&1; then
-		REBOOT=1
-	fi
-	# second half reboots multiple times,
-	# but will snap the GUI back when done
-elif [ "$PACKAGE" == "pkg" ]; then
-	pkg upgrade -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
-else
-	echo "Cannot update $PACKAGE" >> ${PKG_PROGRESS_FILE}
-fi
-
-if [ -n "${REBOOT}" ]; then
-	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
-	# give the frontend some time to figure out that a reboot is coming
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+if opnsense-update -u > ${PIPEFILE} 2>&1; then
+	echo '***REBOOT***' >> ${LOCKFILE}
 	sleep 5
 	/usr/local/etc/rc.reboot
 fi
 
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+echo '***DONE***' >> ${LOCKFILE}

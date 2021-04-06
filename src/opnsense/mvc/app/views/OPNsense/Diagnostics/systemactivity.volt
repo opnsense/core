@@ -40,23 +40,19 @@ POSSIBILITY OF SUCH DAMAGE.
                 selection: true,
                 multiSelect: true,
             };
-            $("#grid-top").bootgrid('destroy');
+            if ($("#grid-top").hasClass('bootgrid-table')) {
+                $("#grid-top").bootgrid('clear');
+            } else {
+                $("#grid-top").bootgrid(gridopt);
+            }
             ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
                         if (status == "success") {
+                            let table = [];
                             $("#grid-top > tbody").html('');
-                            $.each(data['details'], function (key, value) {
-                                var fields = ["PID", "USERNAME", "PRI", "NICE", "SIZE", "RES", "STATE", "C", "TIME", "WCPU", "COMMAND"];
-                                let tr_str = '<tr>';
-                                for (var i = 0; i < fields.length; i++) {
-                                    if (value[fields[i]] != null) {
-                                        tr_str += '<td>' + value[fields[i]] + '</td>';
-                                    } else {
-                                        tr_str += '<td></td>';
-                                    }
-                                }
-                                tr_str += '</tr>';
-                                $("#grid-top > tbody").append(tr_str);
+                            $.each(data['details'], function (key, record) {
+                                table.push(record);
                             });
+                            $("#grid-top").bootgrid('append', table);
                             var header_txt = "";
                             $.each(data['headers'], function (key, value) {
                                 header_txt += value;
@@ -66,7 +62,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             $('#header_data').fadeOut('slow');
                             $('#header_data_show').fadeIn('slow');
                         }
-                        $("#grid-top").bootgrid(gridopt);
                     }
             );
         }

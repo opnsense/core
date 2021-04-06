@@ -54,6 +54,7 @@ $fields = [
     ['name' => 'thermal_sensors_widget_core_warning_threshold', 'default' => 70, 'processFunc' => 'fix_temp_value'],
     ['name' => 'thermal_sensors_widget_core_critical_threshold', 'default' => 80, 'processFunc' => 'fix_temp_value'],
     ['name' => 'thermal_sensors_widget_show_one_core_temp', 'default' => false, 'processFunc' => 'fix_checkbox_value'],
+    ['name' => 'thermal_sensors_widget_show_temp_in_fahrenheit', 'default' => false, 'processFunc' => 'fix_checkbox_value'],
 ];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
@@ -128,8 +129,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     .removeClass('progress-bar-danger')
                     .addClass('progress-bar-success');
             }
+
             // update bar
-            progressBar.html(sensor['temperature'] + ' &deg;C');
+            if ($('#thermal_sensors_widget_show_temp_in_fahrenheit').attr('checked') === 'checked') {
+                progressBar.html(Number.parseFloat(1.8 * sensor['temperature'] + 32).toFixed(1) + ' &deg;F');
+            } else {
+                progressBar.html(sensor['temperature'] + ' &deg;C');
+            }
             progressBar.css("width", tempIntValue + "%").attr("aria-valuenow", tempIntValue + "%");
 
             // update label
@@ -176,6 +182,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             <td>
                 <input type="checkbox" id="thermal_sensors_widget_show_one_core_temp" name="thermal_sensors_widget_show_one_core_temp" <?=$pconfig['thermal_sensors_widget_show_one_core_temp'] ? 'checked="checked"' : ''; ?>/>
                 <?= gettext('Only show first found CPU core temperature') ?>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="checkbox" id="thermal_sensors_widget_show_temp_in_fahrenheit" name="thermal_sensors_widget_show_temp_in_fahrenheit" <?=$pconfig['thermal_sensors_widget_show_temp_in_fahrenheit'] ? 'checked="checked"' : ''; ?>/>
+                <?= gettext('Display temperature in fahrenheit') ?>
             </td>
         </tr>
         <tr>

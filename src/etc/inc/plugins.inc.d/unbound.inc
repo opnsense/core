@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -75,6 +75,7 @@ function unbound_xmlrpc_sync()
         'description' => gettext('Unbound DNS'),
         'section' => 'unbound,OPNsense.unboundplus',
         'id' => 'dnsresolver',
+        'services' => ["unbound"],
     );
 
     return $result;
@@ -189,7 +190,7 @@ EOF;
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
-        $bindints .= "interface: ::0\n";
+        $bindints .= "interface: ::\n";
         $bindints .= "interface-automatic: yes\n";
     }
 
@@ -217,7 +218,7 @@ EOF;
     }
 
     // Configure static Host entries
-    unbound_add_host_entries();
+    unbound_add_host_entries($ifconfig_details);
 
     // Configure Domain Overrides
     unbound_add_domain_overrides();
@@ -506,7 +507,7 @@ function unbound_add_domain_overrides($pvt = false)
     }
 }
 
-function unbound_add_host_entries()
+function unbound_add_host_entries($ifconfig_details = null)
 {
     global $config;
 
@@ -531,7 +532,6 @@ function unbound_add_host_entries()
     } else {
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
-    $ifconfig_details = legacy_interfaces_details();
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
@@ -648,58 +648,19 @@ function unbound_add_host_entries()
         }
     }
 
-    if (isset($config['unbound']['regdhcpstatic']) && is_array($config['dhcpd'])) {
-        foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-            if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
-                foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddr'] || !$host['hostname']) {
-                        continue;
-                    }
+    if (isset($config['unbound']['regdhcpstatic'])) {
+        require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
 
-                    $domain = $config['system']['domain'];
-                    if ($host['domain']) {
-                        $domain = $host['domain'];
-                    } elseif ($dhcpifconf['domain']) {
-                        $domain = $dhcpifconf['domain'];
-                    }
-
-                    $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$domain}\"\n";
-                    $unbound_entries .= "local-data: \"{$host['hostname']}.{$domain} IN A {$host['ipaddr']}\"\n";
-                    if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
-                        $unbound_entries .= "local-data: '{$host['hostname']}.{$domain} TXT \"" . addslashes($host['descr']) . "\"'\n";
-                    }
-                }
+        foreach (dhcpd_staticmap($config['system']['domain'], $ifconfig_details) as $host) {
+            if (isset($host['ipaddr'])) {
+                $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
+                $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";
+            } else {
+                $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
+                $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
             }
-        }
-    }
-
-    if (isset($config['unbound']['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
-        foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-            if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
-                foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddrv6'] || !$host['hostname']) {
-                        continue;
-                    }
-
-                    $domain = $config['system']['domain'];
-                    // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
-                    //      for backward compatibilty support both here.
-                    if (!empty($host['domainsearchlist'])) {
-                        $domain = $host['domainsearchlist'];
-                    } elseif (!empty($host['domain'])) {
-                        $domain = $host['domain'];
-                    } elseif (!empty($dhcpifconf['domainsearchlist'])) {
-                        $domain = $dhcpifconf['domainsearchlist'];
-                    } elseif (!empty($dhcpifconf['domain'])) {
-                        $domain = $dhcpifconf['domain'];
-                    }
-                    $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
-                    $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$domain}\"\n";
-                    $unbound_entries .= "local-data: \"{$host['hostname']}.{$domain} IN AAAA {$host['ipaddrv6']}\"\n";
-                    if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
-                        $unbound_entries .= "local-data: '{$host['hostname']}.{$domain} TXT \"" . addslashes($host['descr']) . "\"'\n";
-                    }
-                }
+            if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
+                $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
             }
         }
     }
@@ -789,7 +750,8 @@ function unbound_hosts_generate()
         return;
     }
 
-    unbound_add_host_entries();
+    $ifconfig_details = legacy_interfaces_details();
+    unbound_add_host_entries($ifconfig_details);
 
     killbypid('/var/run/unbound.pid', 'HUP');
 }

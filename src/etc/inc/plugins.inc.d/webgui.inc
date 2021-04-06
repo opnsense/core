@@ -38,6 +38,11 @@ function webgui_configure()
     );
 }
 
+function webgui_configure_delayed()
+{
+    configd_run('webgui restart 3', true);
+}
+
 function webgui_configure_do($verbose = false, $interface = '')
 {
     global $config;
@@ -194,8 +199,8 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
 {
     global $config;
 
-    $cert_location = 'cert.pem';
-    $ca_location = 'ca.pem';
+    $cert_location = '/var/etc/cert.pem';
+    $key_location = '/var/etc/key.pem';
 
     @mkdir('/tmp/lighttpdcompress');
 
@@ -250,7 +255,6 @@ EOD;
 
     $lighty_modules = !empty($config['system']['webgui']['httpaccesslog']) ? ', "mod_accesslog"' : "";
 
-
     $lighty_config = <<<EOD
 #
 # lighttpd configuration file
@@ -262,8 +266,11 @@ EOD;
 ## modules to load
 server.modules              =   (
   "mod_access", "mod_expire", "mod_deflate", "mod_redirect", "mod_setenv",
-  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
+  "mod_cgi", "mod_fastcgi", "mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
 )
+
+# additional optional modules to load or additional module configurations
+include "/usr/local/etc/lighttpd_webgui/conf.d/*.conf"
 
 server.max-keep-alive-requests = 15
 server.max-keep-alive-idle = 30
@@ -368,33 +375,19 @@ EOD;
     $ca = str_replace("\n\n", "\n", $ca);
 
     if (!empty($cert) && !empty($key)) {
-        $fd = fopen("/var/etc/{$cert_location}", "w");
-        if (!$fd) {
-            log_error('Error: cannot open cert.pem');
-            return 0;
+        $chain = $cert;
+        if (!empty($ca) && strlen(trim($ca))) {
+            $chain .= "\n" . $ca;
         }
-        chmod("/var/etc/{$cert_location}", 0600);
-        fwrite($fd, $cert);
-        fwrite($fd, "\n");
-        fwrite($fd, $key);
-        fclose($fd);
-        if (!(empty($ca) || (strlen(trim($ca)) == 0))) {
-            $fd = fopen("/var/etc/{$ca_location}", "w");
-            if (!$fd) {
-                log_error('Error: cannot open ca.pem');
-                return 0;
-            }
-            chmod("/var/etc/{$ca_location}", 0600);
-            fwrite($fd, $ca);
-            fclose($fd);
-        }
+
+        file_put_contents($cert_location, $chain);
+        file_put_contents($key_location, $key);
+        chmod($key_location, 0600);
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
-        $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
-        if (!empty($ca)) {
-            $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n";
-        }
+        $lighty_config .= "ssl.privkey = \"{$key_location}\"\n";
+        $lighty_config .= "ssl.pemfile = \"{$cert_location}\"\n";
 
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
             /* harden TLS for PCI conformance */

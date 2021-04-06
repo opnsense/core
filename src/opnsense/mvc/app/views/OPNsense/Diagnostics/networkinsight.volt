@@ -346,7 +346,9 @@ POSSIBILITY OF SUCH DAMAGE.
                     let chart_data = [];
                     chart_data_in.map(function(item){
                         var label = "(other)";
-                        if (item.src_addr != "") {
+                        if (item.hostname !== undefined) {
+                            label = item.hostname;
+                        } else if (item.src_addr != "") {
                             label = item.src_addr;
                         }
                         chart_data.push({'label': label, 'value': item.total});
@@ -389,7 +391,8 @@ POSSIBILITY OF SUCH DAMAGE.
                   ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': addresses}, function(lookup_data, status) {
                       data.map(function(item){
                           if (lookup_data[item.src_addr] != undefined) {
-                              item.src_addr = lookup_data[item.src_addr];
+                              item.src_addr = item.src_addr;
+                              item.hostname = lookup_data[item.src_addr];
                           }
                       });
                       add_src_pie(data);
@@ -661,7 +664,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <div class="alert alert-warning" role="alert">
         {{ lang._('Local data collection is not enabled at the moment, please configure netflow first') }}
         <br/>
-        <a href="/ui/diagnostics/netflow/">{{ lang._('Go to netflow configuration') }} </a>
+        <a href="/ui/diagnostics/netflow">{{ lang._('Go to netflow configuration') }} </a>
       </div>
     </div>
     <div id="totals" class="tab-pane fade in active">

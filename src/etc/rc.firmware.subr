@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,51 +27,21 @@
 
 set -e
 
-UPGRADEFILE="/usr/local/opnsense/firmware-upgrade"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
-TEE="/usr/bin/tee -a"
-RELEASE=
+RELEASE=$(opnsense-update -vR)
 
 if [ "${1}" = "upgrade" -a -n "${2}" ]; then
 	RELEASE=${2}
-elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -f ${UPGRADEFILE} ]; then
-	RELEASE=$(cat ${UPGRADEFILE})
+elif [ "${1}" = "ALLOW_RISKY_MAJOR_UPGRADE" -a -n "${RELEASE}" ]; then
+	: # ok, conditional major upgrade
+else
+	# nope, only perform stable update
+	RELEASE=
 fi
-
-: > ${LOCKFILE}
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
-
-echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
 if [ -z "${RELEASE}" ]; then
-	# upgrade all packages if possible
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	opnsense-update -p 2>&1 > ${PIPEFILE}
-
-	# trigger a webgui restart to cope with changes
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	/usr/local/etc/rc.restart_webgui 2>&1 > ${PIPEFILE}
-
-	# if we can update base, we'll do that as well
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -c 2>&1 > ${PIPEFILE}; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		if opnsense-update -bk 2>&1 > ${PIPEFILE}; then
-			echo '***REBOOT***' >> ${LOCKFILE}
-			sleep 5
-			/usr/local/etc/rc.reboot
-		fi
-	fi
+	# already locked here, ok to call without launcher.sh
+	/usr/local/opnsense/scripts/firmware/update.sh
 else
-	# upgrade to a major release
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -ur ${RELEASE} 2>&1 > ${PIPEFILE}; then
-		echo '***REBOOT***' >> ${LOCKFILE}
-		sleep 5
-		/usr/local/etc/rc.reboot
-	fi
+	# already locked here, ok to call without launcher.sh
+	/usr/local/opnsense/scripts/firmware/upgrade.sh
 fi
-
-echo '***DONE***' >> ${LOCKFILE}

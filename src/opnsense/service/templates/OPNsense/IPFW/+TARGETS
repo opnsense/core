@@ -1,2 +1,3 @@
 rc.conf.d:/etc/rc.conf.d/ipfw
 ipfw.conf:/usr/local/etc/ipfw.rules
+ipfw_rule_tables.conf:/usr/local/etc/ipfw_rule_tables.conf

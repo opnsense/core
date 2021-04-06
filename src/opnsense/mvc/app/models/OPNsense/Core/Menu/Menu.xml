@@ -38,13 +38,14 @@
             </History>
         </Configuration>
         <Firmware cssClass="fa fa-building-o fa-fw">
-            <Updates order="10" url="/ui/core/firmware#updates"/>
-            <Plugins order="20" url="/ui/core/firmware#plugins"/>
-            <Packages order="30" url="/ui/core/firmware#packages"/>
-            <Changelog order="40" url="/ui/core/firmware#changelog"/>
-            <Settings order="50" url="/ui/core/firmware#settings"/>
-            <Reporter order="60" url="/crash_reporter.php"/>
-            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
+            <Status order="10" url="/ui/core/firmware#status"/>
+            <Settings order="20" url="/ui/core/firmware#settings"/>
+            <Changelog order="30" url="/ui/core/firmware#changelog"/>
+            <Updates order="40" url="/ui/core/firmware#updates"/>
+            <Plugins order="50" url="/ui/core/firmware#plugins"/>
+            <Packages order="60" url="/ui/core/firmware#packages"/>
+            <Reporter order="70" url="/crash_reporter.php"/>
+            <LogFile order="80" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
             <Single order="10" url="/system_gateways.php">
@@ -154,6 +155,7 @@
         <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
+        <Categories url="/ui/firewall/category" cssClass="fa fa-list-alt fa-fw"/>
         <Groups url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
             <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
         </Groups>

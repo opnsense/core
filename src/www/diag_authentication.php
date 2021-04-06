@@ -68,10 +68,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (is_array($attr_value)) {
                     $attr_value = implode(",", $attr_value);
                 }
+                $attr_value = str_replace("\n", "<br/>", $attr_value);
                 $savemsg .= "{$attr_name} => {$attr_value}<br/>";
             }
         } else {
             $input_errors[] = gettext("Authentication failed.");
+            foreach ($authenticator->getLastAuthErrors() as $err_name => $err_value) {
+                if (is_array($err_value)) {
+                    $err_value = implode(",", $err_value);
+                }
+                $input_errors[] = "{$err_name}: {$err_value}";
+            }
         }
     }
 }

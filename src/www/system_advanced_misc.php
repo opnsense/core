@@ -77,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
-    $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_var']);
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
@@ -128,12 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['crypto_hardware'] = $pconfig['crypto_hardware'];
         } elseif (isset($config['system']['crypto_hardware'])) {
             unset($config['system']['crypto_hardware']);
-        }
-
-        if (!empty($pconfig['cryptodev_enable'])) {
-            $config['system']['cryptodev_enable'] = true;
-        } elseif (isset($config['system']['cryptodev_enable'])) {
-            unset($config['system']['cryptodev_enable']);
         }
 
         if (!empty($pconfig['thermal_hardware'])) {
@@ -275,26 +268,10 @@ include("head.inc");
                                             "cryptographic functions on systems which have the chip. Do not enable this " .
                                             "option if you have a Hifn cryptographic acceleration card, as this will take " .
                                             "precedence and the Hifn card will not be used. Acceleration should be automatic " .
-                                            "for IPsec when using a cipher supported by your chip, such as AES-128. OpenVPN " .
-                                            "should be set for AES-128-CBC and have cryptodev enabled for hardware " .
-                                            "acceleration."); ?>
+                                            "for IPsec when using a cipher supported by your chip, such as AES-128.") ?>
                   <br /><br />
                   <?=gettext("If you do not have a crypto chip in your system, this option will have no " .
                                       "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_cryptodev_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use /dev/crypto");?> </td>
-                <td>
-                  <input name="cryptodev_enable" type="checkbox" id="cryptodev_enable" value="yes" <?= !empty($pconfig['cryptodev_enable']) ? "checked=\"checked\"" : "";?> />
-                  <?= gettext('Enable old userland device for cryptographic acceleration') ?>
-                  <div class="hidden" data-for="help_for_cryptodev_enable">
-                    <?=gettext("Old hardware accelerators like 'safe', 'hifn' or 'ubsec' may only provide userland acceleration to e.g. " .
-                                            "OpenVPN by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
-                                            "engine framework. Note that LibreSSL does not have support for this device and " .
-                                            "instead solely relies on embedded acceleration methods e.g. AES-NI. The default is " .
-                                            "to disable this device as it is likely not needed on modern systems."); ?>
                   </div>
                 </td>
               </tr>

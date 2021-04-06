@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -62,64 +62,23 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * process plugins for config-bound cache (name only)
-     * @param string $name to process
-     * @param string $action taken
+     * Run check for updates
+     * @return array
      */
-    protected function processPlugin($name, $action)
+    public function checkAction()
     {
-        if (strpos($name, 'os-') !== 0) {
-            /* not a plugin, don't care */
-            return;
-        }
+        $this->sessionClose(); // long running action, close session
+        $response = [];
 
-        $config = Config::getInstance()->object();
-
-        if (!isset($config->system->firmware)) {
-            $config->system->addChild('firmware');
-        }
-
-        $plugins = array();
-        if (!isset($config->system->firmware->plugins)) {
-            $config->system->firmware->addChild('plugins');
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response['msg_uuid'] = trim($backend->configdRun('firmware check', true));
+            $response['status'] = 'ok';
         } else {
-            $plugins = explode(',', (string)$config->system->firmware->plugins);
-        }
-        $plugins = array_flip($plugins);
-
-        switch ($action) {
-            case 'install':
-            case 'reinstall':
-                /* find the development/stable equivalent */
-                $other = preg_replace('/-devel$/', '', $name);
-                if ($other == $name) {
-                    $other = "$name-devel";
-                }
-                if (isset($plugins[$other])) {
-                    unset($plugins[$other]);
-                }
-                $plugins[$name] = 'hello';
-                break;
-            case 'remove':
-                if (isset($plugins[$name])) {
-                    unset($plugins[$name]);
-                }
-                break;
-            default:
-                break;
+            $response['status'] = 'failure';
         }
 
-        $config->system->firmware->plugins = implode(',', array_keys($plugins));
-
-        if (empty($config->system->firmware->plugins)) {
-            unset($config->system->firmware->plugins);
-        }
-
-        if (!@count($config->system->firmware->children())) {
-            unset($config->system->firmware);
-        }
-
-        Config::getInstance()->save();
+        return $response;
     }
 
     /**
@@ -128,60 +87,62 @@ class FirmwareController extends ApiControllerBase
      */
     public function statusAction()
     {
-        $config = Config::getInstance()->object();
-        $type_want = 'opnsense';
-        if (!empty($config->system->firmware->type)) {
-            $type_want .= '-' . (string)$config->system->firmware->type;
-        }
+        $active_array = [];
+        $active_count = 0;
+        $active_size = '';
+        $active_status = '';
+        $backend = new Backend();
+        $target = null;
 
         $this->sessionClose(); // long running action, close session
 
-        $backend = new Backend();
-        $type_have = trim($backend->configdRun('firmware type name'));
-        $backend->configdRun('firmware changelog fetch');
-        $args = array();
-
-        if (!empty($type_have) && $type_have !== $type_want) {
-            $args[] = $type_want;
+        if ($this->request->isPost()) {
+            /* run a synchronous check prior to the result fetch */
+            $backend->configdRun('firmware probe');
         }
 
-        $response = json_decode(trim($backend->configdpRun('firmware check', $args)), true);
+        $response = json_decode(trim($backend->configdRun('firmware product')), true);
+        if ($response != null && $response['product_check'] != null) {
+            $response = $response['product_check'];
 
-        if ($response != null) {
-            $packages_size = !empty($response['download_size']) ? $response['download_size'] : 0;
-            $sets_size = 0;
+            if ($response['product_id'] != $response['product_target']) {
+                $target = $response['product_target'];
+            }
+
+            $download_size = !empty($response['download_size']) ? $response['download_size'] : 0;
+
+            $upgrade_size = 0;
+            $update_size = 0;
 
             if (!empty($response['upgrade_packages'])) {
                 foreach ($response['upgrade_packages'] as $listing) {
                     if (!empty($listing['size'])) {
-                        $sets_size += $listing['size'];
+                        $update_size += $listing['size'];
                     }
                 }
             }
 
-            if (preg_match('/\s*(\d+)\s*([a-z])/i', $packages_size, $matches)) {
-                $factor = 1;
-                switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
-                    case 'g':
-                        $factor *= 1024;
-                        /* FALLTROUGH */
-                    case 'm':
-                        $factor *= 1024;
-                        /* FALLTROUGH */
-                    case 'k':
-                        $factor *= 1024;
-                        /* FALLTROUGH */
-                    default:
-                        break;
+            foreach (explode(',', $download_size) as $size) {
+                if (preg_match('/\s*(\d+)\s*([a-z])/i', $size, $matches)) {
+                    $factor = 1;
+                    switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                        case 'g':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        case 'm':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        case 'k':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        default:
+                            break;
+                    }
+                    $update_size += $factor * $matches[1];
                 }
-                $packages_size = $factor * $matches[1];
-            } else {
-                $packages_size = 0;
             }
 
-            $download_size = $this->formatBytes($packages_size + $sets_size);
-
-            $sorted = array();
+            $sorted = [];
 
             foreach (
                 array('new_packages', 'reinstall_packages', 'upgrade_packages',
@@ -196,6 +157,7 @@ class FirmwareController extends ApiControllerBase
                                     'old' => $value['current_version'],
                                     'new' => $value['new_version'],
                                     'name' => $value['name'],
+                                    'repository' => $value['repository'],
                                 );
                                 break;
                             case 'new_packages':
@@ -203,6 +165,7 @@ class FirmwareController extends ApiControllerBase
                                     'new' => $value['version'],
                                     'reason' => gettext('new'),
                                     'name' => $value['name'],
+                                    'repository' => $value['repository'],
                                     'old' => gettext('N/A'),
                                 );
                                 break;
@@ -211,6 +174,7 @@ class FirmwareController extends ApiControllerBase
                                     'reason' => gettext('reinstall'),
                                     'new' => $value['version'],
                                     'old' => $value['version'],
+                                    'repository' => $value['repository'],
                                     'name' => $value['name'],
                                 );
                                 break;
@@ -220,6 +184,7 @@ class FirmwareController extends ApiControllerBase
                                     'new' => gettext('N/A'),
                                     'old' => $value['version'],
                                     'name' => $value['name'],
+                                    'repository' => $value['repository'],
                                 );
                                 break;
                             case 'upgrade_packages':
@@ -228,6 +193,7 @@ class FirmwareController extends ApiControllerBase
                                     'old' => empty($value['current_version']) ?
                                         gettext('N/A') : $value['current_version'],
                                     'new' => $value['new_version'],
+                                    'repository' => $value['repository'],
                                     'name' => $value['name'],
                                 );
                                 break;
@@ -245,14 +211,43 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
 
-            if (count($args)) {
-                $response['status_msg'] = gettext('The release type requires an update.');
-                $response['status_upgrade_action'] = 'rel';
-                $response['status'] = 'ok';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'busy') {
-                $response['status_msg'] = gettext('The package manager is not responding.');
-                $response['status'] = 'error';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
+            $active_count = count($response['all_packages']);
+            $active_array = &$response['all_packages'];
+            $active_size = $update_size;
+            $active_status = 'update';
+
+            $sorted = [];
+
+            if (isset($response['upgrade_sets'])) {
+                foreach ($response['upgrade_sets'] as $value) {
+                    if (!empty($value['size'])) {
+                        $upgrade_size += $value['size'];
+                    }
+                    $sorted[$value['name']] = array(
+                        'reason' => gettext('upgrade'),
+                        'old' => empty($value['current_version']) ?
+                            gettext('N/A') : $value['current_version'],
+                        'new' => $value['new_version'],
+                        'repository' => $value['repository'],
+                        'name' => $value['name'],
+                    );
+                }
+            }
+
+            uksort($sorted, function ($a, $b) {
+                return strnatcasecmp($a, $b);
+            });
+
+            $response['all_sets'] = $sorted;
+
+            if ($active_count == 0) {
+                $active_count = count($response['all_sets']);
+                $active_array = &$response['all_sets'];
+                $active_size = $upgrade_size;
+                $active_status = 'upgrade';
+            }
+
+            if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'unauthenticated') {
@@ -260,9 +255,6 @@ class FirmwareController extends ApiControllerBase
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] == 'misconfigured') {
                 $response['status_msg'] = gettext('The current package configuration is invalid.');
-                $response['status'] = 'error';
-            } elseif (array_key_exists('connection', $response) && $response['connection'] == 'timeout') {
-                $response['status_msg'] = gettext('Timeout while connecting to the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('connection', $response) && $response['connection'] != 'ok') {
                 $response['status_msg'] = gettext('An error occurred while connecting to the selected mirror.');
@@ -276,34 +268,25 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
                 $response['status_msg'] = gettext('The repository has no fingerprint.');
                 $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete' && !empty($target)) {
+                $response['status_msg'] = sprintf(gettext('The release type "%s" is not available on this repository.'), $target);
+                $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
-                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
-                $response['status'] = 'none';
-            } elseif (
-                array_key_exists(0, $response['upgrade_packages']) &&
-                $response['upgrade_packages'][0]['name'] == 'pkg'
-            ) {
-                $response['status_upgrade_action'] = 'pkg';
-                $response['status'] = 'ok';
-                $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
-            } elseif (array_key_exists('updates', $response)) {
-                $response['status_upgrade_action'] = 'all';
-                $response['status'] = 'ok';
-                if ($response['updates'] == 1) {
+            } elseif ($active_count) {
+                if ($active_count == 1) {
                     /* keep this dynamic for template translation even though %s is always '1' */
                     $response['status_msg'] = sprintf(
                         gettext('There is %s update available, total download size is %s.'),
-                        $response['updates'],
-                        $download_size
+                        $active_count,
+                        $this->formatBytes($active_size)
                     );
                 } else {
                     $response['status_msg'] = sprintf(
                         gettext('There are %s updates available, total download size is %s.'),
-                        $response['updates'],
-                        $download_size
+                        $active_count,
+                        $this->formatBytes($active_size)
                     );
                 }
                 if ($response['upgrade_needs_reboot'] == 1) {
@@ -313,14 +296,18 @@ class FirmwareController extends ApiControllerBase
                         gettext('This update requires a reboot.')
                     );
                 }
+                $response['status'] = $active_status;
+            } elseif (!$active_count) {
+                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
+                $response['status'] = 'none';
             } else {
                 $response['status_msg'] = gettext('Unknown firmware status encountered.');
-                $response['status'] = 'unknown';
+                $response['status'] = 'error';
             }
         } else {
             $response = array(
                 'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
-                'status' => 'unknown',
+                'status' => 'error',
             );
         }
 
@@ -335,13 +322,13 @@ class FirmwareController extends ApiControllerBase
      */
     public function changelogAction($version)
     {
-        $this->sessionClose(); // long running action, close session
-        $backend = new Backend();
-        $response = array();
+        $response = ['status' => 'failure'];
 
         if (!$this->request->isPost()) {
             return $response;
         }
+
+        $this->sessionClose(); // long running action, close session
 
         $filter = new \Phalcon\Filter();
         $filter->add('version', function ($value) {
@@ -349,18 +336,13 @@ class FirmwareController extends ApiControllerBase
         });
         $version = $filter->sanitize($version, 'version');
 
-        if ($version == 'update') {
-            $backend->configdRun('firmware changelog fetch');
-        } else {
-            $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
-            $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
-            if (!empty($text)) {
-                $response['text'] = $text;
-            }
-            if (!empty($html)) {
-                $response['html'] = $html;
-            }
+        $backend = new Backend();
+        $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+        if (!empty($html)) {
+            $response['status'] = 'ok';
+            $response['html'] = $html;
         }
+
 
         return $response;
     }
@@ -432,32 +414,57 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * perform actual upgrade
+     * perform (stable) update
+     * @return array status
+     * @throws \Exception
+     */
+    public function updateAction()
+    {
+        $backend = new Backend();
+        $response = array();
+        if ($this->request->isPost()) {
+            $response['msg_uuid'] = trim($backend->configdRun('firmware update', true));
+            $response['status'] = 'ok';
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * perform (major) upgrade
      * @return array status
      * @throws \Exception
      */
     public function upgradeAction()
     {
-        $config = Config::getInstance()->object();
-        $type_want = 'opnsense';
-        if (!empty($config->system->firmware->type)) {
-            $type_want .= '-' . (string)$config->system->firmware->type;
+        $backend = new Backend();
+        $response = array();
+        if ($this->request->isPost()) {
+            $response['msg_uuid'] = trim($backend->configdRun('firmware upgrade', true));
+            $response['status'] = 'ok';
+        } else {
+            $response['status'] = 'failure';
         }
+
+        return $response;
+    }
+
+    /**
+     * run a connection check
+     * @return array status
+     * @throws \Exception
+     */
+    public function connectionAction()
+    {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $response = array();
-        if ($this->request->hasPost('upgrade')) {
+
+        if ($this->request->isPost()) {
             $response['status'] = 'ok';
-            if ($this->request->getPost('upgrade') == 'pkg') {
-                $action = 'firmware upgrade pkg';
-            } elseif ($this->request->getPost('upgrade') == 'maj') {
-                $action = 'firmware upgrade maj';
-            } elseif ($this->request->getPost('upgrade') == 'rel') {
-                $action = 'firmware type install ' . escapeshellarg($type_want);
-            } else {
-                $action = 'firmware upgrade all';
-            }
-            $response['msg_uuid'] = trim($backend->configdRun($action, true));
+            $response['msg_uuid'] = trim($backend->configdRun("firmware connection", true));
         } else {
             $response['status'] = 'failure';
         }
@@ -529,7 +536,6 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
-            $this->processPlugin($pkg_name, 'reinstall');
         } else {
             $response['status'] = 'failure';
         }
@@ -539,11 +545,10 @@ class FirmwareController extends ApiControllerBase
 
     /**
      * install missing configured plugins
-     * @param string $pkg_name package name to reinstall
      * @return array status
      * @throws \Exception
      */
-    public function installConfiguredPluginsAction()
+    public function syncPluginsAction()
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
@@ -559,37 +564,18 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * install missing configured plugins
-     * @param string $pkg_name package name to reinstall
+     * reset missing configured plugins
      * @return array status
      * @throws \Exception
      */
-    public function acceptConfiguredPluginsAction()
+    public function resyncPluginsAction()
     {
         $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
         $response = array();
 
         if ($this->request->isPost()) {
-            $info = $this->infoAction();
-            $installed_plugins = array();
-            if (isset($info['plugin'])) {
-                foreach ($info['plugin'] as $plugin) {
-                    if (!empty($plugin['installed']) && !empty($plugin['provided'])) {
-                        $installed_plugins[] = $plugin['name'];
-                    }
-                }
-            }
-            $config = Config::getInstance()->object();
-            if (!isset($config->system->firmware)) {
-                $config->system->addChild('firmware');
-            }
-            if (!isset($config->system->firmware->plugins)) {
-                $config->system->firmware->addChild('plugins');
-            }
-            $config->system->firmware->plugins = implode(",", $installed_plugins);
-            $response['plugins'] = $installed_plugins;
-            $response['status'] = "ok";
-            Config::getInstance()->save();
+            $response['status'] = strtolower(trim($backend->configdRun('firmware resync')));
         } else {
             $response['status'] = 'failure';
         }
@@ -619,7 +605,6 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware install", array($pkg_name), true));
-            $this->processPlugin($pkg_name, 'install');
         } else {
             $response['status'] = 'failure';
         }
@@ -649,7 +634,6 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware remove", array($pkg_name), true));
-            $this->processPlugin($pkg_name, 'remove');
         } else {
             $response['status'] = 'failure';
         }
@@ -796,7 +780,7 @@ class FirmwareController extends ApiControllerBase
 
         $config = Config::getInstance()->object();
         $configPlugins = array();
-        if (isset($config->system->firmware->plugins)) {
+        if (!empty($config->system->firmware->plugins)) {
             $configPlugins = explode(",", $config->system->firmware->plugins);
         }
 
@@ -805,12 +789,12 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         $version = explode(' ', trim(shell_exec('opnsense-version -nv')));
-        foreach (array('product_name' => 0, 'product_version' => 1) as $result => $index) {
+        foreach (array('product_id' => 0, 'product_version' => 1) as $result => $index) {
             $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
         }
 
         /* allows us to select UI features based on product state */
-        $devel = explode('-', $response['product_name']);
+        $devel = explode('-', $response['product_id']);
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
 
         /* need both remote and local, create array earlier */
@@ -880,17 +864,17 @@ class FirmwareController extends ApiControllerBase
                     $plugins[$missing][$key] = gettext('N/A');
                 }
                 $plugins[$missing]['path'] = gettext('N/A');
-                $plugins[$missing]['configured'] = "1";
-                $plugins[$missing]['installed'] = "0";
-                $plugins[$missing]['provided'] = "0";
+                $plugins[$missing]['configured'] = '1';
+                $plugins[$missing]['installed'] = '0';
+                $plugins[$missing]['provided'] = '0';
                 $plugins[$missing]['name'] = $missing;
             }
         }
 
         uasort($plugins, function ($a, $b) {
             return strnatcasecmp(
-                ($a['configured'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
-                ($b['configured'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
+                ($a['configured'] && !$a['installed'] ? '0' : '1') . ($a['installed'] ? '0' : '1') . $a['name'],
+                ($b['configured'] && !$b['installed'] ? '0' : '1') . ($b['installed'] ? '0' : '1') . $b['name']
             );
         });
 
@@ -902,7 +886,7 @@ class FirmwareController extends ApiControllerBase
         /* also pull in changelogs from here */
         $changelogs = json_decode(trim($backend->configdRun('firmware changelog list')), true);
         if ($changelogs == null) {
-            $changelogs = array();
+            $changelogs = [];
         } else {
             /* development strategy for changelog slightly differs from above */
             $devel = preg_match('/^\d+\.\d+\.[a-z]/i', $response['product_version']) ? true : false;
@@ -926,6 +910,13 @@ class FirmwareController extends ApiControllerBase
 
         $response['changelog'] = $changelogs;
 
+        $product = json_decode(trim($backend->configdRun('firmware product')), true);
+        if ($product == null) {
+            $product = [];
+        }
+
+        $response['product'] = $product;
+
         return $response;
     }
 
@@ -935,13 +926,17 @@ class FirmwareController extends ApiControllerBase
      */
     public function getFirmwareOptionsAction()
     {
+        $families = [];
+        $families_has_subscription = [];
+        $flavours = [];
+        $flavours_allow_custom = false;
+        $flavours_has_subscription = [];
+        $mirrors = [];
+        $mirrors_allow_custom = false;
+        $mirrors_has_subscription = [];
+
         $this->sessionClose(); // long running action, close session
-        $mirrors = array();
-        $flavours = array();
-        $families = array();
-        $has_subscription = array();
-        $allow_custom = false;
-        // parse firmware options
+
         foreach (glob(__DIR__ . "/repositories/*.xml") as $xml) {
             $repositoryXml = simplexml_load_file($xml);
             if ($repositoryXml === false || $repositoryXml->getName() != 'firmware') {
@@ -949,35 +944,51 @@ class FirmwareController extends ApiControllerBase
             } else {
                 if (isset($repositoryXml->mirrors->mirror)) {
                     if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
-                        $allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
+                        $mirrors_allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
                     }
                     foreach ($repositoryXml->mirrors->mirror as $mirror) {
                         $mirrors[(string)$mirror->url] = (string)$mirror->description;
                         $attr = $mirror->attributes();
                         if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
-                            $has_subscription[] = (string)$mirror->url;
+                            $mirrors_has_subscription[] = (string)$mirror->url;
                         }
                     }
                 }
                 if (isset($repositoryXml->flavours->flavour)) {
+                    if (isset($repositoryXml->flavours->attributes()->allow_custom)) {
+                        $flavours_allow_custom = (strtolower($repositoryXml->flavours->attributes()->allow_custom) == "true");
+                    }
                     foreach ($repositoryXml->flavours->flavour as $flavour) {
                         $flavours[(string)$flavour->name] = (string)$flavour->description;
+                        $attr = $flavour->attributes();
+                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
+                            $flavours_has_subscription[] = (string)$flavour->name;
+                        }
                     }
                 }
                 if (isset($repositoryXml->families->family)) {
                     foreach ($repositoryXml->families->family as $family) {
                         $families[(string)$family->name] = (string)$family->description;
+                        $attr = $family->attributes();
+                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
+                            $families_has_subscription[] = (string)$family->name;
+                        }
                     }
                 }
             }
         }
-        return array(
-            'has_subscription' => $has_subscription,
-            'flavours' => $flavours,
+        return [
+            /* provide a full set of data even though the frontend does not use it */
             'families' => $families,
+            'families_allow_custom' => 0,
+            'families_has_subscription' => $families_has_subscription,
+            'flavours' => $flavours,
+            'flavours_allow_custom' => $flavours_allow_custom,
+            'flavours_has_subscription' => $flavours_has_subscription,
             'mirrors' => $mirrors,
-            'allow_custom' => $allow_custom
-        );
+            'mirrors_allow_custom' => $mirrors_allow_custom,
+            'mirrors_has_subscription' => $mirrors_has_subscription,
+        ];
     }
 
     /**
@@ -986,28 +997,42 @@ class FirmwareController extends ApiControllerBase
      * @param $selectedFlavour selected flavour
      * @param $selectedType selected family type
      * @param $selSubscription selected subscription id
-     * @return array|bool is valid config
+     * @return array with validation failure messages
      */
     private function validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)
     {
         $validOptions = $this->getFirmwareOptionsAction();
-        if ($validOptions['allow_custom']) {
-            // custom options allowed, skip validations
-            return true;
-        } elseif (!isset($validOptions['flavours'][$selectedFlavour])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware flavour ' . $selectedFlavour);
-            return false;
-        } elseif (!isset($validOptions['families'][$selectedType])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware release type ' . $selectedFlavour);
-            return false;
-        } elseif (!isset($validOptions['mirrors'][$selectedMirror])) {
-            syslog(LOG_ERR, 'unable to set invalid firmware mirror ' . $selectedMirror);
-            return false;
-        } elseif (!empty($selSubscription) && !in_array($selectedMirror, $validOptions['has_subscription'])) {
-            syslog(LOG_ERR, 'unable to set subscription for firmware mirror ' . $selectedMirror);
-            return false;
+        $invalid_msgs = [];
+
+        if (!$validOptions['mirrors_allow_custom'] && !isset($validOptions['mirrors'][$selectedMirror])) {
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware mirror: %s'), $selectedMirror);
         }
-        return true;
+
+        if (!$validOptions['flavours_allow_custom'] && !isset($validOptions['flavours'][$selectedFlavour])) {
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware flavour: %s'), $selectedFlavour);
+        }
+
+        if (!isset($validOptions['families'][$selectedType])) {
+            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware release type: %s'), $validOptions['families'][$selectedType]);
+        }
+
+        if (in_array($selectedMirror, $validOptions['mirrors_has_subscription'])) {
+            if (!preg_match('/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/i', $selSubscription)) {
+                $invalid_msgs[] = gettext('A valid subscription is required for this firmware mirror.');
+            }
+            if (!in_array($selectedFlavour, $validOptions['flavours_has_subscription'])) {
+                $invalid_msgs[] = sprintf(gettext('Subscription requires the following flavour: %s'), $validOptions['flavours'][$validOptions['flavours_has_subscription'][0]]);
+            }
+            if (!in_array($selectedType, $validOptions['families_has_subscription'])) {
+                $invalid_msgs[] = sprintf(gettext('Subscription requires the following type: %s'), $validOptions['families'][$validOptions['families_has_subscription'][0]]);
+            }
+        } else {
+            if (!empty($selSubscription)) {
+                $invalid_msgs[] = gettext('Subscription cannot be set for non-subscription firmware mirror.');
+            }
+        }
+
+        return $invalid_msgs;
     }
 
     /**
@@ -1044,19 +1069,21 @@ class FirmwareController extends ApiControllerBase
      */
     public function setFirmwareConfigAction()
     {
-        $response = array("status" => "failure");
+        $response = ['status' => 'failure'];
 
         if ($this->request->isPost()) {
-            $config = Config::getInstance()->object();
-
-            $response['status'] = 'ok';
-
             $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
             $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
             $selectedType = filter_var($this->request->getPost("type", null, ""), FILTER_SANITIZE_URL);
             $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
 
-            if ($this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)) {
+            $ret = $this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription);
+            if (count($ret)) {
+                $response['status_msgs'] = $ret;
+            } else {
+                $config = Config::getInstance()->object();
+                $response['status'] = 'ok';
+
                 // config data without model, prepare xml structure and write data
                 if (!isset($config->system->firmware)) {
                     $config->system->addChild('firmware');
@@ -1097,10 +1124,10 @@ class FirmwareController extends ApiControllerBase
 
                 Config::getInstance()->save();
 
+                $this->sessionClose(); // long running action, close session
+
                 $backend = new Backend();
                 $backend->configdRun("firmware configure");
-            } else {
-                $response['status'] = "failed";
             }
         }
 

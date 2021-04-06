@@ -59,6 +59,7 @@ function squid_xmlrpc_sync()
         'description' => gettext('Web Proxy'),
         'section' => 'OPNsense.proxy',
         'id' => 'squid',
+        'services' => ["squid"],
     );
 
     return $result;

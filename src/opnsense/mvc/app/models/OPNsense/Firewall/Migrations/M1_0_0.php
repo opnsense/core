@@ -33,6 +33,7 @@ namespace OPNsense\Firewall\Migrations;
 use OPNsense\Core\Config;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Firewall\Alias;
+use OPNsense\Firewall\Category;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -90,6 +91,8 @@ class M1_0_0 extends BaseModelMigration
                     }
                 }
             }
+        } elseif ($model instanceof Category) {
+            $model->sync();
         }
     }
 

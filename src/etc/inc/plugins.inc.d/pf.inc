@@ -178,6 +178,7 @@ function pf_xmlrpc_sync()
         'description' => gettext('Firewall Groups'),
         'section' => 'ifgroups.ifgroupentry',
         'id' => 'ifgroups',
+        'services' => ["pf"],
     );
 
     return $result;

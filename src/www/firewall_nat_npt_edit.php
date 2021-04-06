@@ -46,29 +46,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['interface'] = "wan";
     if (isset($configId)) {
       // copy 1-to-1 attributes
-      foreach (array('disabled','interface','descr') as $fieldname) {
+      foreach (array('disabled','interface','descr', 'category') as $fieldname) {
           if (isset($a_npt[$configId][$fieldname])) {
               $pconfig[$fieldname] = $a_npt[$configId][$fieldname];
           }
       }
       // load attributes with some kind of logic
       address_to_pconfig(
-          $a_npt[$configId]['source'], $pconfig['src'],$pconfig['srcmask'], $pconfig['srcnot'],
-          $pconfig['__unused__'],$pconfig['__unused__']
+          $a_npt[$configId]['source'], $pconfig['src'], $pconfig['srcmask'],
+          $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
       );
 
       address_to_pconfig(
-          $a_npt[$configId]['destination'], $pconfig['dst'],$pconfig['dstmask'], $pconfig['dstnot'],
-          $pconfig['__unused__'],$pconfig['__unused__']
+          $a_npt[$configId]['destination'], $pconfig['dst'],
+          $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
       );
     }
 
     // initialize empty form values
-    foreach (array('disabled','interface','descr','src','srcmask','dst','dstmask','srcnot','dstnot') as $fieldname) {
+    foreach (array('disabled','interface','descr','src','srcmask','dst') as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
     }
+    $pconfig['category'] = !empty($pconfig['category']) ? explode(",", $pconfig['category']) : [];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -102,14 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $natent = array();
 
       $natent['disabled'] = isset($pconfig['disabled']) ? true:false;
+      $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
       $natent['descr'] = $pconfig['descr'];
       $natent['interface'] = $pconfig['interface'];
       pconfig_to_address(
-          $natent['source'], trim($pconfig['src']),$pconfig['srcmask'], !empty($pconfig['srcnot'])
+          $natent['source'], trim($pconfig['src']), $pconfig['srcmask']
       );
 
       pconfig_to_address(
-          $natent['destination'], trim($pconfig['dst']),$pconfig['dstmask'], !empty($pconfig['dstnot'])
+          $natent['destination'], trim($pconfig['dst']), $pconfig['srcmask']
       );
 
       if (isset($id)) {
@@ -119,7 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       } else {
           $a_npt[] = $natent;
       }
-
+      OPNsense\Core\Config::getInstance()->fromArray($config);
+      $catmdl = new OPNsense\Firewall\Category();
+      if ($catmdl->sync()) {
+          $catmdl->serializeToConfig();
+          $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
+      }
       write_config();
       mark_subsystem_dirty('natconf');
       header(url_safe('Location: /firewall_nat_npt.php'));
@@ -132,7 +139,14 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 ?>
-
+<script src="<?= cache_safe('/ui/js/tokenize2.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/tokenize2.css')) ?>">
+<script src="<?= cache_safe('/ui/js/opnsense_ui.js') ?>"></script>
+<script>
+$( document ).ready(function() {
+    formatTokenizersUI();
+});
+</script>
 <body>
   <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
@@ -144,7 +158,7 @@ include("head.inc");
               <form method="post" name="iform" id="iform">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td><?=gettext("Edit NAT NPTv6 entry"); ?></td>
+                    <td><?=gettext("Edit NPTv6 entry"); ?></td>
                     <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
@@ -180,24 +194,12 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                      <td colspan="2"><?=gettext("Internal IPv6 Prefix"); ?></td>
-                  </tr>
-                  <tr>
-                      <td><a id="help_for_srcnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
-                      <td>
-                        <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" :"";?> />
-                        <div class="hidden" data-for="help_for_srcnot">
-                            <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
-                      </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ". gettext("Address:"); ?></td>
+                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Internal IPv6 Prefix"); ?></td>
                     <td>
                       <table style="border:0;">
                         <tr>
                           <td style="width:348px">
-                            <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
+                            <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Internal IPv6 Prefix");?>"/>
                           </td>
                           <td>
                             <select name="srcmask" class="selectpicker" data-size="5"  data-width="auto">
@@ -209,47 +211,33 @@ include("head.inc");
                         </tr>
                       </table>
                       <div class="hidden" data-for="help_for_src">
-                        <?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the external prefix.");?>
+                        <?=gettext("Enter the internal (LAN) IPv6 prefix for the Network Prefix Translation. The prefix size specified for the internal prefix will also be applied to the external prefix.");?>
                       </div>
                     </td>
                   </tr>
-
-
-
-
                   <tr>
-                      <td colspan="2"><?=gettext("Destination IPv6 Prefix"); ?></td>
-                  </tr>
-                  <tr>
-                      <td><a id="help_for_dstnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
-                      <td>
-                        <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" :"";?> />
-                        <div class="hidden" data-for="help_for_dstnot">
-                            <?=gettext("Use this option to invert the sense of the match."); ?>
-                        </div>
-                      </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ". gettext("Address:"); ?></td>
+                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("External IPv6 Prefix"); ?></td>
                     <td>
-                      <table style="border:0;">
-                        <tr>
-                          <td style="width:348px">
-                            <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          </td>
-                          <td>
-                            <select name="dstmask" class="selectpicker" data-size="5"  data-width="auto">
-                              <?php for ($i = 128; $i > 0; $i--): ?>
-                                <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                              <?php endfor; ?>
-                            </select>
-                          </td>
-                        </tr>
-                      </table>
+                      <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("External IPv6 Prefix");?>"/>
                       <div class="hidden" data-for="help_for_dst">
-                        <?=gettext("Enter the Global Unicast routable IPv6 prefix here"); ?>
+                        <?=gettext("Enter the external (WAN) IPv6 prefix for the Network Prefix Translation. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
                       </div>
                     </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                    <td>
+                      <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
+  <?php
+                      foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
+                        $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
+                        <option value="<?=$catname;?>" <?=!empty($pconfig['category']) && in_array($catname, $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$catname;?></option>
+  <?php
+                      endforeach;?>
+                      </select>
+                      <div class="hidden" data-for="help_for_category">
+                        <?=gettext("You may enter or select a category here to group firewall rules (not parsed)."); ?>
+                      </div>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>

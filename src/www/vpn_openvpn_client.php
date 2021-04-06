@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
-            ,custom_options,ns_cert_type,dev_mode,tlsmode,caref,certref,crypto,digest,engine
+            ,custom_options,ns_cert_type,dev_mode,tlsmode,caref,certref,crypto,digest
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
             ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
-            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
+            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
             ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
@@ -305,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $copy_fields = "auth_user,auth_pass,protocol,dev_mode,local_port,reneg-sec
                 ,server_addr,server_port,resolve_retry,proxy_addr,proxy_port,remote_random
                 ,proxy_authtype,proxy_user,proxy_passwd,description,mode,crypto,digest
-                ,engine,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
+                ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec
                 ,verbosity_level,interface";
 
@@ -949,23 +949,6 @@ $( document ).ready(function() {
               </div>
             </td>
           </tr>
-          <tr id="engine">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
-            <td>
-              <select name="engine" class="form-control">
-<?php
-              $engines = openvpn_get_engines();
-              foreach ($engines as $name => $desc) :
-                  $selected = "";
-                  if ($name == $pconfig['engine']) {
-                      $selected = " selected=\"selected\"";
-                  }?>
-                <option value="<?=$name;?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
-<?php
-              endforeach; ?>
-              </select>
-            </td>
-          </tr>
          </table>
         </div>
        </div>
@@ -1065,7 +1048,7 @@ $( document ).ready(function() {
                                 endforeach; ?>
               </select>
               <div class="hidden" data-for="help_for_compression">
-                <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
+                <?=gettext("Compress tunnel packets using the LZ4/LZO algorithm. The LZ4 generally offers the best preformance with least CPU usage. For backwards compatibility use the LZO (which is identical to the older option --comp-lzo yes). In the partial mode (the option --compress with an empty algorithm) compression is turned off, but the packet framing for compression is still enabled, allowing a different setting to be pushed later. The legacy LZO algorithm with adaptive compression mode will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
               </div>
             </td>
           </tr>

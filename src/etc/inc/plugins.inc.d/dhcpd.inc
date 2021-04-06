@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -355,12 +355,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\t};\n";
         }
 
-        if (!empty($dhcpv6ifconf['rainterface'])) {
-            $radvdconf .= "\troute ::/0 {\n";
-            $radvdconf .= "\t\tRemoveRoute off;\n";
-            $radvdconf .= "\t};\n";
-        }
-
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
                 $radvdconf .= "\troute {$raroute} {\n";
@@ -374,8 +368,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-        /* add DNS servers */
-        $dnslist_tmp = array();
+        $dnslist_tmp = [];
+
         if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
             $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
         } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
@@ -389,11 +383,17 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         } elseif (!empty($config['system']['dnsserver'][0])) {
             $dnslist_tmp = $config['system']['dnsserver'];
         }
-        $dnslist = array();
+
+        $dnslist = [];
+
         foreach ($dnslist_tmp as $server) {
             if (is_ipaddrv6($server)) {
                 $dnslist[] = $server;
             }
+        }
+
+        if (isset($dhcpv6ifconf['radisablerdnss'])) {
+            $dnslist = [];
         }
 
         if (count($dnslist) > 0) {
@@ -497,9 +497,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if ($autotype == 'slaac') {
                 /* XXX also of interest in the future, see hardcoded prefix above */
                 $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
-                $radvdconf .= "\t\tDeprecatePrefix on;\n";
             }
-            /* XXX DeprecatePrefix on crashes radvd on 12.1 */
+            $radvdconf .= "\t\tDeprecatePrefix on;\n";
             $radvdconf .= "\t\tAdvOnLink on;\n";
             $radvdconf .= "\t\tAdvAutonomous on;\n";
             $radvdconf .= "\t};\n";
@@ -1108,7 +1107,7 @@ EOD;
                     $dhcpdconf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
-                if (!empty($sm['gateway']) && ($sm['gateway'] != $dhcpifconf['gateway'])) {
+                if (!empty($sm['gateway']) && $sm['gateway'] != "none" && ($sm['gateway'] != $dhcpifconf['gateway'])) {
                     $dhcpdconf .= "  option routers {$sm['gateway']};\n";
                 }
 
@@ -1883,4 +1882,65 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null)
+{
+    $staticmap = [];
+
+    foreach ([4, 6] as $inet) {
+        $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
+
+        foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
+            if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
+                continue;
+            }
+
+            $ifconf = config_read_array('interfaces', $dhcpif);
+            list ($ipaddrv6) = $inet == 6 && isset($ifconf['dhcpd6track6allowoverride']) ?
+                interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
+
+            foreach ($dhcpifconf['staticmap'] as $host) {
+                if (empty($host[$ipaddr]) || empty($host['hostname'])) {
+                    continue;
+                }
+
+                if (!empty($ipaddrv6)) {
+                    $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+                }
+
+                // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
+                //      for backward compatibilty support both here.
+                if (!empty($host['domainsearchlist'])) {
+                    $domain = $host['domainsearchlist'];
+                } elseif (!empty($host['domain'])) {
+                    $domain = $host['domain'];
+                } elseif (!empty($dhcpifconf['domainsearchlist'])) {
+                    $domain = $dhcpifconf['domainsearchlist'];
+                } elseif (!empty($dhcpifconf['domain'])) {
+                    $domain = $dhcpifconf['domain'];
+                } else {
+                    $domain = $domain_fallback;
+                }
+
+                $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
+
+                $entry = [
+                    'descr' => $host['descr'],
+                    'domain' => $domain,
+                    'hostname' => $host['hostname'],
+                    'interface' => $dhcpif,
+                    $ipaddr => $host[$ipaddr],
+                ];
+
+                if (isset($host['duid'])) {
+                    $entry['duid'] = $host['duid'];
+                }
+
+                $staticmap[] = $entry;
+            }
+        }
+    }
+
+    return $staticmap;
 }

@@ -1,11 +1,15 @@
 #!/bin/sh
 
+REROUTE=
+
 for IPV4 in $(find /tmp -type f -name "newwanip_*"); do
 	INTERFACE=$(cat "${IPV4}")
 	rm "${IPV4}"
 
 	echo -n "Reconfiguring IPv4 on ${INTERFACE}: "
 	configctl interface newip ${INTERFACE}
+
+	REROUTE=yes
 done
 
 for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
@@ -14,4 +18,15 @@ for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
 
 	echo -n "Reconfiguring IPv6 on ${INTERFACE}: "
 	configctl interface newipv6 ${INTERFACE}
+
+	REROUTE=yes
 done
+
+if [ -n "${REROUTE}" ]; then
+	# Following #3414 there is a missing link between VTI and
+	# routing configuration reload so at least for reboot make
+	# sure that it is properly executed even if no VTI exists
+
+	echo -n "Reconfiguring routes: "
+	configctl interface routes configure
+fi

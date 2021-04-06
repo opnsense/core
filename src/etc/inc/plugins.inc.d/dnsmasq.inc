@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -81,6 +81,7 @@ function dnsmasq_xmlrpc_sync()
         'description' => gettext('Dnsmasq DNS'),
         'section' => 'dnsmasq',
         'id' => 'dnsforwarder',
+        'services' => ["dnsmasq"],
     );
 
     return $result;
@@ -223,56 +224,19 @@ function _dnsmasq_add_host_entries()
         }
     }
 
-    if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpd'])) {
-        foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-            if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
-                foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddr'] || !$host['hostname']) {
-                        continue;
-                    }
+    if (isset($dnsmasqcfg['regdhcpstatic'])) {
+        require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
 
-                    if (!empty($host['domain'])) {
-                        $domain = $host['domain'];
-                    } elseif (!empty($dhcpifconf['domain'])) {
-                        $domain = $dhcpifconf['domain'];
-                    } elseif (!empty($config['dnsmasq']['regdhcpdomain'])) {
-                        $domain = $config['dnsmasq']['regdhcpdomain'];
-                    } else {
-                        $domain = $config['system']['domain'];
-                    }
-
-                    $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$domain} {$host['hostname']}\n";
-                }
-            }
+        $domain = $config['system']['domain'];
+        if (!empty($config['dnsmasq']['regdhcpdomain'])) {
+            $domain = $config['dnsmasq']['regdhcpdomain'];
         }
-    }
 
-    if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
-        foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-            if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
-                foreach ($dhcpifconf['staticmap'] as $host) {
-                    if (!$host['ipaddrv6'] || !$host['hostname']) {
-                        continue;
-                    }
-                    // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
-                    //      for backward compatibilty support both here.
-                    if (!empty($host['domainsearchlist'])) {
-                        $domain = $host['domainsearchlist'];
-                    } elseif (!empty($host['domain'])) {
-                        $domain = $host['domain'];
-                    } elseif (!empty($dhcpifconf['domainsearchlist'])) {
-                        $domain = $dhcpifconf['domainsearchlist'];
-                    } elseif (!empty($dhcpifconf['domain'])) {
-                        $domain = $dhcpifconf['domain'];
-                    } elseif (!empty($config['dnsmasq']['regdhcpdomain'])) {
-                        $domain = $config['dnsmasq']['regdhcpdomain'];
-                    } else {
-                        $domain = $config['system']['domain'];
-                    }
-
-                    $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
-                    $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$domain} {$host['hostname']}\n";
-                }
+        foreach (dhcpd_staticmap($domain, legacy_interfaces_details()) as $host) {
+            if (isset($host['ipaddr'])) {
+                $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+            } else {
+                $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
             }
         }
     }

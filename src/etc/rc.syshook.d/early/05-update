@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# Perform major updates
-for STAGE in B P; do
-	if opnsense-update -${STAGE}; then
-		# ideally reroot with `-r', but panics on ZFS
-		reboot
-	fi
-done

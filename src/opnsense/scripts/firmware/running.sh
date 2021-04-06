@@ -27,12 +27,6 @@
 LOCKFILE="/tmp/pkg_upgrade.progress"
 FLOCK="/usr/local/bin/flock"
 
-if [ ! -f ${FLOCK} ]; then
-	# backwards-compat
-	echo "ready"
-	exit 0
-fi
-
 touch ${LOCKFILE}
 
 (

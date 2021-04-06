@@ -45,7 +45,7 @@ function opendns_configure_do($verbose = false)
             flush();
         }
         $result = opendns_register($config['opendns']);
-        syslog(LOG_NOTICE, "opendns response : " . $result);
+        syslog(LOG_NOTICE, "opendns response: $result");
         if ($verbose) {
             echo "done.\n";
         }

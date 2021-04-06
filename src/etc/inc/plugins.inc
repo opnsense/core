@@ -336,6 +336,11 @@ function plugins_xmlrpc_sync()
                     if (empty($helper['help'])) {
                         $sync_settings[$helper['id']]['help'] = sprintf(gettext('Synchronize the %s configuration to the other HA host.'), $helper['description']);
                     }
+                    if (empty($helper['services'])) {
+                        $sync_settings[$helper['id']]['services'] = [];
+                    } elseif (!is_array($helper['services'])) {
+                        $sync_settings[$helper['id']]['services'] = [$helper['services']];
+                    }
                     unset($sync_settings[$helper['id']]['id']);
                 }
             }

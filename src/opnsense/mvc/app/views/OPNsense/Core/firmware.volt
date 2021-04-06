@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -27,135 +27,114 @@
 
 <script>
 
-    /**
-     * prepare for checking update status
-     */
-    function updateStatusPrepare(rerun) {
-        if (rerun === false) {
-            $('#update_status_container').hide();
-            $('#updatelist').show();
-        }
-        $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Checking, please wait...') }}");
+    function generic_search(that, entries) {
+        let search = $(that).val();
+        $('.' + entries).each(function () {
+            let name = $(this).text();
+            if (search.length != 0 && name.indexOf(search) == -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    }
+
+    function cancel_update() {
+        $('#updatelist').hide();
+        $('#update_status_container').show();
+    }
+
+    /* XXX best effort at this point, rework later */
+    function reloadMenu() {
+        $.ajax({
+            type: 'GET',
+            url: '/ui/core/firmware',
+            dataType: 'html',
+            contentType: 'text/html',
+            success: function (data) {
+                $('#navigation').html($('#navigation', data));
+            }
+        });
     }
 
     /**
      * retrieve update status from backend
      */
     function updateStatus() {
-        // update UI
-        updateStatusPrepare(false);
-        $('#major-upgrade').hide();
-        $('#upgrade_maj').prop('disabled', true);
-        $.upgrade_major_message = '';
-        $.upgrade_major_version = '';
+        $('#upgrade_maj').hide();
+        $('#upgrade').hide();
 
-        // request status
-        ajaxGet('/api/core/firmware/status', {}, function(data,status){
-            $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
-            $('#updatestatus').html(data['status_msg']);
+        ajaxGet('/api/core/firmware/status', {}, function (data, status){
+            if (data['status'] == "update") {
+                let show_log = '';
 
-            if (data['status'] == "ok") {
-                $.upgrade_action = data['status_upgrade_action'];
-                if (data['status_upgrade_action'] != 'pkg') {
-                    $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
-                } else {
-                    $.upgrade_needs_reboot = 0;
-                }
-
-                $.upgrade_show_log = '';
-
-                // unhide upgrade button
-                $("#upgrade").attr("style","");
-                $("#audit_all").attr("style","display:none");
+                $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
 
                 // show upgrade list
-                $('#update_status_container').hide();
-                $('#updatelist').show();
+                $('#upgrade').show();
+                $('#updatestatus').html(data['status_msg']);
                 $('#updatelist > tbody').empty();
                 $('#updatetab > a').tab('show');
-                $("#updatelist > thead").html("<tr><th>{{ lang._('Package Name') }}</th>" +
-                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th>" +
-                "<th>{{ lang._('Required Action') }}</th></tr>");
                 $.each(data['all_packages'], function (index, row) {
                     $('#updatelist > tbody').append('<tr><td>'+row['name']+'</td>' +
                     '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
-                    row['reason'] + '</td></tr>');
+                    row['reason']+'</td><td>'+row['repository'] + '</td></tr>');
 
-                    if (row['name'] == data['product_name']) {
-                        $.upgrade_show_log = row['new'].replace(/[_-].*/, '');
+                    if (row['name'] == data['product_target'] && row['new'] != 'N/A') {
+                        show_log = row['new'].replace(/[_-].*/, '');
                     }
                 });
-
-                // display the current changelog if one was found
-                if ($.upgrade_show_log != '') {
-                    changelog($.upgrade_show_log);
-                }
-
-                // update list so plugins sync as well (no logs)
-                packagesInfo(false);
-            } else {
                 $('#update_status_container').hide();
                 $('#updatelist').show();
-                $("#upgrade").attr("style","display:none");
-                $("#audit_all").attr("style","");
 
-                // update list so plugins sync as well (all)
+                // display the current changelog if one was found
+                if (show_log != '') {
+                    changelog(show_log);
+                }
+
+                packagesInfo(false);
+            } else if (data['status'] == "upgrade") {
+                if (data['upgrade_major_message'] != '') {
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    stdDialogInform(
+                        '{{ lang._('Upgrade instructions') }}',
+                        htmlDecode(data['upgrade_major_message']),
+                        "{{ lang._('OK') }}",
+                        function () { show_upgrade(data) },
+                        'warning'
+                    );
+                } else {
+                    show_upgrade(data);
+                }
+
+                packagesInfo(false);
+            } else if (data['status'] == "error") {
+                stdDialogInform('{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'danger');
                 packagesInfo(true);
-            }
-
-            if ('upgrade_major_message' in data) {
-                $.upgrade_major_message = data['upgrade_major_message'];
-            }
-            if ('upgrade_major_version' in data) {
-                $.upgrade_major_version = data['upgrade_major_version'];
-            }
-            if ($.upgrade_major_version != '') {
-                $('#upgrade-version').text($.upgrade_major_version);
-                $('#major-upgrade').show();
+            } else if (data['status'] == "none") {
+                stdDialogInform('{{ lang._('Firmware status') }}', data['status_msg'], "{{ lang._('Close') }}", undefined, 'success');
+                packagesInfo(true);
+            } else {
+                // in case new responses are added
+                console.log('Unknown check response');
+                console.log(data);
             }
         });
     }
 
     /**
-     * perform upgrade, install poller to update status
+     * perform backend action and install poller to update status
      */
-    function upgrade() {
-        $('#updatelist').hide();
+    function backend(type) {
+        $.upgrade_check = type == 'check'
+
         $('#update_status').html('');
+        $('#updatelist').hide();
         $('#update_status_container').show();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Updating, please wait...') }}");
-        $("#audit_all").attr("style","display:none");
-        let maj_suffix = '';
-        if ($.upgrade_action == 'maj') {
-            maj_suffix = '_maj';
-        }
-        $("#upgrade" + maj_suffix).attr("style","");
-        $("#upgrade_progress" + maj_suffix).addClass("fa fa-spinner fa-pulse");
+        $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/upgrade', {upgrade:$.upgrade_action}, function() {
-            $('#updatelist > tbody, #updatelist > thead').empty();
-            setTimeout(trackStatus, 500);
-        });
-    }
-
-    /**
-     * perform audit, install poller to update status
-     */
-    function audit($type) {
-        $.upgrade_action = 'audit';
-        $('#updatelist').hide();
-        $('#update_status').html('');
-        $('#update_status_container').show();
-        $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Auditing, please wait...') }}");
-        $("#audit_all").attr("style","");
-        $("#audit_progress").removeClass("caret");
-        $("#audit_progress").addClass("fa fa-spinner fa-pulse");
-
-        ajaxCall('/api/core/firmware/' + $type, {}, function () {
-            $('#updatelist > tbody, #updatelist > thead').empty();
+        ajaxCall('/api/core/firmware/' + type, {}, function () {
             setTimeout(trackStatus, 500);
         });
     }
@@ -195,18 +174,8 @@
     {
         ajaxCall('/api/core/firmware/changelog/' + version, {}, function (data, status) {
             if (data['html'] != undefined) {
-                BootstrapDialog.show({
-                    type:BootstrapDialog.TYPE_PRIMARY,
-                    title: version,
-                    /* we trust this data, it was signed by us and secured by csrf */
-                    message: htmlDecode(data['html']),
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function(dialogRef){
-                            dialogRef.close();
-                        }
-                    }]
-                });
+                /* we trust this data, it was signed by us and secured by csrf */
+                stdDialogInform(version, htmlDecode(data['html']), "{{ lang._('Close') }}", undefined, 'primary');
             }
         });
     }
@@ -229,47 +198,44 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
-                        action(pkg_act, pkg_name);
+                        backend(pkg_act + "/" + pkg_name);
                     }
                 },{
-                    label: "{{ lang._('Abort') }}",
+                    label: "{{ lang._('Cancel') }}",
                     action: function(dialogRef){
                         dialogRef.close();
                     }
                 }]
             });
         } else {
-            action(pkg_act, pkg_name);
+            backend(pkg_act + "/" + pkg_name);
         }
     }
 
-    /**
-     * perform package action, install poller to update status
-     */
-    function action(pkg_act, pkg_name)
-    {
-        $('#updatelist').hide();
-        $('#update_status').html('');
-        $('#update_status_container').show();
+    function show_upgrade(data) {
+        $('#upgrade_maj').show();
+        $('#updatestatus').html(data['status_msg']);
+        $('#updatelist > tbody').empty();
         $('#updatetab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Executing, please wait...') }}");
-        $.upgrade_action = 'action';
-
-        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name, {}, function() {
-            $('#updatelist > tbody, #updatelist > thead').empty();
-            setTimeout(trackStatus, 500);
+        $.each(data['all_sets'], function (index, row) {
+            $('#updatelist > tbody').append('<tr><td>'+row['name']+'</td>' +
+            '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
+            row['reason']+'</td><td>'+row['repository'] + '</td></tr>');
         });
+        $('#update_status_container').hide();
+        $('#updatelist').show();
+        changelog(data['upgrade_major_version']);
     }
 
     /**
      *  check if a reboot is required, warn user or just upgrade
      */
-    function upgrade_ui()
+    function upgrade_ui(major)
     {
         let reboot_msg = "";
-        if ( $.upgrade_needs_reboot == "1" ) {
+        if ( $.upgrade_needs_reboot == "1" || major === true) {
             reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
-            if ($.upgrade_action == 'maj') {
+            if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
             // reboot required, inform the user.
@@ -282,17 +248,17 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         dialogRef.close();
-                        upgrade();
+                        backend(major === true ? 'upgrade' : 'update');
                     }
                 },{
-                    label: "{{ lang._('Abort') }}",
+                    label: "{{ lang._('Cancel') }}",
                     action: function(dialogRef){
                         dialogRef.close();
                     }
                 }]
             });
         } else {
-            upgrade();
+            backend('update');
         }
     }
 
@@ -307,37 +273,29 @@
         });
     }
 
-    /**
-     * handle check/audit/upgrade status
-     */
     function trackStatus() {
         ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
-            if (data['log'] != undefined) {
+            if (status != 'success') {
+                // recover from temporary errors
+                setTimeout(trackStatus, 1000);
+                return;
+            }
+            if (data['log'] != undefined && data['log'] != '') {
+                var autoscroll = $('#update_status')[0].scrollTop +
+                    $('#update_status')[0].clientHeight ===
+                    $('#update_status')[0].scrollHeight;
                 $('#update_status').html(data['log']);
-                $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
+                if (autoscroll) {
+                    $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
+                }
             }
             if (data['status'] == 'done') {
-                $("#upgrade_progress_maj").removeClass("fa fa-spinner fa-pulse");
-                $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
-                $("#audit_progress").removeClass("fa fa-spinner fa-pulse");
-                $("#audit_progress").addClass("caret");
-                $("#upgrade").attr("style","display:none");
-                $("#audit_all").attr("style","");
-                $('#major-upgrade').hide();
-                $('#upgrade_maj').prop('disabled', true);
-                if ($.upgrade_action == 'pkg') {
-                    // update UI and delay update to avoid races
-                    updateStatusPrepare(true);
-                    setTimeout(updateStatus, 1000);
+                $('#updatetab_progress').removeClass("fa fa-spinner fa-pulse");
+                if ($.upgrade_check === true) {
+                    updateStatus();
                 } else {
-                    if ($.upgrade_action == 'audit') {
-                        $('#updatestatus').html("{{ lang._('Audit done.') }}");
-                    } else if ($.upgrade_action == 'action') {
-                        $('#updatestatus').html("{{ lang._('Action done.') }}");
-                    } else {
-                        $('#updatestatus').html("{{ lang._('Upgrade done.') }}");
-                    }
                     packagesInfo(true);
+                    reloadMenu();
                 }
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
@@ -357,9 +315,6 @@
                 // schedule next poll
                 setTimeout(trackStatus, 500);
             }
-        }).fail(function () {
-            // recover from temporary errors
-            setTimeout(trackStatus, 500);
         });
     }
 
@@ -367,10 +322,25 @@
      * show package info
      */
     function packagesInfo(reset) {
+        $("#statustab_progress").addClass("fa fa-spinner fa-pulse");
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist > tbody').empty();
             $('#pluginlist > tbody').empty();
             var installed = {};
+
+            $.each(data['product'], function(key, value) {
+                if (key == 'product_check') {
+                    if (value != null) {
+                        $('#product_time_check').text(value['last_check']);
+                    } else {
+                        $('#product_time_check').text("{{ lang._('N/A') }}");
+                    }
+                } else {
+                    $('#' + key).text(value);
+                }
+            });
+
+            $("#statustab_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (reset === true) {
                 ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
@@ -382,13 +352,14 @@
                     $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
                 });
 
-                $('#update_status_container').show();
                 $('#updatelist').hide();
+                $('#update_status_container').show();
             }
 
             var local_count = 0;
             var plugin_count = 0;
-            var missing_plugin_count = 0;
+            var misconfigured_plugins = 0;
+            var missing_plugins = 0;
             var changelog_count = 0;
             var changelog_max = 15;
             if ($.changelog_keep_full != undefined) {
@@ -402,13 +373,14 @@
                     return 1;
                 }
                 $('#packageslist > tbody').append(
-                    '<tr>' +
+                    '<tr class="package_entry">' +
                     '<td>' + row['name'] + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['repository'] + '</td>' +
                     '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' +
+                    '<td style="white-space:nowrap;vertical-align:middle;"><div class="input-group">' +
                     '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="{{ lang._('License') }}">' +
                     '<i class="fa fa-balance-scale fa-fw"></i></button> ' +
@@ -421,7 +393,7 @@
                         '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '" ' +
                         '  data-toggle="tooltip" title="{{ lang._('Lock') }}" >' +
                         '<i class="fa fa-unlock fa-fw"></i></button>'
-                    ) + '</td>' +
+                    ) + '</div></td>' +
                     '</tr>'
                 );
             });
@@ -439,26 +411,33 @@
                 let status_text = '';
                 let bold_on = '';
                 let bold_off = '';
-                if (row['installed'] == "1") {
+                if (row['installed'] == "1" && row['configured'] == "0") {
+                    status_text = ' ({{ lang._('misconfigured') }})';
+                    bold_on = '<b>';
+                    bold_off = '</b>';
+                    misconfigured_plugins = 1;
+                } else if (row['installed'] == "0" && row['configured'] == "1") {
+                    status_text = ' ({{ lang._('missing') }})';
+                    bold_on = '<span class="text-danger plugin_missing"><b>';
+                    bold_off = '</b></span>';
+                    missing_plugins = 1;
+                } else if (row['installed'] == "1") {
                     status_text = ' ({{ lang._('installed') }})';
                     bold_on = '<b>';
                     bold_off = '</b>';
-                } else if (row['installed'] == "0" && row['configured'] == "1") {
-                    status_text = ' ({{ lang._('missing') }})';
-                    bold_on = '<span class="text-danger plugin_missing">';
-                    bold_off = '</span>';
-                    missing_plugin_count += 1;
                 }
                 if (row['provided'] == "0" && row['installed'] == "1") {
                     // this state overwrites installed on purpose
                     status_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist > tbody').append(
-                    '<tr>' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
+                    '<tr class="plugin_entry">' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
                     '<td>' + bold_on + row['version'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['repository'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
-                    '<td><button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
+                    '<td style="white-space:nowrap;vertical-align:middle;"><div class="input-group">' +
+                    '<button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
                         '<i class="fa fa-info-circle fa-fw"></i></button>' +
                         (row['installed'] == "1" ?
@@ -470,7 +449,7 @@
                         'data-repository="'+row['repository']+'" data-toggle="tooltip" title="{{ lang._('Install') }}">' +
                         '<i class="fa fa-plus fa-fw">' +
                         '</i></button>'
-                    ) + '</td>' + '</tr>'
+                    ) + '</div></td>' + '</tr>'
                 );
             });
 
@@ -478,33 +457,21 @@
                 $('#pluginlist > tbody').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
-            } else if (missing_plugin_count > 0) {
-                let $tr = $("<tr id='plugin_install_tr'/>");
-                let $td = $("<td colspan=5 style='text-align:center;'>");
-                $td.append('<button class="btn btn-default reinstall_missing_plugins"><i class="fa fa-refresh"></i>&nbsp; {{ lang._('Install missing plugins') }}</button>');
-                $td.append('&nbsp;');
-                $td.append('<button class="btn btn-default accept_plugins"><i class="fa fa-check"></i>&nbsp; {{ lang._('Accept plugins') }}</button>');
-                $tr.append($td);
-                $('#pluginlist > tbody').prepend($tr);
-                $(".reinstall_missing_plugins").tooltip({
-                  'title': '{{ lang._('According to the configuration there is a mismatch between the installed and configured plugins') }}'
-                });
-                $(".accept_plugins").tooltip({
-                  'title': '{{ lang._('Accept current state, capture installed plugins to config') }}'
-                });
-                $(".reinstall_missing_plugins").click(function(){
-                    $(".reinstall_missing_plugins > i.fa").addClass("fa-pulse");
-                    ajaxCall('/api/core/firmware/installConfiguredPlugins', {}, function(data,status) {
-                        $(".plugin_missing").removeClass("text-warning");
-                        $("#plugin_install_tr").remove();
-                    });
-                });
-                $(".accept_plugins").click(function(){
-                    ajaxCall('/api/core/firmware/acceptConfiguredPlugins', {}, function(data,status) {
-                        $(".plugin_missing").removeClass("text-warning");
-                        $("#plugin_install_tr").remove();
-                    });
-                });
+            }
+
+            $('#audit_actions').show();
+            $("#plugin_search").keyup();
+            $("#package_search").keyup();
+
+            if (misconfigured_plugins || missing_plugins) {
+                if (!missing_plugins) {
+                    $("#plugin_get").parent().hide();
+                } else {
+                    $("#plugin_get").parent().show();
+                }
+                $('#plugin_actions').show();
+            } else {
+                $('#plugin_actions').hide();
             }
 
             $("#changeloglist > tbody").empty();
@@ -560,15 +527,15 @@
             });
             $(".act_unlock").click(function(event) {
                 event.preventDefault();
-                action('unlock', $(this).data('package'));
+                backend('unlock/' + $(this).data('package'));
             });
             $(".act_lock").click(function(event) {
                 event.preventDefault();
-                action('lock', $(this).data('package'));
+                backend('lock/' + $(this).data('package'));
             });
             $(".act_remove").click(function(event) {
                 event.preventDefault();
-                action('remove', $(this).data('package'));
+                backend('remove/' + $(this).data('package'));
             });
             $(".act_details").click(function(event) {
                 event.preventDefault();
@@ -587,17 +554,17 @@
                             label: "{{ lang._('Install') }}",
                             action: function(dialogRef){
                                 dialogRef.close();
-                                action('install', package_name);
+                                backend('install/' + package_name);
                             }
                         }, {
-                            label: "{{ lang._('Abort') }}",
+                            label: "{{ lang._('Cancel') }}",
                             action: function(dialogRef){
                                 dialogRef.close();
                             }
                         }]
                     });
                 } else {
-                    action('install', package_name);
+                    backend('install/' + package_name);
                 }
             });
             $(".act_changelog").click(function(event) {
@@ -615,56 +582,30 @@
 
     $( document ).ready(function() {
         // link event handlers
-        $('#checkupdate').click(updateStatus);
-        $('#upgrade').click(upgrade_ui);
-        $('#audit').click(function () { audit('audit'); });
-        $('#health').click(function () { audit('health'); });
-        $('#upgrade_maj').click(function () {
-            $.upgrade_needs_reboot = 1;
-            $.upgrade_action = 'maj';
-            upgrade_ui();
-        });
-        $('#checkupdate_maj').click(function () {
-            if ($.upgrade_major_message == "") {
-                $('#upgrade_maj').prop('disabled', false);
-                changelog($.upgrade_major_version);
-            } else {
-                BootstrapDialog.show({
-                    type:BootstrapDialog.TYPE_WARNING,
-                    title: "{{ lang._('Upgrade instructions') }}",
-                    /* we trust this data, it was signed by us and secured by csrf */
-                    message: htmlDecode($.upgrade_major_message),
-                    buttons: [{
-                        label: "{{ lang._('Unlock') }}",
-                        cssClass: 'btn-warning',
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            $('#upgrade_maj').prop('disabled', false);
-                            changelog($.upgrade_major_version);
-                        }
-                    },{
-                        label: "{{ lang._('Cancel') }}",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                    }]
-                });
-                packagesInfo(true);
-            }
-        });
+        $('#checkupdate').click(function () { backend('check'); });
+        $('#upgrade').click(function () { upgrade_ui(false); });
+        $('#upgrade_maj').click(function () { upgrade_ui(true); });
+        $('#upgrade_cancel').click(cancel_update);
+        $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
+        $("#plugin_get").click(function () { backend('syncPlugins'); });
+        $("#plugin_set").click(function () { backend('resyncPlugins'); });
+        $('#audit_security').click(function () { backend('audit'); });
+        $('#audit_connection').click(function () { backend('connection'); });
+        $('#audit_health').click(function () { backend('health'); });
 
         // populate package information
         packagesInfo(true);
 
+        $("#plugin_search").keyup(function () { generic_search(this, 'plugin_entry'); });
+        $("#package_search").keyup(function () { generic_search(this, 'package_entry'); });
+
         ajaxGet('/api/core/firmware/running', {}, function(data, status) {
-            // if action is already running reattach now...
             if (data['status'] == 'busy') {
-                upgrade();
-            // dashboard link: run check automatically
+                // if action is already running reattach now...
+                backend('audit');
             } else if (window.location.hash == '#checkupdate') {
-                // update UI and delay update to avoid races
-                updateStatusPrepare(false);
-                setTimeout(updateStatus, 1000);
+                // dashboard link: run check automatically after delay
+                setTimeout(function () { backend('check'); }, 2000);
             }
         });
 
@@ -674,23 +615,22 @@
                 var other_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
-                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) == 0) || key == firmwareconfig['mirror']) {
+                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) != -1) || key == firmwareconfig['mirror']) {
                         selected = true;
                         other_selected = false;
                     }
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
-                            .data("has_subscription", firmwareoptions['has_subscription'].indexOf(key) == 0)
+                            .data("has_subscription", firmwareoptions['families_has_subscription'].length > 0)
                             .prop('selected', selected)
                     );
                 });
-                if (firmwareoptions['allow_custom']) {
+                if (firmwareoptions['mirrors_allow_custom']) {
                     $("#firmware_mirror").prepend($("<option/>")
                         .attr("value", firmwareconfig['mirror'])
                         .text("(other)")
                         .data("other", 1)
-                        .data("has_subscription", false)
                         .prop('selected', other_selected)
                     );
                 }
@@ -700,6 +640,7 @@
                 } else {
                     $("#firmware_mirror_subscription").val("");
                 }
+
                 $("#firmware_mirror").selectpicker('refresh');
                 $("#firmware_mirror").change();
 
@@ -716,7 +657,7 @@
                             .prop('selected', selected)
                     );
                 });
-                if (firmwareoptions['allow_custom']) {
+                if (firmwareoptions['flavours_allow_custom']) {
                     $("#firmware_flavour").prepend($("<option/>")
                         .attr("value", firmwareconfig['flavour'])
                         .text("(other)")
@@ -750,11 +691,6 @@
             } else {
                 $("#firmware_mirror_other").hide();
             }
-            if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                $("#firmware_mirror_subscription").parent().parent().show();
-            } else {
-                $("#firmware_mirror_subscription").parent().parent().hide();
-            }
         });
         $("#firmware_flavour").change(function() {
             $("#firmware_flavour_value").val($(this).val());
@@ -766,26 +702,33 @@
         });
 
         $("#change_mirror").click(function(){
-            $("#change_mirror_progress").addClass("fa fa-spinner fa-pulse");
+            $("#settingstab_progress").addClass("fa fa-spinner fa-pulse");
             var confopt = {};
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
-            if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                confopt.subscription = $("#firmware_mirror_subscription").val();
-            } else {
-                confopt.subscription = null;
-            }
-            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data,status) {
-                $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
+            confopt.subscription = $("#firmware_mirror_subscription").val();
+            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data, status) {
+                $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
+                if (data['status'] == 'ok') {
+                    packagesInfo(true);
+                } else {
+                    let validation_msgs = '<ul>';
+                    for (i = 0; i < data['status_msgs'].length; i++) {
+                        validation_msgs += '<li>' + $("<textarea/>").html(data['status_msgs'][i]).text() + '</li>';
+                    }
+                    validation_msgs += '</ul>';
+
+                    stdDialogInform('{{ lang._('Firmware status') }}', htmlDecode(validation_msgs), "{{ lang._('Close') }}", undefined, 'danger');
+                }
             });
         });
 
-        $("#btn_update_status_copy").click(function(){
+        $("#update_status_copy").click(function () {
             $("#update_status").select();
             document.execCommand("copy");
             document.getSelection().removeAllRanges();
-            $(this).toggleClass("fa-flip-horizontal");
+            setTimeout(function () { $("#update_status").blur(); }, 100);
         });
 
         // update history on tab state and implement navigation
@@ -800,101 +743,190 @@
         });
     });
 </script>
-<style>
-  .copy-logo {
-      position: absolute;
-      bottom: 5px;
-      right: 35px;
-  }
-</style>
 <div class="container-fluid">
-    <div class="row">
-        <div id="minor-upgrade" class="alert alert-info" role="alert" style="min-height:65px;">
-            <button class='btn btn-primary pull-right' id="upgrade" style="display:none">{{ lang._('Update now') }} <i id="upgrade_progress"></i></button>
-            <div class="btn-group pull-right">
-                <button type="button" id="audit_all" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    {{ lang._('Audit now') }} <i id="audit_progress" class="caret"></i>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a id="audit" href="#">{{ lang._('Security') }}</a></li>
-                    <li><a id="health" href="#">{{ lang._('Health') }}</a></li>
-                </ul>
-            </div>
-            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;">{{ lang._('Check for updates') }} <i id="checkupdate_progress"></i></button>
-            <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
-        </div>
-        <div id="major-upgrade" class="alert alert-warning" role="alert" style="min-height:65px;display:none;">
-            <button class='btn btn-primary pull-right' id="upgrade_maj" disabled="disabled">{{ lang._('Upgrade now') }} <i id="upgrade_progress_maj"></i> </button>
-            <button class='btn pull-right' id="checkupdate_maj" style="margin-right: 8px;">{{ lang._('Unlock this upgrade') }}</button>
-            <div style="margin-top: 8px;">
-                {{ lang._('This software release has reached its designated end of life.') }}
-                {{ lang._('The next major release is:') }}
-                <span id="upgrade-version"></span>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a> </li>
+                <li id="statustab" class="active"><a data-toggle="tab" href="#status">{{ lang._('Status') }} <i id="statustab_progress"></i></a></li>
+                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }} <i id="settingstab_progress"></i></a></li>
+                <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
+                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }} <i id="updatetab_progress"></i></a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
-                <li id="changelogtab"><a data-toggle="tab" href="#changelog">{{ lang._('Changelog') }}</a></li>
-                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
             </ul>
             <div class="tab-content content-box">
-                <div id="updates" class="tab-pane fade in active">
+                <div id="updates" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
-                        <thead></thead>
-                        <tbody></tbody>
-                    </table>
-                    <div id="update_status_container">
-                      <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
-                      <i id="btn_update_status_copy" class="copy-logo fa fa-clipboard fa-2x" data-toggle="tooltip" title="{{lang._('Copy to clipboard')}}"  style="padding: 5px 5px 5px 5px; cursor: pointer;"></i>
-                    </div>
-                </div>
-                <div id="plugins" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="pluginlist">
-                      <thead>
-                        <tr>
-                          <th>{{ lang._('Name') }}</th>
-                          <th>{{ lang._('Version') }}</th>
-                          <th>{{ lang._('Size') }}</th>
-                          <th>{{ lang._('Comment') }}</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
-                    </table>
-                </div>
-                <div id="packages" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="packageslist">
                         <thead>
-                          <tr>
-                              <th>{{ lang._('Name') }}</th>
-                              <th>{{ lang._('Version') }}</th>
-                              <th>{{ lang._('Size') }}</th>
-                              <th>{{ lang._('License') }}</th>
-                              <th>{{ lang._('Comment') }}</th>
-                              <th></th>
+                            <tr>
+                              <th style="width:20%">{{ lang._('Package name') }}</th>
+                              <th style="width:20%">{{ lang._('Current version') }}</th>
+                              <th style="width:20%">{{ lang._('New version') }}</th>
+                              <th style="width:20%">{{ lang._('Required action') }}</th>
+                              <th style="width:20%">{{ lang._('Repository') }}</th>
                             </tr>
                         </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td style="white-space:nowrap;vertical-align:middle;">
+                                    <button class="btn btn-info" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
+                                    <button class='btn btn-warning' id="upgrade_maj"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
+                                    <button class="btn btn-default" id="upgrade_cancel"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
+                                </td>
+                                <td colspan="2" style="vertical-align:middle">
+                                    <strong><div id="updatestatus"></div></strong>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div id="update_status_container">
+                       <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
+                      <table class="table table-striped table-condensed table-responsive">
                         <tbody>
+                          <tr>
+                            <td>
+                              {{ lang._('Output shown here for diagnostic purposes. There is no general need for manual system intervention.') }}
+                              <a id="update_status_copy">{{ lang._('Click here to copy to clipboard.') }}</a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+                <div id="status" class="tab-pane active">
+                    <table class="table table-striped table-condensed table-responsive">
+                        <tbody>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Type') }}</td>
+                                <td id="product_id"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Version') }}</td>
+                                <td id="product_version"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Architecture') }}</td>
+                                <td id="product_arch"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Flavour') }}</td>
+                                <td id="product_crypto"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Commit') }}</td>
+                                <td id="product_hash"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Mirror') }}</td>
+                                <td id="product_mirror"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Repositories') }}</td>
+                                <td id="product_repos"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Updated on') }}</td>
+                                <td id="product_time"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Checked on') }}</td>
+                                <td id="product_time_check"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;"></td>
+                                <td>
+                                    <button class="btn btn-primary" id="checkupdate"><i class="fa fa-refresh"></i> {{ lang._('Check for updates') }}</button>
+                                    <div class="btn-group" id="audit_actions" style="display:none;">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a id="audit_connection" href="#">{{ lang._('Connectivity') }}</a></li>
+                                            <li><a id="audit_health" href="#">{{ lang._('Health') }}</a></li>
+                                            <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-group" id="plugin_actions" style="display:none;">
+                                        <button type="button" class="btn btn-defaul dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fa fa-exclamation-triangle"></i> {{ lang._('Resolve plugin conflicts') }} <i class="caret"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a id="plugin_see" href="#">{{ lang._('View and edit local conflicts') }}</a></li>
+                                            <li><a id="plugin_get" href="#">{{ lang._('Run the automatic resolver') }}</a></li>
+                                            <li><a id="plugin_set" href="#">{{ lang._('Reset all local conflicts') }}</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <div id="changelog" class="tab-pane fade in">
+                <div id="plugins" class="tab-pane">
+                    <table class="table table-striped table-condensed table-responsive" id="pluginlist">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle">{{ lang._('Version') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Size') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Comment') }}</th>
+                                <th style="vertical-align:middle"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="packages" class="tab-pane">
+                    <table class="table table-striped table-condensed table-responsive" id="packageslist">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="package_search" placeholder="{{ lang._('Name') }}"></th>
+                                <th style="vertical-align:middle">{{ lang._('Version') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Size') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('License') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Comment') }}</th>
+                                <th style="vertical-align:middle"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="changelog" class="tab-pane">
                     <table class="table table-striped table-condensed table-responsive" id="changeloglist">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="settings" class="tab-pane fade in">
-                    <table class="table table-striped table-responsive">
+                <div id="settings" class="tab-pane">
+                    <table class="table table-striped table-condensed table-responsive">
                         <tbody>
                             <tr>
-                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Mirror') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Mirror') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
                                     </select>
@@ -908,7 +940,8 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Flavour') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Flavour') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
@@ -922,17 +955,19 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Release Type') }}</td>
+                                <td style="width: 20px;"></td>
+                                <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Type') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
                                     <div class="hidden" data-for="help_for_type">
-                                        {{ lang._('Select the release type. Use with care.') }}
+                                        {{ lang._('Select the release type.') }}
                                     </div>
                                 </td>
                                 <td></td>
                             </tr>
                             <tr>
+                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
                                     <input type="text" id="firmware_mirror_subscription">
@@ -943,16 +978,20 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td></td>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Usage') }}</td>
                                 <td>
-                                    <button class="btn btn-primary" id="change_mirror" type="button">{{ lang._('Save') }} <i id="change_mirror_progress"></i></button>
+                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
                                 </td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="3">
-                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
+                                <td style="width: 20px;"></td>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-primary" id="change_mirror" type="button"><i class="fa fa-floppy-o"></i> {{ lang._('Save') }}</button>
                                 </td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

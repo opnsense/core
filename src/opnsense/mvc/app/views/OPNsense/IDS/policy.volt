@@ -41,6 +41,15 @@ POSSIBILITY OF SUCH DAMAGE.
               toggle:'/api/ids/settings/togglePolicy/'
           }
       );
+      $("#grid-policy-rule").UIBootgrid({
+              search:'/api/ids/settings/searchPolicyRule',
+              get:'/api/ids/settings/getPolicyRule/',
+              set:'/api/ids/settings/setPolicyRule/',
+              add:'/api/ids/settings/addPolicyRule/',
+              del:'/api/ids/settings/delPolicyRule/',
+              toggle:'/api/ids/settings/togglePolicyRule/'
+          }
+      );
       // policy content handling
       let policy_content_container = $("<div id='policy_content_container'/>");
       $("#policy\\.content").after(policy_content_container);
@@ -92,6 +101,16 @@ POSSIBILITY OF SUCH DAMAGE.
       });
 
       $("#reconfigureAct").SimpleActionButton();
+      // update history on tab state and implement navigation
+      if (window.location.hash != "") {
+          $('a[href="' + window.location.hash + '"]').click();
+      } else {
+          $('a[href="#policies"]').click();
+      }
+
+      $('.nav-tabs a').on('shown.bs.tab', function (e) {
+          history.pushState(null, null, e.target.hash);
+      });
     });
 </script>
 
@@ -102,30 +121,63 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 </style>
 
+
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li><a data-toggle="tab" href="#policies" id="policies_tab">{{ lang._('Policies') }}</a></li>
+    <li><a data-toggle="tab" href="#rules" id="rules_tab">{{ lang._('Rule adjustments') }}</a></li>
+</ul>
 <div class="tab-content content-box">
-    <div class="col-md-12">
-      <table id="grid-policy" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPolicy">
-          <thead>
-          <tr>
-              <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-              <th data-column-id="prio" data-type="string">{{ lang._('Priority') }}</th>
-              <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-              <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-              <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
-          </tr>
-          </thead>
-          <tbody>
-          </tbody>
-          <tfoot>
-          <tr>
-              <td></td>
-              <td>
-                  <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                  <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-              </td>
-          </tr>
-          </tfoot>
-      </table>
+    <div id="policies" class="tab-pane fade in">
+        <div class="col-md-12">
+          <table id="grid-policy" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPolicy">
+              <thead>
+              <tr>
+                  <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                  <th data-column-id="prio" data-type="string">{{ lang._('Priority') }}</th>
+                  <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                  <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+              <tr>
+                  <td></td>
+                  <td>
+                      <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                      <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                  </td>
+              </tr>
+              </tfoot>
+          </table>
+        </div>
+    </div>
+    <div id="rules" class="tab-pane fade in">
+      <div class="col-md-12">
+        <table id="grid-policy-rule" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPolicyRule">
+            <thead>
+            <tr>
+                <th data-column-id="sid" data-width="6em" data-type="string">{{ lang._('SID') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="action" data-type="string">{{ lang._('Action') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+      </div>
     </div>
     <div>
       <div class="col-md-12">
@@ -144,4 +196,6 @@ POSSIBILITY OF SUCH DAMAGE.
 </div>
 
 
+
 {{ partial("layout_partials/base_dialog",['fields':formDialogPolicy,'id':'DialogPolicy','label':lang._('Rule details'),'hasSaveBtn':'true'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPolicyRule,'id':'DialogPolicyRule','label':lang._('Rule details'),'hasSaveBtn':'true'])}}

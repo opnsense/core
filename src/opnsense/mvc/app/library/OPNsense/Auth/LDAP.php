@@ -194,7 +194,12 @@ class LDAP extends Base implements IAuthConnector
         $error_string = "";
         if ($this->ldapHandle !== false) {
             ldap_get_option($this->ldapHandle, LDAP_OPT_ERROR_STRING, $error_string);
-            syslog(LOG_ERR, sprintf($message . " [%s,%s]", $error_string, ldap_error($this->ldapHandle)));
+            $error_string = str_replace(array("\n","\r","\t"), ' ', $error_string);
+            syslog(LOG_ERR, sprintf($message . " [%s; %s]", $error_string, ldap_error($this->ldapHandle)));
+            if (!empty($error_string)) {
+                $this->lastAuthErrors['error'] = $error_string;
+            }
+            $this->lastAuthErrors['ldap_error'] = ldap_error($this->ldapHandle);
         } else {
             syslog(LOG_ERR, $message);
         }
@@ -431,11 +436,14 @@ class LDAP extends Base implements IAuthConnector
         if ($this->ldapHandle !== false) {
             $searchResults = $this->search("(|(ou=*)(cn=Users))");
             if ($searchResults !== false) {
+                $this->logLdapError("LDAP containers search result count: " . $searchResults["count"]);
                 for ($i = 0; $i < $searchResults["count"]; $i++) {
                     $result[] = $searchResults[$i]['dn'];
                 }
 
                 return $result;
+            } else {
+                   $this->logLdapError("LDAP containers search returned no results");
             }
         }
 
@@ -561,6 +569,8 @@ class LDAP extends Base implements IAuthConnector
                 if ($result !== false && count($result) > 0) {
                     $user_dn = $result[0]['dn'];
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
+                } else {
+                    $this->lastAuthErrors['error'] = "User DN not found";
                 }
             }
         }
