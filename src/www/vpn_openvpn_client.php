@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
-            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
+            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
             ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
-            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
+            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
             ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
@@ -305,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $copy_fields = "auth_user,auth_pass,protocol,dev_mode,local_port,reneg-sec
                 ,server_addr,server_port,resolve_retry,proxy_addr,proxy_port,remote_random
                 ,proxy_authtype,proxy_user,proxy_passwd,description,mode,crypto,digest
-                ,engine,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
+                ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec
                 ,verbosity_level,interface";
 
@@ -931,23 +931,6 @@ $( document ).ready(function() {
               <div class="hidden" data-for="help_for_digest">
                 <?=gettext("NOTE: Leave this set to SHA1 unless the server is set to match. SHA1 is the default for OpenVPN."); ?>
               </div>
-            </td>
-          </tr>
-          <tr id="engine">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
-            <td>
-              <select name="engine" class="form-control">
-<?php
-              $engines = openvpn_get_engines();
-              foreach ($engines as $name => $desc) :
-                  $selected = "";
-                  if ($name == $pconfig['engine']) {
-                      $selected = " selected=\"selected\"";
-                  }?>
-                <option value="<?=$name;?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
-<?php
-              endforeach; ?>
-              </select>
             </td>
           </tr>
          </table>

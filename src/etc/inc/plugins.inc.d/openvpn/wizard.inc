@@ -414,14 +414,6 @@ function step10_stepbeforeformdisplay()
                 $opt['value'] = $name;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
-        } elseif ($field['name'] == "engine") {
-            $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            foreach (openvpn_get_engines() as $name => $desc) {
-                $opt = array();
-                $opt['name'] = $desc;
-                $opt['value'] = $name;
-                $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
-            }
         } elseif ($field['name'] == "nbttype") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
             foreach ($netbios_nodetypes as $type => $name) {
@@ -755,7 +747,6 @@ function step12_submitphpaction()
     }
     $server['crypto'] = $pconfig['step10']['crypto'];
     $server['digest'] = $pconfig['step10']['digest'];
-    $server['engine'] = $pconfig['step10']['engine'];
 
     if (isset($pconfig['step11']['ovpnrule'])) {
         $rule = array();
