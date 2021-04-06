@@ -284,6 +284,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/FirewallController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/InterfaceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/LogController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/LvtemplateController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemhealthController.php
@@ -490,6 +491,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
