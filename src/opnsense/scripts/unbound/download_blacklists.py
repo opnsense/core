@@ -82,7 +82,7 @@ if __name__ == '__main__':
         sys.exit(99)
 
     domain_pattern = re.compile(
-        r'(([\da-zA-Z])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
+        r'(([\da-zA-Z_])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
         r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))'
     )
 
