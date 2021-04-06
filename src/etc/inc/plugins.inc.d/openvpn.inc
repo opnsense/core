@@ -297,56 +297,6 @@ function openvpn_get_digestlist()
     return $digests;
 }
 
-function openvpn_get_engines()
-{
-    $openssl_engines = array('none' => 'No Hardware Crypto Acceleration');
-    exec('/usr/local/bin/openssl engine -t -c 2> /dev/null', $openssl_engine_output);
-
-    if (!count($openssl_engine_output)) {
-        /* LibreSSL doesn't offer anything of value */
-        return $openssl_engines;
-    }
-
-    $openssl_engine_output = implode("\n", $openssl_engine_output);
-    $openssl_engine_output = preg_replace("/\\n\\s+/", "|", $openssl_engine_output);
-    $openssl_engine_output = explode("\n", $openssl_engine_output);
-
-    foreach ($openssl_engine_output as $oeo) {
-        $keep = true;
-        $details = explode("|", $oeo);
-        $engine = array_shift($details);
-        $linematch = array();
-        preg_match("/\((.*)\)\s(.*)/", $engine, $linematch);
-        foreach ($details as $dt) {
-            if (strpos($dt, "unavailable") !== false) {
-                $keep = false;
-            }
-            if (strpos($dt, "available") !== false) {
-                continue;
-            }
-            if (strpos($dt, "[") !== false) {
-                $ciphers = trim($dt, "[]");
-            }
-        }
-        if (!empty($ciphers)) {
-            $ciphers = " - " . $ciphers;
-        }
-        if (strlen($ciphers) > 60) {
-            $ciphers = substr($ciphers, 0, 60) . " ... ";
-        }
-        if ($keep) {
-            $openssl_engines[$linematch[1]] = $linematch[2] . $ciphers;
-        }
-    }
-    return $openssl_engines;
-}
-
-function openvpn_validate_engine($engine)
-{
-    $engines = openvpn_get_engines();
-    return array_key_exists($engine, $engines);
-}
-
 function openvpn_validate_port($value, $name)
 {
     $value = trim($value);
@@ -600,10 +550,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $conf .= "local {$iface_ip}\n";
     } elseif (!empty($settings['interface']) && $settings['interface'] == 'any' && substr($settings['protocol'], 0, 3) == 'UDP') {
         $conf .= "multihome\n";
-    }
-
-    if (openvpn_validate_engine($settings['engine']) && ($settings['engine'] != "none")) {
-        $conf .= "engine {$settings['engine']}\n";
     }
 
     // server specific settings
