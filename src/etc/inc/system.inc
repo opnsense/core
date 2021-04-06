@@ -922,11 +922,6 @@ function system_kernel_configure($verbose = false)
         $mods[] = $config['system']['crypto_hardware'];
     }
 
-    if (!empty($config['system']['cryptodev_enable'])) {
-        log_error('Loading cryptodev kernel module.');
-        $mods[] = 'cryptodev';
-    }
-
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         $mods[] = $config['system']['thermal_hardware'];
