@@ -696,19 +696,6 @@
                 <description>The method used to authenticate traffic between endpoints. This setting must match on the client and server side, but is otherwise set however you like.</description>
             </field>
             <field>
-                <name>engine</name>
-                <type>select</type>
-                <displayname>Hardware Crypto</displayname>
-                <bindstofield>wizardtemp->step10->engine</bindstofield>
-                <options>
-                    <option>
-                        <name>dummy</name>
-                        <value>dummy</value>
-                    </option>
-                </options>
-                <description>The hardware cryptographic accelerator to use for this VPN connection, if any.</description>
-            </field>
-            <field>
                 <type>listtopic</type>
                 <name>Tunnel Settings</name>
             </field>
