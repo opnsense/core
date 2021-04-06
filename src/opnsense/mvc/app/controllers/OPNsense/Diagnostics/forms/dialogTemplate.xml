@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>template.name</id>
+        <label>name</label>
+        <type>text</type>
+        <help>Template name</help>
+    </field>
+    <field>
+        <id>template.filters</id>
+        <label>Filters set</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+    </field>
+    <field>
+        <id>template.or</id>
+        <label>OR global operator</label>
+        <type>checkbox</type>
+    </field>
+</form>
