@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (c) 2015-2017 Ad Schellevis <ad@opnsense.org>
-# Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -81,6 +81,7 @@ rc_enabled()
 
 rc_filenames="$(${RCORDER} /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null)"
 rc_filenames_defer=
+rc_filenames_reverse=
 rc_filenames_skip=
 
 for rc_filename in ${rc_filenames}; do
@@ -102,8 +103,10 @@ if [ -z "${1}" ]; then
 	exit 1
 fi
 
+rc_filenames="${rc_filenames} ${rc_filenames_defer}"
+
 # run our bootstrap command on startup
-if [ "${1}" == "start" ]; then
+if [ "${1}" = "start" ]; then
 	for rc_filename in ${rc_filenames}; do
 		eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
 
@@ -115,10 +118,15 @@ if [ "${1}" == "start" ]; then
 		eval "pre_run_cmd=\$${pre_run_var}"
 		${pre_run_cmd}
 	done
+elif [ "${1}" = "stop" ]; then
+	for rc_filename in ${rc_filenames}; do
+		rc_filenames_reverse="${rc_filename} ${rc_filenames_reverse}"
+	done
+	rc_filenames=${rc_filenames_reverse}
 fi
 
 # pass all commands to script now
-for rc_filename in ${rc_filenames} ${rc_filenames_defer}; do
+for rc_filename in ${rc_filenames}; do
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
 
 	if ! rc_enabled ${rc_filename} ${name}; then
