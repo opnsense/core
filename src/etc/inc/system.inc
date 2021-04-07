@@ -1144,12 +1144,6 @@ function system_login_configure($verbose = false)
     /* copy settings already there */
     $new_loader_conf = @file_get_contents('/boot/loader.conf');
 
-    $new_loader_conf .= "# dynamically generated tunables settings follow\n";
-    foreach (system_sysctl_get() as $param => $value) {
-        $new_loader_conf .= "{$param}=\"{$value}\"\n";
-    }
-    $new_loader_conf .= "\n";
-
     $new_loader_conf .= "# dynamically generated console settings follow\n";
     foreach ($new_boot_config as $param => $value) {
         if (!empty($value)) {
@@ -1158,6 +1152,13 @@ function system_login_configure($verbose = false)
             $new_loader_conf .= "#${param}\n";
         }
     }
+    $new_loader_conf .= "\n";
+
+    $new_loader_conf .= "# dynamically generated tunables settings follow\n";
+    foreach (system_sysctl_get() as $param => $value) {
+        $new_loader_conf .= "{$param}=\"{$value}\"\n";
+    }
+
 
     /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
