@@ -28,23 +28,44 @@
  *
  */
 
-namespace OPNsense\Diagnostics;
+namespace OPNsense\Diagnostics\Api;
 
-use OPNsense\Base\IndexController;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
-/**
- * @package OPNsense\Diagnostics
- */
-class LvtemplatesController extends IndexController
+class LvtemplateController extends ApiMutableModelControllerBase
 {
-    /**
-     * firewall live view filters
-     */
+    protected static $internalModelName = 'lvtemplate';
+    protected static $internalModelClass = 'OPNsense\Diagnostics\Lvtemplate';
 
-    public function indexAction()
+    public function searchItemAction()
     {
-        $this->view->pick('OPNsense/Diagnostics/lvtemplates');
-        $this->view->formDialogTemplate = $this->getForm("dialogTemplate");
+        return $this->searchBase(
+            "templates.template",
+            array('name', 'filters', 'or'), "name", null, SORT_NATURAL|SORT_FLAG_CASE
+        );
+    }
+
+    public function setItemAction($uuid)
+    {
+        return $this->setBase("template", "templates.template", $uuid);
+    }
+
+    public function addItemAction()
+    {
+        return $this->addBase("template", "templates.template");
+    }
+
+    public function getItemAction($uuid = null)
+    {
+        return $this->getBase("template", "templates.template", $uuid);
+    }
+
+    public function delItemAction($uuid)
+    {
+        return $this->delBase("templates.template", $uuid);
     }
 
 }

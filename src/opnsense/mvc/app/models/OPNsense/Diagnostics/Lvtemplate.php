@@ -31,6 +31,6 @@ namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\BaseModel;
 
-class Lvtemplates extends BaseModel
+class Lvtemplate extends BaseModel
 {
 }

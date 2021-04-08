@@ -74,6 +74,139 @@
             }
         }
 
+        /**
+         * set new selection
+         * @param items list of lexical expressions
+         * @param operator enable or disable global OR operator
+         */
+        function set_selection(items, operator)
+        {
+            // remove old selection
+            $("#filters > span.badge").click();
+            // collect valid condition types
+            let conditions = [];
+            $("#filter_condition > option").each(function(){
+                conditions.push($(this).val());
+            });
+            items.forEach(function(value) {
+                let parts = value.split(new RegExp("("+conditions.join("|")+")(.+)$"));
+                if (parts.length >= 3 && $("#filter_tag").val(parts[0]).val() === parts[0] ) {
+                    $("#filter_tag").val(parts[0]);
+                    $("#filter_condition").val(parts[1]);
+                    $("#filter_value").val(parts[2]);
+                    $("#add_filter_condition").click();
+                } else if (value.toLowerCase() == "or=1") {
+                    operator = "1";
+                }
+            });
+            $("#filter_or_type").prop('checked', operator === "1" ? true : false);
+            $(".selectpicker").selectpicker('refresh');
+            $("#filter_tag").change();
+        }
+
+        /**
+         * add new filters template
+         * @param t_data template's parameters
+         */
+        function addTemplate(t_data) {
+            ajaxCall('/api/diagnostics/lvtemplate/addItem/', t_data, function(data, status) {
+                if (data.result == "saved") {
+                    fetchTemplates(data.uuid);
+                } else {
+                    BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_DANGER,
+                    title: "{{ lang._('Add filters template') }}",
+                    message: "{{ lang._('Template save failed. Message: ') }}" + data.result,
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                        }]
+                    });
+                    fetchTemplates("00000");
+                }
+            })
+        }
+
+        /**
+         * set template new values
+         * @param t_id template uuid
+         * @param t_data template's parameters
+         */
+        function editTemplate(t_id, t_data) {
+            ajaxCall('/api/diagnostics/lvtemplate/setItem/' + t_id, t_data, function(data, status) {
+                if (data.result == "saved") {
+                    fetchTemplates(t_id);
+                } else {
+                    BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_DANGER,
+                    title: "{{ lang._('Filters template edit') }}",
+                    message: "{{ lang._('Template edit failed. Message: ') }}" + data.result,
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                        }]
+                    });
+                    fetchTemplates(t_id);
+                }
+            })
+        }
+
+        /**
+         * delete filters template
+         * @param t_id template uuid
+         */
+        function delTemplate(t_id) {
+            ajaxCall('/api/diagnostics/lvtemplate/delItem/' + t_id, {}, function(data, status) {
+                if (data.result == "deleted") {
+                    //don't reset current filters so template can be restored right after delete
+                    $("#templates option[value=" + t_id + "]").remove();
+                    $("#templates").val("").selectpicker('refresh');
+                } else {
+                    BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_DANGER,
+                    title: "{{ lang._('Filters template delete') }}",
+                    message: "{{ lang._('Template delete failed. Result: ') }}" + data.result,
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                        }
+                        }]
+                    });
+                }
+            })
+        }
+
+        /**
+         * fetch templates from config
+         * @param opt select value to make :selected and apply
+         */
+        function fetchTemplates(opt) {
+            opt = opt || "00000";
+            //apply = apply || true;
+            $('#templ_name').val("");
+            $('#templates').empty();
+            $('#templates').append($('<option/>', {value: "00000", text: "None"}).data('template', {'filters': "0", 'or': "0"}).addClass("disp_none_opt templates"));
+            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).data('icon','glyphicon-file').addClass("add_new_opt templ_save"));
+            $('#templates').selectpicker('refresh');
+            $('.templates').show();
+            $('.templ_save').hide();
+            ajaxGet('/api/diagnostics/lvtemplate/searchItem/', {}, function(data, status) {
+                let templates = data.rows;
+                $.each(templates, function(i, template) {
+                    $('#templates').append(template.uuid == opt ? $('<option/>', {value:template.uuid, text:template.name, selected: "selected" }).data('template', template) : $('<option/>', {value:template.uuid, text:template.name }).data('template', template));
+                });
+                $('#templates').selectpicker('refresh');
+                $('.badge').click();
+                $("#templates").change();
+            });
+        }
+
+
         function fetch_log() {
             var record_spec = [];
             // read heading, contains field specs
@@ -478,154 +611,17 @@
                             filter_value.show();
                         }
                     }).change();
-                    fetchTemplates("00000", true);
+                    fetchTemplates("00000");
                 }
             });
 
         });
 
+        // get and apply url params. ie11 compat
+        set_selection(window.location.search.substring(1).split("&"), "0");
+
         // startup poller
         poller();
-
-
-        /**
-         * set new selection
-         * @param items list of lexical expressions
-         * @param operator enable or disable global OR operator
-         */
-        function set_selection(items, operator)
-        {
-            // remove old selection
-            $("#filters > span.badge").click();
-            // operator default value
-            operator = operator || "0";
-            // collect valid condition types
-            let conditions = [];
-            $("#filter_condition > option").each(function(){
-                conditions.push($(this).val());
-            });
-            items.forEach(function(value) {
-                let parts = value.split(new RegExp("("+conditions.join("|")+")(.+)$"));
-                if (parts.length >= 3 && $("#filter_tag").val(parts[0]).val() === parts[0] ) {
-                    $("#filter_tag").val(parts[0]);
-                    $("#filter_condition").val(parts[1]);
-                    $("#filter_value").val(parts[2]);
-                    $("#add_filter_condition").click();
-                } else if (value.toLowerCase() == "or=1") {
-                    operator = "1";
-                }
-            });
-            $("#filter_or_type").prop('checked', operator === "1" ? true : false);
-            $(".selectpicker").selectpicker('refresh');
-            $("#filter_tag").change();
-        }
-
-        /**
-         * add new filters template
-         * @param t_data template's parameters
-         */
-        function addTemplate(t_data) {
-            ajaxCall('/api/diagnostics/lvtemplates/addItem/', t_data, function(data, status) {
-                if ((status == "success") && (data.result == "saved")) {
-                    fetchTemplates(data.uuid);
-                } else {
-                    BootstrapDialog.show({
-                    type: BootstrapDialog.TYPE_DANGER,
-                    title: "{{ lang._('Add filters template') }}",
-                    message: "{{ lang._('Template save failed. Message: ') }}" + data.result,
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                        }]
-                    });
-                    fetchTemplates("00000");
-                }
-            })
-        }
-
-        /**
-         * set template new values
-         * @param t_id template uuid
-         * @param t_data template's parameters
-         */
-        function editTemplate(t_id, t_data) {
-            ajaxCall('/api/diagnostics/lvtemplates/setItem/' + t_id, t_data, function(data, status) {
-                if ((status == "success") && (data.result == "saved")) {
-                    fetchTemplates(t_id);
-                } else {
-                    BootstrapDialog.show({
-                    type: BootstrapDialog.TYPE_DANGER,
-                    title: "{{ lang._('Filters template edit') }}",
-                    message: "{{ lang._('Template edit failed. Message: ') }}" + data.result,
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                        }]
-                    });
-                    fetchTemplates(t_id);
-                }
-            })
-        }
-
-        /**
-         * delete filters template
-         * @param t_id template uuid
-         */
-        function delTemplate(t_id) {
-            ajaxCall('/api/diagnostics/lvtemplates/delItem/' + t_id, {}, function(data, status) {
-                if ((status == "success") && (data.result == "deleted")) {
-                    //don't reset current filters so template can be restored right after delete
-                    $("#templates option[value=" + t_id + "]").remove();
-                    $("#templates").val("").selectpicker('refresh');
-                } else {
-                    BootstrapDialog.show({
-                    type: BootstrapDialog.TYPE_DANGER,
-                    title: "{{ lang._('Filters template delete') }}",
-                    message: "{{ lang._('Template delete failed. Result: ') }}" + data.result,
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                        }]
-                    });
-                }
-            })
-        }
-
-        /**
-         * fetch templates from config
-         * @param opt select value to make :selected and apply
-         * @param parse_url flag to parse and apply url params on page load
-         */
-        function fetchTemplates(opt, parse_url) {
-            opt = opt || "00000";
-            //apply = apply || true;
-            $('#templ_name').val("");
-            $('#templates').empty();
-            $('#templates').append($('<option/>', {value: "00000", text: "None"}).data('template', {'filters': "0", 'or': "0"}).addClass("disp_none_opt templates"));
-            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).data('icon','glyphicon-file').addClass("add_new_opt templ_save"));
-            $('#templates').selectpicker('refresh');
-            $('.templates').show();
-            $('.templ_save').hide();
-            ajaxGet('/api/diagnostics/lvtemplates/searchItem/', {}, function(data, status) {
-                let templates = data.rows;
-                $.each(templates, function(i, template) {
-                    $('#templates').append(template.uuid == opt ? $('<option/>', {value:template.uuid, text:template.name, selected: "selected" }).data('template', template) : $('<option/>', {value:template.uuid, text:template.name }).data('template', template));
-                });
-                $('#templates').selectpicker('refresh');
-                $('.badge').click();
-                $("#templates").change();
-                if (parse_url) {
-                    // get and apply url params. ie11 compat
-                    set_selection(window.location.search.substring(1).split("&"));
-                }
-            });
-        }
     });
 </script>
 <style>
