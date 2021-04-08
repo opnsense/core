@@ -288,27 +288,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
-    foreach ($interfaces as $ifname => $ifarr) {
-        if (isset($config['dhcpdv6'][$ifname]['staticmap'])) {
-            foreach($config['dhcpdv6'][$ifname]['staticmap'] as $static) {
-                $slease = array();
-                $slease['ip'] = $static['ipaddrv6'];
-                $slease['type'] = "static";
-                $slease['duid'] = $static['duid'];
-                $slease['start'] = "";
-                $slease['end'] = "";
-                $slease['hostname'] = $static['hostname'];
-                $slease['descr'] = $static['descr'];
-                $slease['act'] = "static";
-                if (in_array($slease['ip'], array_keys($ndpdata))) {
-                    $slease['online'] = 'online';
-                } else {
-                    $slease['online'] = 'offline';
-                }
-
-                $leases[] = $slease;
-            }
+    foreach (dhcpd_staticmap() as $static) {
+        if (!isset($static['ipaddrv6'])) {
+            continue;
         }
+        $slease = [];
+        $slease['ip'] = $static['ipaddrv6'];
+        $slease['if'] = $static['interface'];
+        $slease['type'] = 'static';
+        $slease['duid'] = $static['duid'];
+        $slease['start'] = '';
+        $slease['end'] = '';
+        $slease['hostname'] = $static['hostname'];
+        $slease['descr'] = $static['descr'];
+        $slease['act'] = 'static';
+        $slease['online'] = in_array($slease['ip'], array_keys($ndpdata)) ? 'online' : 'offline';
+        $leases[] = $slease;
     }
 
     if ($_GET['order']) {
@@ -449,31 +444,14 @@ endif;?>
               </thead>
               <tbody>
 <?php
-              $mac_man = json_decode(configd_run("interface list macdb json"), true);
               foreach ($leases as $data):
                 if (!($data['act'] == 'active' || $data['act'] == 'static' || $_GET['all'] == 1)) {
                     continue;
                 }
-                if ($data['act'] == "static") {
-                    foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-                        if (isset($dhcpifconf['staticmap'])) {
-                            foreach ($dhcpifconf['staticmap'] as $staticent) {
-                                if ($data['ip'] == $staticent['ipaddr']) {
-                                    $data['int'] = htmlspecialchars($interfaces[$dhcpif]['descr']);
-                                    $data['if'] = $dhcpif;
-                                    break;
-                                }
-                            }
-                        }
-                        /* exit as soon as we have an interface */
-                        if ($data['if'] != "") {
-                            break;
-                        }
-                    }
-                } else {
-                  $data['if'] = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($data['ip']));
-                  $data['int'] = htmlspecialchars($interfaces[$data['if']]['descr']);
+                if (!isset($data['if'])) {
+                    $data['if'] = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($data['ip']));
                 }
+                $data['int'] = htmlspecialchars($interfaces[$data['if']]['descr']);
                 ?>
                 <tr>
                   <td><?=$data['int'];?></td>
