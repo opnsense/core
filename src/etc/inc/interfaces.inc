@@ -4617,7 +4617,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
     $interfaces_a = config_read_array('interfaces');
 
     foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
-        if ($info['family'] != 'inet6') {
+        if ($info['family'] != 'inet6' || $info['deprecated']) {
             continue;
         }
 
