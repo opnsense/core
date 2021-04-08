@@ -153,6 +153,8 @@ function system_sysctl_get()
         }
     }
 
+    ksort($sysctls);
+
     return $sysctls;
 }
 
@@ -1158,7 +1160,6 @@ function system_login_configure($verbose = false)
     foreach (system_sysctl_get() as $param => $value) {
         $new_loader_conf .= "{$param}=\"{$value}\"\n";
     }
-
 
     /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
