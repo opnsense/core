@@ -92,7 +92,6 @@ class FirmwareController extends ApiControllerBase
         $active_size = '';
         $active_status = '';
         $backend = new Backend();
-        $target = null;
 
         $this->sessionClose(); // long running action, close session
 
@@ -104,10 +103,6 @@ class FirmwareController extends ApiControllerBase
         $response = json_decode(trim($backend->configdRun('firmware product')), true);
         if ($response != null && $response['product_check'] != null) {
             $response = $response['product_check'];
-
-            if ($response['product_id'] != $response['product_target']) {
-                $target = $response['product_target'];
-            }
 
             $download_size = !empty($response['download_size']) ? $response['download_size'] : 0;
 
@@ -271,8 +266,8 @@ class FirmwareController extends ApiControllerBase
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'unsigned') {
                 $response['status_msg'] = gettext('The repository has no fingerprint.');
                 $response['status'] = 'error';
-            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete' && !empty($target)) {
-                $response['status_msg'] = sprintf(gettext('The release type "%s" is not available on this repository.'), $target);
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'incomplete') {
+                $response['status_msg'] = sprintf(gettext('The release type "%s" is not available on this repository.'), $response['product_target']);
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
                 $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
