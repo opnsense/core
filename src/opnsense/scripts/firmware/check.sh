@@ -27,7 +27,7 @@
 
 # This script generates a json structured file with the following content:
 # connection: error|unauthenticated|misconfigured|unresolved|ok
-# repository: error|untrusted|unsigned|revoked|incomplete|ok
+# repository: error|untrusted|unsigned|revoked|incomplete|forbidden|ok
 # last_ckeck: <date_time_stamp>
 # download_size: <size_of_total_downloads>[,<size_of_total_downloads>]
 # new_packages: array with { name: <package_name>, version: <package_version> }
@@ -107,6 +107,10 @@ elif grep -q 'At least one of the certificates has been revoked' ${OUTFILE}; the
 elif grep -q 'No signature found' ${OUTFILE}; then
     # fingerprint not found
     repository="unsigned"
+    connection="ok"
+elif grep -q 'Forbidden' ${OUTFILE}; then
+    # access not granted
+    repository="forbidden"
     connection="ok"
 elif grep -q 'Unable to update repository' ${OUTFILE}; then
     # repository not found
