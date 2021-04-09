@@ -28,6 +28,7 @@
 <script>
     'use strict';
 
+    var t_fetched = $.Deferred();
     $( document ).ready(function() {
         var field_type_icons = {
           'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right',
@@ -203,6 +204,7 @@
                 $('#templates').selectpicker('refresh');
                 $('.badge').click();
                 $("#templates").change();
+                t_fetched.resolve();
             });
         }
 
@@ -611,14 +613,15 @@
                             filter_value.show();
                         }
                     }).change();
+                    $.when(t_fetched).done(function () {
+                        // get and apply url params. ie11 compat
+                        set_selection(window.location.search.substring(1).split("&"), "0");
+                     });
                     fetchTemplates("00000");
                 }
             });
 
         });
-
-        // get and apply url params. ie11 compat
-        set_selection(window.location.search.substring(1).split("&"), "0");
 
         // startup poller
         poller();
