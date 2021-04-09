@@ -190,7 +190,7 @@ EOF;
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
-        $bindints .= "interface: ::0\n";
+        $bindints .= "interface: ::\n";
         $bindints .= "interface-automatic: yes\n";
     }
 
