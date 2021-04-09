@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd February 5, 2021
+.Dd April 9, 2021
 .Dt OPNSENSE-VERSION 8
 .Os
 .Sh NAME
@@ -32,7 +32,7 @@
 .Nd OPNsense version utility
 .Sh SYNOPSIS
 .Nm
-.Op Fl AaefHNnsvw
+.Op Fl AaefHiNnsVvw
 .Op Ar package
 .Nm
 .Fl c
@@ -79,12 +79,16 @@ binary, or from package metadata if the binary could
 not be found.
 .It Fl H
 Return the package commit hash.
+.It Fl i
+Return the package nickname.
 .It Fl N
 Return the product name.
 .It Fl n
 Return the package name.
 .It Fl s
 Return the accumulated file size of the package.
+.It Fl V
+Return the package series.
 .It Fl v
 Return the package version.
 .It Fl w
