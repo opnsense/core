@@ -125,6 +125,9 @@ else
     (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     if [ "${product_id}" != "${product_target}" ]; then
         (pkg install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    elif [ -z "$(pkg rquery %n ${product_id})" ]; then
+        # although this should say "to update matching" we emulate for check below as pkg does not catch this
+        echo "self: No packages available to install matching '${product_id}'" | ${TEE} ${LOCKFILE} ${OUTFILE}
     fi
 
     # Check for additional repository errors
