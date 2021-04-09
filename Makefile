@@ -29,6 +29,7 @@ all:
 .include "Mk/defaults.mk"
 
 CORE_MESSAGE?=	Carry on my wayward son
+CORE_NICKNAME?=	Not Yet
 CORE_NAME?=	opnsense-devel
 CORE_TYPE?=	development
 
@@ -74,6 +75,9 @@ CORE_COMMIT?=	unknown 0 undefined
 CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
+
+_CORE_SERIES=	${CORE_VERSION:S/./ /g}
+CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}
 
 .if "${CORE_REVISION}" != "" && "${CORE_REVISION}" != "0"
 CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}

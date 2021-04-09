@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"    %%CORE_NEXT%%  ``The Road Ahead''   #[m" logo+
+	s"    %%CORE_SERIES%%  ``The Road Ahead''   #[m" logo+
 
 	2drop
 ;
