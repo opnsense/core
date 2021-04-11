@@ -82,8 +82,8 @@ if __name__ == '__main__':
         sys.exit(99)
 
     domain_pattern = re.compile(
-        r'(([\da-zA-Z_])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
-        r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))'
+        r'^(([\da-zA-Z_])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
+        r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))$'
     )
 
     startup_time = time.time()
@@ -133,6 +133,8 @@ if __name__ == '__main__':
                             if domain_pattern.match(domain):
                                 file_stats['blacklist'] += 1
                                 blacklist_items.add(entry)
+                            else:
+                                file_stats['skip'] += 1
 
                 syslog.syslog(
                     syslog.LOG_NOTICE,
