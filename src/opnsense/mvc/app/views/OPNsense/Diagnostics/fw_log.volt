@@ -186,6 +186,7 @@
          * @param opt select value to make :selected and apply
          */
         function fetchTemplates(opt) {
+            const t_fetched = new $.Deferred();
             opt = opt || "00000";
             //apply = apply || true;
             $('#templ_name').val("");
@@ -203,7 +204,9 @@
                 $('#templates').selectpicker('refresh');
                 $('.badge').click();
                 $("#templates").change();
+                t_fetched.resolve();
             });
+            return t_fetched;
         }
 
 
@@ -611,14 +614,14 @@
                             filter_value.show();
                         }
                     }).change();
-                    fetchTemplates("00000");
+                    fetchTemplates("00000").done(function() {
+                        // get and apply url params. ie11 compat
+                        set_selection(window.location.search.substring(1).split("&"), "0");
+                    });
                 }
             });
 
         });
-
-        // get and apply url params. ie11 compat
-        set_selection(window.location.search.substring(1).split("&"), "0");
 
         // startup poller
         poller();
