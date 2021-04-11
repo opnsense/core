@@ -2978,6 +2978,9 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     } else {
         @unlink("/var/etc/dhcp6c_{$interface}.conf");
     }
+    
+    @unlink("/tmp/{$wanif}_pltime\n");
+    @unlink("/tmp/{$wanif}_vltime\n");
 
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
@@ -2988,6 +2991,12 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "\tif [ -n \"\${PDINFO}\" ]; then\n";
     $dhcp6cscript .= "\t\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "\tfi\n";
+    $dhcp6cscript .= "\tif [ -n \"\${PLTIME}\" ]; then\n";
+    $dhcp6cscript .= "\t\techo \${PLTIME} > /tmp/{$wanif}_pltime\n";
+    $dhcp6cscript .= "\tfi\n";
+    $dhcp6cscript .= "\tif [ -n \"\${VLTIME}\" ]; then\n";
+    $dhcp6cscript .= "\t\techo \${VLTIME} > /tmp/{$wanif}_vltime\n";
+    $dhcp6cscript .= "\tfi\n";     
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
     $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
     $dhcp6cscript .= "\t;;\n";

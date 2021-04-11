@@ -235,6 +235,15 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             continue;
         }
 
+         /* Get the tracked interface */
+        $tracked_interface = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface']);
+
+        /* Get the lease time obtained from dhcp6c - Only interested in pltime here */
+        $real_pl_time = @file_get_contents("/tmp/{$tracked_interface}_pltime");      
+        if (!empty($real_pl_time)) {
+           $pl_time = str_replace(array("\n", "\r"), '', $real_pl_time);
+        }
+
         /*
          * Check if we need to listen on a CARP interface.  A CARP setup will try
          * to leave the clients configured: RemoveRoute off / DeprecatePrefix off
@@ -275,7 +284,10 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
         if (!empty($dhcpv6ifconf['AdvDefaultLifetime'])) {
             $radvdconf .= sprintf("\tAdvDefaultLifetime %s;\n", $dhcpv6ifconf['AdvDefaultLifetime']);
+        } else if ($pl_time > 0) {
+          $radvdconf .= sprintf("\tAdvDefaultLifetime %s;\n", $pl_time);
         }
+
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
 
         switch ($dhcpv6ifconf['rapriority']) {
@@ -489,6 +501,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
+        if ($pl_time > 0) {
+          $radvdconf .= sprintf("\tAdvDefaultLifetime %s;\n", $pl_time);
+        }
         $radvdconf .= "\tAdvManagedFlag on;\n";
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
 
@@ -1288,6 +1303,17 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                 continue;
             }
 
+            /* Get the tracked interface */
+            $tracked_interface = get_real_interface($config['interfaces'][$ifname]['track6-interface']);
+
+            /* Get the lease time obtained from dhcp6c */
+            $real_pl_time = @file_get_contents("/tmp/{$tracked_interface}_pltime");
+            $real_vl_time = @file_get_contents("/tmp/{$tracked_interface}_vltime");
+            if(!empty($real_pl_time) && !empty($real_vl_time)) {
+              $pl_time = str_replace(array("\n", "\r"), '', $real_pl_time);
+              $vl_time = str_replace(array("\n", "\r"), '', $real_vl_time);            
+            }
+
             $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
             $ifcfgipv6arr = explode(':', $ifcfgipv6);
 
@@ -1424,6 +1450,8 @@ authoritative;
 
 EOD;
 
+
+
     $dhcpdv6ifs = array();
     $ddns_zones = array();
     $need_ddns_updates = false;
@@ -1499,11 +1527,15 @@ EOD;
         // default-lease-time
         if (!empty($dhcpv6ifconf['defaultleasetime'])) {
             $dhcpdv6conf .= "  default-lease-time {$dhcpv6ifconf['defaultleasetime']};\n";
+        } else if ( $pl_time > 0) {
+            $dhcpdv6conf .= "  default-lease-time {$pl_time};\n";
         }
 
         // max-lease-time
         if (!empty($dhcpv6ifconf['maxleasetime'])) {
             $dhcpdv6conf .= "  max-lease-time {$dhcpv6ifconf['maxleasetime']};\n";
+        } else if ( $vl_time > 0) {
+            $dhcpdv6conf .= "  max-lease-time {$vl_time};\n";
         }
 
         // min-secs
