@@ -564,11 +564,6 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         flush();
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
-
     if ($flush_states) {
         mwexec('/sbin/pfctl -Fs');
     }
