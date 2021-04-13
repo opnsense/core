@@ -65,7 +65,10 @@ $di->set('url', function () use ($config) {
  */
 $di->setShared('session', function () {
     $session = new Manager();
-    $files = new Stream();
+    $files = new Stream([
+        'savePath' => session_save_path(),
+        'prefix'   => 'sess_',
+    ]);
     $session->setAdapter($files);
     $session->start();
     // Set session response cookie, unfortunalty we need to read the config here to determine if secure option is
