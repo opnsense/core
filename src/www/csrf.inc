@@ -34,36 +34,35 @@ class LegacyCSRF
     private $is_html_output = false;
     public function __construct()
     {
-        $this->di = new \Phalcon\DI\FactoryDefault();
-        $this->security = new Phalcon\Security();
-        $this->security->setDi($this->di);
-        // register rewrite handler
-        ob_start(array($this,'csrfRewriteHandler'), 5242880);
-    }
-
-    private function Session()
-    {
         global $config;
-        if ($this->session == null) {
-            $this->session = new Phalcon\Session\Adapter\Files();
-            $this->session->start();
+        // register rewrite handler
+        if (session_status() == PHP_SESSION_NONE) {
+            // Handle HTTPS httponly and secure flags
+            $currentCookieParams = session_get_cookie_params();
+            session_set_cookie_params(
+                $currentCookieParams["lifetime"],
+                $currentCookieParams["path"],
+                null,
+                ($config['system']['webgui']['protocol'] == "https"),
+                true
+            );
+            session_start();
             $secure = $config['system']['webgui']['protocol'] == 'https';
             setcookie(session_name(), session_id(), null, '/', null, $secure, true);
-            $this->di->setShared('session', $this->session);
         }
+        ob_start(array($this,'csrfRewriteHandler'), 5242880);
     }
 
     public function checkToken()
     {
         $result = false; // default, not valid
-        $this->Session();
         $securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
         if (empty($_POST[$securityTokenKey])) {
             if (!empty($_SERVER['HTTP_X_CSRFTOKEN'])) {
-                $result = $this->security->checkToken(null, $_SERVER['HTTP_X_CSRFTOKEN'], false);
+                $result = $_SERVER['HTTP_X_CSRFTOKEN'] == $_SESSION['$PHALCON/CSRF$'];
             }
         } else {
-            $result = $this->security->checkToken($securityTokenKey, $_POST[$securityTokenKey], false);
+            $result = $_POST[$securityTokenKey] == $_SESSION['$PHALCON/CSRF$'];
         }
         // close session after validation
         session_write_close();
@@ -72,15 +71,13 @@ class LegacyCSRF
 
     private function newToken()
     {
-        $this->Session();
+        $random = new \Phalcon\Security\Random();
         // only request new token when session has none
-        $securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
-        $securityToken = $_SESSION['$PHALCON/CSRF$'];
-        if (empty($securityToken) || empty($securityTokenKey)) {
-            $securityToken = $this->security->getToken();
-            $securityTokenKey = $this->security->getTokenKey();
+        if (empty($_SESSION['$PHALCON/CSRF/KEY$']) || empty($_SESSION['$PHALCON/CSRF$'])) {
+            $_SESSION['$PHALCON/CSRF$'] = $random->base64Safe(16);
+            $_SESSION['$PHALCON/CSRF/KEY$'] = $random->base64Safe(16);
         }
-        return array('token'=>$securityToken, 'key' => $securityTokenKey);
+        return array('token' => $_SESSION['$PHALCON/CSRF$'], 'key' => $_SESSION['$PHALCON/CSRF/KEY$']);
     }
 
     public function csrfRewriteHandler($buffer)
@@ -112,6 +109,7 @@ class LegacyCSRF
 }
 
 $LegacyCSRFObject = new LegacyCSRF();
+
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && !$LegacyCSRFObject->checkToken()) {
     header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
