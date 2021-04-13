@@ -107,7 +107,6 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2021
 
 CORE_DEPENDS_amd64?=	beep \
-			bsdinstaller \
 			suricata-devel
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
@@ -133,6 +132,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			ntp \
 			openssh-portable \
 			openvpn \
+			opnsense-installer \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \
