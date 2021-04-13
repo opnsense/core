@@ -31,47 +31,8 @@ fi
 
 rm -f /tmp/install_complete
 
-bsdinstaller()
-{
-sysctl kern.geom.debugflags=16 >/dev/null
-sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
-
-ifconfig lo0 127.0.0.1
-ifconfig lo0 inet6 ::1
-ifconfig lo0 up
-
-if [ -z "${TERM}" ]; then
-	if [ -n "$(tty | grep ttyv)" ]; then
-		export TERM=xterm
-	else
-		export TERM=vt100
-	fi
-fi
-
-CONFIGDIR=/usr/local/share/dfuibe_lua
-CONFIGS=${CONFIGDIR}/main.lua
-
-for CONFIG in BSDInstaller FreeBSD Product; do
-	if [ -f /usr/local/share/dfuibe_lua/conf/${CONFIG}.lua ]; then
-		CONFIGS="${CONFIGS} ${CONFIGDIR}/conf/${CONFIG}.lua"
-	fi
-done
-
-daemon -f lua50c51 ${CONFIGS}
-
-conscontrol mute on > /dev/null
-
-dfuife_curses -b /usr/local/share/dfuife_curses/hourglass.txt
-
-conscontrol mute off > /dev/null
-}
-
-# XXX compat glue for now
-if [ -e /usr/libexec/bsdinstall/opnsense ]; then
-	bsdinstall opnsense
-else
-	bsdinstaller
-fi
+# XXX ideally the exit code could tell us what /tmp/install_complete tried to do
+bsdinstall opnsense
 
 if [ ! -f /tmp/install_complete ]; then
 	echo "The installation was aborted."
