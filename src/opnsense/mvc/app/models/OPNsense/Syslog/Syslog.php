@@ -28,6 +28,7 @@
 
 namespace OPNsense\Syslog;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 
@@ -56,7 +57,7 @@ class Syslog extends BaseModel
                         $ipproto = ((string)$parentNode->transport)[3];
                         $hostproto = strpos((string)$parentNode->hostname, ":") === false ? "4" : "6";
                         if (Util::isIpAddress((string)$parentNode->hostname) && $ipproto != $hostproto) {
-                            $messages->appendMessage(new \Phalcon\Validation\Message(
+                            $messages->appendMessage(new Message(
                                 gettext("Transport protocol does not match address in hostname"),
                                 $key
                             ));

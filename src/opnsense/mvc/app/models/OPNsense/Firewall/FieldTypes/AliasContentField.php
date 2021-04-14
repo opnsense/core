@@ -34,7 +34,7 @@ use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
-use Phalcon\Validation\Message;
+use Phalcon\Messages\Message;
 use OPNsense\Firewall\Util;
 
 /**

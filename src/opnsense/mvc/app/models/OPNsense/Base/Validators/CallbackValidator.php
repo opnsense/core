@@ -30,16 +30,16 @@
 
 namespace OPNsense\Base\Validators;
 
-use Phalcon\Validation\Validator;
+use Phalcon\Validation\AbstractValidator;
 use Phalcon\Validation\ValidatorInterface;
 use Phalcon\Validation;
-use Phalcon\Validation\Message;
+use Phalcon\Messages\Message;
 
 /**
  * Class CallbackValidator
  * @package OPNsense\Base\Validators
  */
-class CallbackValidator extends Validator implements ValidatorInterface
+class CallbackValidator extends AbstractValidator implements ValidatorInterface
 {
 
     /**
@@ -49,7 +49,7 @@ class CallbackValidator extends Validator implements ValidatorInterface
     * @param string $attribute
     * @return boolean
     */
-    public function validate(Validation $validator, $attribute)
+    public function validate(Validation $validator, $attribute): bool
     {
         $callback = $this->getOption('callback');
         if ($callback) {
