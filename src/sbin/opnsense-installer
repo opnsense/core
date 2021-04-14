@@ -55,4 +55,6 @@ for n in 5 4 3 2 1; do
     sleep 1
 done
 
+echo
+
 reboot
