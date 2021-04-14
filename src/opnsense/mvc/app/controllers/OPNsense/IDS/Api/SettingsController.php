@@ -28,9 +28,8 @@
 
 namespace OPNsense\IDS\Api;
 
-use Phalcon\Filter;
+use Phalcon\Filter\FilterFactory;
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Base\Filters\QueryFilter;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Base\UIModelGrid;
@@ -71,8 +70,10 @@ class SettingsController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
             // create filter to sanitize input data
-            $filter = new Filter();
-            $filter->add('query', new QueryFilter());
+            $filter = (new FilterFactory())->newInstance();
+            $filter->set('query', function($value){
+                return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
+            });
 
             // fetch query parameters (limit results to prevent out of memory issues)
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);

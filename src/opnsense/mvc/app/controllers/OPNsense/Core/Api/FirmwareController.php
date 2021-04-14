@@ -328,10 +328,11 @@ class FirmwareController extends ApiControllerBase
 
         $this->sessionClose(); // long running action, close session
 
-        $filter = new \Phalcon\Filter();
-        $filter->add('version', function ($value) {
-            return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
-        });
+        $filter = new \Phalcon\Filter([
+            'version' => function ($value) {
+                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
+            }
+        ]);
         $version = $filter->sanitize($version, 'version');
 
         $backend = new Backend();
@@ -359,10 +360,11 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('scrub', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'scrub' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $package = $filter->sanitize($package, 'scrub');
             $text = trim($backend->configdRun(sprintf('firmware license %s', $package)));
             if (!empty($text)) {
@@ -527,10 +529,11 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'pkgname' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
@@ -596,10 +599,11 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'pkgname' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware install", array($pkg_name), true));
@@ -625,10 +629,11 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'pkgname' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware remove", array($pkg_name), true));
@@ -652,10 +657,11 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'pkgname' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
         } else {
             $pkg_name = null;
@@ -684,10 +690,11 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'pkgname' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
         } else {
             $pkg_name = null;
@@ -754,10 +761,11 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter();
-            $filter->add('scrub', function ($value) {
-                return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-            });
+            $filter = new \Phalcon\Filter([
+                'scrub' => function ($value) {
+                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
+                }
+            ]);
             $package = $filter->sanitize($package, 'scrub');
             $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
             if (!empty($text)) {
