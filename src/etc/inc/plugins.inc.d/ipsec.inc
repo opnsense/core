@@ -531,9 +531,11 @@ function ipsec_parse_phase2($ikeid)
             }
         } else {
             // merge tunnels
-            $result['reqids'] = [min($result['reqids'])];
-            for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
-                $result['uniqid_reqid'][$uniqids[$idx]] = $result['reqids'][0];
+            if (!empty($result['reqids'])) {
+                $result['reqids'] = [min($result['reqids'])];
+                for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
+                    $result['uniqid_reqid'][$uniqids[$idx]] = $result['reqids'][0];
+                }
             }
             $result['leftsubnets'] = array_unique($result['leftsubnets']);
             $result['rightsubnets'] = array_unique($result['rightsubnets']);
