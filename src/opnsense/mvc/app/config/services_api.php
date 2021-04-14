@@ -97,7 +97,7 @@ $di->set('router', function () use ($config) {
 // exception handling
 $di->get('eventsManager')->attach("dispatch:beforeException", function ($event, $dispatcher, $exception) {
     switch ($exception->getCode()) {
-        case Phalcon\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+        case Phalcon\Dispatcher\Exception::EXCEPTION_HANDLER_NOT_FOUND:
             // send to error action on default index controller
             $dispatcher->forward(array(
                 'controller' => 'index',
@@ -109,7 +109,7 @@ $di->get('eventsManager')->attach("dispatch:beforeException", function ($event, 
                 )
             ));
             return false;
-        case Phalcon\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+        case Phalcon\Dispatcher\Exception::EXCEPTION_ACTION_NOT_FOUND:
             // send to error action on default index controller
             $dispatcher->forward(array(
                 'controller' => 'index',
