@@ -44,13 +44,13 @@ $di->set('view', function () use ($config) {
         $view->setViewsDir($viewDirs);
     }
     $view->registerEngines(array(
-        '.volt' => function ($view, $di) use ($config) {
+        '.volt' => function ($view) use ($config) {
 
-            $volt = new VoltEngine($view, $di);
+            $volt = new VoltEngine($view, $this);
 
             $volt->setOptions(array(
-                'compiledPath' => $config->application->cacheDir,
-                'compiledSeparator' => '_'
+                'path' => $config->application->cacheDir,
+                'separator' => '_'
             ));
             // register additional volt template functions
             $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
