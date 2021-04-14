@@ -215,6 +215,13 @@
                     $("#copy-paste").show();
                     break;
             }
+
+            if ($(this).val() === 'dynipv6host') {
+                $("#row_alias\\.interface").show();
+            } else {
+                $("#row_alias\\.interface").hide();
+            }
+
             if ($(this).val() === 'port') {
                 $("#row_alias\\.counters").hide();
             } else {
@@ -472,6 +479,7 @@
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
+                                <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
                         </div>
@@ -689,6 +697,23 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.interface">
+                                    <td>
+                                        <div class="alias interface" id="alias_interface">
+                                            <a id="help_for_alias.interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Interface')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select  class="selectpicker" id="alias.interface" data-width="200px"></select>                                       
+                                        <div class="hidden" data-for="help_for_alias.interface">
+                                            <small>{{lang._('Select the Interface for the V6 dynamic IP')}}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.enabled"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.counters">

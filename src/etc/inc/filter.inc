@@ -716,6 +716,16 @@ function filter_generate_aliases()
                 $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], array(), $aliasObject));
                 $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                 break;
+            case "dynipv6host":
+                list ($ifcfgipv6) = interfaces_primary_address6($aliased['interface'], null, $ifconfig_details);
+                if (!is_ipaddrv6($ifcfgipv6)) {
+                 break;
+                }
+                $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
+                $ifcfgipv6arr = explode(':', $ifcfgipv6);
+                $alias_address = make_ipv6_64_address($ifcfgipv6, $aliased['content']);            
+                $aliases .= "{$aliased['name']} = \"{ {$alias_address} }\"\n";
+                break;
             default:
                 $tblopt = (!empty($aliased['counters']) ? 'counters' : '') . " persist ";
                 $aliases .= "table <{$aliased['name']}> {$tblopt} \n";
