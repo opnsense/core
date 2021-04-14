@@ -28,6 +28,7 @@
 
 namespace OPNsense\Core;
 
+use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 
 /**
@@ -55,10 +56,15 @@ class Backend
      */
     protected function getLogger($ident = 'configd')
     {
-        $logger = new Syslog($ident, array(
-            'facility' => LOG_LOCAL4,
-            'option' => LOG_PID,
-        ));
+        $logger = new Logger(
+            'messages',
+            [
+                'main' => new Syslog($ident, array(
+                    'option' => LOG_PID,
+                    'facility' => LOG_LOCAL4
+                ))
+            ]
+        );
 
         return $logger;
     }

@@ -29,6 +29,7 @@
 namespace OPNsense\Core;
 
 use Phalcon\DI\FactoryDefault;
+use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 
 /**
@@ -285,7 +286,15 @@ class Config extends Singleton
             $this->simplexml = null;
             // there was an issue with loading the config, try to restore the last backup
             $backups = $this->getBackups();
-            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
+            $logger = new Logger(
+                'messages',
+                [
+                    'main' => new Syslog("config", array(
+                        'option' => LOG_PID,
+                        'facility' => LOG_LOCAL4
+                    ))
+                ]
+            );
             if (count($backups) > 0) {
                 // load last backup
                 $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
@@ -620,7 +629,15 @@ class Config extends Singleton
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
                     // Althought we include the backup filename, the event handler is responsible to determine the
                     // last processed event itself. (it's merely added for debug purposes)
-                    $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL5));
+                    $logger = new Logger(
+                        'messages',
+                        [
+                            'main' => new Syslog("config", array(
+                                'option' => LOG_PID,
+                                'facility' => LOG_LOCAL5
+                            ))
+                        ]
+                    );
                     $logger->info("config-event: new_config " . $backup_filename);
                 }
                 flock($this->config_file_handle, LOCK_UN);
