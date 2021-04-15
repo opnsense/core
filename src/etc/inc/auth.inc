@@ -546,6 +546,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&
+        /* XXX $user_pass comparison? */
         $userattrs[2] == $user_uid &&
         $userattrs[3] == $user_gid &&
         $userattrs[7] == $comment &&
