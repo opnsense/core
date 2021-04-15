@@ -120,6 +120,7 @@ class ControllerBase extends ControllerRoot
     {
         // set base template
         $this->view->setTemplateBefore('default');
+        $this->view->session = $this->session;
     }
 
     /**
@@ -178,7 +179,8 @@ class ControllerBase extends ControllerRoot
         $cnf = Config::getInstance();
 
         $this->view->setVar('lang', $this->translator);
-        $this->view->menuSystem = $menu->getItems($this->router->getRewriteUri());
+        $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
+        $this->view->menuSystem = $menu->getItems($rewrite_uri);
         /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
 

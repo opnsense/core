@@ -30,7 +30,6 @@ namespace OPNsense\Syslog\Api;
 
 use Phalcon\Filter;
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Base\Filters\QueryFilter;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Base\UIModelGrid;

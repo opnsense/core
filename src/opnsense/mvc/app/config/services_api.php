@@ -31,7 +31,8 @@ use Phalcon\DI\FactoryDefault;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
-use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\Session\Manager;
+use Phalcon\Session\Adapter\Stream;
 use OPNsense\Core\Config;
 use OPNsense\Core\Routing;
 
@@ -63,7 +64,12 @@ $di->set('url', function () use ($config) {
  * Start the session the first time some component request the session service
  */
 $di->setShared('session', function () {
-    $session = new SessionAdapter();
+    $session = new Manager();
+    $files = new Stream([
+        'savePath' => session_save_path(),
+        'prefix'   => 'sess_',
+    ]);
+    $session->setAdapter($files);
     $session->start();
     // Set session response cookie, unfortunalty we need to read the config here to determine if secure option is
     // a valid choice.
@@ -84,14 +90,14 @@ $di->setShared('session', function () {
  */
 $di->set('router', function () use ($config) {
     $routing = new Routing($config->application->controllersDir, "api");
-    $routing->getRouter()->handle();
+    $routing->getRouter()->handle($_SERVER['REQUEST_URI']);
     return $routing->getRouter();
 });
 
 // exception handling
 $di->get('eventsManager')->attach("dispatch:beforeException", function ($event, $dispatcher, $exception) {
     switch ($exception->getCode()) {
-        case Phalcon\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+        case Phalcon\Dispatcher\Exception::EXCEPTION_HANDLER_NOT_FOUND:
             // send to error action on default index controller
             $dispatcher->forward(array(
                 'controller' => 'index',
@@ -103,7 +109,7 @@ $di->get('eventsManager')->attach("dispatch:beforeException", function ($event, 
                 )
             ));
             return false;
-        case Phalcon\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+        case Phalcon\Dispatcher\Exception::EXCEPTION_ACTION_NOT_FOUND:
             // send to error action on default index controller
             $dispatcher->forward(array(
                 'controller' => 'index',

@@ -62,7 +62,7 @@ class FirewallController extends ApiControllerBase
      * retrieve firewall log filter choices
      * @return array
      */
-    public function log_filtersAction()
+    public function logFiltersAction()
     {
         $config = Config::getInstance()->object();
         $interfaces = [];

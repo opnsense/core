@@ -29,6 +29,7 @@
 
 namespace OPNsense\Monit;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -149,7 +150,7 @@ class Monit extends BaseModel
     /**
      * validate full model using all fields and data in a single (1 deep) array
      * @param bool $validateFullModel validate full model or only changed fields
-     * @return \Phalcon\Validation\Message\Group
+     * @return \Phalcon\Messages\Messages
      */
     public function performValidation($validateFullModel = false)
     {
@@ -172,7 +173,7 @@ class Monit extends BaseModel
                                     $node->isFieldChanged() &&
                                     $this->isTestServiceRelated($testUuid)
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         sprintf(
                                             gettext("Cannot change the test type to '%s'. Test '%s' is linked to a service."),
                                             (string)$node,
@@ -191,7 +192,7 @@ class Monit extends BaseModel
                                     strcmp((string)$parentNode->type, $type) != 0 &&
                                     $this->isTestServiceRelated($parentNode->getAttribute('uuid'))
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         sprintf(
                                             gettext("Condition '%s' would change the type of the test '%s' but it is linked to a service."),
                                             (string)$node,
@@ -223,7 +224,7 @@ class Monit extends BaseModel
                                                     $test->type->getNodeData()[(string)$test->type]['value']
                                                 );
                                                 $messages->appendMessage(
-                                                    new \Phalcon\Validation\Message($validationMsg, $key)
+                                                    new Message($validationMsg, $key)
                                                 );
                                             }
                                         }
@@ -235,7 +236,7 @@ class Monit extends BaseModel
                                     empty((string)$node) && (string)$parentNode->type == 'process'
                                       && empty((string)$parentNode->match)
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         gettext("Please set at least one of Pidfile or Match."),
                                         $key
                                     ));
@@ -246,7 +247,7 @@ class Monit extends BaseModel
                                     empty((string)$node) && (string)$parentNode->type == 'process'
                                       && empty((string)$parentNode->pidfile)
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         gettext("Please set at least one of Pidfile or Match."),
                                         $key
                                     ));
@@ -254,7 +255,7 @@ class Monit extends BaseModel
                                 break;
                             case 'address':
                                 if (empty((string)$node) && (string)$parentNode->type == 'host') {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         gettext("Address is mandatory for 'Remote Host' checks."),
                                         $key
                                     ));
@@ -262,7 +263,7 @@ class Monit extends BaseModel
                                     empty((string)$node) && (string)$parentNode->type == 'network'
                                       && empty((string)$parentNode->interface)
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         gettext("Please set at least one of Address or Interface."),
                                         $key
                                     ));
@@ -273,7 +274,7 @@ class Monit extends BaseModel
                                     empty((string)$node) && (string)$parentNode->type == 'network'
                                       && empty((string)$parentNode->address)
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         gettext("Please set at least one of Address or Interface."),
                                         $key
                                     ));
@@ -286,7 +287,7 @@ class Monit extends BaseModel
                                         ['file', 'fifo', 'filesystem', 'directory']
                                     )
                                 ) {
-                                    $messages->appendMessage(new \Phalcon\Validation\Message(
+                                    $messages->appendMessage(new Message(
                                         gettext("Path is mandatory."),
                                         $key
                                     ));

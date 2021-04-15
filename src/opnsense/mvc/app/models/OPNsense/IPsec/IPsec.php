@@ -28,6 +28,7 @@
 
 namespace OPNsense\IPsec;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -69,7 +70,7 @@ class IPsec extends BaseModel
      * and private key contents with a sanitized representation as well as storing the key size and fingerprint.
      * @param $nodeKey string Fully-qualified key of the keyPair instance within a model
      * @param $keyPair \OPNsense\Base\FieldTypes\BaseField Field instance of a keyPair
-     * @param $messages \Phalcon\Validation\Message\Group Validation message group
+     * @param $messages \Phalcon\Messages\Messages Validation message group
      */
     private function validateKeyPair($nodeKey, $keyPair, $messages)
     {
@@ -86,7 +87,7 @@ class IPsec extends BaseModel
                     (string)$keyPair->keyType . '-public'
                 );
             } catch (\Exception $e) {
-                $messages->appendMessage(new \Phalcon\Validation\Message($e->getMessage(), $nodeKey . '.publicKey'));
+                $messages->appendMessage(new Message($e->getMessage(), $nodeKey . '.publicKey'));
             }
         }
 
@@ -98,14 +99,14 @@ class IPsec extends BaseModel
                     (string)$keyPair->keyType . '-private'
                 );
             } catch (\Exception $e) {
-                $messages->appendMessage(new \Phalcon\Validation\Message($e->getMessage(), $nodeKey . '.privateKey'));
+                $messages->appendMessage(new Message($e->getMessage(), $nodeKey . '.privateKey'));
             }
         }
 
         // Compare SHA1 fingerprint of public and private keys to check if they belong to each other
         if ($publicKey && $privateKey) {
             if ($publicKey['fingerprint'] !== $privateKey['fingerprint']) {
-                $messages->appendMessage(new \Phalcon\Validation\Message(
+                $messages->appendMessage(new Message(
                     gettext('This private key does not belong to the given public key.'),
                     $nodeKey . '.privateKey'
                 ));
