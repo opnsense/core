@@ -33,7 +33,7 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use Phalcon\Logger\Adapter\Syslog;
 use Phalcon\Validation;
-use Phalcon\Validation\Message\Group;
+use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
@@ -439,7 +439,7 @@ abstract class BaseModel
         if (count($validation_data) > 0) {
             $messages = $validation->validate($validation_data);
         } else {
-            $messages = new Group();
+            $messages = new Messages();
         }
 
         return $messages;

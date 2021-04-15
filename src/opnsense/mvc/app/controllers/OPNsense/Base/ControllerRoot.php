@@ -30,7 +30,9 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
 use Phalcon\Mvc\Controller;
+use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Translate\InterpolatorFactory;
 use OPNsense\Core\ACL;
 
 /**
@@ -43,6 +45,12 @@ class ControllerRoot extends Controller
      * @var null|ViewTranslator translator to use
      */
     public $translator;
+
+
+    /**
+     * log handle
+     */
+    protected $logger = null;
 
     /**
      * @var null|string logged in username, populated during authentication
@@ -84,7 +92,8 @@ class ControllerRoot extends Controller
 
         $locale = $lang . '.UTF-8';
         bind_textdomain_codeset('OPNsense', $locale);
-        $this->translator = new ViewTranslator(array(
+        $interpolator = new InterpolatorFactory();
+        $this->translator = new ViewTranslator($interpolator, array(
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
             'locale' => $locale,
@@ -98,12 +107,18 @@ class ControllerRoot extends Controller
      */
     protected function getLogger($ident = "api")
     {
-        $logger = new Syslog($ident, array(
-            'option' => LOG_PID,
-            'facility' => LOG_LOCAL4
-        ));
-
-        return $logger;
+        if ($this->logger == null) {
+            $this->logger = new Logger(
+                'messages',
+                [
+                    'main' => new Syslog($ident, array(
+                        'option' => LOG_PID,
+                        'facility' => LOG_LOCAL4
+                    ))
+                ]
+            );
+        }
+        return $this->logger;
     }
 
     /**

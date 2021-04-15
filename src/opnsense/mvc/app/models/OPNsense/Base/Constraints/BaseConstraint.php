@@ -30,13 +30,12 @@
 
 namespace OPNsense\Base\Constraints;
 
-use Phalcon\Validation\Validator;
+use Phalcon\Validation\AbstractValidator;
 use Phalcon\Validation\ValidatorInterface;
-use Phalcon\Validation\Message;
+use Phalcon\Messages\Message;
 
-abstract class BaseConstraint extends Validator implements ValidatorInterface
+abstract class BaseConstraint extends AbstractValidator implements ValidatorInterface
 {
-
     /**
      * check if field is empty  (either boolean field as false or an empty field)
      * @param $node

@@ -49,7 +49,7 @@ class ComparedToFieldConstraint extends BaseConstraint
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute)
+    public function validate(\Phalcon\Validation $validator, $attribute): bool
     {
         $node = $this->getOption('node');
         $field_name = $this->getOption('field');
