@@ -96,7 +96,7 @@ class ServiceController extends ApiControllerBase
         // get template name
         $paramfilter = (new FilterFactory())->newInstance();
         if ($fileid != null) {
-            $templateFileId = $paramfilter->sanitize($fileid, 'alphanum');
+            $templateFileId = $paramfilter->sanitize($fileid, 'alnum');
         } else {
             $templateFileId = 'default';
         }
