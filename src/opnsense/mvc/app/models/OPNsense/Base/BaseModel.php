@@ -635,7 +635,12 @@ abstract class BaseModel
         if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
             $upgradePerfomed = false;
             $migObjects = array();
-            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL2));
+            $logger = new Logger(
+                'messages',
+                [
+                    'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+                ]
+            );
             $class_info = new ReflectionClass($this);
             // fetch version migrations
             $versions = array();
