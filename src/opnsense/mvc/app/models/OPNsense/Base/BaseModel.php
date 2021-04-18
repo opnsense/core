@@ -31,6 +31,7 @@ namespace OPNsense\Base;
 use Exception;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
+use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 use Phalcon\Validation;
 use Phalcon\Messages\Messages;
@@ -553,10 +554,12 @@ abstract class BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         // create logger to save possible consistency issues to
-        $logger = new Syslog("config", array(
-            'option' => LOG_PID,
-            'facility' => LOG_LOCAL2
-        ));
+        $logger = new Logger(
+            'messages',
+            [
+                'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+            ]
+        );
 
         // Perform validation, collect all messages and raise exception if validation is not disabled.
         // If for some reason the developer chooses to ignore the errors, let's at least log there something
