@@ -4627,12 +4627,13 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         }
 
         $addrparts = explode('/', $tmpaddr);
-
+        $temp_address = Net_Ipv6::uncompress($addrparts[0],true);
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
-                /* do not care about alias */
-                continue 2;
-            }
+          $temp_vip = Net_Ipv6::uncompress( $vip['subnet'],true);
+          if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && $temp_address == $temp_vip) {                
+            /* do not care about alias */
+            continue 2;
+          }
         }
 
         $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
