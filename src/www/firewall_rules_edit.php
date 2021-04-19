@@ -830,8 +830,13 @@ include("head.inc");
                       endforeach; ?>
                       </select>
                       <div class="hidden" data-for="help_for_direction">
-                        <?=gettext("Direction of the traffic. The default policy is to filter inbound traffic, ".
-                                   "which sets the policy to the interface originally receiving the traffic.") ?>
+                        <?=gettext("Direction of the traffic. Traffic IN is coming into the firewall interface, ".
+                                   "while traffic OUT is going out of the firewall interface. In visual terms: ".
+                                   "[Source] -> IN -> [Firewall] -> OUT -> [Destination]. The default policy is to ".
+                                   "filter inbound traffic, which means the policy applies to the interface on which ".
+                                   "the traffic is originally received by the firewall from the source. This is more ".
+                                   "efficient from a traffic processing perspective. In most cases, the default ".
+                                   "policy will be the most appropriate.") ?>
                       </div>
                     </td>
                   <tr>
