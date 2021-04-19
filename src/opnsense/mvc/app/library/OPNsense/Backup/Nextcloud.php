@@ -69,7 +69,7 @@ class Nextcloud extends Base implements IBackupProvider
                 "name" => "password",
                 "type" => "password",
                 "label" => gettext("Password"),
-                "help" => gettext("The app password which has been generated for you"),
+                "help" => gettext("The app password which has been generated for you in Nextcloud security settings. Do not use the real password here."),
                 "value" => null
             ),
             array(
