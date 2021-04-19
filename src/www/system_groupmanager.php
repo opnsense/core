@@ -155,8 +155,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             }
-
-            write_config();
+            if (isset($id) && $a_group[$id]) {
+                $audit_msg = sprintf("group \"%s\" changed", $group['name']);
+            } else {
+                $audit_msg = sprintf("group \"%s\" created", $group['name']);
+            }
+            write_config($audit_msg);
             // XXX: signal backend which users have changed.
             //      core_user_changed_groups() would change local group assignments in that case as well.
             $new_members = !empty($group['member']) ? $group['member'] : array();
