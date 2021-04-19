@@ -464,6 +464,27 @@ class Config extends Singleton
     }
 
     /**
+     * send config change to audit log including the context we currently know of.
+     */
+    private function auditLogChange($backup_filename, $revision=null)
+    {
+        openlog("audit", LOG_ODELAY, LOG_AUTH);
+        $append_message = "";
+        if (is_array($revision) && !empty($revision['description'])) {
+            $append_message = sprintf(" [%s]", $revision['description']);
+        }
+        syslog(LOG_NOTICE, sprintf(
+            "user %s%s changed configuration to %s in %s%s",
+            !empty($_SESSION["Username"]) ? $_SESSION["Username"] : "(system)",
+            !empty($_SERVER['REMOTE_ADDR']) ? "@" . $_SERVER['REMOTE_ADDR'] : "",
+            $backup_filename,
+            !empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'],
+            $append_message
+        ));
+        closelog();
+    }
+
+    /**
      * backup current config
      * @return string target filename
      */
@@ -626,6 +647,7 @@ class Config extends Singleton
                 fflush($this->config_file_handle);
                 $backup_filename = $backup ? $this->backup() : null;
                 if ($backup_filename) {
+                    $this->auditLogChange($backup_filename, $revision);
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
                     // Althought we include the backup filename, the event handler is responsible to determine the
                     // last processed event itself. (it's merely added for debug purposes)
