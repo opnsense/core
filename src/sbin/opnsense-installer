@@ -31,7 +31,6 @@ fi
 
 if ! bsdinstall opnsense; then
 	clear
-	echo "The installation was aborted."
 	exit 0
 fi
 
