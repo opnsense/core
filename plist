@@ -936,6 +936,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Sample/sub2/example_sub2.txt
 /usr/local/opnsense/service/templates/OPNsense/Syslog/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/README
+/usr/local/opnsense/service/templates/OPNsense/Syslog/local/audit.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/configd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dnsmasq.conf
