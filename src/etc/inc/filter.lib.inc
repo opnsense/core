@@ -601,10 +601,15 @@ function filter_core_rules_system($fw, $defaults)
                     $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
                 }
                 foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
-                    $gwproto = $fw->getGateway($gwname)['proto'];
+                    $gwcfg = $fw->getGateway($gwname);
+                    if (empty($gwcfg['gateway'])) {
+                        // XXX: only force traffic on explict gateway [address] selection,
+                        //      exclude gateway_interface types.
+                        continue;
+                    }
                     // only try to add gateway rules for traffic leaving this interface
                     // when the correct protocol is assigned to the interface
-                    if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
+                    if (($gwcfg['proto'] == 'inet' && $intf_has_v4) || ($gwcfg['proto'] == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(
                             100000,
                             array('from' => "({$ifcfg['if']})", 'direction' => 'out', 'gateway' => $gwname,
