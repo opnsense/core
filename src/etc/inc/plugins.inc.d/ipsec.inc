@@ -1532,6 +1532,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 } else {
                     $inactivityline = '';
                 }
+                if (!empty($ph1ent['keyingtries'])) {
+                    $keyingtriesline = "keyingtries = " ;
+                    $keyingtriesline .= $ph1ent['keyingtries'] == -1 ? "%forever" : $ph1ent['keyingtries'];
+                } else {
+                    $keyingtriesline = '';
+                }
 
                 if (!empty($ph1ent['lifetime'])) {
                     $ikelifeline = "ikelifetime = {$ph1ent['lifetime']}s";
@@ -1663,6 +1669,7 @@ conn con<<connectionId>>
   type = {$parsed_phase2['type']}
   {$dpdline}
   {$inactivityline}
+  {$keyingtriesline}
   left = {$left_spec}
   right = {$right_spec}
   {$right_any}
