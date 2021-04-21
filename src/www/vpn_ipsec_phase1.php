@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
-    ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike";
+    ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -235,6 +235,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['inactivity_timeout']) && !is_numericint($pconfig['inactivity_timeout'])) {
         $input_errors[] = gettext("The inactivity timeout must be an integer.");
+    }
+    if (!empty($pconfig['keyingtries']) && !is_numericint($pconfig['keyingtries']) && $pconfig['keyingtries'] != "-1") {
+        $input_errors[] = gettext("The keyingtries must be an integer.");
     }
 
     if ((!empty($pconfig['lifetime']) && !is_numeric($pconfig['lifetime']))) {
@@ -393,7 +396,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
-        ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout
+        ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
         ,nat_traversal,auto,mobike";
 
@@ -1199,6 +1202,18 @@ endforeach; ?>
                       <input name="inactivity_timeout" type="text" id="inactivity_timeout" value="<?=$pconfig['inactivity_timeout'];?>" />
                       <div class="hidden" data-for="help_for_inactivity_timeout">
                         <?=gettext("Time before closing inactive tunnels if they don't handle any traffic. (seconds)"); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_keyingtries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Keyingtries"); ?></td>
+                    <td>
+                      <input name="keyingtries" type="text" id="keyingtries" value="<?=$pconfig['keyingtries'];?>" />
+                      <div class="hidden" data-for="help_for_keyingtries">
+                        <?=gettext(
+                          "How many attempts should be made to negotiate a connection, or a replacement for one, before giving up (default 3). ".
+                          "Leave empty for default, -1 for forever or any positive integer for the number of tries"
+                        ); ?>
                       </div>
                     </td>
                   </tr>
