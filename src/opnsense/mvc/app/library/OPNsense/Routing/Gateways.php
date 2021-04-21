@@ -212,6 +212,7 @@ class Gateways
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
                         "monitor_disable" => true, // disable monitoring by default
+                        "gateway_interface" => false, // Dynamic gateway policy
                         "if" => $realif,
                         "dynamic" => true,
                         "virtual" => true
@@ -253,6 +254,7 @@ class Gateways
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
+                        $thisconf['gateway_interface'] = true;
                         $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (
                         $ipproto == 'inet6'
