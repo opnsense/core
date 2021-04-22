@@ -192,7 +192,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
         $result = $this->validate($node, $prefix);
         if (empty($result['result'])) {
-            return $this->save();
+            $result = $this->save();
+            if ($node !== null) {
+                $attrs = $node->getAttributes();
+                if (!empty($attrs['uuid'])) {
+                    $result['uuid'] = $attrs['uuid'];
+                }
+            }
         }
         return $result;
     }
