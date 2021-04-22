@@ -383,7 +383,7 @@ function core_xmlrpc_sync()
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
         'section' => 'staticroutes,gateways',
         'id' => 'staticroutes',
-        'services' => ["routing"],
+        'services' => ["routing", "dpinger"],
     );
     $result[] = array(
         'description' => gettext('Network Time'),

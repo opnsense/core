@@ -123,13 +123,8 @@ function filter_configure_xmlrpc()
     require_once("interfaces.inc");
 
     system_routing_configure();
-    plugins_configure('monitor');
     filter_configure();
     system_hosts_generate();
-    local_sync_accounts();
-    plugins_configure('dhcp');
-    plugins_configure('dns');
-    plugins_configure('remote');
 
     return true;
 }
