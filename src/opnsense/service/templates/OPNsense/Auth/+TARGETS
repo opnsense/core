@@ -3,3 +3,4 @@ motd:/etc/motd
 sshd.pam:/etc/pam.d/sshd
 sudoers:/usr/local/etc/sudoers.d/opnsense
 system.pam:/etc/pam.d/system
+csh.cshrc:/etc/csh.cshrc

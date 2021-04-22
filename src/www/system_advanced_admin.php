@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['serialusb'] = isset($config['system']['serialusb']);
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
     $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
+    $pconfig['autologout'] = $config['system']['autologout'];
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
@@ -104,6 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['session_timeout']) && (!is_numeric($pconfig['session_timeout']) || $pconfig['session_timeout'] <= 0)) {
         $input_errors[] = gettext('Session timeout must be an integer value.');
+    }
+
+    if (!empty($pconfig['autologout']) && (!is_numeric($pconfig['autologout']) || $pconfig['autologout'] <= 0)) {
+        $input_errors[] = gettext('Inactivity timeout must be an integer value.');
     }
 
     if (!empty($pconfig['authmode'])) {
@@ -234,6 +239,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['authmode'] = implode(',', $pconfig['authmode']);
         } elseif (isset($config['system']['webgui']['authmode'])) {
             unset($config['system']['webgui']['authmode']);
+        }
+
+        if (!empty($pconfig['autologout'])) {
+            $config['system']['autologout'] = $pconfig['autologout'];
+        } elseif (isset($config['system']['autologout'])) {
+            unset($config['system']['autologout']);
         }
 
         /* always store setting to prevent installer auto-start */
@@ -869,6 +880,25 @@ $(document).ready(function() {
                 <td>
                   <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                   <?=gettext("Password protect the console menu"); ?>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Shell') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_autologout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Inactivity timeout') ?></td>
+                <td>
+                  <input name="autologout" type="text" value="<?= $pconfig['autologout'];?>"/>
+                  <small><?=gettext("Minutes"); ?></small>
+                  <div class="hidden" data-for="help_for_autologout">
+                    <?= gettext('When set, defines the number of minutes an ssh or console session might idle before being logged out automatically, only available on [t]csh type shells. '.
+                                'Does not affect currently active shells.') ?>
+                  </div>
                 </td>
               </tr>
             </table>
