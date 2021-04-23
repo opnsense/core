@@ -37,6 +37,7 @@
                         <networkgroup>Network group</networkgroup>
                         <mac>MAC address</mac>
                         <external>External (advanced)</external>
+                        <dynipv6host>IPv6 Dynamic Host</dynipv6host>                                            
                     </OptionValues>
                 </type>
                 <proto type="OptionField">
@@ -46,6 +47,8 @@
                         <IPv6>IPv6</IPv6>
                     </OptionValues>
                 </proto>
+                <dyninterface type="InterfaceField">                                     
+                </dyninterface>
                 <counters type="BooleanField">
                     <default>0</default>
                 </counters>
