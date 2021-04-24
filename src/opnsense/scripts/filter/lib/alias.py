@@ -26,6 +26,9 @@
     --------------------------------------------------------------------------------------
     Alias representation
 """
+import socket
+import fcntl
+import struct        
 import os
 import re
 import time
@@ -33,6 +36,7 @@ import requests
 import ipaddress
 import dns.resolver
 import syslog
+import subprocess                 
 from hashlib import md5
 from . import geoip
 from .arpcache import ArpCache
@@ -57,6 +61,7 @@ class Alias(object):
         self._timeout = timeout
         self._name = None
         self._type = None
+        self._dyninterface = None
         self._proto = 'IPv4,IPv6'
         self._items = list()
         self._resolve_content = set()
@@ -67,6 +72,8 @@ class Alias(object):
                 self._proto = subelem.text
             elif subelem.tag == 'name':
                 self._name = subelem.text
+            elif subelem.tag == 'dyninterface':
+                self._dyninterface = subelem.text        
             elif subelem.tag == 'ttl':
                 tmp = subelem.text.strip()
                 if len(tmp.split('.')) <= 2 and tmp.replace('.', '').isdigit():
@@ -259,6 +266,31 @@ class Alias(object):
         # return the addresses and networks of this alias
         return list(self._resolve_content)
 
+    def _fetch_dynipv6(self, address):
+           
+        #get the interface /64 address   
+        address = address.strip()
+        sp = subprocess.run(['/sbin/ifconfig', self._dyninterface,'inet6'], capture_output=True, text=True)
+        for line in sp.stdout.split('\n'):
+            if line.find('prefixlen 64') > -1:
+                i_address = line.split(' ')[1]
+                if i_address[0] == '1' or i_address[0] == '2' or i_address[0] == 3:
+                    break
+        # split the mask - if no mask it's a /64
+        if address.find('/') > -1:
+            l_address,l_mask = address.split('/')
+        else:
+            l_mask = '64' 
+            l_address = address
+
+        base_mask = int(l_mask)
+        base_address = ipaddress.ip_address(i_address)
+        base_size=int((128-base_mask)/16)
+        combine_address='0'+l_address
+        ipv6_addr  = ipaddress.ip_address(combine_address)
+        calculated_address = ':'.join(base_address.exploded.split(':')[:8-base_size] + ipv6_addr.exploded.split(':')[8-base_size:])
+        for address in self._parse_address(calculated_address):
+             yield address
     def get_parser(self):
         """ fetch address parser to use, None if alias type is not handled here
             :return: function or None
@@ -269,6 +301,8 @@ class Alias(object):
             return self._fetch_url
         elif self._type == 'geoip':
             return self._fetch_geo
+        elif self._type == 'dynipv6host':
+            return self._fetch_dynipv6
         elif self._type == 'mac':
             return ArpCache().iter_addresses
         else:
