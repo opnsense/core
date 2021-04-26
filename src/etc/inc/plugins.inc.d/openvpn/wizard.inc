@@ -620,7 +620,8 @@ function step12_submitphpaction()
             $pconfig['step9']['lifetime'],
             $dn,
             'sha256',
-            'server_cert'
+            'server_cert',
+            []
         );
 
         $a_cert = &config_read_array('cert');
