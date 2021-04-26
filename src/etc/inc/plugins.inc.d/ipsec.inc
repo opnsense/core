@@ -255,7 +255,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                             }
                         }
                     }
-                    $interface = explode("_vhid", $ph1ent['interface'])[0];
+                    $interface = explode("_vip", $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
                                       "log" => !isset($config['syslog']['nologdefaultpass']),
                                       "quick" => false,
