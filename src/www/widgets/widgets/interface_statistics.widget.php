@@ -80,13 +80,13 @@ $ifvalues = array(
           // fill in stats, use column index to determine td location
           var item_index = $("#interface_statistics_widget_intf_" + interface_data['descr']).index();
           if (item_index != -1) {
-              $("#interface_statistics_widget_val_pkg_in > td:eq("+item_index+")").html(parseInt(interface_data['inpkts']).toLocaleString());
-              $("#interface_statistics_widget_val_pkg_out > td:eq("+item_index+")").html(parseInt(interface_data['outpkts']).toLocaleString());
-              $("#interface_statistics_widget_val_bytes_in > td:eq("+item_index+")").html(interface_data['inbytes_frmt']);
-              $("#interface_statistics_widget_val_bytes_out > td:eq("+item_index+")").html(interface_data['outbytes_frmt']);
-              $("#interface_statistics_widget_val_errors_in > td:eq("+item_index+")").html(interface_data['inerrs']);
-              $("#interface_statistics_widget_val_errors_out > td:eq("+item_index+")").html(interface_data['outerrs']);
-              $("#interface_statistics_widget_val_collisions > td:eq("+item_index+")").html(interface_data['collisions']);
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(1)").html(parseInt(interface_data['inpkts']).toLocaleString());
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(2)").html(parseInt(interface_data['outpkts']).toLocaleString());
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(3)").html(interface_data['inbytes_frmt']);
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(4)").html(interface_data['outbytes_frmt']);
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(5)").html(interface_data['inerrs']);
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(6)").html(interface_data['outerrs']);
+              $("#interface_statistics_widget_intf_" + interface_data['descr'] +" > td:eq(7)").html(interface_data['collisions']);
           }
       });
   }
@@ -116,28 +116,22 @@ $ifvalues = array(
 <table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_statistics_widget_update">
   <tr>
     <th>&nbsp;</th>
-<?php
-    foreach ($interfaces as $ifdescr => $ifname):
-      $listed = in_array($ifdescr, $pconfig['interfacesstatisticsfilter']);
-      $listed = !empty($pconfig['interfacesstatisticsinvert']) ? $listed : !$listed;
-      if (!$listed) {
-        continue;
-      } ?>
-    <th id="interface_statistics_widget_intf_<?= html_safe($ifdescr) ?>"><?= $ifname ?></th>
+<?php foreach ($ifvalues as $ifkey => $iflabel): ?>
+    <th><strong><?= $iflabel ?></strong></th>
 <?php endforeach ?>
   </tr>
-<?php
-    foreach ($ifvalues as $ifkey => $iflabel): ?>
-  <tr id="interface_statistics_widget_val_<?= html_safe($ifkey) ?>">
-    <td><strong><?= $iflabel ?></strong></td>
 <?php foreach ($interfaces as $ifdescr => $ifname):
       $listed = in_array($ifdescr, $pconfig['interfacesstatisticsfilter']);
       $listed = !empty($pconfig['interfacesstatisticsinvert']) ? $listed : !$listed;
       if (!$listed) {
         continue;
       } ?>
+  <tr id="interface_statistics_widget_intf_<?= html_safe($ifdescr) ?>">
+    <td><strong><?= $ifname ?></strong></td>
+<?php $infcount = 0; 
+      while ($infcount++ < count($ifvalues)): ?>
     <td>&#126;</td>
-<?php endforeach ?>
+<?php endwhile ?>
   </tr>
 <?php endforeach ?>
 </table>
