@@ -94,7 +94,7 @@ function reconfigure_dhcpd()
 }
 
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'dhcpleaseinlocaltime','descr',
-  'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
+  'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
   'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport', 'omapialgorithm', 'omapikey', 'minsecs');
@@ -142,6 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['wpad'] =  isset($dhcpdconf['wpad']);
     $pconfig['staticarp'] = isset($dhcpdconf['staticarp']);
     $pconfig['denyunknown'] = isset($dhcpdconf['denyunknown']);
+    $pconfig['ignoreuids'] = isset($dhcpdconf['ignoreuids']);
     $pconfig['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
     $pconfig['netboot'] = isset($dhcpdconf['netboot']);
 
@@ -397,6 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdconf['enable'] = !empty($dhcpdconf['enable']);
             $dhcpdconf['staticarp'] = !empty($dhcpdconf['staticarp']);
             $dhcpdconf['denyunknown'] = !empty($dhcpdconf['denyunknown']);
+            $dhcpdconf['ignoreuids'] = !empty($dhcpdconf['ignoreuids']);
             $dhcpdconf['ddnsupdate'] = !empty($dhcpdconf['ddnsupdate']);
             $dhcpdconf['netboot'] = !empty($dhcpdconf['netboot']);
 
@@ -675,6 +677,15 @@ include("head.inc");
                         <input name="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" data-for="help_for_denyunknown">
                           <?=gettext("If this is checked, only the clients defined below will get DHCP leases from this server.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_ignoreuids" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Ignore Client UIDs");?></td>
+                      <td>
+                        <input name="ignoreuids" type="checkbox" value="yes" <?=!empty($pconfig['ignoreuids']) ? "checked=\"checked\"" : ""; ?> />
+                        <div class="hidden" data-for="help_for_ignoreuids">
+                          <?=gettext("By default, the same MAC can get multiple leases if the requests are sent using different UIDs. To avoid this behavior, check this box, and client UIDs will be ignored");?>
                         </div>
                       </td>
                     </tr>
