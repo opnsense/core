@@ -43,14 +43,6 @@ class NptRule extends Rule
             'to' => 'parsePlain, -> ',
             'descr' => 'parseComment'
         ),
-        'binat_2' => array(
-            'disabled' => 'parseIsComment',
-            'binat' => 'parseStaticText,binat ',
-            'interface' => 'parseInterface',
-            'to' => 'parsePlain,from , to any',
-            'from' => 'parsePlain, -> ',
-            'descr' => 'parseComment'
-        ),
     );
 
     /**
@@ -81,8 +73,6 @@ class NptRule extends Rule
     {
         foreach ($this->reader('npt') as $rule) {
             $rule['rule_type'] = "binat_1";
-            yield $rule;
-            $rule['rule_type'] = "binat_2";
             yield $rule;
         }
     }
