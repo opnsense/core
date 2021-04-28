@@ -840,6 +840,10 @@ EOPP;
                 $dhcpdconf .= "    deny unknown-clients;\n";
             }
 
+            if (isset($poolconf['ignoreuids'])) {
+                $dhcpdconf .= "    ignore-client-uids true;\n";
+            }
+
             if (
                 !empty($poolconf['gateway']) && $poolconf['gateway'] != "none"
                 && (empty($dhcpifconf['gateway']) || $poolconf['gateway'] != $dhcpifconf['gateway'])
