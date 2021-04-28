@@ -815,10 +815,10 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
             $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
             break;
         case "fqdn":
-            $thisid_data = !empty($id_data) ? "fqdn:\"{$id_data}\"" : null;
+            $thisid_data = !empty($id_data) ? "fqdn:{$id_data}" : null;
             break;
         case "keyid tag":
-            $thisid_data = !empty($id_data) ? "keyid:\"{$id_data}\"" : null;
+            $thisid_data = !empty($id_data) ? "keyid:{$id_data}" : null;
             break;
         default:
             $thisid_data = !empty($id_data) ? "{$id_data}" : null;
