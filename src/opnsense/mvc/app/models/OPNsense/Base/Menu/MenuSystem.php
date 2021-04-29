@@ -266,23 +266,23 @@ class MenuSystem
             }
         }
 
-        foreach ($ifgroups as $key => $groupings) {
-            $first = true;
-            foreach ($groupings as $grouping) {
-                if (empty($iftargets['if'][$key])) {
-                    // referential integrity between ifgroups and interfaces isn't assured, skip when interface doesn't exist
-                    continue;
-                }
-                $this->appendItem('Interfaces.' . $grouping, $key, array(
-                    'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
-                    'visiblename' => '[' . $iftargets['if'][$key] . ']',
-                ));
-                if ($first) {
-                    $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
-                        'url' => '/interfaces.php?if=' . $key,
-                        'visibility' => 'hidden',
+        foreach ($iftargets['if'] as $key => $descr) {
+            if (array_key_exists($key, $ifgroups)) {
+                $first = true;
+                foreach ($ifgroups[$key] as $grouping) {
+                    $this->appendItem('Interfaces.' . $grouping, $key, array(
+                        'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
+                        'visiblename' => '[' . $descr . ']',
+                        'cssclass' => 'fa fa-sitemap',
+                        'order' => $ordid++,
                     ));
-                    $first = false;
+                    if ($first) {
+                        $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
+                            'url' => '/interfaces.php?if=' . $key,
+                            'visibility' => 'hidden',
+                        ));
+                        $first = false;
+                    }
                 }
             }
         }
