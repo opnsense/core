@@ -249,39 +249,52 @@ class MenuSystem
 
         // add groups and interfaces to "Interfaces" menu tab...
         $ordid = 0;
+        $groupings_appended = [];
         foreach ($iftargets['if'] as $key => $descr) {
             if (array_key_exists($key, $iftargets['gr'])) {
-                $this->appendItem('Interfaces', $key, array(
-                    'visiblename' => '[' . $descr . ']',
-                    'cssclass' => 'fa fa-sitemap',
-                    'order' => $ordid++,
-                ));
-            } elseif (!array_key_exists($key, $ifgroups)) {
-                $this->appendItem('Interfaces', $key, array(
-                    'url' => '/interfaces.php?if=' . $key,
-                    'visiblename' => '[' . $descr . ']',
-                    'cssclass' => 'fa fa-sitemap',
-                    'order' => $ordid++,
-                ));
-            }
-        }
-
-        foreach ($iftargets['if'] as $key => $descr) {
-            if (array_key_exists($key, $ifgroups)) {
-                $first = true;
-                foreach ($ifgroups[$key] as $grouping) {
-                    $this->appendItem('Interfaces.' . $grouping, $key, array(
-                        'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
+                // add a group item unless it has been already added below while adding a nested interface item
+                if (!array_key_exists($key, $groupings_appended)) {
+                    $this->appendItem('Interfaces', $key, array(
                         'visiblename' => '[' . $descr . ']',
                         'cssclass' => 'fa fa-sitemap',
                         'order' => $ordid++,
                     ));
-                    if ($first) {
-                        $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
-                            'url' => '/interfaces.php?if=' . $key,
-                            'visibility' => 'hidden',
+                    $groupings_appended[] = $key;
+                }
+            } else {
+                if (!array_key_exists($key, $ifgroups)) {
+                    // add an interface item that is not assigned to any group
+                    $this->appendItem('Interfaces', $key, array(
+                        'url' => '/interfaces.php?if=' . $key,
+                        'visiblename' => '[' . $descr . ']',
+                        'cssclass' => 'fa fa-sitemap',
+                        'order' => $ordid++,
+                    ));
+                } else {
+                    $first = true;
+                    foreach ($ifgroups[$key] as $grouping) {
+                        // add a group item unless it has already been added above or here
+                        if (array_key_exists($grouping, $iftargets['gr']) && !array_key_exists($grouping, $groupings_appended)) {
+                            $this->appendItem('Interfaces', $grouping, array(
+                                'visiblename' => '[' . $iftargets['if'][$grouping] . ']',
+                                'cssclass' => 'fa fa-sitemap',
+                                'order' => $ordid++,
+                            ));
+                            $groupings_appended[] = $grouping;
+                        }
+                        $this->appendItem('Interfaces.' . $grouping, $key, array(
+                            'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
+                            'visiblename' => '[' . $descr . ']',
+                            'cssclass' => 'fa fa-sitemap',
+                            'order' => $ordid++,
                         ));
-                        $first = false;
+                        if ($first) {
+                            $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
+                                'url' => '/interfaces.php?if=' . $key,
+                                'visibility' => 'hidden',
+                            ));
+                            $first = false;
+                        }
                     }
                 }
             }
