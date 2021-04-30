@@ -801,6 +801,7 @@
 /usr/local/opnsense/scripts/suricata/queryInstalledRules.py
 /usr/local/opnsense/scripts/suricata/rule-updater.py
 /usr/local/opnsense/scripts/suricata/setup.sh
+/usr/local/opnsense/scripts/syslog/generate_certs
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
