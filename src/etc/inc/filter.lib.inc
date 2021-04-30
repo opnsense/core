@@ -195,7 +195,7 @@ function filter_core_get_default_nat_outbound_networks()
     }
     // Add ipsec network pool if specified
     if (!empty($config['ipsec']['client']['pool_address']) && !empty($config['ipsec']['client']['pool_netbits'])) {
-        $tonathosts[] = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
+        $result[] = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
     }
 
     return $result;
