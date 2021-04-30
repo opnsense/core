@@ -45,9 +45,6 @@ foreach ((new OPNsense\Syslog\Syslog())->destinations->destination->iterateItems
             if ($cert_refid == (string)$cert->refid) {
                 file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.key", base64_decode((string)$cert->prv));
                 file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.crt", base64_decode((string)$cert->crt));
-                $cert = (array)$cert;
-                $ca = ca_chain($cert);
-                file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.ca", (string)$ca);
             }
         }
     }
@@ -57,7 +54,7 @@ foreach ((new OPNsense\Syslog\Syslog())->destinations->destination->iterateItems
 foreach (glob("/usr/local/etc/syslog-ng/cert.d/*") as $filename) {
     $instance = explode(".", basename($filename))[0];
     $ext = pathinfo($filename)['extension'];
-    if (!in_array($instance, $instances) && in_array($ext, ['crt', 'key', 'ca'])) {
+    if (!in_array($instance, $instances) && in_array($ext, ['crt', 'key'])) {
         unlink($filename);
     }
 }
