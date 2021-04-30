@@ -673,6 +673,8 @@ EOD;
         }
     }
 
+    // deploy certificates (separate caller in case we ever remove clog, in which case we can move all to configd)
+    mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
     if (!empty($config['syslog']['disable_clog'])) {
         // non legacy mode
         if (isvalidpid('/var/run/syslog.pid')) {
