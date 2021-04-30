@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -72,10 +72,13 @@ function system_powerd_configure($verbose = false)
 
 function get_default_sysctl_value($id)
 {
+    global $config;
+
     $sysctls = array(
         'hw.ibrs_disable' => '0',
-        'hw.syscons.kbd_reboot' => '0',
         'hw.ixl.enable_head_writeback' => '0',
+        'hw.syscons.kbd_reboot' => '0',
+        'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(), /* XXX support comconsole_port if needed */
         'kern.ipc.maxsockbuf' => '4262144',
         'kern.randompid' => '347',
         'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
@@ -129,6 +132,7 @@ function system_sysctl_get()
 {
     global $config;
 
+    /* list of unconditional sysctls not necessarily present in config */
     $sysctls = array(
         'hw.ixl.enable_head_writeback' => 'default',
         'net.enc.in.ipsec_bpf_mask' => 'default',
@@ -148,6 +152,8 @@ function system_sysctl_get()
             $value = get_default_sysctl_value($key);
         }
     }
+
+    ksort($sysctls);
 
     return $sysctls;
 }
@@ -918,11 +924,6 @@ function system_kernel_configure($verbose = false)
         $mods[] = $config['system']['crypto_hardware'];
     }
 
-    if (!empty($config['system']['cryptodev_enable'])) {
-        log_error('Loading cryptodev kernel module.');
-        $mods[] = 'cryptodev';
-    }
-
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         $mods[] = $config['system']['thermal_hardware'];
@@ -1059,6 +1060,19 @@ function system_console_types()
     );
 }
 
+function system_console_speed()
+{
+    global $config;
+
+    $speed = 115200;
+
+    if (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) {
+        $speed = $config['system']['serialspeed'];
+    }
+
+    return $speed;
+}
+
 function system_login_configure($verbose = false)
 {
     global $config;
@@ -1073,7 +1087,7 @@ function system_login_configure($verbose = false)
 
     configd_run('template reload OPNsense/Auth');
 
-    $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
+    $serialspeed = system_console_speed();
 
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
@@ -1106,7 +1120,14 @@ function system_login_configure($verbose = false)
     }
 
     if ($serial_enabled) {
-        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
+        $serial_options = ["-S{$serialspeed}"];
+        if ($console_selection[0] == 'comconsole') {
+            $serial_options[] = '-h';
+        }
+        if (in_array('vidconsole', $console_selection)) {
+            $serial_options[] = '-D';
+        }
+        @file_put_contents('/boot.config', join(' ', $serial_options) . "\n");
         $new_boot_config['comconsole_speed'] = '"' . $serialspeed . '"';
         $new_boot_config['boot_serial'] = '"YES"';
     } elseif (!$output_enabled) {
@@ -1125,12 +1146,6 @@ function system_login_configure($verbose = false)
     /* copy settings already there */
     $new_loader_conf = @file_get_contents('/boot/loader.conf');
 
-    $new_loader_conf .= "# dynamically generated tunables settings follow\n";
-    foreach (system_sysctl_get() as $param => $value) {
-        $new_loader_conf .= "{$param}=\"{$value}\"\n";
-    }
-    $new_loader_conf .= "\n";
-
     $new_loader_conf .= "# dynamically generated console settings follow\n";
     foreach ($new_boot_config as $param => $value) {
         if (!empty($value)) {
@@ -1139,6 +1154,12 @@ function system_login_configure($verbose = false)
             $new_loader_conf .= "#${param}\n";
         }
     }
+    $new_loader_conf .= "\n";
+
+    $new_loader_conf .= "# dynamically generated tunables settings follow\n";
+    foreach (system_sysctl_get() as $param => $value) {
+        $new_loader_conf .= "{$param}=\"{$value}\"\n";
+    }
 
     /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
@@ -1146,7 +1167,7 @@ function system_login_configure($verbose = false)
     /* setup /etc/ttys */
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
-    $on_off_secure_u = $serial_enabled ? 'onifconsole secure' : 'off secure';
+    $on_off_secure_u = $serial_enabled ? (isset($config['system']['serialusb']) ? 'on' : 'onifconsole') . ' secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
@@ -1192,7 +1213,7 @@ function reset_factory_defaults($sync = true)
     mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
     disable_security_checks();
 
-    mwexec('/usr/local/sbin/beep.sh stop');
+    mwexec('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
     $shutdown_cmd = '/sbin/shutdown -op now';

@@ -35,6 +35,14 @@ import ujson
 import netaddr
 
 if __name__ == '__main__':
+    # index mac database (shipped with netaddr)
+    macdb = dict()
+    with open("%s/eui/oui.txt" % os.path.dirname(netaddr.__file__)) as fh_macdb:
+        for line in fh_macdb:
+            if line[11:].startswith('(hex)'):
+                macprefix = line[0:8].replace('-', ':').lower()
+                macdb[macprefix] = line[18:].strip()
+
     result = []
     # parse ndp output
     sp = subprocess.run(['/usr/sbin/ndp', '-an'], capture_output=True, text=True)
@@ -46,11 +54,8 @@ if __name__ == '__main__':
                       'intf': line_parts[2],
                       'manufacturer': ''
                       }
-            manufacturer_mac = netaddr.EUI(record['mac'])
-            try:
-                record['manufacturer'] = manufacturer_mac.oui.registration().org
-            except netaddr.NotRegisteredError:
-                pass
+            if record['mac'][0:8] in macdb:
+                record['manufacturer'] = macdb[record['mac'][0:8]]
             result.append(record)
 
     # handle command line argument (type selection)

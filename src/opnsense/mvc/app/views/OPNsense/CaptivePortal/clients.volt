@@ -66,39 +66,39 @@ POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             };
-            $("#grid-clients").bootgrid('destroy');
-            ajaxGet("/api/captiveportal/session/list/"+zoneid+"/", {}, function(data, status) {
-                if (status == "success") {
-                    $("#grid-clients > tbody").html('');
-                    $.each(data, function(key, value) {
-                        var fields = ["sessionId", "userName", "macAddress", "ipAddress", "startTime"];
-                        let tr_str = '<tr>';
-                        for (var i = 0; i < fields.length; i++) {
-                            if (value[fields[i]] != null) {
-                                tr_str += '<td>' + value[fields[i]] + '</td>';
-                            } else {
-                                tr_str += '<td></td>';
-                            }
-                        }
-                        tr_str += '</tr>';
-                        $("#grid-clients > tbody").append(tr_str);
-                    });
+            if ($("#grid-clients").hasClass('bootgrid-table')) {
+                $("#grid-clients").bootgrid('clear');
+            } else {
+                let grid_clients = $("#grid-clients").bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function(){
                     // hook disconnect button
-                    var grid_clients = $("#grid-clients").bootgrid(gridopt);
-                    grid_clients.on("loaded.rs.jquery.bootgrid", function(){
-                        grid_clients.find(".command-disconnect").on("click", function(e) {
-                            var sessionId=$(this).data("row-id");
-                            stdDialogConfirm('{{ lang._('Confirm disconnect') }}',
-                                '{{ lang._('Do you want to disconnect the selected client?') }}',
-                                '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                                ajaxCall("/api/captiveportal/session/disconnect/" + zoneid + '/',
-                                      {'sessionId': sessionId}, function(data,status){
-                                    // reload grid after delete
-                                    loadSessions();
-                                });
+                    grid_clients.find(".command-disconnect").on("click", function(e) {
+                        var zoneid = $('#cp-zones').find("option:selected").val();
+                        var sessionId=$(this).data("row-id");
+                        stdDialogConfirm('{{ lang._('Confirm disconnect') }}',
+                            '{{ lang._('Do you want to disconnect the selected client?') }}',
+                            '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
+                            ajaxCall("/api/captiveportal/session/disconnect/" + zoneid + '/',
+                                  {'sessionId': sessionId}, function(data,status){
+                                // reload grid after delete
+                                loadSessions();
                             });
                         });
                     });
+                });
+            }
+            ajaxGet("/api/captiveportal/session/list/"+zoneid+"/", {}, function(data, status) {
+                if (status == "success") {
+                    // format records (our bootgrid doesn't like null and expects moment for datetime)
+                    let table = [];
+                    for (var i = 0; i < data.length; i++) {
+                        let record = {};
+                        $.each(data[i], function(key, value) {
+                            record[key] = value !== null  ? value : "";
+                        });
+                        record['startTime'] = moment(parseInt(record['startTime'])*1000);
+                        table.push(record);
+                    }
+                    $("#grid-clients").bootgrid('append', table);
                     // hide actionBar on mobile
                     $('.actionBar').addClass('hidden-xs hidden-sm');
                 }
@@ -123,12 +123,12 @@ POSSIBILITY OF SUCH DAMAGE.
             <table id="grid-clients" class="table table-condensed table-hover table-striped table-responsive">
                 <thead>
                 <tr>
-                    <th data-column-id="sessionid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
+                    <th data-column-id="sessionId" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
                     <th data-column-id="userName" data-type="string">{{ lang._('Username') }}</th>
                     <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
                     <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP address') }}</th>
                     <th data-column-id="startTime" data-type="datetime">{{ lang._('Connected since') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                    <th data-column-id="commands" data-searchable="false" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
                 </thead>
                 <tbody>

@@ -304,7 +304,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('filter');
-        //header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         $response = array("id" => $id);
         $response["new_label"] = isset($a_filter[$id]['log']) ?  gettext("Disable Log") : gettext("Enable Log");
         $response["new_state"] = isset($a_filter[$id]['log']) ;
@@ -316,11 +315,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $selected_if = 'FloatingRules';
 if (isset($_GET['if'])) {
     $selected_if = htmlspecialchars($_GET['if']);
-}
-
-$selected_category = [];
-if (isset($_GET['category'])) {
-    $selected_category = !is_array($_GET['category']) ? array($_GET['category']) : $_GET['category'];
 }
 
 include("head.inc");
@@ -443,7 +437,7 @@ $( document ).ready(function() {
   $(".act_toggle").click(function(event){
       event.preventDefault();
       let target = $(this);
-      target.removeClass('fa-play').addClass('fa-spinner fa-pulse');
+      target.addClass('fa-spinner fa-pulse');
       let id = target.attr("id").split('_').pop(-1);
       $.ajax("firewall_rules.php",{
           type: 'post',
@@ -452,18 +446,18 @@ $( document ).ready(function() {
           data: {'act': 'toggle', 'id': id},
           success: function(response) {
               target.prop('title', response['new_label']).tooltip('fixTitle').tooltip('hide');
-              target.removeClass('fa-spinner fa-pulse').addClass('fa-play');
+              target.removeClass('fa-spinner fa-pulse');
               if (response['new_state']) {
-                  target.removeClass('text-muted').addClass('text-success');
+                  target.removeClass('text-muted').addClass(target.hasClass('fa-play') ? 'text-success' : 'text-danger');
               } else {
-                  target.removeClass('text-success').addClass('text-muted');
+                  target.removeClass('text-success text-danger').addClass('text-muted');
               }
               $("#fw-alert-box").removeClass("hidden");
               $(".fw-alert-messages").addClass("hidden");
               $("#fw-alert-changes").removeClass("hidden");
           },
           error: function () {
-              target.removeClass('fa-spinner fa-pulse').addClass('fa-play');
+              target.removeClass('fa-spinner fa-pulse');
           }
       });
   });
@@ -500,56 +494,6 @@ $( document ).ready(function() {
   // watch scroll position and set to last known on page load
   watchScrollPosition();
 
-  // link category select/search
-  $("#fw_category").change(function(){
-      var selected_values = [];
-      $("#fw_category > option:selected").each(function(){
-          if ($(this).val() != "") {
-              selected_values.push($(this).val());
-          } else {
-              // select all when "Filter by category" is selected
-              selected_values = [];
-              return false;
-          }
-      });
-      $(".rule").each(function(){
-          if (selected_values.indexOf($(this).data('category')) == -1 && selected_values.length > 0) {
-              $(this).hide();
-              $(this).find("input").prop('disabled', true);
-          } else {
-              $(this).find("input").prop('disabled', false);
-              $(this).show();
-          }
-      });
-
-      // hook into tab changes, keep selected category/categories when following link
-      $("#Firewall_Rules > .menu-level-3-item").each(function(){
-          var add_link = "";
-          if (selected_values.length > 0) {
-              add_link = "&" + $.param({'category': selected_values});
-          }
-          if ($(this).is('A')) {
-              if ($(this).data('link') == undefined) {
-                  // move link to data tag
-                  $(this).data('link', $(this).attr('href'));
-              }
-              $(this).attr('href', $(this).data('link') + add_link);
-          } else if ($(this).is('OPTION')) {
-            if ($(this).data('link') == undefined) {
-                // move link to data tag
-                $(this).data('link', $(this).val());
-            }
-            $(this).val($(this).data('link') + add_link);
-          }
-      });
-      $(".opnsense-rules").change();
-  });
-
-  // hide category search when not used
-  if ($("#fw_category > option").length == 0) {
-      $("#fw_category").addClass('hidden');
-  }
-
   // select All
   $("#selectAll").click(function(){
       $(".rule_select").prop("checked", $(this).prop("checked"));
@@ -575,6 +519,9 @@ $( document ).ready(function() {
       $(this).blur();
   });
 
+  // hook category functionality
+  hook_firewall_categories();
+
   // expand internal auto generated rules
   if ($("tr.internal-rule").length > 0) {
       $("#expand-internal-rules").show();
@@ -599,7 +546,6 @@ $( document ).ready(function() {
       });
   });
   //
-  $("#fw_category").change();
   $("#expand-internal").click(function(event){
       event.preventDefault();
       $(".internal-rule").toggle();
@@ -623,19 +569,7 @@ $( document ).ready(function() {
 <?php include("fbegin.inc"); ?>
   <div class="hidden">
     <div id="category_block" style="z-index:-100;">
-        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("Select category");?>" id="fw_category">
-<?php
-            // collect unique list of categories and append to option list
-            $categories = array();
-            foreach ($a_filter as $tmp_rule) {
-              if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                  $categories[] = $tmp_rule['category'];
-              }
-            }
-            foreach ($categories as $category):?>
-                <option value="<?=$category;?>" <?=in_array($category, $selected_category) ? "selected=\"selected\"" : "" ;?>><?=$category;?></option>
-<?php
-            endforeach;?>
+        <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
         </select>
         <button id="btn_inspect" class="btn btn-default hidden-xs">
           <i class="fa fa-eye" aria-hidden="true"></i>
@@ -911,7 +845,7 @@ $( document ).ready(function() {
                     <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : gettext('N/A') ?></td>
                     <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
                     <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
-                    <td>
+                    <td  class="rule-description">
                       <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
                           <small><?=$rule_hash;?></small>

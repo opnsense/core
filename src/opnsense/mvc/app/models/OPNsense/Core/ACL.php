@@ -131,7 +131,7 @@ class ACL
             $allGroupPrivs[$groupkey] = array();
             foreach ($groupNode->children() as $itemKey => $node) {
                 $node_data = (string)$node;
-                if ($itemKey == "member" && $node_data != "") {
+                if ($itemKey == "member" && $node_data != "" && isset($userUidMap[$node_data])) {
                     $username = $userUidMap[$node_data];
                     if ($this->userDatabase[$username]["uid"] == $node_data) {
                         $this->userDatabase[$username]["groups"][] = $groupkey;

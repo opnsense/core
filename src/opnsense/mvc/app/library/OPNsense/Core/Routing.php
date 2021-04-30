@@ -173,9 +173,6 @@ class Routing
                     }
                 }
             }
-            $this->router->setUriSource(
-                Router::URI_SOURCE_SERVER_REQUEST_URI
-            );
             $this->router->removeExtraSlashes(true);
         }
     }

@@ -82,7 +82,14 @@ class RuleCache(object):
                                     # step into metadata
                                     src_pointer = src_pointer['metadata']
                                     src_section = section_name.split('metadata_', 1)[1]
-                                rule_data = src_pointer[src_section] if src_section in src_pointer else None
+
+                                if  src_section in src_pointer:
+                                    rule_data = src_pointer[src_section]
+                                elif src_section in rule['metadata']:
+                                    # metadata field is actually a rule field (category)
+                                    rule_data = rule['metadata'][src_section]
+                                else:
+                                    rule_data = None
                                 if rule_data not in configured_policies[policy_id][section_name]:
                                     is_matched = False
                         if is_matched:
@@ -110,12 +117,13 @@ class RuleCache(object):
             cnf = ConfigParser()
             cnf.read(rule_config_fn)
             for section in cnf.sections():
-                if section[0:5] == 'rule_':
-                    sid = section[5:]
+                if section[0:5] == 'rule_' and cnf.has_option(section, 'sid'):
+                    sid = cnf.get(section, 'sid')
                     # mark rule policies as __manual__ so we can filter them easily
                     rule_updates[sid] = {'mtime': policy_config_mtime, 'policy_id': None, 'policy': "__manual__"}
                     for rule_item in cnf.items(section):
                         rule_updates[sid][rule_item[0]] = rule_item[1]
+                    rule_updates[sid]['enabled'] = rule_updates[sid]['enabled'] == '1'
         return rule_updates
 
     @staticmethod

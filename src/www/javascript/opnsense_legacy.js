@@ -168,3 +168,100 @@ function window_highlight_table_option()
         });
     }
 }
+
+
+/**
+ * load fireall categories and hook change events.
+ * in order to use this partial the html template should contain the following:
+ * - a <select> with the id "fw_category" to load categories in
+ * - <tr/> entities with class "rule" to identify the rows to filter
+ * - on the <tr/> tag a data element named "category", which contains a comma seperated list of categories this rule belongs to
+ * - a <table/> with id "opnsense-rules" which contains the rules
+ */
+function hook_firewall_categories() {
+    let cat_select = $("#fw_category");
+    ajaxCall('/api/firewall/category/searchNoCategoryItem', {}, function(data){
+        if (data.rows !== undefined && data.rows.length > 0) {
+            let color_map = {};
+            for (let i=0; i < data.rows.length ; ++i) {
+                if (data.rows[i].color != "") {
+                    color_map[data.rows[i].name] = data.rows[i].color;
+                }
+            }
+            let category_count = {};
+            $(".rule").each(function(){
+                let row = $(this);
+                $(this).data('category').toString().split(',').forEach(function(item){
+                    if (category_count[item] === undefined) {
+                        category_count[item] = 0 ;
+                    }
+                    category_count[item] += 1;
+                    if (color_map[item] !== undefined) {
+                        // suffix category color in the description td
+                        let td = row.find('td.rule-description');
+                        if (td.length > 0) {
+                            td.append($("<i class='fa fa-circle selector-item'  title='"+item+"'/>").css('color', '#'+color_map[item]));
+                        }
+                    }
+                });
+            });
+            for (let i=0; i < data.rows.length ; ++i) {
+                let opt_val = $('<div/>').html(data.rows[i].name).text();
+                let option = $("<option/>");
+                let bgcolor = data.rows[i].color != "" ? data.rows[i].color : '31708f;'; // set category color
+                if (category_count[data.rows[i].name] != undefined) {
+                    option.data(
+                      'content',
+                      "<span>"+opt_val + "</span>"+
+                      "<span style='background:#"+bgcolor+";' class='badge pull-right'>"+
+                      category_count[data.rows[i].name]+"</span>"
+                    );
+                }
+                cat_select.append(option.val(opt_val).html(data.rows[i].name));
+            }
+        }
+        cat_select.selectpicker('refresh');
+        // remove text class preventing sticking badges to the right
+        $('#category_block  span.text').removeClass('text');
+        // hide category search when not used
+        if (cat_select.find("option").length == 0) {
+            cat_select.addClass('hidden');
+        } else {
+            let tmp  = [];
+            if (window.sessionStorage && window.sessionStorage.getItem("firewall.selected.categories") !== null) {
+                tmp = window.sessionStorage.getItem("firewall.selected.categories").split(',');
+            }
+            cat_select.val(tmp);
+        }
+
+        cat_select.change(function(){
+            if (window.sessionStorage) {
+                window.sessionStorage.setItem("firewall.selected.categories", cat_select.val().join(','));
+            }
+            let selected_values = cat_select.val();
+            let no_cat = cat_select.find("option")[0].value;
+            $(".rule").each(function(){
+                let is_selected = false;
+                $(this).data('category').toString().split(',').forEach(function(item){
+                    if (selected_values.indexOf(no_cat) > -1 && item === "") {
+                        // No category for this rule
+                        is_selected = true;
+                    }
+                    if (selected_values.indexOf(item) > -1) {
+                        is_selected = true;
+                    }
+                });
+                if (!is_selected && selected_values.length > 0) {
+                    $(this).hide();
+                    $(this).find("input").prop('disabled', true);
+                } else {
+                    $(this).find("input").prop('disabled', false);
+                    $(this).show();
+                }
+            });
+            $(".opnsense-rules").change();
+        });
+        cat_select.change();
+        $('.selector-item').tooltip();
+    });
+}

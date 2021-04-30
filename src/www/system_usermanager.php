@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             local_user_del($a_user[$id]);
             $userdeleted = $a_user[$id]['name'];
             unset($a_user[$id]);
-            write_config();
+            write_config(sprintf('The user "%s" was successfully removed.', $userdeleted));
             $savemsg = sprintf(gettext('The user "%s" was successfully removed.'), $userdeleted);
             header(url_safe('Location: /system_usermanager.php?savemsg=%s', array($savemsg)));
             exit;
@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $certdeleted = lookup_cert($a_user[$id]['cert'][$pconfig['certid']]);
         $certdeleted = $certdeleted['descr'];
         unset($a_user[$id]['cert'][$pconfig['certid']]);
-        write_config();
+        write_config(sprintf('The certificate association "%s" was successfully removed.', $certdeleted));
         $savemsg = sprintf(gettext('The certificate association "%s" was successfully removed.'), $certdeleted);
         header(url_safe('Location: /system_usermanager.php?savemsg=%s&act=edit&userid=%d', array($savemsg, $id)));
         exit;
@@ -385,7 +385,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             local_user_set_groups($userent, $pconfig['groups']);
             local_user_set($userent);
-            write_config();
+            if (isset($id)) {
+                $audit_msg = sprintf("user \"%s\" changed", $userent['name']);
+            } else {
+                $audit_msg = sprintf("user \"%s\" created", $userent['name']);
+            }
+            write_config($audit_msg);
             // XXX: signal backend that the user has changed.
             configdp_run('auth user changed', [$userent['name']]);
 
@@ -486,7 +491,7 @@ $( document ).ready(function() {
       event.preventDefault();
       const url="system_usermanager_import_ldap.php";
       var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
-      if (oWin==null || typeof(oWin)=="undefined") {
+      if (oWin == null || typeof(oWin) == "undefined") {
         alert("<?= html_safe(gettext('Popup blocker detected. Action aborted.')) ?>");
       }
     });
@@ -508,9 +513,9 @@ $( document ).ready(function() {
 
                 $('#downloadFile').ready(function() {
                     $('#downloadFile').get(0).click();
+                    // reload form after download
+                    setTimeout(window.location.reload.bind(window.location), 100);
                 });
-                // reload form
-                location.reload();
             }
         },'json');
     });

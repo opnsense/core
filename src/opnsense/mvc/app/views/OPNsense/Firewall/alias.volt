@@ -195,6 +195,8 @@
         $("#alias\\.type").change(function(){
             $(".alias_type").hide();
             $("#row_alias\\.updatefreq").hide();
+            $("#row_alias\\.interface").hide();
+            $("#copy-paste").hide();
             switch ($(this).val()) {
                 case 'geoip':
                     $("#alias_type_geoip").show();
@@ -206,11 +208,17 @@
                     $("#alias_type_networkgroup").show();
                     $("#alias\\.proto").selectpicker('hide');
                     break;
+                case 'dynipv6host':
+                    $("#row_alias\\.interface").show();
+                    $("#alias_type_default").show();
+                    break;
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
+                    /* FALLTROUGH */
                 default:
                     $("#alias_type_default").show();
                     $("#alias\\.proto").selectpicker('hide');
+                    $("#copy-paste").show();
                     break;
             }
             if ($(this).val() === 'port') {
@@ -470,6 +478,7 @@
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
+                                <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
                         </div>
@@ -679,10 +688,31 @@
                                         </table>
 
                                         <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
-                                        <small>{{lang._('Clear All')}}</small></a>
+                                        <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">
+                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
+                                        <small>{{ lang._('Copy') }}</small></a>
+                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
+                                        <small>{{ lang._('Paste') }}</small></a></span>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.interface">
+                                    <td>
+                                        <div class="alias interface" id="alias_interface">
+                                            <a id="help_for_alias.interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Interface')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select  class="selectpicker" id="alias.interface" data-width="200px"></select>
+                                        <div class="hidden" data-for="help_for_alias.interface">
+                                            <small>{{lang._('Select the interface for the V6 dynamic IP')}}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.interface"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.counters">

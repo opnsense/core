@@ -449,15 +449,19 @@ $( document ).ready(function() {
             $.post('system_usermanager_settings_ldapacpicker.php', request_data, function(data) {
                 var tbl = $("<table/>");
                 var tbl_body = $("<tbody/>");
-                for (var i=0; i < data.length ; ++i) {
-                    var tr = $("<tr/>");
-                    tr.append($("<td/>").append(
-                        $("<input type='checkbox' class='ldap_item_select'>")
-                            .prop('checked', data[i].selected)
-                            .prop('value', data[i].value)
-                    ));
-                    tr.append($("<td/>").text(data[i].value));
-                    tbl_body.append(tr);
+                if (data.length > 0) {
+                    for (var i=0; i < data.length ; ++i) {
+                       var tr = $("<tr/>");
+                       tr.append($("<td/>").append(
+                           $("<input type='checkbox' class='ldap_item_select'>")
+                               .prop('checked', data[i].selected)
+                               .prop('value', data[i].value)
+                       ));
+                       tr.append($("<td/>").text(data[i].value));
+                       tbl_body.append(tr);
+                    }
+                } else {
+                    tbl_body.append("<tr><td><?=gettext("No results. Check General log for details"); ?></td></tr>");
                 }
                 tbl.append(tbl_body);
                 BootstrapDialog.show({
@@ -465,15 +469,19 @@ $( document ).ready(function() {
                   title: "<?=gettext("Please select which containers to Authenticate against:");?>",
                   message: tbl,
                   buttons: [{
-                            label: "<?= gettext("Close");?>",
+                            label: "<?= gettext("Save");?>",
+                            cssClass: 'btn-primary',
                             action: function(dialogRef) {
                                 var values = $(".ldap_item_select:checked").map(function(){
                                     return $(this).val();
                                 }).get().join(';');
                                 $("#ldapauthcontainers").val(values);
                                 dialogRef.close();
-                            }
-                        }]
+                            }}, {
+                            label: "<?= gettext("Cancel");?>",
+                            action: function(dialogRef) {
+                                dialogRef.close();
+                        }}]
                 });
             }, "json");
         }
@@ -688,8 +696,8 @@ endif; ?>
                     </ul>
                     <br/>
                     <div class="hidden" data-for="help_for_ldapauthcontainers">
-                        <br/><?= gettext('Semicolon-separated list of distinguished names optionally containing DC= components.') ?>
-                        <br/><?=gettext("Example:");?> OU=Freelancers,O=Company,DC=example,DC=com;CN=Users,OU=Staff,O=Company
+                        <br/><?= gettext('Semicolon-separated list of distinguished names containing DC= components.') ?>
+                        <br/><?=gettext("Example:");?> OU=Freelancers,O=Company,DC=example,DC=com;CN=Users,OU=Staff,O=Company,DC=example,DC=com
                     </div>
                   </td>
                 </tr>

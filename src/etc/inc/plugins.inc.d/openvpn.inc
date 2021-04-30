@@ -110,6 +110,7 @@ function openvpn_xmlrpc_sync()
         'description' => gettext('OpenVPN'),
         'section' => 'openvpn',
         'id' => 'openvpn',
+        'services' => ["openvpn"],
     );
 
     return $result;
@@ -137,9 +138,15 @@ function openvpn_compression_modes()
 {
     return array(
         '' => gettext('No Preference'),
-        'no' => gettext('Disabled - No Compression'),
-        'adaptive' => gettext('Enabled with Adaptive Compression'),
-        'yes' => gettext('Enabled without Adaptive Compression'),
+        'pfc' => sprintf(gettext('Partial - Packet framing for compression (%s)'), '--compress'),
+        'lz4' => sprintf(gettext('Enabled - LZ4 algorithm (%s)'), '--compress lz4'),
+        'lz4-v2' => sprintf(gettext('Enabled - LZ4 v2 algorithm (%s)'), '--compress lz4-v2'),
+        'lzo' => sprintf(gettext('Enabled - LZO algorithm (%s)'), '--compress lzo'),
+        'stub' => sprintf(gettext('Enabled - Stub algorithm (%s)'), '--compress stub'),
+        'stub-v2' => sprintf(gettext('Enabled - Stub v2 algorithm (%s)'), '--compress stub-v2'),
+        'no' => sprintf(gettext('Legacy - Disabled LZO algorithm (%s)'), '--comp-lzo no'),
+        'adaptive' => sprintf(gettext('Legacy - Enabled LZO algorithm with adaptive compression (%s)'), '--comp-lzo adaptive'),
+        'yes' => sprintf(gettext('Legacy - Enabled LZO algorithm without adaptive compression (%s)'), '--comp-lzo yes'),
     );
 }
 
@@ -288,56 +295,6 @@ function openvpn_get_digestlist()
     ksort($digests);
     $digests["none"] = gettext("None (No Authentication)");
     return $digests;
-}
-
-function openvpn_get_engines()
-{
-    $openssl_engines = array('none' => 'No Hardware Crypto Acceleration');
-    exec('/usr/local/bin/openssl engine -t -c 2> /dev/null', $openssl_engine_output);
-
-    if (!count($openssl_engine_output)) {
-        /* LibreSSL doesn't offer anything of value */
-        return $openssl_engines;
-    }
-
-    $openssl_engine_output = implode("\n", $openssl_engine_output);
-    $openssl_engine_output = preg_replace("/\\n\\s+/", "|", $openssl_engine_output);
-    $openssl_engine_output = explode("\n", $openssl_engine_output);
-
-    foreach ($openssl_engine_output as $oeo) {
-        $keep = true;
-        $details = explode("|", $oeo);
-        $engine = array_shift($details);
-        $linematch = array();
-        preg_match("/\((.*)\)\s(.*)/", $engine, $linematch);
-        foreach ($details as $dt) {
-            if (strpos($dt, "unavailable") !== false) {
-                $keep = false;
-            }
-            if (strpos($dt, "available") !== false) {
-                continue;
-            }
-            if (strpos($dt, "[") !== false) {
-                $ciphers = trim($dt, "[]");
-            }
-        }
-        if (!empty($ciphers)) {
-            $ciphers = " - " . $ciphers;
-        }
-        if (strlen($ciphers) > 60) {
-            $ciphers = substr($ciphers, 0, 60) . " ... ";
-        }
-        if ($keep) {
-            $openssl_engines[$linematch[1]] = $linematch[2] . $ciphers;
-        }
-    }
-    return $openssl_engines;
-}
-
-function openvpn_validate_engine($engine)
-{
-    $engines = openvpn_get_engines();
-    return array_key_exists($engine, $engines);
 }
 
 function openvpn_validate_port($value, $name)
@@ -593,10 +550,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         $conf .= "local {$iface_ip}\n";
     } elseif (!empty($settings['interface']) && $settings['interface'] == 'any' && substr($settings['protocol'], 0, 3) == 'UDP') {
         $conf .= "multihome\n";
-    }
-
-    if (openvpn_validate_engine($settings['engine']) && ($settings['engine'] != "none")) {
-        $conf .= "engine {$settings['engine']}\n";
     }
 
     // server specific settings
@@ -908,7 +861,19 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (!empty($settings['compression'])) {
-        $conf .= "comp-lzo {$settings['compression']}\n";
+        switch ($settings['compression']) {
+            case 'no':
+            case 'adaptive':
+            case 'yes':
+                $conf .= "comp-lzo {$settings['compression']}\n";
+                break;
+            case 'pfc':
+                $conf .= "compress\n";
+                break;
+            default:
+                $conf .= "compress {$settings['compression']}\n";
+                break;
+        }
     }
 
     if ($settings['passtos']) {

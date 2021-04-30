@@ -139,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig[$fieldname] = $a_filter[$configId][$fieldname];
             }
         }
+        $pconfig['category'] = !empty($pconfig['category']) ? explode(",", $pconfig['category']) : [];
 
         // process fields with some kind of logic
         address_to_pconfig($a_filter[$configId]['source'], $pconfig['src'],
@@ -241,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
     } elseif ($pconfig['protocol'] == "ipv6-icmp" && !empty($pconfig['icmp6-type']) && $pconfig['ipprotocol'] == "inet46") {
         $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
-    } elseif ($pconfig['protocol'] == "ipv6-icmp" && $pconfig['ipprotocol'] != "inet4") {
+    } elseif ($pconfig['protocol'] == "ipv6-icmp" && $pconfig['ipprotocol'] != "inet6") {
         $input_errors[] =  gettext('You can not assign an ICMP type to a rule that applies to IPv4 and IPv6.');
     }
     if ($pconfig['statetype'] == "synproxy state" || $pconfig['statetype'] == "modulate state") {
@@ -534,6 +535,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // sort filter items per interface, not really necessary but leaves a bit nicer sorted config.xml behind.
         filter_rules_sort();
         // write to config
+        OPNsense\Core\Config::getInstance()->fromArray($config);
+        $catmdl = new OPNsense\Firewall\Category();
+        if ($catmdl->sync()) {
+            $catmdl->serializeToConfig();
+            $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
+        }
         write_config();
         mark_subsystem_dirty('filter');
 
@@ -552,6 +559,9 @@ $priorities = interfaces_vlan_priorities();
 include("head.inc");
 
 ?>
+<script src="<?= cache_safe('/ui/js/tokenize2.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/tokenize2.css')) ?>">
+<script src="<?= cache_safe('/ui/js/opnsense_ui.js') ?>"></script>
 <body>
   <script>
   $( document ).ready(function() {
@@ -672,67 +682,7 @@ include("head.inc");
       $("#toggleAdvanced").click();
       <?php endif;?>
 
-      // add typeahead for existing categories, all options are saves in the select option "existing_categories"
-      var categories = [];
-      $("#existing_categories > option").each(function(){
-          categories.push($(this).val());
-      });
-      $("#category").typeahead({
-          source: categories
-      });
-
-      /***************************************************************************************************************
-       * typeahead seems to be broken since jQuery 3.3.0
-       * temporary fix to make sure "position()" returns the expected values as suggested in:
-       * https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/384
-       *
-       * When being used outside position: relative items, the plugin still seems to be working
-       * (which is likely why the menu quick search isn't affected).
-       ***************************************************************************************************************/
-      $.fn.position = function() {
-        if ( !this[ 0 ] ) {
-            return;
-        }
-
-        var offsetParent, offset, doc,
-          elem = this[ 0 ],
-          parentOffset = { top: 0, left: 0 };
-
-        // position:fixed elements are offset from the viewport, which itself always has zero offset
-        if ( jQuery.css( elem, "position" ) === "fixed" ) {
-
-          // Assume position:fixed implies availability of getBoundingClientRect
-          offset = elem.getBoundingClientRect();
-
-        } else {
-          offset = this.offset();
-
-          // Account for the *real* offset parent, which can be the document or its root element
-          // when a statically positioned element is identified
-          doc = elem.ownerDocument;
-          offsetParent = elem.offsetParent || doc.documentElement;
-          while ( offsetParent &&
-            offsetParent !== doc &&
-            ( offsetParent !== doc.body && offsetParent !== doc.documentElement ) &&
-            jQuery.css( offsetParent, "position" ) === "static" ) {
-
-            offsetParent = offsetParent.parentNode;
-          }
-          if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
-
-            // Incorporate borders into its offset, since they are outside its content origin
-            parentOffset = jQuery( offsetParent ).offset();
-            parentOffset.top += jQuery.css( offsetParent, "borderTopWidth", true );
-            parentOffset.left += jQuery.css( offsetParent, "borderLeftWidth", true );
-          }
-        }
-
-        // Subtract parent offsets and element margins
-        return {
-          top: offset.top - parentOffset.top - jQuery.css( elem, "marginTop", true ),
-          left: offset.left - parentOffset.left - jQuery.css( elem, "marginLeft", true )
-        };
-      };
+      formatTokenizersUI();
   });
 
   </script>
@@ -880,8 +830,13 @@ include("head.inc");
                       endforeach; ?>
                       </select>
                       <div class="hidden" data-for="help_for_direction">
-                        <?=gettext("Direction of the traffic. The default policy is to filter inbound traffic, ".
-                                   "which sets the policy to the interface originally receiving the traffic.") ?>
+                        <?=gettext("Direction of the traffic. Traffic IN is coming into the firewall interface, ".
+                                   "while traffic OUT is going out of the firewall interface. In visual terms: ".
+                                   "[Source] -> IN -> [Firewall] -> OUT -> [Destination]. The default policy is to ".
+                                   "filter inbound traffic, which means the policy applies to the interface on which ".
+                                   "the traffic is originally received by the firewall from the source. This is more ".
+                                   "efficient from a traffic processing perspective. In most cases, the default ".
+                                   "policy will be the most appropriate.") ?>
                       </div>
                     </td>
                   <tr>
@@ -1265,23 +1220,17 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
                     <td>
-                      <input name="category" type="text" class="formfld unknown" id="category" size="40" value="<?=$pconfig['category'];?>" />
-                      <div class="hidden" data-for="help_for_category">
-                        <?=gettext("You may enter or select a category here to group firewall rules (not parsed)."); ?>
-                      </div>
-                      <select class="hidden" id="existing_categories">
+                      <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-sortable="false" data-width="334px" data-live-search="true">
 <?php
-                      $categories = array();
-                      foreach ($a_filter as $tmp_rule) {
-                          if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
-                              $categories[] = $tmp_rule['category'];
-                          }
-                      }
-                      foreach ($categories as $category):?>
-                        <option value="<?=$category;?>"></option>
+                      foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
+                        $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
+                        <option value="<?=$catname;?>" <?=!empty($pconfig['category']) && in_array($catname, $pconfig['category']) ? 'selected="selected"' : '';?> ><?=$catname;?></option>
 <?php
                       endforeach;?>
                       </select>
+                      <div class="hidden" data-for="help_for_category">
+                        <?=gettext("You may enter or select a category here to group firewall rules (not parsed)."); ?>
+                      </div>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>

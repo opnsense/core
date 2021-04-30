@@ -38,7 +38,7 @@ function reconfigure_dhcpd()
 {
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    dhcpd_dhcp_configure(false, 'inet6');
+    dhcpd_dhcp6_configure();
     clear_subsystem_dirty('staticmaps');
 }
 
@@ -502,8 +502,8 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                           </tbody>
                         </table>
                         <div class="hidden" data-for="help_for_range">
-                            <?= gettext("When using a static WAN address, the range should be entered using the full IPv6 address. " .
-                            "When using a dynamic WAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
+                            <?= gettext("When using a static LAN address, the range should be entered using the full IPv6 address. " .
+                            "When using a delegated LAN address, only enter the suffix part (i.e. ::1:2:3:4)."); ?>
                       </td>
                     </tr>
                     <tr>
@@ -750,7 +750,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                             </tfoot>
                           </table>
                           <div class="hidden" data-for="help_for_numberoptions">
-                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="http://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">','</a>') ?>
+                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="https://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">','</a>') ?>
                           </div>
                         </div>
                       </td>

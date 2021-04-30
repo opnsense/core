@@ -64,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
+        if (empty($config['dhcrelay'])) {
+            $config['dhcrelay'] =  array();
+        }
         $config['dhcrelay']['enable'] = !empty($pconfig['enable']);
         $config['dhcrelay']['interface'] = implode(",", $pconfig['interface']);
         $config['dhcrelay']['agentoption'] = !empty($pconfig['agentoption']);

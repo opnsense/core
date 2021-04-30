@@ -336,6 +336,7 @@ function print_legacy_box($msg, $name, $value)
     <p>{$msg}</p>
   </div>
 </div>
+
 EOFnp;
 }
 

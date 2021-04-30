@@ -31,9 +31,10 @@ namespace OPNsense\Base;
 use Exception;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
+use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 use Phalcon\Validation;
-use Phalcon\Validation\Message\Group;
+use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
@@ -235,8 +236,15 @@ abstract class BaseModel
 
                 if ($fieldObject->isArrayType()) {
                     // handle Array types, recurring items
-                    if ($config_section_data != null && !empty((string)$config_section_data)) {
+                    $node_count = 0;
+                    if ($config_section_data != null) {
                         foreach ($config_section_data as $conf_section) {
+                            if ($conf_section->count() == 0) {
+                                // skip empty nodes: prevents legacy empty tags from being treated as invalid content items
+                                // (migration will drop these anyways)
+                                continue;
+                            }
+                            $node_count++;
                             // Array items are identified by a UUID, read from attribute or create a new one
                             if (isset($conf_section->attributes()->uuid)) {
                                 $tagUUID = $conf_section->attributes()['uuid']->__toString();
@@ -256,7 +264,8 @@ abstract class BaseModel
                             }
                             $fieldObject->addChildNode($tagUUID, $child_node);
                         }
-                    } else {
+                    }
+                    if ($node_count == 0) {
                         // There's no content in config.xml for this array node.
                         $tagUUID = $internal_data->generateUUID();
                         $child_node = $fieldObject->newContainerField(
@@ -431,7 +440,7 @@ abstract class BaseModel
         if (count($validation_data) > 0) {
             $messages = $validation->validate($validation_data);
         } else {
-            $messages = new Group();
+            $messages = new Messages();
         }
 
         return $messages;
@@ -545,10 +554,12 @@ abstract class BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         // create logger to save possible consistency issues to
-        $logger = new Syslog("config", array(
-            'option' => LOG_PID,
-            'facility' => LOG_LOCAL4
-        ));
+        $logger = new Logger(
+            'messages',
+            [
+                'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+            ]
+        );
 
         // Perform validation, collect all messages and raise exception if validation is not disabled.
         // If for some reason the developer chooses to ignore the errors, let's at least log there something
@@ -624,7 +635,12 @@ abstract class BaseModel
         if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
             $upgradePerfomed = false;
             $migObjects = array();
-            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
+            $logger = new Logger(
+                'messages',
+                [
+                    'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+                ]
+            );
             $class_info = new ReflectionClass($this);
             // fetch version migrations
             $versions = array();

@@ -38,7 +38,7 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
     :return: generator
     """
     if hasattr(filename, 'read') is False:
-        input_stream = open(filename, 'rU')
+        input_stream = open(filename, 'r', errors='replace')
     else:
         input_stream = filename
 

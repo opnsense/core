@@ -203,6 +203,7 @@ function print_alert_box($msg, $alert = 'warning', $button = '')
     <div style="margin-top: 8px;">{$msg}</div>
   </div>
 </div>
+
 EOFnp;
 }
 
@@ -214,6 +215,7 @@ function print_content_box($msg)
      <tr><td>{$msg}</td></tr>
   </table>
 </div>
+
 EOFnp;
 }
 
@@ -301,7 +303,7 @@ function get_std_save_message($plain = false)
     }
 }
 
-function get_specialnets($only_enabled=false)
+function get_specialnets($only_enabled = false)
 {
     $specialnets = array();
     $specialnets["any"] = gettext("any");
@@ -409,7 +411,7 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
     }
 }
 
-function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $pendport=0)
+function pconfig_to_address(&$adr, $padr, $pmask, $pnot = false, $pbeginport = 0, $pendport = 0)
 {
     $adr = array();
     if ($padr == "any") {
@@ -579,7 +581,8 @@ function service_control_links($service, $xs = false)
     $service_id = isset($service['id']) ? $service['id'] : '';
 
     $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
-    $template .= 'class="btn btn-%s btn-default %s"><i class="%s"></i></span>' . PHP_EOL;
+    $template .= 'class="btn btn-%s btn-default %s" data-toggle="tooltip" data-placement="bottom" ';
+    $template .= 'title="%s"><i class="%s"></i></span>' . PHP_EOL;
 
     $output = '';
 
@@ -591,9 +594,10 @@ function service_control_links($service, $xs = false)
             $service['name'],
             $xs ? 'xs' : 'sm',
             'srv_status_act',
+            gettext("restart service"),
             'fa fa-refresh fa-fw'
         );
-        if (empty($service['nocheck'])) {
+        if (empty($service['nocheck']) && empty($service['locked'])) {
             $output .= sprintf(
                 $template,
                 $service_id,
@@ -601,6 +605,7 @@ function service_control_links($service, $xs = false)
                 $service['name'],
                 $xs ? 'xs' : 'sm',
                 'srv_status_act',
+                gettext("stop service"),
                 'fa fa-stop fa-fw'
             );
         }
@@ -612,6 +617,7 @@ function service_control_links($service, $xs = false)
             $service['name'],
             $xs ? 'xs' : 'sm',
             'srv_status_act',
+            gettext("start service"),
             'fa fa-play fa-fw'
         );
     }

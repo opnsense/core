@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -36,6 +36,11 @@ function webgui_configure()
         'newwanip' => array('webgui_configure_do:2'),
         'webgui' => array('webgui_configure_do'),
     );
+}
+
+function webgui_configure_delayed()
+{
+    configd_run('webgui restart 3', true);
 }
 
 function webgui_configure_do($verbose = false, $interface = '')
@@ -91,32 +96,13 @@ function webgui_configure_do($verbose = false, $interface = '')
     if ($config['system']['webgui']['protocol'] == "https") {
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         if (!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
-            $a_ca = &config_read_array('ca');
-            $a_cert = &config_read_array('cert');
-            log_error("Creating SSL certificate for this host");
-            $cert = array();
-            $cert['refid'] = uniqid();
-            $cert['descr'] = 'Web GUI SSL certificate';
-            mwexec(
-                /* XXX ought to be replaced by PHP calls */
-                '/usr/local/bin/openssl req -new -extensions server_cert ' .
-                '-config /usr/local/etc/ssl/opnsense.cnf ' .
-                '-newkey rsa:4096 -sha256 -days 825 -nodes -x509 ' .
-                '-subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense" ' .
-                '-keyout /tmp/ssl.key -out /tmp/ssl.crt'
-            );
-            $crt = file_get_contents('/tmp/ssl.crt');
-            $key = file_get_contents('/tmp/ssl.key');
-            unlink('/tmp/ssl.key');
-            unlink('/tmp/ssl.crt');
-            cert_import($cert, $crt, $key);
-            $a_cert[] = $cert;
-            $config['system']['webgui']['ssl-certref'] = $cert['refid'];
-            write_config('Created web GUI SSL certificate');
-        } else {
-            $crt = base64_decode($cert['crt']);
-            $key = base64_decode($cert['prv']);
+            /* XXX for now only if a certificate is not availabe */
+            webgui_create_selfsigned(false);
+            $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         }
+
+        $crt = base64_decode($cert['crt']);
+        $key = base64_decode($cert['prv']);
 
         if (!$config['system']['webgui']['port']) {
             $portarg = '443';
@@ -161,12 +147,60 @@ function webgui_configure_do($verbose = false, $interface = '')
     }
 }
 
+function webgui_create_selfsigned($verbose = false)
+{
+    global $config, $g;
+
+    $a_ca = &config_read_array('ca');
+    $a_cert = &config_read_array('cert');
+
+    if ($verbose) {
+        echo 'Creating self-signed web GUI certificate...';
+        flush();
+    }
+
+    log_error('Creating TLS certificate for this host');
+
+    $cert = array();
+    $cert['refid'] = uniqid();
+    $cert['descr'] = 'Web GUI TLS certificate';
+
+    $dns = $config['system']['hostname'] . "." . $config['system']['domain'];
+
+    mwexecf(
+        '/usr/local/bin/openssl req -new -extensions server_cert ' .
+        '-config /usr/local/etc/ssl/opnsense.cnf ' .
+        '-newkey rsa:4096 -sha256 -days 397 -nodes -x509 ' .
+        '-subj "/CN="%s"/C=NL/ST=Zuid-Holland/L=Middelharnis/O="%s" self-signed web certificate" ' .
+        '-addext "subjectAltName = DNS:"%s -keyout /tmp/ssl.key -out /tmp/ssl.crt',
+        array($dns, $g['product_name'], $dns)
+    );
+
+    $crt = file_get_contents('/tmp/ssl.crt');
+    $key = file_get_contents('/tmp/ssl.key');
+
+    unlink('/tmp/ssl.key');
+    unlink('/tmp/ssl.crt');
+
+    cert_import($cert, $crt, $key);
+
+    $a_cert[] = $cert;
+
+    $config['system']['webgui']['ssl-certref'] = $cert['refid'];
+
+    write_config('Created web GUI TLS certificate');
+
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
 function webgui_generate_config($port, $cert, $key, $ca, $listeners)
 {
     global $config;
 
-    $cert_location = 'cert.pem';
-    $ca_location = 'ca.pem';
+    $cert_location = '/var/etc/cert.pem';
+    $key_location = '/var/etc/key.pem';
 
     @mkdir('/tmp/lighttpdcompress');
 
@@ -221,7 +255,6 @@ EOD;
 
     $lighty_modules = !empty($config['system']['webgui']['httpaccesslog']) ? ', "mod_accesslog"' : "";
 
-
     $lighty_config = <<<EOD
 #
 # lighttpd configuration file
@@ -230,14 +263,14 @@ EOD;
 #
 ############ Options you really have to take care of ####################
 
-server.event-handler  = "freebsd-kqueue"
-server.network-backend  = "writev"
-
 ## modules to load
 server.modules              =   (
-  "mod_access", "mod_expire", "mod_compress", "mod_redirect", "mod_setenv",
-  "mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
+  "mod_access", "mod_expire", "mod_deflate", "mod_redirect", "mod_setenv",
+  "mod_cgi", "mod_fastcgi", "mod_alias", "mod_rewrite", "mod_openssl" {$lighty_modules}
 )
+
+# additional optional modules to load or additional module configurations
+include "/usr/local/etc/lighttpd_webgui/conf.d/*.conf"
 
 server.max-keep-alive-requests = 15
 server.max-keep-alive-idle = 30
@@ -342,65 +375,45 @@ EOD;
     $ca = str_replace("\n\n", "\n", $ca);
 
     if (!empty($cert) && !empty($key)) {
-        $fd = fopen("/var/etc/{$cert_location}", "w");
-        if (!$fd) {
-            log_error('Error: cannot open cert.pem');
-            return 0;
+        $chain = $cert;
+        if (!empty($ca) && strlen(trim($ca))) {
+            $chain .= "\n" . $ca;
         }
-        chmod("/var/etc/{$cert_location}", 0600);
-        fwrite($fd, $cert);
-        fwrite($fd, "\n");
-        fwrite($fd, $key);
-        fclose($fd);
-        if (!(empty($ca) || (strlen(trim($ca)) == 0))) {
-            $fd = fopen("/var/etc/{$ca_location}", "w");
-            if (!$fd) {
-                log_error('Error: cannot open ca.pem');
-                return 0;
-            }
-            chmod("/var/etc/{$ca_location}", 0600);
-            fwrite($fd, $ca);
-            fclose($fd);
-        }
+
+        file_put_contents($cert_location, $chain);
+        file_put_contents($key_location, $key);
+        chmod($key_location, 0600);
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
-        $lighty_config .= "ssl.disable-client-renegotiation = \"enable\"\n";
-        $lighty_config .= "ssl.dh-file = \"" . get_dh_parameters(4096) . "\"\n";
-        $lighty_config .= "ssl.ec-curve = \"secp384r1\"\n";
-        $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n";
-        if (!empty($ca)) {
-            $lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n";
-        }
-        $lighty_config .= "setenv.add-environment = (\n";
-        $lighty_config .= "     \"HTTPS\" => \"on\"\n";
-        $lighty_config .= ")\n";
+        $lighty_config .= "ssl.privkey = \"{$key_location}\"\n";
+        $lighty_config .= "ssl.pemfile = \"{$cert_location}\"\n";
 
-        // Harden SSL a bit for PCI conformance testing
-        $lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
-        $lighty_config .= "ssl.use-sslv3 = \"disable\"\n";
-        $lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
-            $ciphers = array(
-                'ECDHE-ECDSA-AES256-GCM-SHA384',
-                'ECDHE-RSA-AES256-GCM-SHA384',
-                'ECDHE-ECDSA-CHACHA20-POLY1305',
-                'ECDHE-RSA-CHACHA20-POLY1305',
-                'ECDHE-ECDSA-AES128-GCM-SHA256',
-                'ECDHE-RSA-AES128-GCM-SHA256',
-                'ECDHE-ECDSA-AES256-SHA384',
-                'ECDHE-RSA-AES256-SHA384',
-                'ECDHE-ECDSA-AES128-SHA256',
-                'ECDHE-RSA-AES128-SHA256'
-            );
-            $lighty_config .= 'ssl.cipher-list = "' . join(':', $ciphers) . '"' . PHP_EOL;
+            /* harden TLS for PCI conformance */
+            $lighty_config .= <<<EOD
+ssl.openssl.ssl-conf-cmd = (
+    "MinProtocol" => "TLSv1.2",
+    "Options" => "-ServerPreference",
+    "CipherString" => "EECDH+AESGCM:AES256+EECDH:CHACHA20:!SHA1:!SHA256:!SHA384"
+)
+
+EOD;
         } else {
-            $lighty_config .= 'ssl.cipher-list = "' . $config['system']['webgui']['ssl-ciphers'] . '"' . PHP_EOL;
+            $lighty_config .= <<<EOD
+
+ssl.openssl.ssl-conf-cmd = (
+    "MinProtocol" => "TLSv1",
+    "CipherString" => "{$config['system']['webgui']['ssl-ciphers']}"
+)
+
+EOD;
         }
+
         if (!empty($config['system']['webgui']['ssl-hsts'])) {
-            $lighty_config .= "setenv.add-response-header  = (\n";
-            $lighty_config .= "    \"Strict-Transport-Security\" => \"max-age=15768000;\"\n";
-            $lighty_config .= ")\n";
+            $lighty_config .= "\$HTTP[\"scheme\"] == \"https\" {\n";
+            $lighty_config .= "    setenv.add-response-header = (\"Strict-Transport-Security\" => \"max-age=15768000\" )\n";
+            $lighty_config .= "}\n";
         }
 
         $lighty_config .= "\n";
@@ -436,8 +449,8 @@ debug.log-request-handling = "disable"
 debug.log-file-not-found   = "disable"
 
 # gzip compression
-compress.cache-dir = "/tmp/lighttpdcompress/"
-compress.filetype  = ("text/plain","text/css", "text/xml", "text/javascript" )
+deflate.cache-dir = "/tmp/lighttpdcompress/"
+deflate.mimetypes = ("text/plain","text/css", "text/xml", "text/javascript" )
 
 {$server_upload_dirs}
 
@@ -467,6 +480,7 @@ EOD;
     \$HTTP["host"] =~ "(.*)" {
         url.redirect = ( "^/(.*)" => "https://%1{$redirectport}/$1" )
     }
+    ssl.engine = "disable"
 }
 
 EOD;

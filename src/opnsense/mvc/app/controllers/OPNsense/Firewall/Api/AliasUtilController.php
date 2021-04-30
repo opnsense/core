@@ -96,9 +96,9 @@ class AliasUtilController extends ApiControllerBase
     {
         $this->sessionClose();
 
-        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', -1));
         $currentPage = intval($this->request->getPost('current', 'int', 1));
-        $offset = ($currentPage - 1) * $itemsPerPage;
+        $offset = $itemsPerPage > 0 ? ($currentPage - 1) * $itemsPerPage : 0;
 
         $backend = new Backend();
         $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")), true);
@@ -122,13 +122,27 @@ class AliasUtilController extends ApiControllerBase
             sort($entry_keys);
         }
 
-        $formatted = array_map(function ($value) use (&$entries) {
+        $formatted_full = array_map(function ($value) use (&$entries) {
             $item = ['ip' => $value];
             foreach ($entries[$value] as $ekey => $evalue) {
                 $item[$ekey] = $evalue;
             }
             return $item;
-        }, array_slice($entry_keys, $offset, $itemsPerPage));
+        }, $entry_keys);
+
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !array_key_exists('ip', $this->request->getPost('sort'))
+        ) {
+            $sortcolumn = array_key_first($this->request->getPost('sort'));
+            $sort_order = $this->request->getPost('sort')[$sortcolumn];
+            if (!empty(array_column($formatted_full, $sortcolumn))) {
+                array_multisort(array_column($formatted_full, $sortcolumn), $sort_order == 'asc' ? SORT_ASC : SORT_DESC, $formatted_full);
+            }
+        }
+
+        $formatted = array_slice($formatted_full, $offset, $itemsPerPage > 0 ? $itemsPerPage : null);
 
         return [
             'total' => count($entry_keys),

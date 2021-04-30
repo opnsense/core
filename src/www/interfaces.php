@@ -435,9 +435,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['ipaddrv6'] = null;
     }
 
-    /*
-        locate PPP details (if any)
-    */
+    /* locate PPP details (if any) */
     $pppid = count($a_ppps);
     foreach ($a_ppps as $key => $ppp) {
         if ($a_interfaces[$if]['if'] == $ppp['if']) {
@@ -472,9 +470,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pppid = count($a_ppps);
     }
 
-    /*
-      Wireless interface
-    */
     if (isset($a_interfaces[$if]['wireless'])) {
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
@@ -2143,7 +2138,7 @@ include("head.inc");
                               </label>
                             </div>
                             <div class="hidden" data-for="help_for_dhcpprotocol_timing">
-                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease."),'<a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
+                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease."),'<a target="_blank" href="https://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
                             </div>
                           </td>
                         </tr>
@@ -2151,7 +2146,7 @@ include("head.inc");
                           <td><a id="help_for_dhcp_lease_requirements_and_requests" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lease Requirements");?> </td>
                           <td>
                             <div class="hidden" data-for="help_for_dhcp_lease_requirements_and_requests">
-                              <?=sprintf(gettext("More detailed information about lease requirements and requests can be found in the %sFreeBSD Manual%s."),'<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">','</a>')?><br/>
+                              <?=sprintf(gettext("More detailed information about lease requirements and requests can be found in the %sFreeBSD Manual%s."),'<a target="FreeBSD_DHCP" href="https://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">','</a>')?><br/>
                               <hr/>
                             </div>
                             <?=gettext("Send Options"); ?><br />
@@ -2289,10 +2284,10 @@ include("head.inc");
                         <tr>
                           <td><?=gettext("Advanced PPP"); ?></td>
                           <td>
-                            <?php if (!empty($pconfig['pppid'])): ?>
-                              <?= sprintf(gettext('%sClick here%s to edit PPP configuration.'),'<a href="/interfaces_ppps_edit.php?id=' . htmlspecialchars($pconfig['pppid']) . '" class="navlnk">', '</a>') ?>
+                            <?php if (!empty($a_ppps[$pppid])): ?>
+                              <?= sprintf(gettext('%sClick here%s to edit PPP configuration.'), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
                             <?php else: ?>
-                              <?= sprintf(gettext("%sClick here%s to create a PPP configuration."), '<a href="/interfaces_ppps_edit.php" class="navlnk">', '</a>') ?>
+                              <?= sprintf(gettext("%sClick here%s to create a PPP configuration."), '<a href="/interfaces_ppps_edit.php">', '</a>') ?>
                             <?php endif; ?>
                           </td>
                         </tr>
@@ -2361,13 +2356,13 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced and MLPPP"); ?></td>
-                          <?php if (isset($pconfig['pppid'])): ?>
+                          <?php if (!empty($a_ppps[$pppid])): ?>
                             <td>
-                            <?= sprintf(gettext('%sClick here%s for additional PPPoE configuration options. Save first if you made changes.'),'<a href="/interfaces_ppps_edit.php?id='.$pconfig['pppid'].'" class="navlnk">','</a>') ?>
+                            <?= sprintf(gettext('%sClick here%s for additional PPPoE configuration options. Save first if you made changes.'), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
                             </td>
                           <?php else: ?>
                             <td>
-                            <?= sprintf(gettext('%sClick here%s for advanced PPPoE configuration options and MLPPP configuration.'),'<a href="/interfaces_ppps_edit.php" class="navlnk">','</a>') ?>
+                            <?= sprintf(gettext('%sClick here%s for advanced PPPoE configuration options and MLPPP configuration.'),'<a href="/interfaces_ppps_edit.php">','</a>') ?>
                             </td>
                           <?php endif; ?>
                         </tr>
@@ -2443,10 +2438,10 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced"); ?></td>
                             <td>
-                          <?php if (!empty($pconfig['pppid'])): ?>
-                            <?= sprintf(gettext("%sClick here%s for additional PPTP and L2TP configuration options. Save first if you made changes."),'<a href="/interfaces_ppps_edit.php?id='.$pconfig['pppid'].'" class="navlnk">','</a>') ?>
+                          <?php if (!empty($a_ppps[$pppid])): ?>
+                            <?= sprintf(gettext("%sClick here%s for additional PPTP and L2TP configuration options. Save first if you made changes."), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
                           <?php else: ?>
-                            <?= sprintf(gettext('%sClick here%s for advanced PPTP and L2TP configuration options.'),'<a href="/interfaces_ppps_edit.php" class="navlnk">','</a>') ?>
+                            <?= sprintf(gettext('%sClick here%s for advanced PPTP and L2TP configuration options.'),'<a href="/interfaces_ppps_edit.php">','</a>') ?>
                           <?php endif; ?>
                             </td>
                         </tr>

@@ -43,7 +43,7 @@ class UniqueConstraint extends BaseConstraint
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute)
+    public function validate(\Phalcon\Validation $validator, $attribute): bool
     {
         $node = $this->getOption('node');
         $fieldSeparator = chr(10) . chr(0);

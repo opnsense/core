@@ -211,7 +211,7 @@ function filter_core_rules_system($fw, $defaults)
     // block All IPv6 except loopback traffic
     $fw->registerFilterRule(
         1,
-        array('interface' => 'loopback', 'ipprotocol' => 'inet6', 'disabled' => isset($config['system']['ipv6allow']),
+        array('interface' => 'lo0', 'ipprotocol' => 'inet6', 'disabled' => isset($config['system']['ipv6allow']),
           'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_firewall.php#ipv6allow'),
         $defaults['pass']
     );
@@ -233,35 +233,35 @@ function filter_core_rules_system($fw, $defaults)
     $fw->registerFilterRule(
         1,
         array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 requirements (ICMP)'),
+            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)'),
         $defaults['pass']
     );
     // Allow only bare essential icmpv6 packets
     $fw->registerFilterRule(
         1,
-        array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '129,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 requirements (ICMP)', 'from' => '(self)',
+        array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,129,133,134,135,136',
+            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '(self)',
             'to' => 'fe80::/10,ff02::/16', 'direction' => 'out' ),
         $defaults['pass']
     );
     $fw->registerFilterRule(
         1,
         array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 requirements (ICMP)', 'from' => 'fe80::/10',
+            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'fe80::/10',
             'to' => 'fe80::/10,ff02::/16', 'direction' => 'in' ),
         $defaults['pass']
     );
     $fw->registerFilterRule(
         1,
         array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 requirements (ICMP)', 'from' => 'ff02::/16',
+            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'ff02::/16',
             'to' => 'fe80::/10', 'direction' => 'in' ),
         $defaults['pass']
     );
     $fw->registerFilterRule(
         1,
         array('ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 requirements (ICMP)', 'from' => '::',
+            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '::',
             'to' => 'ff02::/16', 'direction' => 'in' ),
         $defaults['pass']
     );
@@ -535,7 +535,7 @@ function filter_core_rules_system($fw, $defaults)
         }
     }
     // loopback
-    $fw->registerFilterRule(5, array('interface' => 'loopback', 'descr' => 'pass loopback'), $defaults['pass']);
+    $fw->registerFilterRule(5, array('interface' => 'lo0', 'descr' => 'pass loopback'), $defaults['pass']);
     // out from this Firewall
     $fw->registerFilterRule(
         5,
@@ -601,13 +601,18 @@ function filter_core_rules_system($fw, $defaults)
                     $intf_has_v6 = $intf_has_v6 || is_subnetv6($addr);
                 }
                 foreach ($fw->getInterfaceGateways($ifcfg['if']) as $gwname) {
-                    $gwproto = $fw->getGateway($gwname)['proto'];
+                    $gwcfg = $fw->getGateway($gwname);
+                    if (empty($gwcfg['gateway'])) {
+                        // XXX: only force traffic on explict gateway [address] selection,
+                        //      exclude gateway_interface types.
+                        continue;
+                    }
                     // only try to add gateway rules for traffic leaving this interface
                     // when the correct protocol is assigned to the interface
-                    if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
+                    if (($gwcfg['proto'] == 'inet' && $intf_has_v4) || ($gwcfg['proto'] == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(
                             100000,
-                            array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
+                            array('from' => "({$ifcfg['if']})", 'direction' => 'out', 'gateway' => $gwname,
                             'destination' => array('network' => $ifdescr, "not" => true),
                             'statetype' => 'keep',
                             'allowopts' => true,

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# refresh relevant configuration files
+/usr/local/etc/rc.configure_firmware
+
+# create a unique timestamp for our asset caching
+touch /usr/local/opnsense/www/index.php
+
+# remove spurious .pkgsave files pkg may have created
+daemon -f find /usr/local -type f -name "*.pkgsave" -delete

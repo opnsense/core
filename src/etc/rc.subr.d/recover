@@ -215,92 +215,95 @@ EOF;
 
 function recover_ports()
 {
-	$actions = array(
-		'pre-install',
-		'post-install'
-	);
+    $actions = ['pre-install', 'post-install'];
 
-	exec('/usr/local/sbin/pkg-static query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
+    exec('/usr/local/sbin/pkg-static query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
 
-	if ($pkgs[0] == '') {
-		return;
-	}
+    if ($pkgs[0] == '') {
+        return;
+    }
 
-	$tempname = tempnam('/tmp', 'recover.');
-	$tempfile = fopen($tempname, 'w');
+    $tempname = tempnam('/tmp', 'recover.');
+    $tempfile = fopen($tempname, 'w');
+    $luacount = 0;
 
-	foreach ($pkgs as $pkg) {
-		$raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . $pkg);
-		$info = json_decode($raw, true);
-		foreach($actions as $action) {
-			if (!isset($info['scripts'][$action])) {
-				continue;
-			}
+    foreach ($pkgs as $pkg) {
+        $raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . $pkg);
+        $info = json_decode($raw, true);
+        foreach ($actions as $action) {
+            if (!empty($info['scripts'][$action])) {
+                ftruncate($tempfile, 0);
+                rewind($tempfile);
+                fwrite($tempfile, $info['scripts'][$action] . PHP_EOL);
+                passthru('/bin/sh ' . $tempname);
+            }
+            if (!empty($info['lua_scripts'][$action])) {
+                $luacount += count($info['lua_scripts'][$action]);
+            }
+        }
+    }
 
-			ftruncate($tempfile, 0);
-			rewind($tempfile);
-			fwrite($tempfile, $info['scripts'][$action] . PHP_EOL);
-			passthru('/bin/sh ' . $tempname);
-		}
-	}
+    if ($luacount) {
+        echo "===> Unhandled LUA scripts ($luacount) were found." . PHP_EOL;
+    }
 
-	fclose($tempfile);
-	unlink($tempname);
+    fclose($tempfile);
+    unlink($tempname);
 }
 
 function recover_rebuild()
 {
-	passthru('/usr/sbin/pwd_mkdb -p /etc/master.passwd');
-	passthru('/usr/sbin/pwd_mkdb /etc/master.passwd');
-	passthru('/bin/sync');
+    passthru('/usr/sbin/pwd_mkdb -p /etc/master.passwd');
+    passthru('/usr/sbin/pwd_mkdb /etc/master.passwd');
+    passthru('/bin/sync');
 }
 
 function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini)
 {
-	echo "===> Restoring /etc/group\n";
-	file_put_contents('/etc/group', $etc_group);
+    echo "===> Restoring /etc/group\n";
+    file_put_contents('/etc/group', $etc_group);
 
-	echo "===> Restoring /etc/master.passwd\n";
-	file_put_contents('/etc/master.passwd', $etc_master_passwd);
+    echo "===> Restoring /etc/master.passwd\n";
+    file_put_contents('/etc/master.passwd', $etc_master_passwd);
 
-	echo "===> Restoring /etc/shells\n";
-	file_put_contents('/etc/shells', $etc_shells);
+    echo "===> Restoring /etc/shells\n";
+    file_put_contents('/etc/shells', $etc_shells);
 
-	echo "===> Restoring /etc/ttys\n";
-	file_put_contents('/etc/ttys', $etc_ttys);
+    echo "===> Restoring /etc/ttys\n";
+    file_put_contents('/etc/ttys', $etc_ttys);
 
-	echo "===> Restoring php.ini files\n";
-	file_put_contents('/usr/local/etc/php.ini', $php_ini);
-	file_put_contents('/usr/local/lib/php.ini', $php_ini);
+    echo "===> Restoring php.ini files\n";
+    file_put_contents('/usr/local/etc/php.ini', $php_ini);
+    file_put_contents('/usr/local/lib/php.ini', $php_ini);
 
-	recover_rebuild();
+    recover_rebuild();
 }
 
 function recover_pkg()
 {
-	recover_ports();
-	recover_rebuild();
+    recover_ports();
+    recover_rebuild();
 
-	echo "===> Restoring critical core files\n";
+    echo "===> Restoring critical core files\n";
 
-	foreach (['/usr/local/etc/bogons', '/usr/local/etc/bogonsv6'] as $file) {
-		if (!file_exists($file) || filesize($file) === 0) {
-			@copy("{$file}.sample", $file);
-		}
-	}
+    foreach (['/usr/local/etc/bogons', '/usr/local/etc/bogonsv6'] as $file) {
+        if (!file_exists($file) || filesize($file) === 0) {
+            @copy("{$file}.sample", $file);
+        }
+    }
 }
 
 $stage = isset($argv[1]) ? $argv[1] : 'both';
 
 switch ($stage) {
-	case 'base':
-		recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini);
-		break;
-	case 'pkg':
-		recover_pkg();
-		break;
-	default:
-		recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini);
-		recover_pkg();
-		break;
+    case 'base':
+        recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini);
+        break;
+    case 'pkg':
+        recover_pkg();
+        break;
+    default:
+        recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini);
+        recover_pkg();
+        break;
 }

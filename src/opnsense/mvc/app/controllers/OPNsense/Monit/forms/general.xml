@@ -1,7 +1,7 @@
 <form>
    <field>
       <id>monit.general.enabled</id>
-      <label>Enable monit</label>
+      <label>Enable Monit</label>
       <type>checkbox</type>
       <help><![CDATA[Enable or disable monit.]]></help>
    </field>
@@ -9,7 +9,7 @@
       <id>monit.general.interval</id>
       <label>Polling Interval</label>
       <type>text</type>
-      <help><![CDATA[Polling interval in seconds]]></help>
+      <help><![CDATA[Polling interval in seconds.]]></help>
    </field>
    <field>
       <id>monit.general.startdelay</id>
@@ -19,7 +19,7 @@
    </field>
    <field>
       <id>monit.general.mailserver</id>
-      <label>Mail Server</label>
+      <label>Mail Server Address</label>
       <type>select_multiple</type>
       <allownew>true</allownew>
       <style>tokenize</style>
@@ -33,21 +33,21 @@
    </field>
    <field>
       <id>monit.general.username</id>
-      <label>Username</label>
+      <label>Mail Server Username</label>
       <type>text</type>
-      <help><![CDATA[The username for authentication.]]></help>
+      <help><![CDATA[The username for mail server authentication.]]></help>
    </field>
    <field>
       <id>monit.general.password</id>
-      <label>Password</label>
+      <label>Mail Server Password</label>
       <type>password</type>
-      <help><![CDATA[The password for authentication.]]></help>
+      <help><![CDATA[The password for mail server authentication.]]></help>
    </field>
    <field>
       <id>monit.general.ssl</id>
-      <label>Secure Connection</label>
+      <label>Mail Server SSL Connection</label>
       <type>checkbox</type>
-      <help><![CDATA[Enable encryption.]]></help>
+      <help><![CDATA[Enable encryption for mail server communication.]]></help>
    </field>
    <field>
       <id>monit.general.sslversion</id>

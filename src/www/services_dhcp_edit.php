@@ -125,11 +125,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* check for overlaps */
+    if (!empty($pconfig['domain'])) {
+        $this_fqdn = $pconfig['hostname'] . "." . $pconfig['domain'];
+    } elseif (!empty($if) && !empty($config['dhcpd'][$if]['domain'])) {
+        $this_fqdn = $pconfig['hostname'] . "." . $config['dhcpd'][$if]['domain'];
+    } else {
+        $this_fqdn = $pconfig['hostname'] . "." . $config['system']['domain'];
+    }
     foreach ($a_maps as $mapent) {
         if (isset($id) && ($a_maps[$id] === $mapent)) {
             continue;
         }
-        if ((($mapent['hostname'] == $pconfig['hostname']) && $mapent['hostname'])  ||
+        if (empty($mapent['hostname'])) {
+            $fqdn = "";
+        } elseif (!empty($mapent['domain'])) {
+            $fqdn = $mapent['hostname'] . "." . $mapent['domain'];
+        } elseif (!empty($if) && !empty($config['dhcpd'][$if]['domain'])) {
+            $fqdn = $mapent['hostname'] . "." . $config['dhcpd'][$if]['domain'];
+        } else {
+            $fqdn = $mapent['hostname'] . "." . $config['system']['domain'];
+        }
+
+        if (($fqdn == $this_fqdn)  ||
             (($mapent['mac'] == $pconfig['mac']) && $mapent['mac']) ||
             (($mapent['ipaddr'] == $pconfig['ipaddr']) && $mapent['ipaddr'] ) ||
             (($mapent['cid'] == $pconfig['cid']) && $mapent['cid'])) {
@@ -147,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
     }
 
-    if (!empty($pconfig['gateway']) && !is_ipaddrv4($pconfig['gateway'])) {
+    if (!empty($pconfig['gateway']) && $pconfig['gateway'] != "none" && !is_ipaddrv4($pconfig['gateway'])) {
         $input_errors[] = gettext("A valid IP address must be specified for the gateway.");
     }
 
@@ -156,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("A valid IP address must be specified for the primary/secondary WINS servers.");
     }
 
-    if (is_subnetv4($parent_net) && !empty($pconfig['gateway'])) {
+    if (is_subnetv4($parent_net) && $pconfig['gateway'] != "none" &&  !empty($pconfig['gateway'])) {
         if (!ip_in_subnet($pconfig['gateway'], $parent_net) && !ip_in_interface_alias_subnet($if, $pconfig['gateway'])) {
             $input_errors[] = sprintf(gettext("The gateway address %s does not lie within the chosen interface's subnet."), $_POST['gateway']);
         }
@@ -403,7 +420,9 @@ include("head.inc");
                   <td>
                     <input name="gateway" type="text" value="<?=$pconfig['gateway'];?>" />
                     <div class="hidden" data-for="help_for_gateway">
-                      <?=gettext("The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network.");?>
+                      <?=gettext('The default is to use the IP on this interface of the firewall as the gateway. '.
+                                 'Specify an alternate gateway here if this is not the correct gateway for your network. ' .
+                                 'Type "none" for no gateway assignment.');?>
                     </div>
                   </td>
                 </tr>

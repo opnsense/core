@@ -36,7 +36,7 @@ require_once("interfaces.inc");
  * @param null $selected_id selected item index
  * @return array
  */
-function available_interfaces($selected_id=null)
+function available_interfaces($selected_id = null)
 {
     global $config;
     // configured interfaces

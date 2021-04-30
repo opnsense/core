@@ -76,9 +76,7 @@ class Plugin
      */
     public function setInterfaceMapping(&$mapping)
     {
-        $this->interfaceMapping = array();
-        $this->interfaceMapping['loopback'] = array('if' => 'lo0', 'descr' => 'loopback');
-        $this->interfaceMapping = array_merge($this->interfaceMapping, $mapping);
+        $this->interfaceMapping = $mapping;
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
@@ -104,11 +102,16 @@ class Plugin
     {
         $this->gateways = $gateways;
         foreach ($gateways->gatewaysIndexedByName(false, true) as $key => $gw) {
-            if (Util::isIpAddress($gw['gateway']) && !empty($gw['if'])) {
-                $this->gatewayMapping[$key] = array("logic" => "route-to ( {$gw['if']} {$gw['gateway']} )",
+            if (!empty($gw['gateway_interface']) || Util::isIpAddress($gw['gateway'])) {
+                if (Util::isIpAddress($gw['gateway'])) {
+                    $logic = "route-to ( {$gw['if']} {$gw['gateway']} )";
+                } else {
+                    $logic = "route-to {$gw['if']}";
+                }
+                $this->gatewayMapping[$key] = array("logic" => $logic,
                                                     "interface" => $gw['if'],
                                                     "gateway" => $gw['gateway'],
-                                                    "proto" => strstr($gw['gateway'], ':') ? "inet6" : "inet",
+                                                    "proto" => $gw['ipprotocol'],
                                                     "type" => "gateway");
             }
         }

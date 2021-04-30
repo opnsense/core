@@ -1,0 +1,28 @@
+This directory allows the user to enable and configure additional lighttpd modules for the OPNsense webgui, or
+specify additional configurations for modules that are enabled already in /usr/local/etc/inc/plugins.d/webgui.inc
+
+Relevant lighttpd modules available: https://redmine.lighttpd.net/projects/lighttpd/wiki/Docs#Modules
+
+The user can create and configure their own configuration files in this directory, or copy, rename and adapt example
+configurations already included in this directory
+
+To use the functionality of this directory:
+
+- create a suitably named file with the extension .conf in this directory, either by copying and renaming an example already included,
+  or creating your own
+
+- if necessary, enable the applicable lighttpd module in that file by including:
+
+    server.modules += ( "mod_[NAME]" )
+
+  (for example: server.modules += ( "mod_extforward" )
+
+- specify the relevant configurations for the module, according to the lighttpd documentation
+
+In some cases, the order in which modules are enabled by lighttpd is important. Modules which gate requests
+(eg mod_access, mod_auth) or modify requests (eg mod_alias, mod_setenv) should be listed before modules which
+complete requests (eg mod_redirect, mod_rewrite), and which, in turn, should be listed before dynamic handlers
+(eg mod_cgi, mod_fastcgi, mod_proxy, mod_scgi, ...)
+
+To address this, you will need to ensure that the relevant configuration files appear in this directory in the
+right order. Begin the files with appropriate numbering (such as 01- and 02-) to achieve that

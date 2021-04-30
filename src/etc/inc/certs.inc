@@ -209,7 +209,7 @@ function cert_import(&$cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert')
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns)
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -226,7 +226,7 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
     $ca_serial = ++$ca['serial'];
 
     // handle parameters which can only be set via the configuration file
-    $config_filename = create_temp_openssl_config($dn);
+    $config_filename = create_temp_openssl_config($extns);
 
     $args = array(
         'config' => $config_filename,
@@ -286,7 +286,7 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
     return true;
 }
 
-function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
+function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $extns)
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -303,7 +303,7 @@ function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
     $ca_serial = ++$ca['serial'];
 
     // handle parameters which can only be set via the configuration file
-    $config_filename = create_temp_openssl_config($dn);
+    $config_filename = create_temp_openssl_config($extns);
 
     $args = array(
         'config' => $config_filename,
@@ -331,6 +331,29 @@ function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
     return true;
 }
 
+function certs_build_name($dn)
+{
+    if (empty($dn) || !is_array($dn)) {
+        return 'unknown';
+    }
+
+    $subject = '';
+    ksort($dn);
+
+    foreach ($dn as $a => $v) {
+        if (is_array($v)) {
+            ksort($v);
+            foreach ($v as $w) {
+                $subject = strlen($subject) ? "{$a}={$w}, {$subject}" : "{$a}={$w}";
+            }
+        } else {
+            $subject = strlen($subject) ? "{$a}={$v}, {$subject}" : "{$a}={$v}";
+        }
+    }
+
+    return $subject;
+}
+
 function csr_get_subject($str_crt, $decode = true)
 {
     if ($decode) {
@@ -338,20 +361,8 @@ function csr_get_subject($str_crt, $decode = true)
     }
 
     $components = openssl_csr_get_subject($str_crt);
-    if (empty($components) || !is_array($components)) {
-        return "unknown";
-    }
 
-    ksort($components);
-    foreach ($components as $a => $v) {
-        if (!strlen($subject)) {
-            $subject = "{$a}={$v}";
-        } else {
-            $subject = "{$a}={$v}, {$subject}";
-        }
-    }
-
-    return $subject;
+    return certs_build_name($components);
 }
 
 function cert_get_subject($str_crt, $decode = true)
@@ -363,26 +374,7 @@ function cert_get_subject($str_crt, $decode = true)
     $inf_crt = openssl_x509_parse($str_crt);
     $components = $inf_crt['subject'];
 
-    if (empty($components) || !is_array($components)) {
-        return "unknown";
-    }
-
-    ksort($components);
-    $subject = '';
-    foreach ($components as $a => $v) {
-        if (is_array($v)) {
-            ksort($v);
-            foreach ($v as $w) {
-                $asubject = "{$a}={$w}";
-                $subject = (isset($subject)) ? "{$asubject}, {$subject}" : $asubject;
-            }
-        } else {
-            $asubject = "{$a}={$v}";
-            $subject = (isset($subject)) ? "{$asubject}, {$subject}" : $asubject;
-        }
-    }
-
-    return $subject;
+    return certs_build_name($components);
 }
 
 function cert_get_subject_array($crt)
@@ -404,34 +396,16 @@ function cert_get_subject_array($crt)
     return $subject_array;
 }
 
-
 function cert_get_issuer($str_crt, $decode = true)
 {
     if ($decode) {
         $str_crt = base64_decode($str_crt);
     }
+
     $inf_crt = openssl_x509_parse($str_crt);
     $components = $inf_crt['issuer'];
 
-    if (empty($components) || !is_array($components)) {
-        return "unknown";
-    }
-    ksort($components);
-    $issuer = '';
-    foreach ($components as $a => $v) {
-        if (is_array($v)) {
-            ksort($v);
-            foreach ($v as $w) {
-                $aissuer = "{$a}={$w}";
-                $issuer = (isset($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
-            }
-        } else {
-            $aissuer = "{$a}={$v}";
-            $issuer = (isset($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
-        }
-    }
-
-    return $issuer;
+    return certs_build_name($components);
 }
 
 /* this function works on x509 (crt), rsa key (prv), and req(csr) */
@@ -741,18 +715,18 @@ function cert_get_cn($crt, $isref = false)
  * @param $dn
  * @return bool|string The name of the temporary config file.
  */
-function create_temp_openssl_config(&$dn)
+function create_temp_openssl_config(&$extns)
 {
-    // define temp filename to use for openssl.cnf
+    // define temp filename to use for openssl.cnf and add extensions values to it
     $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
 
     $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
 
-    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $dnTag) {
-        if (isset($dn[$dnTag])) {
-            $template_dn = $dnTag . ' = ' . str_replace(array("\r", "\n"), '', $dn[$dnTag]);
+    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $extnTag) {
+        if (isset($extns[$extnTag])) {
+            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
             // Overwrite the placeholders for this property
-            $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
+            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
         }
     }
     file_put_contents($configFilename, $template);

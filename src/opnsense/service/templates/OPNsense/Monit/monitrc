@@ -137,7 +137,7 @@ check {{ service.type }} {{ service.name }} {{ path }}
 {%     if service.start|default('') != '' %}
    start program = "{{ service.start }}"
 {%     endif %}
-{%     if service.start|default('') != '' %}
+{%     if service.stop|default('') != '' %}
    stop program = "{{ service.stop }}"
 {%     endif %}
 {%     if service.tests is defined %}

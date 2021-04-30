@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,24 @@ function openssh_services()
 
     return $services;
 }
+
+/**
+ *  sync configuration via xmlrpc
+ * @return array
+ */
+function openssh_xmlrpc_sync()
+{
+    $result = [];
+    $result[] = array(
+        'description' => gettext('OpenSSH'),
+        'section' => 'system.ssh',
+        'id' => 'ssh',
+        'services' => ["openssh"],
+    );
+
+    return $result;
+}
+
 
 function openssh_stop()
 {
@@ -201,7 +219,11 @@ function openssh_configure_do($verbose = false, $interface = '')
             continue;
         }
 
-        $listeners[] = $tmpaddr;
+        if (count($listeners) < 16) {
+            $listeners[] = $tmpaddr;
+        } else {
+            log_error("The SSH listening address $tmpaddr cannot be added due to MAX_LISTEN_SOCKS limit reached.");
+        }
     }
 
     foreach ($listeners as $listener) {

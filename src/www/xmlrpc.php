@@ -69,6 +69,7 @@ if (!isset($_SERVER['HTTP_AUTHORIZATION']) ||               // check for an auth
     </param>
   </params>
 </methodResponse>
+
 EOD;
 
     $xml = '<?xml version="1.0"?>'."\n".$xml;

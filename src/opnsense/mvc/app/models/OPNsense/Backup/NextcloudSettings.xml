@@ -48,9 +48,9 @@
         </password_encryption>
         <backupdir type="TextField">
             <Required>Y</Required>
-            <mask>/[a-z0-9\-]+/i</mask>
+            <mask>/^([\w%+\-]+\/)*[\w+%\-]+$/</mask>
             <default>OPNsense-Backup</default>
-            <ValidationMessage>The Backup Directory can only consist of alphanumeric characters.</ValidationMessage>
+            <ValidationMessage>The Backup Directory can only consist of alphanumeric characters, dash, underscores and slash. No leading or trailing slash.</ValidationMessage>
         </backupdir>
     </items>
 </model>

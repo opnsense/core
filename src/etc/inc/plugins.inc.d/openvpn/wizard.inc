@@ -414,14 +414,6 @@ function step10_stepbeforeformdisplay()
                 $opt['value'] = $name;
                 $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
             }
-        } elseif ($field['name'] == "engine") {
-            $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
-            foreach (openvpn_get_engines() as $name => $desc) {
-                $opt = array();
-                $opt['name'] = $desc;
-                $opt['value'] = $name;
-                $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'][] = $opt;
-            }
         } elseif ($field['name'] == "nbttype") {
             $pkg['step'][$stepid]['fields']['field'][$idx]['options']['option'] = array();
             foreach ($netbios_nodetypes as $type => $name) {
@@ -532,7 +524,7 @@ function step12_submitphpaction()
 
     if (!is_array($config['wizardtemp'])) {
         $message = "No configuration found please retry again.";
-        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s' . array($message)));
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s', array($message)));
         exit;
     }
 
@@ -628,7 +620,8 @@ function step12_submitphpaction()
             $pconfig['step9']['lifetime'],
             $dn,
             'sha256',
-            'server_cert'
+            'server_cert',
+            []
         );
 
         $a_cert = &config_read_array('cert');
@@ -755,7 +748,6 @@ function step12_submitphpaction()
     }
     $server['crypto'] = $pconfig['step10']['crypto'];
     $server['digest'] = $pconfig['step10']['digest'];
-    $server['engine'] = $pconfig['step10']['engine'];
 
     if (isset($pconfig['step11']['ovpnrule'])) {
         $rule = array();

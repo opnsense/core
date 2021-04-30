@@ -255,7 +255,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                             }
                         }
                     }
-                    $interface = explode("_vhid", $ph1ent['interface'])[0];
+                    $interface = explode("_vip", $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
                                       "log" => !isset($config['syslog']['nologdefaultpass']),
                                       "quick" => false,
@@ -333,6 +333,7 @@ function ipsec_xmlrpc_sync()
         'description' => gettext('IPsec'),
         'section' => 'ipsec',
         'id' => 'ipsec',
+        'services' => ["strongswan"],
     );
 
     return $result;
@@ -530,9 +531,11 @@ function ipsec_parse_phase2($ikeid)
             }
         } else {
             // merge tunnels
-            $result['reqids'] = [min($result['reqids'])];
-            for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
-                $result['uniqid_reqid'][$uniqids[$idx]] = $result['reqids'][0];
+            if (!empty($result['reqids'])) {
+                $result['reqids'] = [min($result['reqids'])];
+                for ($idx = 0; $idx < count($result['leftsubnets']); ++$idx) {
+                    $result['uniqid_reqid'][$uniqids[$idx]] = $result['reqids'][0];
+                }
             }
             $result['leftsubnets'] = array_unique($result['leftsubnets']);
             $result['rightsubnets'] = array_unique($result['rightsubnets']);
@@ -810,6 +813,12 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
             break;
         case "peeraddress":
             $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
+            break;
+        case "fqdn":
+            $thisid_data = !empty($id_data) ? "fqdn:{$id_data}" : null;
+            break;
+        case "keyid tag":
+            $thisid_data = !empty($id_data) ? "keyid:{$id_data}" : null;
             break;
         default:
             $thisid_data = !empty($id_data) ? "{$id_data}" : null;
@@ -1526,6 +1535,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 } else {
                     $inactivityline = '';
                 }
+                if (!empty($ph1ent['keyingtries'])) {
+                    $keyingtriesline = "keyingtries = " ;
+                    $keyingtriesline .= $ph1ent['keyingtries'] == -1 ? "%forever" : $ph1ent['keyingtries'];
+                } else {
+                    $keyingtriesline = '';
+                }
 
                 if (!empty($ph1ent['lifetime'])) {
                     $ikelifeline = "ikelifetime = {$ph1ent['lifetime']}s";
@@ -1657,6 +1672,7 @@ conn con<<connectionId>>
   type = {$parsed_phase2['type']}
   {$dpdline}
   {$inactivityline}
+  {$keyingtriesline}
   left = {$left_spec}
   right = {$right_spec}
   {$right_any}
@@ -1734,7 +1750,9 @@ EOD;
                         }
                     } else {
                         $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                        $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][0]);
+                        if (!isset($ph1ent['mobile'])) {
+                            $tmpconf .= sprintf("\treqid = %d\n", $parsed_phase2['reqids'][0]);
+                        }
                         if (!empty($parsed_phase2['rightsubnets'])) {
                             $tmpconf .= "\trightsubnet = " . join(',', $parsed_phase2['rightsubnets']) . "\n";
                         }
@@ -1839,10 +1857,24 @@ function ipsec_get_configured_vtis()
                     $configured_intf[$intfnm]['networks'] = array();
                 }
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
+                // calculate netmask for the provided tunnel
+                if ($inet == 'inet6') {
+                    // XXX: we don't support 128bit integers, only the last 64 bits are considered to calculate the
+                    //      subnet size.
+                    $tunnel_int64 = [];
+                    foreach (['tunnel_local', 'tunnel_remote'] as $fieldname) {
+                        $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
+                        $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
+                    }
+                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
+                } else {
+                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
+                }
+
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $inet == 'inet6' ? '128' : '32',
+                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }
@@ -1946,10 +1978,18 @@ function ipsec_configure_vti($verbose = false)
                 }
             }
             if (!$isfound) {
-                mwexecf('/sbin/ifconfig %s %s %s %s', array(
-                    $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask']),
-                    $endpoint['tunnel_remote']
-                ));
+                if ($endpoint['inet'] == 'inet') {
+                    mwexecf('/sbin/ifconfig %s %s %s %s', array(
+                        $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask']),
+                        $endpoint['tunnel_remote']
+                    ));
+                } else {
+                    // XXX: don't specify a tunnel endpoint for ipv6, although this looks like an illogical
+                    //      construction, a netmask seems to be a requirement for some ipv6 consumers (frr)
+                    mwexecf('/sbin/ifconfig %s %s %s', array(
+                        $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask'])
+                    ));
+                }
             }
         }
     }

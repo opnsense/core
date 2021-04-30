@@ -99,7 +99,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("XX5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['InclusionIn']);
+        $this->assertEquals($this->validate($field), ['Phalcon\Validation\Validator\InclusionIn']);
     }
 
     public function testSetMultiOk()

@@ -391,7 +391,7 @@ $( document ).ready(function() {
                       </td>
                       <td class="hidden-xs">
                           <?=empty($ph1ent['protocol']) || $ph1ent['protocol'] == "inet" ? "IPv4" : "IPv6"; ?>
-                          <?php $ph1ent_type=array("ikev1" => "IKE", "ikev2" => "IKEv2", "ike" => "auto"); ?>
+                          <?php $ph1ent_type = array('ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'); ?>
                           <?=!empty($ph1ent['iketype']) &&  isset($ph1ent_type[$ph1ent['iketype']]) ? $ph1ent_type[$ph1ent['iketype']] :"" ;?>
                       </td>
                       <td>

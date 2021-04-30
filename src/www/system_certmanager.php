@@ -36,9 +36,9 @@ require_once('phpseclib/File/ASN1/Element.php');
 require_once('phpseclib/Crypt/RSA.php');
 require_once('phpseclib/Crypt/Hash.php');
 
-function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg)
+function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg, $extns)
 {
-    $configFilename = create_temp_openssl_config($dn);
+    $configFilename = create_temp_openssl_config($extns);
 
 
     $args = array(
@@ -283,8 +283,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['csr_keytype'] = "RSA";
         $pconfig['csr_keylen'] = "2048";
         $pconfig['csr_digest_alg'] = "sha256";
-        $pconfig['lifetime'] = "825";
-        $pconfig['lifetime_sign_csr'] = "825";
+        $pconfig['lifetime'] = "397";
+        $pconfig['lifetime_sign_csr'] = "397";
         $pconfig['cert_type'] = "usr_cert";
         $pconfig['cert'] = null;
         $pconfig['key'] = null;
@@ -617,27 +617,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // validation and at the same time create $dn for sign_cert_csr
         if ($pconfig['certmethod'] === 'sign_cert_csr') {
             // XXX: we should separate validation and data gathering
-            $dn = array();
+            $extns = array();
             if (isset($pconfig['key_usage_sign_csr'])) {
                 $san_str = '';
-
-                for ($i = 0; $i < count($pconfig['altname_type_sign_csr']); ++$i) {
-                    if ($pconfig['altname_value_sign_csr'][$i] === '') {
-                        continue;
+                if (!empty($pconfig['altname_type_sign_csr'])) {
+                    for ($i = 0; $i < count($pconfig['altname_type_sign_csr']); ++$i) {
+                        if ($pconfig['altname_value_sign_csr'][$i] === '') {
+                            continue;
+                        }
+                        if (! is_valid_alt_value(array(
+                            'type' => $pconfig['altname_type_sign_csr'][$i],
+                            'value' => $pconfig['altname_value_sign_csr'][$i]), $input_errors
+                        )) {
+                            break;
+                        }
+                        if ($san_str !== '') {
+                            $san_str .= ', ';
+                        }
+                        $san_str .= $pconfig['altname_type_sign_csr'][$i] . ':' . $pconfig['altname_value_sign_csr'][$i];
                     }
-                    if (! is_valid_alt_value(array(
-                        'type' => $pconfig['altname_type_sign_csr'][$i],
-                        'value' => $pconfig['altname_value_sign_csr'][$i]), $input_errors
-                    )) {
-                        break;
-                    }
-                    if ($san_str !== '') {
-                        $san_str .= ', ';
-                    }
-                    $san_str .= $pconfig['altname_type_sign_csr'][$i] . ':' . $pconfig['altname_value_sign_csr'][$i];
                 }
                 if ($san_str !== '') {
-                    $dn['subjectAltName'] = $san_str;
+                    $extns['subjectAltName'] = $san_str;
                 }
                 if (is_array($pconfig['key_usage_sign_csr']) && count($pconfig['key_usage_sign_csr']) > 0) {
                     $resstr = '';
@@ -652,7 +653,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             break;
                         }
                     }
-                    $dn['keyUsage'] = $resstr;
+                    $extns['keyUsage'] = $resstr;
                 }
                 if (is_array($pconfig['extended_key_usage_sign_csr']) && count($pconfig['extended_key_usage_sign_csr']) > 0) {
                     $resstr = '';
@@ -667,12 +668,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             break;
                         }
                     }
-                    $dn['extendedKeyUsage'] = $resstr;
+                    $extns['extendedKeyUsage'] = $resstr;
                 }
                 if ($pconfig['basic_constraints_is_ca_sign_csr'] === 'true') {
-                    $dn['basicConstraints'] = 'CA:' . ((isset($pconfig['basic_constraints_is_ca_sign_csr']) && $pconfig['basic_constraints_is_ca_sign_csr'] === 'true') ? 'TRUE' : 'false');
+                    $extns['basicConstraints'] = 'CA:' . ((isset($pconfig['basic_constraints_is_ca_sign_csr']) && $pconfig['basic_constraints_is_ca_sign_csr'] === 'true') ? 'TRUE' : 'false');
                     if (isset($pconfig['basic_constraints_path_len_sign_csr']) && $pconfig['basic_constraints_path_len_sign_csr'] != '') {
-                        $dn['basicConstraints'] .= ', pathlen:' . ((int) $pconfig['basic_constraints_path_len_sign_csr']);
+                        $extns['basicConstraints'] .= ', pathlen:' . ((int) $pconfig['basic_constraints_path_len_sign_csr']);
                     }
                 }
             }
@@ -715,12 +716,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['dn_organization'],
                         'emailAddress' => $pconfig['dn_email'],
                         'commonName' => $pconfig['dn_commonname']);
+                    $extns = array();
                     if (count($altnames)) {
                         $altnames_tmp = array();
                         foreach ($altnames as $altname) {
                             $altnames_tmp[] = "{$altname['type']}:{$altname['value']}";
                         }
-                        $dn['subjectAltName'] = implode(",", $altnames_tmp);
+                        $extns['subjectAltName'] = implode(",", $altnames_tmp);
                     }
 
                     if (!cert_create(
@@ -730,7 +732,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $pconfig['lifetime'],
                         $dn,
                         $pconfig['digest_alg'],
-                        $pconfig['cert_type']
+                        $pconfig['cert_type'],
+                        $extns
                     )) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
@@ -745,7 +748,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
                     if (!sign_cert_csr($cert, $pconfig['caref_sign_csr'], $pconfig['csr'], (int) $pconfig['lifetime_sign_csr'],
-                                       $pconfig['digest_alg_sign_csr'], $dn)) {
+                                       $pconfig['digest_alg_sign_csr'], $extns)) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
@@ -759,6 +762,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['csr_dn_organization'],
                         'emailAddress' => $pconfig['csr_dn_email'],
                         'commonName' => $pconfig['csr_dn_commonname']);
+                    $extns = array();
                     if (!empty($pconfig['csr_dn_organizationalunit'])) {
                         $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
                     }
@@ -767,9 +771,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         foreach ($altnames as $altname) {
                             $altnames_tmp[] = "{$altname['type']}:{$altname['value']}";
                         }
-                        $dn['subjectAltName'] = implode(",", $altnames_tmp);
+                        $extns['subjectAltName'] = implode(",", $altnames_tmp);
                     }
-                    if (!csr_generate($cert, $pconfig['csr_keylen_curve'], $dn, $pconfig['csr_digest_alg'])) {
+                    if (!csr_generate($cert, $pconfig['csr_keylen_curve'], $dn, $pconfig['csr_digest_alg'], $extns)) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2021 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,23 +28,44 @@
  *
  */
 
-namespace OPNsense\Base\Filters;
+namespace OPNsense\Diagnostics\Api;
 
-use Phalcon\Filter;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
-/**
- * Class queryFilter sanitize query expressions (normal text + wildcard)
- * @package OPNsense\Base\Filters
- */
-class QueryFilter
+class LvtemplateController extends ApiMutableModelControllerBase
 {
-    /**
-     * sanitize query string
-     * @param $value sanitize input
-     * @return mixed sanitize output
-     */
-    public function filter($value)
+    protected static $internalModelName = 'lvtemplate';
+    protected static $internalModelClass = 'OPNsense\Diagnostics\Lvtemplate';
+
+    public function searchItemAction()
     {
-        return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,.,\#]/", "", $value);
+        return $this->searchBase(
+            "templates.template",
+            array('name', 'filters', 'or'), "name", null, SORT_NATURAL|SORT_FLAG_CASE
+        );
     }
+
+    public function setItemAction($uuid)
+    {
+        return $this->setBase("template", "templates.template", $uuid);
+    }
+
+    public function addItemAction()
+    {
+        return $this->addBase("template", "templates.template");
+    }
+
+    public function getItemAction($uuid = null)
+    {
+        return $this->getBase("template", "templates.template", $uuid);
+    }
+
+    public function delItemAction($uuid)
+    {
+        return $this->delBase("templates.template", $uuid);
+    }
+
 }

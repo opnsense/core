@@ -157,6 +157,11 @@ class FlowParser:
                 record['netflow_ver'] = record['agent_info'][3]
                 record['recv'] = record['recv_sec']
                 record['recv_usec'] = record['recv_time'][1]
+                record['if_ndx_in'] = -1
+                record['if_ndx_out'] = -1
+                record['src_port'] = 0
+                record['dst_port'] = 0
+                record['protocol'] = 0
                 if 'proto_flags_tos' in record:
                     record['tcp_flags'] = record['proto_flags_tos'][0]
                     record['protocol'] = record['proto_flags_tos'][1]
@@ -186,5 +191,8 @@ class FlowParser:
                 record['flow_end'] = record['recv_sec'] - (record['sys_uptime_ms'] - record['flow_finish']) / 1000.0
                 record['duration_ms'] = (record['flow_finish'] - record['flow_start'])
                 record['flow_start'] = record['flow_end'] - record['duration_ms'] / 1000.0
+                if 'packets' not in record or 'octets' not in record or 'src_addr' not in record or 'dst_addr' not in record:
+                    # this can't be useful data, skip record
+                    continue
 
                 yield record

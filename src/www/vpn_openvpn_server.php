@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // 1 on 1 copy of config attributes
         $copy_fields = "mode,protocol,authmode,dev_mode,interface,local_port
-            ,description,custom_options,crypto,engine,tunnel_network
+            ,description,custom_options,crypto,tunnel_network
             ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
             ,local_networkv6,maxclients,compression,passtos,client2client
             ,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['cert_depth'] = 1;
         // init all fields used in the form
         $init_fields = "mode,protocol,authmode,dev_mode,interface,local_port
-            ,description,custom_options,crypto,engine,tunnel_network
+            ,description,custom_options,crypto,tunnel_network
             ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
             ,local_networkv6,maxclients,compression,passtos,client2client
             ,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
@@ -264,12 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['ntp_server2']) && !is_ipaddr(trim($pconfig['ntp_server2']))) {
             $input_errors[] = gettext("The field 'NTP Server #2' must contain a valid IP address");
         }
-        if (!empty($pconfig['ntp_server3']) && !is_ipaddr(trim($pconfig['ntp_server3']))) {
-            $input_errors[] = gettext("The field 'NTP Server #3' must contain a valid IP address");
-        }
-        if (!empty($pconfig['ntp_server4']) && !is_ipaddr(trim($pconfig['ntp_server4']))) {
-            $input_errors[] = gettext("The field 'NTP Server #4' must contain a valid IP address");
-        }
 
         if (!empty($pconfig['wins_server_enable'])) {
             if (!empty($pconfig['wins_server1']) && !is_ipaddr(trim($pconfig['wins_server1']))) {
@@ -356,7 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 openvpn_delete('server', $a_server[$id]);
             }
             // 1 on 1 copy of config attributes
-            $copy_fields = "mode,protocol,dev_mode,local_port,description,crypto,digest,engine
+            $copy_fields = "mode,protocol,dev_mode,local_port,description,crypto,digest
                 ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,gwredir,local_network,local_networkv6,maxclients,compression
                 ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
@@ -1003,26 +997,6 @@ endif; ?>
                         </div>
                       </td>
                     </tr>
-                    <tr id="engine">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
-                      <td>
-                        <select name="engine" class="selectpicker" data-size="5" data-live-search="true">
-<?php
-                        $engines = openvpn_get_engines();
-                        foreach ($engines as $name => $desc) :
-                            $selected = "";
-                            if ($name == $pconfig['engine']) {
-                                $selected = " selected=\"selected\"";
-                            }
-                        ?>
-                          <option value="<?=$name;?>"<?=$selected?>>
-                            <?=htmlspecialchars($desc);?>
-                          </option>
-<?php
-                        endforeach; ?>
-                        </select>
-                      </td>
-                    </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
                       <td style="width:22%"><a id="help_for_cert_depth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate Depth"); ?></td>
                       <td>
@@ -1273,7 +1247,7 @@ endif; ?>
                         endforeach; ?>
                         </select>
                         <div class="hidden" data-for="help_for_compression">
-                            <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
+                            <?=gettext("Compress tunnel packets using the LZ4/LZO algorithm. The LZ4 generally offers the best preformance with least CPU usage. For backwards compatibility use the LZO (which is identical to the older option --comp-lzo yes). In the partial mode (the option --compress with an empty algorithm) compression is turned off, but the packet framing for compression is still enabled, allowing a different setting to be pushed later. The legacy LZO algorithm with adaptive compression mode will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
                         </div>
                       </td>
                     </tr>
@@ -1466,7 +1440,7 @@ endif; ?>
                         <div id="netbios_data">
                           <span>
                             <?=gettext("Node Type"); ?>:&nbsp;
-                          </span>
+                          </span><br>
                           <select name='netbios_ntype' class="selectpicker">
 <?php
                           foreach ($netbios_nodetypes as $type => $name) :
@@ -1484,7 +1458,7 @@ endif; ?>
                                                         "(point-to-point name queries to a WINS server), " .
                                                         "m-node (broadcast then query name server), and " .
                                                         "h-node (query name server, then broadcast)."); ?>
-                          </div>
+                          </div><br>
                           <span>
                             <?=gettext("Scope ID"); ?>:&nbsp;
                           </span>

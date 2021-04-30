@@ -141,7 +141,7 @@ include("head.inc");
                       <?= sprintf(gettext('pfsync transfers state insertion, update, and deletion messages between firewalls.%s' .
                         'Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol (%sIP Protocol 240%s).%s' .
                         'It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.%s' .
-                        'This setting should be enabled on all members of a failover group.'), '<br/>','<a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank">','</a>','<br/>','<br/>') ?>
+                        'This setting should be enabled on all members of a failover group.'), '<br/>','<a href="https://www.openbsd.org/faq/pf/carp.html" target="_blank">','</a>','<br/>','<br/>') ?>
                       <div class="well well-sm" ><b><?=gettext('Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)') ?></b></div>
                     </div>
                   </td>
@@ -239,105 +239,6 @@ include("head.inc");
                       <div class="well well-sm">
                         <b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizewidgets" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dashboard') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizewidgets" value="on" <?=!empty($pconfig['synchronizewidgets']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizewidgets">
-                      <?=gettext('Synchronize dashboard widgets.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizeusers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Users and Groups') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizeusers" value="on" <?=!empty($pconfig['synchronizeusers']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizeusers">
-                      <?=gettext('Synchronize the users and groups over to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizeauthservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Auth Servers') ?></td>
-                  <td>
-                    <input type="checkbox" name='synchronizeauthservers' value="on" <?=!empty($pconfig['synchronizeauthservers']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizeauthservers">
-                      <?=gettext('Synchronize the authentication servers (e.g. LDAP, RADIUS) over to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizecerts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Certificates') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizecerts" value="on" <?=!empty($pconfig['synchronizecerts']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizecerts">
-                      <?=gettext('Synchronize the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizerules" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Firewall Rules') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizerules" value="on" <?=!empty($pconfig['synchronizerules']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizerules">
-                      <?=gettext('Synchronize the firewall rules to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizeschedules" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Firewall Schedules') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizeschedules" value="on" <?=!empty($pconfig['synchronizeschedules']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" data-for="help_for_synchronizeschedules">
-                      <?=gettext('Synchronize the firewall schedules to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizealiases" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Aliases') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizealiases" value="on" <?=!empty($pconfig['synchronizealiases']) ? "checked=\"checked\"" : "";?>/>
-                    <div class="hidden" data-for="help_for_synchronizealiases">
-                      <?=gettext('Synchronize the aliases over to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizenat" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NAT') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizenat" value="on" <?=!empty($pconfig['synchronizenat']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" data-for="help_for_synchronizenat">
-                      <?=gettext('Synchronize the NAT rules over to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizedhcpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DHCPD') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizedhcpd" value="on" <?=!empty($pconfig['synchronizedhcpd']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizedhcpd">
-                      <?=gettext('Synchronize the DHCP Server settings over to the other HA host. This only applies to DHCP for IPv4.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizestaticroutes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Static Routes') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizestaticroutes" value="on" <?=!empty($pconfig['synchronizestaticroutes']) ? "checked=\"checked\"" :"";?> />
-                    <div class="hidden" data-for="help_for_synchronizestaticroutes">
-                      <?=gettext('Synchronize the Static Route configuration and Gateways to the other HA host.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_synchronizevirtualip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Virtual IPs') ?></td>
-                  <td>
-                    <input type="checkbox" name="synchronizevirtualip" value="on" <?=!empty($pconfig['synchronizevirtualip']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_synchronizevirtualip">
-                      <?=gettext('Synchronize the CARP Virtual IPs to the other HA host.') ?>
                     </div>
                   </td>
                 </tr>

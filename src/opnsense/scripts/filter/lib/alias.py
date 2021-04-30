@@ -26,6 +26,9 @@
     --------------------------------------------------------------------------------------
     Alias representation
 """
+import socket
+import fcntl
+import struct
 import os
 import re
 import time
@@ -33,9 +36,12 @@ import requests
 import ipaddress
 import dns.resolver
 import syslog
+import subprocess
 from hashlib import md5
 from . import geoip
 from .arpcache import ArpCache
+from .interface import InterfaceParser
+
 
 class Alias(object):
     def __init__(self, elem, known_aliases=[], ttl=-1, ssl_no_verify=False, timeout=120):
@@ -57,6 +63,7 @@ class Alias(object):
         self._timeout = timeout
         self._name = None
         self._type = None
+        self._interface = None
         self._proto = 'IPv4,IPv6'
         self._items = list()
         self._resolve_content = set()
@@ -67,6 +74,8 @@ class Alias(object):
                 self._proto = subelem.text
             elif subelem.tag == 'name':
                 self._name = subelem.text
+            elif subelem.tag == 'interface':
+                self._interface = subelem.text
             elif subelem.tag == 'ttl':
                 tmp = subelem.text.strip()
                 if len(tmp.split('.')) <= 2 and tmp.replace('.', '').isdigit():
@@ -269,6 +278,8 @@ class Alias(object):
             return self._fetch_url
         elif self._type == 'geoip':
             return self._fetch_geo
+        elif self._type == 'dynipv6host':
+            return InterfaceParser(self._interface).iter_dynipv6host
         elif self._type == 'mac':
             return ArpCache().iter_addresses
         else:

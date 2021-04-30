@@ -39,9 +39,9 @@ $all_form_fields = "custom_options,disable,common_name,block,description
     ,wins_server2,ovpn_servers";
 
 $a_csc = &config_read_array('openvpn', 'openvpn-csc');
-
 $vpnid = 0;
-$act=null;
+$act = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     if (isset($_GET['dup']) && isset($a_csc[$_GET['dup']]))  {
@@ -157,12 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (!empty($pconfig['ntp_server2']) && !is_ipaddr(trim($pconfig['ntp_server2']))) {
                 $input_errors[] = gettext("The field 'NTP Server #2' must contain a valid IP address");
-            }
-            if (!empty($pconfig['ntp_server3']) && !is_ipaddr(trim($pconfig['ntp_server3']))) {
-                $input_errors[] = gettext("The field 'NTP Server #3' must contain a valid IP address");
-            }
-            if (!empty($pconfig['ntp_server4']) && !is_ipaddr(trim($pconfig['ntp_server4']))) {
-                $input_errors[] = gettext("The field 'NTP Server #4' must contain a valid IP address");
             }
         }
 

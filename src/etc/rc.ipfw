@@ -33,6 +33,8 @@ sysctl net.inet.ip.dummynet.hash_size=256 > /dev/null
 
 # reload ipfw rules
 ipfw -q /usr/local/etc/ipfw.rules
+# load tables
+/usr/local/opnsense/scripts/shaper/update_tables
 
 if [ ! -f /tmp/ipfw.firstload ]; then
 	# we need to make sure ipfw is loaded as last

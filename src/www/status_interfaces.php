@@ -87,7 +87,7 @@ include("head.inc");
                         </th>
 <?php
                         if (!isset($first_row)):
-                          $first_row=false; ?>
+                          $first_row = false; ?>
                         <th id="collapse_all" style="cursor: pointer; padding-left: .5em; padding-right: .5em" data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>">
                           <div class="pull-right">
                             <i class="fa fa-expand"></i>
@@ -104,10 +104,14 @@ include("head.inc");
                   <tbody>
                     <tr>
                       <td style="width:22%"><?= gettext("Status") ?></td>
-                      <td style="width:78%"><?= $ifinfo['status'] ?></td>
+                      <td style="width:78%"><?= $ifinfo['status'] ?>
+<?php                   if (empty($ifcfg['enable'])): ?>
+                          <i class="fa fa-warning" title="<?=gettext("administrative disabled");?>" data-toggle="tooltip"></i>
+<?php                   endif; ?>
+                      </td>
                     </tr>
 <?php
-                    if (!empty($ifinfo['dhcplink'])): ?>
+                    if (!empty($ifinfo['dhcplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP");?></td>
                       <td>
@@ -122,7 +126,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['dhcp6link'])): ?>
+                    if (!empty($ifinfo['dhcp6link']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
@@ -137,7 +141,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['pppoelink'])): ?>
+                    if (!empty($ifinfo['pppoelink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
@@ -152,7 +156,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['pptplink'])): ?>
+                    if (!empty($ifinfo['pptplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?= gettext("PPTP") ?></td>
                       <td>
@@ -167,7 +171,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['l2tplink'])): ?>
+                    if (!empty($ifinfo['l2tplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
@@ -182,7 +186,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['ppplink'])): ?>
+                    if (!empty($ifinfo['ppplink']) && !empty($ifcfg['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPP"); ?></td>
                       <td>
@@ -293,13 +297,13 @@ include("head.inc");
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
                       <td>
-                        <?=$ifinfo['ipaddr'];?> /  <?=$ifinfo['subnet'];?>
+                        <?=$ifinfo['ipaddr'];?>/<?=$ifinfo['subnet'];?>
 <?php
                         foreach($ifinfo['ipv4'] as $ipv4):
                             if ($ipv4['ipaddr'] != $ifinfo['ipaddr']):?>
                             <br/>
                             <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-                            <?=$ipv4['ipaddr'];?> / <?=$ipv4['subnetbits'];?> <?= !empty($ipv4['vhid']) ? 'vhid ' . $ipv4['vhid'] : "" ;?>
+                            <?=$ipv4['ipaddr'];?>/<?=$ipv4['subnetbits'];?> <?= !empty($ipv4['vhid']) ? 'vhid ' . $ipv4['vhid'] : "" ;?>
 <?php
                             endif;
                         endforeach;?>
@@ -309,16 +313,15 @@ include("head.inc");
                     endif;
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
-                      <td><?= gettext("Gateway IPv4") ?></td>
+                      <td><?= gettext('IPv4 gateway') ?></td>
                       <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway']) ?> <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
-                    $llitem = !empty($ifinfo['ipv6']) ? end($ifinfo['ipv6']) : null;
-                    if (!empty($llitem['link-local'])): ?>
+                    if (!empty($ifinfo['linklocal'])): ?>
                     <tr>
-                      <td><?= gettext("IPv6 Link Local") ?></td>
-                      <td><?= $llitem['ipaddr'];?> / <?= $llitem['subnetbits'];?>
+                      <td><?= gettext("IPv6 link-local") ?></td>
+                      <td><?= $ifinfo['linklocal'] ?>/64
                     </tr>
 <?php
                     endif;
@@ -326,13 +329,11 @@ include("head.inc");
                     <tr>
                       <td><?= gettext("IPv6 address") ?></td>
                       <td>
-                        <?= $ifinfo['ipaddrv6'] ?> / <?= $ifinfo['subnetv6'] ?>
 <?php
                         foreach($ifinfo['ipv6'] as $ipv6):
-                            if ($ipv6['ipaddr'] != $ifinfo['ipaddrv6'] && empty($ipv6['link-local'])):?>
-                            <br/>
-                            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-                            <?=$ipv6['ipaddr'];?> / <?=$ipv6['subnetbits'];?> <?= !empty($ipv6['vhid']) ? 'vhid ' . $ipv6['vhid'] : "" ;?>
+                            if (!$ipv6['link-local']):?>
+                            <?=$ipv6['ipaddr'];?>/<?=$ipv6['subnetbits'];?> <?= !empty($ipv6['vhid']) ? 'vhid ' . $ipv6['vhid'] : "" ;?> <?= $ipv6['deprecated'] ? 'deprecated' : '' ?>
+                            <br />
 <?php
                             endif;
                         endforeach;?>
@@ -341,13 +342,13 @@ include("head.inc");
 <?php endif ?>
 <?php if (array_key_exists('pdinfo', $ifinfo)): ?>
                     <tr>
-                      <td><?= gettext('Delegated prefix') ?></td>
+                      <td><?= gettext('IPv6 delegated prefix') ?></td>
                       <td><?= $ifinfo['pdinfo'] ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
-                      <td><?= gettext("Gateway IPv6") ?></td>
+                      <td><?= gettext('IPv6 gateway') ?></td>
                       <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
@@ -426,27 +427,27 @@ include("head.inc");
                     endif; ?>
                     <tr>
                       <td><?= gettext("In/out packets") ?></td>
-                      <td class="text-nowrap"> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?><wbr>
-                          (<?= format_bytes($ifpfcounters['inbytes']);?> / <?=format_bytes($ifpfcounters['outbytes']);?> )
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpkts'] ?> / <?= $ifpfcounters['outpkts'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytes']);?> / <?=format_bytes($ifpfcounters['outbytes']);?>)
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (pass)") ?></td>
-                      <td class="text-nowrap"> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?><wbr>
-                          (<?= format_bytes($ifpfcounters['inbytespass']) ?> / <?= format_bytes($ifpfcounters['outbytespass']) ?> )
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpktspass'] ?> / <?= $ifpfcounters['outpktspass'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytespass']) ?> / <?= format_bytes($ifpfcounters['outbytespass']) ?>)
                       </td>
                     </tr>
                     <tr>
                       <td><?= gettext("In/out packets (block)") ?></td>
-                      <td class="text-nowrap"> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?><wbr>
-                          (<?= format_bytes($ifpfcounters['inbytesblock']) ?> / <?= format_bytes($ifpfcounters['outbytesblock']) ?> )
+                      <td class="text-nowrap"> <?= $ifpfcounters['inpktsblock'] ?> / <?= $ifpfcounters['outpktsblock'] ?>
+                          (<?= format_bytes($ifpfcounters['inbytesblock']) ?> / <?= format_bytes($ifpfcounters['outbytesblock']) ?>)
                       </td>
                     </tr>
 <?php
                     if (isset($ifinfo['inerrs'])): ?>
                     <tr>
                       <td><?= gettext("In/out errors") ?></td>
-                      <td><?= $ifinfo['inerrs'] . "/" . $ifinfo['outerrs'] ?></td>
+                      <td><?= $ifinfo['inerrs'] . ' / ' . $ifinfo['outerrs'] ?></td>
                     </tr>
 <?php
                     endif;

@@ -67,22 +67,21 @@ function session_auth(&$Login_Error)
 
     function auth_log($message)
     {
-        openlog("webgui", LOG_ODELAY, LOG_AUTH);
+        openlog("audit", LOG_ODELAY, LOG_AUTH);
         log_error($message);
         closelog();
     }
 
-    // Handle HTTPS httponly and secure flags
-    $currentCookieParams = session_get_cookie_params();
-    session_set_cookie_params(
-        $currentCookieParams["lifetime"],
-        $currentCookieParams["path"],
-        null,
-        ($config['system']['webgui']['protocol'] == "https"),
-        true
-    );
-
     if (session_status() == PHP_SESSION_NONE) {
+        // Handle HTTPS httponly and secure flags
+        $currentCookieParams = session_get_cookie_params();
+        session_set_cookie_params(
+            $currentCookieParams["lifetime"],
+            $currentCookieParams["path"],
+            null,
+            ($config['system']['webgui']['protocol'] == "https"),
+            true
+        );
         session_start();
     }
 
@@ -94,24 +93,13 @@ function session_auth(&$Login_Error)
 
     /* Validate incoming login request */
     if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
-        // authenticate using config settings, or local if failed
-        $authservers = !empty($config['system']['webgui']['authmode']) ?
-            explode(',', $config['system']['webgui']['authmode']) : array('Local Database');
-        $is_authenticated = false;
-        $authenticator = null;
-
-        foreach ($authservers as $authserver) {
-            $authenticator = get_authenticator(auth_get_authserver($authserver));
-            if ($authenticator != null && $authenticator->authenticate($_POST['usernamefld'], $_POST['passwordfld'])) {
-                $is_authenticated = true;
-                break;
-            }
-        }
+        $authFactory = new \OPNsense\Auth\AuthenticationFactory();
+        $is_authenticated = $authFactory->authenticate("WebGui", $_POST['usernamefld'], $_POST['passwordfld']);
 
         if ($is_authenticated) {
+            $authenticator = $authFactory->lastUsedAuth;
             // Generate a new id to avoid session fixation
             session_regenerate_id();
-            // XXX: eventually we should replace the login flow for a service based one (IService).
             $_SESSION['Username'] = $authenticator->getUserName($_POST['usernamefld']);
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];

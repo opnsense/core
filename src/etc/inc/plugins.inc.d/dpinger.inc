@@ -42,7 +42,7 @@ function dpinger_services()
     }
 
     foreach ($config['gateways']['gateway_item'] as $gateway) {
-        if (isset($gateway['monitor_disable']) && $gateway['monitor_disable'] != '0') {
+        if (!empty($gateway['monitor_disable']) || isset($gateway['disabled'])) {
             continue;
         }
 
@@ -129,7 +129,23 @@ function dpinger_configure_do($verbose = false, $gwname = null)
          * $gateway['ipprotocol'] is the better option.
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-            $gwifip = find_interface_ip($gateway['if'], $ifconfig_details);
+            $gwifip = null;
+            if (!empty($ifconfig_details[$gateway['if']]['ipv4'][0]) && !empty($gateway['gateway'])) {
+                $ifdetails = $ifconfig_details[$gateway['if']];
+                $match = ip2ulong($gateway['gateway']);
+                foreach ($ifdetails['ipv4'] as $ipv4) {
+                    $ip_min = gen_subnet($ipv4['ipaddr'], $ipv4['subnetbits']);
+                    $ip_max = gen_subnet_max($ipv4['ipaddr'], $ipv4['subnetbits']);
+                    if ($match >= ip2ulong($ip_min) && $match <= ip2ulong($ip_max)) {
+                        $gwifip = $ipv4['ipaddr'];
+                        break;
+                    }
+                }
+                if ($gwifip == null) {
+                    $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0]['ipaddr'];
+                    log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
+                }
+            }
             if (!is_ipaddrv4($gwifip)) {
                 log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
                 continue;

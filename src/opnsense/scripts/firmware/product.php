@@ -1,7 +1,8 @@
+#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (c) 2021 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,20 +27,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function traffic_api()
-{
-    $result = array();
-    $result['interfaces'] = legacy_interface_stats();
-    $temp = gettimeofday();
-    $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
-    // collect user friendly interface names
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $interfaceKey => $interfaceData) {
-        if (array_key_exists($interfaceData['if'], $result['interfaces'])) {
-            $result['interfaces'][$interfaceData['if']]['name'] = !empty($interfaceData['descr']) ? $interfaceData['descr'] : $interfaceKey;
-        }
-    }
-    if (!empty($result['interfaces']['enc0'])) {
-        $result['interfaces']['enc0']['name'] = "IPsec";
-    }
-    return $result;
+$metafile = '/usr/local/opnsense/version/core';
+
+$ret = json_decode(@file_get_contents($metafile), true);
+if ($ret != null) {
+    $ret['product_crypto'] = trim(shell_exec('opnsense-version -f'));
+    $ret['product_mirror'] = preg_replace('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', '/${SUBSCRIPTION}/', trim(shell_exec('opnsense-update -M')));
+    $ret['product_time'] = date('D M j H:i:s T Y', filemtime('/usr/local/opnsense/www/index.php'));
+    $repos = explode("\n", trim(shell_exec('opnsense-verify -l')));
+    sort($repos);
+    $ret['product_repos'] = implode(', ', $repos);
+    $ret['product_check'] = json_decode(@file_get_contents('/tmp/pkg_upgrade.json'), true);
+    ksort($ret);
+} else {
+    $ret = [];
 }
+
+echo json_encode($ret, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
