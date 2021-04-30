@@ -276,6 +276,7 @@ class MenuSystem
                 $this->appendItem('Interfaces.' . $grouping, $key, array(
                     'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
                     'visiblename' => '[' . $iftargets['if'][$key] . ']',
+                    'order' => array_search($key, array_keys($iftargets['if']))
                 ));
                 if ($first) {
                     $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
