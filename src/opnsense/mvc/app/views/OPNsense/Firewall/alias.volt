@@ -210,7 +210,7 @@
                     break;
                 case 'dynipv6host':
                     $("#row_alias\\.interface").show();
-                    $("#alias\\.proto").selectpicker('hide');                                                             
+                    $("#alias\\.proto").selectpicker('hide');
                     $("#alias_type_default").show();
                     break;
                 case 'urltable':

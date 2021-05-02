@@ -128,7 +128,7 @@ $ifvalues = array(
       } ?>
   <tr id="interface_statistics_widget_intf_<?= html_safe($ifdescr) ?>">
     <td><strong><?= $ifname ?></strong></td>
-<?php $infcount = 0; 
+<?php $infcount = 0;
       while ($infcount++ < count($ifvalues)): ?>
     <td>&#126;</td>
 <?php endwhile ?>
