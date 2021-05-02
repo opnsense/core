@@ -686,6 +686,7 @@
 /usr/local/opnsense/scripts/filter/lib/alias.py
 /usr/local/opnsense/scripts/filter/lib/arpcache.py
 /usr/local/opnsense/scripts/filter/lib/geoip.py
+/usr/local/opnsense/scripts/filter/lib/interface.py
 /usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
@@ -802,6 +803,7 @@
 /usr/local/opnsense/scripts/suricata/queryInstalledRules.py
 /usr/local/opnsense/scripts/suricata/rule-updater.py
 /usr/local/opnsense/scripts/suricata/setup.sh
+/usr/local/opnsense/scripts/syslog/generate_certs
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
