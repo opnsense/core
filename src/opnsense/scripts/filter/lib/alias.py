@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2021 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import syslog
 import subprocess
 from hashlib import md5
 from . import geoip
+from . import net_wildcard_iterator
 from .arpcache import ArpCache
 from .interface import InterfaceParser
 
@@ -100,7 +101,15 @@ class Alias(object):
             :return: boolean
         """
         address = address.strip()
-        if address.find('/') > -1:
+        if address.find('/') > -1 and not address.split('/')[-1].isdigit():
+            # wildcard netmask
+            for idx, item in enumerate(net_wildcard_iterator(address)):
+                if idx > 65535:
+                    # overflow
+                    syslog.syslog(syslog.LOG_ERR, 'alias table %s overflow' % self._name)
+                    break
+                yield str(item)
+        elif address.find('/') > -1:
             # provided address could be a network
             try:
                 ipaddress.ip_network(str(address.lstrip('!')), strict=False)
