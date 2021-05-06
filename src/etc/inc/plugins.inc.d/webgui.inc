@@ -412,7 +412,7 @@ EOD;
 
         if (!empty($config['system']['webgui']['ssl-hsts'])) {
             $lighty_config .= "\$HTTP[\"scheme\"] == \"https\" {\n";
-            $lighty_config .= "    setenv.add-response-header = (\"Strict-Transport-Security\" => \"max-age=15768000\" )\n";
+            $lighty_config .= "    setenv.add-response-header = (\"Strict-Transport-Security\" => \"max-age=31536000\" )\n";
             $lighty_config .= "}\n";
         }
 
