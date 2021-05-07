@@ -66,7 +66,7 @@ class Util
     {
         $tmp = explode('/', $network);
         if (count($tmp) == 2) {
-            if (self::isIpAddress($tmp[0]) && abs($tmp[1]) == $tmp[1]) {
+            if (self::isIpAddress($tmp[0]) && abs($tmp[1]) == $tmp[1] && ctype_digit($tmp[1])) {
                 if (strpos($tmp[0], ':') !== false && $tmp[1] <= 128) {
                     // subnet v6
                     return true;
