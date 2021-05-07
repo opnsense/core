@@ -103,12 +103,12 @@ class Alias(object):
         address = address.strip()
         if address.find('/') > -1 and not address.split('/')[-1].isdigit():
             # wildcard netmask
-            for idx, item in enumerate(net_wildcard_iterator(address)):
+            for idx, item in enumerate(net_wildcard_iterator(address.lstrip('!'))):
                 if idx > 65535:
                     # overflow
                     syslog.syslog(syslog.LOG_ERR, 'alias table %s overflow' % self._name)
                     break
-                yield str(item)
+                yield "!%s" % item if address.startswith('!') else str(item)
         elif address.find('/') > -1:
             # provided address could be a network
             try:

@@ -80,6 +80,26 @@ class Util
     }
 
     /**
+     * is provided network a valid wildcard (https://en.wikipedia.org/wiki/Wildcard_mask)
+     * @param string $network network
+     * @return boolean
+     */
+    public static function isWildcard($network)
+    {
+      $tmp = explode('/', $network);
+      if (count($tmp) == 2) {
+          if (self::isIpAddress($tmp[0]) && self::isIpAddress($tmp[1])) {
+              if (strpos($tmp[0], ':') !== false && strpos($tmp[1], ':') !== false) {
+                  return true;
+              } elseif (strpos($tmp[0], ':') === false && strpos($tmp[1], ':') === false) {
+                  return true;
+              }
+          }
+      }
+      return false;
+    }
+
+    /**
      * use provided alias object instead of creating one. When modifying multiple aliases referencing each other
      * we need to use the same object for validations.
      * @param Alias $alias object to link
