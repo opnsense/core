@@ -64,11 +64,10 @@ class InterfaceParser:
             for network in self._ipv6_networks[self._interface]:
                 # only global addresses apply
                 if network["addr"].is_global:
-                    base_mask = int(network["mask"])
-                    base_size=int((128-base_mask)/16)
+                    base_mask = int(pattern.split("/")[1])
                     offset_address = ipaddress.IPv6Address('0' + pattern.split("/")[0])
-                    calculated_address = ':'.join(
-                        network["addr"].exploded.split(':')[:8-base_size] +
-                        offset_address.exploded.split(':')[8-base_size:]
-                    )
-                    yield "%s/%s" % (calculated_address, pattern.split("/")[1])
+                    base_address = int(ipaddress.IPv6Address(network["addr"]))
+                    prefix_address = (base_address >> 128-base_mask) << 128-base_mask
+                    suffix_address = int(ipaddress.IPv6Address(offset_address))
+                    calculated_address = ipaddress.IPv6Address(prefix_address+suffix_address).__str__()                
+                    yield "%s/128" % (calculated_address)
