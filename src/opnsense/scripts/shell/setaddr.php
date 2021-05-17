@@ -514,7 +514,7 @@ console_configure_dhcpd(4);
 console_configure_dhcpd(6);
 
 if ($config['system']['webgui']['protocol'] == 'https') {
-    if (console_prompt_for_yn('Do you want to revert to HTTP as the web GUI protocol?', 'n')) {
+    if (console_prompt_for_yn('Do you want to change the web GUI protocol from HTTPS to HTTP?', 'n')) {
         $config['system']['webgui']['protocol'] = 'http';
         $restart_webgui = true;
     } elseif (console_prompt_for_yn('Do you want to generate a new self-signed web GUI certificate?', 'n')) {
