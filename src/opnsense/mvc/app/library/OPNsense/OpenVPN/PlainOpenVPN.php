@@ -180,7 +180,8 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             }
             $conf[] = "</ca>";
         }
-        if ($this->config['mode'] !== "server_user" && empty($this->config['cryptoapi'])) {
+
+        if (!empty($this->config['client_crt']) && empty($this->config['cryptoapi'])) {
             $conf[] = "<cert>";
             $conf = array_merge($conf, explode("\n", trim($this->config['client_crt'])));
             $conf[] = "</cert>";
