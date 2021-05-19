@@ -86,17 +86,17 @@ class Util
      */
     public static function isWildcard($network)
     {
-      $tmp = explode('/', $network);
-      if (count($tmp) == 2) {
-          if (self::isIpAddress($tmp[0]) && self::isIpAddress($tmp[1])) {
-              if (strpos($tmp[0], ':') !== false && strpos($tmp[1], ':') !== false) {
-                  return true;
-              } elseif (strpos($tmp[0], ':') === false && strpos($tmp[1], ':') === false) {
-                  return true;
-              }
-          }
-      }
-      return false;
+        $tmp = explode('/', $network);
+        if (count($tmp) == 2) {
+            if (self::isIpAddress($tmp[0]) && self::isIpAddress($tmp[1])) {
+                if (strpos($tmp[0], ':') !== false && strpos($tmp[1], ':') !== false) {
+                    return true;
+                } elseif (strpos($tmp[0], ':') === false && strpos($tmp[1], ':') === false) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

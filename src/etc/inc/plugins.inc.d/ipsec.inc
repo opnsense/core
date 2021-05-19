@@ -1536,7 +1536,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $inactivityline = '';
                 }
                 if (!empty($ph1ent['keyingtries'])) {
-                    $keyingtriesline = "keyingtries = " ;
+                    $keyingtriesline = "keyingtries = ";
                     $keyingtriesline .= $ph1ent['keyingtries'] == -1 ? "%forever" : $ph1ent['keyingtries'];
                 } else {
                     $keyingtriesline = '';

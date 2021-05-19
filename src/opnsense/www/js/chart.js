@@ -1528,7 +1528,7 @@ function getAlpha(string) {
 // generators
 function hexString(rgba, a) {
    var a = (a !== undefined && rgba.length === 3) ? a : rgba[3];
-   return "#" + hexDouble(rgba[0]) 
+   return "#" + hexDouble(rgba[0])
               + hexDouble(rgba[1])
               + hexDouble(rgba[2])
               + (
@@ -10743,7 +10743,7 @@ var core_helpers = function() {
 	};
 	/**
 	 * @private
- 	 */
+	 */
 	helpers$1._calculatePadding = function(container, padding, parentDimension) {
 		padding = helpers$1.getStyle(container, padding);
 
@@ -15259,8 +15259,8 @@ var Legend = core_element.extend({
 		me.legendHitBoxes = [];
 
 		/**
- 		 * @private
- 		 */
+		 * @private
+		 */
 		me._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type

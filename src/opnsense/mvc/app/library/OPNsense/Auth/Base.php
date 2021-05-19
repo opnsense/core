@@ -161,5 +161,4 @@ abstract class Base
     {
         return $this->lastAuthErrors;
     }
-
 }

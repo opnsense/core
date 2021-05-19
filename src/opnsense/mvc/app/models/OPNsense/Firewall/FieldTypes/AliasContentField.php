@@ -235,7 +235,7 @@ class AliasContentField extends BaseField
     {
         $messages = array();
         foreach ($this->getItems($data) as $pnetwork) {
-            if (!Util::isSubnet("0000".$pnetwork)) {
+            if (!Util::isSubnet("0000" . $pnetwork)) {
                 $messages[] = sprintf(
                     gettext('Entry "%s" is not a valid partial ipv6 net definition (e.g. ::1000/64).'),
                     $pnetwork

@@ -44,7 +44,10 @@ class LvtemplateController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             "templates.template",
-            array('name', 'filters', 'or'), "name", null, SORT_NATURAL|SORT_FLAG_CASE
+            array('name', 'filters', 'or'),
+            "name",
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
@@ -67,5 +70,4 @@ class LvtemplateController extends ApiMutableModelControllerBase
     {
         return $this->delBase("templates.template", $uuid);
     }
-
 }

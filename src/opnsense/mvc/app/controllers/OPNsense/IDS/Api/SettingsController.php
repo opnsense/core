@@ -71,7 +71,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $this->sessionClose();
             // create filter to sanitize input data
             $filter = (new FilterFactory())->newInstance();
-            $filter->set('query', function($value){
+            $filter->set('query', function ($value) {
                 return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
             });
 
