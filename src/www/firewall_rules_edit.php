@@ -48,7 +48,7 @@ $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
  */
 function FormSetAdvancedOptions(&$item) {
     foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout"
-                  ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "disablereplyto","tcpflags1"
+                  ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "reply-to","tcpflags1"
                   ,"tcpflags2") as $fieldname) {
 
         if (!empty($item[$fieldname])) {
@@ -97,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'direction',
         'disabled',
         'disablereplyto',
+        'reply-to',
         'floating',
         'gateway',
         'icmptype',
@@ -172,6 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+    // replyto switch
+    $pconfig['reply-to'] = !empty($pconfig['disablereplyto']) ? "__disable__" : $pconfig['reply-to'];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -236,6 +239,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if ($pconfig['ipprotocol'] == "inet" && !is_ipaddrv4($gateways->getAddress($pconfig['gateway']))) {
             $input_errors[] = gettext('You can not assign the IPv6 Gateway to an IPv4 filter rule.');
+        }
+    }
+    if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['reply-to']) && $pconfig['reply-to'] != '__disable__') {
+        $input_errors[] = gettext("You can not assign a reply-to destination to a rule that applies to IPv4 and IPv6");
+    } elseif (!empty($pconfig['reply-to']) && is_ipaddr($gateways->getAddress($pconfig['reply-to']))) {
+        if ($pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6($gateways->getAddress($pconfig['reply-to']))) {
+            $input_errors[] = gettext('You can not assign the IPv4 reply-to destination to an IPv6 filter rule.');
+        }
+        if ($pconfig['ipprotocol'] == "inet" && !is_ipaddrv4($gateways->getAddress($pconfig['reply-to']))) {
+            $input_errors[] = gettext('You can not assign the IPv6 reply-to destination to an IPv4 filter rule.');
         }
     }
     if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype']) && $pconfig['ipprotocol'] == "inet46") {
@@ -457,8 +470,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['allowopts'])) {
             $filterent['allowopts'] = true;
         }
-        if (!empty($pconfig['disablereplyto'])) {
+        if ($pconfig['reply-to'] == "__disable__") {
             $filterent['disablereplyto'] = true;
+        } elseif (!empty($pconfig['reply-to'])) {
+            $filterent['reply-to'] = $pconfig['reply-to'];
         }
         if(!empty($pconfig['nopfsync'])) {
             $filterent['nopfsync'] = true;
@@ -1340,11 +1355,26 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr class="opt_advanced hidden">
-                      <td><a id="help_for_disable_replyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("disable reply-to");?> </td>
+                      <td><a id="help_for_replyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("reply-to");?> </td>
                       <td>
-                        <input type="checkbox" value="yes" name="disablereplyto"<?= !empty($pconfig['disablereplyto']) ? " checked=\"checked\"" :""; ?> />
-                        <div class="hidden" data-for="help_for_disable_replyto">
-                          <?=gettext("This will disable auto generated reply-to for this rule.");?>
+                        <select name="reply-to" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                          <option value="" ><?=gettext("default");?></option>
+                          <option value="__disable__" <?= "__disable__" == $pconfig['reply-to'] ? " selected=\"selected\"" : "";?> ><?=gettext("disable");?></option>
+<?php
+                        foreach($gateways->gatewaysIndexedByName(true, true, true) as $gwname => $gw):?>
+                          <option value="<?=$gwname;?>" <?=$gwname == $pconfig['reply-to'] ? " selected=\"selected\"" : "";?>>
+                            <?=$gw['name'];?>
+                            <?=empty($gw['gateway']) ? "" : " - " . $gw['gateway'];?>
+                          </option>
+<?php
+endforeach;?>
+                        </select>
+                        <div class="hidden" data-for="help_for_replyto">
+                          <?=gettext(
+                            "Determines how packets route back in the opposite direction (replies), ".
+                            "when set to default, packets on WAN type interfaces reply to their connected gateway on the interface (unless globally disabled). " .
+                            "A specific gateway may be chosen as well here. This setting is only relevant in the context of a state, " .
+                            "for stateless rules there is no defined opposite direction.");?>
                         </div>
                       </td>
                   </tr>
