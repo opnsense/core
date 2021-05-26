@@ -550,9 +550,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_bring_down($ifapply, $ifcfgo);
-                    if (isset($config['interfaces'][$ifapply]['enable'])) {
-                        interface_configure(false, $ifapply, true);
-                    }
+                    interface_configure(false, $ifapply, true);
                 }
 
                 system_routing_configure();
