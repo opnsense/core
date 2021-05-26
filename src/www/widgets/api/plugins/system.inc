@@ -162,6 +162,25 @@ function system_api_versions()
     return $result;
 }
 
+function system_api_firmware()
+{
+    $ret = gettext('Click to check for updates.');
+
+    $product = json_decode(configd_run('firmware product'), true);
+    if (
+        !empty($product['product_check']['upgrade_sets']) ||
+        !empty($product['product_check']['downgrade_packages']) ||
+        !empty($product['product_check']['new_packages']) ||
+        !empty($product['product_check']['reinstall_packages']) ||
+        !empty($product['product_check']['remove_packages']) ||
+        !empty($product['product_check']['upgrade_packages'])
+    ) {
+        $ret = gettext('Click to view pending updates.');
+    }
+
+    return $ret;
+}
+
 /**
  * widget system data
  */
@@ -178,6 +197,7 @@ function system_api()
     $result['config'] = system_api_config();
     $result['kernel'] = system_api_kernel();
     $result['disk'] = system_api_disk();
+    $result['firmware'] = system_api_firmware();
 
     return $result;
 }
