@@ -457,7 +457,7 @@ class Config extends Singleton
     /**
      * send config change to audit log including the context we currently know of.
      */
-    private function auditLogChange($backup_filename, $revision=null)
+    private function auditLogChange($backup_filename, $revision = null)
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
         $append_message = "";
