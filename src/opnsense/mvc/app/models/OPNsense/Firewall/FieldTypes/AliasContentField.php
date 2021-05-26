@@ -226,26 +226,6 @@ class AliasContentField extends BaseField
     }
 
     /**
-     * Validate partial ipv6 network definition
-     * @param array $data to validate
-     * @return bool|Callback
-     * @throws \OPNsense\Base\ModelException
-     */
-    private function validatePartialIPv6Network($data)
-    {
-        $messages = array();
-        foreach ($this->getItems($data) as $pnetwork) {
-            if (!Util::isSubnet("0000" . $pnetwork)) {
-                $messages[] = sprintf(
-                    gettext('Entry "%s" is not a valid partial ipv6 net definition (e.g. ::1000/64).'),
-                    $pnetwork
-                );
-            }
-        }
-        return $messages;
-    }
-
-    /**
      * Validate host options
      * @param array $data to validate
      * @return bool|Callback
@@ -324,12 +304,6 @@ class AliasContentField extends BaseField
                 case "mac":
                     $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validatePartialMacAddr($data);
-                    }
-                    ]);
-                    break;
-                case "dynipv6host":
-                    $validators[] = new CallbackValidator(["callback" => function ($data) {
-                        return $this->validatePartialIPv6Network($data);
                     }
                     ]);
                     break;

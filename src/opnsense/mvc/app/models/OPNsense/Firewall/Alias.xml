@@ -37,13 +37,7 @@
                         <networkgroup>Network group</networkgroup>
                         <mac>MAC address</mac>
                         <external>External (advanced)</external>
-                        <dynipv6host>IPv6 Dynamic Host</dynipv6host>
                     </OptionValues>
-                    <Constraints>
-                        <check001>
-                            <reference>interface.check001</reference>
-                        </check001>
-                    </Constraints>
                 </type>
                 <proto type="OptionField">
                     <Multiple>Y</Multiple>
@@ -52,16 +46,6 @@
                         <IPv6>IPv6</IPv6>
                     </OptionValues>
                 </proto>
-                <interface type="InterfaceField">
-                  <Constraints>
-                      <check001>
-                          <ValidationMessage>IPv6 Dynamic Host require an interface to track.</ValidationMessage>
-                          <type>SetIfConstraint</type>
-                          <field>type</field>
-                          <check>dynipv6host</check>
-                      </check001>
-                  </Constraints>
-                </interface>
                 <counters type="BooleanField">
                     <default>0</default>
                 </counters>
