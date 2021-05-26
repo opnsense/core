@@ -84,7 +84,7 @@ while [ -z "${RESTORE}" ]; do
 	echo
 done
 
-echo cp /conf/backup/${RESTORE} /conf/config.xml
+cp /conf/backup/${RESTORE} /conf/config.xml
 
 read -p "Do you want to reboot to apply the backup cleanly? [y/N]: " YN
 
