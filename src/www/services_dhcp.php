@@ -685,7 +685,7 @@ include("head.inc");
                       <td>
                         <input name="ignoreuids" type="checkbox" value="yes" <?=!empty($pconfig['ignoreuids']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" data-for="help_for_ignoreuids">
-                          <?=gettext("By default, the same MAC can get multiple leases if the requests are sent using different UIDs. To avoid this behavior, check this box, and client UIDs will be ignored");?>
+                          <?=gettext('By default, the same MAC can get multiple leases if the requests are sent using different UIDs. To avoid this behavior, check this box and client UIDs will be ignored.');?>
                         </div>
                       </td>
                     </tr>
