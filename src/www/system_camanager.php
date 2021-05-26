@@ -323,9 +323,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 } elseif ($reqdfields[$i] == "dn_organization") {
                     if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\"\']/", $pconfig["dn_organization"])) {
-                        $input_errors[] = gettext("The field 'Distinguished name Organization' contains invalid characters.");
+                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                     }
-                } elseif (($reqdfields[$i] != "descr" && $reqdfields[$i] != "dn_organization") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["$reqdfields[$i]"])) {
+                } elseif ($reqdfields[$i] != "descr" && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["$reqdfields[$i]"])) {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
