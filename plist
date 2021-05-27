@@ -686,7 +686,6 @@
 /usr/local/opnsense/scripts/filter/lib/alias.py
 /usr/local/opnsense/scripts/filter/lib/arpcache.py
 /usr/local/opnsense/scripts/filter/lib/geoip.py
-/usr/local/opnsense/scripts/filter/lib/interface.py
 /usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
