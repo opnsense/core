@@ -306,11 +306,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $leases[] = $slease;
     }
 
-    if ($_GET['order']) {
-        usort($leases, function ($a, $b) {
-            return strcmp($a[$_GET['order']], $b[$_GET['order']]);
-        });
+    if (isset($_GET['order']) && 
+      in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
+        $order = $_GET['order'];
+    } else {
+        $order = 'ip';
     }
+
+    usort($leases,
+        function ($a, $b) use ($order) {
+            $cmp = ($order === 'ip') ? 0 : strnatcasecmp($a[$order], $b[$order]);
+            if ($cmp === 0) {
+                $cmp = ipcmp($a['ip'], $b['ip']);
+            }
+            return $cmp;
+        }
+    );
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
@@ -383,6 +394,11 @@ legacy_html_escape_form_data($leases);
               location.reload();
           });
       });
+      // keep sorting in place.
+      $(".act_sort").click(function(){
+          var all = <?=!empty($_GET['all']) ? 1 : 0;?> ;
+          document.location = document.location.origin + window.location.pathname +"?all="+all+"&order="+$(this).data('field');
+      });
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -429,16 +445,16 @@ endif;?>
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <th><?=gettext("Interface"); ?></th>
-                    <th><?=gettext("IPv6 address"); ?></th>
-                    <th><?=gettext("IAID"); ?></th>
-                    <th><?=gettext("DUID"); ?></th>
-                    <th><?=gettext("Hostname/MAC"); ?></th>
-                    <th><?=gettext("Description"); ?></th>
-                    <th><?=gettext("Start"); ?></th>
-                    <th><?=gettext("End"); ?></th>
-                    <th><?=gettext("Online"); ?></th>
-                    <th><?=gettext("Lease Type"); ?></th>
+                    <th class="act_sort" data-field="int"><?=gettext("Interface"); ?></th>
+                    <th class="act_sort" data-field="ip"><?=gettext("IPv6 address"); ?></th>
+                    <th class="act_sort" data-field="iaid"><?=gettext("IAID"); ?></th>
+                    <th class="act_sort" data-field="duid"><?=gettext("DUID"); ?></th>
+                    <th class="act_sort" data-field="hostname"><?=gettext("Hostname/MAC"); ?></th>
+                    <th class="act_sort" data-field="descr"><?=gettext("Description"); ?></th>
+                    <th class="act_sort" data-field="start"><?=gettext("Start"); ?></th>
+                    <th class="act_sort" data-field="end"><?=gettext("End"); ?></th>
+                    <th class="act_sort" data-field="online"><?=gettext("Online"); ?></th>
+                    <th class="act_sort" data-field="act"><?=gettext("Lease Type"); ?></th>
                     <th class="text-nowrap"></th>
                 </tr>
               </thead>
