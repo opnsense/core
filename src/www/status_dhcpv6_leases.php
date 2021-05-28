@@ -306,8 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $leases[] = $slease;
     }
 
-    if (isset($_GET['order']) && 
-      in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
+    if (isset($_GET['order']) && in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
         $order = $_GET['order'];
     } else {
         $order = 'ip';

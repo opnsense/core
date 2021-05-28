@@ -244,8 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (isset($_GET['order']) && 
-      in_array($_GET['order'], ['int', 'ip', 'mac', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
+    if (isset($_GET['order']) && in_array($_GET['order'], ['int', 'ip', 'mac', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
         $order = $_GET['order'];
     } else {
         $order = 'ip';
