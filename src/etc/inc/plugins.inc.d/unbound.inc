@@ -212,7 +212,7 @@ EOF;
     }
 
     // Allow DNS Rebind for forwarded domains
-    if ((isset($config['unbound']['domainoverrides']) && is_array($config['unbound']['domainoverrides'])) && !isset($config['system']['webgui']['nodnsrebindcheck'])) {
+    if (isset($config['unbound']['domainoverrides']) && is_array($config['unbound']['domainoverrides'])) {
         $private_domains = "# Set private domains in case authoritative name server returns a Private IP address\n";
         $private_domains .= unbound_add_domain_overrides(true);
     }
@@ -467,6 +467,8 @@ function unbound_configure_do($verbose = false, $interface = '')
 
 function unbound_add_domain_overrides($pvt = false)
 {
+    global $config;
+
     $domains = config_read_array('unbound', 'domainoverrides');
 
     usort($domains, function ($a, $b) {
@@ -486,10 +488,11 @@ function unbound_add_domain_overrides($pvt = false)
     $domain_entries = '';
     foreach ($result as $domain => $ips) {
         if ($pvt == true) {
-            $domain_entries .= "private-domain: \"$domain\"\n";
             $domain_entries .= "domain-insecure: \"$domain\"\n";
-            if (preg_match('/.+\.in-addr\.arpa\.?$/', $domain)) {
+            if (preg_match('/.+\.(in-addr|ip6)\.arpa\.?$/', $domain)) {
                 $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
+            } elseif (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
+                $domain_entries .= "private-domain: \"$domain\"\n";
             }
         } else {
             $domain_entries .= "forward-zone:\n";
