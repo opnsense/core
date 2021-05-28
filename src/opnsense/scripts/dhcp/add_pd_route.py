@@ -54,7 +54,9 @@ if __name__ == '__main__':
         sys.exit(1)
     if not prefix.is_global:
         print("Attempting to use a non-global prefix. Are you sure?")
-    
+    if prefix.prefixlen < 48 or prefix.prefixlen > 64:                             
+        print("Prefix length should be less than or equal to 64 and probably greater than 48")
+        sys.exit(1)    
 
     #for some reason fe80::%IFACE shows up via ndp for a client on my system
     #not sure why but we can't use that one
