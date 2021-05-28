@@ -244,13 +244,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    $order = ( $_GET['order'] ) ? $_GET['order'] : 'ip';
+    if (isset($_GET['order']) && 
+      in_array($_GET['order'], ['int', 'ip', 'mac', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
+        $order = $_GET['order'];
+    } else {
+        $order = 'ip';
+    }
 
     usort($leases,
         function ($a, $b) use ($order) {
-            $cmp = strnatcasecmp($a[$order], $b[$order]);
+            $cmp = ($order === 'ip') ? 0 : strnatcasecmp($a[$order], $b[$order]);
             if ($cmp === 0) {
-                $cmp = strnatcasecmp($a['ip'], $b['ip']);
+                $cmp = ipcmp($a['ip'], $b['ip']);
             }
             return $cmp;
         }
@@ -372,7 +377,7 @@ legacy_html_escape_form_data($leases);
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <td><?=gettext("Interface"); ?></td>
+                    <td class="act_sort" data-field="int"><?=gettext("Interface"); ?></td>
                     <td class="act_sort" data-field="ip"><?=gettext("IP address"); ?></td>
                     <td class="act_sort" data-field="mac"><?=gettext("MAC address"); ?></td>
                     <td class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></td>
