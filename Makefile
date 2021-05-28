@@ -109,8 +109,9 @@ CORE_COPYRIGHT_YEARS?=	2014-2021
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
-CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
-			ca_root_nss \
+CORE_DEPENDS_PHP73=	php73-hash # XXX not needed with 7.4
+
+CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
@@ -143,7 +144,6 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
 			php${CORE_PHP}-google-api-php-client \
-			php${CORE_PHP}-hash \
 			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-openssl \
@@ -174,7 +174,9 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			syslogd \
 			unbound \
 			wpa_supplicant \
-			zip
+			zip \
+			${CORE_DEPENDS_PHP${CORE_PHP}} \
+			${CORE_DEPENDS_${CORE_ARCH}}
 
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
