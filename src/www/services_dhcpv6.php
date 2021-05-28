@@ -44,7 +44,10 @@ function reconfigure_dhcpd()
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
-    if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
+    if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']]) &&
+        isset($config['interfaces'][$_GET['if']]['enable']) &&
+        (is_ipaddr($config['interfaces'][$_GET['if']]['ipaddrv6']) ||
+        !empty($config['interfaces'][$_GET['if']]['dhcpd6track6allowoverride']))) {
         $if = $_GET['if'];
     } else {
         /* if no interface is provided this invoke is invalid */
