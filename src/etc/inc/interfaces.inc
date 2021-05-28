@@ -4629,7 +4629,10 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         $addrparts = explode('/', $tmpaddr);
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && $vip['subnet'] == $addrparts[0]) {
+            if (
+                $vip['interface'] == $interface && $vip['mode'] == 'ipalias' &&
+                Net_IPv6::compress($vip['subnet']) == $addrparts[0]
+            ) {
                 /* do not care about alias */
                 continue 2;
             }

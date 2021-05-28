@@ -75,16 +75,18 @@ class ArchiveOpenVPN extends PlainOpenVPN
         mkdir($content_dir, 0700, true);
 
         if (empty($this->config['cryptoapi'])) {
-            // export keypair
-            $p12 = $this->export_pkcs12(
-                $this->config['client_crt'],
-                $this->config['client_prv'],
-                !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
-                !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
-            );
+            if (!empty($this->config['client_crt'])) {
+                // export keypair
+                $p12 = $this->export_pkcs12(
+                    $this->config['client_crt'],
+                    $this->config['client_prv'],
+                    !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
+                    !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
+                );
 
-            file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);
-            $conf[] = "pkcs12 {$base_filename}.p12";
+                file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);
+                $conf[] = "pkcs12 {$base_filename}.p12";
+            }
         } else {
             // use internal Windows store, only flush ca (when available)
             if (!empty($this->config['server_ca_chain'])) {

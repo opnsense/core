@@ -48,6 +48,17 @@
          */
         $("#reconfigureAct").SimpleActionButton();
         updateServiceControlUI('syslog');
+
+        $("#destination\\.transport").change(function(){
+            let transport_type = $(this).val();
+            $(".transport_type").each(function(){
+                if ($(this).hasClass("transport_type_" + transport_type)) {
+                    $(this).closest("tr").show();
+                } else {
+                    $(this).closest("tr").hide();
+                }
+            });
+        });
     });
 
 </script>

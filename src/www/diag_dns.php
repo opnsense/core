@@ -51,14 +51,11 @@ if (!empty($_REQUEST['host'])) {
         }
     }
 
-    $ipaddr = "";
     if (count($input_errors) == 0) {
         if (is_ipaddr($host)) {
-            $resolved[] = " " . gethostbyaddr($host); // add a space to provide an empty type field
-            $ipaddr = $host;
+            $resolved[] = "PTR " . gethostbyaddr($host);
         } elseif (is_hostname($host)) {
-            exec("/usr/bin/drill {$host_esc} A | /usr/bin/grep 'IN' | /usr/bin/grep -v ';' | /usr/bin/awk '{ print $4 \" \" $5 }'", $resolved);
-            $ipaddr = explode(" ", $resolved[count($resolved)-1])[1];
+            exec("(/usr/bin/drill {$host_esc} AAAA; /usr/bin/drill {$host_esc} A) | /usr/bin/grep 'IN' | /usr/bin/grep -v ';' | /usr/bin/grep -v 'SOA' | /usr/bin/awk '{ print $4 \" \" $5 }'", $resolved);
         }
     }
 }

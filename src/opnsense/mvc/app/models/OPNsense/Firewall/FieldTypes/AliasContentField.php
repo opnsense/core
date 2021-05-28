@@ -201,37 +201,24 @@ class AliasContentField extends BaseField
             }
             if (
                 strpos($network, "!") === 0 &&
-                  (Util::isIpAddress(substr($network, 1)) || Util::isSubnet(substr($network, 1)))
+                  (
+                    Util::isIpAddress(substr($network, 1)) ||
+                    Util::isSubnet(substr($network, 1)) ||
+                    Util::isWildcard(substr($network, 1))
+                  )
             ) {
                 // exclude address or network (https://www.freebsd.org/doc/handbook/firewalls-pf.html 30.3.2.4)
                 continue;
             } elseif (
-                !Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
+                !Util::isAlias($network) &&
+                !Util::isIpAddress($network) &&
+                !Util::isSubnet($network) &&
+                !Util::isWildcard($network) &&
                     !($ipaddr_count == 2 && $domain_alias_count == 0)
             ) {
                 $messages[] = sprintf(
                     gettext('Entry "%s" is not a network.'),
                     $network
-                );
-            }
-        }
-        return $messages;
-    }
-
-    /**
-     * Validate partial ipv6 network definition
-     * @param array $data to validate
-     * @return bool|Callback
-     * @throws \OPNsense\Base\ModelException
-     */
-    private function validatePartialIPv6Network($data)
-    {
-        $messages = array();
-        foreach ($this->getItems($data) as $pnetwork) {
-            if (!Util::isSubnet("0000".$pnetwork)) {
-                $messages[] = sprintf(
-                    gettext('Entry "%s" is not a valid partial ipv6 net definition (e.g. ::1000/64).'),
-                    $pnetwork
                 );
             }
         }
@@ -317,12 +304,6 @@ class AliasContentField extends BaseField
                 case "mac":
                     $validators[] = new CallbackValidator(["callback" => function ($data) {
                         return $this->validatePartialMacAddr($data);
-                    }
-                    ]);
-                    break;
-                case "dynipv6host":
-                    $validators[] = new CallbackValidator(["callback" => function ($data) {
-                        return $this->validatePartialIPv6Network($data);
                     }
                     ]);
                     break;

@@ -388,6 +388,21 @@
             });
         }
 
+        // matcher
+        function match_filter(value, condition, data)
+        {
+            if (data === undefined) {
+                return false;
+            }
+
+            data = data.toLowerCase();
+
+            return (condition === '=' && data == value) ||
+                (condition === '~' && data.match(value)) ||
+                (condition === '!=' && data != value) ||
+                (condition === '!~' && !data.match(filter_value));
+        }
+
         // live filter
         function apply_filter()
         {
@@ -407,21 +422,27 @@
                     let filter_value = filters[i].value.toLowerCase();
                     let filter_condition = filters[i].condition;
                     let this_condition_match = false;
-                    filters[i].tag.forEach(function(filter_tag){
-                        if (this_condition_match) {
-                            return;
-                        } else if (this_data[filter_tag] === undefined) {
-                            this_condition_match = false;
-                        } else if (filter_condition === '=' && this_data[filter_tag].toLowerCase() == filter_value) {
-                            this_condition_match = true;
-                        } else if (filter_condition === '~' && this_data[filter_tag].toLowerCase().match(filter_value)) {
-                            this_condition_match = true;
-                        } else if (filter_condition === '!=' && this_data[filter_tag].toLowerCase() != filter_value) {
-                            this_condition_match = true;
-                        } else if (filter_condition === '!~' && !this_data[filter_tag].toLowerCase().match(filter_value)) {
-                            this_condition_match = true;
+                    let filter_tag = filters[i].tag;
+
+                    if (filter_tag === '__addr__') {
+                        let src_match = match_filter(filter_value, filter_condition, this_data['src']);
+                        let dst_match = match_filter(filter_value, filter_condition, this_data['dst']);
+                        if (!filter_condition.match('!')) {
+                            this_condition_match = src_match || dst_match;
+                        } else {
+                            this_condition_match = src_match && dst_match;
                         }
-                    });
+                    } else if (filter_tag === '__port__') {
+                        let srcport_match = match_filter(filter_value, filter_condition, this_data['srcport']);
+                        let dstport_match = match_filter(filter_value, filter_condition, this_data['dstport']);
+                        if (!filter_condition.match('!')) {
+                            this_condition_match = srcport_match || dstport_match;
+                        } else {
+                            this_condition_match = srcport_match && dstport_match;
+                        }
+                    } else {
+                        this_condition_match = match_filter(filter_value, filter_condition, this_data[filter_tag]);
+                    }
 
                     if (!this_condition_match && !filter_or_type) {
                         // normal AND condition, exit when one of the criteria is not met
@@ -446,14 +467,14 @@
             }
             let $new_filter = $("<span/>").addClass("badge");
             $new_filter.data('filter', {
-                tag:$("#filter_tag").val().split(','),
+                tag:$("#filter_tag").val(),
                 condition:$("#filter_condition").val(),
                 value:$("#filter_value").val(),
               }
             );
             $new_filter.text($("#filter_tag").val() + $("#filter_condition").val() + $("#filter_value").val());
             $new_filter.click(function(){
-                $("#filter_tag").val($(this).data('filter').tag.join(','));
+                $("#filter_tag").val($(this).data('filter').tag);
                 $("#filter_condition").val($(this).data('filter').condition);
                 $("#filter_value").val($(this).data('filter').value);
                 $(this).remove();
@@ -667,8 +688,8 @@
                                     <option value="srcport">{{ lang._('src_port') }}</option>
                                     <option value="dst">{{ lang._('dst') }}</option>
                                     <option value="dstport">{{ lang._('dst_port') }}</option>
-                                    <option value="src,dst">{{ lang._('host') }}</option>
-                                    <option value="srcport,dstport">{{ lang._('port') }}</option>
+                                    <option value="__addr__">{{ lang._('address') }}</option>
+                                    <option value="__port__">{{ lang._('port') }}</option>
                                     <option value="protoname">{{ lang._('protoname') }}</option>
                                     <option value="label">{{ lang._('label') }}</option>
                                     <option value="rid">{{ lang._('rule id') }}</option>

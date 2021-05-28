@@ -40,6 +40,16 @@
     <type>text</type>
   </field>
   <field>
+    <id>destination.certificate</id>
+    <style>transport_type_tls4 transport_type_tls6 transport_type</style>
+    <label>Certificate</label>
+    <type>dropdown</type>
+    <help><![CDATA[Transport certificate to use, please make sure to check the general system log when experiencing issues.
+      Error messages can be a bit cryptic from time to time, in which case <a href="https://support.oneidentity.com/kb/263658/common-issues-of-tls-encrypted-message-transfer">this</a> is a good
+      resource for tracking common issues.]]>
+    </help>
+  </field>
+  <field>
     <id>destination.description</id>
     <label>Description</label>
     <type>text</type>

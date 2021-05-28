@@ -123,7 +123,7 @@ class FilterRule extends Rule
             // reply-to gateway set, when found map to reply attribute, otherwise skip keyword
             if (!empty($this->gatewayMapping[$rule['reply-to']])) {
                 $if = $this->gatewayMapping[$rule['reply-to']]['interface'];
-                if (!empty($this->gatewayMapping[$rule['reply-to']]['gateway'])){
+                if (!empty($this->gatewayMapping[$rule['reply-to']]['gateway'])) {
                     $gw = $this->gatewayMapping[$rule['reply-to']]['gateway'];
                     $rule['reply'] = "reply-to ( {$if} {$gw} ) ";
                 } else {

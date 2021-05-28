@@ -41,7 +41,7 @@ class M1_0_0 extends BaseModelMigration
     public function run($model)
     {
 
-        if ((empty((string)$model->type) || (string)$model->type == "devel") && !empty((string)$model->mirror) ) {
+        if ((empty((string)$model->type) || (string)$model->type == "devel") && !empty((string)$model->mirror)) {
             $is_business = stripos((string)$model->mirror, "opnsense-update.deciso.com") > 1;
             if ($is_business) {
                 $model->type = "business";

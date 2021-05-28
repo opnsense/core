@@ -66,6 +66,13 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function setrouteAction($uuid)
     {
+        $node = $this->getBase("route", "route", $uuid);
+        // delete previous route when changed (one shot, apply should only delete the last known situation)
+        if (!empty($node['route']['network']) && $_POST['route']['network'] != $node['route']['network']
+            && !file_exists("/tmp/delete_route_{$uuid}.todo")
+        ) {
+            file_put_contents("/tmp/delete_route_{$uuid}.todo", $node['route']['network']);
+        }
         return $this->setBase("route", "route", $uuid);
     }
 

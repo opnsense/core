@@ -101,7 +101,9 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'fail
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
-    if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
+    if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']]) &&
+        isset($config['interfaces'][$_GET['if']]['enable']) &&
+        is_ipaddr($config['interfaces'][$_GET['if']]['ipaddr'])) {
         $if = $_GET['if'];
         if (isset($_GET['pool']) && !empty($config['dhcpd'][$_GET['if']]['pool'][$_GET['pool']])) {
             $pool = $_GET['pool'];
@@ -685,7 +687,7 @@ include("head.inc");
                       <td>
                         <input name="ignoreuids" type="checkbox" value="yes" <?=!empty($pconfig['ignoreuids']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" data-for="help_for_ignoreuids">
-                          <?=gettext("By default, the same MAC can get multiple leases if the requests are sent using different UIDs. To avoid this behavior, check this box, and client UIDs will be ignored");?>
+                          <?=gettext('By default, the same MAC can get multiple leases if the requests are sent using different UIDs. To avoid this behavior, check this box and client UIDs will be ignored.');?>
                         </div>
                       </td>
                     </tr>

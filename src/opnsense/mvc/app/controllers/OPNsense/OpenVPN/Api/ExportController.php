@@ -203,7 +203,12 @@ class ExportController extends ApiControllerBase
      */
     public function accountsAction($vpnid)
     {
-        $result = array();
+        $result = [
+            null => [
+                "description" => gettext("(none) Exclude certificate from export"),
+                "users" => []
+            ]
+        ];
         $server = $this->findServer($vpnid);
         if ($server !== null) {
             // collect certificates for this server's ca

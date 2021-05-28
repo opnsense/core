@@ -170,15 +170,17 @@ class TheGreenBow extends BaseExporter implements IExportProvider
         }
 
         // client certificate
-        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->public_key =
-            "\n" . $this->config['client_crt'];
-        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->private_key =
-            "\n" . $this->config['client_prv'];
-        // server CA-chain
-        $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = "\n" . implode(
-            "\n",
-            $this->config['server_ca_chain']
-        );
+        if (!empty($this->config['client_crt'])) {
+            $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->public_key =
+                "\n" . $this->config['client_crt'];
+            $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->private_key =
+                "\n" . $this->config['client_prv'];
+            // server CA-chain
+            $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = "\n" . implode(
+                "\n",
+                $this->config['server_ca_chain']
+            );
+        }
 
         // export to DOM to reformat+pretty-print output
         $dom = new \DOMDocument("1.0");

@@ -423,6 +423,7 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
+            $backend->configdRun('firmware flush');
             $response['msg_uuid'] = trim($backend->configdRun('firmware update', true));
             $response['status'] = 'ok';
         } else {
@@ -442,6 +443,7 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
+            $backend->configdRun('firmware flush');
             $response['msg_uuid'] = trim($backend->configdRun('firmware upgrade', true));
             $response['status'] = 'ok';
         } else {
@@ -1133,6 +1135,7 @@ class FirmwareController extends ApiControllerBase
                 $this->sessionClose(); // long running action, close session
 
                 $backend = new Backend();
+                $backend->configdRun('firmware flush');
                 $backend->configdRun("firmware configure");
             }
         }

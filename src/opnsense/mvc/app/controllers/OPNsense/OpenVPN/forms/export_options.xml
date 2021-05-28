@@ -3,21 +3,19 @@
         <id>openvpn_export.servers</id>
         <label>Remote Access Server</label>
         <type>dropdown</type>
-        <help><![CDATA[Select an OpenVPN server to export profiles for.]]></help>
+        <help>Select an OpenVPN server to export profiles for.</help>
     </field>
     <field>
         <id>openvpn_export.template</id>
         <label>Export type</label>
         <type>dropdown</type>
-        <help><![CDATA[File format to export.]]></help>
+        <help>File format to export.</help>
     </field>
     <field>
         <id>openvpn_export.hostname</id>
         <label>Hostname</label>
         <type>text</type>
-        <help>
-            Address(es) or hostname(s) to which this client should connect to, use comma's to provide more then one
-        </help>
+        <help>Address(es) or hostname(s) to which this client should connect to separated by comma for multiple entries</help>
     </field>
     <field>
         <id>openvpn_export.local_port</id>
@@ -50,19 +48,14 @@
         <label>Windows Certificate System Store</label>
         <type>checkbox</type>
         <style>export_option</style>
-        <help>
-          Load the certificate and private key from the Windows Certificate System Store (Windows/OpenSSL Only).
-        </help>
+        <help>Load the certificate and private key from the Windows Certificate System Store (Windows/OpenSSL Only).</help>
     </field>
     <field>
         <id>openvpn_export.auth_nocache</id>
         <label>Disable password save</label>
         <type>checkbox</type>
         <style>export_option</style>
-        <help>
-          Sets auth-nocache in the exported configuration when password authentication is used.
-          This prevents OpenVPN from caching passwords in memory.
-        </help>
+        <help>Sets auth-nocache in the exported configuration when password authentication is used. This prevents OpenVPN from caching passwords in memory.</help>
     </field>
     <field>
         <id>openvpn_export.plain_config</id>
