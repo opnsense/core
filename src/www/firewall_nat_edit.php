@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dstbeginport'] = 80 ;
     $pconfig['dstendport'] = 80 ;
     $pconfig['local-port'] = 80;
+    $pconfig['associated-rule-id'] = true;
     if (isset($configId)) {
         // copy 1-on-1
         foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync','log',
