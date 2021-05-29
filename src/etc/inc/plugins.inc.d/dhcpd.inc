@@ -1426,9 +1426,11 @@ ping-check true;
 update-conflict-detection false;
 authoritative;
 on commit {                                                                         
-  execute("/usr/local/opnsense/scripts/dhcp/add_pd_route.py",                       
-    binary-to-ascii(16, 8, ":", substring(hardware, 1, 6)),                         
-    option dhcp6.ia-prefix);                                                        
+  if exists dhcp6.ia-prefix {
+    execute("/usr/local/opnsense/scripts/dhcp/add_pd_route.py",                       
+      binary-to-ascii(16, 8, ":", substring(hardware, 1, 6)),                         
+      option dhcp6.ia-prefix); 
+  }
 }
 on expiry {
   if exists dhcp6.ia-prefix {
