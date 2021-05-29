@@ -447,8 +447,8 @@ endif;?>
                     <th class="act_sort" data-field="int"><?=gettext("Interface"); ?></th>
                     <th class="act_sort" data-field="ip"><?=gettext("IPv6 address"); ?></th>
                     <th class="act_sort" data-field="iaid"><?=gettext("IAID"); ?></th>
-                    <th class="act_sort" data-field="duid"><?=gettext("DUID"); ?></th>
-                    <th class="act_sort" data-field="hostname"><?=gettext("Hostname/MAC"); ?></th>
+                    <th class="act_sort" data-field="duid"><?=gettext("DUID/MAC"); ?></th>
+                    <th class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></th>
                     <th class="act_sort" data-field="descr"><?=gettext("Description"); ?></th>
                     <th class="act_sort" data-field="start"><?=gettext("Start"); ?></th>
                     <th class="act_sort" data-field="end"><?=gettext("End"); ?></th>
@@ -459,6 +459,7 @@ endif;?>
               </thead>
               <tbody>
 <?php
+              $mac_man = json_decode(configd_run("interface list macdb json"), true);
               foreach ($leases as $data):
                 if (!($data['act'] == 'active' || $data['act'] == 'static' || $_GET['all'] == 1)) {
                     continue;
@@ -467,15 +468,40 @@ endif;?>
                     $data['if'] = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($data['ip']));
                 }
                 $data['int'] = htmlspecialchars($interfaces[$data['if']]['descr']);
+
+                $mac_from_ndp = !empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";
+                $vendor_from_ndp = empty($mac_from_ndp) ? "" : ($mac_man[strtoupper(implode("", explode(":", substr($mac_from_ndp, 0, 8))))] ?? "");
+                
+                $mac_from_duid = "";
+                $duid_formatted = $data['duid'];
+                $duid_type = substr($data['duid'], 0, 5);
+                if ($duid_type === "00:01" || $duid_type === "00:03"){
+                    $duid_subtype = substr($data['duid'], 6, 5);
+                    if ($duid_subtype === "00:01") {
+                        $mac_from_duid = substr($data['duid'], -17, 17);
+                        $duid_formatted = substr($data['duid'], 0, strlen($data['duid']) - 17) . '<u>' . $mac_from_duid . '</u>';
+                    }
+                }
+                $vendor_from_duid = empty($mac_from_duid) ? "" : ($mac_man[strtoupper(implode("", explode(":", substr($mac_from_duid, 0, 8))))] ?? "");
+
+                $duid_content = $duid_formatted;
+                if (!empty($vendor_from_duid)) {
+                    $duid_content .= '<br/><small><i>'.$vendor_from_duid.'</i></small>';
+                }
+                if (!empty($mac_from_ndp) && $mac_from_duid !== $mac_from_ndp) {
+                    $duid_content .= '</br>'.gettext('NDP MAC').': '.$mac_from_ndp;
+                    if (!empty($vendor_from_ndp)) {
+                        $duid_content .= '<br/><small><i>'.$vendor_from_ndp.'</i></small>';
+                    }
+                }
                 ?>
                 <tr>
                   <td><?=$data['int'];?></td>
                   <td><?=$data['ip'];?></td>
                   <td><?=$data['iaid'];?></td>
-                  <td><?=$data['duid'];?></td>
+                  <td><?=$duid_content;?></td>
                   <td>
                     <?=!empty($data['hostname']) ? htmlentities($data['hostname']) : "";?>
-                    <?=!empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";?>
                   </td>
                   <td><?=htmlentities($data['descr']);?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
