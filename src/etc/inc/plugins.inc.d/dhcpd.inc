@@ -1430,6 +1430,18 @@ on commit {
     binary-to-ascii(16, 8, ":", substring(hardware, 1, 6)),                         
     option dhcp6.ia-prefix);                                                        
 }
+on expiry {
+  if exists dhcp6.ia-prefix {
+    execute("/sbin/route", "-6", "delete",
+      option dhcp6.ia-prefix);
+  }
+}
+on release {
+  if exists dhcp6.ia-prefix {
+    execute("/sbin/route", "-6", "delete",
+      option dhcp6.ia-prefix);
+  }
+}
 
 EOD;
 
