@@ -9,6 +9,8 @@
     "product_hash": "%%CORE_HASH%%",
     "product_id": "%%CORE_NAME%%",
     "product_name": "%%CORE_PRODUCT%%",
+    "product_nickname": "%%CORE_NICKNAME%%",
+    "product_series": "%%CORE_SERIES%%",
     "product_version": "%%CORE_PKGVERSION%%",
     "product_website": "%%CORE_WWW%%"
 }

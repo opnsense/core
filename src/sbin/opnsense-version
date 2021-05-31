@@ -32,7 +32,7 @@ OUTPUT=
 
 DO_CHECK=
 
-while getopts AacefHNnsvw OPT; do
+while getopts AacefHiNnsVvw OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -52,6 +52,9 @@ while getopts AacefHNnsvw OPT; do
 	H)
 		OUTPUT="${OUTPUT} \${product_hash}"
 		;;
+	i)
+		OUTPUT="${OUTPUT} \${product_nickname}"
+		;;
 	N)
 		OUTPUT="${OUTPUT} \${product_name}"
 		;;
@@ -60,6 +63,9 @@ while getopts AacefHNnsvw OPT; do
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
+		;;
+	V)
+		OUTPUT="${OUTPUT} \${product_series}"
 		;;
 	v)
 		OUTPUT="${OUTPUT} \${product_version}"

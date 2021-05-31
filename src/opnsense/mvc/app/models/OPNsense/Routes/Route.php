@@ -61,8 +61,13 @@ class Route extends BaseModel
                     $gateways = $route->gateway->getNodeData();
                     $gateway = isset($gateways[(string)$route->gateway]) ? $gateways[(string)$route->gateway] : null;
                     $tmp = explode("-", $gateway['value']);
-                    $gateway_ip = !empty($tmp) ? end($tmp) : "";
+                    $gateway_ip = !empty($tmp) ? trim(end($tmp)) : "";
                     $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
+                    if (in_array($gateway_ip, ['inet', 'inet6'])) {
+                        $gateway_proto = $gateway_ip;
+                    } else {
+                        $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
+                    }
                     // When protocols don't match, add a message for this field to the validation result.
                     if (empty($gateway_ip) || $gateway_proto != $proto_net) {
                         $node_validators = $node->getValidators();

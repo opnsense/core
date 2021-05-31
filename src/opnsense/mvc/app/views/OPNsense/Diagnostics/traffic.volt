@@ -98,6 +98,15 @@ POSSIBILITY OF SUCH DAMAGE.
                       maintainAspectRatio: false,
                       scales: {
                           xAxes: [{
+                              time: {
+                                  tooltipFormat:'HH:mm:ss',
+                                  unit: 'second',
+                                  minUnit: 'second',
+                                  displayFormats: {
+                                      second: 'HH:mm:ss',
+                                      minute: 'HH:mm:ss'
+                                  }
+                              },
                               type: 'realtime',
                               realtime: {
                                   duration: 20000,
@@ -181,6 +190,15 @@ POSSIBILITY OF SUCH DAMAGE.
                       maintainAspectRatio: false,
                       scales: {
                           xAxes: [{
+                              time: {
+                                  tooltipFormat:'HH:mm:ss',
+                                  unit: 'second',
+                                  minUnit: 'second',
+                                  displayFormats: {
+                                      second: 'HH:mm:ss',
+                                      minute: 'HH:mm:ss'
+                                  }
+                              },
                               type: 'realtime',
                               realtime: {
                                   duration: 40000,

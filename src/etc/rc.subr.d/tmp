@@ -39,6 +39,8 @@ else
 	USE_MFS_TMP=0
 fi
 
+mkdir -p /tmp
+
 if [ ${USE_MFS_TMP} -ne 0 ]; then
 	mount -t tmpfs -o mode=01777 tmpfs /tmp
 else

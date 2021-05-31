@@ -28,9 +28,16 @@ all:
 
 .include "Mk/defaults.mk"
 
+<<<<<<< HEAD
 CORE_MESSAGE?=	Business as usual
 CORE_NAME?=	opnsense-business
 CORE_TYPE?=	business
+=======
+CORE_MESSAGE?=	What are you looking at?
+CORE_NICKNAME?=	Marvelous Meerkat
+CORE_NAME?=	opnsense
+CORE_TYPE?=	community
+>>>>>>> 21.1.5
 
 CORE_ABI?=	21.1
 CORE_PHP?=	73
@@ -75,6 +82,9 @@ CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
+_CORE_SERIES=	${CORE_VERSION:S/./ /g}
+CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}
+
 .if "${CORE_REVISION}" != "" && "${CORE_REVISION}" != "0"
 CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 .else
@@ -103,7 +113,6 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2021
 
 CORE_DEPENDS_amd64?=	beep \
-			bsdinstaller \
 			suricata
 
 CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
@@ -129,6 +138,7 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			ntp \
 			openssh-portable \
 			openvpn \
+			opnsense-installer \
 			opnsense-lang \
 			opnsense-update \
 			pam_opnsense \

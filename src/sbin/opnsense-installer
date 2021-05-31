@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,63 +29,13 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-sysctl kern.geom.debugflags=16 >/dev/null
-sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
-
-ifconfig lo0 127.0.0.1
-ifconfig lo0 inet6 ::1
-ifconfig lo0 up
-
-if [ -z "${TERM}" ]; then
-	if [ -n "$(tty | grep ttyv)" ]; then
-		export TERM=xterm
-	else
-		export TERM=vt100
-	fi
-fi
-
-rm -f /tmp/install_complete
-
-CONFIGDIR=/usr/local/share/dfuibe_lua
-CONFIGS=${CONFIGDIR}/main.lua
-
-for CONFIG in BSDInstaller FreeBSD Product; do
-	if [ -f /usr/local/share/dfuibe_lua/conf/${CONFIG}.lua ]; then
-		CONFIGS="${CONFIGS} ${CONFIGDIR}/conf/${CONFIG}.lua"
-	fi
-done
-
-daemon -f lua50c51 ${CONFIGS}
-
-conscontrol mute on > /dev/null
-
-dfuife_curses -b /usr/local/share/dfuife_curses/hourglass.txt
-
-conscontrol mute off > /dev/null
-
-if [ ! -f /tmp/install_complete ]; then
-	echo "The installation was aborted."
-	echo
-	exit
+if ! bsdinstall opnsense; then
+	clear
+	exit 0
 fi
 
 clear
 
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
-echo
 echo "The installation finished successfully."
 echo
 echo "After reboot, open a web browser and navigate to"
@@ -98,10 +48,12 @@ echo "certificate will be self-signed and cannot be validated by"
 echo "an external root authority."
 echo
 echo -n "Rebooting in 5 seconds.  CTRL-C to abort"
+
 for n in 5 4 3 2 1; do
     echo -n "."
     sleep 1
 done
+
 echo
 
 reboot

@@ -211,7 +211,7 @@ function filter_core_rules_system($fw, $defaults)
     // block All IPv6 except loopback traffic
     $fw->registerFilterRule(
         1,
-        array('interface' => 'loopback', 'ipprotocol' => 'inet6', 'disabled' => isset($config['system']['ipv6allow']),
+        array('interface' => 'lo0', 'ipprotocol' => 'inet6', 'disabled' => isset($config['system']['ipv6allow']),
           'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_firewall.php#ipv6allow'),
         $defaults['pass']
     );
@@ -535,7 +535,7 @@ function filter_core_rules_system($fw, $defaults)
         }
     }
     // loopback
-    $fw->registerFilterRule(5, array('interface' => 'loopback', 'descr' => 'pass loopback'), $defaults['pass']);
+    $fw->registerFilterRule(5, array('interface' => 'lo0', 'descr' => 'pass loopback'), $defaults['pass']);
     // out from this Firewall
     $fw->registerFilterRule(
         5,
@@ -607,7 +607,7 @@ function filter_core_rules_system($fw, $defaults)
                     if (($gwproto == 'inet' && $intf_has_v4) || ($gwproto == 'inet6' && $intf_has_v6)) {
                         $fw->registerFilterRule(
                             100000,
-                            array('from' => $ifcfg['if'], 'direction' => 'out', 'gateway' => $gwname,
+                            array('from' => "({$ifcfg['if']})", 'direction' => 'out', 'gateway' => $gwname,
                             'destination' => array('network' => $ifdescr, "not" => true),
                             'statetype' => 'keep',
                             'allowopts' => true,

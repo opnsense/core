@@ -153,6 +153,8 @@ function system_sysctl_get()
         }
     }
 
+    ksort($sysctls);
+
     return $sysctls;
 }
 
@@ -921,11 +923,6 @@ function system_kernel_configure($verbose = false)
         $mods[] = $config['system']['crypto_hardware'];
     }
 
-    if (!empty($config['system']['cryptodev_enable'])) {
-        log_error('Loading cryptodev kernel module.');
-        $mods[] = 'cryptodev';
-    }
-
     if (!empty($config['system']['thermal_hardware'])) {
         log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         $mods[] = $config['system']['thermal_hardware'];
@@ -1162,7 +1159,10 @@ function system_login_configure($verbose = false)
     foreach (system_sysctl_get() as $param => $value) {
         $new_loader_conf .= "{$param}=\"{$value}\"\n";
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 21.1.5
 
     /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);

@@ -209,7 +209,7 @@ function cert_import(&$cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert')
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns)
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -226,7 +226,7 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
     $ca_serial = ++$ca['serial'];
 
     // handle parameters which can only be set via the configuration file
-    $config_filename = create_temp_openssl_config($dn);
+    $config_filename = create_temp_openssl_config($extns);
 
     $args = array(
         'config' => $config_filename,
@@ -286,7 +286,7 @@ function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg,
     return true;
 }
 
-function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
+function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $extns)
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -303,7 +303,7 @@ function sign_cert_csr(&$cert, $caref, $csr, $lifetime, $digest_alg, $dn)
     $ca_serial = ++$ca['serial'];
 
     // handle parameters which can only be set via the configuration file
-    $config_filename = create_temp_openssl_config($dn);
+    $config_filename = create_temp_openssl_config($extns);
 
     $args = array(
         'config' => $config_filename,
@@ -715,18 +715,18 @@ function cert_get_cn($crt, $isref = false)
  * @param $dn
  * @return bool|string The name of the temporary config file.
  */
-function create_temp_openssl_config(&$dn)
+function create_temp_openssl_config(&$extns)
 {
-    // define temp filename to use for openssl.cnf
+    // define temp filename to use for openssl.cnf and add extensions values to it
     $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
 
     $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
 
-    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $dnTag) {
-        if (isset($dn[$dnTag])) {
-            $template_dn = $dnTag . ' = ' . str_replace(array("\r", "\n"), '', $dn[$dnTag]);
+    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $extnTag) {
+        if (isset($extns[$extnTag])) {
+            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
             // Overwrite the placeholders for this property
-            $template = str_replace('###OPNsense:' . $dnTag . '###', $template_dn, $template);
+            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
         }
     }
     file_put_contents($configFilename, $template);

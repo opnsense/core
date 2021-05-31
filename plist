@@ -59,6 +59,8 @@
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/ipsec.opnsense.d/README
 /usr/local/etc/ipsec.secrets.opnsense.d/README
+/usr/local/etc/lighttpd_webgui/conf.d/README
+/usr/local/etc/lighttpd_webgui/conf.d/extforward.conf.example
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20160725
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/opnsense-update.deciso.com.20170721
@@ -769,6 +771,7 @@
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
+/usr/local/opnsense/scripts/shaper/update_tables
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
 /usr/local/opnsense/scripts/shell/firmware.sh
@@ -889,7 +892,9 @@
 /usr/local/opnsense/service/templates/OPNsense/IPFW/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.fw.conf
+/usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw_rule_tables.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
+/usr/local/opnsense/service/templates/OPNsense/IPFW/rules.macro
 /usr/local/opnsense/service/templates/OPNsense/Macros/interface.macro
 /usr/local/opnsense/service/templates/OPNsense/Monit/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Monit/monitrc
