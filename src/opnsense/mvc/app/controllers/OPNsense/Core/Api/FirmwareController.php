@@ -792,7 +792,7 @@ class FirmwareController extends ApiControllerBase
             $configPlugins = explode(",", $config->system->firmware->plugins);
         }
 
-        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license', 'repository', 'origin');
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'automatic', 'license', 'repository', 'origin');
         $backend = new Backend();
         $response = array();
 
@@ -838,7 +838,7 @@ class FirmwareController extends ApiControllerBase
                     $translated['provided'] = '1';
                 }
                 $translated['path'] = "{$translated['repository']}/{$translated['origin']}";
-                $translated['configured'] = in_array($translated['name'], $configPlugins) ? '1' : '0';
+                $translated['configured'] = in_array($translated['name'], $configPlugins) || $translated['automatic'] == '1' ? '1' : '0';
                 $packages[$translated['name']] = $translated;
 
                 /* figure out local and remote plugins */
