@@ -595,7 +595,7 @@ function service_control_links($service, $xs = false)
             $xs ? 'xs' : 'sm',
             'srv_status_act',
             gettext("restart service"),
-            'fa fa-refresh fa-fw'
+            'fa fa-repeat fa-fw'
         );
         if (empty($service['nocheck']) && empty($service['locked'])) {
             $output .= sprintf(
