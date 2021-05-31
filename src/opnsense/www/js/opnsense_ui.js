@@ -181,7 +181,7 @@ function updateServiceControlUI(serviceName)
         if (data['status'] === "running") {
             status_html += 'label-success';
             status_icon = 'play';
-            buttons += '<span id="restartService" class="btn btn-sm btn-default"><i class="fa fa-refresh fa-fw"></i></span> ';
+            buttons += '<span id="restartService" class="btn btn-sm btn-default"><i class="fa fa-repeat fa-fw"></i></span>';
             buttons += '<span id="stopService" class="btn btn-sm btn-default"><i class="fa fa-stop fa-fw"></span>';
         } else if (data['status'] === "stopped") {
             status_html += 'label-danger';

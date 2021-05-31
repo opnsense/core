@@ -288,7 +288,7 @@ include("head.inc");
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
                                             title="<?=sprintf(gettext('Restart %sService'), $service['name']);?>"
-                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-refresh fa-fw">
+                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-repeat fa-fw">
                                         </span>
 <?php
                                           if (empty($service['nocheck'])):?>
@@ -335,7 +335,7 @@ include("head.inc");
                                             data-service_name="all"
                                             data-toggle="tooltip"
                                             title="<?=gettext('Restart all services');?>"
-                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-refresh fa-fw">
+                                            class="btn btn-xs btn-default xmlrpc_srv_status_act fa fa-repeat fa-fw">
                                         </span>
                                     </div>
                                 </td>
