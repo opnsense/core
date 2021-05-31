@@ -1028,11 +1028,14 @@ class FirmwareController extends ApiControllerBase
             if (!preg_match('/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/i', $selSubscription)) {
                 $invalid_msgs[] = gettext('A valid subscription is required for this firmware mirror.');
             }
-            if (!in_array($selectedFlavour, $validOptions['flavours_has_subscription'])) {
-                $invalid_msgs[] = sprintf(gettext('Subscription requires the following flavour: %s'), $validOptions['flavours'][$validOptions['flavours_has_subscription'][0]]);
-            }
-            if (!in_array($selectedType, $validOptions['families_has_subscription'])) {
-                $invalid_msgs[] = sprintf(gettext('Subscription requires the following type: %s'), $validOptions['families'][$validOptions['families_has_subscription'][0]]);
+            if (!preg_match('/\//', $selectedFlavour)) {
+                /* error when flat flavour is used, but not when directory location was selected */
+                if (!in_array($selectedFlavour, $validOptions['flavours_has_subscription'])) {
+                    $invalid_msgs[] = sprintf(gettext('Subscription requires the following flavour: %s'), $validOptions['flavours'][$validOptions['flavours_has_subscription'][0]]);
+                }
+                if (!in_array($selectedType, $validOptions['families_has_subscription'])) {
+                    $invalid_msgs[] = sprintf(gettext('Subscription requires the following type: %s'), $validOptions['families'][$validOptions['families_has_subscription'][0]]);
+                }
             }
         } else {
             if (!empty($selSubscription)) {
