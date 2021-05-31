@@ -28,16 +28,10 @@ all:
 
 .include "Mk/defaults.mk"
 
-<<<<<<< HEAD
 CORE_MESSAGE?=	Business as usual
+CORE_NICKNAME?=	Marvelous Meerkat
 CORE_NAME?=	opnsense-business
 CORE_TYPE?=	business
-=======
-CORE_MESSAGE?=	What are you looking at?
-CORE_NICKNAME?=	Marvelous Meerkat
-CORE_NAME?=	opnsense
-CORE_TYPE?=	community
->>>>>>> 21.1.5
 
 CORE_ABI?=	21.1
 CORE_PHP?=	73
