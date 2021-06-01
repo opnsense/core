@@ -316,7 +316,7 @@ class ExportController extends ApiControllerBase
      */
     public function downloadAction($vpnid, $certref = null)
     {
-        $response = array("status" => "failed");
+        $response = array("result" => "failed");
         if ($this->request->isPost()) {
             $server = $this->findServer($vpnid);
             if ($server !== null) {
