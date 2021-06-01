@@ -33,6 +33,16 @@ import sys
 import ujson
 import argparse
 
+def fetch_rule_labels():
+    result = dict()
+    sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
+    for line in sp.stdout.strip().split('\n'):
+        if line.startswith('@'):
+            line_id = line.split()[0][1:]
+            if line.find(' label ') > -1:
+                rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
+                result[line_id] = rid
+    return result
 
 def parse_address(addr):
     parse_result = {'port': '0'}
@@ -54,69 +64,68 @@ def parse_address(addr):
 if __name__ == '__main__':
     # parse input arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--filter', help='filter results', default='')
     parser.add_argument('--limit', help='limit number of results', default='')
     inputargs = parser.parse_args()
 
+    rule_labels = fetch_rule_labels()
     result = {'details': [], 'total_entries': 0}
-    sp = subprocess.run(['/sbin/pfctl', '-s', 'state'], capture_output=True, text=True)
-    data = sp.stdout.strip()
-    if data.count('\n') > 2:
-        for line in data.split('\n'):
-            parts = line.split()
-            if len(parts) >= 6:
-                # count total number of state table entries
-                result['total_entries'] += 1
-                # apply filter when provided
-                if inputargs.filter != "" and line.lower().find(inputargs.filter) == -1:
-                    continue
-                # limit results
-                if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
-                    continue
-                record = dict()
-                record['nat_addr'] = None
-                record['nat_port'] = None
-                record['iface'] = parts[0]
-                record['proto'] = parts[1]
-                record['src_addr'] = parse_address(parts[2])['addr']
-                record['src_port'] = parse_address(parts[2])['port']
-                record['ipproto'] = parse_address(parts[2])['ipproto']
+    sp = subprocess.run(['/sbin/pfctl', '-vs', 'state'], capture_output=True, text=True)
+    record = None
+    for line in sp.stdout.strip().split('\n'):
+        parts = line.split()
+        if line.startswith(" ") and len(parts) > 1 and record:
+            if parts[0] == 'age':
+                for part in line.split(","):
+                    part = part.strip()
+                    if part.startswith("rule "):
+                        record["rule"] = part.split()[-1]
+                        if record["rule"] in rule_labels:
+                            record["label"] = rule_labels[record["rule"]]
+                    elif part.startswith("age "):
+                        record["age"] = part.split()[-1]
+                    elif part.startswith("expires in"):
+                        record["expires"] = part.split()[-1]
+                    elif part.endswith("pkts"):
+                        record["pkts"] = [int(s) for s in part.split()[0].split(':')]
+                    elif part.endswith("bytes"):
+                        record["bytes"] = [int(s) for s in part.split()[0].split(':')]
+        elif len(parts) >= 6:
+            # count total number of state table entries
+            result['total_entries'] += 1
+            # apply filter when provided
+            if inputargs.filter != "" and line.lower().find(inputargs.filter) == -1:
+                continue
+            # limit results
+            if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
+                continue
+            record = dict()
+            record['nat_addr'] = None
+            record['nat_port'] = None
+            record['iface'] = parts[0]
+            record['proto'] = parts[1]
+            record['src_addr'] = parse_address(parts[2])['addr']
+            record['src_port'] = parse_address(parts[2])['port']
+            record['ipproto'] = parse_address(parts[2])['ipproto']
 
-                if parts[3].find('(') > -1:
-                    # NAT enabled
-                    record['nat_addr'] = parts[3][1:].split(':')[0]
-                    if parts[3].find(':') > -1:
-                       record['nat_port'] = parts[3].split(':')[1][:-1]
+            if parts[3].find('(') > -1:
+                # NAT enabled
+                record['nat_addr'] = parts[3][1:].split(':')[0]
+                if parts[3].find(':') > -1:
+                   record['nat_port'] = parts[3].split(':')[1][:-1]
 
-                record['dst_addr'] = parse_address(parts[-2])['addr']
-                record['dst_port'] = parse_address(parts[-2])['port']
+            record['dst_addr'] = parse_address(parts[-2])['addr']
+            record['dst_port'] = parse_address(parts[-2])['port']
 
-                if parts[-3] == '->':
-                    record['direction'] = 'out'
-                else:
-                    record['direction'] = 'in'
+            if parts[-3] == '->':
+                record['direction'] = 'out'
+            else:
+                record['direction'] = 'in'
 
-                record['state'] = parts[-1]
+            record['state'] = parts[-1]
 
-                result['details'].append(record)
+            result['details'].append(record)
 
     result['total'] = len(result['details'])
 
-    # handle command line argument (type selection)
-    if inputargs.output == 'json':
-        print(ujson.dumps(result))
-    else:
-        # output plain
-        print ('------------------------- STATES -------------------------')
-        for state in result['details']:
-            if state['ipproto'] == 'ipv4':
-                if state['nat_addr'] is not None:
-                    print ('%(iface)s %(proto)s %(src_addr)s:%(src_port)s \
-  (%(nat_addr)s:%(nat_port)s) %(direction)s %(dst_addr)s:%(dst_port)s %(state)s' % state)
-                else:
-                    print ('%(iface)s %(proto)s %(src_addr)s:%(src_port)s \
-  %(direction)s %(dst_addr)s:%(dst_port)s %(state)s' % state)
-            else:
-                print ('%(iface)s %(proto)s %(src_addr)s[%(src_port)s] \
-  %(direction)s %(dst_addr)s[%(dst_port)s] %(state)s' % state)
+    print(ujson.dumps(result))
