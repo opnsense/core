@@ -1,6 +1,9 @@
 #!/usr/local/bin/python3
  
 """
+    Copyright (c) 2021 Nick Galloway
+    All rights reserved.
+
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
  
@@ -30,6 +33,7 @@ import sys
 import argparse
 import ipaddress
 import re
+import socket
 
 def mac_address(addr):
     print("checking mac: " + addr)
@@ -54,12 +58,12 @@ if __name__ == '__main__':
         sys.exit(1)
     if not prefix.is_global:
         print("Attempting to use a non-global prefix. Are you sure?")
-    if prefix.prefixlen < 48 or prefix.prefixlen > 64:                             
+    if prefix.prefixlen < 48 or prefix.prefixlen > 64:
         print("Prefix length should be less than or equal to 64 and probably greater than 48")
-        sys.exit(1)    
+        sys.exit(1)
 
     #for some reason fe80::%IFACE shows up via ndp for a client on my system
-    #not sure why but we can't use that one
+    #not sure why, but we can't use that one
     ndp = subprocess.run(['/usr/sbin/ndp', '-na'], capture_output=True, text=True)
     for line in ndp.stdout.split("\n"):
        if macaddr in line and "fe80::" in line and not "fe80::%" in line:
@@ -67,13 +71,17 @@ if __name__ == '__main__':
            link = re.match('^(.+)%([\S]+)',line)
            try:
                linkaddr = ipaddress.IPv6Address(link[1])
-               #TODO check if interface name is valid
                interface = link[2]
+               #we don't use the interfaceindex, but use this lookup to validate the interface exists
+               interfaceindex = socket.if_nametoindex(interface)
            except TypeError:
                print("invalid link address - no match")
                continue
            except ValueError:
                print("invalid link address - ip conversion error")
+               continue
+           except OSError:
+               print("invalid interface")
                continue
            print("Adding route with prefix: " + str(prefix) + " to " + str(linkaddr) + "%" + str(interface))
            subprocess.run(['/sbin/route', '-6', 'add', str(prefix), str(linkaddr)+"%"+str(interface)], capture_output=True, text=True)
