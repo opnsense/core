@@ -157,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach (glob("/tmp/packetcapture_*.cap") as $filename) {
             $bfilename = basename($filename);
             if ($_GET['download'] === $bfilename) {
+                ob_end_clean(); // disable legacy csrf output buffering
                 header("Content-Type: application/octet-stream");
                 header("Content-Disposition: attachment; filename={$bfilename}");
                 header("Content-Length: ".filesize($filename));
