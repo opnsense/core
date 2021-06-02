@@ -1918,11 +1918,11 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
 
                 // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                 //      for backward compatibilty support both here.
-                if (!empty($host['domainsearchlist'])) {
+                if (!empty($ipaddrv6) && !empty($host['domainsearchlist'])) {
                     $domain = $host['domainsearchlist'];
                 } elseif (!empty($host['domain'])) {
                     $domain = $host['domain'];
-                } elseif (!empty($dhcpifconf['domainsearchlist'])) {
+                } elseif (!empty($ipaddrv6) && !empty($dhcpifconf['domainsearchlist'])) {
                     $domain = $dhcpifconf['domainsearchlist'];
                 } elseif (!empty($dhcpifconf['domain'])) {
                     $domain = $dhcpifconf['domain'];
@@ -1930,7 +1930,8 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                     $domain = $domain_fallback;
                 }
 
-                $domain = explode(";", $domain)[0]; // XXX: first entry of domainsearchlist
+                /* first entry only */
+                $domain = preg_split('/[ ;]+/', $domain)[0];
 
                 $entry = [
                     'descr' => $host['descr'],
