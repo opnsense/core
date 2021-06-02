@@ -65,13 +65,16 @@ if __name__ == '__main__':
     # parse input arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--filter', help='filter results', default='')
+    parser.add_argument('--label', help='label / rule id', default='')
     parser.add_argument('--limit', help='limit number of results', default='')
+    parser.add_argument('--offset', help='offset results', default='')
     inputargs = parser.parse_args()
 
     rule_labels = fetch_rule_labels()
     result = {'details': [], 'total_entries': 0}
     sp = subprocess.run(['/sbin/pfctl', '-vs', 'state'], capture_output=True, text=True)
     record = None
+    state_line = ''
     for line in sp.stdout.strip().split('\n'):
         parts = line.split()
         if line.startswith(" ") and len(parts) > 1 and record:
@@ -90,24 +93,27 @@ if __name__ == '__main__':
                         record["pkts"] = [int(s) for s in part.split()[0].split(':')]
                     elif part.endswith("bytes"):
                         record["bytes"] = [int(s) for s in part.split()[0].split(':')]
+            if inputargs.label != "" and record['label'].lower().find(inputargs.label) == -1:
+                # label
+                continue
+            elif inputargs.filter != "" and state_line.lower().find(inputargs.filter) == -1:
+                # apply filter when provided
+                continue
+            # append to response
+            result['details'].append(record)
         elif len(parts) >= 6:
             # count total number of state table entries
             result['total_entries'] += 1
-            # apply filter when provided
-            if inputargs.filter != "" and line.lower().find(inputargs.filter) == -1:
-                continue
-            # limit results
-            if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
-                continue
-            record = dict()
-            record['nat_addr'] = None
-            record['nat_port'] = None
-            record['iface'] = parts[0]
-            record['proto'] = parts[1]
-            record['src_addr'] = parse_address(parts[2])['addr']
-            record['src_port'] = parse_address(parts[2])['port']
-            record['ipproto'] = parse_address(parts[2])['ipproto']
-
+            record = {
+                'label': '',
+                'nat_addr': None,
+                'nat_port': None,
+                'iface': parts[0],
+                'proto': parts[1],
+                'src_addr': parse_address(parts[2])['addr'],
+                'src_port': parse_address(parts[2])['port'],
+                'ipproto': parse_address(parts[2])['ipproto']
+            }
             if parts[3].find('(') > -1:
                 # NAT enabled
                 record['nat_addr'] = parts[3][1:].split(':')[0]
@@ -123,8 +129,13 @@ if __name__ == '__main__':
                 record['direction'] = 'in'
 
             record['state'] = parts[-1]
+            state_line = line
 
-            result['details'].append(record)
+    # apply offset and limit
+    if inputargs.offset.isdigit():
+        result['details'] = result['details'][int(inputargs.offset):]
+    if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
+        result['details'] = result['details'][:int(inputargs.limit)]
 
     result['total'] = len(result['details'])
 
