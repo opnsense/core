@@ -471,7 +471,7 @@ endif;?>
 
                 $mac_from_ndp = !empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";
                 $vendor_from_ndp = empty($mac_from_ndp) ? "" : ($mac_man[strtoupper(implode("", explode(":", substr($mac_from_ndp, 0, 8))))] ?? "");
-                
+
                 $mac_from_duid = "";
                 $duid_formatted = $data['duid'];
                 $duid_type = substr($data['duid'], 0, 5);
