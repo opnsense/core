@@ -674,7 +674,7 @@
     <div class="content-box-main">
         <div class="table-responsive">
             <div  class="col-xs-12">
-                <div class="col-lg-6 col-sm-12">
+                <div class="col-lg-7 col-sm-12">
                   <table class="table table-condensed">
                       <tbody>
                           <tr>
@@ -704,10 +704,10 @@
                                     <option value="!=">{{ lang._('is not') }}</option>
                                 </select>
                               </td>
-                              <td>
+                              <td style="width:200px;">
                                 <input type="text" id="filter_value"></input>
                                 <div>
-                                <select id="filter_value_items" class="selectpicker" data-width="250px"></select>
+                                <select id="filter_value_items" class="selectpicker" data-width="200px"></select>
                                 </div>
                               </td>
                               <td>
@@ -738,25 +738,27 @@
                       </tfoot>
                   </table>
                 </div>
-                <div class="col-lg-4 col-sm-12">
-                    <div class="pull-right">
-                        <button type="button" class="btn btn-default templates"
-                            title="Save the current set of filters" id="templ_save_start"><span
-                                class="fa fa-angle-double-right"></span></button>
-                            <button type="button" class="btn btn-default templ_save" title="Cancel" id="templ_save_cancel"><span
-                                    class="fa fa-times"></span></button>
-                            <div style="display: inline-block;vertical-align: top;"><select id="templates" class="selectpicker" title="Choose template" data-width="200"></select>
-                                <input type="text" id="templ_name" placeholder="Template name" style="width:200px;vertical-align:middle;display:none;">
-                            </div>
-                            <button type="button" class="btn btn-default templ_save" title="Save template" id="templ_save_apply"><span class="fa fa-save"></span></button>
-                        <span class="templates">
-                            <button id="template_delete" type="button" class="btn btn-default" title="Deleted selected template" if="templ_del">
-                                <span class="fa fa-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-sm-12">
+                <div class="col-lg-5 col-sm-12">
+                  <div class="pull-left" style="padding-bottom: 5px;padding-right: 5px;">
+                      <button type="button" class="btn btn-default templates" title="Save the current set of filters" id="templ_save_start">
+                          <span class="fa fa-angle-double-right"></span>
+                      </button>
+                      <button type="button" class="btn btn-default templ_save" title="Cancel" id="templ_save_cancel">
+                          <span class="fa fa-times"></span>
+                      </button>
+                      <div style="display: inline-block;vertical-align: top;">
+                          <select id="templates" class="selectpicker" title="Choose template" data-width="200"></select>
+                          <input type="text" id="templ_name" placeholder="Template name" style="width:200px;vertical-align:middle;display:none;">
+                      </div>
+                      <button type="button" class="btn btn-default templ_save" title="Save template" id="templ_save_apply">
+                          <span class="fa fa-save"></span>
+                      </button>
+                      <span class="templates">
+                          <button id="template_delete" type="button" class="btn btn-default" title="Delete selected template">
+                              <span class="fa fa-trash"></span>
+                          </button>
+                      </span>
+                  </div>
                   <div class="pull-right">
                     <div class="checkbox-inline">
                       <label>
