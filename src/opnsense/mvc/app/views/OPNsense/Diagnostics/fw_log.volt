@@ -400,7 +400,7 @@
             return (condition === '=' && data == value) ||
                 (condition === '~' && data.match(value)) ||
                 (condition === '!=' && data != value) ||
-                (condition === '!~' && !data.match(filter_value));
+                (condition === '!~' && !data.match(value));
         }
 
         // live filter
