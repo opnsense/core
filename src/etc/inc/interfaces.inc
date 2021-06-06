@@ -4631,7 +4631,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if (
                 $vip['interface'] == $interface && $vip['mode'] == 'ipalias' &&
-                Net_IPv6::compress($vip['subnet']) == $addrparts[0]
+                Net_IPv6::compress($vip['subnet'], true) == Net_IPv6::compress($addrparts[0], true)
             ) {
                 /* do not care about alias */
                 continue 2;
