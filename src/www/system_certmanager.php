@@ -1317,7 +1317,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key data");?></td>
                   <td>
-                    <textarea name="key" id="key" cols="65" rows="7" class="formfld_cert"><?=$pconfig['key'];?></textarea>
+                    <textarea name="key" id="key" cols="65" rows="7"><?=$pconfig['key'];?></textarea>
                     <div class="hidden" data-for="help_for_key">
                       <?=gettext("Paste a private key in X.509 PEM format here.");?>
                     </div>
@@ -1980,7 +1980,7 @@ $( document ).ready(function() {
               <tr>
                 <td><?=gettext("Signing request data");?></td>
                 <td>
-                  <textarea name="csr" id="csr" cols="65" rows="7" class="formfld_cert" readonly="readonly"><?=$pconfig['csr'];?></textarea>
+                  <textarea name="csr" id="csr" cols="65" rows="7" readonly="readonly"><?=$pconfig['csr'];?></textarea>
                   <br />
                   <?=gettext("Copy the certificate signing data from here and forward it to your certificate authority for signing.");?>
                 </td>
@@ -1988,7 +1988,7 @@ $( document ).ready(function() {
               <tr>
                 <td><?=gettext("Final certificate data");?></td>
                 <td>
-                  <textarea name="cert" id="cert" cols="65" rows="7" class="formfld_cert"><?=$pconfig['cert'];?></textarea>
+                  <textarea name="cert" id="cert" cols="65" rows="7"><?=$pconfig['cert'];?></textarea>
                   <br />
                   <?=gettext("Paste the certificate received from your certificate authority here.");?>
                 </td>

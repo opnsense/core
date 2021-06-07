@@ -446,7 +446,7 @@ include("fbegin.inc");
                   <tr>
                     <td><a id="help_for_count" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Count");?></td>
                     <td>
-                      <input type="text" name="count" class="formfld unknown" id="count" size="5" value="<?=$pconfig['count'];?>" />
+                      <input type="text" name="count" id="count" size="5" value="<?= $pconfig['count']; ?>" />
                       <div class="hidden" data-for="help_for_count">
                         <?=gettext("This is the number of packets the packet capture will grab. Default value is 100.") . "<br />" . gettext("Enter 0 (zero) for no count limit.");?>
                       </div>

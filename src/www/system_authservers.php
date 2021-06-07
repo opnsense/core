@@ -662,7 +662,7 @@ endif; ?>
                     <?=gettext("User DN:");?><br/>
                     <input name="ldap_binddn" type="text" id="ldap_binddn" size="40" value="<?=$pconfig['ldap_binddn'];?>"/>
                     <?=gettext("Password:");?><br/>
-                    <input name="ldap_bindpw" type="password" class="formfld pwd" id="ldap_bindpw" size="20" value="<?=$pconfig['ldap_bindpw'];?>"/><br />
+                    <input name="ldap_bindpw" type="password" id="ldap_bindpw" size="20" value="<?=$pconfig['ldap_bindpw'];?>"/><br />
                     <div class="hidden" data-for="help_for_ldap_binddn">
                       <?=gettext("Leave empty to use anonymous binds to resolve distinguished names");?>
                     </div>
@@ -782,7 +782,7 @@ endif; ?>
                 <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Secret");?></td>
                   <td>
-                    <input name="radius_secret" type="password" class="formfld pwd" id="radius_secret" size="20" value="<?=$pconfig['radius_secret'];?>"/>
+                    <input name="radius_secret" type="password" id="radius_secret" size="20" value="<?=$pconfig['radius_secret'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_radius auth_options hidden">

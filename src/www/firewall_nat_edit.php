@@ -1001,9 +1001,9 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                   <td>
-                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                    <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">
-                      <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
+                      <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                     </div>
                 </tr>
                 <tr>

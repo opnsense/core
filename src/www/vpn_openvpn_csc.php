@@ -416,7 +416,7 @@ if ($act!="new" && $act!="edit") {
                     <td>
                       <input name="description" type="text" value="<?=$pconfig['description'];?>" />
                       <div class="hidden" data-for="help_for_description">
-                        <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+                        <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>
                   </tr>

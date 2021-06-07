@@ -644,7 +644,7 @@ $( document ).ready(function() {
                       <td>
                         <input name="description" type="text" class="form-control unknown" size="30" value="<?=htmlspecialchars($pconfig['description']);?>" />
                         <div class="hidden" data-for="help_for_description">
-                            <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+                          <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                         </div>
                       </td>
                     </tr>

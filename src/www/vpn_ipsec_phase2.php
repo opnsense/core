@@ -575,8 +575,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td>
                     <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">
-                        <?=gettext("You may enter a description here " .
-                                                    "for your reference (not parsed)"); ?>.
+                      <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                     </div>
                   </td>
                 </tr>

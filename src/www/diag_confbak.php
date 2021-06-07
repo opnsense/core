@@ -222,8 +222,7 @@ include("fbegin.inc");
                   </tr>
                   <tr>
                     <td>
-                      <input name="backupcount" type="text" class="formfld unknown" size="5"
-                        value="<?= html_safe($pconfig['backupcount']) ?>"/>
+                      <input name="backupcount" type="text" size="5" value="<?= html_safe($pconfig['backupcount']) ?>"/>
                     </td>
                     <td><?= gettext("Enter the number of older configurations to keep in the local backup cache."); ?></td>
                   </tr>
