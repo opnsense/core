@@ -374,14 +374,11 @@ $( document ).ready(function() {
                             </td>
                             <td>
                               <select name="subnet_bits" data-network-id="subnet" class="selectpicker ipv4v6net" data-size="10"  data-width="auto" id="subnet_bits">
-                                <option disabled="disabled"></option> <!-- workaround for selectpicker -->
-<?php
-                                for ($i = 128; $i >= 1; $i--): ?>
+<?php for ($i = 128; $i >= 1; $i--): ?>
                                   <option value="<?=$i;?>" <?= $i == $pconfig['subnet_bits'] ? "selected=\"selected\"" :""; ?>>
                                     <?=$i;?>
                                   </option>
-<?php
-                                endfor; ?>
+<?php endfor ?>
                               </select>
                             </td>
                           </tr>

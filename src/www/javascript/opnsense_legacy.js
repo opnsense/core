@@ -47,32 +47,32 @@ function notice_action(action,msgid) {
  * @param classname: classname to hook on to, select list of netmasks
  * @param data_id: data field reference to network input field
  */
-function hook_ipv4v6(classname, data_id) {
-  $("select."+classname).each(function(){
-      var selectlist_id = $(this).attr('id');
-      if ($(this).data(data_id) != undefined) {
-        $("#"+$(this).data(data_id)).change(function(){
-          var itemValue = $(this).val();
-          $("#"+selectlist_id+" > option").each(function() {
-              if (parseInt($(this).val()) > 32 && itemValue.indexOf(":") == -1 ) {
-                  $(this).hide()
-              } else {
-                  $(this).show();
-              }
-          });
-          // select highest visible option
-          if (parseInt($("#"+selectlist_id).val()) > 32 && itemValue.indexOf(":") == -1) {
-            $("#"+selectlist_id+' option[value=32]').attr('selected','selected');
-          }
-          // when select list uses selectpicker, refresh
-          if ($("#"+selectlist_id).hasClass('selectpicker')) {
-            $("#"+selectlist_id).selectpicker('refresh');
-          }
-        });
-      }
-      // trigger initial onChange event
-      $("#"+$(this).data(data_id)).change();
-  });
+function hook_ipv4v6(classname, data_id)
+{
+    $("select."+classname).each(function(){
+        var selectlist_id = $(this).attr('id');
+        if ($(this).data(data_id) != undefined) {
+            $("#"+$(this).data(data_id)).change(function () {
+                if ($(this).val().indexOf(":") == -1) {
+                    $("#"+selectlist_id).val('32');
+                    for (let i = 33; i <= 128; ++i) {
+                        $("#"+selectlist_id+' option[value=' + i + ']').hide()
+                    }
+                } else {
+                    for (let i = 33; i <= 128; ++i) {
+                        $("#"+selectlist_id+' option[value=' + i + ']').show()
+                    }
+                    $("#"+selectlist_id).val('64');
+                }
+                /* when select list uses selectpicker, refresh */
+                if ($("#"+selectlist_id).hasClass('selectpicker')) {
+                    $("#"+selectlist_id).selectpicker('refresh');
+                }
+            });
+        }
+        /* trigger initial onChange event */
+        $("#"+$(this).data(data_id)).change();
+    });
 }
 
 /**
