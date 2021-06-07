@@ -620,21 +620,25 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr class="opt_localid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address:");?>&nbsp;&nbsp;</td>
                   <td>
-                    <input name="localid_address" type="text" id="localid_address" size="28" value="<?=$pconfig['localid_address'];?>" />
-                    /
-                    <select name="localid_netbits" data-network-id="localid_address" class="ipv4v6net" id="localid_netbits">
-<?php               for ($i = 128; $i >= 0; $i--) :
-?>
-                      <option value="<?=$i;?>" <?= isset($pconfig['localid_netbits']) && $i == $pconfig['localid_netbits'] ? "selected=\"selected\"" : "";?>>
-                        <?=$i;?>
-                      </option>
-<?php
-                    endfor; ?>
-                    </select>
+                    <table style="max-width: 348px">
+                      <tr>
+                        <td>
+                          <input name="localid_address" type="text" style="width: 278px" id="localid_address" size="28" value="<?=$pconfig['localid_address'];?>" />
+                        </td>
+                        <td>
+                          <select name="localid_netbits" data-network-id="localid_address" class="selectpicker ipv4v6net" data-size="10" data-width="70px" id="localid_netbits">
+<?php for ($i = 128; $i >= 0; $i--) : ?>
+                            <option value="<?=$i;?>" <?= isset($pconfig['localid_netbits']) && $i == $pconfig['localid_netbits'] ? "selected=\"selected\"" : "";?>>
+                              <?=$i;?>
+                            </option>
+<?php endfor ?>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
-<?php          if (!isset($pconfig['mobile'])) :
-?>
+<?php if (!isset($pconfig['mobile'])): ?>
                 <tr class="opt_remoteid">
                   <td colspan="2"><b><?=gettext("Remote Network");?></b></td>
                 </tr>
@@ -654,17 +658,22 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr class="opt_remoteid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address"); ?>:&nbsp;&nbsp;</td>
                   <td>
-                    <input name="remoteid_address" type="text" class="formfld unknown" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
-                    /
-                    <select name="remoteid_netbits" data-network-id="remoteid_address" class="ipv4v6net" id="remoteid_netbits">
-<?php              for ($i = 128; $i >= 0; $i--) :
-?>
-                      <option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
-                        <?=$i;?>
-                      </option>
-<?php              endfor;
-?>
-                    </select>
+                    <table style="max-width: 348px">
+                      <tr>
+                        <td>
+                          <input name="remoteid_address" type="text" style="width: 278px" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
+                        </td>
+                        <td>
+                          <select name="remoteid_netbits" data-network-id="remoteid_address" class="selectpicker ipv4v6net" data-size="10" data-width="70px" id="remoteid_netbits">
+<?php for ($i = 128; $i >= 0; $i--): ?>
+                            <option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
+                              <?=$i;?>
+                            </option>
+<?php endfor ?>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 

@@ -285,14 +285,12 @@ if (!isset($_GET['act'])) {
                             <input name="acl_networks_acl_network[]" type="text" id="acl_network_<?=$item_idx;?>" value="<?=$item['acl_network'];?>" />
                           </td>
                           <td>
-                            <select name="acl_networks_mask[]" data-network-id="acl_network_<?=$item_idx;?>" class="ipv4v6net" id="mask<?=$item_idx;?>">
-<?php
-                              for ($i = 128; $i >= 0; $i--):?>
+                            <select name="acl_networks_mask[]" data-network-id="acl_network_<?=$item_idx;?>" class="selectpicker ipv4v6net" data-size="10" data-width="auto" id="mask<?=$item_idx;?>">
+<?php for ($i = 128; $i >= 0; $i--): ?>
                               <option value="<?=$i;?>" <?= $item['mask'] == $i ? 'selected="selected"' : ''?>>
                                 <?=$i;?>
                               </option>
-<?php
-                              endfor;?>
+<?php endfor ?>
                             </select>
                           </td>
                           <td>
