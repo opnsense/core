@@ -740,7 +740,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote gateway"); ?></td>
                     <td>
-                      <input name="remote-gateway" type="text" class="formfld unknown" id="remotegw" size="28" value="<?=$pconfig['remote-gateway'];?>" />
+                      <input name="remote-gateway" type="text" id="remotegw" size="28" value="<?=$pconfig['remote-gateway'];?>" />
                       <div class="hidden" data-for="help_for_remotegw">
                         <?= gettext('Enter the public IP address or host name of the remote gateway.') ?>
                       </div>
@@ -880,7 +880,7 @@ endforeach; ?>
                   <tr class="auth_opt auth_psk">
                     <td><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
-                      <input name="pre-shared-key" type="text" class="formfld unknown" id="pskey" size="40"
+                      <input name="pre-shared-key" type="text" id="pskey" size="40"
                              value="<?= $pconfig['authentication_method'] == "pre_shared_key" || $pconfig['authentication_method'] == "xauth_psk_server" ? $pconfig['pre-shared-key'] : "";?>" />
                       <div class="hidden" data-for="help_for_psk">
                         <?=gettext("Input your Pre-Shared Key string."); ?>
@@ -1172,13 +1172,13 @@ endforeach; ?>
                       </div>
                       <div id="opt_dpd">
                         <br />
-                        <input name="dpd_delay" type="text" class="formfld unknown" id="dpd_delay" size="5" value="<?=$pconfig['dpd_delay'];?>" />
+                        <input name="dpd_delay" type="text" id="dpd_delay" size="5" value="<?=$pconfig['dpd_delay'];?>" />
                         <?=gettext("seconds"); ?>
                         <div class="hidden" data-for="help_for_dpd_enable">
                           <?=gettext("Delay between requesting peer acknowledgement."); ?>
                         </div>
                         <br />
-                        <input name="dpd_maxfail" type="text" class="formfld unknown" id="dpd_maxfail" size="5" value="<?=$pconfig['dpd_maxfail'];?>" />
+                        <input name="dpd_maxfail" type="text" id="dpd_maxfail" size="5" value="<?=$pconfig['dpd_maxfail'];?>" />
                         <?=gettext("retries"); ?>
                         <div class="hidden" data-for="help_for_dpd_enable">
                           <?=gettext("Number of consecutive failures allowed before disconnect."); ?>

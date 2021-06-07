@@ -136,7 +136,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_ident" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Identifier"); ?></td>
                     <td>
-                      <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=$pconfig['ident'];?>" />
+                      <input name="ident" type="text" id="ident" size="30" value="<?=$pconfig['ident'];?>" />
                       <div class="hidden" data-for="help_for_ident">
                         <?=gettext("This can be either an IP address, fully qualified domain name or an email address."); ?>
                       </div>
@@ -145,7 +145,7 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
-                      <input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=$pconfig['psk'];?>" />
+                      <input name="psk" type="text" id="psk" size="40" value="<?=$pconfig['psk'];?>" />
                     </td>
                   </tr>
                   <tr>

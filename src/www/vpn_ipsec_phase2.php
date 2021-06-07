@@ -799,7 +799,7 @@ endif; ?>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime"); ?></td>
                   <td>
-                    <input name="lifetime" type="text" class="formfld unknown" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
+                    <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
                     <?=gettext("seconds"); ?>
                   </td>
                 </tr>
@@ -811,7 +811,7 @@ endif; ?>
                 <tr>
                   <td><a id="help_for_pinghost" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatically ping host"); ?></td>
                   <td>
-                    <input name="pinghost" type="text" class="formfld unknown" id="pinghost" size="28" value="<?=$pconfig['pinghost'];?>" />
+                    <input name="pinghost" type="text" id="pinghost" size="28" value="<?=$pconfig['pinghost'];?>" />
                     <div class="hidden" data-for="help_for_pinghost">
                         <?=gettext("IP address"); ?>
                     </div>
