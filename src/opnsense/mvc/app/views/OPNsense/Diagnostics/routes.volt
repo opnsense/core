@@ -105,7 +105,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <table class="table">
                         <tr>
                             <td>
-                                <input type="checkbox" class="formfld" id="resolve" name="resolve" value="yes">
+                                <input type="checkbox" id="resolve" name="resolve" value="yes">
                             </td>
                             <td>
                                 <strong><?=gettext("Name resolution");?></strong>
