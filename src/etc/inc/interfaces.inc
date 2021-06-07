@@ -4633,7 +4633,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
                 /*
                  * Since we do not know what subnet value was given by user
                  * uncompress/compress to match correctly compressed system
-                 * value.  Matchig alias cannot be primary address.
+                 * value.  Matching alias cannot be primary address.
                  */
                 if (Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $addrparts[0]) {
                     continue 2;
