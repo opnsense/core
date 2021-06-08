@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2021 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,13 +91,15 @@ class ControllerRoot extends Controller
         }
 
         $locale = $lang . '.UTF-8';
-        bind_textdomain_codeset('OPNsense', $locale);
         $interpolator = new InterpolatorFactory();
         $this->translator = new ViewTranslator($interpolator, array(
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
             'locale' => $locale,
         ));
+
+        /* somehow this is not done by Phalcon */
+        putenv('LANG=' . $locale);
     }
 
     /**
