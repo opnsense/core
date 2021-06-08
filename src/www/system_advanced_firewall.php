@@ -365,7 +365,7 @@ include("head.inc");
                   <?=gettext("Skip rules when gateway is down"); ?>
                   <div class="hidden" data-for="help_for_skip_rules_gw_down">
                     <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
-                                        "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
+                                        "rule is created and traffic is sent to default gateway. This option overrides that behavior ".
                                         "and the rule is not created when gateway is down"); ?>
                   </div>
                 </td>
