@@ -758,7 +758,7 @@ function auth_get_authserver($name)
         );
     }
 
-    if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
+    if (!empty($config['system']['authserver'])) {
         foreach ($config['system']['authserver'] as $authcfg) {
             if ($authcfg['name'] == $name) {
                 if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
@@ -784,7 +784,7 @@ function auth_get_authserver_list()
 
     $list = array();
 
-    if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
+    if (!empty($config['system']['authserver'])) {
         foreach ($config['system']['authserver'] as $authcfg) {
             /* Add support for disabled entries? */
             $list[$authcfg['name']] = $authcfg;

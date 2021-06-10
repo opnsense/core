@@ -231,7 +231,7 @@ if (file_exists('/var/run/booting')) {
     return;
 }
 
-if (isset($config['hasync']) && is_array($config['hasync'])) {
+if (!empty($config['hasync'])) {
     $hasync = $config['hasync'];
     $enable_debug = in_array('debug', $argv);
     $restart_services = in_array('restart_services', $argv);

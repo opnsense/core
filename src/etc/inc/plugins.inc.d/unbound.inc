@@ -212,7 +212,7 @@ EOF;
     }
 
     // Allow DNS Rebind for forwarded domains
-    if (isset($config['unbound']['domainoverrides']) && is_array($config['unbound']['domainoverrides'])) {
+    if (!empty($config['unbound']['domainoverrides'])) {
         $private_domains = "# Set private domains in case authoritative name server returns a Private IP address\n";
         $private_domains .= unbound_add_domain_overrides(true);
     }

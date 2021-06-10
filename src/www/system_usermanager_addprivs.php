@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
-            if (isset($config['system']['group']) && is_array($config['system']['group'])) {
+            if (!empty($config['system']['group'])) {
                 usort($config['system']['group'], function ($a, $b) {
                     return strcasecmp($a['name'], $b['name']);
                 });

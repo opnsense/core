@@ -127,7 +127,7 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     }
 }
 
-if (isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
+if (!empty($config['gifs']['gif'])) {
     foreach ($config['gifs']['gif'] as $gif) {
         if ($gif['if'] == $interface) {
             foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifparent) {

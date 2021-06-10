@@ -1076,7 +1076,7 @@ function openvpn_fetch_csc_list()
 {
     global $config;
     $result = array();
-    if (!empty($config['openvpn']['openvpn-csc']) && is_array($config['openvpn']['openvpn-csc'])) {
+    if (!empty($config['openvpn']['openvpn-csc'])) {
         $all_servers = array_keys(openvpn_get_remote_access_servers());
         foreach ($config['openvpn']['openvpn-csc'] as $settings) {
             if (!isset($settings['disable'])) {
@@ -1191,7 +1191,8 @@ function openvpn_get_active_servers($type = 'multipoint')
     global $config;
 
     $servers = array();
-    if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
+
+    if (!empty($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as &$settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
@@ -1221,6 +1222,7 @@ function openvpn_get_active_servers($type = 'multipoint')
             }
         }
     }
+
     return $servers;
 }
 
@@ -1295,7 +1297,7 @@ function openvpn_get_active_clients()
 
     $clients = array();
 
-    if (isset($config['openvpn']['openvpn-client']) && is_array($config['openvpn']['openvpn-client'])) {
+    if (!empty($config['openvpn']['openvpn-client'])) {
         foreach ($config['openvpn']['openvpn-client'] as &$settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
@@ -1520,6 +1522,7 @@ function openvpn_gen_route_ipv6($network, $iroute = false)
 function openvpn_get_remote_access_servers()
 {
     global $config;
+
     $result = array();
 
     if (!empty($config['openvpn']['openvpn-server'])) {
@@ -1529,6 +1532,7 @@ function openvpn_get_remote_access_servers()
             }
         }
     }
+
     return $result;
 }
 
@@ -1538,7 +1542,7 @@ function openvpn_refresh_crls()
 
     openvpn_create_dirs();
 
-    if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
+    if (!empty($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;

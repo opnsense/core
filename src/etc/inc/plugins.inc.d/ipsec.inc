@@ -1405,7 +1405,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         /* Add user PSKs */
-        if (isset($config['system']['user']) && is_array($config['system']['user'])) {
+        if (!empty($config['system']['user'])) {
             foreach ($config['system']['user'] as $user) {
                 if (!empty($user['ipsecpsk'])) {
                     $pskconf .= "{$user['name']} : PSK 0s" . base64_encode($user['ipsecpsk']) . "\n";

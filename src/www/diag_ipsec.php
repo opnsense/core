@@ -40,15 +40,18 @@ require_once("plugins.inc.d/ipsec.inc");
 function ipsec_conn_description($conn)
 {
     global $config;
+
     $ipsec_conn_seq = substr(explode('-', $conn)[0],3);
-    if (isset($config['ipsec']['phase1']) && is_array($config['ipsec']['phase1'])) {
+
+    if (!empty($config['ipsec']['phase1'])) {
         foreach ($config['ipsec']['phase1'] as $phase1) {
             if ($phase1['ikeid'] == $ipsec_conn_seq && !empty($phase1['descr'])) {
                 return $phase1['descr'];
             }
         }
     }
-    return "";
+
+    return '';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

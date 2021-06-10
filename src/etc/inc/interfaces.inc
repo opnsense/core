@@ -1818,7 +1818,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
     }
 
     // Read or write settings at shared area
-    if (isset($config['wireless']['interfaces'][$baseif]) && is_array($config['wireless']['interfaces'][$baseif])) {
+    if (!empty($config['wireless']['interfaces'][$baseif])) {
         foreach ($shared_settings as $setting) {
             if ($sync_changes) {
                 if (isset($ifcfg['wireless'][$setting])) {
@@ -1837,7 +1837,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
     }
 
     // Sync the mode on the clone creation page with the configured mode on the interface
-    if (stristr($ifcfg['if'], "_wlan") && isset($config['wireless']['clone']) && is_array($config['wireless']['clone'])) {
+    if (stristr($ifcfg['if'], '_wlan') && !empty($config['wireless']['clone'])) {
         foreach ($config['wireless']['clone'] as &$clone) {
             if ($clone['cloneif'] == $ifcfg['if']) {
                 if ($sync_changes) {

@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['ipsec']['preferoldsa'])) {
             unset($config['ipsec']['preferoldsa']);
         }
-        if (isset($config['ipsec']) && is_array($config['ipsec'])) {
+        if (!empty($config['ipsec'])) {
             foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
                 if (empty($pconfig["ipsec_{$lkey}"])) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"])) {

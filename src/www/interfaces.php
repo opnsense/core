@@ -928,7 +928,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } else {
                     $clone_count = 0;
                 }
-                if (isset($config['wireless']['clone']) && is_array($config['wireless']['clone'])) {
+                if (!empty($config['wireless']['clone'])) {
                     foreach ($config['wireless']['clone'] as $clone) {
                         if ($clone['if'] == $wlanbaseif) {
                             $clone_count++;
