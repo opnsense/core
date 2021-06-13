@@ -161,12 +161,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 header("Content-Disposition: attachment; filename={$bfilename}");
                 header("Content-Length: ".filesize($filename));
                 header('Content-Transfer-Encoding: binary');
+
+                // Temporarily disable output buffer rewriting during the
+                // download, as it is not needed for the packet capture file
+                // and would even corrupt certain capture files
+                $prev_is_rewrite_enabled = $LegacyCSRFObject->get_rewrite_enabled_status();
+                $LegacyCSRFObject->configure_rewrite_enabled(false);                
+
                 $file = fopen($filename, 'rb');
                 while(!feof($file)) {
                     print(fread($file, 32 * 1024));
                     ob_flush();
                 }
                 fclose($file);
+
+                // Restore original output buffer rewriting state
+                $LegacyCSRFObject->configure_rewrite_enabled($prev_is_rewrite_enabled);
+
                 break;
             }
         }

@@ -32,6 +32,8 @@ class LegacyCSRF
     private $security = null;
     private $session = null;
     private $is_html_output = false;
+    private $is_rewrite_enabled = true;
+
     public function __construct()
     {
         global $config;
@@ -80,8 +82,23 @@ class LegacyCSRF
         return array('token' => $_SESSION['$PHALCON/CSRF$'], 'key' => $_SESSION['$PHALCON/CSRF/KEY$']);
     }
 
+    public function get_rewrite_enabled_status()
+    {
+      return $this->is_rewrite_enabled;
+    }
+
+    public function configure_rewrite_enabled($set_enabled)
+    {
+      $this->is_rewrite_enabled = $set_enabled;
+    }
+
     public function csrfRewriteHandler($buffer)
     {
+        // Don't rewrite anything if rewriting is manually disabled
+        if (!$this->is_rewrite_enabled) {
+            return $buffer;
+        }
+       
         // quick check if output looks like html, don't rewrite other document types
         if (stripos($buffer, '<html') !== false) {
             $this->is_html_output = true;
