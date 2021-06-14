@@ -114,8 +114,6 @@ function filter_pflog_start($verbose = false)
 
 function filter_configure()
 {
-    global $config;
-
     /*
      * NOTE: Check here for bootup status since this should not be triggered during bootup.
      *   The reason is that rc.bootup calls filter_configure_sync directly which does this too.
