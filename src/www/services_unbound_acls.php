@@ -123,11 +123,6 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-$main_buttons = array();
-if (!isset($_GET['act'])) {
-    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'services_unbound_acls.php?act=new');
-}
-
 ?>
 <body>
 <script>
@@ -360,7 +355,13 @@ if (!isset($_GET['act'])) {
                     <th><?=gettext("Access List Name"); ?></th>
                     <th><?=gettext("Action"); ?></th>
                     <th><?=gettext("Description"); ?></th>
-                    <th class="text-nowrap"></th>
+                    <th class="text-nowrap">
+<?php if (!isset($_GET['act'])): ?>
+                      <a href="services_unbound_acls.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <i class="fa fa-plus fa-fw"></i>
+                      </a>
+<?php endif ?>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

@@ -433,16 +433,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 include("head.inc");
 
-$main_buttons = array();
-
-if (empty($act)) {
-    $main_buttons[] = array('href' => 'vpn_openvpn_server.php?act=new', 'label' => gettext('Add'));
-}
-
 legacy_html_escape_form_data($pconfig);
 
 ?>
-
 <body>
 <?php include("fbegin.inc"); ?>
 <script>
@@ -1618,7 +1611,14 @@ endif; ?>
                   <td><?=gettext("Protocol / Port"); ?></td>
                   <td><?=gettext("Tunnel Network"); ?></td>
                   <td><?=gettext("Description"); ?></td>
-                  <td class="text-nowrap"></td>
+                  <td class="text-nowrap">
+                    <a href="vpn_openvpn_server.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                      <i class="fa fa-plus fa-fw"></i>
+                    </a>
+                    <a href="wizard.php?xml=openvpn" class="btn btn-defaultu btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Use a wizard to setup a new server')) ?>">
+                      <i class="fa fa-magic fa-fw"></i>
+                    </a>
+                  </td>
                 </tr>
                 </thead>
 
@@ -1654,13 +1654,6 @@ endif; ?>
 <?php
                   $i++;
                   endforeach;?>
-                  <tr>
-                    <td colspan="5">
-                      <a href="wizard.php?xml=openvpn" class="btn btn-default">
-                        <i class="fa fa-magic fa-fw"></i> <?= gettext('Use a wizard to setup a new server') ?>
-                       </a>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>

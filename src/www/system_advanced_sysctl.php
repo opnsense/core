@@ -118,17 +118,11 @@ uasort($a_tunable, function($a, $b) {
     return strnatcmp($a['tunable'], $b['tunable']);
 });
 
-legacy_html_escape_form_data($a_tunable);
-
-if ($act != 'edit') {
-    $main_buttons = array(
-        array('href' => '#set_defaults', 'label' => gettext('Default')),
-        array('href' => 'system_advanced_sysctl.php?act=edit', 'label' => gettext('Add')),
-    );
-}
-
 include("head.inc");
+
+legacy_html_escape_form_data($a_tunable);
 legacy_html_escape_form_data($pconfig);
+
 ?>
 <body>
 <script>
@@ -157,8 +151,6 @@ $( document ).ready(function() {
   });
 
   if ($("a[href='#set_defaults']").length > 0) {
-      // set defaults button visible, change style and hook event
-      $("a[href='#set_defaults']").removeClass('btn-primary').addClass('btn-danger');
       $("a[href='#set_defaults']").click(function(event){
           event.preventDefault();
           BootstrapDialog.show({
@@ -210,7 +202,16 @@ $( document ).ready(function() {
               <th><?=gettext("Tunable Name"); ?></th>
               <th><?=gettext("Description"); ?></th>
               <th><?=gettext("Value"); ?></th>
-              <th class="text-nowrap"></th>
+              <th class="text-nowrap">
+<?php if ($act != 'edit'): ?>
+                <a href="system_advanced_sysctl.php?act=edit" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                  <i class="fa fa-plus fa-fw"></i>
+                </a>
+                <a href="#set_defaults" class="btn btn-danger btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Default')) ?>">
+                  <i class="fa fa-trash-o fa-fw"></i>
+                </a>
+<?php endif ?>
+              </th>
             </tr>
 <?php foreach ($a_tunable as $i => &$tunable): ?>
               <tr>

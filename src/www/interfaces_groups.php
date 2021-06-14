@@ -61,10 +61,6 @@ legacy_html_escape_form_data($a_ifgroups);
 
 include("head.inc");
 
-$main_buttons = array(
-    array('href' => 'interfaces_groups_edit.php', 'label' => gettext('Add')),
-);
-
 ?>
 <body>
   <script>
@@ -115,7 +111,11 @@ $main_buttons = array(
                     <th><?=gettext("Name");?></th>
                     <th><?=gettext("Members");?></th>
                     <th><?=gettext("Description");?></th>
-                    <th class="text-nowrap"></th>
+                    <th class="text-nowrap">
+                      <a href="interfaces_groups_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <i class="fa fa-plus fa-fw"></i>
+                      </a>
+		    </th>
                   </tr>
                 </thead>
                 <tbody>

@@ -62,10 +62,6 @@ $service_hook = 'strongswan';
 
 include("head.inc");
 
-$main_buttons = array(
-    array('href' => 'vpn_ipsec_keys_edit.php', 'label' => gettext('Add')),
-);
-
 ?>
 <body>
 
@@ -119,7 +115,11 @@ if (is_subsystem_dirty('ipsec')) {
                   <td><?=gettext("Identifier"); ?></td>
                   <td><?=gettext("Pre-Shared Key"); ?></td>
                   <td><?=gettext("Type"); ?></td>
-                  <td class="text-nowrap"></td>
+                  <td class="text-nowrap">
+                    <a href="vpn_ipsec_keys_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                      <i class="fa fa-plus fa-fw"></i>
+                    </a>
+                  </td>
                 </tr>
 <?php           $i = 0;
                 $userkeys = array();

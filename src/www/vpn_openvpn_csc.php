@@ -342,16 +342,11 @@ $( document ).ready(function() {
 });
 //]]>
 </script>
+<?php
 
-<?
-if ($act!="new" && $act!="edit") {
-    $main_buttons = array(
-        array('href' => 'vpn_openvpn_csc.php?act=new', 'label' => gettext('Add')),
-    );
-}
+include("fbegin.inc");
+
 ?>
-
-<?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -687,7 +682,17 @@ if ($act!="new" && $act!="edit") {
                       <td><?=gettext("Common Name"); ?></td>
                       <td><?=gettext("Tunnel Network");?></td>
                       <td><?=gettext("Description"); ?></td>
-                      <td class="text-nowrap"></td>
+                      <td class="text-nowrap">
+                        <a href="vpn_openvpn_csc.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                        <a data-id="<?= count($a_csc) ?>" data-toggle="tooltip" title="<?=gettext("Move selected items to end");?>" class="act_move btn btn-default btn-xs">
+                          <span class="fa fa-arrow-down fa-fw"></span>
+                        </a>
+                        <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash fa-fw"></span>
+                        </a>
+                      </td>
                     </tr>
 <?php
                     $i = 0;
@@ -722,19 +727,6 @@ if ($act!="new" && $act!="edit") {
 <?php
                     $i++;
                     endforeach;?>
-                    <tr>
-                      <td colspan="4">
-                        <?=gettext("Additional OpenVPN client specific overrides can be added here.");?>
-                      </td>
-                      <td class="text-nowrap">
-                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Move selected items to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="fa fa-arrow-down fa-fw"></span>
-                        </a>
-                        <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash fa-fw"></span>
-                        </a>
-                      </td>
-                    </tr>
                   </table>
                 </div>
               </form>

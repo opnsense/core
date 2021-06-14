@@ -365,14 +365,7 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-$main_buttons = array();
-
-if (empty($act)) {
-    $main_buttons[] = array('href' => 'vpn_openvpn_client.php?act=new', 'label' => gettext('Add'));
-}
-
 ?>
-
 <body>
 <?php include("fbegin.inc"); ?>
 <script>
@@ -1155,7 +1148,17 @@ $( document ).ready(function() {
                 <td><?=gettext("Protocol"); ?></td>
                 <td><?=gettext("Server"); ?></td>
                 <td><?=gettext("Description"); ?></td>
-                <td class="text-nowrap"></td>
+                <td class="text-nowrap">
+                  <a href="vpn_openvpn_client.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                    <i class="fa fa-plus fa-fw"></i>
+                  </a>
+                  <a data-id="<?= count($a_client) ?>" data-toggle="tooltip" title="<?=gettext("Move selected items to end");?>" class="act_move btn btn-default btn-xs">
+                    <span class="fa fa-arrow-down fa-fw"></span>
+                  </a>
+                  <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                    <span class="fa fa-trash-o fa-fw"></span>
+                  </a>
+                </td>
               </tr>
             </thead>
             <tbody>
@@ -1187,7 +1190,7 @@ $( document ).ready(function() {
                       <span class="fa fa-pencil fa-fw"></span>
                     </a>
                     <a data-id="<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs">
-                      <span class="fa fa-trash fa-fw"></span>
+                      <span class="fa fa-trash-o fa-fw"></span>
                     </a>
                     <a href="vpn_openvpn_client.php?act=new&amp;dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone client");?>">
                       <span class="fa fa-clone fa-fw"></span>
@@ -1197,17 +1200,6 @@ $( document ).ready(function() {
 <?php
               $i++;
               endforeach;?>
-              <tr>
-                <td colspan="4"></td>
-                <td class="text-nowrap">
-                  <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("Move selected items to end");?>" class="act_move btn btn-default btn-xs">
-                    <span class="fa fa-arrow-down fa-fw"></span>
-                  </a>
-                  <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="fa fa-trash fa-fw"></span>
-                  </a>
-                </td>
-              </tr>
             </tbody>
           </table>
           </div>
