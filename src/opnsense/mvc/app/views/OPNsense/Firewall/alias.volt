@@ -341,7 +341,7 @@
               type: BootstrapDialog.TYPE_INFO,
               draggable: true,
               buttons: [{
-                  label: '<i class="fa fa fa-cloud-upload" aria-hidden="true"></i>',
+                  label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
                   action: function(sender){
                       $table.hide();
                       $tbody.empty();
