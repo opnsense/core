@@ -17,7 +17,7 @@
                             rowCount: [20, 50, 100, 200, -1],
                             formatters: {
                                 commands: function (column, row) {
-                                    return '<button type="button" class="btn btn-xs btn-default delete-ip" data-row-id="' + row.ip + '"><span class="fa fa-trash-o"></span></button>';
+                                    return '<button type="button" class="btn btn-xs btn-default delete-ip" data-row-id="' + row.ip + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                                 },
                             }
                         }

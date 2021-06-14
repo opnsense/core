@@ -1,4 +1,3 @@
-
 <link href="{{ cache_safe('/ui/css/flags/flag-icon.css') }}" rel="stylesheet">
 <style>
     @media (min-width: 768px) {
@@ -342,7 +341,7 @@
               type: BootstrapDialog.TYPE_INFO,
               draggable: true,
               buttons: [{
-                  label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
+                  label: '<i class="fa fa fa-cloud-upload" aria-hidden="true"></i>',
                   action: function(sender){
                       $table.hide();
                       $tbody.empty();
@@ -495,15 +494,15 @@
                         <tr>
                             <td></td>
                             <td>
-                                <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                                <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>
-                                <button id="exportbtn" data-toggle="tooltip" title="{{ lang._('download')}}" type="button" class="btn btn-xs btn-default"> <span class="fa fa-cloud-download"></span></button>
-                                <button id="importbtn" data-toggle="tooltip" title="{{ lang._('upload')}}" type="button" class="btn btn-xs btn-default"> <span class="fa fa-cloud-upload"></span></button>
+                                <button id="exportbtn" data-toggle="tooltip" title="{{ lang._('download')}}" type="button" class="btn btn-xs btn-default"> <span class="fa fa-fw fa-cloud-download"></span></button>
+                                <button id="importbtn" data-toggle="tooltip" title="{{ lang._('upload')}}" type="button" class="btn btn-xs btn-default"> <span class="fa fa-fw fa-cloud-upload"></span></button>
                             </td>
                         </tr>
                         </tfoot>
