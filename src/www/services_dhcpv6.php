@@ -784,7 +784,7 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                       <td><?=gettext("Hostname");?></td>
                       <td><?=gettext("Description");?></td>
                       <td class="text-nowrap">
-                        <a href="services_dhcpv6_edit.php?if=<?=$if;?>" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                        <a href="services_dhcpv6_edit.php?if=<?=$if;?>" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                       </td>
                     </tr>
 <?php

@@ -153,7 +153,7 @@ include_once("head.inc");
                         <td><strong><?= gettext('Value') ?></strong></td>
                         <td><strong><?= gettext('Description') ?></strong></td>
                         <td class="text-nowrap">
-                          <a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                          <a href="services_unbound_host_edit.php" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                         </td>
                       </tr>
 <?php foreach ($a_hosts as $i => $hostent): ?>
@@ -223,7 +223,7 @@ include_once("head.inc");
                         <td><strong><?= gettext('IP') ?></strong></td>
                         <td><strong><?= gettext('Description') ?></strong></td>
                         <td class="text-nowrap">
-                          <a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                          <a href="services_unbound_domainoverride_edit.php" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                         </td>
                       </tr>
 <?php foreach ($a_domains as $i => $doment): ?>

@@ -445,6 +445,10 @@ $( document ).ready(function() {
                         <?= $ph1ent['descr'] ?>
                       </td>
                       <td class="text-nowrap">
+                        <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-primary btn-xs"
+                          title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
                         <button data-id="<?=$i; ?>" data-act="move" type="submit" class="act_move btn btn-default btn-xs"
                           title="<?=gettext("Move selected entries before this");?>" data-toggle="tooltip">
                           <i class="fa fa-arrow-left fa-fw"></i>
@@ -453,22 +457,16 @@ $( document ).ready(function() {
                           title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
                           <i class="fa fa-pencil fa-fw"></i>
                         </a>
-                        <button data-id="<?=$i; ?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"
-                          type="submit" class="act_delete_p1 btn btn-default btn-xs">
-                          <i class="fa fa-trash fa-fw"></i>
-                        </button>
-<?php                   if (!isset($ph1ent['mobile'])):
-?>
+<?php if (!isset($ph1ent['mobile'])): ?>
                         <a href="vpn_ipsec_phase1.php?dup=<?=$i; ?>" class="btn btn-default btn-xs"
                           title="<?= html_safe(gettext('Clone')) ?>" data-toggle="tooltip">
                           <i class="fa fa-clone fa-fw"></i>
                         </a>
-<?php
-                        endif ?>
-                        <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-default btn-xs"
-                          title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
-                          <i class="fa fa-plus fa-fw"></i>
-                        </a>
+<?php endif ?>
+                        <button data-id="<?=$i; ?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"
+                          type="submit" class="act_delete_p1 btn btn-default btn-xs">
+                          <i class="fa fa-trash fa-fw"></i>
+                        </button>
                       </td>
                     </tr>
 <?php
@@ -563,14 +561,14 @@ $( document ).ready(function() {
                                     class="btn btn-default btn-xs">
                                     <i class="fa fa-pencil fa-fw"></i>
                                   </a>
-                                  <button data-id="<?=$ph2index; ?>" type="submit" class="act_delete_p2 btn btn-default btn-xs"
-                                    title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
-                                    <i class="fa fa-trash fa-fw"></i>
-                                  </button>
                                   <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid']; ?>" class="btn btn-default btn-xs"
                                     title="<?= html_safe(gettext('Clone')) ?>" data-toggle="tooltip">
                                     <i class="fa fa-clone fa-fw"></i>
                                   </a>
+                                  <button data-id="<?=$ph2index; ?>" type="submit" class="act_delete_p2 btn btn-default btn-xs"
+                                    title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
+                                    <i class="fa fa-trash fa-fw"></i>
+                                  </button>
                                 </td>
                               </tr>
 <?php
@@ -582,6 +580,10 @@ $( document ).ready(function() {
                       <td colspan="4" class="hidden-xs"></td>
                       <td colspan="4"> </td>
                       <td class="text-nowrap">
+                        <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
+                          class="btn btn-primary btn-xs">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
                         <button
                           type="submit"
                           data-id="<?=$i;?>"
@@ -598,10 +600,6 @@ $( document ).ready(function() {
                           class="btn btn-default btn-xs">
                           <i class="fa fa-trash fa-fw"></i>
                         </button>
-                        <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
-                          class="btn btn-default btn-xs">
-                          <i class="fa fa-plus fa-fw"></i>
-                        </a>
                       </td>
                     </tr>
                     <tr>

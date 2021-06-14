@@ -753,7 +753,7 @@ include("head.inc");
                                 <th><?=gettext("Pool End");?></th>
                                 <th><?=gettext("Description");?></th>
                                 <th class="text-nowrap">
-                                  <a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=newpool" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                                  <a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=newpool" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                                 </th>
                               </tr>
                             </thead>
@@ -1188,7 +1188,7 @@ include("head.inc");
                     <td><?=gettext("Hostname");?></td>
                     <td><?=gettext("Description");?></td>
                     <td class="text-nowrap">
-                      <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                      <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                     </td>
                   </tr>
 <?php

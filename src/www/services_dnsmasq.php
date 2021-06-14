@@ -387,7 +387,7 @@ $( document ).ready(function() {
                   <td><strong><?= gettext('IP') ?></strong></td>
                   <td><strong><?= gettext('Description') ?></strong></td>
                   <td class="text-nowrap">
-                    <a href="services_dnsmasq_edit.php" class="btn btn-default btn-xs"><i class="fa fa-plus fa-fw"></i></a>
+                    <a href="services_dnsmasq_edit.php" class="btn btn-primary btn-xs"><i class="fa fa-plus fa-fw"></i></a>
                   </td>
                 </tr>
 <?php foreach (config_read_array('dnsmasq', 'hosts') as $i => $hostent): ?>
@@ -439,7 +439,7 @@ $( document ).ready(function() {
                   <td><strong><?= gettext('IP') ?></strong></td>
                   <td><strong><?= gettext('Description') ?></strong></td>
                   <td class="text-nowrap">
-                    <a href="services_dnsmasq_domainoverride_edit.php" class="btn btn-default btn-xs">
+                    <a href="services_dnsmasq_domainoverride_edit.php" class="btn btn-primary btn-xs">
                       <i class="fa fa-plus fa-fw"></i>
                     </a>
                   </td>
