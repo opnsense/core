@@ -26,8 +26,6 @@
     --------------------------------------------------------------------------------------
     Alias representation
 """
-import socket
-import fcntl
 import os
 import re
 import time
@@ -39,7 +37,6 @@ from hashlib import md5
 from . import geoip
 from . import net_wildcard_iterator
 from .arpcache import ArpCache
-
 
 class Alias(object):
     def __init__(self, elem, known_aliases=[], ttl=-1, ssl_no_verify=False, timeout=120):
