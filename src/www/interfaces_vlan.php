@@ -149,6 +149,9 @@ $main_buttons = array(
                   <tfoot>
                     <tr>
                       <td colspan="5">
+                        <strong><?= gettext("When using VLANs, avoid using their parent interfaces! Firewall rules added to a parent interface may interfere with VLANs and result in unpredictable behaviour.");?></strong>
+                        <br />
+                        <br />
                         <?= gettext("Not all drivers/NICs support 802.1Q VLAN tagging properly. On cards that do not explicitly support it, VLAN tagging will still work, but the reduced MTU may cause problems.");?>
                       </td>
                     </tr>
