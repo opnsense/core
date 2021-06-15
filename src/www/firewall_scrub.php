@@ -117,10 +117,6 @@ legacy_html_escape_form_data($a_scrub);
 
 include("head.inc");
 
-$main_buttons = array(
-    array('href'=>'firewall_scrub_edit.php', 'label'=>gettext('Add')),
-);
-
 ?>
 <body>
 <script>
@@ -289,18 +285,28 @@ $( document ).ready(function() {
               <div class="table-responsive" >
                 <table class="table table-striped table-hover" id="rules">
                   <thead>
-                     <tr>
-                         <th colspan="2"><?=gettext("Detailed settings");?></th>
-                         <th colspan="2" class="hidden-xs hidden-sm"> </th>
-                         <th colspan="2"> </th>
-                     </tr>
+                    <tr>
+                      <th colspan="2"><?=gettext("Detailed settings");?></th>
+                      <th colspan="2" class="hidden-xs hidden-sm"> </th>
+                      <th colspan="2"> </th>
+                    </tr>
                     <tr>
                       <th><input type="checkbox" id="selectAll"></th>
                       <th><?=gettext("Interfaces");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Source");?></th>
                       <th class="hidden-xs hidden-sm"><?=gettext("Destination");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th></th>
+                      <th class="text-nowrap">
+                        <a href="firewall_scrub_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                        <a id="move_<?= count($a_scrub) ?>" name="move_<?= count($a_scrub) ?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules to end")) ?>" class="act_move btn btn-default btn-xs">
+                          <span class="fa fa-arrow-left fa-fw"></span>
+                        </a>
+                        <a data-id="x" title="<?= html_safe(gettext("delete selected rules")) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash fa-fw"></span>
+                        </a>
+                      </th>
                     </tr>
                   </thead>
                 <tbody>
@@ -384,14 +390,7 @@ $( document ).ready(function() {
                         <a><i class="fa fa-list fa-fw"></i></a> <?=gettext("Alias (click to view/edit)");?>
                       </td>
                       <td colspan="2" class="hidden-xs hidden-sm"></td>
-                      <td>
-                        <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules to end")) ?>" class="act_move btn btn-default btn-xs">
-                          <span class="fa fa-arrow-left fa-fw"></span>
-                        </a>
-                        <a data-id="x" title="<?= html_safe(gettext("delete selected rules")) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash fa-fw"></span>
-                        </a>
-                      </td>
+                      <td></td>
                     </tr>
                 </tfoot>
               </table>
