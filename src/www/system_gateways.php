@@ -198,12 +198,7 @@ $service_hook = 'dpinger';
 
 include("head.inc");
 
-$main_buttons = array(
-    array('label'=> gettext('Add'), 'href'=>'system_gateways_edit.php'),
-);
-
 ?>
-
 <script>
 $( document ).ready(function() {
   // link delete single item buttons (by class)
@@ -301,7 +296,17 @@ $( document ).ready(function() {
                     <th class="text-nowrap hidden-xs"><?= gettext('Loss') ?></th>
                     <th><?=gettext("Status"); ?></th>
                     <th class="hidden-xs hidden-sm hidden-md"><?=gettext("Description"); ?></th>
-                    <th class="text-nowrap"></th>
+                    <th class="text-nowrap">
+                      <a href="system_gateways_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <i class="fa fa-plus fa-fw"></i>
+                      </a>
+<?php if (count($a_gateways)): ?>
+                          <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip"
+                                  title="<?= html_safe(gettext('Delete selected items')) ?>">
+                              <i class="fa fa-trash fa-fw"></i>
+                          </button>
+<?php endif ?>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -421,33 +426,6 @@ $( document ).ready(function() {
                     $i++;
                   endforeach;?>
                 </tbody>
-                <thead>
-                    <tr>
-                      <td colspan="2"></td>
-                      <td></td>
-                      <td class="hidden-xs hidden-sm hidden-md"></td>
-                      <td class="hidden-xs hidden-sm hidden-md"></td>
-                      <td class="hidden-xs hidden-sm hidden-md"></td>
-                      <td class="hidden-xs hidden-sm hidden-md"></td>
-                      <td class="hidden-xs hidden-sm hidden-md"></td>
-                      <td class="text-nowrap hidden-xs"></td>
-                      <td class="text-nowrap hidden-xs"></td>
-                      <td class="text-nowrap hidden-xs"></td>
-                      <td></td>
-                      <td class="hidden-xs hidden-sm hidden-md"></td>
-                      <td class="text-nowrap">
-<?php
-                      if ($i > 0) :
-                                      ?>
-                          <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip"
-                                  title="<?= html_safe(gettext('Delete selected items')) ?>">
-                              <i class="fa fa-trash fa-fw"></i>
-                          </button>
-<?php
-                      endif;?>
-                      </td>
-                    </tr>
-                </thead>
               </table>
             </form>
           </div>

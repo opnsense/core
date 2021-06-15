@@ -68,10 +68,6 @@ $service_hook = 'dpinger';
 
 include("head.inc");
 
-$main_buttons = array(
-    array('label'=> gettext('Add'), 'href'=>'system_gateway_groups_edit.php'),
-);
-
 ?>
 <script>
 $( document ).ready(function() {
@@ -122,7 +118,11 @@ $( document ).ready(function() {
                       <td><?= gettext('Name') ?></td>
                       <td><?= gettext('Gateways') ?></td>
                       <td class="hidden-xs"><?= gettext('Description') ?></td>
-                      <td class="text-nowrap"></td>
+                      <td class="text-nowrap">
+                        <a href="system_gateway_groups_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                      </td>
                     </tr>
                   </thead>
                   <tbody>
@@ -207,9 +207,10 @@ $( document ).ready(function() {
 <?php $i++;
                     endforeach; ?>
                     <tr>
-                      <td colspan="4">
+                      <td colspan="3">
                         <?= gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.") ?>
                       </td>
+                      <td class="text-nowrap"></td>
                     </tr>
                   </tbody>
                 </table>

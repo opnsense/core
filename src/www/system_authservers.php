@@ -328,11 +328,6 @@ legacy_html_escape_form_data($a_server);
 
 include("head.inc");
 
-$main_buttons = array();
-if (!isset($_GET['act'])) {
-    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'system_authservers.php?act=new');
-}
-
 ?>
 <body>
 
@@ -896,7 +891,11 @@ else :
                   <th><?=gettext("Server Name");?></th>
                   <th style="width:25%"><?=gettext("Type");?></th>
                   <th style="width:35%"><?=gettext("Host Name");?></th>
-                  <th style="width:10%" class="text-nowrap"></th>
+                  <th style="width:10%" class="text-nowrap">
+                    <a href="system_authservers.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                      <i class="fa fa-plus fa-fw"></i>
+                    </a>
+                  </th>
                 </tr>
               </thead>
               <tbody>

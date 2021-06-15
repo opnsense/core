@@ -817,14 +817,7 @@ legacy_html_escape_form_data($a_cert);
 
 include("head.inc");
 
-if (empty($act)) {
-    $main_buttons = array(
-        array('label' => gettext('Add'), 'href' => 'system_certmanager.php?act=new'),
-    );
-}
-
 ?>
-
 <body>
   <style>
     .monospace-dialog {
@@ -2051,7 +2044,11 @@ $( document ).ready(function() {
                 <th><?=gettext("Name");?></th>
                 <th><?=gettext("Issuer");?></th>
                 <th><?=gettext("Distinguished Name");?></th>
-                <th><?=gettext("In Use");?></th>
+                <th class="text-nowrap">
+                  <a href="system_certmanager.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                    <i class="fa fa-plus fa-fw"></i>
+                  </a>
+                </th>
               </tr>
             </thead>
             <tbody>

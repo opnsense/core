@@ -414,11 +414,6 @@ legacy_html_escape_form_data($a_user);
 
 include("head.inc");
 
-$main_buttons = array();
-if (!isset($_GET['act'])) {
-    $main_buttons[] = array('label' => gettext('Add'), 'href' => 'system_usermanager.php?act=new');
-}
-
 ?>
 <script src="<?= cache_safe('/ui/js/jquery.qrcode.js') ?>"></script>
 <script src="<?= cache_safe('/ui/js/qrcode.js') ?>"></script>
@@ -995,7 +990,32 @@ $( document ).ready(function() {
                       <th><?=gettext("Username"); ?></th>
                       <th><?=gettext("Full name"); ?></th>
                       <th><?=gettext("Groups"); ?></th>
-                      <th></th>
+                      <th class="text-nowrap">
+                        <a href="system_usermanager.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+<?php
+                        $can_import = false;
+                        if (!empty($config['system']['webgui']['authmode'])) {
+                            $servers = explode(',', $config['system']['webgui']['authmode']);
+                            foreach ($servers as $server) {
+                                $authcfg_type = auth_get_authserver($server)['type'];
+                                if ($authcfg_type == 'ldap' || $authcfg_type == 'ldap-totp') {
+                                    $can_import = true;
+                                }
+                            }
+                        }
+?>
+<?php if (!$can_import): ?>
+                        <button type="submit" name="import"
+                                id="import_ldap_users"
+                                data-toggle="tooltip"
+                                class="btn btn-primary btn-xs"
+                                title="<?= html_safe(gettext('Import')) ?>">
+                            <i class="fa fa-cloud-download fa-fw"></i>
+                        </button>
+<?php endif ?>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1051,29 +1071,7 @@ $( document ).ready(function() {
                           </tr>
                         </table>
                       </td>
-                      <td class="text-nowrap">
-<?php
-                        $can_import = false;
-                        if (!empty($config['system']['webgui']['authmode'])) {
-                            $servers = explode(',', $config['system']['webgui']['authmode']);
-                            foreach ($servers as $server) {
-                                $authcfg_type = auth_get_authserver($server)['type'];
-                                if ($authcfg_type == 'ldap' || $authcfg_type == 'ldap-totp') {
-                                    $can_import = true;
-                                }
-                            }
-                        }
-?>
-<?php if ($can_import): ?>
-                          <button type="submit" name="import"
-                                  id="import_ldap_users"
-                                  data-toggle="tooltip"
-                                  class="btn btn-primary btn-xs"
-                                  title="<?= html_safe(gettext('Import')) ?>">
-                              <i class="fa fa-cloud-download fa-fw"></i>
-                          </button>
-<?php endif ?>
-                      </td>
+                      <td class="text-nowrap"></td>
                     </tr>
                   </tbody>
                 </table>
