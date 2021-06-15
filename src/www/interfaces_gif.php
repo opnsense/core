@@ -60,14 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
 include("head.inc");
-legacy_html_escape_form_data($a_gifs);
-$main_buttons = array(
-  array('href'=>'interfaces_gif_edit.php', 'label'=>gettext('Add')),
-);
-?>
 
+legacy_html_escape_form_data($a_gifs);
+
+?>
 <body>
   <script>
   $( document ).ready(function() {
@@ -115,7 +112,11 @@ $main_buttons = array(
                       <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Tunnel to...");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap"></th>
+                      <th class="text-nowrap">
+                        <a href="interfaces_gif_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>

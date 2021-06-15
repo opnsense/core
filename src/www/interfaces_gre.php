@@ -30,7 +30,8 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function gre_inuse($gre_intf) {
+function gre_inuse($gre_intf)
+{
     foreach (legacy_config_get_interfaces() as $if => $intf) {
         if ($intf['if'] == $gre_intf) {
             return true;
@@ -62,13 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 include("head.inc");
+
 legacy_html_escape_form_data($a_gres);
-$main_buttons = array(
-  array('href'=>'interfaces_gre_edit.php', 'label'=>gettext('Add')),
-);
 
 ?>
-
 <body>
   <script>
   $( document ).ready(function() {
@@ -116,7 +114,11 @@ $main_buttons = array(
                       <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Tunnel to...");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th>&nbsp;</th>
+                      <th class="text-nowrap">
+                        <a href="interfaces_gre_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>

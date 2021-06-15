@@ -61,14 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
 include("head.inc");
-legacy_html_escape_form_data($a_clones);
-$main_buttons = array(
-  array('href'=>'interfaces_wireless_edit.php', 'label'=>gettext('Add')),
-);
-?>
 
+legacy_html_escape_form_data($a_clones);
+
+?>
 <body>
   <script>
   $( document ).ready(function() {
@@ -115,7 +112,11 @@ $main_buttons = array(
                       <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Mode");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap"></th>
+                      <th class="text-nowrap">
+                        <a href="interfaces_wireless_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -138,11 +139,6 @@ $main_buttons = array(
 <?php
                     $i++;
                   endforeach;?>
-                    <tr>
-                      <td colspan="4">
-                        <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>

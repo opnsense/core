@@ -30,17 +30,20 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function vlan_inuse($vlan_intf) {
+function vlan_inuse($vlan_intf)
+{
     global $config;
+
     foreach ($config['interfaces'] as $if => $intf) {
         if ($intf['if'] == $vlan_intf) {
             return $if;
         }
     }
+
     return false;
 }
 
-$a_vlans = &config_read_array('vlans', 'vlan') ;
+$a_vlans = &config_read_array('vlans', 'vlan');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
@@ -67,13 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 include("head.inc");
+
 legacy_html_escape_form_data($a_vlans);
-$main_buttons = array(
-  array('href'=>'interfaces_vlan_edit.php', 'label'=>gettext('Add')),
-);
 
 ?>
-
 <body>
   <script>
   $( document ).ready(function() {
@@ -121,7 +121,11 @@ $main_buttons = array(
                       <th><?=gettext("Tag");?></th>
                       <th><?=gettext("PCP");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap"></th>
+                      <th class="text-nowrap">
+                        <a href="interfaces_vlan_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -146,13 +150,6 @@ $main_buttons = array(
                   $i++;
                   endforeach; ?>
                   </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="5">
-                        <?= gettext("Not all drivers/NICs support 802.1Q VLAN tagging properly. On cards that do not explicitly support it, VLAN tagging will still work, but the reduced MTU may cause problems.");?>
-                      </td>
-                    </tr>
-                  </tfoot>
                 </table>
               </div>
             </form>

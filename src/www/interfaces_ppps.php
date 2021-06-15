@@ -30,8 +30,10 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function ppp_inuse($ppp_intf) {
+function ppp_inuse($ppp_intf)
+{
     global $config;
+
     if (isset($config['ppps']['ppp']) && !is_array($config['ppps']['ppp'])) {
         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $intf) {
             if ($intf['if'] == $ppp_intf) {
@@ -39,6 +41,7 @@ function ppp_inuse($ppp_intf) {
             }
         }
     }
+
     return false;
 }
 
@@ -63,10 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 include("head.inc");
+
 legacy_html_escape_form_data($a_ppps);
-$main_buttons = array(
-  array('href'=>'interfaces_ppps_edit.php', 'label'=>gettext('Add')),
-);
 
 ?>
 <body>
@@ -115,7 +116,11 @@ $main_buttons = array(
                       <th><?=gettext("Interface");?></th>
                       <th><?=gettext("Interface(s)/Port(s)");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap"></th>
+                      <th class="text-nowrap">
+                        <a href="interfaces_ppps_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
