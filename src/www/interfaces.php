@@ -388,6 +388,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
+        'hw_settings_overwrite',
+        'disablechecksumoffloading',
+        'disablesegmentationoffloading',
+        'disablelargereceiveoffloading',
+        'disablevlanhwfilter',
     );
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -1307,6 +1312,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 // quite obscure this... copies parts of the config
                 interface_sync_wireless_clones($new_config, true);
             }
+            // hardware (offloading) Settings
+            if (!empty($pconfig['hw_settings_overwrite'])) {
+                $new_config['hw_settings_overwrite'] = true;
+                if (!empty($pconfig['disablechecksumoffloading'])) {
+                    $new_config['disablechecksumoffloading'] = true;
+                }
+                if (!empty($pconfig['disablesegmentationoffloading'])) {
+                    $new_config['disablesegmentationoffloading'] = true;
+                }
+                if (!empty($pconfig['disablelargereceiveoffloading'])) {
+                    $new_config['disablelargereceiveoffloading'] = true;
+                }
+                if (!empty($pconfig['disablevlanhwfilter'])) {
+                    $new_config['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
+                }
+            }
 
             if (count($new_ppp_config) > 0) {
                 // ppp details changed
@@ -1699,6 +1720,15 @@ include("head.inc");
       });
       $("#mtu").change();
 
+      // toggle hardware settings visibility
+      $("#hw_settings_overwrite").change(function(){
+          if ($("#hw_settings_overwrite").is(':checked')) {
+              $(".hw_settings_overwrite").show();
+          } else {
+              $(".hw_settings_overwrite").hide();
+          }
+      }).change();
+
       window_highlight_table_option();
   });
 </script>
@@ -1906,6 +1936,78 @@ include("head.inc");
                               <?=gettext("If the destination is directly reachable via an interface requiring no " .
                               "intermediary system to act as a gateway, you can select this option which allows dynamic gateways " .
                               "to be created without direct target addresses. Some tunnel types support this."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- Hardware settings -->
+                <div class="tab-content content-box col-xs-12 __mb">
+                  <div class="table-responsive">
+                    <table class="table table-striped opnsense_standard_table_form">
+                      <thead>
+                        <tr>
+                          <th colspan="2"><?=gettext("Hardware settings"); ?></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwite global settings"); ?></td>
+                          <td style="width:78%">
+                            <input id="hw_settings_overwrite" name="hw_settings_overwrite" type="checkbox" value="yes" <?=!empty($pconfig['hw_settings_overwrite']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_hw_settings_overwrite">
+                              <?=gettext("Overwrite custom interface hardware settings with settings specified below"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="hw_settings_overwrite" style="display:none">
+                          <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
+                          <td>
+                            <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
+                            <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
+                            <div class="hidden" data-for="help_for_disablechecksumoffloading">
+                              <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="hw_settings_overwrite" style="display:none">
+                          <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
+                          <td>
+                            <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
+                            <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
+                            <div class="hidden" data-for="help_for_disablesegmentationoffloading">
+                              <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="hw_settings_overwrite" style="display:none">
+                          <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
+                          <td>
+                            <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
+                            <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
+                            <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
+                              <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="hw_settings_overwrite" style="display:none">
+                          <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Filtering"); ?></td>
+                          <td>
+                            <select name="disablevlanhwfilter" class="selectpicker">
+                                <option value="0" <?=$pconfig['disablevlanhwfilter'] == "0" ? "selected=\"selected\"" : "";?> >
+                                  <?=gettext("Enable VLAN Hardware Filtering");?>
+                                </option>
+                                <option value="1" <?=$pconfig['disablevlanhwfilter'] == "1" ? "selected=\"selected\"" : "";?> >
+                                  <?=gettext("Disable VLAN Hardware Filtering"); ?>
+                                </option>
+                                <option value="2" <?=$pconfig['disablevlanhwfilter'] == "2" ? "selected=\"selected\"" : "";?> >
+                                  <?=gettext("Leave default");?>
+                                </option>
+                            </select>
+                            <div class="hidden" data-for="help_for_disablevlanhwfilter">
+                              <?= gettext('Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.') ?>
                             </div>
                           </td>
                         </tr>
