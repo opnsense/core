@@ -319,10 +319,6 @@ if (isset($_GET['if'])) {
 
 include("head.inc");
 
-$main_buttons = array(
-    array('label' => gettext('Add'), 'href' => 'firewall_rules_edit.php?if=' . $selected_if),
-);
-
 $a_filter_raw = config_read_array('filter', 'rule');
 legacy_html_escape_form_data($a_filter);
 $all_rule_stats = json_decode(configd_run("filter rule stats"), true);
@@ -642,7 +638,23 @@ $( document ).ready(function() {
                         <strong><?= gettext('Description') ?></strong>
                         <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </td>
-                      <td class="button-th"></td>
+                      <td class="text-nowrap button-th">
+                        <a href="<?= url_safe('firewall_rules_edit.php?if=%s', array($selected_if)) ?>" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+                        <button id="move_<?= count($a_filter) ?>" name="move_<?= count($a_filter) ?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
+                          <i class="fa fa-arrow-left fa-fw"></i>
+                        </button>
+                        <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                          <i class="fa fa-trash fa-fw"></i>
+                        </button>
+                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
+                          <i class="fa fa-check-square-o fa-fw"></i>
+                        </button>
+                        <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
+                          <i class="fa fa-square-o fa-fw"></i>
+                        </button>
+                      </td>
                   </tr>
                   <tr id="expand-internal-rules" style="display: none;">
                       <td><i class="fa fa-folder-o text-muted"></i></td>
@@ -878,28 +890,6 @@ $( document ).ready(function() {
                   endforeach;
                   $i++;
 ?>
-                  <tr>
-                    <td colspan="2"></td>
-                    <td colspan="2" class="view-info"></td>
-                    <td colspan="5" class="view-info hidden-xs hidden-sm"></td>
-                    <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
-                    <td colspan="2" class="view-stats"></td>
-                    <td></td>
-                    <td>
-                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
-                        <i class="fa fa-arrow-left fa-fw"></i>
-                      </button>
-                      <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
-                        <i class="fa fa-trash fa-fw"></i>
-                      </button>
-                      <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
-                          <i class="fa fa-check-square-o fa-fw"></i>
-                      </button>
-                      <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
-                          <i class="fa fa-square-o fa-fw"></i>
-                      </button>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
               <table class="table table-condensed table-striped opnsense-rules">

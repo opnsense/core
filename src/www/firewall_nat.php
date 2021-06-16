@@ -152,12 +152,7 @@ legacy_html_escape_form_data($a_nat);
 
 $lockout_spec = filter_core_get_antilockout();
 
-$main_buttons = array(
-    array('label' => gettext('Add'), 'href' => 'firewall_nat_edit.php'),
-);
-
 ?>
-
 <body>
 <script>
 $( document ).ready(function() {
@@ -343,7 +338,25 @@ $( document ).ready(function() {
                       <th><?=gettext("IP");?></th>
                       <th><?=gettext("Ports");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th>&nbsp;</th>
+                      <th class="text-nowrap">
+                        <a href="firewall_nat_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                          <i class="fa fa-plus fa-fw"></i>
+                        </a>
+<?php if (count($a_nat)): ?>
+                        <button id="move_<?= count($a_nat) ?>" name="move_<?= count($a_nat) ?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
+                          <i class="fa fa-arrow-left fa-fw"></i>
+                        </button>
+                        <button id="del_x" title="<?=html_safe(gettext("Delete selected"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <i class="fa fa-trash fa-fw"></i>
+                        </button>
+                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
+                          <i class="fa fa-check-square-o fa-fw"></i>
+                        </button>
+                        <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
+                          <i class="fa fa-square-o fa-fw"></i>
+                        </button>
+<?php endif ?>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -513,26 +526,6 @@ $( document ).ready(function() {
                       </td>
                      </tr>
 <?php $nnats++; endforeach; ?>
-<?php if ($nnats != 0): ?>
-                    <tr>
-                      <td colspan="8"></td>
-                      <td class="hidden-xs hidden-sm" colspan="4"> </td>
-                      <td>
-                        <button id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
-                          <i class="fa fa-arrow-left fa-fw"></i>
-                        </button>
-                        <button id="del_x" title="<?=html_safe(gettext("Delete selected"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <i class="fa fa-trash fa-fw"></i>
-                        </button>
-                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
-                          <i class="fa fa-check-square-o fa-fw"></i>
-                        </button>
-                        <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
-                          <i class="fa fa-square-o fa-fw"></i>
-                        </button>
-                      </td>
-                    </tr>
-<?php endif ?>
                   </tbody>
                   <tfoot>
                     <tr class="hidden-xs hidden-sm">
