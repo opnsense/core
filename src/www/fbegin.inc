@@ -190,9 +190,6 @@ if($need_alert_display == true) {
                   echo service_control_links($ssvc);
                 }
               } ?>
-              <?php if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
-                <a href="<?=$button['href'];?>" class="btn btn-primary"><i class="fa fa-plus-circle fa-fw"></i> <?= $button['label'] ?></a>
-              <?php endforeach; endif; ?>
 
               <?php if (isset($widgetCollection)): ?>
                 <a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
