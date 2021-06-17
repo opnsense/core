@@ -44,19 +44,6 @@
         $('#update_status_container').show();
     }
 
-    /* XXX best effort at this point, rework later */
-    function reloadMenu() {
-        $.ajax({
-            type: 'GET',
-            url: '/ui/core/firmware',
-            dataType: 'html',
-            contentType: 'text/html',
-            success: function (data) {
-                $('#navigation').html($('#navigation', data));
-            }
-        });
-    }
-
     /**
      * retrieve update status from backend
      */
@@ -295,7 +282,6 @@
                     updateStatus();
                 } else {
                     packagesInfo(true);
-                    reloadMenu();
                 }
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
