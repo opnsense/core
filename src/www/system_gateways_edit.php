@@ -49,11 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (!isset($pconfig['name'])) {
+    if (empty($pconfig['name'])) {
         $input_errors[] = gettext("A valid gateway name must be specified.");
-    }
-
-    if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $pconfig['name'])) {
+    } elseif (!isset($id) && !preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $pconfig['name'])) {
         $input_errors[] = sprintf(gettext('The name must be less than 32 characters long and may only consist of the following characters: %s'), 'a-z, A-Z, 0-9, _');
     }
 
