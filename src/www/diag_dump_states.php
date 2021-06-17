@@ -35,7 +35,7 @@ require_once("interfaces.inc");
 if (isset($_POST['action']) && $_POST['action'] == "remove") {
     if (isset($_POST['srcip']) && isset($_POST['dstip']) && is_ipaddr($_POST['srcip']) && is_ipaddr($_POST['dstip'])) {
         $retval = mwexecf('/sbin/pfctl -k %s/32 -k %s/32', array($_POST['srcip'], $_POST['dstip']));
-        echo htmlentities("|{$_POST['srcip']}|{$_POST['dstip']}|{$retval}|");
+        echo html_safe("|{$_POST['srcip']}|{$_POST['dstip']}|{$retval}|");
     } else {
         echo gettext("invalid input");
     }

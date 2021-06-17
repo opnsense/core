@@ -271,7 +271,7 @@ include("fbegin.inc");
                             default:
                                 $color = '#000000';
                         } ?>
-                      <span style="color: <?= $color; ?>; white-space: pre-wrap; font-family: monospace;"><?= htmlentities($line); ?></span>
+                      <span style="color: <?= $color; ?>; white-space: pre-wrap; font-family: monospace;"><?= html_safe($line) ?></span>
                       <br/>
                     <?php endforeach; ?>
                   </td>

@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $remipp = $_POST['remipp'];
         if (!empty($port) && !empty($remipp)) {
             $retval = kill_client($port, $remipp);
-            echo htmlentities("|{$port}|{$remipp}|{$retval}|");
+            echo html_safe("|{$port}|{$remipp}|{$retval}|");
         } else {
             echo gettext("invalid input");
         }

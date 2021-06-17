@@ -352,13 +352,9 @@ include("head.inc");
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Authority");?></td>
                 <td>
                   <select name='caref' id='caref' class="selectpicker">
-<?php
-                  foreach ($a_ca as $ca):?>
-                    <option value="<?=$ca['refid'];?>" <?=$pconfig['caref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>>
-                      <?=htmlentities($ca['descr']);?>
-                    </option>
-<?php
-                  endforeach;?>
+<?php foreach ($a_ca as $ca): ?>
+                    <option value="<?= html_safe($ca['refid']) ?>" <?=$pconfig['caref'] == $ca['refid'] ? 'selected="selected"' : '' ?>><?= html_safe($ca['descr']) ?></option>
+<?php endforeach ?>
                   </select>
                 </td>
               </tr>

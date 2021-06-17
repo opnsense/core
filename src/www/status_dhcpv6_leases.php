@@ -500,10 +500,8 @@ endif;?>
                   <td><?=$data['ip'];?></td>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$duid_content;?></td>
-                  <td>
-                    <?=!empty($data['hostname']) ? htmlentities($data['hostname']) : "";?>
-                  </td>
-                  <td><?=htmlentities($data['descr']);?></td>
+                  <td><?= !empty($data['hostname']) ? html_safe($data['hostname']) : '' ?></td>
+                  <td><?= html_safe($data['descr']);?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
                   <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
                   <td>
