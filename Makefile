@@ -34,7 +34,7 @@ CORE_NAME?=	opnsense-devel
 CORE_TYPE?=	development
 
 CORE_ABI?=	21.1
-CORE_PHP?=	74
+CORE_PHP?=	73
 CORE_PYTHON?=	37
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
@@ -109,6 +109,8 @@ CORE_COPYRIGHT_YEARS?=	2014-2021
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
+CORE_DEPENDS_PHP73=	php73-hash # XXX not needed with 7.4
+
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
@@ -173,6 +175,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			unbound \
 			wpa_supplicant \
 			zip \
+			${CORE_DEPENDS_PHP${CORE_PHP}} \
 			${CORE_DEPENDS_${CORE_ARCH}}
 
 WRKDIR?=${.CURDIR}/work
