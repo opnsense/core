@@ -535,7 +535,25 @@
             });
             $(".act_remove").click(function(event) {
                 event.preventDefault();
-                backend('remove/' + $(this).data('package'));
+                let plugin_name = $(this).data('package');
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_WARNING,
+                    title: "{{ lang._('Confirm removal') }}",
+                    message: "{{ lang._('Do you really want to remove this plugin?') }}" + " <strong>" + plugin_name + "</strong>",
+                    buttons: [{
+                        label: "{{ lang._('OK') }}",
+                        cssClass: 'btn-warning',
+                        action: function (dialogRef) {
+                            dialogRef.close();
+                            backend('remove/' + plugin_name);
+                        }
+                    },{
+                        label: "{{ lang._('Cancel') }}",
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
             });
             $(".act_details").click(function(event) {
                 event.preventDefault();
