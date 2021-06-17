@@ -3887,7 +3887,7 @@ function link_interface_to_gre($interface)
 {
     global $config;
 
-    $result = array();
+    $result = [];
 
     if (isset($config['gres']['gre'])) {
         foreach ($config['gres']['gre'] as $gre) {
@@ -3904,7 +3904,7 @@ function link_interface_to_gif($interface)
 {
     global $config;
 
-    $result = array();
+    $result = [];
 
     if (isset($config['gifs']['gif'])) {
         foreach ($config['gifs']['gif'] as $gif) {

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -87,14 +87,11 @@ if (is_ipaddr($ip)) {
 
 interfaces_vips_configure(false, $interface);
 
-$gre = link_interface_to_gre($interface);
-if (!empty($gre)) {
-    array_walk($gre, 'interface_gre_configure');
-}
-$gif = link_interface_to_gif($interface);
-if (!empty($gif)) {
-    array_walk($gif, 'interface_gif_configure');
-}
+$gres = link_interface_to_gre($interface);
+array_walk($gres, 'interface_gre_configure');
+
+$gifs = link_interface_to_gif($interface);
+array_walk($gifs, 'interface_gif_configure');
 
 $bridgetmp = link_interface_to_bridge($interface);
 if (!empty($bridgetmp)) {
@@ -127,19 +124,20 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     }
 }
 
-if (!empty($config['gifs']['gif'])) {
-    foreach ($config['gifs']['gif'] as $gif) {
-        if ($gif['if'] == $interface) {
-            foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifparent) {
-                if (($ifparent['if'] == $gif['gifif']) && (isset($ifparent['enable']))) {
-                  $gif['gifif'] = interface_gif_configure($gif);
-                  $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
-                  if (!empty($confif)) {
-                      interface_configure(false, $confif);
-                  }
-                  system_routing_configure(false, $ifname);
-                }
-            }
+foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
+    foreach ($gifs as $gif) {
+        if ($ifparent['if'] == $gif['gifif']) {
+            interface_configure(false, $ifname);
+            system_routing_configure(false, $ifname);
+            break;
+        }
+    }
+
+    foreach ($gres as $gre) {
+        if ($ifparent['if'] == $gre['greif']) {
+            interface_configure(false, $ifname);
+            system_routing_configure(false, $ifname);
+            break;
         }
     }
 }
