@@ -37,10 +37,11 @@
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
 JSONFILE="/tmp/pkg_upgrade.json"
-JSONRETURN=${1}
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
 TEE="/usr/bin/tee -a"
+
+CUSTOMPKG=${1}
 
 rm -f ${JSONFILE}
 : > ${LOCKFILE}
@@ -123,7 +124,9 @@ else
 
     # now check what happens when we would go ahead
     (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
-    if [ "${product_id}" != "${product_target}" ]; then
+    if  [ -n "${CUSTOMPKG}" ]; then
+        (pkg install -Un "${CUSTOMPKG}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    elif [ "${product_id}" != "${product_target}" ]; then
         (pkg install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     elif [ -z "$(pkg rquery %n ${product_id})" ]; then
         # although this should say "to update matching" we emulate for check below as pkg does not catch this
@@ -133,6 +136,8 @@ else
     # Check for additional repository errors
     if grep -q 'Unable to update repository' ${OUTFILE}; then
         repository="error" # already set but reset here for clarity
+    elif [ -n "${CUSTOMPKG}" ] && grep -q "No packages available to install matching..${CUSTOMPKG}" ${OUTFILE}; then
+        repository="incomplete"
     elif grep -q "No packages available to install matching..${product_target}" ${OUTFILE}; then
         repository="incomplete"
     else
@@ -367,9 +372,5 @@ cat > ${JSONFILE} << EOF
     "upgrade_sets":[${sets_upgraded}]
 }
 EOF
-
-if [ -n "${JSONRETURN}" ]; then
-    cat ${JSONFILE}
-fi
 
 echo '***DONE***' >> ${LOCKFILE}
