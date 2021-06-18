@@ -124,22 +124,25 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     }
 }
 
+$restartifs = [];
+
 foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
     foreach ($gifs as $gif) {
         if ($ifparent['if'] == $gif['gifif']) {
-            interface_configure(false, $ifname);
-            system_routing_configure(false, $ifname);
-            break;
+            $restartifs[$ifname] = 1;
         }
     }
 
     foreach ($gres as $gre) {
         if ($ifparent['if'] == $gre['greif']) {
-            interface_configure(false, $ifname);
-            system_routing_configure(false, $ifname);
-            break;
+            $restartifs[$ifname] = 1;
         }
     }
+}
+
+foreach (array_keys($restartifs) as $ifname) {
+    interface_configure(false, $ifname);
+    system_routing_configure(false, $ifname);
 }
 
 $cacheip = @file_get_contents($cacheip_file);
