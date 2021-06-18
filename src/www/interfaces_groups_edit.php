@@ -101,15 +101,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             $rule_ifs[array_search($a_ifgroups[$id]['ifname'], $rule_ifs)] = $ifgroupentry['ifname'];
                             $rule['interface'] = implode(",", $rule_ifs);
                         }
+                        foreach (['source', 'destination'] as $net) {
+                            if (!empty($rule[$net]['network']) && $rule[$net]['network'] == $a_ifgroups[$id]['ifname']) {
+                                $rule[$net]['network'] = $pconfig['ifname'];
+                            }
+                        }
                     }
               }
-              if (!empty($config['nat']) && is_array($config['nat']['rule'])) {
-                  foreach ($config['nat']['rule'] as &$rule) {
+              foreach (['rule', 'onetoone'] as $section) {
+                  if (!empty($config['nat']) && is_array($config['nat'][$section])) {
+                      foreach ($config['nat'][$section] as &$rule) {
+                          $rule_ifs = explode(",", $rule['interface']);
+                          if (in_array($a_ifgroups[$id]['ifname'], $rule_ifs)) {
+                              // replace interface
+                              $rule_ifs[array_search($a_ifgroups[$id]['ifname'], $rule_ifs)] = $ifgroupentry['ifname'];
+                              $rule['interface'] = implode(",", $rule_ifs);
+                          }
+                          foreach (['source', 'destination'] as $net) {
+                              if (!empty($rule[$net]['network']) && $rule[$net]['network'] == $a_ifgroups[$id]['ifname']) {
+                                  $rule[$net]['network'] = $pconfig['ifname'];
+                              }
+                          }
+                      }
+                  }
+              }
+              if (!empty($config['nat']) && !empty($config['nat']['outbound']) && is_array($config['nat']['outbound']['rule'])) {
+                  foreach ($config['nat']['outbound']['rule'] as &$rule) {
                       $rule_ifs = explode(",", $rule['interface']);
                       if (in_array($a_ifgroups[$id]['ifname'], $rule_ifs)) {
                           // replace interface
                           $rule_ifs[array_search($a_ifgroups[$id]['ifname'], $rule_ifs)] = $ifgroupentry['ifname'];
                           $rule['interface'] = implode(",", $rule_ifs);
+                      }
+                      foreach (['source', 'destination'] as $net) {
+                          if (!empty($rule[$net]['network']) && $rule[$net]['network'] == $a_ifgroups[$id]['ifname']) {
+                              $rule[$net]['network'] = $pconfig['ifname'];
+                          }
                       }
                   }
               }
