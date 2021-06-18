@@ -4567,7 +4567,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                 continue;
             }
             foreach ($intf_details[$realif][$proto] as $address) {
-                if (!empty($address['tunnel']) || empty($address['ipaddr'])) {
+                if (empty($address['ipaddr'])) {
                     continue;
                 }
                 $scope = '';
