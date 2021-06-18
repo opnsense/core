@@ -352,18 +352,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $input_errors[] = gettext("You can only specify the state timeout (advanced option) for TCP protocol.");
     }
     if ($pconfig['type'] != 'pass') {
-      if (!empty($pconfig['max']))
+      if (!empty($pconfig['max'])) {
           $input_errors[] = gettext("You can only specify the maximum state entries (advanced option) for Pass type rules.");
-      if (!empty($pconfig['max-src-nodes']))
+      }
+      if (!empty($pconfig['max-src-nodes'])) {
           $input_errors[] = gettext("You can only specify the maximum number of unique source hosts (advanced option) for Pass type rules.");
-      if (!empty($pconfig['max-src-conn']))
+      }
+      if (!empty($pconfig['max-src-conn'])) {
           $input_errors[] = gettext("You can only specify the maximum number of established connections per host (advanced option) for Pass type rules.");
-      if (!empty($pconfig['max-src-states']))
+      }
+      if (!empty($pconfig['max-src-states'])) {
           $input_errors[] = gettext("You can only specify the maximum state entries per host (advanced option) for Pass type rules.");
-      if (!empty($pconfig['max-src-conn-rate']) || !empty($pconfig['max-src-conn-rates']))
+      }
+      if (!empty($pconfig['max-src-conn-rate']) || !empty($pconfig['max-src-conn-rates'])) {
           $input_errors[] = gettext("You can only specify the maximum new connections per host / per second(s) (advanced option) for Pass type rules.");
-      if (!empty($pconfig['statetimeout']))
+      }
+      if (!empty($pconfig['statetimeout'])) {
           $input_errors[] = gettext("You can only specify the state timeout (advanced option) for Pass type rules.");
+      }
+      if (!empty($pconfig['allowopts'])) {
+          $input_errors[] = gettext("You can only specify allow options (advanced option) for Pass type rules.");
+      }
     }
     if ($pconfig['statetype'] == "none") {
       if (!empty($pconfig['max']))
