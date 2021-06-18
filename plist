@@ -569,6 +569,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_states.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_stats.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
@@ -1710,7 +1711,6 @@
 /usr/local/www/diag_confbak.php
 /usr/local/www/diag_defaults.php
 /usr/local/www/diag_dns.php
-/usr/local/www/diag_dump_states.php
 /usr/local/www/diag_ipsec.php
 /usr/local/www/diag_ipsec_leases.php
 /usr/local/www/diag_ipsec_sad.php
