@@ -54,8 +54,8 @@ class Nextcloud extends Base implements IBackupProvider
             array(
                 "name" => "url",
                 "type" => "text",
-                "label" => gettext("URL"),
-                "help" => gettext("The Base URL to Nextcloud without trailing slash. For example: https://cloud.example.com"),
+                "label" => gettext("Nextcloud Server URL"),
+                "help" => gettext("The Base URL to Nextcloud without trailing slash. For example: https://cloud.example.com If your server SSL certificate is not issued from a well known authority, you will need to add your intermediate certificate to the OPNSense CA truststore to avoid SSL verification errors."),
                 "value" => null
             ),
             array(
@@ -69,7 +69,7 @@ class Nextcloud extends Base implements IBackupProvider
                 "name" => "password",
                 "type" => "password",
                 "label" => gettext("Password"),
-                "help" => gettext("The app password which has been generated for you"),
+                "help" => gettext("The app password which has been generated for you in Nextcloud security settings. Do not use the real password here."),
                 "value" => null
             ),
             array(
