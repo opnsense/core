@@ -1667,17 +1667,12 @@ function interface_carp_configure(&$vip)
         return;
     }
 
-    // when CARP is temporary disabled, don't try to configure on any interface-up events
+    /* when CARP is temporary disabled do not try to configure on any interface up events */
     if (get_single_sysctl('net.inet.carp.allow') == '0') {
         return;
     }
 
-    /* NOTE: Maybe its useless nowdays */
     $realif = get_real_interface($vip['interface']);
-    if (!does_interface_exist($realif)) {
-        file_notice(sprintf(gettext("Interface specified for the virtual IP address %s does not exist. Skipping this VIP."), $vip['subnet']));
-        return;
-    }
 
     $vip_password = $vip['password'];
     $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip_password)));
@@ -1694,6 +1689,7 @@ function interface_carp_configure(&$vip)
 
     mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$advskew} {$advbase} {$password}");
 
+    /* XXX use legacy_interface_setaddress */
     if (is_ipaddrv4($vip['subnet'])) {
         mwexec("/sbin/ifconfig {$realif} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
     } elseif (is_ipaddrv6($vip['subnet'])) {
