@@ -997,28 +997,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         $realifv6 = $ifacecfg['ifcfg']['realifv6'];
     }
 
+    $ifcfg['ipaddr'] = empty($ifcfg['ipaddr']) ? null : $ifcfg['ipaddr'];
     $ifcfg['ipaddrv6'] = empty($ifcfg['ipaddrv6']) ? null : $ifcfg['ipaddrv6'];
-
-    if (!in_array($interface, array('openvpn', 'ppp', 'ipsec', 'enc0'))) {
-        /**
-         * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
-         * XXX: we kept this in place due to dropping the $realv6iface parameter from get_real_interface(),
-        */
-        if (!in_array($ifcfg['ipaddrv6'], array('6rd', '6to4', 'pppoe', 'ppp', 'l2tp', 'pptp'))) {
-            $ipaddr = empty($ifcfg['ipaddr']) ? null : $ifcfg['ipaddr'];
-            if (in_array($ipaddr, array('pppoe', 'ppp', 'l2tp', 'pptp'))) {
-                foreach ($ppps as $ppp) {
-                    if ($ifcfg['if'] == $ppp['if']) {
-                        $ports = explode(',', $ppp['ports']);
-                        foreach ($ports as $pid => $parent_if) {
-                            $realifv6 = $parent_if;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
@@ -2311,6 +2291,31 @@ function interface_static6_configure($interface, $wancfg)
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', array($realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']));
 }
 
+function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = null)
+{
+    $family = $family === 6 ? 6 : 4;
+
+    foreach (array_keys(interfaces_addresses($realif, true, $ifconfig_details)) as $tmpiface) {
+        $tmpip = $tmpiface;
+
+        if (is_linklocal($tmpip)) {
+            /* never delete link-local */
+            continue;
+        } elseif (is_ipaddrv6($tmpip) || is_subnetv6($tmpip)) {
+            if ($family != 6) {
+                continue;
+            }
+        } elseif (is_subnetv4($tmpiface)) {
+            if ($family != 4) {
+                continue;
+            }
+            $tmpip = explode('/', $tmpiface)[0];
+        }
+
+        legacy_interface_deladdress($realif, $tmpip, $family);
+    }
+}
+
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
 {
     global $config;
@@ -2329,26 +2334,15 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     $realif = get_real_interface($interface);
+    $realifv6 = get_real_interface($interface, 'inet6');
     $realhwif_array = get_parent_interface($interface);
     // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
     $realhwif = $realhwif_array[0];
 
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
-        /* remove all IPv4 and IPv6 addresses */
-        foreach (array_keys(interfaces_addresses($realif, true)) as $tmpiface) {
-            $tmpip = $tmpiface;
-            $family = 4;
-
-            if (is_linklocal($tmpip)) {
-                continue;
-            } elseif (is_ipaddrv6($tmpip) || is_subnetv6($tmpip)) {
-                $family = 6;
-            } elseif (is_subnetv4($tmpiface)) {
-                $tmpip = explode('/', $tmpiface)[0];
-            }
-
-            legacy_interface_deladdress($realif, $tmpip, $family);
-        }
+        $ifconfig_details = legacy_interfaces_details();
+        interfaces_addresses_flush($realif, 4, $ifconfig_details);
+        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
 
         /* only bring down the interface when both v4 and v6 are set to NONE */
         if (empty($wancfg['ipaddr']) && empty($wancfg['ipaddrv6'])) {
@@ -2461,8 +2455,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         switch ($wancfg['ipaddrv6']) {
             case 'slaac':
             case 'dhcp6':
-                $realifv6 = get_real_interface($interface, 'inet6');
-
                 /* accept router advertisements for this interface */
                 set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
                 log_error("Accept router advertisements on interface {$realifv6}");
