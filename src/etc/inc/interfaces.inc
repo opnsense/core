@@ -1648,17 +1648,18 @@ function interface_ipalias_configure(&$vip)
     }
 
     if (is_ipaddrv6($vip['subnet'])) {
-        $if = escapeshellarg(get_real_interface($vip['interface'], 'inet6'));
+        $if = get_real_interface($vip['interface'], 'inet6');
         $af = 'inet6';
     } else {
-        $if = escapeshellarg(get_real_interface($vip['interface']));
+        $if = get_real_interface($vip['interface']);
         $af = 'inet';
     }
 
     $vhid = !empty($vip['vhid']) ? 'vhid ' . escapeshellarg($vip['vhid']) : '';
     $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
 
-    mwexec("/sbin/ifconfig " . $if . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
+    /* XXX use legacy_interface_setaddress */
+    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
 }
 
 function interface_carp_configure(&$vip)
