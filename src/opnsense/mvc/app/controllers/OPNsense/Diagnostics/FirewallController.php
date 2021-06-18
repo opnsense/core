@@ -52,4 +52,11 @@ class FirewallController extends IndexController
     {
         $this->view->pick('OPNsense/Diagnostics/fw_stats');
     }
+    /**
+     * firewall states
+     */
+    public function statesAction()
+    {
+        $this->view->pick('OPNsense/Diagnostics/fw_states');
+    }
 }

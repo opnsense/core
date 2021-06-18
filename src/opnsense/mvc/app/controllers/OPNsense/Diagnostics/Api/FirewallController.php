@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2017 Deciso B.V.
+ *    Copyright (C) 2017-2021 Deciso B.V.
  *    All rights reserved.
  *
  *    Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 
 namespace OPNsense\Diagnostics\Api;
 
+use Phalcon\Filter;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
@@ -142,5 +143,71 @@ class FirewallController extends ApiControllerBase
         } else {
             return null;
         }
+    }
+
+    /**
+     * query pf states
+     */
+    public function queryStatesAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $ifnames = [];
+            $ifnames["lo0"] = gettext("loopback");
+            if (Config::getInstance()->object()->interfaces->count() > 0) {
+                foreach (Config::getInstance()->object()->interfaces->children() as $k => $n) {
+                    $ifnames[(string)$n->if] = !empty((string)$n->descr) ? (string)$n->descr : $k;
+                }
+            }
+
+            $filter = new Filter([
+                'query' => function ($value) {
+                    return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
+                }
+            ]);
+            $searchPhrase="";
+            $ruleLabel="";
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+
+            if ($this->request->getPost('searchPhrase', 'string', '') != "") {
+                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
+            }
+
+            $response = (new Backend())->configdpRun("filter list states",[$searchPhrase, $itemsPerPage,
+                ($currentPage - 1) * $itemsPerPage, $ruleLabel]);
+            $response = json_decode($response, true);
+            if ($response != null) {
+                foreach ($response['details'] as &$row) {
+                    $isipv4 = strpos($row['src_addr'], ':') === false;
+                    $row['interface'] = !empty($ifnames[$row['iface']]) ? $ifnames[$row['iface']] : $row['iface'];
+                }
+                return [
+                    'rows' => $response['details'],
+                    'rowCount' => count($response['details']),
+                    'total' => $response['total_entries'],
+                    'current' => (int)$currentPage
+                ];
+            }
+        }
+        return [];
+    }
+
+    public function delStateAction($stateid, $creatorid){
+        if ($this->request->isPost()) {
+            $filter = new Filter([
+                'hexval' => function ($value) {
+                    return preg_replace("/[^0-9,a-f,A-F]/", "", $value);
+                }
+            ]);
+            $response = (new Backend())->configdpRun("filter kill state", [
+                $filter->sanitize($stateid, "hexval"),
+                $filter->sanitize($creatorid, "hexval")
+            ]);
+            return [
+                'result' => $response
+            ];
+        }
+        return ['result' => ""];
     }
 }

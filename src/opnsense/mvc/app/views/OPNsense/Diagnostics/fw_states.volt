@@ -1,0 +1,114 @@
+{#
+
+OPNsense® is Copyright © 2021 by Deciso B.V.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1.  Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2.  Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+#}
+
+
+<script>
+    'use strict';
+
+    $( document ).ready(function() {
+        /*************************************************************************************************************
+         * link grid actions
+         *************************************************************************************************************/
+        let grid_states = $("#grid-states").UIBootgrid(
+                {   search:'/api/diagnostics/firewall/query_states',
+                    del:'/api/diagnostics/firewall/del_state/',
+                    options:{
+                        formatters:{
+                            commands: function (column, row) {
+                                return  "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
+                            },
+                            rule: function (column, row) {
+                                if (row.label !== "") {
+                                    return "<a target=\"_blank\" href=\"/firewall_rule_lookup.php?rid=" + row.label + "\">"+row[column.id]+"</a>";
+                                } else {
+                                    return row[column.id];
+                                }
+                            },
+                            direction: function (column, row) {
+                                if (row[column.id] == 'out') {
+                                    return "<span class=\"fa fa-arrow-left\" title=\"{{lang._('out')}}\" data-toggle=\"tooltip\"></span>";
+                                } else {
+                                    return "<span class=\"fa fa-arrow-right\" title=\"{{lang._('in')}}\" data-toggle=\"tooltip\"></span>";
+                                }
+                            },
+                            address: function (column, row) {
+                                if (row[column.id+"_addr"]) {
+                                    let addr_txt = row[column.id+"_addr"];
+                                    if (addr_txt.includes(":")) {
+                                        addr_txt = addr_txt + ":[" + row[column.id+"_port"] + "]";
+                                    } else {
+                                        addr_txt = addr_txt + ":" + row[column.id+"_port"];
+                                    }
+                                    return addr_txt;
+                                }
+                                return "";
+                            }
+                        }
+                    }
+                }
+        );
+        grid_states.on('loaded.rs.jquery.bootgrid', function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    });
+
+</script>
+
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li class="active"><a data-toggle="tab" href="#grid-states">{{ lang._('States') }}</a></li>
+</ul>
+<div class="tab-content content-box">
+    <div id="categories" class="tab-pane fade in active">
+        <table id="grid-states" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+            <thead>
+            <tr>
+                <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false" >{{ lang._('state id') }}</th>
+                <th data-column-id="interface" data-type="string" data-width="6em">{{ lang._('Int') }}</th>
+                <th data-column-id="direction" data-type="string" data-width="4em" data-formatter="direction">{{ lang._('Dir') }}</th>
+                <th data-column-id="proto" data-type="string" data-width="6em">{{ lang._('Proto') }}</th>
+                <th data-column-id="src" data-type="string" data-formatter="address">{{ lang._('Source') }}</th>
+                <th data-column-id="nat" data-type="string" data-formatter="address">{{ lang._('Nat') }}</th>
+                <th data-column-id="dst" data-type="string" data-formatter="address">{{ lang._('Destination') }}</th>
+                <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
+                <th data-column-id="descr" data-type="string" data-formatter="rule">{{ lang._('Rule') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

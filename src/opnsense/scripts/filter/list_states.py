@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2021 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,18 +30,31 @@
 """
 import subprocess
 import sys
+import os
 import ujson
 import argparse
 
 def fetch_rule_labels():
     result = dict()
+    descriptions = dict()
+    # query descriptions from active ruleset so we can search and display rule descriptions as well.
+    if os.path.isfile('/tmp/rules.debug'):
+        with open('/tmp/rules.debug', "rt", encoding="utf-8") as f_in:
+            for line in f_in:
+                lbl = line.split(' label ')[-1] if line.find(' label ') > -1 else ""
+                rule_label = lbl.split('"')[1] if lbl.count('"') >= 2 else None
+                descriptions[rule_label] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
+
     sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
     for line in sp.stdout.strip().split('\n'):
         if line.startswith('@'):
             line_id = line.split()[0][1:]
             if line.find(' label ') > -1:
                 rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
-                result[line_id] = rid
+                result[line_id] = {'rid': rid, 'descr': None}
+                if rid in descriptions:
+                    result[line_id]['descr'] = descriptions[rid]
+
     return result
 
 def parse_address(addr):
@@ -72,9 +85,8 @@ if __name__ == '__main__':
 
     rule_labels = fetch_rule_labels()
     result = {'details': [], 'total_entries': 0}
-    sp = subprocess.run(['/sbin/pfctl', '-vs', 'state'], capture_output=True, text=True)
+    sp = subprocess.run(['/sbin/pfctl', '-vvs', 'state'], capture_output=True, text=True)
     record = None
-    state_line = ''
     for line in sp.stdout.strip().split('\n'):
         parts = line.split()
         if line.startswith(" ") and len(parts) > 1 and record:
@@ -84,7 +96,8 @@ if __name__ == '__main__':
                     if part.startswith("rule "):
                         record["rule"] = part.split()[-1]
                         if record["rule"] in rule_labels:
-                            record["label"] = rule_labels[record["rule"]]
+                            record["label"] = rule_labels[record["rule"]]["rid"]
+                            record["descr"] = rule_labels[record["rule"]]["descr"]
                     elif part.startswith("age "):
                         record["age"] = part.split()[-1]
                     elif part.startswith("expires in"):
@@ -93,19 +106,23 @@ if __name__ == '__main__':
                         record["pkts"] = [int(s) for s in part.split()[0].split(':')]
                     elif part.endswith("bytes"):
                         record["bytes"] = [int(s) for s in part.split()[0].split(':')]
+            elif parts[0] == "id:":
+                # XXX: in order to kill a state, we need to pass both the id and the creator, so it seeems to make
+                #      sense to uniquely identify the state by the combined number
+                record["id"] = "%s/%s" % (parts[1], parts[3])
+            search_line = " ".join(str(item) for item in filter(None, record.values()))
             if inputargs.label != "" and record['label'].lower().find(inputargs.label) == -1:
                 # label
                 continue
-            elif inputargs.filter != "" and state_line.lower().find(inputargs.filter) == -1:
+            elif inputargs.filter != "" and search_line.lower().find(inputargs.filter.lower()) == -1:
                 # apply filter when provided
                 continue
             # append to response
             result['details'].append(record)
         elif len(parts) >= 6:
-            # count total number of state table entries
-            result['total_entries'] += 1
             record = {
                 'label': '',
+                'descr': '',
                 'nat_addr': None,
                 'nat_port': None,
                 'iface': parts[0],
@@ -129,9 +146,9 @@ if __name__ == '__main__':
                 record['direction'] = 'in'
 
             record['state'] = parts[-1]
-            state_line = line
 
     # apply offset and limit
+    result['total_entries'] = len(result['details'])
     if inputargs.offset.isdigit():
         result['details'] = result['details'][int(inputargs.offset):]
     if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
