@@ -2328,19 +2328,18 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         /* remove all IPv4 and IPv6 addresses */
         foreach (array_keys(interfaces_addresses($realif, true)) as $tmpiface) {
-            if (is_ipaddrv6($tmpiface) || is_subnetv6($tmpiface)) {
-                if (!is_linklocal($tmpiface)) {
-                    mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$tmpiface} delete");
-                }
-            } else {
-                if (is_subnetv4($tmpiface)) {
-                    $tmpip = explode('/', $tmpiface);
-                    $tmpip = $tmpip[0];
-                } else {
-                    $tmpip = $tmpiface;
-                }
-                legacy_interface_deladdress($realif, $tmpip);
+            $tmpip = $tmpiface;
+            $family = 4;
+
+            if (is_linklocal($tmpip)) {
+                continue;
+            } elseif (is_ipaddrv6($tmpip) || is_subnetv6($tmpip)) {
+                $family = 6;
+            } elseif (is_subnetv4($tmpiface)) {
+                $tmpip = explode('/', $tmpiface)[0];
             }
+
+            legacy_interface_deladdress($realif, $tmpip, $family);
         }
 
         /* only bring down the interface when both v4 and v6 are set to NONE */
