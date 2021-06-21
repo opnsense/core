@@ -713,7 +713,12 @@ $( document ).ready(function() {
                       </td>
                       <td class="view-info hidden-xs hidden-sm">*</td>
                       <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['evaluations'] : gettext('N/A') ?></td>
-                      <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['states'] : gettext('N/A') ?></td>
+                      <td class="view-stats hidden-xs hidden-sm">
+<?php if (!empty($rule_stats) && !empty($rule->getRef())):?>
+                          <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule->getLabel());?>" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?= $rule_stats['states'];?></a>
+<?php else: ?>
+                          <?= !empty($rule_stats) ? $rule_stats['states'] : gettext('N/A') ?></td>
+<?php endif ?>
                       <td class="view-stats"><?= !empty($rule_stats) ? $rule_stats['packets'] : gettext('N/A') ?></td>
                       <td class="view-stats"><?= !empty($rule_stats) ? format_bytes($rule_stats['bytes']) : gettext('N/A') ?></td>
                       <td><?=$rule->getDescr();?></td>
@@ -854,7 +859,14 @@ $( document ).ready(function() {
                        endif;?>
                     </td>
                     <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['evaluations'] : gettext('N/A') ?></td>
-                    <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['states'] : gettext('N/A') ?></td>
+                    <td class="view-stats hidden-xs hidden-sm">
+<?php if (!empty($all_rule_stats[$rule_hash])):?>
+                      <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule_hash);?>" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?= $all_rule_stats[$rule_hash]['states'];?></a>
+<?php else: ?>
+                      <?= gettext('N/A') ?>
+<?php endif ?>
+
+                    </td>
                     <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
                     <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
                     <td  class="rule-description">

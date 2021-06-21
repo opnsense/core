@@ -124,8 +124,10 @@ def query_states(rule_label, filter_str):
             elif filter_str != "" and search_line.lower().find(filter_str.lower()) == -1:
                 # apply filter when provided
                 continue
-            # append to response
-            result.append(record)
+
+            if parts[0] == "id:":
+                # append to response
+                result.append(record)
         elif len(parts) >= 6:
             record = {
                 'label': '',
