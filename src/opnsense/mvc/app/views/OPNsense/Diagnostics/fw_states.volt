@@ -68,16 +68,85 @@ POSSIBILITY OF SUCH DAMAGE.
                                 }
                                 return "";
                             }
-                        }
+                        },
+                        requestHandler:function(request){
+                            if ($("#ruleid").val() != "") {
+                                request['ruleid'] = $("#ruleid").val();
+                            }
+                            return request;
+                        },
                     }
                 }
         );
         grid_states.on('loaded.rs.jquery.bootgrid', function() {
             $('[data-toggle="tooltip"]').tooltip();
+            if ($(".search-field").val() !== "") {
+                $("#actKillStates").show();
+            } else {
+                $("#actKillStates").hide();
+            }
         });
+
+        // collect rule id's
+        ajaxGet("/api/diagnostics/firewall/list_rule_ids", {}, function(data, status){
+            if (data.items) {
+                for (let i=0; i < data.items.length ; ++i) {
+                    $("#ruleid").append($("<option/>").val(data.items[i]['id']).text(data.items[i]['descr']));
+                }
+                $("#service_status_container").append($("#ruleid"));
+                $("#ruleid").change(function(){
+                    $("#grid-states").bootgrid("reload");
+                });
+                let init_state = window.location.hash.substr(1);
+                if (init_state) {
+                    $("#ruleid").val(init_state);
+                    $("#ruleid").change();
+                }
+            }
+        });
+
+        $("#actKillStates").click(function(){
+          BootstrapDialog.show({
+              type:BootstrapDialog.TYPE_DANGER,
+              title: "{{ lang._('Delete all filtered states') }}",
+              message: "{{ lang._('Are you sure you do want to kill all states matching the provided search criteria?') }}",
+              buttons: [{
+                        label: "{{ lang._('No') }}",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }}, {
+                        label: "{{ lang._('Yes') }}",
+                        action: function(dialogRef) {
+                            let params = {'filter': $(".search-field").val()};
+                            if ($("#ruleid").val() != "") {
+                                params['ruleid'] = $("#ruleid").val();
+                            }
+                            ajaxCall('/api/diagnostics/firewall/kill_states/', params, function(data, status){
+                                $("#grid-states").bootgrid("reload");
+                                dialogRef.close();
+                            });
+                      }
+                  }]
+          });
+        });
+        // move kill states button
+        $("div.search.form-group").before($("#actKillStates"));
+
     });
 
 </script>
+
+<div style="display:none">
+  <div class="btn-group" id="actKillStates" style="margin-right:20px;">
+    <button class="btn btn-danger" style="cursor: pointer;" data-toggle="tooltip"  title="{{ lang._('kill all matched states') }}">
+        <span class="fa fa-remove"></span>
+    </button>
+  </div>
+</div>
+
+<select id="ruleid">
+    <option value="">{{ lang._("select rule") }}</option>
+</select>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#grid-states">{{ lang._('States') }}</a></li>

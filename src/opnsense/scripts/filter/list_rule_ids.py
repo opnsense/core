@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2021 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,34 +24,21 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    list pf states
 """
 import ujson
-import argparse
-from lib.states import query_states
+from lib.states import fetch_rule_labels
+HEX_DIGITS = set("0123456789abcdef")
 
+result = list()
+unique_ids = set()
+for record in fetch_rule_labels().values():
+    if len(record['rid']) == 32 and set(record['rid']).issubset(HEX_DIGITS):
+        if record['rid'] not in unique_ids:
+            if record['descr'] != "":
+                result.append({'id': record['rid'], 'descr': record['descr']})
+            else:
+                result.append({'id': record['rid'], 'descr': "-- %s" % record['rid']})
+            unique_ids.add(record['rid'])
 
-if __name__ == '__main__':
-    # parse input arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--filter', help='filter results', default='')
-    parser.add_argument('--label', help='label / rule id', default='')
-    parser.add_argument('--limit', help='limit number of results', default='')
-    parser.add_argument('--offset', help='offset results', default='')
-    inputargs = parser.parse_args()
-
-    result = {
-        'details': query_states(rule_label=inputargs.label, filter_str=inputargs.filter)
-    }
-    result['total_entries'] = len(result['details'])
-    # apply offset and limit
-    if inputargs.offset.isdigit():
-        result['details'] = result['details'][int(inputargs.offset):]
-    if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
-        result['details'] = result['details'][:int(inputargs.limit)]
-
-    result['total'] = len(result['details'])
-
-    print(ujson.dumps(result))
+result = sorted(result, key=lambda k: k['descr'])
+print(ujson.dumps(result))

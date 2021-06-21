@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2021 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,34 +24,29 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    list pf states
 """
-import ujson
 import argparse
+import ujson
+import subprocess
 from lib.states import query_states
 
 
 if __name__ == '__main__':
+    result = dict()
     # parse input arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--filter', help='filter results', default='')
     parser.add_argument('--label', help='label / rule id', default='')
-    parser.add_argument('--limit', help='limit number of results', default='')
-    parser.add_argument('--offset', help='offset results', default='')
     inputargs = parser.parse_args()
 
-    result = {
-        'details': query_states(rule_label=inputargs.label, filter_str=inputargs.filter)
-    }
-    result['total_entries'] = len(result['details'])
-    # apply offset and limit
-    if inputargs.offset.isdigit():
-        result['details'] = result['details'][int(inputargs.offset):]
-    if inputargs.limit.isdigit() and len(result['details']) >= int(inputargs.limit):
-        result['details'] = result['details'][:int(inputargs.limit)]
+    # collect all unique state id's
+    commands = dict()
+    for record in query_states(rule_label=inputargs.label, filter_str=inputargs.filter):
+        commands[record['id']] = "/sbin/pfctl -k id -k %s" % record['id']
 
-    result['total'] = len(result['details'])
-
-    print(ujson.dumps(result))
+    # drop list of states in chunks
+    chunk_size = 500
+    commands  = list(commands.values())
+    for chunk in [commands[i:i + chunk_size] for i in range(0, len(commands), chunk_size)]:
+        sp = subprocess.run([";\n".join(chunk)], capture_output=True, text=True, shell=True)
+    print(ujson.dumps({'dropped_states': len(commands)}))

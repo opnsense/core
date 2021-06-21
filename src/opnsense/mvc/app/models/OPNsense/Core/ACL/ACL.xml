@@ -177,6 +177,7 @@
             <pattern>ui/diagnostics/firewall/states*</pattern>
             <pattern>api/diagnostics/firewall/query_states*</pattern>
             <pattern>api/diagnostics/firewall/del_state*</pattern>
+            <pattern>api/diagnostics/firewall/kill_states*</pattern>
         </patterns>
     </page-diagnostics-showstates>
     <page-diagnostics-statessummary>

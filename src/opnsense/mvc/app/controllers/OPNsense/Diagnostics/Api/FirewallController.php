@@ -166,16 +166,20 @@ class FirewallController extends ApiControllerBase
                 }
             ]);
             $searchPhrase = '';
-            $ruleLabel = '';
+            $ruleId = '';
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
+
+            if ($this->request->getPost('ruleid', 'string', '') != '') {
+                $ruleId = $filter->sanitize($this->request->getPost('ruleid'), 'query');
+            }
 
             if ($this->request->getPost('searchPhrase', 'string', '') != '') {
                 $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
             }
 
             $response = (new Backend())->configdpRun('filter list states', [$searchPhrase, $itemsPerPage,
-                ($currentPage - 1) * $itemsPerPage, $ruleLabel]);
+                ($currentPage - 1) * $itemsPerPage, $ruleId]);
             $response = json_decode($response, true);
             if ($response != null) {
                 foreach ($response['details'] as &$row) {
@@ -213,5 +217,52 @@ class FirewallController extends ApiControllerBase
             ];
         }
         return ['result' => ""];
+    }
+
+    /**
+     * drop pf states by filter and/or rule id
+     */
+    public function killStatesAction()
+    {
+        if ($this->request->isPost()) {
+            $filter = new Filter([
+                'query' => function ($value) {
+                    return preg_replace("/[^0-9,a-z,A-Z, ,\/,*,\-,_,.,\#]/", "", $value);
+                },
+                'hexval' => function ($value) {
+                    return preg_replace("/[^0-9,a-f,A-F]/", "", $value);
+                }
+            ]);
+            $ruleid = null;
+            $filterString = null;
+            if (!empty($this->request->getPost('filter'))) {
+                $filterString = $filter->sanitize($this->request->getPost('filter'), 'query');
+            }
+            if (!empty($this->request->getPost('ruleid'))) {
+                $ruleid = $filter->sanitize($this->request->getPost('ruleid'), 'hexval');
+            }
+            if ($filterString != null || $ruleid != null) {
+                $response = (new Backend())->configdpRun("filter kill states", [$filterString, $ruleid]);
+                $response = json_decode($response, true);
+                if ($response != null) {
+                    return ["result" => "ok", "dropped_states" => $response['dropped_states']];
+                }
+            }
+        }
+        return ["result" => "failed"];
+    }
+
+    /**
+     * return rule'ids and descriptions from running config
+     */
+    public function listRuleIdsAction()
+    {
+        if ($this->request->isGet()) {
+            $response = json_decode((new Backend())->configdpRun("filter list rule_ids"), true);
+            if ($response != null) {
+                return ["items" => $response];
+            }
+        }
+        return ["items" => []];
     }
 }
