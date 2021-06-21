@@ -57,10 +57,11 @@ elif [ "${AF}" = "inet6" ]; then
 
 	# flush stale IPv6 addresses since mpd5 will not do it
 	php << EOF
-<?
+<?php
 require_once 'util.inc';
 require_once 'interfaces.inc';
 interfaces_addresses_flush('${IF}', 6);
+?>
 EOF
 fi
 
