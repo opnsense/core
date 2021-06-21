@@ -165,16 +165,16 @@ class FirewallController extends ApiControllerBase
                     return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
                 }
             ]);
-            $searchPhrase="";
-            $ruleLabel="";
+            $searchPhrase = '';
+            $ruleLabel = '';
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
 
-            if ($this->request->getPost('searchPhrase', 'string', '') != "") {
-                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
+            if ($this->request->getPost('searchPhrase', 'string', '') != '') {
+                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
             }
 
-            $response = (new Backend())->configdpRun("filter list states",[$searchPhrase, $itemsPerPage,
+            $response = (new Backend())->configdpRun('filter list states', [$searchPhrase, $itemsPerPage,
                 ($currentPage - 1) * $itemsPerPage, $ruleLabel]);
             $response = json_decode($response, true);
             if ($response != null) {
@@ -193,7 +193,8 @@ class FirewallController extends ApiControllerBase
         return [];
     }
 
-    public function delStateAction($stateid, $creatorid){
+    public function delStateAction($stateid, $creatorid)
+    {
         if ($this->request->isPost()) {
             $filter = new Filter([
                 'hexval' => function ($value) {
