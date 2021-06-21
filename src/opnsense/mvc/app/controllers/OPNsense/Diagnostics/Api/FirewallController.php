@@ -162,7 +162,7 @@ class FirewallController extends ApiControllerBase
 
             $filter = new Filter([
                 'query' => function ($value) {
-                    return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
+                    return preg_replace("/[^0-9,a-z,A-Z, ,\/,*,\-,_,.,\#]/", "", $value);
                 }
             ]);
             $searchPhrase = '';
@@ -193,6 +193,9 @@ class FirewallController extends ApiControllerBase
         return [];
     }
 
+    /**
+     * delete / drop a specific state by state+creator id
+     */
     public function delStateAction($stateid, $creatorid)
     {
         if ($this->request->isPost()) {
