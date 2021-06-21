@@ -33,6 +33,8 @@ import sys
 import os
 import ujson
 import argparse
+import ipaddress
+
 
 def fetch_rule_labels():
     result = dict()
@@ -83,6 +85,11 @@ if __name__ == '__main__':
     parser.add_argument('--offset', help='offset results', default='')
     inputargs = parser.parse_args()
 
+    try:
+        filter_network = ipaddress.ip_network(inputargs.filter.strip())
+    except ValueError:
+        filter_network = None
+
     rule_labels = fetch_rule_labels()
     result = {'details': [], 'total_entries': 0}
     sp = subprocess.run(['/sbin/pfctl', '-vvs', 'state'], capture_output=True, text=True)
@@ -114,6 +121,18 @@ if __name__ == '__main__':
             if inputargs.label != "" and record['label'].lower().find(inputargs.label) == -1:
                 # label
                 continue
+            elif filter_network is not None:
+                try:
+                    match = False
+                    for field in ['src_addr', 'dst_addr', 'nat_addr']:
+                        addr = ipaddress.ip_network(record[field])
+                        if field is not None and ipaddress.ip_network(filter_network).overlaps(addr):
+                            match = True
+                            break
+                    if not match:
+                        continue
+                except:
+                    continue
             elif inputargs.filter != "" and search_line.lower().find(inputargs.filter.lower()) == -1:
                 # apply filter when provided
                 continue
