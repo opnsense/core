@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2020 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -298,6 +298,16 @@ while : ; do
 			fi
 		fi
 	elif [ -f "${MNT}/conf/config.xml" ]; then
+		if [ "$(grep -cx -- '---- BEGIN config.xml ----' ${MNT}/conf/config.xml)" != "0" ]; then
+			echo "The file /conf/config.xml is encrypted."
+
+			if [ -n "${DO_DEV}" ]; then
+				bootstrap_and_exit 1
+			fi
+
+			continue
+		fi
+
 		rm -rf /conf/*
 
 		for FILE in captiveportal.sqlite config.xml dhcpleases.tgz dhcp6c_duid netflow.tgz rrd.tgz; do
