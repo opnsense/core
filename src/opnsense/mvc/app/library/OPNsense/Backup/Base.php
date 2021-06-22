@@ -110,18 +110,18 @@ abstract class Base
                 list ($header, $value) = explode(':', $val);
                 $value = trim($value);
                 switch (strtolower(trim($header))) {
-                case 'cipher':
-                    $cipher = strtolower($value);
-                    break;
-                case 'hash':
-                    $hash = strtolower($value);
-                    break;
-                case 'pbkdf2':
-                    $pbkdf2 = $value;
-                    break;
-                default:
-                    /* skip unknown */
-                    break;
+                    case 'cipher':
+                        $cipher = strtolower($value);
+                        break;
+                    case 'hash':
+                        $hash = strtolower($value);
+                        break;
+                    case 'pbkdf2':
+                        $pbkdf2 = $value;
+                        break;
+                    default:
+                        /* skip unknown */
+                        break;
                 }
                 unset($data[$key]);
             } elseif (strpos($val, "---- BEGIN {$tag} ----") !== false) {

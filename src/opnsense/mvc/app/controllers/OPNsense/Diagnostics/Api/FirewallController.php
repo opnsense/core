@@ -180,7 +180,7 @@ class FirewallController extends ApiControllerBase
             }
             if ($this->request->has('sort') && is_array($this->request->getPost("sort"))) {
                 $tmp = array_keys($this->request->getPost("sort"));
-                $sortBy = $tmp[0] . " ". $this->request->getPost("sort")[$tmp[0]]  ;
+                $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
             }
 
             $response = (new Backend())->configdpRun('filter list states', [$searchPhrase, $itemsPerPage,
