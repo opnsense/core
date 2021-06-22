@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Deciso B.V.
- * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2018-2021 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,27 +47,41 @@ abstract class Base
         $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
         @unlink("{$file}.enc");
 
+        /* current encryption defaults, change as needed */
+        $cipher = 'aes-256-cbc';
+        $hash = 'sha512';
+        $pbkdf2 = '100000';
+
         file_put_contents("{$file}.dec", $data);
-        exec(sprintf(
-            '/usr/local/bin/openssl enc -e -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
-            escapeshellarg("{$file}.dec"),
-            escapeshellarg("{$file}.enc"),
-            escapeshellarg($pass)
-        ));
+        exec(
+            sprintf(
+                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass pass:%s',
+                escapeshellarg($cipher),
+                escapeshellarg($hash),
+                escapeshellarg($pbkdf2),
+                escapeshellarg("{$file}.dec"),
+                escapeshellarg("{$file}.enc"),
+                escapeshellarg($pass)
+            ),
+            $unused,
+            $retval
+        );
         @unlink("{$file}.dec");
 
-        if (file_exists("{$file}.enc")) {
+        if (file_exists("{$file}.enc") && !$retval) {
             $version = trim(shell_exec('opnsense-version -Nv'));
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
-            $result .= "Cipher: AES-256-CBC\n";
-            $result .= "Hash: MD5\n\n";
+            $result .= "Cipher: " . strtoupper($cipher) . "\n";
+            $result .= "PBKDF2: " . $pbkdf2 . "\n";
+            $result .= "Hash: " . strtoupper($hash) . "\n\n";
             $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")), 76, "\n");
             $result .= "---- END {$tag} ----\n";
             @unlink("{$file}.enc");
             return $result;
         } else {
             syslog(LOG_ERR, 'Failed to encrypt data!');
+            @unlink("{$file}.enc");
             return null;
         }
     }
@@ -86,9 +100,28 @@ abstract class Base
 
         $data = explode("\n", $data);
 
+        /* pre-21.7 compat defaults, do not change */
+        $cipher = 'aes-256-cbc';
+        $hash = 'md5';
+        $pbkdf2 = null;
+
         foreach ($data as $key => $val) {
-            /* XXX remove helper lines for now */
             if (strpos($val, ':') !== false) {
+                list ($header, $value) = explode(':', $val);
+                switch (strtolower($header)) {
+                case 'cipher':
+                    $cipher = strtolower($value);
+                    break;
+                case 'hash':
+                    $hash = strtolower($value);
+                    break;
+                case 'pbkdf2':
+                    $pbkdf2 = $value;
+                    break;
+                default:
+                    /* skip unknown */
+                    break;
+                }
                 unset($data[$key]);
             } elseif (strpos($val, "---- BEGIN {$tag} ----") !== false) {
                 unset($data[$key]);
@@ -102,12 +135,15 @@ abstract class Base
         file_put_contents("{$file}.enc", base64_decode($data));
         exec(
             sprintf(
-                '/usr/local/bin/openssl enc -d -aes-256-cbc -md md5 -in %s -out %s -pass pass:%s',
+                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass pass:%s',
+                escapeshellarg($cipher),
+                escapeshellarg($hash),
+		$pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
                 escapeshellarg("{$file}.enc"),
                 escapeshellarg("{$file}.dec"),
                 escapeshellarg($pass)
             ),
-            $output,
+            $unused,
             $retval
         );
         @unlink("{$file}.enc");
@@ -118,6 +154,7 @@ abstract class Base
             return $result;
         } else {
             syslog(LOG_ERR, 'Failed to decrypt data!');
+            @unlink("{$file}.dec");
             return null;
         }
     }
