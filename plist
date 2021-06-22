@@ -682,6 +682,7 @@
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
 /usr/local/opnsense/scripts/filter/find_table_references.py
+/usr/local/opnsense/scripts/filter/kill_states.py
 /usr/local/opnsense/scripts/filter/kill_table.py
 /usr/local/opnsense/scripts/filter/lib/__init__.py
 /usr/local/opnsense/scripts/filter/lib/alias.py
@@ -691,6 +692,7 @@
 /usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
+/usr/local/opnsense/scripts/filter/list_rule_ids.py
 /usr/local/opnsense/scripts/filter/list_states.py
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
