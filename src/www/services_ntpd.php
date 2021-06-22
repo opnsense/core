@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         rrd_configure();
         ntpd_configure_do();
-	system_cron_configure();
+        system_cron_configure();
 
         header(url_safe('Location: /services_ntpd.php'));
         exit;
@@ -287,6 +287,7 @@ include("head.inc");
                       </table>
                       <div class="hidden" data-for="help_for_timeservers">
                         <?=gettext('For best results three to five servers should be configured here.'); ?>
+                        <?=gettext('When no servers are specified NTP will be completely disabled.'); ?>
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
@@ -298,7 +299,7 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Client mode') ?></td>
                     <td>
                       <input name="clientmode" type="checkbox" id="clientmode" <?=!empty($pconfig['clientmode']) ? ' checked="checked"' : '' ?> />
-                        <?= gettext('Do not persist the NTP server to synchronize time') ?>
+                      <?= gettext('Quit NTP server immediately after time synchronisation') ?>
                     </td>
                   </tr>
                   <tr>
@@ -336,10 +337,10 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_orphan" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Orphan mode') ?></td>
                     <td>
-                      <input name="orphan" type="text" value="<?=$pconfig['orphan']?>" />
+                      <input name="orphan" type="text" value="<?=$pconfig['orphan']?>" placeholder="12" />
                       <div class="hidden" data-for="help_for_orphan">
                         <?=gettext("(0-15)");?><br />
-                        <?=gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."); ?>
+                        <?=gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server."); ?>
                       </div>
                     </td>
                   </tr>
@@ -347,17 +348,17 @@ include("head.inc");
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
-                      <?= gettext('Enable RRD graphs of NTP statistics (default: disabled).') ?>
+                      <?= gettext('Enable RRD graphs of NTP statistics') ?>
                     </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_syslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Syslog logging') ?></td>
                     <td>
                       <input name="logpeer" type="checkbox" <?=!empty($pconfig['logpeer']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of peer messages (default: disabled)."); ?>
+                      <?=gettext("Enable logging of peer messages"); ?>
                       <br />
                       <input name="logsys" type="checkbox" <?=!empty($pconfig['logsys']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of system messages (default: disabled)."); ?>
+                      <?=gettext("Enable logging of system messages"); ?>
                       <div class="hidden" data-for="help_for_syslog">
                         <?=gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="/ui/diagnostics/log/core/ntpd"><?=gettext("Status > System Logs > NTP"); ?></a>).
                       </div>
@@ -373,13 +374,13 @@ include("head.inc");
                       <?= gettext("These options will create persistent daily log files in /var/log/ntp.") ?>
                       <br /><br />
                       <input name="clockstats" type="checkbox" id="clockstats"<?=!empty($pconfig['clockstats']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of reference clock statistics (default: disabled)."); ?>
+                      <?=gettext("Enable logging of reference clock statistics"); ?>
                       <br />
                       <input name="loopstats" type="checkbox" id="loopstats"<?=!empty($pconfig['loopstats']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of clock discipline statistics (default: disabled)."); ?>
+                      <?=gettext("Enable logging of clock discipline statistics"); ?>
                       <br />
                       <input name="peerstats" type="checkbox" id="peerstats"<?=!empty($pconfig['peerstats']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable logging of NTP peer statistics (default: disabled)."); ?>
+                      <?=gettext("Enable logging of NTP peer statistics"); ?>
                       </div>
                     </td>
                   </tr>
@@ -393,22 +394,22 @@ include("head.inc");
                       <?=gettext("These options control access to NTP from the WAN."); ?>
                       <br /><br />
                       <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
+                      <?=gettext("Enable Kiss-o'-death packets"); ?>
                       <br />
                       <input name="nomodify" type="checkbox" id="nomodify"<?=empty($pconfig['nomodify']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc (default: enabled)."); ?>
+                      <?=gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc"); ?>
                       <br />
                       <input name="noquery" type="checkbox" id="noquery"<?=!empty($pconfig['noquery']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Disable ntpq and ntpdc queries (default: disabled)."); ?>
+                      <?=gettext("Disable ntpq and ntpdc queries"); ?>
                       <br />
                       <input name="noserve" type="checkbox" id="noserve"<?=!empty($pconfig['noserve']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Disable all except ntpq and ntpdc queries (default: disabled)."); ?>
+                      <?=gettext("Disable all except ntpq and ntpdc queries"); ?>
                       <br />
                       <input name="nopeer" type="checkbox" id="nopeer"<?=empty($pconfig['nopeer']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Deny packets that attempt a peer association (default: enabled)."); ?>
+                      <?=gettext("Deny packets that attempt a peer association"); ?>
                       <br />
                       <input name="notrap" type="checkbox" id="notrap"<?=empty($pconfig['notrap']) ? " checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Deny mode 6 control message trap service (default: enabled)."); ?>
+                      <?=gettext("Deny mode 6 control message trap service"); ?>
                       </div>
                     </td>
                   </tr>
