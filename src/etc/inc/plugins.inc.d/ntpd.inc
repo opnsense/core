@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -37,6 +37,8 @@ function ntpd_enabled()
 
 function ntpd_services()
 {
+    global $config;
+
     $services = array();
 
     if (!ntpd_enabled()) {
@@ -46,9 +48,14 @@ function ntpd_services()
     $pconfig = array();
     $pconfig['name'] = 'ntpd';
     $pconfig['description'] = gettext('Network Time Daemon');
-    $pconfig['php']['restart'] = array('ntpd_configure_start');
-    $pconfig['php']['start'] = array('ntpd_configure_start');
+    $pconfig['php']['restart'] = array('ntpd_configure_do');
+    $pconfig['php']['start'] = array('ntpd_configure_do');
     $pconfig['pidfile'] = '/var/run/ntpd.pid';
+
+    if (!empty($config['ntpd']['clientmode'])) {
+        $pconfig['nocheck'] = true;
+    }
+
     $services[] = $pconfig;
 
     return $services;
@@ -63,12 +70,24 @@ function ntpd_syslog()
     return $logfacilities;
 }
 
+function ntpd_cron()
+{
+    global $config;
+
+    $jobs = array();
+
+    if (ntpd_enabled() && !empty($config['ntpd']['clientmode'])) {
+        $jobs[]['autocron'] = array('pluginctl -s ntpd restart', '0', '2');
+    }
+
+    return $jobs;
+}
 function ntpd_configure()
 {
     return array(
-        'bootup' => array('ntpd_configure_defer'),
-        'local' => array('ntpd_configure_start'),
-        'newwanip' => array('ntpd_configure_defer'),
+        'bootup' => array('ntpd_configure_do'),
+        'local' => array('ntpd_configure_do'),
+        'newwanip' => array('ntpd_configure_do'),
     );
 }
 
@@ -149,23 +168,11 @@ function ntpd_configure_pps($serialport)
     return true;
 }
 
-function ntpd_configure_start($verbose = false)
-{
-    ntpd_configure_do($verbose, true);
-}
-
-function ntpd_configure_defer($verbose = false)
-{
-    ntpd_configure_do($verbose, false);
-}
-
-function ntpd_configure_do($verbose = false, $start_ntpd = true)
+function ntpd_configure_do($verbose = false)
 {
     global $config;
 
-    if ($start_ntpd) {
-        killbypid('/var/run/ntpd.pid', 'TERM', true);
-    }
+    killbypid('/var/run/ntpd.pid', 'TERM', true);
 
     if (!ntpd_enabled()) {
         return;
@@ -436,23 +443,20 @@ function ntpd_configure_do($verbose = false, $start_ntpd = true)
 
     file_put_contents('/var/etc/ntpd.conf', $ntpcfg);
 
-    if (!$start_ntpd) {
-        /* write out the config and delay startup */
-        mwexec_bg('/usr/local/etc/inc/plugins.inc.d/ntpd/ntpdate_sync_once.sh');
-        if ($verbose) {
-            echo "deferred.\n";
-        }
-        return;
-    }
-
     /* if /var/empty does not exist, create it */
     @mkdir('/var/empty', 0775, true);
 
-    /* start opentpd, set time now and use new config */
-    mwexecf(
-        '/usr/local/sbin/ntpd -g -c %s -p %s',
-        array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
-    );
+    if (empty($config['ntpd']['clientmode'])) {
+        mwexecf(
+            '/usr/local/sbin/ntpd -g -c %s -p %s',
+            array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
+        );
+    } else {
+        mwexecf_bg(
+            '/usr/local/sbin/ntpd -q -g -c %s -p %s',
+            array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
+        );
+    }
 
     if ($verbose) {
         echo "done.\n";

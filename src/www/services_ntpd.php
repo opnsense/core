@@ -36,8 +36,25 @@ require_once("plugins.inc.d/ntpd.inc");
 
 $a_ntpd = &config_read_array('ntpd');
 
-$copy_fields = array('orphan', 'statsgraph', 'logpeer', 'logsys', 'clockstats', 'loopstats', 'interface',
-                     'peerstats', 'noquery', 'noserve', 'kod', 'nomodify', 'nopeer', 'notrap', 'leapsec');
+$copy_fields = [
+    'clientmode',
+    'clockstats',
+    'interface',
+    'kod',
+    'leapsec',
+    'logpeer',
+    'logsys',
+    'loopstats',
+    'nomodify',
+    'nopeer',
+    'noquery',
+    'noserve',
+    'notrap',
+    'orphan',
+    'peerstats',
+    'statsgraph',
+];
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
@@ -127,7 +144,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("Updated NTP Server Settings");
 
         rrd_configure();
-        ntpd_configure_start();
+        ntpd_configure_do();
+	system_cron_configure();
 
         header(url_safe('Location: /services_ntpd.php'));
         exit;
@@ -225,39 +243,6 @@ include("head.inc");
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Interface(s)') ?></td>
-                    <td>
-<?php
-                    $interfaces = get_configured_interface_with_descr();
-                    $carplist = get_configured_carp_interface_list();
-                    foreach ($carplist as $cif => $carpip) {
-                        $interfaces[$cif] = $carpip." (".get_vip_descr($carpip).")";
-                    }
-                    $aliaslist = get_configured_ip_aliases_list();
-                    foreach ($aliaslist as $aliasip => $aliasif) {
-                        $interfaces[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-                    }?>
-                      <select id="interface" name="interface[]" multiple="multiple" class="selectpicker">
-<?php
-                      foreach ($interfaces as $iface => $ifacename):
-                          if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface)) {
-                              continue;
-                          }?>
-                          <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>
-                              <?=htmlspecialchars($ifacename);?>
-                          </option>
-<?php
-                      endforeach;?>
-                      </select>
-                      <div class="hidden" data-for="help_for_interfaces">
-                        <?=gettext("Interfaces without an IP address will not be shown."); ?>
-                        <br />
-                        <br /><?=gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
-                        <br /><?=gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
                     <td><a id="help_for_timeservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Time servers') ?></td>
                     <td>
                       <table class="table table-striped table-condensed" id="timeservers_table">
@@ -306,6 +291,45 @@ include("head.inc");
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
                         <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Client mode') ?></td>
+                    <td>
+                      <input name="clientmode" type="checkbox" id="clientmode" <?=!empty($pconfig['clientmode']) ? ' checked="checked"' : '' ?> />
+                        <?= gettext('Do not persist the NTP server to synchronize time') ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Interfaces') ?></td>
+                    <td>
+<?php
+                    $interfaces = get_configured_interface_with_descr();
+                    $carplist = get_configured_carp_interface_list();
+                    foreach ($carplist as $cif => $carpip) {
+                        $interfaces[$cif] = $carpip." (".get_vip_descr($carpip).")";
+                    }
+                    $aliaslist = get_configured_ip_aliases_list();
+                    foreach ($aliaslist as $aliasip => $aliasif) {
+                        $interfaces[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                    }?>
+                      <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
+<?php
+                      foreach ($interfaces as $iface => $ifacename):
+                          if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface)) {
+                              continue;
+                          }?>
+                          <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>
+                              <?=htmlspecialchars($ifacename);?>
+                          </option>
+<?php
+                      endforeach;?>
+                      </select>
+                      <div class="hidden" data-for="help_for_interfaces">
+                        <?=gettext("Interfaces without an IP address will not be shown."); ?>
+                        <br /><?=gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
+                        <br /><?=gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
                       </div>
                     </td>
                   </tr>

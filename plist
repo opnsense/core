@@ -31,7 +31,6 @@
 /usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
-/usr/local/etc/inc/plugins.inc.d/ntpd/ntpdate_sync_once.sh
 /usr/local/etc/inc/plugins.inc.d/opendns.inc
 /usr/local/etc/inc/plugins.inc.d/openssh.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn.inc
