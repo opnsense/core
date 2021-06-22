@@ -108,7 +108,7 @@ abstract class Base
         foreach ($data as $key => $val) {
             if (strpos($val, ':') !== false) {
                 list ($header, $value) = explode(':', $val);
-		$value = trim($value);
+                $value = trim($value);
                 switch (strtolower(trim($header))) {
                 case 'cipher':
                     $cipher = strtolower($value);
