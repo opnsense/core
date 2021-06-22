@@ -191,7 +191,6 @@
             <pfTables order="50" url="/ui/firewall/alias_util/"/>
             <StatesDump order="70" VisibleName="States Dump" url="/ui/diagnostics/firewall/states"/>
             <StatesReset order="80" VisibleName="States Reset" url="/diag_resetstate.php"/>
-            <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>

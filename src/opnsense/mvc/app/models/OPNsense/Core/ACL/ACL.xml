@@ -180,12 +180,6 @@
             <pattern>api/diagnostics/firewall/kill_states*</pattern>
         </patterns>
     </page-diagnostics-showstates>
-    <page-diagnostics-statessummary>
-        <name>Diagnostics: States Summary</name>
-        <patterns>
-            <pattern>diag_states_summary.php*</pattern>
-        </patterns>
-    </page-diagnostics-statessummary>
     <page-diagnostics-testport>
         <name>Diagnostics: Test Port</name>
         <patterns>
