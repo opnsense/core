@@ -167,6 +167,7 @@ class FirewallController extends ApiControllerBase
             ]);
             $searchPhrase = '';
             $ruleId = '';
+            $sortBy = '';
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
 
@@ -177,9 +178,13 @@ class FirewallController extends ApiControllerBase
             if ($this->request->getPost('searchPhrase', 'string', '') != '') {
                 $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
             }
+            if ($this->request->has('sort') && is_array($this->request->getPost("sort"))) {
+                $tmp = array_keys($this->request->getPost("sort"));
+                $sortBy = $tmp[0] . " ". $this->request->getPost("sort")[$tmp[0]]  ;
+            }
 
             $response = (new Backend())->configdpRun('filter list states', [$searchPhrase, $itemsPerPage,
-                ($currentPage - 1) * $itemsPerPage, $ruleId]);
+                ($currentPage - 1) * $itemsPerPage, $ruleId, $sortBy]);
             $response = json_decode($response, true);
             if ($response != null) {
                 foreach ($response['details'] as &$row) {

@@ -40,11 +40,22 @@ if __name__ == '__main__':
     parser.add_argument('--label', help='label / rule id', default='')
     parser.add_argument('--limit', help='limit number of results', default='')
     parser.add_argument('--offset', help='offset results', default='')
+    parser.add_argument('--sort_by', help='sort by (field asc|desc)', default='')
     inputargs = parser.parse_args()
 
     result = {
         'details': query_states(rule_label=inputargs.label, filter_str=inputargs.filter)
     }
+    # sort results
+    if inputargs.sort_by.strip() != '':
+        sort_key = inputargs.sort_by.split()[0]
+        sort_desc = inputargs.sort_by.split()[-1] == 'desc'
+        result['details'] = sorted(
+            result['details'],
+            key=lambda k: str(k[sort_key]).lower() if sort_key in k else '',
+            reverse=sort_desc
+        )
+
     result['total_entries'] = len(result['details'])
     # apply offset and limit
     if inputargs.offset.isdigit():
