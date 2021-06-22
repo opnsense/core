@@ -138,7 +138,7 @@ abstract class Base
                 '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass pass:%s',
                 escapeshellarg($cipher),
                 escapeshellarg($hash),
-		$pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
+                $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
                 escapeshellarg("{$file}.enc"),
                 escapeshellarg("{$file}.dec"),
                 escapeshellarg($pass)
