@@ -392,7 +392,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Local.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Backup/Nextcloud.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/UIModelGrid.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/ViewTranslator.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Backend.php
@@ -418,8 +417,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.tgb
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Routing/Gateways.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Backup/NextcloudSettings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/AllOrNoneConstraint.php
