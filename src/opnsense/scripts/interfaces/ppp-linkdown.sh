@@ -54,15 +54,6 @@ elif [ "${AF}" = "inet6" ]; then
 
 	# Do not remove gateway used during filter reload.
 	rm -f /tmp/${IF}_routerv6 /tmp/${IF}upv6 /tmp/${IF}_ipv6
-
-	# flush stale IPv6 addresses since mpd5 will not do it
-	php << EOF
-<?php
-require_once 'util.inc';
-require_once 'interfaces.inc';
-interfaces_addresses_flush('${IF}', 6);
-?>
-EOF
 fi
 
 daemon -f /usr/local/opnsense/service/configd_ctl.py dns reload
