@@ -309,6 +309,9 @@
         cloneText: "{{ lang._('Clone') }}",
         deleteText: "{{ lang._('Delete') }}",
         addText: "{{ lang._('Add') }}",
+        infoText: "{{ lang._('Info') }}",
+        enableText: "{{ lang._('Enable') }}",
+        disableText: "{{ lang._('Disable') }}",
         deleteSelectedText: "{{ lang._('Delete selected') }}"
     });
     $.extend(stdDialogRemoveItem.defaults, {
