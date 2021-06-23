@@ -304,7 +304,12 @@
         deselectAllText: "{{ lang._('Deselect All') }}"
     });
     $.extend(jQuery.fn.UIBootgrid.defaults, {
-        removeWarningText: "{{ lang._('Remove selected item(s)?') }}"
+        removeWarningText: "{{ lang._('Remove selected item(s)?') }}",
+        editText: "{{ lang._('Edit') }}",
+        cloneText: "{{ lang._('Clone') }}",
+        deleteText: "{{ lang._('Delete') }}",
+        addText: "{{ lang._('Add') }}",
+        deleteSelectedText: "{{ lang._('Delete selected') }}"
     });
     $.extend(stdDialogRemoveItem.defaults, {
         title: "{{ lang._('Remove') }}",

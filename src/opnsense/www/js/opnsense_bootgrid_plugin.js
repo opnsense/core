@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2021 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -109,9 +109,9 @@ $.fn.UIBootgrid = function (params) {
             useRequestHandlerOnGet: false,
             formatters: {
                 "commands": function (column, row) {
-                    return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " +
-                        "<button type=\"button\" class=\"btn btn-xs btn-default command-copy\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-fw fa-clone\"></span></button>" +
-                        "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
+                    return '<button type="button" class="btn btn-xs btn-default command-edit" data-toggle="tooltip" title="' + $.fn.UIBootgrid.defaults.editText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                        '<button type="button" class="btn btn-xs btn-default command-copy" data-toggle="tooltip" title="' + $.fn.UIBootgrid.defaults.cloneText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                        '<button type="button" class="btn btn-xs btn-default command-delete" data-toggle="tooltip" title="' + $.fn.UIBootgrid.defaults.deleteText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                 },
                 "commandsWithInfo": function(column, row) {
                     return "<button type=\"button\" class=\"btn btn-xs btn-default command-info\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-fw fa-info-circle\"></span></button> " +
@@ -280,7 +280,6 @@ $.fn.UIBootgrid = function (params) {
      */
     this.command_delete = function(event) {
         let uuid=$(this).data("row-id");
-        // XXX must be replaced, cannot translate
         stdDialogRemoveItem($.fn.UIBootgrid.defaults.removeWarningText,function() {
             ajaxCall(params['del'] + uuid, {},function(data,status){
                 // reload grid after delete
@@ -293,7 +292,6 @@ $.fn.UIBootgrid = function (params) {
      * delete selected event
      */
     this.command_delete_selected = function(event) {
-        // XXX must be replaced, cannot translate
         stdDialogRemoveItem($.fn.UIBootgrid.defaults.removeWarningText,function(){
             const rows = $("#" + this_grid.attr('id')).bootgrid('getSelectedRows');
             if (rows !== undefined){
@@ -422,8 +420,12 @@ $.fn.UIBootgrid = function (params) {
     return this.each((function(){
         // since we start using simple class selectors for our commands, we need to make sure "add" and
         // "delete selected" actions are properly marked
-        $(this).find("*[data-action=add]").addClass('command-add');
-        $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected');
+        $(this).find("*[data-action=add]").addClass('command-add').attr({
+            'data-toggle': 'tooltip', 'title': $.fn.UIBootgrid.defaults.addText
+        });
+        $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected').attr({
+            'data-toggle': 'tooltip', 'title': $.fn.UIBootgrid.defaults.deleteSelectedText
+        });
 
         if (params !== undefined && params['search'] !== undefined) {
             // load previous selections when enabled
@@ -436,6 +438,9 @@ $.fn.UIBootgrid = function (params) {
 
             // link edit and delete event buttons
             grid.on("loaded.rs.jquery.bootgrid", function(){
+                // toggle all rendered tooltips
+                $('[data-toggle="tooltip"]').tooltip();
+
                 // hook all events
                 const commands = this_grid.getCommands();
                 Object.keys(commands).map(function (k) {
@@ -454,11 +459,10 @@ $.fn.UIBootgrid = function (params) {
                 // store selections when enabled
                 this_grid.store_selection();
             });
+
             return grid;
         }
     }));
 };
 
-$.fn.UIBootgrid.defaults = {
-    removeWarningText: "Remove selected item(s)?"
-};
+$.fn.UIBootgrid.defaults = { /* translations are rendered in the default page template */ };
