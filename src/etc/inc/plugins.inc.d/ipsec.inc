@@ -221,6 +221,8 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
         !isset($config['system']['disablevpnrules']) &&
             isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])
     ) {
+        $enable_replyto = empty($config['system']['disablereplyto']);
+        $enable_routeto = empty($config['system']['pf_disable_force_gw']);
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!isset($ph1ent['disabled'])) {
                 // detect remote ip
@@ -282,26 +284,26 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                     $fw->registerFilterRule(
                         500000,
                         array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 500,
-                              "gateway" => $gwname, "disablereplyto" => true),
+                              "gateway" => $enable_routeto ? $gwname : null, "disablereplyto" => true),
                         $baserule
                     );
                     $fw->registerFilterRule(
                         500000,
                         array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 500,
-                              "reply-to" => $gwname),
+                              "reply-to" => $enable_replyto ? $gwname : null),
                         $baserule
                     );
                     if ($ph1ent['nat_traversal'] != "off") {
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 4500,
-                                  "gateway" => $gwname, "disablereplyto" => true),
+                                  "gateway" => $enable_routeto ? $gwname : null, "disablereplyto" => true),
                             $baserule
                         );
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 4500,
-                                  "reply-to" => $gwname),
+                                  "reply-to" => $enable_replyto ? $gwname : null),
                             $baserule
                         );
                     }
@@ -309,13 +311,13 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "out", "protocol" => $proto, "to" => $rgip,
-                                  "gateway" => $gwname, "disablereplyto" => true),
+                                  "gateway" => $enable_routeto ? $gwname : null, "disablereplyto" => true),
                             $baserule
                         );
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "in", "protocol" => $proto, "from" => $rgip,
-                                  "reply-to" => $gwname),
+                                  "reply-to" => $enable_replyto ? $gwname : null),
                             $baserule
                         );
                     }
