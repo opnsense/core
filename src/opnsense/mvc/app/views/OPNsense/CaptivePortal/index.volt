@@ -41,33 +41,18 @@
             }
         );
 
-        var gridopt = {
-            ajax: true,
-            selection: true,
-            multiSelect: true,
-            rowCount:[7,14,20,-1],
-            url: '/api/captiveportal/service/searchTemplates',
-            formatters: {
-                "commands": function (column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-download" data-toggle="tooltip" title="{{ lang._('Download') }}" data-row-id="' + row.fileid + '"><span class="fa fa-download fa-fw"></span></button> ' +
-                           '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" data-row-name="' + row.name + '"><span class="fa fa-pencil fa-fw"></span></button> ' +
-                           '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-trash-o fa-fw"></span></button>';
+        var grid_templates  = $("#grid-templates").UIBootgrid({
+            search: '/api/captiveportal/service/searchTemplates',
+            options: {
+                formatters: {
+                    "commands": function (column, row) {
+                        return '<button type="button" class="btn btn-xs btn-default command-download bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Download') }}" data-row-id="' + row.fileid + '"><span class="fa fa-download fa-fw"></span></button> ' +
+                               '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" data-row-name="' + row.name + '"><span class="fa fa-pencil fa-fw"></span></button> ' +
+                               '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-trash-o fa-fw"></span></button>';
+                    }
                 }
             }
-        };
-
-        var grid_templates = $("#grid-templates").bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function (e)
-        {
-            // scale footer on resize
-            $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
-            $(this).find('tr[data-row-id]').each(function(){
-                if ($(this).find('[class*="command-toggle"]').first().data("value") == "0") {
-                    $(this).addClass("text-muted");
-                }
-            });
-
         });
-
         grid_templates.on("loaded.rs.jquery.bootgrid", function(){
             grid_templates.find(".command-edit").on("click", function(e) {
                 $("#templateUUID").val($(this).data("row-id"));
