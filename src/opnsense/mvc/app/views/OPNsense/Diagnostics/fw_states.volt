@@ -37,7 +37,7 @@
                     options:{
                         formatters:{
                             commands: function (column, row) {
-                                return  "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
+                                return  '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.deleteText + '" data-row-id="' + row.id + '"><span class="fa fa-trash-o fa-fw"></span></button>';
                             },
                             rule: function (column, row) {
                                 if (row.label !== "") {
@@ -172,7 +172,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o fa-fw"></span></button>
                 </td>
             </tr>
             </tfoot>
