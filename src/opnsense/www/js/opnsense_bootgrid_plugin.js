@@ -454,7 +454,7 @@ $.fn.UIBootgrid = function (params) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.infoText);
                     } else if ($(this).hasClass('command-copy')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.cloneText);
-                    } else {
+                    } else if ($(this).attr('title') === undefined) {
                         $(this).attr('title', 'Error: unregistered tooltip');
                     }
                     $(this).tooltip();
