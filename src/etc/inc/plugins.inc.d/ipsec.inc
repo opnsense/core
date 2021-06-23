@@ -792,8 +792,6 @@ function ipsec_resolve($hostname)
 
 function ipsec_find_id(&$ph1ent, $side = 'local')
 {
-    $id_data = null;
-    $id_type = null;
     if ($side == "local") {
         $id_type = $ph1ent['myid_type'];
         $id_data = isset($ph1ent['myid_data']) ? $ph1ent['myid_data'] : null;
@@ -804,29 +802,29 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
         if (isset($ph1ent['mobile'])) {
             return null;
         }
+    } else {
+        return null;
     }
 
-    switch ($id_type) {
-        case "myaddress":
-            $thisid_data = ipsec_get_phase1_src($ph1ent);
-            break;
-        case "dyn_dns":
-            $thisid_data = ipsec_resolve($id_data);
-            break;
-        case "peeraddress":
-            $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
-            break;
-        case "fqdn":
-            $thisid_data = !empty($id_data) ? "fqdn:{$id_data}" : null;
-            break;
-        case "keyid tag":
-            $thisid_data = !empty($id_data) ? "keyid:{$id_data}" : null;
-            break;
-        default:
-            $thisid_data = !empty($id_data) ? "{$id_data}" : null;
-            break;
+    if ($id_type == "myaddress") {
+        $thisid_data = ipsec_get_phase1_src($ph1ent);
+    } elseif ($id_type == "dyn_dns") {
+        $thisid_data = ipsec_resolve($id_data);
+    } elseif ($id_type == "peeraddress") {
+        $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
+    } elseif (empty($id_data)) {
+        $thisid_data = null;
+    } elseif (in_array($id_type, ["asn1dn", "fqdn"])) {
+        $thisid_data = "{$id_type}:{$id_data}";
+    } elseif ($id_type == "keyid tag") {
+        $thisid_data = "keyid:{$id_data}";
+    } elseif ($id_type == "user_fqdn") {
+        $thisid_data = "userfqdn:{$id_data}";
+    } else {
+        $thisid_data = $id_data;
     }
-    return $thisid_data;
+
+    return trim($thisid_data);
 }
 
 /* include all configuration functions */
@@ -1344,7 +1342,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 /* XXX" Traffic selectors? */
                 $pskconf .= " : " . ipsec_get_key_type($ph1keyfile) . " {$ph1keyfile}\n";
             } elseif (!empty($ph1ent['pre-shared-key'])) {
-                $myid = isset($ph1ent['mobile']) ? trim(ipsec_find_id($ph1ent, "local")) : "";
+                $myid = isset($ph1ent['mobile']) ? ipsec_find_id($ph1ent, "local") : "";
                 $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($peerid_data)) {
