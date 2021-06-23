@@ -521,7 +521,7 @@ abstract class BaseModel
         // find parent of mountpoint (create if it doesn't exists)
         $target_node = $config_xml;
         $str_parts = explode("/", str_replace("//", "/", $this->internal_mountpoint));
-        for ($i = 0; $i < count($str_parts) - 1; $i++) {
+        for ($i = 0; $i < count($str_parts); $i++) {
             if ($str_parts[$i] != "") {
                 if (count($target_node->xpath($str_parts[$i])) == 0) {
                     $target_node = $target_node->addChild($str_parts[$i]);
@@ -534,14 +534,8 @@ abstract class BaseModel
         // copy model data into config
         $toDom = dom_import_simplexml($target_node);
         $fromDom = dom_import_simplexml($source_node[0]);
-
-        // remove old model data and write new
-        foreach ($toDom->childNodes as $childNode) {
-            if ($childNode->nodeName == $fromDom->nodeName) {
-                $toDom->removeChild($childNode);
-            }
-        }
-        $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
+        $nodeImport  = $toDom->ownerDocument->importNode($fromDom, TRUE);
+        $toDom->parentNode->replaceChild($nodeImport, $toDom);
     }
 
     /**
