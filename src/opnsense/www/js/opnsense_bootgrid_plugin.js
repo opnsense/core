@@ -443,11 +443,11 @@ $.fn.UIBootgrid = function (params) {
                     } else if ($(this).hasClass('command-edit')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.editText);
                     } else if ($(this).hasClass('command-toggle')) {
-		        if ($(this).data('value') == 1) {
+                      if ($(this).data('value') == 1) {
                             $(this).attr('title', $.fn.UIBootgrid.defaults.disableText);
-			} else {
+                      } else {
                             $(this).attr('title', $.fn.UIBootgrid.defaults.enableText);
-			}
+                      }
                     } else if ($(this).hasClass('command-delete')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.deleteText);
                     } else if ($(this).hasClass('command-info')) {
