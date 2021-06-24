@@ -62,7 +62,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 multiSelect: true,
                 formatters: {
                     "commands": function (column, row) {
-                        return  "<button type=\"button\" class=\"btn btn-xs btn-default command-disconnect\" data-row-id=\"" + row.sessionId + "\"><span class=\"fa fa-trash-o\"></span></button>";
+                        return '<button type="button" class="btn btn-xs btn-default command-disconnect" data-toggle="tooltip" title="{{ lang._('Disconnect') }}" data-row-id="' + row.sessionId + '"><span class="fa fa-trash-o fa-fw"></span></button>';
                     }
                 }
             };

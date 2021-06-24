@@ -49,9 +49,9 @@
             url: '/api/captiveportal/service/searchTemplates',
             formatters: {
                 "commands": function (column, row) {
-                    return  "<button type=\"button\" class=\"btn btn-xs btn-default command-download\" data-row-id=\"" + row.fileid + "\"><span class=\"fa fa-download\"></span></button> " +
-                            "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\" data-row-name=\"" + row.name + "\"><span class=\"fa fa-pencil\"></span></button> " +
-                            "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
+                    return '<button type="button" class="btn btn-xs btn-default command-download" data-toggle="tooltip" title="{{ lang._('Download') }}" data-row-id="' + row.fileid + '"><span class="fa fa-download fa-fw"></span></button> ' +
+                           '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" data-row-name="' + row.name + '"><span class="fa fa-pencil fa-fw"></span></button> ' +
+                           '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-trash-o fa-fw"></span></button>';
                 }
             }
         };
