@@ -109,21 +109,21 @@ $.fn.UIBootgrid = function (params) {
             useRequestHandlerOnGet: false,
             formatters: {
                 "commands": function (column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.editText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.cloneText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.deleteText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                    return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                 },
                 "commandsWithInfo": function(column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.infoText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-info-circle"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.editText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button>' +
-                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.cloneText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.deleteText + '" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                    return '<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-info-circle"></span></button> ' +
+                        '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button>' +
+                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                 },
                 "rowtoggle": function (column, row) {
                     if (parseInt(row[column.id], 2) === 1) {
-                        return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.disableText + '" data-value="1" data-row-id="' + row.uuid + '"></span>';
+                        return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + row.uuid + '"></span>';
                     } else {
-                        return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" title="' + $.fn.UIBootgrid.defaults.enableText + '" data-value="0" data-row-id="' + row.uuid + '"></span>';
+                        return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
                     }
                 },
                 "boolean": function (column, row) {
@@ -420,12 +420,8 @@ $.fn.UIBootgrid = function (params) {
     return this.each((function(){
         // since we start using simple class selectors for our commands, we need to make sure "add" and
         // "delete selected" actions are properly marked
-        $(this).find("*[data-action=add]").addClass('command-add bootgrid-tooltip').attr({
-            'title': $.fn.UIBootgrid.defaults.addText
-        });
-        $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected bootgrid-tooltip').attr({
-            'title': $.fn.UIBootgrid.defaults.deleteSelectedText
-        });
+        $(this).find("*[data-action=add]").addClass('command-add bootgrid-tooltip');
+        $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected bootgrid-tooltip');
 
         if (params !== undefined && params['search'] !== undefined) {
             // load previous selections when enabled
@@ -438,8 +434,31 @@ $.fn.UIBootgrid = function (params) {
 
             // link edit and delete event buttons
             grid.on("loaded.rs.jquery.bootgrid", function(){
-                // toggle all rendered tooltips
-                $('.bootgrid-tooltip').tooltip();
+                // toggle all automated tooltips
+                $(this).find(".bootgrid-tooltip").each(function (index) {
+                    if ($(this).hasClass('command-add')) {
+                        $(this).attr('title', $.fn.UIBootgrid.defaults.addText);
+                    } else if ($(this).hasClass('command-delete-selected')) {
+                        $(this).attr('title', $.fn.UIBootgrid.defaults.deleteSelectedText);
+                    } else if ($(this).hasClass('command-edit')) {
+                        $(this).attr('title', $.fn.UIBootgrid.defaults.editText);
+                    } else if ($(this).hasClass('command-toggle')) {
+		        if ($(this).data('value') == 1) {
+                            $(this).attr('title', $.fn.UIBootgrid.defaults.disableText);
+			} else {
+                            $(this).attr('title', $.fn.UIBootgrid.defaults.enableText);
+			}
+                    } else if ($(this).hasClass('command-delete')) {
+                        $(this).attr('title', $.fn.UIBootgrid.defaults.deleteText);
+                    } else if ($(this).hasClass('command-info')) {
+                        $(this).attr('title', $.fn.UIBootgrid.defaults.infoText);
+                    } else if ($(this).hasClass('command-copy')) {
+                        $(this).attr('title', $.fn.UIBootgrid.defaults.cloneText);
+                    } else {
+                        $(this).attr('title', 'Error: unregistered tooltip');
+                    }
+                    $(this).tooltip();
+                });
 
                 // hook all events
                 const commands = this_grid.getCommands();
