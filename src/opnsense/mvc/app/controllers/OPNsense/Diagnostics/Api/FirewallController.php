@@ -270,4 +270,28 @@ class FirewallController extends ApiControllerBase
         }
         return ["items" => []];
     }
+
+    /**
+     * flush all pf states
+     */
+    public function flushStatesAction()
+    {
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun("filter flush states");
+            return ["result" => "ok"];
+        }
+        return ["result" => "failed"];
+    }
+
+    /**
+     * flush pf source tracking
+     */
+    public function flushSourcesAction()
+    {
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun("filter flush sources");
+            return ["result" => "ok"];
+        }
+        return ["result" => "failed"];
+    }
 }

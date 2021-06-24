@@ -130,9 +130,71 @@
         // move kill states button
         $("div.search.form-group").before($("#actKillStates"));
 
+        $("#reset_states").click(function(){
+          BootstrapDialog.show({
+              type:BootstrapDialog.TYPE_DANGER,
+              title: $("#reset_states").html(),
+              message: $("#msg_statetable").html(),
+              buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }}, {
+                        label: "{{ lang._('Reset') }}",
+                        action: function(dialogRef) {
+                            ajaxCall('/api/diagnostics/firewall/flush_states/', {}, function(data, status){
+                            });
+                            dialogRef.close();
+                      }
+                  }]
+          });
+        });
+
+        $("#reset_sources").click(function(){
+          BootstrapDialog.show({
+              type:BootstrapDialog.TYPE_DANGER,
+              title: $("#reset_sources").html(),
+              message: $("#msg_sourcetracking").html(),
+              buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }}, {
+                        label: "{{ lang._('Reset') }}",
+                        action: function(dialogRef) {
+                            ajaxCall('/api/diagnostics/firewall/flush_sources/', {}, function(data, status){
+                            });
+                            dialogRef.close();
+                      }
+                  }]
+          });
+        });
     });
 
 </script>
+
+<div id="msg_statetable" style="display:none;">
+  <?=gettext("Resetting the state tables will remove all entries from " .
+  "the corresponding tables. This means that all open connections " .
+  "will be broken and will have to be re-established. This " .
+  "may be necessary after making substantial changes to the " .
+  "firewall and/or NAT rules, especially if there are IP protocol " .
+  "mappings (e.g. for PPTP or IPv6) with open connections."); ?>
+  <br />
+  <?=gettext("The firewall will normally leave " .
+  "the state tables intact when changing rules."); ?>
+  <br />
+  <?=gettext('Note: If you reset the firewall state table, the browser ' .
+  'session may appear to be hung after clicking "Reset". ' .
+  'Simply refresh the page to continue.'); ?>
+</div>
+
+<div id="msg_sourcetracking" style="display:none;">
+  <?=gettext("Resetting the source tracking table will remove all source/destination associations. " .
+  "This means that the \"sticky\" source/destination association " .
+  "will be cleared for all clients."); ?><br/><br/>
+  <?=gettext("This does not clear active connection states, only source tracking."); ?>
+</div>
 
 <div style="display:none">
   <div class="btn-group" id="actKillStates" style="margin-right:20px; display:none;">
@@ -147,7 +209,8 @@
 </select>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#grid-states">{{ lang._('States') }}</a></li>
+    <li class="active"><a data-toggle="tab" href="#categories">{{ lang._('States') }}</a></li>
+    <li><a data-toggle="tab" href="#actions">{{ lang._('Actions') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="categories" class="tab-pane fade in active">
@@ -176,6 +239,27 @@
                 </td>
             </tr>
             </tfoot>
+        </table>
+    </div>
+    <div id="actions" class="tab-pane fade in">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                  <th>{{ lang._('Action') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                      <button id="reset_states" type="button" class="btn btn-primary"><span class="fa fa-trash-o fa-fw"></span> {{ lang._('Reset state table') }}</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      <button id="reset_sources" type="button" class="btn btn-primary"><span class="fa fa-trash-o fa-fw"></span> {{ lang._('Reset source tracking') }}</button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>

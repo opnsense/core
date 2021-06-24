@@ -188,7 +188,6 @@
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <Aliases url="/ui/firewall/alias_util/"/>
             <States url="/ui/diagnostics/firewall/states"/>
-            <StatesReset VisibleName="States Reset" url="/diag_resetstate.php"/>
             <pfInfo url="/diag_pf_info.php"/>
             <pfTop url="/diag_system_pftop.php"/>
         </Diagnostics>

@@ -165,12 +165,6 @@
             <pattern>api/core/system/reboot</pattern>
         </patterns>
     </page-diagnostics-rebootsystem>
-    <page-diagnostics-resetstate>
-        <name>Diagnostics: Reset state</name>
-        <patterns>
-            <pattern>diag_resetstate.php*</pattern>
-        </patterns>
-    </page-diagnostics-resetstate>
     <page-diagnostics-showstates>
         <name>Diagnostics: Show States</name>
         <patterns>
@@ -178,6 +172,8 @@
             <pattern>api/diagnostics/firewall/query_states*</pattern>
             <pattern>api/diagnostics/firewall/del_state*</pattern>
             <pattern>api/diagnostics/firewall/kill_states*</pattern>
+            <pattern>api/diagnostics/firewall/flush_sources*</pattern>
+            <pattern>api/diagnostics/firewall/flush_states*</pattern>
         </patterns>
     </page-diagnostics-showstates>
     <page-diagnostics-testport>
