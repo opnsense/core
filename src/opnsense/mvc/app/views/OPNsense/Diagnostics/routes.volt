@@ -35,8 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
             formatters: {
                 "commands": function (column, row) {
                     return "<button type=\"button\" \
-                                    class=\"btn btn-xs btn-default command-delete\" \
-                                    data-row-id=\"" + row.destination + "," + row.gateway +"\"><span class=\"fa fa-trash-o\"></span></button>";
+                                    class=\"btn btn-xs btn-default command-delete bootgrid-tooltip\" \
+                                    data-row-id=\"" + row.destination + "," + row.gateway +"\"><span class=\"fa fa-trash-o fa-fw\"></span></button>";
                 }
             }
         }).on("loaded.rs.jquery.bootgrid", function(){

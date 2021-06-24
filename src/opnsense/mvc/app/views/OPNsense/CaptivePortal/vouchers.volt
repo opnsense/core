@@ -87,11 +87,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajax: false,
                 selection: true,
                 multiSelect: true,
-                formatters: {
-                    "commands": function (column, row) {
-                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-remove\" data-row-id=\"" + row.username + "\"><span class=\"fa fa-trash-o\"></span></button>";
-                    }
-                },
                 converters: {
                     // convert datetime type fields from unix timestamp to readable format
                     datetime: {

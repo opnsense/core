@@ -192,8 +192,8 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button id="addTemplateAct" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button id="downloadTemplateAct" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-download"></span></button>
+                        <button id="addTemplateAct" type="button" class="btn btn-xs btn-primary bootgrid-tooltip" title="{{ lang._('Add template') }}"><span class="fa fa-fw fa-plus"></span></button>
+                        <button id="downloadTemplateAct" type="button" class="btn btn-xs btn-default bootgrid-tooltip" title="{{ lang._('Download default template') }}"><span class="fa fa-fw fa-download"></span></button>
                     </td>
                 </tr>
                 </tfoot>

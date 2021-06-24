@@ -252,13 +252,13 @@ POSSIBILITY OF SUCH DAMAGE.
                         navigation:0,
                         formatters:{
                             editor: function (column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil\"></span></button>";
+                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
                             },
                             boolean: function (column, row) {
                                 if (parseInt(row[column.id], 2) == 1) {
-                                    return "<span class=\"fa fa-check command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
+                                    return "<span class=\"fa fa-check fa-fw command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
                                 } else {
-                                    return "<span class=\"fa fa-times command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
+                                    return "<span class=\"fa fa-times fa-fw command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
                                 }
                             }
                         },
@@ -328,11 +328,11 @@ POSSIBILITY OF SUCH DAMAGE.
                                 rowCount:[10, 25, 50,100,500,1000] ,
                                 formatters:{
                                     rowtoggle: function (column, row) {
-                                        var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-pencil\"></span></button> ";
+                                        var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
                                         if (parseInt(row[column.id], 2) == 1) {
-                                            toggle += "&nbsp; <span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
+                                            toggle += "&nbsp; <span style=\"cursor: pointer;\" class=\"fa fa-check-square-o fa-fw command-toggle bootgrid-tooltip\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
                                         } else {
-                                            toggle += "&nbsp; <span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
+                                            toggle += "&nbsp; <span style=\"cursor: pointer;\" class=\"fa fa-square-o fa-fw command-toggle bootgrid-tooltip\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
                                         }
                                         return toggle;
                                     }
@@ -415,7 +415,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 requestHandler:addAlertQryFilters,
                                 formatters:{
                                     info: function (column, row) {
-                                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil\"></span></button> ";
+                                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo bootgrid-tooltip\" title=\"{{ lang._('View') }}\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
                                     }
                                 },
                                 converters: {
@@ -832,10 +832,10 @@ POSSIBILITY OF SUCH DAMAGE.
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o"></span></button>
-                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o"></span></button>
-                    <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('alert') }}</button>
-                    <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('drop') }}</button>
+                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o fa-fw"></span></button>
+                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o fa-fw"></span></button>
+                    <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('Alert') }}</button>
+                    <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('Drop') }}</button>
                 </td>
                 <td></td>
             </tr>
@@ -874,8 +874,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 <tr >
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o fa-fw"></span></button>
                     </td>
                 </tr>
             </tfoot>

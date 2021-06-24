@@ -377,8 +377,8 @@
                 <tr>
                     <td colspan="3"></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn" data-toggle="tooltip" title="{{ lang._('Reload') }}"><span class="fa fa-repeat fa-fw"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -399,8 +399,8 @@
                 <tr>
                     <td colspan="2"></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn" data-toggle="tooltip" title="{{ lang._('Reload') }}"><span class="fa fa-repeat fa-fw"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -423,8 +423,8 @@
                 <tr>
                     <td colspan="3"></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn"><span class="fa fa-refresh"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
+                        <button type="button" class="btn btn-xs btn-primary reload-pac-btn" data-toggle="tooltip" title="{{ lang._('Reload') }}"><span class="fa fa-repeat fa-fw"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -481,7 +481,7 @@
                         <tr>
                             <td></td>
                             <td>
-                                <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                                <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
                             </td>
                         </tr>
                         </tfoot>

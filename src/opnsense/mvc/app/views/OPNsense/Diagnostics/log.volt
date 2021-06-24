@@ -35,9 +35,8 @@
               formatters:{
                   page: function (column, row) {
                       if ($("input.search-field").val() !== "") {
-                          return "<button type=\"button\" class=\"btn btn-xs btn-default action-page\" data-row-id=\"" +
-                                row.rnum +
-                                "\"><span class=\"fa fa-arrow-right fa-fw\"></span></button>";
+                          return '<button type="button" class="btn btn-xs btn-default action-page bootgrid-tooltip" data-row-id="' +
+                                row.rnum + '" title="{{ lang._('Go to page') }}"><span class="fa fa-arrow-right fa-fw"></span></button>';
                       } else {
                           return "";
                       }

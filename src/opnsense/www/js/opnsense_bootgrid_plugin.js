@@ -436,26 +436,28 @@ $.fn.UIBootgrid = function (params) {
             grid.on("loaded.rs.jquery.bootgrid", function(){
                 // toggle all automated tooltips
                 $(this).find(".bootgrid-tooltip").each(function (index) {
-                    if ($(this).hasClass('command-add')) {
+                    if ($(this).attr('title') !== undefined) {
+                        // keep this tooltip
+                    } else if ($(this).hasClass('command-add')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.addText);
                     } else if ($(this).hasClass('command-delete-selected')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.deleteSelectedText);
                     } else if ($(this).hasClass('command-edit')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.editText);
                     } else if ($(this).hasClass('command-toggle')) {
-                      if ($(this).data('value') == 1) {
+                        if ($(this).data('value') == 1) {
                             $(this).attr('title', $.fn.UIBootgrid.defaults.disableText);
-                      } else {
+                        } else {
                             $(this).attr('title', $.fn.UIBootgrid.defaults.enableText);
-                      }
+                        }
                     } else if ($(this).hasClass('command-delete')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.deleteText);
                     } else if ($(this).hasClass('command-info')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.infoText);
                     } else if ($(this).hasClass('command-copy')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.cloneText);
-                    } else if ($(this).attr('title') === undefined) {
-                        $(this).attr('title', 'Error: unregistered tooltip');
+                    } else {
+                        $(this).attr('title', 'Error: no tooltip match');
                     }
                     $(this).tooltip();
                 });
