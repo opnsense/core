@@ -143,9 +143,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
             if ( selected_logfile != "none") {
                 request['fileid'] = selected_logfile;
-                request['rowCount'] = selected_max_entries;
-                request['searchPhrase'] = search_phrase;
             }
+            request['rowCount'] = selected_max_entries;
+            request['searchPhrase'] = search_phrase;
             return request;
         }
 
