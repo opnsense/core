@@ -91,6 +91,7 @@ class ControllerRoot extends Controller
         }
 
         $locale = $lang . '.UTF-8';
+        bind_textdomain_codeset('OPNsense', $locale);
         $interpolator = new InterpolatorFactory();
         $this->translator = new ViewTranslator($interpolator, array(
             'directory' => '/usr/local/share/locale',
