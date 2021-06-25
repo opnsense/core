@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
@@ -60,7 +60,7 @@ function get_current_theme()
 function html_safe($text)
 {
     /* gettext() embedded in JavaScript can cause syntax errors */
-    return htmlspecialchars($text, ENT_QUOTES | ENT_HTML401);
+    return str_replace("\n", '&#10;', htmlspecialchars($text, ENT_QUOTES | ENT_HTML401));
 }
 
 /**
