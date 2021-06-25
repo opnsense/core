@@ -137,6 +137,8 @@ function filter_configure_xmlrpc()
 function restore_config_section_xmlrpc($new_config)
 {
     global $config;
+    // lock config write during merge
+    OPNsense\Core\Config::getInstance()->lock();
 
     require_once("interfaces.inc");
     require_once("filter.inc");
