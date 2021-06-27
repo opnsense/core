@@ -164,6 +164,9 @@ if __name__ == '__main__':
                     rule['rid'] = rulep[-1]
                     if rulep[-1] in running_conf_descr['rule_map']:
                         rule['label'] = running_conf_descr['rule_map'][rulep[-1]]
+                    # obsolete md5 in log record
+                    else:
+                        rule['label'] = ''
                 elif 'rulenr' in rule and rule['rulenr'] in running_conf_descr['line_ids']:
                     if rule['action'] in ['pass', 'block']:
                         rule['label'] = running_conf_descr['line_ids'][rule['rulenr']]['label']
