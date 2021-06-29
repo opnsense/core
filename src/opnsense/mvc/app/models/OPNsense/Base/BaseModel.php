@@ -534,7 +534,7 @@ abstract class BaseModel
         // copy model data into config
         $toDom = dom_import_simplexml($target_node);
         $fromDom = dom_import_simplexml($source_node[0]);
-        $nodeImport  = $toDom->ownerDocument->importNode($fromDom, TRUE);
+        $nodeImport  = $toDom->ownerDocument->importNode($fromDom, true);
         $toDom->parentNode->replaceChild($nodeImport, $toDom);
     }
 
