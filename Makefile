@@ -30,12 +30,12 @@ all:
 
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NICKNAME?=	Not Yet
-CORE_NAME?=	opnsense-devel
-CORE_TYPE?=	development
+CORE_NAME?=	opnsense
+CORE_TYPE?=	community
 
-CORE_ABI?=	21.1
+CORE_ABI?=	21.7
 CORE_PHP?=	74
-CORE_PYTHON?=	37
+CORE_PYTHON?=	38
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
 .if ${_CORE_NEXT:[2]} == 7
@@ -107,7 +107,7 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2021
 
 CORE_DEPENDS_amd64?=	beep \
-			suricata-devel
+			suricata
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
