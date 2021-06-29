@@ -27,6 +27,16 @@
 
 set -e
 
+# From this shell script never execute any remote work priror to user
+# consent.  The first action is the unconditional changelog fetch after
+# script invoke.  After that we opportunistically run the selected major
+# "upgrade"/minor "update" request as it appears to be available.
+#
+# Except for the reboot check, we never inspect the incoming integrity
+# of the update: in case there is none available the respective function
+# will tell us itself.  With this we shield the firmware shell run from
+# the complexity of GUI/API updates so that bugs are most likely avoided.
+
 SCRIPTSDIR="/usr/local/opnsense/scripts/firmware"
 RELEASE=$(opnsense-update -vR)
 PROMPT="y/N"
