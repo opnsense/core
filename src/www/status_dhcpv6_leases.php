@@ -288,10 +288,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
+    $duids = [];
+    foreach ($leases as $i => $this_lease) {
+        if (!empty($this_lease['duid'])) {
+            $duids[$this_lease['duid']] = $i;
+        }
+    }
+
     foreach (dhcpd_staticmap() as $static) {
         if (!isset($static['ipaddrv6'])) {
             continue;
         }
+
         $slease = [];
         $slease['ip'] = Net_IPv6::compress($static['ipaddrv6']);
         $slease['if'] = $static['interface'];
@@ -303,7 +311,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $slease['descr'] = $static['descr'];
         $slease['act'] = 'static';
         $slease['online'] = in_array($slease['ip'], array_keys($ndpdata)) ? 'online' : 'offline';
-        $leases[] = $slease;
+
+        if (isset($duids[$slease['duid']])) {
+            /* update lease with static data */
+            foreach ($slease as $key => $value) {
+                if (!empty($value)) {
+                    $leases[$duids[$slease['duid']]][$key] = $slease[$key];
+                }
+            }
+        } else {
+            $leases[] = $slease;
+	}
     }
 
     if (isset($_GET['order']) && in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
