@@ -655,6 +655,10 @@ function unbound_add_host_entries($ifconfig_details = null)
         require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
 
         foreach (dhcpd_staticmap($config['system']['domain'], $ifconfig_details) as $host) {
+            if (empty($host['hostname'])) {
+                /* cannot register without a hostname */
+                continue;
+            }
             if (isset($host['ipaddr'])) {
                 $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
                 $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";

@@ -233,6 +233,10 @@ function _dnsmasq_add_host_entries()
         }
 
         foreach (dhcpd_staticmap($domain, legacy_interfaces_details()) as $host) {
+            if (empty($host['hostname'])) {
+                /* cannot register without a hostname */
+                continue;
+            }
             if (isset($host['ipaddr'])) {
                 $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
             } else {
