@@ -1,6 +1,6 @@
 <p>OPNsense %%CORE_SERIES%% "<em>%%CORE_NICKNAME%%</em>" has reached its end of life. As such
 it will not receive any more updates, but the upgrade to the new %%CORE_NEXT%% series is
-seamless and can be performed right here from the GUI by unlocking it below.</p>
+seamless and can be performed right here from the web GUI.</p>
 <p> Another method is to import and reinstall using a new installation image,
 which will retain your settings (selecting "Import Configuration"), then
 reformat the disk and apply a clean system (selecting "Guided Installation").</p>
