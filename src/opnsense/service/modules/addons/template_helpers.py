@@ -129,7 +129,7 @@ class Helpers(object):
             return result
         else:
             # resort list by tag
-            if sortAs is 'int':
+            if sortAs == 'int':
                 return sorted(result, key=lambda d: int(d[sortBy]))
             else:
                 return sorted(result, key=lambda d: d[sortBy])
