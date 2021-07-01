@@ -322,18 +322,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("Renegotiate time should contain a valid number of seconds.");
         }
 
-        // When server certificate is set, check type.
         if (!empty($pconfig['certref'])) {
             foreach ($config['cert'] as $cert) {
                 if ($cert['refid'] == $pconfig['certref']) {
                     if (cert_get_purpose($cert['crt'])['server'] == 'No') {
                         $input_errors[] = gettext(
-                            sprintf("certificate %s is not intended for server use", $cert['descr'])
+                            sprintf('Certificate %s is not intended for server use.', $cert['descr'])
                         );
                     }
                 }
             }
         }
+
         $prev_opt = (isset($id) && !empty($a_server[$id])) ? $a_server[$id]['custom_options'] : "";
         if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
             $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
