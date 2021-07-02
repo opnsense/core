@@ -152,10 +152,13 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
 
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
-    filter_configure_sync(false, isset($config['system']['ip_change_kill_states']));
-    if (is_ipaddr($cacheip) && $ip != $cacheip && !isset($config['system']['ip_change_kill_states'])) {
+    filter_configure_sync();
+    if (isset($config['system']['ip_change_kill_states'])) {
+        log_error('IP address renew, killing all previous states');
+        mwexec('/sbin/pfctl -Fs');
+    } else if (is_ipaddr($cacheip) && $ip != $cacheip) {
         log_error("IP address change detected, killing states of old ip $cacheip");
-        mwexec('/sbin/pfctl -k ' . $cacheip);
+        mwexecf('/sbin/pfctl -k %s', $cacheip);
     }
 
     if (is_ipaddr($ip)) {

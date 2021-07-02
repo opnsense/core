@@ -123,29 +123,6 @@ function filter_configure()
     }
 }
 
-function filter_should_trigger_kill_states()
-{
-    global $config;
-    if (empty($config['system']['kill_states'])) {
-        $a_gateways = return_gateways_status();
-        $ifdetails = legacy_interfaces_details();
-        $any_gateway_down = false;
-        foreach ((new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true) as $gateway) {
-            if (empty($gateway['monitor']) || empty($a_gateways[$gateway['name']])) {
-                continue;
-            } elseif (!is_ipaddr($gateway['monitor']) || strstr($gateway['monitor'], '127.0.0.')) {
-                continue;
-            }
-            if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
-                $any_gateway_down = true;
-                break;
-            }
-        }
-        return $any_gateway_down;
-    }
-    return false;
-}
-
 /**
  * sync interface groups, but leave the ones not managed by us intact.
  */
@@ -207,7 +184,7 @@ function is_interface_group($if)
     return false;
 }
 
-function filter_configure_sync($verbose = false, $flush_states = false, $load_aliases = true)
+function filter_configure_sync($verbose = false, $load_aliases = true)
 {
     global $config;
     $sched_kill_states = array(); // kill states for schedules
@@ -555,15 +532,6 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
      */
     if (!is_bogonsv6_used()) {
         mwexec('/sbin/pfctl -t bogonsv6 -T kill');
-    }
-
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
-
-    if ($flush_states) {
-        mwexec('/sbin/pfctl -Fs');
     }
 
     if ($verbose) {
