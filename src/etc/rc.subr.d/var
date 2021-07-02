@@ -101,7 +101,6 @@ MFS_DIRS="
 /var/crash
 /var/db/aliastables
 /var/db/pkg
-/var/log/bsdinstaller
 "
 
 for RC_FILE in ${RC_FILES}; do
