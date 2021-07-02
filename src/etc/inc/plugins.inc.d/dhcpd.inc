@@ -1910,8 +1910,8 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                     continue;
                 }
 
-                if (!empty($ipaddrv6)) {
-                    /* expand IPv6 suffix address */
+                if (!empty($ipaddrv6) && strpos($host['ipaddrv6'], '::') === 0) {
+                    /* expand IPv6 suffix address, but only allow user-given compressed suffix */
                     $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
                 }
 
