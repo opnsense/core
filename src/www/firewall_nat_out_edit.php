@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if(!empty($pconfig['dstport']) && !is_portrange($pconfig['dstport']) && !is_portoralias($pconfig['dstport'])) {
             $input_errors[] = gettext("You must supply either a valid port or port alias for the destination port entry.");
         }
-        if (!empty($pconfig['natport']) && !is_port($pconfig['natport']) && empty($pconfig['nonat'])) {
+        if (!empty($pconfig['natport']) && !(is_port($pconfig['natport']) || is_portrange($pconfig['natport'])) && empty($pconfig['nonat'])) {
             $input_errors[] = gettext("You must supply a valid port for the NAT port entry.");
         }
     }
