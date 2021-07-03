@@ -233,7 +233,7 @@ class MenuSystem
                 }
                 // "Services: DHCPv[46]" menu tab:
                 if (empty($node->virtual) && isset($node->enable)) {
-                    if (!empty(filter_var($node->ipaddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))) {
+                    if (!empty(filter_var($node->ipaddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) && (!($node->subnet >= "31"))) {
                         $iftargets['dhcp4'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                     }
                     if (!empty(filter_var($node->ipaddrv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) || !empty($node->dhcpd6track6allowoverride)) {
