@@ -397,7 +397,22 @@ function gen_subnetv6_max($ipaddr, $bits)
 
     return $result;
 }
-
+/* returns ISP assigned PD Info */
+function get_isp_pdinfo($if, $type = 'full')
+{
+    $realif = get_real_interface($if);
+    if(file_exists("/tmp/{$realif}_pdinfo")) {
+        $file_pdinfo = file_get_contents("/tmp/{$realif}_pdinfo");
+        $pdinfo = explode('/',$file_pdinfo);
+        if($type != 'len') {
+            return $file_pdinfo;
+        } else {
+            return $pdinfo[1];
+        }
+    } else {
+       return false;
+    }
+}
 /* returns the calculated bit length of the prefix delegation from a WAN interface */
 function calculate_ipv6_delegation_length($if)
 {
@@ -424,7 +439,10 @@ function calculate_ipv6_delegation_length($if)
             break;
         case 'dhcp6':
             $dhcp6cfg = $config['interfaces'][$if];
-            if (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
+            if(get_isp_pdinfo($if) != false)
+            {
+                $pdlen = get_isp_pdinfo($if, $type = 'len');
+            } else if (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
                 $pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
             }
             break;
