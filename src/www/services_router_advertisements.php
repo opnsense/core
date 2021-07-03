@@ -127,21 +127,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext('AdvValidLifetime must be between %s and %s seconds.'),  1, 4294967295);
         }
         if (!empty($pconfig['AdvPreferredLifetime']) && !val_int_in_range($pconfig['AdvPreferredLifetime'], 1, 4294967295)) {
-            $input_errors[] = sprintf(gettext('AdvPreferredLifetime must be between %s and %s seconds.'),  1, 4294967295);
+            $input_errors[] = sprintf(gettext('AdvPreferredLifetime must be between %s and %s seconds.'), 1, 4294967295);
         }
-        if (!empty($pconfig['AdvRDNSSLifetime']) && !val_int_in_range($pconfig['AdvRDNSSLifetime'], $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2)) {
-            $input_errors[] = sprintf(gettext('AdvRDNSSLifetime must be between %s and %s seconds.'),  $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2);
+        if (!empty($pconfig['AdvRDNSSLifetime']) && !val_int_in_range($pconfig['AdvRDNSSLifetime'], 1, 4294967295)) {
+            $input_errors[] = sprintf(gettext('AdvRDNSSLifetime must be between %s and %s seconds.'), 1, 4294967295);
         }
-        if (!empty($pconfig['AdvDNSSLLifetime']) && !val_int_in_range($pconfig['AdvDNSSLLifetime'], $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2)) {
-            $input_errors[] = sprintf(gettext('AdvDNSSLLifetime must be between %s and %s seconds.'),  $pconfig['ramaxinterval'], $pconfig['ramaxinterval'] * 2);
+        if (!empty($pconfig['AdvDNSSLLifetime']) && !val_int_in_range($pconfig['AdvDNSSLLifetime'], 1, 4294967295)) {
+            $input_errors[] = sprintf(gettext('AdvDNSSLLifetime must be between %s and %s seconds.'), 1, 4294967295);
         }
         if (!empty($pconfig['AdvRouteLifetime']) && !val_int_in_range($pconfig['AdvRouteLifetime'], 1, 4294967295)) {
-            $input_errors[] = sprintf(gettext('AdvRouteLifetime must be between %s and %s seconds.'),  1, 4294967295);
+            $input_errors[] = sprintf(gettext('AdvRouteLifetime must be between %s and %s seconds.'), 1, 4294967295);
         }
         $mtu_low = 1280;
         $mtu_high = 65535;
         if (!empty($pconfig['AdvLinkMTU']) && !val_int_in_range($pconfig['AdvLinkMTU'], $mtu_low, $mtu_high)) {
-            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'),  $mtu_low, $mtu_high);
+            $input_errors[] = sprintf(gettext('AdvLinkMTU must be between %s and %s bytes.'), $mtu_low, $mtu_high);
         }
     }
 
