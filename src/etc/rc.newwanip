@@ -154,6 +154,7 @@ if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
     plugins_configure('monitor');
     filter_configure_sync();
     if (isset($config['system']['ip_change_kill_states'])) {
+        /* XXX maybe eventually ip_change_kill_states should be removed */
         log_error('IP address renew, killing all previous states');
         mwexec('/sbin/pfctl -Fs');
     } else if (is_ipaddr($cacheip) && $ip != $cacheip) {
