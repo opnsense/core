@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -201,7 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* remove the old array */
     unset($lease_content);
 
-    /* remove duplicate items by mac address */
     if (count($leases) > 0) {
         $leases = remove_duplicate($leases,"ip");
     }
@@ -217,30 +216,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $macs[$this_lease['mac']] = $i;
         }
     }
-    foreach ($interfaces as $ifname => $ifarr) {
-        if (isset($config['dhcpd'][$ifname]['staticmap'])) {
-            foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
-                $slease = array();
-                $slease['ip'] = $static['ipaddr'];
-                $slease['type'] = "static";
-                $slease['mac'] = $static['mac'];
-                $slease['start'] = '';
-                $slease['end'] = '';
-                $slease['hostname'] = $static['hostname'];
-                $slease['descr'] = $static['descr'];
-                $slease['act'] = "static";
-                $slease['online'] = in_array(strtolower($slease['mac']), $arpdata_mac) ? 'online' : 'offline';
-                if (isset($macs[$slease['mac']])) {
-                    // update lease with static data
-                    foreach ($slease as $key => $value) {
-                        if (!empty($value)) {
-                            $leases[$macs[$slease['mac']]][$key] = $slease[$key];
-                        }
-                    }
-                } else {
-                    $leases[] = $slease;
+
+    foreach (dhcpd_staticmap() as $static) {
+        if (!isset($static['ipaddr'])) {
+            continue;
+        }
+
+        $slease = array();
+        $slease['ip'] = $static['ipaddr'];
+        $slease['type'] = 'static';
+        $slease['mac'] = $static['mac'];
+        $slease['start'] = '';
+        $slease['end'] = '';
+        $slease['hostname'] = $static['hostname'];
+        $slease['descr'] = $static['descr'];
+        $slease['act'] = 'static';
+        $slease['online'] = in_array(strtolower($slease['mac']), $arpdata_mac) ? 'online' : 'offline';
+
+        if (isset($macs[$slease['mac']])) {
+            /* update lease with static data */
+            foreach ($slease as $key => $value) {
+                if (!empty($value)) {
+                    $leases[$macs[$slease['mac']]][$key] = $slease[$key];
                 }
             }
+        } else {
+            $leases[] = $slease;
         }
     }
 

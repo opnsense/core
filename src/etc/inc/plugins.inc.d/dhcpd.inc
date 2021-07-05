@@ -1905,12 +1905,19 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                 interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
 
             foreach ($dhcpifconf['staticmap'] as $host) {
-                if (empty($host[$ipaddr]) || empty($host['hostname'])) {
+                if (empty($host[$ipaddr])) {
+                    /* we only return proper entries with an IP address */
                     continue;
                 }
 
-                if (!empty($ipaddrv6)) {
+                if (!empty($ipaddrv6) && strpos($host['ipaddrv6'], '::') === 0) {
+                    /* expand IPv6 suffix address, but only allow user-given compressed suffix */
                     $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+                }
+
+		if (!empty($host['ipaddrv6'])) {
+                    /* avoid sloppy input by recompressing the address correctly */
+                    $host['ipaddrv6'] = Net_IPv6::compress(Net_IPv6::uncompress($host['ipaddrv6']));
                 }
 
                 // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
@@ -1938,8 +1945,10 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                     $ipaddr => $host[$ipaddr],
                 ];
 
-                if (isset($host['duid'])) {
-                    $entry['duid'] = $host['duid'];
+                foreach (['mac', 'duid'] as $property) {
+                    if (isset($host[$property])) {
+                        $entry[$property] = $host[$property];
+                    }
                 }
 
                 $staticmap[] = $entry;
