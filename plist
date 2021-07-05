@@ -1715,7 +1715,6 @@
 /usr/local/www/diag_ipsec_leases.php
 /usr/local/www/diag_ipsec_sad.php
 /usr/local/www/diag_ipsec_spd.php
-/usr/local/www/diag_logs_common.inc
 /usr/local/www/diag_logs_settings.php
 /usr/local/www/diag_packet_capture.php
 /usr/local/www/diag_pf_info.php
