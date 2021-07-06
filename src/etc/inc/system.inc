@@ -677,9 +677,7 @@ EOD;
     mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
     if (!empty($config['syslog']['disable_clog'])) {
         // non legacy mode
-        if (isvalidpid('/var/run/syslog.pid')) {
-            killbypid('/var/run/syslog.pid', 'TERM', true);
-        }
+        killbypid('/var/run/syslog.pid', 'TERM', true);
         if (!$restart && isvalidpid('/var/run/syslog-ng.pid')) {
             mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
         } else {
