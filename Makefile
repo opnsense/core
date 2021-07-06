@@ -33,14 +33,14 @@ CORE_NICKNAME?=	Not Yet
 CORE_NAME?=	opnsense
 CORE_TYPE?=	community
 
-.if empty(CORE_DEVABI)
+.if empty(DEVABI)
 . for REPLACEMENT in ABI PHP PYTHON
 .  if empty(CORE_${REPLACEMENT})
 .   error Cannot build without CORE_${REPLACEMENT} set
 .  endif
 . endfor
 .else
-CORE_ABI=	${CORE_DEVABI}
+CORE_ABI=	${DEVABI}
 .endif
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
