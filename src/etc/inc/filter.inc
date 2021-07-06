@@ -101,9 +101,10 @@ function filter_pflog_start($verbose = false)
         flush();
     }
 
-    if (isvalidpid('/var/run/filterlog.pid')) {
-        killbypid('/var/run/filterlog.pid', 'TERM', true);
-    }
+    killbypid('/var/run/filterlog.pid', 'TERM', true);
+
+    /* enable permanent promiscuous mode to avoid dmesg noise */
+    mwexec('/sbin/ifconfig pflog0 promisc');
 
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
