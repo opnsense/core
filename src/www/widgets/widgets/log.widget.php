@@ -216,9 +216,9 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           </select><br/><br/>
           <table style="width:348px">
             <tr>
-              <td><label for="actblock"><input id="actblock" name="actblock" type="checkbox" value="Block" <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?> />Block</label></td>
-              <td><label for="actreject"><input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?> />Reject</label></td>
-              <td><label for="actpass"><input id="actpass" name="actpass" type="checkbox" value="Pass" <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?> />Pass</label></td>
+              <td><label for="actblock"><input id="actblock" name="actblock" type="checkbox" value="Block" <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?> /><?= gettext('Block') ?></label></td>
+              <td><label for="actreject"><input id="actreject" name="actreject" type="checkbox" value="Reject" <?=in_array('Reject', $nentriesacts) ? "checked=\"checked\"" : "";?> /><?= gettext('Reject') ?></label></td>
+              <td><label for="actpass"><input id="actpass" name="actpass" type="checkbox" value="Pass" <?=in_array('Pass', $nentriesacts) ? "checked=\"checked\"" : "";?> /><?= gettext('Pass') ?></label></td>
               <td><button name="submit_firewall_logs_widget" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
             </tr>
           </table>
