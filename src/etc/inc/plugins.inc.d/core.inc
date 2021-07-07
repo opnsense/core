@@ -244,6 +244,7 @@ function core_syslog()
 {
     $logfacilities = array();
 
+    $logfacilities['audit'] = array('facility' => array('audit'));
     $logfacilities['configd'] = array('facility' => array('configd.py'));
     $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
     $logfacilities['filter'] = array('facility' => array('filterlog'));

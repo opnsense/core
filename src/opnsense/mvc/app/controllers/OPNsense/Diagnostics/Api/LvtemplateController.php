@@ -28,25 +28,46 @@
  *
  */
 
-namespace OPNsense\Core\Migrations;
+namespace OPNsense\Diagnostics\Api;
 
-use OPNsense\Base\BaseModelMigration;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
-class M1_0_0 extends BaseModelMigration
+class LvtemplateController extends ApiMutableModelControllerBase
 {
-    /**
-     * Migrate BE release type
-     * @param $model
-     */
-    public function run($model)
-    {
+    protected static $internalModelName = 'lvtemplate';
+    protected static $internalModelClass = 'OPNsense\Diagnostics\Lvtemplate';
 
-        if ((empty((string)$model->type) || (string)$model->type == "devel") && !empty((string)$model->mirror)) {
-            $is_business = stripos((string)$model->mirror, "opnsense-update.deciso.com") > 1;
-            if ($is_business) {
-                $model->type = "business";
-                $model->flavour = "latest";
-            }
-        }
+    public function searchItemAction()
+    {
+        return $this->searchBase(
+            "templates.template",
+            array('name', 'filters', 'or'),
+            "name",
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
+        );
+    }
+
+    public function setItemAction($uuid)
+    {
+        return $this->setBase("template", "templates.template", $uuid);
+    }
+
+    public function addItemAction()
+    {
+        return $this->addBase("template", "templates.template");
+    }
+
+    public function getItemAction($uuid = null)
+    {
+        return $this->getBase("template", "templates.template", $uuid);
+    }
+
+    public function delItemAction($uuid)
+    {
+        return $this->delBase("templates.template", $uuid);
     }
 }

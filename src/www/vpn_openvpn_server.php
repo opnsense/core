@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // 1 on 1 copy of config attributes
         $copy_fields = "mode,protocol,authmode,dev_mode,interface,local_port
-            ,description,custom_options,crypto,engine,tunnel_network
+            ,description,custom_options,crypto,tunnel_network
             ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
             ,local_networkv6,maxclients,compression,passtos,client2client
             ,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['cert_depth'] = 1;
         // init all fields used in the form
         $init_fields = "mode,protocol,authmode,dev_mode,interface,local_port
-            ,description,custom_options,crypto,engine,tunnel_network
+            ,description,custom_options,crypto,tunnel_network
             ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
             ,local_networkv6,maxclients,compression,passtos,client2client
             ,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
@@ -350,7 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 openvpn_delete('server', $a_server[$id]);
             }
             // 1 on 1 copy of config attributes
-            $copy_fields = "mode,protocol,dev_mode,local_port,description,crypto,digest,engine
+            $copy_fields = "mode,protocol,dev_mode,local_port,description,crypto,digest
                 ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,gwredir,local_network,local_networkv6,maxclients,compression
                 ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
@@ -995,26 +995,6 @@ endif; ?>
                         <div class="hidden" data-for="help_for_digest">
                             <?= gettext('Leave this set to SHA1 unless all clients are set to match. SHA1 is the default for OpenVPN.') ?>
                         </div>
-                      </td>
-                    </tr>
-                    <tr id="engine">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
-                      <td>
-                        <select name="engine" class="selectpicker" data-size="5" data-live-search="true">
-<?php
-                        $engines = openvpn_get_engines();
-                        foreach ($engines as $name => $desc) :
-                            $selected = "";
-                            if ($name == $pconfig['engine']) {
-                                $selected = " selected=\"selected\"";
-                            }
-                        ?>
-                          <option value="<?=$name;?>"<?=$selected?>>
-                            <?=htmlspecialchars($desc);?>
-                          </option>
-<?php
-                        endforeach; ?>
-                        </select>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">

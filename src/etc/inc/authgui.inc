@@ -67,7 +67,7 @@ function session_auth(&$Login_Error)
 
     function auth_log($message)
     {
-        openlog("webgui", LOG_ODELAY, LOG_AUTH);
+        openlog("audit", LOG_ODELAY, LOG_AUTH);
         log_error($message);
         closelog();
     }

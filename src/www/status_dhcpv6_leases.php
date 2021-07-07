@@ -293,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             continue;
         }
         $slease = [];
-        $slease['ip'] = $static['ipaddrv6'];
+        $slease['ip'] = Net_IPv6::compress($static['ipaddrv6']);
         $slease['if'] = $static['interface'];
         $slease['type'] = 'static';
         $slease['duid'] = $static['duid'];
@@ -353,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             @unlink($leasesfile);
             @rename($leasesfile.".new", $leasesfile);
 
-            dhcpd_dhcp_configure(false, 'inet6');
+            dhcpd_dhcp6_configure();
         }
     }
     exit;

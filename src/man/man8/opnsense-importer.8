@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2018 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2018-2021 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd November 20, 2018
+.Dd April 21, 2021
 .Dt OPNSENSE-IMPORTER 8
 .Os
 .Sh NAME
@@ -32,7 +32,7 @@
 .Nd OPNsense import utility
 .Sh SYNOPSIS
 .Nm
-.Op Fl bz
+.Op Fl bpz
 .Op Ar disk
 .Sh DESCRIPTION
 The
@@ -61,6 +61,10 @@ Run the importer in boot mode, which only triggers the import timeout
 prompt when no current configuration is found in the system.
 This mode is used for install media duties to allow early configuration
 imports to be able to live-boot into them afterwards.
+.It Fl p
+Run the importer in password reset mode, which mounts the disk and
+invokes the builtin root password prompt and after change adjusts
+authentication settings to know good defaults.
 .It Fl z
 List all available ZFS pools in the system and exit.
 .El
