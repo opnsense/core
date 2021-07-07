@@ -25,26 +25,26 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+BEEPDIR="/usr/local/etc/opnsense-beep.d"
 COMMAND=${1}
 
-HIGH="900"
-LOW="200"
-START="500 400 600 800 800"
-STOP="600 800 500 400 400"
+if [ -z "${COMMAND}" ]; then
+	COMMAND=low
+fi
 
 while getopts "" OPT; do
-        case ${OPT} in
-        *)
-                echo "Usage: man ${0##*/}" >&2
-                exit 1
-                ;;
-        esac
+	case ${OPT} in
+	*)
+		echo "Usage: man ${0##*/}" >&2
+		exit 1
+		;;
+	esac
 done
 
 shift $((${OPTIND} - 1))
 
 if [ ! -c "/dev/speaker" ]; then
-	exit
+	exit 1
 fi
 
 if [ -f /conf/config.xml ]; then
@@ -53,17 +53,16 @@ if [ -f /conf/config.xml ]; then
 	fi
 fi
 
-case "${COMMAND}" in
-start)
-	for NOTE in ${START}; do /usr/local/bin/beep -p ${NOTE} 25; done
-	;;
-stop)
-	for NOTE in ${STOP}; do /usr/local/bin/beep -p ${NOTE} 25; done
-	;;
-high)
-	for NOTE in ${HIGH}; do /usr/local/bin/beep -p ${NOTE} 10; done
-	;;
-low|*)
-	for NOTE in ${LOW}; do /usr/local/bin/beep -p ${NOTE} 10; done
-	;;
-esac
+BEEPFILE="${BEEPDIR}/${COMMAND}"
+
+if [ -f "${BEEPFILE}.local" ]; then
+	BEEPFILE="${BEEPFILE}.local"
+fi
+
+if [ ! -f "${BEEPFILE}" ]; then
+	exit 1
+fi
+
+cat "${BEEPFILE}" | while read NOTE DURATION; do
+	/usr/local/bin/beep -p "${NOTE}" "${DURATION}"
+done
