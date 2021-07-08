@@ -850,12 +850,18 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 openvpn_add_keyfile($crl['text'], $conf, $mode_id, "crl-verify");
             }
             if ($settings['tls']) {
-                if ($mode == "server") {
-                    $tlsopt = 0;
+                if ($settings['tlsmode'] == "crypt") {
+                    $tlsmode = "tls-crypt";
+                    $tlsopt = '';
                 } else {
-                    $tlsopt = 1;
+                    $tlsmode = "tls-auth";
+                    if ($mode == "server") {
+                        $tlsopt = 0;
+                    } else {
+                        $tlsopt = 1;
+                    }
                 }
-                openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-auth", $tlsopt);
+                openvpn_add_keyfile($settings['tls'], $conf, $mode_id, $tlsmode, $tlsopt);
             }
             break;
     }

@@ -162,9 +162,16 @@ class TheGreenBow extends BaseExporter implements IExportProvider
                 }
             }
             $tls[] = "-----END Static key-----\n";
-
-            $output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth->key = (string)implode("\n", $tls);
+            if ($this->config['tlsmode'] === 'crypt') {
+                $output->cfg_ssl->cfg_sslconnection->cfg_TlsCrypt->key = (string)implode("\n", $tls);
+                unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth);
+                unset($output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->KeyDirection);
+            } else {
+                $output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth->key = (string)implode("\n", $tls);
+                unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsCrypt);
+            }
         } else {
+            unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsCrypt);
             unset($output->cfg_ssl->cfg_sslconnection->cfg_TlsAuth);
             unset($output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->KeyDirection);
         }
