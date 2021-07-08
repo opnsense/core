@@ -132,7 +132,7 @@ class Alias(object):
                 for rdata in self._dnsResolver.query(address, record_type):
                     yield str(rdata)
                 could_resolve = True
-            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers):
+            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers, dns.name.EmptyLabel):
                 pass
 
         if not could_resolve:
