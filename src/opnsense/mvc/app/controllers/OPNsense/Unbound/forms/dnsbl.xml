@@ -12,6 +12,12 @@
         <help>Select which kind of DNSBL you want to use.</help>
     </field>
     <field>
+        <id>dnsbl.inform</id>
+        <label>Inform zone type</label>
+        <type>checkbox</type>
+        <help>For debugging purposes. Create inform-type local-zone's for blacklisted hosts. Allows to use a 'inform ' keyword to find blacklisted hosts lookups.</help>
+    </field>
+    <field>
         <id>dnsbl.lists</id>
         <label>URLs of Blacklists</label>
         <type>select_multiple</type>
