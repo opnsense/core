@@ -46,7 +46,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
-        $response = $backend->configdpRun('unbound dnsbl');
-        return array("status" => $response);
+        $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
+        return array('status' => $response);
     }
 }

@@ -116,12 +116,12 @@ function unbound_generate_config()
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     }
 
-    mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
+    foreach (glob('/var/unbound/etc/*') as $file) {
+        unlink($file);
+    }
 
-    // Setup optimization
     $optimization = unbound_optimization();
 
-    // Setup DNS64 and DNSSEC support
     $dns64prefix = '';
     if (isset($config['unbound']['dns64'])) {
         $module_config = 'dns64 ';
@@ -136,9 +136,7 @@ function unbound_generate_config()
         $module_config .= 'iterator';
     }
 
-    // Setup DNS Rebinding
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-        // Private-addresses for DNS Rebinding
         $private_addr = <<<EOF
 # For DNS Rebinding prevention
 #
@@ -211,19 +209,14 @@ EOF;
         }
     }
 
-    // Allow DNS Rebind for forwarded domains
+    /* allow DNS Rebind for forwarded domains */
     if (!empty($config['unbound']['domainoverrides'])) {
         $private_domains = "# Set private domains in case authoritative name server returns a Private IP address\n";
         $private_domains .= unbound_add_domain_overrides(true);
     }
 
-    // Configure static Host entries
     unbound_add_host_entries($ifconfig_details);
-
-    // Configure Domain Overrides
     unbound_add_domain_overrides();
-
-    // Configure Unbound access-lists
     unbound_acls_config();
 
     // Add custom Unbound options
@@ -232,7 +225,6 @@ EOF;
         $custom_options = "# Unbound custom options\n{$config['unbound']['custom_options']}\n";
     }
 
-    // Server configuration variables
     $port = is_port($config['unbound']['port']) ? $config['unbound']['port'] : "53";
     $hide_id = !empty($config['unbound']['hideidentity']) ? "yes" : "no";
     $hide_version = !empty($config['unbound']['hideversion']) ? "yes" : "no";
@@ -389,6 +381,8 @@ EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
     configd_run('template reload OPNsense/Unbound/*');
+    mwexecf('cp /usr/local/etc/unbound.opnsense.d/*.conf /var/unbound/etc/');
+    mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
 }
 
 function unbound_interface($interface)
