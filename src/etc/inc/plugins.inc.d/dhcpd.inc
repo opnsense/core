@@ -1915,7 +1915,7 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                     $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
                 }
 
-		if (!empty($host['ipaddrv6'])) {
+                if (!empty($host['ipaddrv6'])) {
                     /* avoid sloppy input by recompressing the address correctly */
                     $host['ipaddrv6'] = Net_IPv6::compress(Net_IPv6::uncompress($host['ipaddrv6']));
                 }
