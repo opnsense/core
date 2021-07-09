@@ -219,12 +219,6 @@ EOF;
     unbound_add_domain_overrides();
     unbound_acls_config();
 
-    // Add custom Unbound options
-    $custom_options = '';
-    if (!empty($config['unbound']['custom_options'])) {
-        $custom_options = "# Unbound custom options\n{$config['unbound']['custom_options']}\n";
-    }
-
     $port = is_port($config['unbound']['port']) ? $config['unbound']['port'] : "53";
     $hide_id = !empty($config['unbound']['hideidentity']) ? "yes" : "no";
     $hide_version = !empty($config['unbound']['hideversion']) ? "yes" : "no";
@@ -361,10 +355,8 @@ include: /var/unbound/host_entries.conf
 # Domain overrides
 include: /var/unbound/domainoverrides.conf
 
-# Custom includes (plugins)
+# Custom includes
 include: /var/unbound/etc/*.conf
-
-{$custom_options}
 
 {$forward_conf}
 

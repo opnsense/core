@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['txtsupport'] = isset($a_unboundcfg['txtsupport']);
     // text values
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
-    $pconfig['custom_options'] = !empty($a_unboundcfg['custom_options']) ? $a_unboundcfg['custom_options'] : null;
     $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
     $pconfig['dns64prefix'] = !empty($a_unboundcfg['dns64prefix']) ? $a_unboundcfg['dns64prefix'] : null;
     // array types
@@ -87,10 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
             $input_errors[] = sprintf(gettext('Local zone type "%s" is not known.'), $pconfig['local_zone_type']);
         }
-        $prev_opt = !empty($a_unboundcfg['custom_options']) ? $a_unboundcfg['custom_options'] : "";
-        if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
-            $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
-        }
 
         if (count($input_errors) == 0) {
             // text types
@@ -114,8 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_unboundcfg['local_zone_type'])) {
                 unset($a_unboundcfg['local_zone_type']);
             }
-
-            $a_unboundcfg['custom_options'] = !empty($pconfig['custom_options']) ? str_replace("\r\n", "\n", $pconfig['custom_options']) : null;
 
             // boolean values
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
@@ -177,7 +170,7 @@ include_once("head.inc");
             $(window).trigger('resize');
         });
         // show advanced when option set
-        if ($("#outgoing_interface").val() != '' || $("#custom_options").val() != '' || $("#enable_wpad").prop('checked')) {
+        if ($("#outgoing_interface").val() != '' || $("#enable_wpad").prop('checked')) {
             $("#show_advanced_dns").click();
         }
     });
@@ -345,16 +338,6 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr class="showadv" style="display:none">
-                        <td><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Custom options') ?></td>
-                        <td>
-                          <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
-                          <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
-                          <div class="hidden" data-for="help_for_custom_options">
-                            <?=gettext("Enter any additional options you would like to add to the Unbound configuration here."); ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr class="showadv" style="display:none">
                         <td><a id="help_for_outgoing_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Outgoing Network Interfaces"); ?></td>
                         <td>
                           <select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
@@ -363,7 +346,6 @@ include_once("head.inc");
                               <?= html_safe($ifdescr) ?>
                             </option>
 <?php endforeach ?>
-
                           </select>
                           <div class="hidden" data-for="help_for_outgoing_interface">
                             <?=gettext("Utilize different network interfaces that Unbound will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
