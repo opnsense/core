@@ -89,9 +89,9 @@ if __name__ == '__main__':
     startup_time = time.time()
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
     blacklist_items = set()
-    if os.path.exists('/var/unbound/etc/blacklists.ini'):
+    if os.path.exists('/tmp/unbound-blacklists.conf'):
         cnf = ConfigParser()
-        cnf.read('/var/unbound/etc/blacklists.ini')
+        cnf.read('/tmp/unbound-blacklists.conf')
         # exclude (white) lists, compile to regex to be used to filter blacklist entries
         if cnf.has_section('exclude'):
             exclude_list = set()
@@ -142,7 +142,7 @@ if __name__ == '__main__':
                 )
 
     # write out results
-    with open("/var/unbound/etc/dnsbl.conf", 'w') as unbound_outf:
+    with open("/usr/local/etc/unbound.opnsense.d/dnsbl.conf", 'w') as unbound_outf:
         if blacklist_items:
             unbound_outf.write('server:\n')
             for entry in blacklist_items:

@@ -1,0 +1,2 @@
+OPNsense: automatically included unbound.conf configuration files
+moved into chroot directory /var/unbound/etc on reconfigure.
