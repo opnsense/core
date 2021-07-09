@@ -1915,18 +1915,18 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                     $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
                 }
 
-		if (!empty($host['ipaddrv6'])) {
+                if (!empty($host['ipaddrv6'])) {
                     /* avoid sloppy input by recompressing the address correctly */
                     $host['ipaddrv6'] = Net_IPv6::compress(Net_IPv6::uncompress($host['ipaddrv6']));
                 }
 
                 // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                 //      for backward compatibilty support both here.
-                if (!empty($ipaddrv6) && !empty($host['domainsearchlist'])) {
+                if ($inet == 6 && !empty($host['domainsearchlist'])) {
                     $domain = $host['domainsearchlist'];
                 } elseif (!empty($host['domain'])) {
                     $domain = $host['domain'];
-                } elseif (!empty($ipaddrv6) && !empty($dhcpifconf['domainsearchlist'])) {
+                } elseif ($inet == 6 && !empty($dhcpifconf['domainsearchlist'])) {
                     $domain = $dhcpifconf['domainsearchlist'];
                 } elseif (!empty($dhcpifconf['domain'])) {
                     $domain = $dhcpifconf['domain'];
