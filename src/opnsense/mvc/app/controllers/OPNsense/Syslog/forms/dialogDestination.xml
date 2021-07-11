@@ -30,6 +30,12 @@
     <help>Choose which facilities to include, omit to select all.</help>
   </field>
   <field>
+    <id>destination.flags</id>
+    <label>Flags</label>
+    <type>select_multiple</type>
+    <help>Choose which flags to enable.</help>
+  </field>
+  <field>
     <id>destination.hostname</id>
     <label>Hostname</label>
     <type>text</type>
