@@ -746,7 +746,7 @@ function unbound_hosts_generate()
     $ifconfig_details = legacy_interfaces_details();
     unbound_add_host_entries($ifconfig_details);
 
-    killbypid('/var/run/unbound.pid', 'HUP');
+    configd_run("unbound reload", true);
 }
 
 function unbound_local_zone_types()
