@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2017-2021 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -28,13 +28,13 @@
 set -e
 
 UNBOUNDCTL="/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf"
-CACHE="/var/unbound/cache.dump"
+CACHE="/var/unbound/cache.dump.gz"
 COMMAND=${1}
 
 if [ "${COMMAND}" = "dump" ]; then
-	${UNBOUNDCTL} dump_cache > ${CACHE}
+	${UNBOUNDCTL} dump_cache | gzip > ${CACHE}
 elif [ "${COMMAND}" = "load" -a -f "${CACHE}" ]; then
-	cat ${CACHE} | ${UNBOUNDCTL} load_cache
+	gunzip -c ${CACHE} | ${UNBOUNDCTL} load_cache
 elif [ "${COMMAND}" = "flush" ]; then
 	rm -f ${CACHE}
 fi

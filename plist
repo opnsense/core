@@ -834,7 +834,7 @@
 /usr/local/opnsense/scripts/systemhealth/queryLog.py
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/download_blacklists.py
-/usr/local/opnsense/scripts/unbound/unbound_start.sh
+/usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/wrapper.py
 /usr/local/opnsense/service/conf/actions.d/actions_auth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf

@@ -39,7 +39,7 @@ function openssh_enabled()
 function openssh_configure()
 {
     return array(
-        'earlybootup' => array('openssh_configure_do'),
+        'early' => array('openssh_configure_do'),
         'local' => array('openssh_configure_do'),
         'newwanip' => array('openssh_configure_do:2'),
     );

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2018-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2018 Fabian Franz
  * Copyright (C) 2014-2016 Deciso B.V.
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['regdhcp'] = isset($a_unboundcfg['regdhcp']);
     $pconfig['regdhcpstatic'] = isset($a_unboundcfg['regdhcpstatic']);
     $pconfig['txtsupport'] = isset($a_unboundcfg['txtsupport']);
+    $pconfig['cacheflush'] = isset($a_unboundcfg['cacheflush']);
     // text values
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
     $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
@@ -111,10 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // boolean values
+            $a_unboundcfg['cacheflush'] = !empty($pconfig['cacheflush']);
+            $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
+            $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
-            $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
-            $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
             $a_unboundcfg['forwarding'] = !empty($pconfig['forwarding']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
@@ -304,7 +306,17 @@ include_once("head.inc");
                           <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Create corresponding TXT records') ?>
                           <div class="hidden" data-for="help_for_txtsupport">
-                            <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?><br />
+                            <?=gettext("If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.");?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_cacheflush" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DNS Cache');?></td>
+                        <td>
+                          <input name="cacheflush" type="checkbox" value="yes" <?=!empty($pconfig['cacheflush']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Flush DNS cache during reload') ?>
+                          <div class="hidden" data-for="help_for_cacheflush">
+                            <?= gettext('If this option is set, the DNS cache will be flushed during each daemon reload. This is the default behavior for Unbound, but may be undesired when multiple dynamic interfaces require frequent reloading.') ?>
                           </div>
                         </td>
                       </tr>
