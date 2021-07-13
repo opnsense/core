@@ -1922,11 +1922,11 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
 
                 // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                 //      for backward compatibilty support both here.
-                if (!empty($ipaddrv6) && !empty($host['domainsearchlist'])) {
+                if ($inet == 6 && !empty($host['domainsearchlist'])) {
                     $domain = $host['domainsearchlist'];
                 } elseif (!empty($host['domain'])) {
                     $domain = $host['domain'];
-                } elseif (!empty($ipaddrv6) && !empty($dhcpifconf['domainsearchlist'])) {
+                } elseif ($inet == 6 && !empty($dhcpifconf['domainsearchlist'])) {
                     $domain = $dhcpifconf['domainsearchlist'];
                 } elseif (!empty($dhcpifconf['domain'])) {
                     $domain = $dhcpifconf['domain'];
