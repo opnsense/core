@@ -834,6 +834,7 @@
 /usr/local/opnsense/scripts/systemhealth/logformats/syslog.py
 /usr/local/opnsense/scripts/systemhealth/queryLog.py
 /usr/local/opnsense/scripts/unbound/cache.sh
+/usr/local/opnsense/scripts/unbound/check.sh
 /usr/local/opnsense/scripts/unbound/download_blacklists.py
 /usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/wrapper.py
