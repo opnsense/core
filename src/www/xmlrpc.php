@@ -37,13 +37,13 @@ require_once("xmlrpc.inc");
  */
 function http_basic_auth($http_auth_header)
 {
-    $tags=explode(" ", $http_auth_header) ;
+    $tags = explode(' ', $http_auth_header);
     if (count($tags) >= 2) {
-        $userinfo= explode(":", base64_decode($tags[1])) ;
-        if (count($userinfo)>=2) {
+        $userinfo= explode(':', base64_decode($tags[1]), 2);
+        if (count($userinfo) == 2) {
             if (authenticate_user($userinfo[0], $userinfo[1])) {
                 $aclObj = new \OPNsense\Core\ACL();
-                return $aclObj->isPageAccessible($userinfo[0], "/xmlrpc.php");
+                return $aclObj->isPageAccessible($userinfo[0], '/xmlrpc.php');
             }
         }
     }
