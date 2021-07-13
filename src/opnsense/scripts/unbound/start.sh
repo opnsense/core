@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # Copyright (c) 2020 Deciso B.V.
 # All rights reserved.
 #
@@ -25,6 +26,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+set -e
+
 # prepare and startup unbound, so we can easily background it
 
 chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key
@@ -34,3 +37,4 @@ if [ ! -f /var/unbound/unbound_control.key ]; then
 fi
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf
+/usr/local/opnsense/scripts/unbound/cache.sh load

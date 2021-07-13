@@ -99,7 +99,7 @@ interfaces_configure(true);
 
 system_resolvconf_generate(true);
 filter_configure_sync(true);
-plugins_configure('earlybootup', true);
+plugins_configure('early', true);
 system_cron_configure(true, true);
 system_routing_configure(true);
 

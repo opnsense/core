@@ -42,6 +42,7 @@ function unbound_configure()
     return array(
         'bootup' => array('unbound_configure_do'),
         'dns' => array('unbound_configure_do'),
+        'early' => array('unbound_cache_flush'),
         'hosts' => array('unbound_hosts_generate:0'),
         'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
@@ -377,50 +378,24 @@ EOD;
     mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
 }
 
-function unbound_interface($interface)
+function unbound_cache_flush()
 {
-    global $config;
-
-    if (empty($interface)) {
-        /* emulate non-interface reload */
-        return true;
-    }
-
-    if (!empty($config['unbound']['active_interface'])) {
-        foreach (explode(',', $config['unbound']['active_interface']) as $used) {
-            if ($used == $interface) {
-                return true;
-            }
-        }
-    }
-
-    if (!empty($config['unbound']['outgoing_interface'])) {
-        foreach (explode(',', $config['unbound']['outgoing_interface']) as $used) {
-            if ($used == $interface) {
-                return true;
-            }
-        }
-    }
-
-    /*
-     * We can ignore this request as we don't listen here
-     * or always listen on :: / 0.0.0.0 so that a reload
-     * is not necessary.
-     */
-    return false;
+    configd_run('unbound cache flush');
 }
 
 function unbound_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
-    unbound_generate_config();
-
-    if (!unbound_interface($interface) && isvalidpid('/var/run/unbound.pid')) {
-        return;
+    if (empty($config['unbound']['cacheflush'])) {
+        if (isvalidpid('/var/run/unbound.pid')) {
+            configd_run('unbound cache dump');
+        }
+    } else {
+        unbound_cache_flush();
     }
 
-    //configd_run('unbound cache dump');
+    unbound_generate_config();
 
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
@@ -434,7 +409,7 @@ function unbound_configure_do($verbose = false, $interface = '')
         flush();
     }
 
-    configd_run("unbound start", true);
+    configd_run('unbound start', true);
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
@@ -443,8 +418,6 @@ function unbound_configure_do($verbose = false, $interface = '')
         }
         mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py --domain %s', $domain);
     }
-
-    //configd_run('unbound cache load');
 
     if ($verbose) {
         echo "done.\n";
