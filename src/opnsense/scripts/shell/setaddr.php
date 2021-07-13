@@ -357,10 +357,10 @@ function console_configure_ip_address($version)
                         $maxbits
                     ) . "\n> ";
                     $intbits = chop(fgets($fp));
-                    $intbits_ok = is_numeric($intbits) && (($intbits >= 1) && ($intbits <= $maxbits));
+                    $intbits_ok = is_numeric($intbits) && $intbits >= 1 && $intbits <= $maxbits;
                     $restart_dhcpd = true;
 
-                    if ($version === 4 && $intbits < $maxbits) {
+                    if ($version === 4 && $intbits < 31) {
                         if ($intip == gen_subnet($intip, $intbits)) {
                             echo 'You cannot set network address to an interface';
                             continue 2;
