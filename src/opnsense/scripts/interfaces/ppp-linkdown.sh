@@ -54,6 +54,11 @@ elif [ "${AF}" = "inet6" ]; then
 
 	# Do not remove gateway used during filter reload.
 	rm -f /tmp/${IF}_routerv6 /tmp/${IF}upv6 /tmp/${IF}_ipv6
+
+	# deprecate all previous SLAAC addresses
+	ifconfig ${IF} | grep autoconf | while read FAMILY ADDR MORE; do
+		ifconfig ${IF} ${FAMILY} ${ADDR} deprecated
+	done
 fi
 
 daemon -f /usr/local/opnsense/service/configd_ctl.py dns reload
