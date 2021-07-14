@@ -73,6 +73,7 @@ product_target=opnsense${product_suffix}
 product_version=$(opnsense-version -v)
 
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
