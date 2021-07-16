@@ -120,10 +120,10 @@ if ($authName !== null) {
                           $update_count++;
                       }
                   }
-                  if ($update_count > 0){
-                      // write config when changed
-                      write_config();
-                  }
+              }
+              if ($update_count > 0){
+                  // write config when changed
+                  write_config();
               }
           }
       } else {
