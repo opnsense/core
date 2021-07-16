@@ -1006,7 +1006,7 @@ $( document ).ready(function() {
                             }
                         }
 ?>
-<?php if (!$can_import): ?>
+<?php if ($can_import): ?>
                         <button type="submit" name="import"
                                 id="import_ldap_users"
                                 data-toggle="tooltip"
