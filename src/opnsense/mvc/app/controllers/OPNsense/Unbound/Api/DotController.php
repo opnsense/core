@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2020 Michael Muenz <m.muenz@gmail.com>
+ *    Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
  *
  *    All rights reserved.
  *
