@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dnsallowoverride_exclude'] = array();
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
+    $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'];
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
@@ -81,6 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
+    }
+    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'])) {
+        $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
     /* collect direct attached networks and static routes */
@@ -166,6 +170,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dnslocalhost'] = true;
         } elseif (isset($config['system']['dnslocalhost'])) {
             unset($config['system']['dnslocalhost']);
+        }
+
+        if (!empty($pconfig['dnssearchdomain'])) {
+            $config['system']['dnssearchdomain'] = $pconfig['dnssearchdomain'];
+        } elseif (isset($config['system']['dnssearchdomain'])) {
+            unset($config['system']['dnssearchdomain']);
         }
 
         if (!empty($pconfig['gw_switch_default'])) {
@@ -438,6 +448,16 @@ $( document ).ready(function() {
                 </div>
               </td>
             </tr>
+            <tr>
+              <td><a id="help_for_dnssearchdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS search domain') ?></td>
+              <td>
+                <input name="dnssearchdomain" type="text" value="<?= $pconfig['dnssearchdomain'] ?>" />
+                <div class="hidden" data-for="help_for_dnssearchdomain">
+                  <?= gettext('Enter an additional domain to add to the local list of search domains.') ?>
+                </div>
+              </td>
+            </tr>
+            <tr>
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
