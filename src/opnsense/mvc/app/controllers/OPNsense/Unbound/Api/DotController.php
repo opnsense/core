@@ -35,7 +35,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 class DotController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'dot';
-    protected static $internalModelClass = '\OPNsense\Unbound\Dot';
+    protected static $internalModelClass = '\OPNsense\Unboundplus\Dot';
 
     public function searchDotAction()
     {
