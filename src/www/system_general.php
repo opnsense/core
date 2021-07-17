@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
     $pconfig['domain'] = $config['system']['domain'];
+    $pconfig['domainsearchlist'] = $config['system']['domainsearchlist'];
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
@@ -139,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $config['system']['domain'] = $pconfig['domain'];
+        $config['system']['domainsearchlist'] = $pconfig['domainsearchlist'];
         $config['system']['hostname'] = $pconfig['hostname'];
         $config['system']['language'] = $pconfig['language'];
         $config['system']['timezone'] = $pconfig['timezone'];
@@ -292,6 +294,16 @@ $( document ).ready(function() {
                   <?=gettext("Do not use 'local' as a domain name. It will cause local hosts running mDNS (avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."); ?>
                   <br />
                   <?=sprintf(gettext("e.g. %smycorp.com, home, office, private, etc.%s"),'<em>','</em>') ?>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list"); ?></td>
+              <td>
+                <input name="domainsearchlist" type="text" value="<?=$pconfig['domainsearchlist'];?>" />
+                <div class="hidden" data-for="help_for_domainsearchlist">
+                  <?=gettext("Enter a custom ordered space separated list of search domain"); ?>
+                  <br />
                 </div>
               </td>
             </tr>
