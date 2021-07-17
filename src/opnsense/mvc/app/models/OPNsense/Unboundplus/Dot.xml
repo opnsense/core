@@ -1,0 +1,24 @@
+<model>
+    <mount>//OPNsense/unboundplus/dot</mount>
+    <description>Unbound DNS over TLS configuration</description>
+    <version>0.1.1</version>
+    <items>
+        <dots>
+            <dot type="ArrayField">
+                <enable type="BooleanField">
+                    <Required>Y</Required>
+                    <default>1</default>
+                </enable>
+                <server type="NetworkField">
+                    <Required>Y</Required>
+                </server>
+                <port type="PortField">
+                    <Required>Y</Required>
+                </port>
+                <verify type="HostnameField">
+                    <Required>N</Required>
+                </verify>
+            </dot>
+        </dots>
+    </items>
+</model>
