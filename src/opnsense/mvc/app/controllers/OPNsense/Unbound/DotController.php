@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unboundplus;
+namespace OPNsense\Unbound;
 
-use OPNsense\Base\BaseModel;
+use OPNsense\Base\IndexController;
 
-class Dnsbl extends BaseModel
+class DotController extends IndexController
 {
+    public function indexAction()
+    {
+        $this->view->formDialogEdit = $this->getForm('dialogDot');
+        $this->view->pick('OPNsense/Unbound/dot');
+    }
 }

@@ -49,6 +49,9 @@ class LogController extends IndexController
             case 'ipsec':
                 $this->view->service = 'ipsec';
                 break;
+            case 'resolver':
+                $this->view->service = 'unbound';
+                break;
             case 'suricata':
                 $this->view->service = 'ids';
                 break;

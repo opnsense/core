@@ -27,7 +27,7 @@
 
 <script>
    $(document).ready(function() {
-       var data_get_map = {'frm_dnsbl_settings':"/api/unbound/dnsbl/get"};
+       var data_get_map = {'frm_dnsbl_settings':"/api/unbound/settings/get"};
        mapDataToFormUI(data_get_map).done(function(data){
            formatTokenizersUI();
            $('.selectpicker').selectpicker('refresh');
@@ -36,12 +36,14 @@
        $("#saveAct").SimpleActionButton({
           onPreAction: function() {
               const dfObj = new $.Deferred();
-              saveFormToEndpoint("/api/unbound/dnsbl/set", 'frm_dnsbl_settings', function(){
+              saveFormToEndpoint("/api/unbound/settings/set", 'frm_dnsbl_settings', function(){
                   dfObj.resolve();
               });
               return dfObj;
           }
       });
+
+      updateServiceControlUI('unbound');
    });
 </script>
 

@@ -27,7 +27,7 @@
 
  <script>
      $(document).ready(function() {
-         var data_get_map = {'frm_miscellaneous_settings':"/api/unbound/miscellaneous/get"};
+         var data_get_map = {'frm_miscellaneous_settings':"/api/unbound/settings/get"};
          mapDataToFormUI(data_get_map).done(function(data){
              formatTokenizersUI();
              $('.selectpicker').selectpicker('refresh');
@@ -35,12 +35,14 @@
          $("#saveAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
-                saveFormToEndpoint("/api/unbound/miscellaneous/set", 'frm_miscellaneous_settings', function(){
+                saveFormToEndpoint("/api/unbound/settings/set", 'frm_miscellaneous_settings', function(){
                     dfObj.resolve();
                 });
                 return dfObj;
             }
         });
+
+        updateServiceControlUI('unbound');
      });
  </script>
 

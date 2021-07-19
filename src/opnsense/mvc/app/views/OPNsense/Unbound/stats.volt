@@ -137,9 +137,9 @@
 
         // initial fetch
         updateStats();
+
+	updateServiceControlUI('unbound');
     });
-
-
 </script>
 
 <div class="content-box">
