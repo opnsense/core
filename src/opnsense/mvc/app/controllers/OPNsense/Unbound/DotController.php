@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,11 +30,11 @@ namespace OPNsense\Unbound;
 
 use OPNsense\Base\IndexController;
 
-class MiscellaneousController extends IndexController
+class DotController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->miscellaneousForm = $this->getForm('miscellaneous');
-        $this->view->pick('OPNsense/Unbound/miscellaneous');
+        $this->view->formDialogEdit = $this->getForm('dialogDot');
+        $this->view->pick('OPNsense/Unbound/dot');
     }
 }

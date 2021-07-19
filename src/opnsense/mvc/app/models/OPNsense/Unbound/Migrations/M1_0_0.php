@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2021 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Diagnostics;
+namespace OPNsense\Unbound\Migrations;
 
-use OPNsense\Base\IndexController;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Base\FieldTypes\BooleanField;
+use OPNsense\Base\FieldTypes\NetworkField;
+use OPNsense\Base\FieldTypes\PortField;
+use OPNsense\Core\Config;
 
-/**
- * @inherit
- */
-class LogController extends IndexController
+class M1_0_0 extends BaseModelMigration
 {
-    public function renderPage($module, $scope)
+    /**
+     * Migrate older models into shared model
+     * @param $model
+     */
+    public function run($model)
     {
-        $this->view->pick('OPNsense/Diagnostics/log');
-        $this->view->module = $module;
-        $this->view->scope = $scope;
-        $this->view->service = '';
+        $config = Config::getInstance()->object();
 
-        $service = $module == 'core' ? $scope : $module;
-
-        /* XXX manually hook up known services for now */
-        switch ($service) {
-            case 'ipsec':
-                $this->view->service = 'ipsec';
-                break;
-            case 'resolver':
-                $this->view->service = 'unbound';
-                break;
-            case 'suricata':
-                $this->view->service = 'ids';
-                break;
-            case 'squid':
-                $this->view->service = 'proxy';
-                break;
-            default:
-                /* no service API at the moment */
-                break;
+        if (empty($config->OPNsense->unboundplus)) {
+            return;
         }
-    }
 
-    public function __call($name, $arguments)
-    {
-        if (substr($name, -6) == 'Action') {
-            $scope = count($arguments) > 0 ? $arguments[0] : "core";
-            $module = substr($name, 0, strlen($name) - 6);
-            return $this->renderPage($module, $scope);
+        $mdlNode = $config->OPNsense->unboundplus;
+
+        foreach (['dnsbl', 'miscellaneous'] as $strip) {
+            if (!empty($mdlNode->$strip)) {
+                $model->$strip->setAttributeValue('version', null);
+            }
+        }
+
+        if (!empty($mdlNode->miscellaneous->dotservers)) {
+            foreach (explode(',', (string)$mdlNode->miscellaneous->dotservers) as $dot) {
+                $dotNode = $model->dots->dot->add();
+                $dotData = explode('@', $dot, 2);
+                $dotContent = [ 'enabled' => 1, 'server' => $dotData[0] ];
+                if (!empty($dotData[1])) {
+                    $dotContent['port'] = $dotData[1];
+                }
+                $dotNode->setNodes($dotContent);
+            }
         }
     }
 }

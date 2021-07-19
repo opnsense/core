@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2020 Deciso B.V.
+# Copyright (c) 2020-2021 Deciso B.V.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,16 @@ chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/ro
 if [ ! -f /var/unbound/unbound_control.key ]; then
     chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
 fi
+
+for FILE in $(find /var/unbound/etc -depth 1); do
+	rm -rf ${FILE}
+done
+
+for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); do
+	cp ${FILE} /var/unbound/etc/
+done
+
+chown -R unbound:unbound /var/unbound
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf
 /usr/local/opnsense/scripts/unbound/cache.sh load

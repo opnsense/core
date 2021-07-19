@@ -31,12 +31,10 @@ namespace OPNsense\Unbound\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Unboundplus\Dnsbl;
-use OPNsense\Unboundplus\Miscellaneous;
 
 class ServiceController extends ApiMutableServiceControllerBase
 {
-    protected static $internalServiceClass = '\OPNsense\Unboundplus\Dnsbl';
+    protected static $internalServiceClass = '\OPNsense\Unbound\Unbound';
     protected static $internalServiceTemplate = 'OPNsense/Unbound/*';
     protected static $internalServiceEnabled = 'service_enabled';
     protected static $internalServiceName = 'unbound';

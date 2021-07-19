@@ -1,31 +1,39 @@
 <form>
     <field>
-        <id>dnsbl.enabled</id>
+        <id>unbound.dnsbl.enabled</id>
         <label>Enable</label>
         <type>checkbox</type>
         <help>Enable the usage of DNS blocklists.</help>
     </field>
     <field>
-        <id>dnsbl.type</id>
+        <id>unbound.dnsbl.type</id>
         <label>Type of DNSBL</label>
         <type>select_multiple</type>
         <help>Select which kind of DNSBL you want to use.</help>
     </field>
     <field>
-        <id>dnsbl.lists</id>
-        <label>URLs of Blacklists</label>
+        <id>unbound.dnsbl.lists</id>
+        <label>URLs of Blocklists</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
         <advanced>true</advanced>
-        <help>List of domains from where blacklist will be downloaded.</help>
+        <help>List of domains from where blocklist will be downloaded.</help>
     </field>
     <field>
-        <id>dnsbl.whitelists</id>
+        <id>unbound.dnsbl.whitelists</id>
         <label>Whitelist Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>List of domains to whitelist. You can use regular expressions.</help>
+    </field>
+    <field>
+        <id>unbound.miscellaneous.privatedomain</id>
+        <label>Private Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to mark as private. You only need this for some DNSBL lists which resolve to private addresses.</help>
     </field>
 </form>

@@ -1,0 +1,26 @@
+<form>
+    <field>
+        <id>dot.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable or disable this server.</help>
+    </field>
+    <field>
+        <id>dot.server</id>
+        <label>Server IP</label>
+        <type>text</type>
+        <help>IP address of DNS server to forward all requests.</help>
+    </field>
+    <field>
+        <id>dot.port</id>
+        <label>Server Port</label>
+        <type>text</type>
+        <help>Port of DNS server, for usual DNS use 53, if you use DoT set it to 853.</help>
+    </field>
+    <field>
+        <id>dot.verify</id>
+        <label>Verify CN</label>
+        <type>text</type>
+        <help>Verfiy if CN in certficate matches this value.</help>
+    </field>
+</form>

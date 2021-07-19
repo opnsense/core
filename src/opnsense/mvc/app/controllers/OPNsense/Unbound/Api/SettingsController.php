@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2020 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +27,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unboundplus;
+namespace OPNsense\Unbound\Api;
 
-use OPNsense\Base\BaseModel;
+use OPNsense\Base\ApiMutableModelControllerBase;
 
-class Dnsbl extends BaseModel
+class SettingsController extends ApiMutableModelControllerBase
 {
+    protected static $internalModelClass = '\OPNsense\Unbound\Unbound';
+    protected static $internalModelName = 'unbound';
+
+    public function searchDotAction()
+    {
+        return $this->searchBase('dots.dot', array('enabled', 'server', 'port', 'verify'));
+    }
+
+    public function getDotAction($uuid = null)
+    {
+        return $this->getBase('dot', 'dots.dot', $uuid);
+    }
+
+    public function addDotAction()
+    {
+        return $this->addBase('dot', 'dots.dot');
+    }
+
+    public function delDotAction($uuid)
+    {
+        return $this->delBase('dots.dot', $uuid);
+    }
+
+    public function setDotAction($uuid)
+    {
+        return $this->setBase('dot', 'dots.dot', $uuid);
+    }
+
+    public function toggleDotAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('dots.dot', $uuid, $enabled);
+    }
 }
