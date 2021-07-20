@@ -62,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['apply'])) {
         unbound_configure_do();
-        plugins_configure('dhcp');
         clear_subsystem_dirty('unbound');
         header(url_safe('Location: /services_unbound_acls.php'));
         exit;

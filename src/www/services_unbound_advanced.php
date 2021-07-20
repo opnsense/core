@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     write_config('Unbound advanced configuration changed.');
 
     unbound_configure_do();
-    plugins_configure('dhcp');
+    clear_subsystem_dirty('unbound');
 
     header(url_safe('Location: /services_unbound_advanced.php'));
     exit;
