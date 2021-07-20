@@ -55,9 +55,10 @@ elif [ "${AF}" = "inet6" ]; then
 	# Do not remove gateway used during filter reload.
 	rm -f /tmp/${IF}_routerv6 /tmp/${IF}upv6 /tmp/${IF}_ipv6
 
-	# deprecate all previous SLAAC addresses
-	ifconfig ${IF} | grep autoconf | while read FAMILY ADDR MORE; do
-		ifconfig ${IF} ${FAMILY} ${ADDR} deprecated
+	# remove previous SLAAC addresses as the ISP may
+	# not respond to these in the upcoming session
+	ifconfig ${IF} | grep -e autoconf -e deprecated | while read FAMILY ADDR MORE; do
+		ifconfig ${IF} ${FAMILY} ${ADDR} -alias
 	done
 fi
 
