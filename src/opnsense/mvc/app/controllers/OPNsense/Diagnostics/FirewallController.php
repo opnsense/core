@@ -59,4 +59,11 @@ class FirewallController extends IndexController
     {
         $this->view->pick('OPNsense/Diagnostics/fw_states');
     }
+    /**
+     * firewall pftop
+     */
+    public function pfTopAction()
+    {
+        $this->view->pick('OPNsense/Diagnostics/fw_pftop');
+    }
 }

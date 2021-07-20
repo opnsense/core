@@ -147,9 +147,10 @@
         </patterns>
     </page-diagnostics-pf-info>
     <page-diagnostics-system-pftop>
-        <name>Diagnostics: pfTop</name>
+        <name>Diagnostics: Firewall sessions</name>
         <patterns>
-            <pattern>diag_system_pftop.php*</pattern>
+            <pattern>ui/diagnostics/firewall/pf_top*</pattern>
+            <pattern>api/diagnostics/firewall/pf_top*</pattern>
         </patterns>
     </page-diagnostics-system-pftop>
     <page-diagnostics-ping>

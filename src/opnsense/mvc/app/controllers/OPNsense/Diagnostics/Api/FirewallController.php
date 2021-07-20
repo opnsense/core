@@ -203,6 +203,50 @@ class FirewallController extends ApiControllerBase
     }
 
     /**
+     * query pftop
+     */
+    public function queryPfTopAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $filter = new Filter([
+                'query' => function ($value) {
+                    return preg_replace("/[^0-9,a-z,A-Z, ,\/,*,\-,_,.,\#]/", "", $value);
+                }
+            ]);
+            $searchPhrase = '';
+            $ruleId = '';
+            $sortBy = '';
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+
+            if ($this->request->getPost('ruleid', 'string', '') != '') {
+                $ruleId = $filter->sanitize($this->request->getPost('ruleid'), 'query');
+            }
+
+            if ($this->request->getPost('searchPhrase', 'string', '') != '') {
+                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
+            }
+            if ($this->request->has('sort') && is_array($this->request->getPost("sort"))) {
+                $tmp = array_keys($this->request->getPost("sort"));
+                $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
+            }
+
+            $response = (new Backend())->configdpRun('filter diag top', [$searchPhrase, $itemsPerPage,
+                ($currentPage - 1) * $itemsPerPage, $ruleId, $sortBy]);
+            $response = json_decode($response, true);
+            if ($response != null) {
+                return [
+                    'rows' => $response['details'],
+                    'rowCount' => count($response['details']),
+                    'total' => $response['total_entries'],
+                    'current' => (int)$currentPage
+                ];
+            }
+        }
+        return [];
+    }
+    /**
      * delete / drop a specific state by state+creator id
      */
     public function delStateAction($stateid, $creatorid)

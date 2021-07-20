@@ -157,3 +157,75 @@ def query_states(rule_label, filter_str):
             record['state'] = parts[-1]
 
     return result
+
+
+def query_top(rule_label, filter_str):
+    result = list()
+    rule_labels = fetch_rule_labels()
+    sp = subprocess.run(['/usr/local/sbin/pftop', '-w', '1000', '-b','-v', 'long','9999999999999'], capture_output=True, text=True)
+    header = None
+    try:
+        filter_network = ipaddress.ip_network(filter_str.strip())
+    except ValueError:
+        filter_network = None
+
+    for rownum, line in enumerate(sp.stdout.strip().split('\n')):
+        parts = line.strip().split()
+        if rownum >= 2 and len(parts) > 5:
+            record = {
+                'proto': parts[0],
+                'dir': parts[1].lower(),
+                'src_addr': parse_address(parts[2])['addr'],
+                'src_port': parse_address(parts[2])['port'],
+                'dst_addr': parse_address(parts[3])['addr'],
+                'dst_port': parse_address(parts[3])['port'],
+                'gw_addr': None,
+                'gw_port': None,
+            }
+            if parts[4].count(':') > 2 or parts[4].count('.') > 2:
+                record['gw_addr'] = parse_address(parts[4])['addr']
+                record['gw_port'] = parse_address(parts[4])['port']
+                idx = 5
+            else:
+                idx = 4
+
+            record['state'] = parts[idx]
+            record['age'] = parts[idx+1]
+            record['expire'] = parts[idx+2]
+            record['pkts'] = int(parts[idx+3])
+            record['bytes'] = int(parts[idx+4])
+            record['avg'] = int(parts[idx+5])
+            record['rule'] = parts[idx+6]
+            if record['rule'] in rule_labels:
+                record['label'] = rule_labels[record['rule']]['rid']
+                record['descr'] = rule_labels[record['rule']]['descr']
+            else:
+                record['label'] = None
+                record['descr'] = None
+            for timefield in ['age', 'expire']:
+                tmp = record[timefield].split(':')
+                record[timefield] = int(tmp[0]) * 3600 + int(tmp[1]) * 60 + int(tmp[2])
+
+            search_line = " ".join(str(item) for item in filter(None, record.values()))
+            if rule_label != "" and record['label'].lower().find(rule_label) == -1:
+                # label
+                continue
+            elif filter_network is not None:
+                try:
+                    match = False
+                    for field in ['src_addr', 'dst_addr', 'gateway']:
+                        addr = ipaddress.ip_network(record[field])
+                        if field is not None and ipaddress.ip_network(filter_network).overlaps(addr):
+                            match = True
+                            break
+                    if not match:
+                        continue
+                except:
+                    continue
+            elif filter_str != "" and search_line.lower().find(filter_str.lower()) == -1:
+                # apply filter when provided
+                continue
+
+            result.append(record)
+
+    return result

@@ -188,8 +188,8 @@
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <Aliases url="/ui/firewall/alias_util/"/>
             <States url="/ui/diagnostics/firewall/states"/>
+            <Sessions url="/ui/diagnostics/firewall/pf_top"/>
             <pfInfo url="/diag_pf_info.php"/>
-            <pfTop url="/diag_system_pftop.php"/>
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>
