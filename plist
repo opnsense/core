@@ -570,6 +570,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_pftop.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_states.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_stats.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/log.volt
@@ -698,6 +699,7 @@
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
+/usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
 /usr/local/opnsense/scripts/filter/rule_stats.py
 /usr/local/opnsense/scripts/filter/update_bogons.sh
@@ -1724,7 +1726,6 @@
 /usr/local/www/diag_packet_capture.php
 /usr/local/www/diag_pf_info.php
 /usr/local/www/diag_ping.php
-/usr/local/www/diag_system_pftop.php
 /usr/local/www/diag_testport.php
 /usr/local/www/diag_traceroute.php
 /usr/local/www/fbegin.inc
