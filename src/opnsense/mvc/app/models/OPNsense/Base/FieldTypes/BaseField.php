@@ -376,7 +376,11 @@ abstract class BaseField
      */
     public function setAttributeValue($key, $value)
     {
-        $this->internalAttributes[$key] = $value;
+        if ($value !== null) {
+            $this->internalAttributes[$key] = $value;
+        } elseif (isset($this->internalAttributes[$key])) {
+            unset($this->internalAttributes[$key]);
+        }
     }
 
     /**
