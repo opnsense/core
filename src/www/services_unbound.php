@@ -62,9 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($pconfig['apply'])) {
-        system_resolvconf_generate();
+        system_resolvconf_generate(); /* checks for 'enable' */
         unbound_configure_do();
-        plugins_configure('dhcp');
+        plugins_configure('dhcp'); /* checks for 'enable' */
         clear_subsystem_dirty('unbound');
         header(url_safe('Location: /services_unbound.php'));
         exit;

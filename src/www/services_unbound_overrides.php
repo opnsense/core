@@ -46,9 +46,7 @@ foreach ($a_hosts as $i => $hostent) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['apply'])) {
-        system_resolvconf_generate();
         unbound_configure_do();
-        plugins_configure('dhcp');
         clear_subsystem_dirty('unbound');
         header(url_safe('Location: /services_unbound_overrides.php'));
         exit;
