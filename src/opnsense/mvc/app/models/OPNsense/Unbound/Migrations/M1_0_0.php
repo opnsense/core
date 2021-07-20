@@ -60,20 +60,11 @@ class M1_0_0 extends BaseModelMigration
             foreach (explode(',', (string)$mdlNode->miscellaneous->dotservers) as $dot) {
                 $dotNode = $model->dots->dot->add();
                 $dotData = explode('@', $dot, 2);
-
-                $dotEnabled = new BooleanField('enabled', 'enabled');
-                $dotEnabled->setValue('1');
-                $dotNode->addChildNode('enabled', $dotEnabled);
-
-                $dotServer = new NetworkField('server', 'server');
-                $dotServer->setValue($dotData[0]);
-                $dotNode->addChildNode('server', $dotServer);
-
+                $dotContent = [ 'enabled' => 1, 'server' => $dotData[0] ];
                 if (!empty($dotData[1])) {
-                    $dotPort = new PortField('port', 'port');
-                    $dotPort->setValue($dotData[1]);
-                    $dotNode->addChildNode('port', $dotPort);
+                    $dotContent['port'] = $dotData[1];
                 }
+                $dotNode->setNodes($dotContent);
             }
         }
     }
