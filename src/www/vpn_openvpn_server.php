@@ -202,6 +202,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], gettext('IPv4 Tunnel Network'), false, 'ipv4')) {
             $input_errors[] = $result;
+        } elseif (isset($pconfig['tunnel_network'])) {
+            // Check IPv4 tunnel_network pool size
+            list($ipv4tunnel_base, $ipv4tunnel_prefix) = explode('/',trim($pconfig['tunnel_network']));
+            if ($pconfig['dev_mode'] != "tap") {
+                if ($ipv4tunnel_prefix > 28 && empty($pconfig['topology_subnet'])) {
+                    $input_errors[] = gettext('A prefix longer than 28 cannot be used with a net30 topology.');
+                }
+                if ($ipv4tunnel_prefix > 29 && !empty($pconfig['topology_subnet'])) {
+                    $input_errors[] = gettext('A prefix longer than 29 cannot be used for tunnel network.');
+                }
+            } else {
+                if ($ipv4tunnel_prefix > 29) {
+                    $input_errors[] = gettext('A prefix longer than 29 cannot be used for tunnel network.');
+                }
+            }
         }
 
         if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], gettext('IPv6 Tunnel Network'), false, 'ipv6')) {
