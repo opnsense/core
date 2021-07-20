@@ -133,6 +133,15 @@ function unbound_generate_config()
         $module_config .= 'iterator';
     }
 
+    $qnameminstrict = '';
+    if (!empty($config['unbound']['qnameminstrict'])) {
+        $qnameminstrict = <<<EOF
+qname-minimisation: yes
+qname-minimisation-strict: yes
+
+EOF;
+    }
+
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
         $private_addr = <<<EOF
 # For DNS Rebinding prevention
@@ -327,6 +336,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['infra_cache_slabs']}
 {$optimization['key_cache_slabs']}
 {$optimization['so_rcvbuf']}
+{$qnameminstrict}
 {$anchor_file}
 {$dns64prefix}
 prefetch: {$prefetch}
