@@ -557,6 +557,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt

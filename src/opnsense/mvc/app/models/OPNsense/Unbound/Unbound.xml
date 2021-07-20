@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>0.0.0</version>
+    <version>1.0.0</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -65,7 +65,7 @@
                     <Required>Y</Required>
                 </server>
                 <port type="PortField">
-                    <Required>Y</Required>
+                    <Required>N</Required>
                 </port>
                 <verify type="HostnameField">
                     <Required>N</Required>
