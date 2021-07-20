@@ -117,10 +117,6 @@ function unbound_generate_config()
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     }
 
-    foreach (glob('/var/unbound/etc/*') as $file) {
-        unlink($file);
-    }
-
     $optimization = unbound_optimization();
 
     $dns64prefix = '';
@@ -374,8 +370,6 @@ EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
     configd_run('template reload OPNsense/Unbound/*');
-    mwexecf('cp /usr/local/etc/unbound.opnsense.d/*.conf /var/unbound/etc/');
-    mwexecf('/usr/sbin/chown -R unbound:unbound %s', '/var/unbound');
 }
 
 function unbound_cache_flush()

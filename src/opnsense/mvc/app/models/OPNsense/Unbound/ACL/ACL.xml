@@ -39,7 +39,7 @@
         </patterns>
     </page-diagnostics-logs-resolver>
     <page-services-unbound>
-        <name>Services: Unbound (mvc)</name>
+        <name>Services: Unbound (MVC)</name>
         <patterns>
             <pattern>ui/unbound/*</pattern>
             <pattern>api/unbound/*</pattern>

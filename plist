@@ -374,11 +374,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DnsblController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DotController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/MiscellaneousController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/miscellaneous.xml
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -601,7 +599,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dnsbl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dot.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Unbound/miscellaneous.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
@@ -834,9 +831,9 @@
 /usr/local/opnsense/scripts/systemhealth/logformats/squid.py
 /usr/local/opnsense/scripts/systemhealth/logformats/syslog.py
 /usr/local/opnsense/scripts/systemhealth/queryLog.py
+/usr/local/opnsense/scripts/unbound/blocklists.py
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/check.sh
-/usr/local/opnsense/scripts/unbound/download_blacklists.py
 /usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/wrapper.py
 /usr/local/opnsense/service/conf/actions.d/actions_auth.conf
@@ -977,7 +974,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-lockout.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/blacklists.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/miscellaneous.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
