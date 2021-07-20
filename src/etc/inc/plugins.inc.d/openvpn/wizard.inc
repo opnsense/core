@@ -440,6 +440,12 @@ function step10_submitphpaction()
 
     if ($result = openvpn_validate_cidr($_POST['tunnelnet'], gettext('IPv4 Tunnel Network'), false, 'ipv4')) {
         $input_errors[] = $result;
+    } elseif (isset($_POST['tunnelnet'])) {
+        // Check IPv4 tunnelnet pool size. Wizard makes tun mode with net30 server only.
+        list($ipv4tunnel_base, $ipv4tunnel_prefix) = explode('/',trim($_POST['tunnelnet']));
+        if ($ipv4tunnel_prefix > 28) {
+            $input_errors[] = gettext('A prefix longer than 28 cannot be used with a net30 topology.');
+        }
     }
 
     if ($result = openvpn_validate_cidr($_POST['tunnelnetv6'], gettext('IPv6 Tunnel Network'), false, 'ipv6')) {
