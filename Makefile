@@ -28,20 +28,11 @@ all:
 
 .include "Mk/defaults.mk"
 
+CORE_ABI?=	21.1
 CORE_MESSAGE?=	Carry on my wayward son
-CORE_NICKNAME?=	Not Yet
 CORE_NAME?=	opnsense-devel
+CORE_NICKNAME?=	Not Yet
 CORE_TYPE?=	development
-
-.if empty(DEVABI)
-. for REPLACEMENT in ABI PHP PYTHON
-.  if empty(CORE_${REPLACEMENT})
-.   error Cannot build without CORE_${REPLACEMENT} set
-.  endif
-. endfor
-.else
-CORE_ABI=	${DEVABI}
-.endif
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
 .if ${_CORE_NEXT:[2]} == 7
@@ -52,7 +43,7 @@ CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
 .endif
 
-.if exists(${GIT}) && exists(${GITVERSION})
+.if exists(${GIT}) && exists(${GITVERSION}) && exists(${.CURDIR}/.git)
 . if ${CORE_TYPE:M[Dd][Ee][Vv]*}
 _NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
 .  if !empty(_NEXTBETA)
