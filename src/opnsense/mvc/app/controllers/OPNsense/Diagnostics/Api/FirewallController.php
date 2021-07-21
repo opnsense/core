@@ -199,7 +199,12 @@ class FirewallController extends ApiControllerBase
                 ];
             }
         }
-        return [];
+        return [
+            'rows' => [],
+            'rowCount' => 0,
+            'total' => 0,
+            'current' => 0
+        ];
     }
 
     /**
@@ -244,7 +249,12 @@ class FirewallController extends ApiControllerBase
                 ];
             }
         }
-        return [];
+        return [
+            'rows' => [],
+            'rowCount' => 0,
+            'total' => 0,
+            'current' => 0
+        ];
     }
     /**
      * delete / drop a specific state by state+creator id
