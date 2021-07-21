@@ -52,7 +52,7 @@ CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
 .endif
 
-.if exists(${GIT}) && exists(${GITVERSION})
+.if exists(${GIT}) && exists(${GITVERSION}) && exists(${.CURDIR}/.git)
 . if ${CORE_TYPE:M[Dd][Ee][Vv]*}
 _NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
 .  if !empty(_NEXTBETA)
