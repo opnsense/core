@@ -34,6 +34,12 @@ CORE_NAME?=	opnsense-devel
 CORE_NICKNAME?=	Not Yet
 CORE_TYPE?=	development
 
+.for REPLACEMENT in ABI PHP PYTHON
+. if empty(CORE_${REPLACEMENT})
+.  warning Cannot build without CORE_${REPLACEMENT} set
+. endif
+.endfor
+
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
 .if ${_CORE_NEXT:[2]} == 7
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
