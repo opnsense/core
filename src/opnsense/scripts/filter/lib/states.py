@@ -192,9 +192,9 @@ def query_top(rule_label, filter_str):
             record['state'] = parts[idx]
             record['age'] = parts[idx+1]
             record['expire'] = parts[idx+2]
-            record['pkts'] = int(parts[idx+3])
-            record['bytes'] = int(parts[idx+4])
-            record['avg'] = int(parts[idx+5])
+            record['pkts'] = int(parts[idx+3]) if parts[idx+3].isdigit() else 0
+            record['bytes'] = int(parts[idx+4]) if parts[idx+4].isdigit() else 0
+            record['avg'] = int(parts[idx+5]) if parts[idx+5].isdigit() else 0
             record['rule'] = parts[idx+6]
             if record['rule'] in rule_labels:
                 record['label'] = rule_labels[record['rule']]['rid']
