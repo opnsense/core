@@ -28,20 +28,17 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_MESSAGE?=	Carry on my wayward son
-CORE_NICKNAME?=	Not Yet
+CORE_ABI?=	21.7
+CORE_MESSAGE?=	The song remains the same
 CORE_NAME?=	opnsense
+CORE_NICKNAME?=	Noble Nightingale
 CORE_TYPE?=	community
 
-.if empty(DEVABI)
-. for REPLACEMENT in ABI PHP PYTHON
-.  if empty(CORE_${REPLACEMENT})
-.   error Cannot build without CORE_${REPLACEMENT} set
-.  endif
-. endfor
-.else
-CORE_ABI=	${DEVABI}
-.endif
+.for REPLACEMENT in ABI PHP PYTHON
+. if empty(CORE_${REPLACEMENT})
+.  warning Cannot build without CORE_${REPLACEMENT} set
+. endif
+.endfor
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
 .if ${_CORE_NEXT:[2]} == 7
