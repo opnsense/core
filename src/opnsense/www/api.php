@@ -24,21 +24,18 @@ try {
     $application = new \Phalcon\Mvc\Application($di);
 
     echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
-} catch (\Exception $e) {
-    $response = array();
-    $response['errorMessage'] = $e->getMessage();
+} catch (\Error | \Exception $e) {
+    $response = [
+        'errorMessage' => $e->getMessage(),
+        'errorTrace' => $e->getTraceAsString(),
+    ];
     if (method_exists($e, 'getTitle')) {
         $response['errorTitle'] = $e->getTitle();
     } else {
-        $response['errorTitle'] = gettext("An API exception occured");
+        $response['errorTitle'] = gettext('An API exception occured');
+        $response['errorMessage'] = $e->getFile() . ':' . $e->getLine() . ': ' . $response['errorMessage'];
         error_log($e);
     }
-    header('HTTP', true, 500);
-    header("Content-Type: application/json;charset=utf-8");
-    echo json_encode($response, JSON_UNESCAPED_SLASHES);
-} catch (\ArgumentCountError $e) {
-    error_log($e);
-    $response = ['errorMessage' => 'endpoint parameter mismatch', 'errorTitle' => gettext("An API exception occured")];
     header('HTTP', true, 500);
     header("Content-Type: application/json;charset=utf-8");
     echo json_encode($response, JSON_UNESCAPED_SLASHES);
