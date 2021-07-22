@@ -1,5 +1,4 @@
 {#
- #
  # Copyright (c) 2014-2021 Deciso B.V.
  # All rights reserved.
  #
@@ -255,7 +254,7 @@
                                         log_td.addClass('address');
                                         log_td.data('address', record[column_name]);
                                         if (record[column_name+'port'] !== undefined) {
-                                            if (record['version'] == 6) {
+                                            if (record['ipversion'] == 6) {
                                                 log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
                                             } else {
                                                 log_td.text(log_td.text()+':'+record[column_name+'port']);
