@@ -43,7 +43,7 @@ from params import update_params
 
 # define log layouts, every endpoint contains all options
 # source : https://github.com/opnsense/ports/blob/master/opnsense/filterlog/files/description.txt
-fields_general = 'rulenr,subrulenr,anchorname,ridentifier,interface,reason,action,dir,version'.split(',')
+fields_general = 'rulenr,subrulenr,anchorname,rid,interface,reason,action,dir,version'.split(',')
 fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,proto,protoname,length,src,dst'.split(',')
 fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
 fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
@@ -159,8 +159,15 @@ if __name__ == '__main__':
                                 update_rule(rule, metadata, rulep, fields_ipv6_carp)
 
                 rule.update(metadata)
-                if len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
-                    # rule id found in record, don't use rule sequence number in that case
+                if rule['rid'] != '0':
+                    # rule id in latest record format, don't use rule sequence number in that case
+                    if rule['rid'] in running_conf_descr['rule_map']:
+                        rule['label'] = running_conf_descr['rule_map'][rule['rid']]
+                    # obsolete md5 in log record
+                    else:
+                        rule['label'] = ''
+                elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
+                    # rule id apended in record format, don't use rule sequence number in that case either
                     rule['rid'] = rulep[-1]
                     if rulep[-1] in running_conf_descr['rule_map']:
                         rule['label'] = running_conf_descr['rule_map'][rulep[-1]]
