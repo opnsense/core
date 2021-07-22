@@ -84,7 +84,7 @@ if (isset($opts['h'])) {
         foreach (plugins_scan() as $name => $path) {
             try {
                 include_once $path;
-            } catch (ParseError $e) {
+            } catch (\Error $e) {
                 error_log($e);
             }
             $func = sprintf('%s_configure', $name);
