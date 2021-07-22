@@ -48,5 +48,6 @@ if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
 else
 	echo "No IPv6 address could be found." | ${TEE} ${LOCKFILE}
 fi
+echo "Checking connectivity for URL: ${URL}" | ${TEE} ${LOCKFILE}
 (pkg update -f 2>&1) | ${TEE} ${LOCKFILE}
 echo '***DONE***' >> ${LOCKFILE}
