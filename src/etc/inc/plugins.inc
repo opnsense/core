@@ -73,7 +73,7 @@ function plugins_services()
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_services', $name);
@@ -98,7 +98,7 @@ function plugins_devices()
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_devices', $name);
@@ -119,7 +119,7 @@ function plugins_cron()
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_cron', $name);
@@ -140,7 +140,7 @@ function plugins_syslog()
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_syslog', $name);
@@ -178,7 +178,7 @@ function plugins_interfaces()
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_interfaces', $name);
@@ -220,7 +220,7 @@ function plugins_firewall($fw)
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_firewall', $name);
@@ -241,7 +241,7 @@ function plugins_configure($hook, $verbose = false, $args = array())
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_configure', $name);
@@ -285,7 +285,7 @@ function plugins_run($hook, $verbose = false, $args = array())
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_run', $name);
@@ -325,7 +325,7 @@ function plugins_xmlrpc_sync()
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
-        } catch (ParseError $e) {
+        } catch (\Error $e) {
             error_log($e);
         }
         $func = sprintf('%s_xmlrpc_sync', $name);
