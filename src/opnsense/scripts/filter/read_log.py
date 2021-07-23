@@ -45,12 +45,12 @@ from params import update_params
 # source : https://github.com/opnsense/ports/blob/master/opnsense/filterlog/files/description.txt
 fields_general = 'rulenr,subrulenr,anchorname,rid,interface,reason,action,dir,ipversion'.split(',')
 
-fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,proto,protoname,length,src,dst'.split(',')
+fields_ipv4 = fields_general + 'tos,ecn,ttl,id,offset,ipflags,protonum,protoname,length,src,dst'.split(',')
 fields_ipv4_udp = fields_ipv4 + 'srcport,dstport,datalen'.split(',')
 fields_ipv4_tcp = fields_ipv4 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv4_carp = fields_ipv4 + 'type,ttl,vhid,version,advskew,advbase'.split(',')
 
-fields_ipv6 = fields_general + 'class,flow,hoplimit,protoname,proto,length,src,dst'.split(',')
+fields_ipv6 = fields_general + 'class,flow,hoplimit,protoname,protonum,length,src,dst'.split(',')
 fields_ipv6_udp = fields_ipv6 + 'srcport,dstport,datalen'.split(',')
 fields_ipv6_tcp = fields_ipv6 + 'srcport,dstport,datalen,tcpflags,seq,ack,urp,tcpopts'.split(',')
 fields_ipv6_carp = fields_ipv6 + 'type,hoplimit,vhid,version,advskew,advbase'.split(',')
@@ -143,21 +143,21 @@ if __name__ == '__main__':
                 elif 'ipversion' in rule:
                     if rule['ipversion'] == '4':
                         update_rule(rule, metadata, rulep, fields_ipv4)
-                        if 'proto' in rule:
-                            if rule['proto'] == '17': # UDP
+                        if 'protonum' in rule:
+                            if rule['protonum'] == '17': # UDP
                                 update_rule(rule, metadata, rulep, fields_ipv4_udp)
-                            elif rule['proto'] == '6': # TCP
+                            elif rule['protonum'] == '6': # TCP
                                 update_rule(rule, metadata, rulep, fields_ipv4_tcp)
-                            elif rule['proto'] == '112': # CARP
+                            elif rule['protonum'] == '112': # CARP
                                 update_rule(rule, metadata, rulep, fields_ipv4_carp)
                     elif rule['ipversion'] == '6':
                         update_rule(rule, metadata, rulep, fields_ipv6)
-                        if 'proto' in rule:
-                            if rule['proto'] == '17': # UDP
+                        if 'protonum' in rule:
+                            if rule['protonum'] == '17': # UDP
                                 update_rule(rule, metadata, rulep, fields_ipv6_udp)
-                            elif rule['proto'] == '6': # TCP
+                            elif rule['protonum'] == '6': # TCP
                                 update_rule(rule, metadata, rulep, fields_ipv6_tcp)
-                            elif rule['proto'] == '112': # CARP
+                            elif rule['protonum'] == '112': # CARP
                                 update_rule(rule, metadata, rulep, fields_ipv6_carp)
 
                 rule.update(metadata)
