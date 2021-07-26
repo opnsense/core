@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+
 IF="${1}"
 AF="${2}"
 IP="${3}"
@@ -52,6 +54,12 @@ elif [ "${AF}" = "inet6" ]; then
 
 	# Do not remove gateway used during filter reload.
 	rm -f /tmp/${IF}_routerv6 /tmp/${IF}upv6 /tmp/${IF}_ipv6
+
+	# remove previous SLAAC addresses as the ISP may
+	# not respond to these in the upcoming session
+	ifconfig ${IF} | grep -e autoconf -e deprecated | while read FAMILY ADDR MORE; do
+		ifconfig ${IF} ${FAMILY} ${ADDR} -alias
+	done
 fi
 
 daemon -f /usr/local/opnsense/service/configd_ctl.py dns reload
