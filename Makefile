@@ -28,7 +28,7 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	21.1
+CORE_ABI?=	21.7
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
 CORE_NICKNAME?=	Not Yet
