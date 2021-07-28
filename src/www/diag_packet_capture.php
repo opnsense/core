@@ -319,6 +319,12 @@ include("head.inc");
               }
           });
         });
+        $("#select_all").click(function(e){
+            e.preventDefault();
+            $("#interface  option").prop("selected", $("#select_all > i").hasClass("fa-check-square-o"));
+            $("#select_all > i").toggleClass("fa-check-square-o fa-square-o");
+            $("#interface").selectpicker('refresh');
+        });
     });
 </script>
 
@@ -349,15 +355,18 @@ include("fbegin.inc");
                   <tr>
                     <td><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
-                      <select name="interface[]" class="selectpicker" multiple="multiple">
+                      <select id="interface" name="interface[]" class="selectpicker" multiple="multiple">
 <?php
                       foreach ($interfaces as $iface => $ifacename): ?>
-                        <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$iface;?>" <?=is_array($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
                           <?=$ifacename;?>
                         </option>
 <?php
                       endforeach; ?>
                       </select>
+                      <button class="btn btn-default" id="select_all" data-toggle="tooltip" title="<?=gettext("(de)select all");?>">
+                          <i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i>
+                      </button>
                       <div class="hidden" data-for="help_for_if">
                         <?=gettext("Select the interface on which to capture traffic.");?>
                       </div>
