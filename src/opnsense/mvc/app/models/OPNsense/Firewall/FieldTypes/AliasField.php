@@ -53,7 +53,7 @@ class AliasField extends ArrayField
             "enabled" => "1",
             "name" => "virusprot",
             "type" => "external",
-            "description" => "overload table for rate limitting (internal)",
+            "description" => "overload table for rate limiting (internal)",
             "content" => ""
         ],
         "sshlockout" => [
