@@ -201,7 +201,7 @@ class ExportController extends ApiControllerBase
      * @param string $vpnid server handle
      * @return array list of configured accounts
      */
-    public function accountsAction($vpnid)
+    public function accountsAction($vpnid = null)
     {
         $result = [
             null => [
