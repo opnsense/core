@@ -358,7 +358,7 @@ include("fbegin.inc");
                       <select id="interface" name="interface[]" class="selectpicker" multiple="multiple">
 <?php
                       foreach ($interfaces as $iface => $ifacename): ?>
-                        <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$iface;?>" <?=is_array($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? "selected=\"selected\"" : ""; ?>>
                           <?=$ifacename;?>
                         </option>
 <?php
