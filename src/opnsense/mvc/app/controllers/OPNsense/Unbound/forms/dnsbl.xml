@@ -36,4 +36,12 @@
         <allownew>true</allownew>
         <help>List of domains to mark as private. You only need this for some DNSBL lists which resolve to private addresses.</help>
     </field>
+    <field>
+        <id>unbound.miscellaneous.insecuredomain</id>
+        <label>Insecure Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to mark as insecure. DNSSEC chain of trust is ignored towards the domain name.</help>
+    </field>
 </form>
