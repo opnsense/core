@@ -442,7 +442,7 @@ function step10_submitphpaction()
         $input_errors[] = $result;
     } elseif (!empty($_POST['tunnelnet'])) {
         // Check IPv4 tunnelnet pool size. Wizard makes tun mode with net30 server only.
-        list($ipv4tunnel_base, $ipv4tunnel_prefix) = explode('/',trim($_POST['tunnelnet']));
+        list($ipv4tunnel_base, $ipv4tunnel_prefix) = explode('/', trim($_POST['tunnelnet']));
         if ($ipv4tunnel_prefix > 28) {
             $input_errors[] = gettext('A prefix longer than 28 cannot be used with a net30 topology.');
         }
