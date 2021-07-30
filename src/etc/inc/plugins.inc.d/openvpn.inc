@@ -271,13 +271,13 @@ function openvpn_get_cipherlist()
     $ciphers = array();
     exec('/usr/local/sbin/openvpn --show-ciphers', $lines);
     foreach ($lines as $line) {
-        if (strstr($line, '(') !== false) {
+        if (strstr($line, '  (') !== false) {
             $cipher = explode(' ', $line)[0];
             $ciphers[$cipher] = $line;
         }
     }
-    ksort($ciphers);
-    $ciphers["none"] = gettext("None (No Encryption)");
+    ksort($ciphers, SORT_STRING | SORT_FLAG_CASE);
+    $ciphers['none'] = gettext('None (No Encryption)');
     return $ciphers;
 }
 
