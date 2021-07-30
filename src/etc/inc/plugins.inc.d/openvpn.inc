@@ -595,15 +595,17 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         // configure p2p/server modes
         switch ($settings['mode']) {
             case 'p2p_tls':
-                // If the CIDR is less than a /30, OpenVPN will complain if you try to
-                //  use the server directive. It works for a single client without it.
-                //  See ticket #1417
-                if (!empty($ip) && !empty($mask) && ($cidr < 30)) {
-                    $conf .= "server {$ip} {$mask}\n";
-                    $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
-                    if (is_ipaddr($ipv6)) {
+                if (!empty($ip) || !empty($ipv6)) {
+                    // If the CIDR is less than a /30, OpenVPN will complain if you try to
+                    //  use the server directive. It works for a single client without it.
+                    //  See ticket #1417
+                    if (is_ipaddrv4($ip) && !empty($mask) && $cidr < 30) {
+                        $conf .= "server {$ip} {$mask}\n";
+                    }
+                    if (is_ipaddrv6($ipv6) && !empty($prefix)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
+                    $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                 }
                 /* XXX FALLTHROUGH */
             case 'p2p_shared_key':
@@ -627,9 +629,11 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             case 'server_tls':
             case 'server_user':
             case 'server_tls_user':
-                if (!empty($ip) && !empty($mask)) {
-                    $conf .= "server {$ip} {$mask}\n";
-                    if (is_ipaddr($ipv6)) {
+                if (!empty($ip) || !empty($ipv6)) {
+                    if (is_ipaddrv4($ip) && !empty($mask)) {
+                        $conf .= "server {$ip} {$mask}\n";
+                    }
+                    if (is_ipaddrv6($ipv6) && !empty($prefix)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
                     $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
