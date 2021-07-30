@@ -76,6 +76,9 @@
             <privatedomain type="CSVListField">
                     <Required>N</Required>
             </privatedomain>
+            <insecuredomain type="CSVListField">
+                    <Required>N</Required>
+            </insecuredomain>
         </miscellaneous>
     </items>
 </model>
