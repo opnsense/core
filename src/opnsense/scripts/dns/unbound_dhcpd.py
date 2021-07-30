@@ -36,6 +36,7 @@ import time
 import tempfile
 import argparse
 import syslog
+from configparser import ConfigParser
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from daemonize import Daemonize
 import watchers.dhcpd
@@ -109,12 +110,28 @@ class UnboundLocalData:
         return len(tmp) == 1 and fqdn in self._map_by_fqdn and self._map_by_fqdn[fqdn] == address
 
 
-def run_watcher(target_filename, domain):
+def run_watcher(target_filename, default_domain, watch_file, config):
     # cleanup interval (seconds)
     cleanup_interval = 60
 
+    # parse lease configs (ranges and domain names)
+    lease_configs = list()
+    if os.path.isfile(config):
+        cnf = ConfigParser()
+        cnf.read(config)
+        for section in cnf.sections():
+            if cnf.has_option(section, 'start') and cnf.has_option(section, 'end') and cnf.has_option(section, 'domain'):
+                try:
+                    lease_configs.append({
+                        'start': ipaddress.ip_address(cnf.get(section, 'start')),
+                        'end': ipaddress.ip_address(cnf.get(section, 'end')),
+                        'domain': cnf.get(section, 'domain')
+                    })
+                except ValueError:
+                    pass
+
     # initiate lease watcher and setup cache
-    dhcpdleases = watchers.dhcpd.DHCPDLease()
+    dhcpdleases = watchers.dhcpd.DHCPDLease(watch_file)
     cached_leases = dict()
     unbound_local_data = UnboundLocalData()
 
@@ -125,6 +142,11 @@ def run_watcher(target_filename, domain):
         for lease in dhcpdleases.watch():
             if 'ends' in lease and lease['ends'] > time.time() \
                     and 'client-hostname' in lease and 'address' in lease and lease['client-hostname']:
+                address = ipaddress.ip_address(lease['address'])
+                lease['domain'] = default_domain
+                for lease_config in lease_configs:
+                    if lease_config['start'] <= address <= lease_config['end']:
+                        lease['domain'] = lease_config['domain']
                 cached_leases[lease['address']] = lease
                 dhcpd_changed = True
 
@@ -140,7 +162,7 @@ def run_watcher(target_filename, domain):
                         syslog.LOG_NOTICE,
                         "dhcpd expired %s @ %s" % (cached_leases[address]['client-hostname'], address)
                     )
-                    fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
+                    fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], cached_leases[address]['domain'])
                     remove_rr += [ ipaddress.ip_address(address).reverse_pointer,
                                    fqdn ]
                     if unbound_local_data.is_equal(address, fqdn):
@@ -153,14 +175,14 @@ def run_watcher(target_filename, domain):
             with open(target_filename, 'w') as unbound_conf:
                 for address in cached_leases:
                     unbound_conf.write('local-data-ptr: "%s %s.%s"\n' % (
-                        address, cached_leases[address]['client-hostname'], domain)
+                        address, cached_leases[address]['client-hostname'], cached_leases[address]['domain'])
                     )
                     unbound_conf.write('local-data: "%s.%s IN A %s"\n' % (
-                        cached_leases[address]['client-hostname'], domain, address)
+                        cached_leases[address]['client-hostname'], cached_leases[address]['domain'], address)
                     )
             # signal unbound
             for address in cached_leases:
-                fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], domain)
+                fqdn = '%s.%s' % (cached_leases[address]['client-hostname'], cached_leases[address]['domain'])
                 if not unbound_local_data.is_equal(address, fqdn):
                     remove_rr.append(ipaddress.ip_address(address).reverse_pointer)
                     for tmp_fqdn in unbound_local_data.all_fqdns(address, fqdn):
@@ -184,18 +206,32 @@ def run_watcher(target_filename, domain):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--pid', help='pid file location', default='/var/run/unbound_dhcpd.pid')
+    parser.add_argument('--source', help='source leases file',
+                                    default='/var/dhcpd/var/db/dhcpd.leases')
     parser.add_argument('--target', help='target config file, used when unbound restarts',
                                     default='/var/unbound/dhcpleases.conf')
     parser.add_argument('--foreground', help='run in forground', default=False, action='store_true')
-    parser.add_argument('--domain', help='domain to use',  default='local')
+    parser.add_argument('--domain', help='default domain to use',  default='local')
+    parser.add_argument('--config', help='configuration file to use',  default='/usr/local/etc/unbound_dhcpd.conf')
+
     inputargs = parser.parse_args()
 
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
 
     if inputargs.foreground:
-        run_watcher(target_filename=inputargs.target, domain=inputargs.domain)
+        run_watcher(
+            target_filename=inputargs.target,
+            default_domain=inputargs.domain,
+            watch_file=inputargs.source,
+            config=inputargs.config
+        )
     else:
         syslog.syslog(syslog.LOG_NOTICE, 'daemonize unbound dhcpd watcher.')
-        cmd  = lambda : run_watcher(target_filename=inputargs.target, domain=inputargs.domain)
+        cmd  = lambda : run_watcher(
+            target_filename=inputargs.target,
+            default_domain=inputargs.domain,
+            watch_file=inputargs.source,
+            config=inputargs.config
+        )
         daemon = Daemonize(app="unbound_dhcpd", pid=inputargs.pid, action=cmd)
         daemon.start()
