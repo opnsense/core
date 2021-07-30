@@ -982,6 +982,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/miscellaneous.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/unbound_dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/WebGui/etc.php.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/lib.php.ini
