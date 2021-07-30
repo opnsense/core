@@ -53,17 +53,28 @@ function hook_ipv4v6(classname, data_id)
         var selectlist_id = $(this).attr('id');
         if ($(this).data(data_id) != undefined) {
             $("#"+$(this).data(data_id)).change(function () {
-                if ($(this).val().indexOf(":") == -1) {
-                    $("#"+selectlist_id).val('32');
-                    for (let i = 33; i <= 128; ++i) {
-                        $("#"+selectlist_id+' option[value=' + i + ']').hide()
-                    }
-                } else {
+                let net = $("#"+selectlist_id).val();
+                let type = $(this).data('ipv4v6');
+                let val = $(this).val();
+                if (val.indexOf(":") != -1) {
                     for (let i = 33; i <= 128; ++i) {
                         $("#"+selectlist_id+' option[value=' + i + ']').show()
                     }
-                    $("#"+selectlist_id).val('64');
+                    if ((type === undefined && val == '') || type === '4') {
+                        net = '64';
+                    }
+                    type = '6';
+                } else {
+                    if ((type === undefined && val == '') || type === '6') {
+                        net = '32';
+                    }
+                    type = '4';
+                    for (let i = 33; i <= 128; ++i) {
+                        $("#"+selectlist_id+' option[value=' + i + ']').hide()
+                    }
                 }
+                $("#"+selectlist_id).val(net);
+                $(this).data('ipv4v6', type);
                 /* when select list uses selectpicker, refresh */
                 if ($("#"+selectlist_id).hasClass('selectpicker')) {
                     $("#"+selectlist_id).selectpicker('refresh');
