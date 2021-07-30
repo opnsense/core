@@ -179,7 +179,4 @@ if __name__ == '__main__':
         for filename in to_remove[aliasname]:
             os.remove(filename)
 
-    if 'messages' in result and ''.join(result['messages']).find('Invalid argument') > -1:
-        result['messages'].append("(net.pf.request_maxcount likely undersized in system tunables)")
-
     print (json.dumps(result))
