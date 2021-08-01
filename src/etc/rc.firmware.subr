@@ -40,7 +40,7 @@ fi
 
 if [ -z "${RELEASE}" ]; then
 	# already locked here, ok to call without launcher.sh
-	/usr/local/opnsense/scripts/firmware/update.sh
+	/usr/local/opnsense/scripts/firmware/update.sh sync
 else
 	# already locked here, ok to call without launcher.sh
 	/usr/local/opnsense/scripts/firmware/upgrade.sh

@@ -25,6 +25,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+CMD=${1}
 LOCKFILE="/tmp/pkg_upgrade.progress"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
@@ -46,6 +47,11 @@ fi
 
 # restart the web server
 (/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
+
+# run plugin resolver if requested
+if [ "${CMD}" = "sync" ]; then
+	. /usr/local/opnsense/scripts/firmware/sync.subr.sh
+fi
 
 # if we can update base, we'll do that as well
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
