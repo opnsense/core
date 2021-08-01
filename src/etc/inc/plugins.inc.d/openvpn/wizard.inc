@@ -276,7 +276,7 @@ function step8_stepbeforeformdisplay()
         $stepid++;
     } else {
         foreach ($config['cert'] as $cert) {
-            if (cert_get_purpose($cert['crt'])['server'] == 'Yes') {
+            if (cert_get_purpose($cert['crt'])['id-kp-serverAuth'] == 'Yes') {
                 $no_server_cert = false;
                 break;
             }

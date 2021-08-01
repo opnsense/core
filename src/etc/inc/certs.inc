@@ -440,18 +440,27 @@ function cert_get_purpose($str_crt, $decode = true)
 
     $crt_details = openssl_x509_parse($str_crt);
     $purpose = array();
-    $purpose['ca'] = (stristr($crt_details['extensions']['basicConstraints'], 'CA:TRUE') === false) ? 'No' : 'Yes';
+    foreach (['basicConstraints', 'extendedKeyUsage', 'keyUsage'] as $ext) {
+        $purpose[$ext] = [];
+        if (!empty($crt_details['extensions'][$ext])) {
+            foreach (explode(",", $crt_details['extensions'][$ext]) as $item) {
+                $purpose[$ext][] = trim($item);
+            }
+        }
+    }
+    $purpose['ca'] = in_array('CA:TRUE', $purpose['basicConstraints']) ? 'Yes' : 'No';
+    $purpose['server'] = in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) ? 'Yes' : 'No';
+    // rfc3280 extended key usage
     if (
-        isset($crt_details['extensions']['extendedKeyUsage']) &&
-        strstr($crt_details['extensions']['extendedKeyUsage'], 'TLS Web Server Authentication') !== false &&
-        isset($crt_details['extensions']['keyUsage']) &&
-        strpos($crt_details['extensions']['keyUsage'], 'Digital Signature') !== false &&
-        (strpos($crt_details['extensions']['keyUsage'], 'Key Encipherment') !== false ||
-        strpos($crt_details['extensions']['keyUsage'], 'Key Agreement') !== false)
+        in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
+        in_array('Digital Signature', $purpose['keyUsage']) && (
+            in_array('Key Encipherment', $purpose['keyUsage']) ||
+            in_array('Key Agreement', $purpose['keyUsage'])
+        )
     ) {
-        $purpose['server'] = 'Yes';
+        $purpose['id-kp-serverAuth'] = 'Yes';
     } else {
-        $purpose['server'] = 'No';
+        $purpose['id-kp-serverAuth'] = 'No';
     }
     return $purpose;
 }

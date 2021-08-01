@@ -337,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['certref'])) {
             foreach ($config['cert'] as $cert) {
                 if ($cert['refid'] == $pconfig['certref']) {
-                    if (cert_get_purpose($cert['crt'])['server'] == 'No') {
+                    if (cert_get_purpose($cert['crt'])['id-kp-serverAuth'] == 'No') {
                         $input_errors[] = gettext(
                             sprintf('Certificate %s is not intended for server use.', $cert['descr'])
                         );
