@@ -4181,6 +4181,10 @@ function get_interfaces_info()
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];
+        $ifinfo['inbytes'] = $ifinfotmp['bytes received'];
+        $ifinfo['outbytes'] = $ifinfotmp['bytes transmitted'];
+        $ifinfo['inpkts'] = $ifinfotmp['packets received'];
+        $ifinfo['outpkts'] = $ifinfotmp['packets transmitted'];
         $ifinfo['inerrs'] = $ifinfotmp['input errors'];
         $ifinfo['outerrs'] = $ifinfotmp['output errors'];
         $ifinfo['collisions'] = $ifinfotmp['collisions'];

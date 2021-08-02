@@ -32,17 +32,15 @@ function interfaces_api()
 {
     $result = array();
     $ifsinfo = get_interfaces_info();
-    $pfctl_counters = json_decode(configd_run("filter list counters json"), true);
     foreach (get_configured_interface_with_descr() as $ifdescr => $ifname) {
         $ifinfo = $ifsinfo[$ifdescr];
-        $ifpfcounters = $pfctl_counters[$ifinfo['if']];
         $interfaceItem = array();
-        $interfaceItem['inpkts'] = $ifpfcounters['inpkts'];
-        $interfaceItem['outpkts'] = $ifpfcounters['outpkts'];
-        $interfaceItem['inbytes'] = $ifpfcounters['inbytes'];
-        $interfaceItem['outbytes'] = $ifpfcounters['outbytes'];
-        $interfaceItem['inbytes_frmt'] = format_bytes($ifpfcounters['inbytes']);
-        $interfaceItem['outbytes_frmt'] = format_bytes($ifpfcounters['outbytes']);
+        $interfaceItem['inpkts'] = $ifinfo['inpkts'];
+        $interfaceItem['outpkts'] = $ifinfo['outpkts'];
+        $interfaceItem['inbytes'] = $ifinfo['inbytes'];
+        $interfaceItem['outbytes'] = $ifinfo['outbytes'];
+        $interfaceItem['inbytes_frmt'] = format_bytes($ifinfo['inbytes']);
+        $interfaceItem['outbytes_frmt'] = format_bytes($ifinfo['outbytes']);
         $interfaceItem['inerrs'] = isset($ifinfo['inerrs']) ? $ifinfo['inerrs'] : "0";
         $interfaceItem['outerrs'] = isset($ifinfo['outerrs']) ? $ifinfo['outerrs'] : "0";
         $interfaceItem['collisions'] = isset($ifinfo['collisions']) ? $ifinfo['collisions'] : "0";
