@@ -259,6 +259,7 @@ EOF;
     }
 
     $forward_conf = '';
+    $forward_local = '';
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
 
@@ -282,6 +283,9 @@ forward-zone:
 
 EOD;
             foreach ($dnsservers as $dnsserver) {
+                if (strpos($dnsserver, '127.') === 0 || $dnsserver == '::1') {
+                    $forward_local = "do-not-query-localhost: no\n";
+                }
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
             }
         }
@@ -338,6 +342,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['so_rcvbuf']}
 {$qnameminstrict}
 {$anchor_file}
+{$forward_local}
 {$dns64prefix}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
@@ -439,6 +444,7 @@ function unbound_add_domain_overrides($pvt = false)
     });
 
     $result = array();
+    $forward_local = '';
 
     foreach ($domains as $domain) {
         $domain_key = current($domain);
@@ -461,6 +467,9 @@ function unbound_add_domain_overrides($pvt = false)
             $domain_entries .= "forward-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
             foreach ($ips as $ip) {
+                if (strpos($ip, '127.') === 0 || $ip == '::1') {
+                    $forward_local = "server:\n\tdo-not-query-localhost: no\n";
+                }
                 $domain_entries .= "\tforward-addr: $ip\n";
             }
         }
@@ -469,6 +478,7 @@ function unbound_add_domain_overrides($pvt = false)
     if ($pvt == true) {
         return $domain_entries;
     } else {
+        $domain_entries .= $forward_local;
         file_put_contents('/var/unbound/domainoverrides.conf', $domain_entries);
     }
 }
