@@ -80,7 +80,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20190702
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20200119
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20200313
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210104
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210104
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210629
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
