@@ -31,6 +31,11 @@ UNBOUNDCTL="/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf"
 CACHE="/var/unbound/cache.dump.gz"
 COMMAND=${1}
 
+if [ -f ${CACHE} -a "$(zcat ${CACHE} | wc -l | awk '{ print $1 }')" = "0" ]; then
+	# purge invalid data
+	COMMAND=flush
+fi
+
 if [ "${COMMAND}" = "dump" ]; then
 	${UNBOUNDCTL} dump_cache | gzip > ${CACHE}
 elif [ "${COMMAND}" = "load" -a -f "${CACHE}" ]; then
