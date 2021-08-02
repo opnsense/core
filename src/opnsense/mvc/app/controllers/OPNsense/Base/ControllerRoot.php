@@ -99,6 +99,7 @@ class ControllerRoot extends Controller
         ));
 
         /* somehow this is not done by Phalcon */
+        bind_textdomain_codeset('OPNsense', $locale);
         putenv('LANG=' . $locale);
     }
 
