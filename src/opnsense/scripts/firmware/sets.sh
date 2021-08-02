@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LIC="BSD2CLAUSE"
-OS="HardenedBSD"
+OS="FreeBSD"
 REPO="OPNsense"
 SEP=${1:-","}
 
