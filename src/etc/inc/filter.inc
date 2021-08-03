@@ -419,7 +419,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     if (!empty($config['system']['maximumtableentries'])) {
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
         set_single_sysctl('net.pf.request_maxcount', $config['system']['maximumtableentries']);
-    } elseif (is_bogonsv6_used()) {
+    } else {
         $max_table_entries = default_table_entries_size();
         $req_table_entries = 1000000;
         if ($max_table_entries <= $req_table_entries) {
