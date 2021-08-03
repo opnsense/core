@@ -144,153 +144,152 @@ else
         # Repository can be used for updates
         repository="ok"
 
+        MODE=
+
+        while read LINE; do
+            REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
+            if [ -z "${REPO}" ]; then
+                REPO=${product_repo}
+            fi
+
+            for i in $(echo "${LINE}" | tr '[' '(' | cut -d '(' -f1); do
+                case ${MODE} in
+                DOWNGRADED:)
+                    if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
+                        if [ "${i%:*}" = "${i}" ]; then
+                            itemcount=0 # This is not a valid item so reset item count
+                            MODE=
+                        else
+                            i=$(echo $i | tr -d :)
+                            if [ -n "$packages_downgraded" ]; then
+                                packages_downgraded=$packages_downgraded","
+                            fi
+                            packages_downgraded=$packages_downgraded"{\"name\":\"$i\",\"repository\":\"${REPO}\","
+                        fi
+                    fi
+                    if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
+                        packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
+                    fi
+                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                        packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
+                        itemcount=$(expr $itemcount + 4) # get ready for next item
+                    fi
+                    ;;
+                INSTALLED:)
+                    if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
+                        if [ "${i%:*}" = "${i}" ]; then
+                            itemcount=0 # This is not a valid item so reset item count
+                            MODE=
+                        else
+                            i=$(echo $i | tr -d :)
+                            if [ -n "$packages_new" ]; then
+                                packages_new=$packages_new","
+                            fi
+                            packages_new=$packages_new"{\"name\":\"$i\",\"repository\":\"${REPO}\","
+                        fi
+                    fi
+                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                        packages_new=$packages_new"\"version\":\"$i\"}"
+                        itemcount=$(expr $itemcount + 2) # get ready for next item
+                    fi
+                    ;;
+                REINSTALLED:)
+                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                        if [ "${i%-*}" = "${i}" ]; then
+                            itemcount=0 # This is not a valid item so reset item count
+                            MODE=
+                        else
+                            name=${i%-*}
+                            version=${i##*-}
+                            itemcount="$(expr $itemcount + 1)" # get ready for next item
+                            if [ -n "$packages_reinstall" ]; then
+                                packages_reinstall=$packages_reinstall"," # separator for next item
+                            fi
+                            packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\",\"repository\":\"${REPO}\"}"
+                        fi
+                    fi
+                    ;;
+                REMOVED:)
+                    if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
+                        if [ "${i%:*}" = "${i}" ]; then
+                            itemcount=0 # This is not a valid item so reset item count
+                            MODE=
+                        else
+                            i=$(echo $i | tr -d :)
+                            if [ -n "$packages_removed" ]; then
+                                packages_removed=$packages_removed","
+                            fi
+                            packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
+                        fi
+                    fi
+                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                        packages_removed=$packages_removed"\"version\":\"$i\"}"
+                        itemcount=$(expr $itemcount + 2) # get ready for next item
+                    fi
+                    ;;
+                UPGRADED:)
+                    if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
+                        if [ "${i%:*}" = "${i}" ]; then
+                            itemcount=0 # This is not a valid item so reset item count
+                            MODE=
+                        else
+                            i=$(echo $i | tr -d :)
+                            if [ -n "$packages_upgraded" ]; then
+                                packages_upgraded=$packages_upgraded","
+                            fi
+                            packages_upgraded=$packages_upgraded"{\"name\":\"$i\",\"repository\":\"${REPO}\","
+                        fi
+                    fi
+                    if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
+                        packages_upgraded=$packages_upgraded"\"current_version\":\"$i\","
+                    fi
+                    if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
+                        packages_upgraded=$packages_upgraded"\"new_version\":\"$i\"}"
+                        itemcount=$(expr $itemcount + 4) # get ready for next item
+                    fi
+                    ;;
+                esac
+
+                linecount=$(expr $linecount + 1)
+
+                case $i in
+                INSTALLED:|REMOVED:)
+                    itemcount=$(expr $linecount + 2)
+                    MODE=$i
+                    ;;
+                REINSTALLED:)
+                    itemcount=$(expr $linecount + 1)
+                    MODE=$i
+                    ;;
+                DOWNGRADED:|UPGRADED:)
+                    itemcount=$(expr $linecount + 4)
+                    MODE=$i
+                    ;;
+                esac
+            done
+        done < ${OUTFILE}
+
+        # if we run twice give values as CSV for later processing
+        download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
+
         # see if packages indicate a new version (not revision) of base / kernel
         LQUERY=$(pkg query %v opnsense-update)
         LQUERY=${LQUERY%%_*}
         RQUERY=$(pkg rquery %v opnsense-update)
         RQUERY=${RQUERY%%_*}
+
         if [ "$(pkg version -t ${LQUERY} ${RQUERY})" = "<" ]; then
             kernel_to_reboot="${RQUERY}"
             base_to_reboot="${RQUERY}"
         fi
 
-        if grep -q 'The following' ${OUTFILE}; then # XXX not strictly needed
-            # if we run twice give values as CSV for later processing
-            download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
-
-            MODE=
-
-            while read LINE; do
-                REPO=$(echo "${LINE}" | grep -o '\[.*\]' | tr -d '[]')
-                if [ -z "${REPO}" ]; then
-                    REPO=${product_repo}
-                fi
-
-                for i in $(echo "${LINE}" | tr '[' '(' | cut -d '(' -f1); do
-                    case ${MODE} in
-                    DOWNGRADED:)
-                        if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
-                            if [ "${i%:*}" = "${i}" ]; then
-                                itemcount=0 # This is not a valid item so reset item count
-                                MODE=
-                            else
-                                i=$(echo $i | tr -d :)
-                                if [ -n "$packages_downgraded" ]; then
-                                    packages_downgraded=$packages_downgraded","
-                                fi
-                                packages_downgraded=$packages_downgraded"{\"name\":\"$i\",\"repository\":\"${REPO}\","
-                            fi
-                        fi
-                        if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
-                            packages_downgraded=$packages_downgraded"\"current_version\":\"$i\","
-                        fi
-                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                            packages_downgraded=$packages_downgraded"\"new_version\":\"$i\"}"
-                            itemcount=$(expr $itemcount + 4) # get ready for next item
-                        fi
-                        ;;
-                    INSTALLED:)
-                        if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
-                            if [ "${i%:*}" = "${i}" ]; then
-                                itemcount=0 # This is not a valid item so reset item count
-                                MODE=
-                            else
-                                i=$(echo $i | tr -d :)
-                                if [ -n "$packages_new" ]; then
-                                    packages_new=$packages_new","
-                                fi
-                                packages_new=$packages_new"{\"name\":\"$i\",\"repository\":\"${REPO}\","
-                            fi
-                        fi
-                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                            packages_new=$packages_new"\"version\":\"$i\"}"
-                            itemcount=$(expr $itemcount + 2) # get ready for next item
-                        fi
-                        ;;
-                    REINSTALLED:)
-                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                            if [ "${i%-*}" = "${i}" ]; then
-                                itemcount=0 # This is not a valid item so reset item count
-                                MODE=
-                            else
-                                name=${i%-*}
-                                version=${i##*-}
-                                itemcount="$(expr $itemcount + 1)" # get ready for next item
-                                if [ -n "$packages_reinstall" ]; then
-                                    packages_reinstall=$packages_reinstall"," # separator for next item
-                                fi
-                                packages_reinstall=$packages_reinstall"{\"name\":\"$name\",\"version\":\"$version\",\"repository\":\"${REPO}\"}"
-                            fi
-                        fi
-                        ;;
-                    REMOVED:)
-                        if [ "$(expr $linecount + 2)" -eq "$itemcount" ]; then
-                            if [ "${i%:*}" = "${i}" ]; then
-                                itemcount=0 # This is not a valid item so reset item count
-                                MODE=
-                            else
-                                i=$(echo $i | tr -d :)
-                                if [ -n "$packages_removed" ]; then
-                                    packages_removed=$packages_removed","
-                                fi
-                                packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
-                            fi
-                        fi
-                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                            packages_removed=$packages_removed"\"version\":\"$i\"}"
-                            itemcount=$(expr $itemcount + 2) # get ready for next item
-                        fi
-                        ;;
-                    UPGRADED:)
-                        if [ "$(expr $linecount + 4)" -eq "$itemcount" ]; then
-                            if [ "${i%:*}" = "${i}" ]; then
-                                itemcount=0 # This is not a valid item so reset item count
-                                MODE=
-                            else
-                                i=$(echo $i | tr -d :)
-                                if [ -n "$packages_upgraded" ]; then
-                                    packages_upgraded=$packages_upgraded","
-                                fi
-                                packages_upgraded=$packages_upgraded"{\"name\":\"$i\",\"repository\":\"${REPO}\","
-                            fi
-                        fi
-                        if [ "$(expr $linecount + 3)" -eq "$itemcount" ]; then
-                            packages_upgraded=$packages_upgraded"\"current_version\":\"$i\","
-                        fi
-                        if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
-                            packages_upgraded=$packages_upgraded"\"new_version\":\"$i\"}"
-                            itemcount=$(expr $itemcount + 4) # get ready for next item
-                        fi
-                        ;;
-                    esac
-
-                    linecount=$(expr $linecount + 1)
-
-                    case $i in
-                    INSTALLED:|REMOVED:)
-                        itemcount=$(expr $linecount + 2)
-                        MODE=$i
-                        ;;
-                    REINSTALLED:)
-                        itemcount=$(expr $linecount + 1)
-                        MODE=$i
-                        ;;
-                    DOWNGRADED:|UPGRADED:)
-                        itemcount=$(expr $linecount + 4)
-                        MODE=$i
-                        ;;
-                    esac
-                done
-            done < ${OUTFILE}
-        fi
-
-        if [ -z "$base_to_reboot" ]; then
+        if [ -z "${base_to_reboot}" ]; then
             if opnsense-update -cbf; then
                 base_to_reboot="$(opnsense-update -v)"
             fi
         fi
 
-        if [ -n "$base_to_reboot" ]; then
+        if [ -n "${base_to_reboot}" ]; then
             base_to_delete="$(opnsense-version -v base)"
             base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
             if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
@@ -305,13 +304,13 @@ else
             fi
         fi
 
-        if [ -z "$kernel_to_reboot" ]; then
+        if [ -z "${kernel_to_reboot}" ]; then
             if opnsense-update -cfk; then
                 kernel_to_reboot="$(opnsense-update -v)"
             fi
         fi
 
-        if [ -n "$kernel_to_reboot" ]; then
+        if [ -n "${kernel_to_reboot}" ]; then
             kernel_to_delete="$(opnsense-version -v kernel)"
             kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
             if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
