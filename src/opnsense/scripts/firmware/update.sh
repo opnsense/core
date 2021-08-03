@@ -30,11 +30,17 @@ LOCKFILE="/tmp/pkg_upgrade.progress"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
 
+DO_FORCE=
+
 : > ${LOCKFILE}
 rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
+
+if [ "${CMD}" = "force" ]; then
+	DO_FORCE="-f"
+fi
 
 # figure out the release type from config
 SUFFIX="-$(pluginctl -g system.firmware.type)"
@@ -43,7 +49,7 @@ if [ "${SUFFIX}" = "-" ]; then
 fi
 
 # upgrade all packages if possible
-(opnsense-update -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
+(opnsense-update ${DO_FORCE} -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
 
 # restart the web server
 (/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
@@ -55,9 +61,9 @@ fi
 
 # if we can update base, we'll do that as well
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
-if opnsense-update -c > ${PIPEFILE} 2>&1; then
+if opnsense-update ${DO_FORCE} -c > ${PIPEFILE} 2>&1; then
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update -bk > ${PIPEFILE} 2>&1; then
+	if opnsense-update ${DO_FORCE} -bk > ${PIPEFILE} 2>&1; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot
