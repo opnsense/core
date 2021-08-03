@@ -26,6 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # This script generates a json structured file with the following content:
+#
 # connection: error|unauthenticated|misconfigured|unresolved|ok
 # repository: error|untrusted|unsigned|revoked|incomplete|forbidden|ok
 # last_ckeck: <date_time_stamp>
@@ -86,8 +87,6 @@ fi
 # always update pkg so we can see the real updates directly
 (pkg upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
 
-# XXX do we have to call update again if pkg was updated?
-
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
     # DNS resolution failed
@@ -145,17 +144,19 @@ else
         # Repository can be used for updates
         repository="ok"
 
-        if [ -n "$(grep 'The following' ${OUTFILE} | awk -F '[ ]' '{print $3}')" ]; then # XXX not strictly needed
+        # see if packages indicate a new version (not revision) of base / kernel
+        LQUERY=$(pkg query %v opnsense-update)
+        LQUERY=${LQUERY%%_*}
+        RQUERY=$(pkg rquery %v opnsense-update)
+        RQUERY=${RQUERY%%_*}
+        if [ "$(pkg version -t ${LQUERY} ${RQUERY})" = "<" ]; then
+            kernel_to_reboot="${RQUERY}"
+            base_to_reboot="${RQUERY}"
+        fi
+
+        if grep -q 'The following' ${OUTFILE}; then # XXX not strictly needed
             # if we run twice give values as CSV for later processing
             download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
-
-            # see if packages indicate a new version (not revision) of base / kernel
-            LQUERY=$(pkg query %v opnsense-update)
-            RQUERY=$(pkg rquery %v opnsense-update)
-            if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
-                kernel_to_reboot="${RQUERY%%_*}"
-                base_to_reboot="${RQUERY%%_*}"
-            fi
 
             MODE=
 

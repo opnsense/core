@@ -37,7 +37,7 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 	REPOVER=$(pkg rquery %v ${COREPKG})
 
 	# plugins must pass a version check on up-to-date core package
-	if ! php -r "exit(version_compare('${COREVER}','${REPOVER}') >= 0 ? 0 : 1);"; then
+	if [ "$(pkg version -t ${COREVER} ${REPOVER})" = "<" ]; then
 		echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." >> ${LOCKFILE} 2>&1
 		echo '***DONE***' >> ${LOCKFILE}
 		exit
