@@ -88,6 +88,11 @@
                                       '&nbsp; <strong>:</strong> &nbsp;' + node.value
                                   );
                               }
+                              if (node.selected) {
+                                  $li.addClass("node-selected");
+                              } else {
+                                  $li.removeClass("node-selected");
+                              }
                           }
                       });
                       // initial view, collapse first level if there's only one node
@@ -117,6 +122,66 @@
               }
               $("#"+e.target.id).find(".tab-icon").addClass("fa-refresh");
           }
+
+          $(window).trigger('resize');
+      });
+
+      /**
+       * resize tree height
+       */
+      $(window).on('resize', function() {
+          let new_height = $(".page-foot").offset().top -
+                           ($(".page-content-head").offset().top + $(".page-content-head").height()) - 160;
+          $(".treewidget").height(new_height);
+          $(".treewidget").css('max-height', new_height + 'px');
+      });
+
+
+      /**
+       * delayed live-search tree view
+       */
+      let apply_tree_search_timer = null;
+      $(".tree_search").keyup(function(){
+          let sender = $(this);
+          clearTimeout(apply_tree_search_timer);
+          apply_tree_search_timer = setTimeout(function(){
+              let searchTerm = sender.val().toLowerCase();
+              let target = $("#"+sender.attr('for'));
+              let tree = target.tree("getTree");
+              let selected = [];
+              if (tree !== null) {
+                  tree.iterate((node) => {
+                      let matched = false;
+                      if (searchTerm !== "") {
+                          matched = node.name.toLowerCase().includes(searchTerm);
+                          if (!matched && typeof node.value === 'string') {
+                              matched = node.value.toLowerCase().includes(searchTerm);
+                          }
+                      }
+                      node["selected"] = matched;
+
+                      if (matched) {
+                          selected.push(node);
+                          if (node.isFolder()) {
+                              node.is_open = true;
+                          }
+                          let parent = node.parent;
+                          while (parent) {
+                              parent.is_open = true;
+                              parent = parent.parent;
+                          }
+                      } else if (node.isFolder()) {
+                          node.is_open = false;
+                      }
+
+                      return true;
+                  });
+                  target.tree("refresh");
+                  if (selected.length > 0) {
+                      target.tree('scrollToNode', selected[0]);
+                  }
+              }
+          }, 500);
       });
 
       // update history on tab state and implement navigation
@@ -131,6 +196,15 @@
     });
 </script>
 
+<style>
+  .searchbox {
+    margin: 8px;
+  }
+
+  .node-selected {
+      font-weight: bolder;
+  }
+</style>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jqtree.css', ui_theme|default('opnsense'))) }}">
 <script src="{{ cache_safe('/ui/js/tree.jquery.min.js') }}"></script>
 
@@ -151,7 +225,16 @@
       <div class="row">
           <section class="col-xs-12">
               <div class="content-box">
-                <div style="padding: 5px; overflow-y: scroll; height:400px;" id="{{tab['name']}}Tree"></div>
+                <div class="searchbox">
+                    <input
+                        id="{{tab['name']}}Search"
+                        type="text"
+                        for="{{tab['name']}}Tree"
+                        class="tree_search"
+                        placeholder="{{ lang._('search')}}"
+                    ></input>
+                </div>
+                <div class="treewidget" style="padding: 8px; overflow-y: scroll; height:400px;" id="{{tab['name']}}Tree"></div>
               </div>
           </section>
       </div>
