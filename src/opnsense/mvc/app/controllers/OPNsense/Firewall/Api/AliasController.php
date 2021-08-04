@@ -246,6 +246,16 @@ class AliasController extends ApiMutableModelControllerBase
     }
 
     /**
+     * get aliases load stats and table-entries limit
+     */
+    public function getRecordsAction()
+    {
+        $backend = new Backend();
+        $result = $backend->configdRun('filter diag records json');
+        return $result;
+    }
+
+    /**
      * variant on model.getNodes() returning actual field values
      * @param $parent_node BaseField node to reverse
      */
