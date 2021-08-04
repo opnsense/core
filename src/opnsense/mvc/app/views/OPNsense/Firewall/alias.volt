@@ -99,6 +99,26 @@
         }
 
         /**
+         * show tables limits, counts and alerts
+         **/
+        function get_aliases_stat() {
+            ajaxGet("/api/firewall/alias/getRecords", {}, function(data){
+                overall = data.overall_count;
+                limit = data.table_entries;
+                perc_full = Math.round(100*overall/limit);
+                $('#room_left').attr('aria-valuenow', perc_full + '%').css("width", perc_full + "%");
+                $('#entries_bar > span').text("Records / Limit: "+ perc_full + "% (" + overall + "/" + limit + " records)");
+                bar_color = (perc_full > 50) ? "orangered" : (perc_full < 50 && perc_full > 30) ? "yellowgreen" : "greenyellow";
+                $('#room_left').css("background-color", bar_color);
+                if (data.errors > 0) {
+                    $('#alias_alert').show();
+                } else {
+                    $('#alias_alert').hide();
+                }
+            });
+        }
+
+        /**
          * fetch regions and countries for geoip selection
          */
         ajaxGet("/api/firewall/alias/listCountries", {}, function(data){
@@ -413,6 +433,7 @@
                 }
                 formatTokenizersUI();
                 $('.selectpicker').selectpicker('refresh');
+                get_aliases_stat();
             });
         }
         loadSettings();
@@ -444,8 +465,11 @@
             history.pushState(null, null, e.target.hash);
         });
 
-        // move filter into action header
+        // move filter and progress bar into action header
         $("#type_filter_container").detach().prependTo('#grid-aliases-header > .row > .actionBar > .actions');
+        $("#aliases_stat").detach().prependTo('#grid-aliases-header > .row > .actionBar');
+
+
 
     });
 </script>
@@ -475,7 +499,14 @@
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
                         </div>
-                    </div>
+                        <div id="aliases_stat" style="text-align: center;display: inline-block;width: 25%;margin-right: 25%;">
+                            <div id="entries_bar" class="progress">
+                                <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 23%;z-index: 0;"></div>
+                                    <span class="state_text" style="position:absolute;right:0;left:0;">loadind data..</span>
+                                </div>
+                                <span id="alias_alert" style="color: orangered; display:none">There are error(s) loading Alias(es)</span>
+                            </div>
+                        </div>
                     <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage" data-store-selection="true">
                         <thead>
                         <tr>
