@@ -124,6 +124,7 @@ if __name__ == '__main__':
     aliases.read()
 
     registered_aliases = set()
+    alias_errors = ""
     for alias in aliases:
         registered_aliases.add(alias.get_name())
         # fetch alias content including dependencies
@@ -146,7 +147,6 @@ if __name__ == '__main__':
             line = line.strip()
             if line:
                 alias_pf_content.append(line)
-
         if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired) and alias.get_parser():
             # if the alias is changed, expired or the one in memory has a different number of items, load table
             # (but only if we know how to handle this alias type)
@@ -160,11 +160,16 @@ if __name__ == '__main__':
 
                 error_output = sp.stderr.strip()
                 if error_output.find('pfctl: ') > -1:
+                    alias_errors += "%s,%s,%s,%s\n" % (alias_name, len(alias_content), len(alias_content) - len(alias_pf_content), error_output.replace('pfctl: ', ''))
                     result['status'] = 'error'
                     if 'messages' not in result:
                         result['messages'] = list()
                     if error_output not in result['messages']:
-                        result['messages'].append("%s [%s]" % (error_output.replace('pfctl: ', ''), alias_name))
+                        result['messages'].append("Error loading alias [%s]: %s" % (alias_name, error_output.replace('pfctl: ', '')))
+                        syslog.syslog(syslog.LOG_NOTICE, "Error loading alias [%s]: %s" % (alias_name, error_output.replace('pfctl: ', '')))
+
+    with open("/var/db/aliastables/alias_errs.log", 'w') as err_file:
+        err_file.write(alias_errors)
     # cleanup removed aliases
     to_remove = dict()
     for filename in glob.glob('/var/db/aliastables/*.txt'):
