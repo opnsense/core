@@ -24,8 +24,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE=/tmp/pkg_upgrade.progress
-MUSTCHECK=yes
+LOCKFILE="/tmp/pkg_upgrade.progress"
+MUSTCHECK="yes"
+TEE="/usr/bin/tee -a"
 
 for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
     /usr/bin/sed 's/,/ /g'); do
