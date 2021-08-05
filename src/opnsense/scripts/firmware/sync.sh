@@ -30,5 +30,5 @@ LOCKFILE=/tmp/pkg_upgrade.progress
 : > ${LOCKFILE}
 
 echo "***GOT REQUEST TO SYNC***" >> ${LOCKFILE}
-. /usr/local/opnsense/scripts/firmware/sync.subr.sh
+. /usr/local/opnsense/scripts/firmware/sync.subr.sh > /dev/null
 echo '***DONE***' >> ${LOCKFILE}
