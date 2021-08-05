@@ -25,12 +25,30 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE=/tmp/pkg_upgrade.progress
+MUSTCHECK=yes
 
-PACKAGES=$(/usr/local/sbin/pluginctl -g system.firmware.plugins | /usr/bin/sed 's/,/ /g')
-for PACKAGE in ${PACKAGES}; do
+for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
+    /usr/bin/sed 's/,/ /g'); do
 	if ! pkg query %n ${PACKAGE} > /dev/null; then
+		if [ -n "${MUSTCHECK}" ] ; then
+			COREPKG=$(opnsense-version -n)
+			COREVER=$(opnsense-version -v)
+			REPOVER=$(pkg rquery %v ${COREPKG})
+
+			# plugins must pass a version check on up-to-date core package
+			if [ "$(pkg version -t ${COREVER} ${REPOVER})" = "<" ]; then
+				echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." >> ${LOCKFILE} 2>&1
+				break
+			fi
+
+			MUSTCHECK=
+		fi
+
 		pkg install -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 		/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${LOCKFILE} 2>&1
 	fi
 done
-pkg autoremove -y >> ${LOCKFILE} 2>&1
+
+if [ -z "${MUSTCHECK}" ]; then
+	pkg autoremove -y >> ${LOCKFILE} 2>&1
+fi
