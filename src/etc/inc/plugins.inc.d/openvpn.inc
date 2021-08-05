@@ -625,11 +625,12 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 if (!empty($ip) || !empty($ipv6)) {
                     if (is_ipaddrv4($ip) && !empty($mask)) {
                         $conf .= "server {$ip} {$mask}\n";
+                        $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                     }
                     if (is_ipaddrv6($ipv6) && !empty($prefix)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
+                        $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                     }
-                    $conf .= "client-config-dir /var/etc/openvpn-csc/" . $vpnid . "\n";
                 } else {
                     if ($settings['serverbridge_dhcp']) {
                         if (
