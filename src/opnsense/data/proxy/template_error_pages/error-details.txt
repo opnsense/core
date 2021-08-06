@@ -11,7 +11,7 @@ detail: "%ssl_error_descr: %ssl_subject"
 descr: "Certificate does not match domainname"
 
 name: X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT
-detail: "SSL Certficate error: certificate issuer (CA) not known: %ssl_ca_name"
+detail: "SSL Certificate error: certificate issuer (CA) not known: %ssl_ca_name"
 descr: "Unable to get issuer certificate"
 
 name: X509_V_ERR_UNABLE_TO_GET_CRL
@@ -39,7 +39,7 @@ detail: "%ssl_error_descr: %ssl_subject"
 descr: "CRL signature failure"
 
 name: X509_V_ERR_CERT_NOT_YET_VALID
-detail: "SSL Certficate is not valid before: %ssl_notbefore"
+detail: "SSL Certificate is not valid before: %ssl_notbefore"
 descr: "Certificate is not yet valid"
 
 name: X509_V_ERR_CERT_HAS_EXPIRED
@@ -83,7 +83,7 @@ detail: "Self-signed SSL Certificate in chain: %ssl_subject"
 descr: "Self signed certificate in certificate chain"
 
 name: X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY
-detail: "SSL Certficate error: certificate issuer (CA) not known: %ssl_ca_name"
+detail: "SSL Certificate error: certificate issuer (CA) not known: %ssl_ca_name"
 descr: "Unable to get local issuer certificate"
 
 name: X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE

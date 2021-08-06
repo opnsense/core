@@ -21,6 +21,6 @@
         <id>dot.verify</id>
         <label>Verify CN</label>
         <type>text</type>
-        <help>Verfiy if CN in certficate matches this value.</help>
+        <help>Verify if CN in certificate matches this value.</help>
     </field>
 </form>
