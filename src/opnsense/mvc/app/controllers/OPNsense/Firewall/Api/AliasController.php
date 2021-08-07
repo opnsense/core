@@ -246,6 +246,14 @@ class AliasController extends ApiMutableModelControllerBase
     }
 
     /**
+     * get aliases load stats and table-entries limit
+     */
+    public function getTableSizeAction()
+    {
+        return json_decode((new Backend())->configdRun('filter diag table_size'), true);
+    }
+
+    /**
      * variant on model.getNodes() returning actual field values
      * @param $parent_node BaseField node to reverse
      */

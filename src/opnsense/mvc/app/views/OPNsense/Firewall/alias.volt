@@ -39,7 +39,6 @@
             toggle:'/api/firewall/alias/toggleItem/',
             options:{
                 requestHandler: function(request){
-                    let selected = $('#type_filter').find("option:selected").val();
                     if ( $('#type_filter').val().length > 0) {
                         request['type'] = $('#type_filter').val();
                     }
@@ -95,6 +94,19 @@
                 } else {
                     $("label[data-id='"+$(this).data('id')+"_label']").text("");
                 }
+            });
+        }
+
+        /**
+         * show tables limits, counts and alerts
+         **/
+        function get_aliases_stat() {
+            ajaxGet("/api/firewall/alias/get_table_size", {}, function(data){
+                perc_full = Math.round(100*data.used/data.size);
+                $('#room_left').attr('aria-valuenow', perc_full + '%').css("width", perc_full + "%");
+                $('#entries_bar > span > span').text(perc_full + "% (" + data.used + "/" + data.size + ")");
+                bar_color = (perc_full > 50) ? "orangered" : (perc_full < 50 && perc_full > 30) ? "yellowgreen" : "greenyellow";
+                $('#room_left').css("background-color", bar_color);
             });
         }
 
@@ -413,6 +425,7 @@
                 }
                 formatTokenizersUI();
                 $('.selectpicker').selectpicker('refresh');
+                get_aliases_stat();
             });
         }
         loadSettings();
@@ -446,10 +459,25 @@
 
         // move filter into action header
         $("#type_filter_container").detach().prependTo('#grid-aliases-header > .row > .actionBar > .actions');
+        // alias size in service container
+        $("#aliases_stat").detach().prependTo('#service_status_container');
+        $("#service_status_container").css('width', '250px');
+        $("#aliases_stat").tooltip({placement: 'bottom'});
+
+
 
     });
 </script>
 
+<div id="aliases_stat"  title="{{ lang._('Current Tables Entries/Firewall Maximum Table Entries') }}">
+    <div class="col-xs-1"><i class="fa fa-fw fa-info-circle"></i></div>
+    <div id="entries_bar" class="progress" style="text-align: center;">
+        <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 23%;z-index: 0;"></div>
+        <span class="state_text" style="position:absolute;right:0;left:0;">
+        <span>{{ lang._('loading data..') }}</span>
+        </span>
+    </div>
+</div>
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#aliases" id="aliases_tab">{{ lang._('Aliases') }}</a></li>
     <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeoIP settings') }}</a></li>

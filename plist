@@ -700,6 +700,7 @@
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
 /usr/local/opnsense/scripts/filter/pfinfo.py
+/usr/local/opnsense/scripts/filter/pftablecount.py
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
 /usr/local/opnsense/scripts/filter/rule_stats.py
