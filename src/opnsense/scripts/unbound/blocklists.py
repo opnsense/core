@@ -141,12 +141,38 @@ if __name__ == '__main__':
                     'blocklist download %(uri)s (lines: %(lines)d exclude: %(skip)d block: %(blocklist)d)' % file_stats
                 )
 
+        # fetch configured DNS response type
+        localzone = None
+        redirect_a = None
+        redirect_aaaa = None
+        if cnf.has_section('response'):
+            if cnf.has_option('response', 'localzone'):
+                localzone = cnf.get('response', 'localzone').strip()
+            if cnf.has_option('response', 'redirect_a'):
+                redirect_a = cnf.get('response', 'redirect_a').strip()
+            if cnf.has_option('response', 'redirect_aaaa'):
+                redirect_aaaa = cnf.get('response', 'redirect_aaaa').strip()
+            # null localzone is used to indicate legacy behavior
+            if localzone == '__default__':
+                localzone = None
+
     # write out results
     with open("/usr/local/etc/unbound.opnsense.d/dnsbl.conf", 'w') as unbound_outf:
         if blocklist_items:
             unbound_outf.write('server:\n')
             for entry in blocklist_items:
-                unbound_outf.write("local-data: \"%s A 0.0.0.0\"\n" % entry)
+                if localzone:
+                    # advanced DNSBL custom zone response type
+                    unbound_outf.write("local-zone: \"%s\" %s\n" % (entry, localzone))
+                    # Optional redirect records
+                    if localzone.endswith('redirect') or localzone.startswith('inform'):
+                        if redirect_a:
+                           unbound_outf.write("local-data: \"%s A %s\"\n" % (entry, redirect_a))
+                        if redirect_aaaa:
+                           unbound_outf.write("local-data: \"%s AAAA %s\"\n" % (entry, redirect_aaaa))
+                else:
+                    # legacy OPNsense behavior
+                    unbound_outf.write("local-data: \"%s A 0.0.0.0\"\n" % entry)
 
     syslog.syslog(syslog.LOG_NOTICE, "blocklist download done in %0.2f seconds (%d records)" % (
         time.time() - startup_time, len(blocklist_items)

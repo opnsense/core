@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -49,6 +49,30 @@
                     <yy>YoYo List</yy>
                 </OptionValues>
             </type>
+            <localzone type="OptionField">
+                <Required>Y</Required>
+                <default>__default__</default>
+                <OptionValues>
+                    <__default__>Return null (0.0.0.0) A record (default)</__default__>
+                    <always_nxdomain>Always return NXDOMAIN</always_nxdomain>
+                    <always_null>Always return null A/AAAA response (matches subdomains)</always_null>
+                    <redirect>Return NXDOMAIN or redirect record (matches subdomains)</redirect>
+                    <inform_redirect>Log and return NXDOMAIN or redirect record (matches subdomains)</inform_redirect>
+                    <inform>Log and resolve normally or return redirect record</inform>
+                </OptionValues>
+            </localzone>
+            <redirect_a type="NetworkField">
+                <Required>N</Required>
+                <netMaskAllowed>N</netMaskAllowed>
+                <version>ipv4</version>
+                <default></default>
+            </redirect_a>
+            <redirect_aaaa type="NetworkField">
+                <Required>N</Required>
+                <netMaskAllowed>N</netMaskAllowed>
+                <version>ipv6</version>
+                <default></default>
+            </redirect_aaaa>
             <lists type="CSVListField">
                 <Required>N</Required>
             </lists>

@@ -12,6 +12,33 @@
         <help>Select which kind of DNSBL you want to use.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.localzone</id>
+        <label>DNSBL Response Type</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help><![CDATA[Select the desired DNSBL response type for blocklist matches. See 'local-zone' in unbound.conf(5) for full details.
+          "Always" types always return the indicated response.
+          "Inform" types generate additional logging that can be used to monitor blocklist matches.
+          "Redirect" types will return NXDOMAIN or local data (if configured).
+          Types that match subdomains can improve DNSBL coverage but may require whitelisting some subdomains.
+          NXDOMAIN responses may produce improved behavior versus null records with some web sites and mobile apps.
+        ]]></help>
+    </field>
+    <field>
+        <id>unbound.dnsbl.redirect_a</id>
+        <label>Redirect A record (optional)</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Return this IPv4 address (typically 0.0.0.0) for redirected A records or NXDOMAIN if blank.</help>
+    </field>
+    <field>
+        <id>unbound.dnsbl.redirect_aaaa</id>
+        <label>Redirect AAAA record (optional)</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Return this IPv6 address (typically ::) for redirected AAAA records or NXDOMAIN if blank.</help>
+    </field>
+    <field>
         <id>unbound.dnsbl.lists</id>
         <label>URLs of Blocklists</label>
         <type>select_multiple</type>
