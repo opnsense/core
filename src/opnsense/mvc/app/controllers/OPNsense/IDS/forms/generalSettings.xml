@@ -24,6 +24,16 @@
         <help><![CDATA[Send alerts to system log in fast log format. This will not change the alert logging used by the product itself.]]></help>
     </field>
     <field>
+        <id>ids.general.unix_sock</id>
+        <label>Enable alerts and stats events to UNIX-socket</label>
+        <type>checkbox</type>
+        <help><![CDATA[
+          Report triggered IDS/IPS alerts, internal performance counters of the Suricata IDS/IPS engine, 
+          such as captured traffic volume, memory usage, uptime, flow counters, and much more to UNIX-socket /tmp/suricata-stats.sock.
+          Suricata Data Sink must be enabled in Telegraf first.
+          ]]></help>
+    </field>
+    <field>
         <id>ids.general.syslog_eve</id>
         <label>Enable eve syslog output</label>
         <type>checkbox</type>

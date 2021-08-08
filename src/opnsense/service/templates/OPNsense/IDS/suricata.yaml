@@ -70,6 +70,29 @@ stats:
 
 # Configure the type of alert (and other) logging you would like.
 outputs:
+{% if helpers.exists('OPNsense.IDS.general.unix_sock') and OPNsense.IDS.general.unix_sock == '1' %}
+
+  # Extensible Event Format (nicknamed EVE) to UNIX-socket
+  - eve-log:
+      enabled: yes
+      filetype: unix_stream
+      filename: /tmp/suricata-stats.sock
+      types:
+        - stats:
+           threads: yes
+        - alert:
+             # packet: yes              # enable dumping of packet (without stream segments)
+             # metadata: no             # enable inclusion of app layer metadata with alert. Default yes
+             # http-body: yes           # Requires metadata; enable dumping of http body in Base64
+             # http-body-printable: yes # Requires metadata; enable dumping of http body in printable format
+
+             # Enable the logging of tagged packets for rules using the
+             # "tag" keyword.
+             tagged-packets: yes
+
+             http: yes
+             tls: yes
+{% endif %}
 
   # a line based alerts log similar to Snort's fast.log
   - fast:
