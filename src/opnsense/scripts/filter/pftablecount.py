@@ -50,7 +50,8 @@ if __name__ == '__main__':
                 planned_size  = tmp.count('\n') + 1 if len(tmp) > 0 else 0
                 # if planned size doesn't fit the table, make sure we report intented size
                 # used size can be divert a bit if pfctl optimizes as well.
-                result['used'] += max(planned_size, table_size)
+                table_size = max(planned_size, table_size)
+            result['used'] += table_size
 
     for line in subprocess.run(['/sbin/pfctl', '-sm'], capture_output=True, text=True).stdout.strip().split('\n'):
         if "table-entries" in line:
