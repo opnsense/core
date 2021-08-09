@@ -815,7 +815,13 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
     } elseif (empty($id_data)) {
         $thisid_data = null;
     } elseif (in_array($id_type, ["asn1dn", "fqdn"])) {
-        $thisid_data = "{$id_type}:{$id_data}";
+        if (strpos($id_data, "#") !== false) {
+            // XXX: the same quoting likely applies to other to the docs, but to limit impact keep only fix here
+            //      (https://wiki.strongswan.org/projects/strongswan/wiki/IdentityParsing)
+            $thisid_data = "\"{$id_type}:{$id_data}\"";
+        } else {
+            $thisid_data = "{$id_type}:{$id_data}";
+        }
     } elseif ($id_type == "keyid tag") {
         $thisid_data = "keyid:{$id_data}";
     } elseif ($id_type == "user_fqdn") {
