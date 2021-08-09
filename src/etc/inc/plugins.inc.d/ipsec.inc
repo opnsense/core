@@ -816,8 +816,6 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
         $thisid_data = null;
     } elseif (in_array($id_type, ["asn1dn", "fqdn"])) {
         if (strpos($id_data, "#") !== false) {
-            // XXX: the same quoting likely applies to other to the docs, but to limit impact keep only fix here
-            //      (https://wiki.strongswan.org/projects/strongswan/wiki/IdentityParsing)
             $thisid_data = "\"{$id_type}:{$id_data}\"";
         } else {
             $thisid_data = "{$id_type}:{$id_data}";
