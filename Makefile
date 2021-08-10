@@ -235,12 +235,6 @@ manifest:
 	done
 	@echo "}"
 
-name:
-	@echo ${CORE_NAME}
-
-depends:
-	@echo ${CORE_DEPENDS}
-
 .if ${.TARGETS:Mupgrade}
 PKG_FORMAT?=	tar
 .else
