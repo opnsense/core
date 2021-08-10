@@ -326,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
-        $leasesfile = '/var/dhcpd/var/db/dhcpd.leases'; /* XXX needs wrapper */
+        $leasesfile = '/var/dhcpd/var/db/dhcpd6.leases'; /* XXX needs wrapper */
         $fin = @fopen($leasesfile, "r");
         $fout = @fopen($leasesfile.".new", "w");
         if ($fin) {
