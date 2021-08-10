@@ -33,60 +33,21 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/dhcpd.inc");
 
-/*
- * This function will remove entries from dhcpd.leases that would otherwise
- * overlap with static DHCP reservations. If we don't clean these out,
- * then DHCP will print a warning in the logs about a duplicate lease
- *
- * XXX errr: why are we doing this only on this particular page?
- */
-function dhcp_clean_leases()
+function validate_partial_mac_list($maclist)
 {
-    global $config;
-
-    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
-
-    $leasesfile = dhcpd_dhcpv4_leasesfile();
-    if (!file_exists($leasesfile)) {
-        return;
-    }
-
-    /* Build lease patterns for static MACs */
-    $lease_patterns = array();
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
-        if (isset($config['dhcpd'][$ifname]['staticmap'])) {
-            foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
-                $lease_patterns[] = '(lease\s*[0-9\.]+\s*\{[^\{\}]*hardware ethernet ' . $static['mac'] . '[^\{\}]*(.*"[^\{\}]*\}|\})\s?)';
-            }
-        }
-    }
-
-    /* Read existing leases file */
-    $leases_contents = file_get_contents($leasesfile);
-
-    /* Remove existing leases for static MACs */
-    $leases_contents = preg_replace($lease_patterns, '', $leases_contents);
-
-    /* Write out the new leases file */
-    $fd = fopen($leasesfile, 'w');
-    fwrite($fd, $leases_contents);
-    fclose($fd);
-}
-
-function validate_partial_mac_list($maclist) {
     $macs = explode(',', $maclist);
-    // Loop through and look for invalid MACs.
+
     foreach ($macs as $mac) {
         if (!is_macaddr($mac, true)) {
             return false;
         }
     }
+
     return true;
 }
 
 function reconfigure_dhcpd()
 {
-    dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
     dhcpd_dhcp4_configure();

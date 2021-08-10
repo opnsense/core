@@ -543,16 +543,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
     }
 }
 
-function dhcpd_dhcpv4_leasesfile()
-{
-    return '/var/dhcpd/var/db/dhcpd.leases';
-}
-
-function dhcpd_dhcpv6_leasesfile()
-{
-    return '/var/dhcpd/var/db/dhcpd6.leases';
-}
-
 function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = array())
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
@@ -1957,4 +1947,27 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
     }
 
     return $staticmap;
+}
+
+function dhcpd_leases($inet = 4)
+{
+    $file = $inet == 6 ? '/var/dhcpd/var/db/dhcpd6.leases' : '/var/dhcpd/var/db/dhcpd.leases';
+    $token = $inet == 6 ? 'ia-' : 'lease';
+    $content = [];
+    $section = [];
+
+    $fin = @fopen($file, 'r');
+    if ($fin) {
+        while (($line = fgets($fin, 4096)) !== false) {
+            if (strpos($line, $token) === 0) {
+                $section = [];
+            } elseif (strpos($line, '}') === 0 && count($section) > 0) {
+                $content[] = implode($section, '');
+            }
+            $section[] = rtrim($line, "\n;");
+        }
+        fclose($fin);
+    }
+
+    return $content;
 }
