@@ -581,7 +581,7 @@ function interface_lagg_configure(&$lagg)
             // Already configured, detach child interfaces before attempting to configure.
             // Prevents vlans to loose parent.
             if (!empty($interface_stats[$laggif]['laggport'])) {
-                foreach ($interface_stats[$laggif]['laggport'] as $laggport) {
+                foreach (array_keys($interface_stats[$laggif]['laggport']) as $laggport) {
                     mwexec("/sbin/ifconfig {$laggif} -laggport {$laggport}");
                 }
             }
@@ -614,12 +614,20 @@ function interface_lagg_configure(&$lagg)
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
-    if (!empty($lagg['lacp_fast_timeout'])) {
-        mwexec("/sbin/ifconfig {$laggif} lacp_fast_timeout");
-    } elseif ($lagg['proto'] == 'lacp') {
-        mwexec("/sbin/ifconfig {$laggif} -lacp_fast_timeout");
+    if (in_array($lagg['proto'], ['lacp', 'loadbalance'])) {
+        foreach (['lacp_fast_timeout', 'use_flowid', 'lacp_strict'] as $attr) {
+            $attr_proto = strpos($attr, 'lacp_') !== false ? 'lacp' : $lagg['proto'];
+            if (isset($lagg[$attr]) && $attr_proto == $lagg['proto']) {
+                if (!empty($lagg[$attr])) {
+                    mwexec("/sbin/ifconfig {$laggif} {$attr}");
+                } else {
+                    mwexec("/sbin/ifconfig {$laggif} -{$attr}");
+                }
+            }
+        }
+        $configured_hash = !empty($lagg['lagghash']) ? $lagg['lagghash'] : "l2,l3,l4";
+        mwexec("/sbin/ifconfig {$laggif} lagghash " . escapeshellarg($configured_hash));
     }
-
     interfaces_bring_up($laggif);
 
     return $laggif;
@@ -4130,7 +4138,7 @@ function interfaces_staticarp_configure($if)
     }
 }
 
-function get_interfaces_info()
+function get_interfaces_info($include_unlinked=false)
 {
     global $config;
 
@@ -4139,13 +4147,25 @@ function get_interfaces_info()
     $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
     $ifup = legacy_interface_listget('up');
     $result = array();
+    $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+    $known_interfaces = [];
+    foreach ($interfaces as $ifdescr => $interface) {
+        $interfaces[$ifdescr]['if'] = get_real_interface($ifdescr);
+        $interfaces[$ifdescr]['ifv6'] = get_real_interface($ifdescr, 'inet6');
+        $known_interfaces[] = $interface['if'];
+        $known_interfaces[] = $interface['ifv6'];
+    }
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifdescr => $ifcnf) {
-        $ifinfo = array();
+    if ($include_unlinked) {
+        $unassigned_descr = gettext("Unassigned");
+        foreach ($all_intf_details as $if => $ifdata) {
+            if (!in_array($if, $known_interfaces)) {
+                $interfaces[$if] = ["descr" => $unassigned_descr, "if" => $if, "ifv6" => $if, 'unassigned' => true];
+            }
+        }
+    }
 
-        $ifinfo['if'] = get_real_interface($ifdescr);
-        $ifinfo['ifv6'] = get_real_interface($ifdescr, 'inet6');
-
+    foreach ($interfaces as $ifdescr => $ifinfo) {
         $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
         $ifinfo['statusv6'] = (is_array($ifup) && in_array($ifinfo['ifv6'], $ifup)) ? 'up' : 'down';
 
