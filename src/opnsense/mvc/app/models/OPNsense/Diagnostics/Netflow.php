@@ -28,6 +28,7 @@
 
 namespace OPNsense\Diagnostics;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -66,7 +67,7 @@ class Netflow extends BaseModel
         }
 
         if (count($missing)) {
-            $messages->appendMessage(new \Phalcon\Validation\Message(
+            $messages->appendMessage(new Message(
                 sprintf(
                     gettext('WAN interfaces missing in listening interfaces: %s'),
                     implode(', ', $missing)

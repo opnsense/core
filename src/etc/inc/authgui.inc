@@ -72,17 +72,16 @@ function session_auth(&$Login_Error)
         closelog();
     }
 
-    // Handle HTTPS httponly and secure flags
-    $currentCookieParams = session_get_cookie_params();
-    session_set_cookie_params(
-        $currentCookieParams["lifetime"],
-        $currentCookieParams["path"],
-        null,
-        ($config['system']['webgui']['protocol'] == "https"),
-        true
-    );
-
     if (session_status() == PHP_SESSION_NONE) {
+        // Handle HTTPS httponly and secure flags
+        $currentCookieParams = session_get_cookie_params();
+        session_set_cookie_params(
+            $currentCookieParams["lifetime"],
+            $currentCookieParams["path"],
+            null,
+            ($config['system']['webgui']['protocol'] == "https"),
+            true
+        );
         session_start();
     }
 

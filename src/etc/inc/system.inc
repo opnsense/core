@@ -239,6 +239,7 @@ function get_locale_list()
     $locales['de_DE'] = gettext('German');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
+    $locales['no_NO'] = gettext('Norwegian');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
@@ -672,6 +673,8 @@ EOD;
         }
     }
 
+    // deploy certificates (separate caller in case we ever remove clog, in which case we can move all to configd)
+    mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
     if (!empty($config['syslog']['disable_clog'])) {
         // non legacy mode
         if (isvalidpid('/var/run/syslog.pid')) {

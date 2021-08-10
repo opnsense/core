@@ -30,15 +30,15 @@
 
 namespace OPNsense\Base\Validators;
 
-use Phalcon\Validation\Validator;
+use Phalcon\Validation\AbstractValidator;
 use Phalcon\Validation\ValidatorInterface;
-use Phalcon\Validation\Message;
+use Phalcon\Messages\Message;
 
 /**
  * Class CsvListValidator validate a string list against a list of options
  * @package OPNsense\Base\Validators
  */
-class CsvListValidator extends Validator implements ValidatorInterface
+class CsvListValidator extends AbstractValidator implements ValidatorInterface
 {
 
     /**
@@ -48,7 +48,7 @@ class CsvListValidator extends Validator implements ValidatorInterface
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute)
+    public function validate(\Phalcon\Validation $validator, $attribute): bool
     {
         $value = $validator->getValue($attribute);
         $domain = $this->getOption('domain');

@@ -22,6 +22,8 @@
                       <tcp4>TCP(4)</tcp4>
                       <udp6>UDP(6)</udp6>
                       <tcp6>TCP(6)</tcp6>
+                      <tls4>TLS(4)</tls4>
+                      <tls6>TLS(6)</tls6>
                   </OptionValues>
                 </transport>
                 <program type="JsonKeyValueStoreField">
@@ -80,6 +82,10 @@
                 <hostname type="HostnameField">
                     <Required>Y</Required>
                 </hostname>
+                <certificate type="CertificateField">
+                    <Required>N</Required>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </certificate>
                 <port type="PortField">
                     <Required>Y</Required>
                     <default>514</default>

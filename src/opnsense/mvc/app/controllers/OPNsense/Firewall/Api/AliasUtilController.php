@@ -156,7 +156,7 @@ class AliasUtilController extends ApiControllerBase
      * update bogons table
      * @return array status
      */
-    public function update_bogonsAction()
+    public function updateBogonsAction()
     {
         $this->sessionClose();
         $backend = new Backend();
@@ -279,7 +279,7 @@ class AliasUtilController extends ApiControllerBase
      *               only present if the call was succesful.)
      * @throws \Exception
      */
-    public function find_referencesAction()
+    public function findReferencesAction()
     {
         $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost('ip')) {

@@ -34,7 +34,7 @@ CORE_NAME?=	opnsense-business
 CORE_TYPE?=	business
 
 CORE_ABI?=	21.1
-CORE_PHP?=	73
+CORE_PHP?=	74
 CORE_PYTHON?=	37
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
@@ -109,8 +109,7 @@ CORE_COPYRIGHT_YEARS?=	2014-2021
 CORE_DEPENDS_amd64?=	beep \
 			suricata
 
-CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
-			ca_root_nss \
+CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
@@ -143,13 +142,12 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
 			php${CORE_PHP}-google-api-php-client \
-			php${CORE_PHP}-hash \
 			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-openssl \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
-			php${CORE_PHP}-phalcon \
+			php${CORE_PHP}-phalcon4 \
 			php${CORE_PHP}-phpseclib \
 			php${CORE_PHP}-session \
 			php${CORE_PHP}-simplexml \
@@ -174,7 +172,8 @@ CORE_DEPENDS?=		${CORE_DEPENDS_${CORE_ARCH}} \
 			syslogd \
 			unbound \
 			wpa_supplicant \
-			zip
+			zip \
+			${CORE_DEPENDS_${CORE_ARCH}}
 
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src

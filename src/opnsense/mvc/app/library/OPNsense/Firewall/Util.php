@@ -66,12 +66,32 @@ class Util
     {
         $tmp = explode('/', $network);
         if (count($tmp) == 2) {
-            if (self::isIpAddress($tmp[0]) && abs($tmp[1]) == $tmp[1]) {
+            if (self::isIpAddress($tmp[0]) && abs($tmp[1]) == $tmp[1] && ctype_digit($tmp[1])) {
                 if (strpos($tmp[0], ':') !== false && $tmp[1] <= 128) {
                     // subnet v6
                     return true;
                 } elseif ($tmp[1] <= 32) {
                     // subnet v4
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * is provided network a valid wildcard (https://en.wikipedia.org/wiki/Wildcard_mask)
+     * @param string $network network
+     * @return boolean
+     */
+    public static function isWildcard($network)
+    {
+        $tmp = explode('/', $network);
+        if (count($tmp) == 2) {
+            if (self::isIpAddress($tmp[0]) && self::isIpAddress($tmp[1])) {
+                if (strpos($tmp[0], ':') !== false && strpos($tmp[1], ':') !== false) {
+                    return true;
+                } elseif (strpos($tmp[0], ':') === false && strpos($tmp[1], ':') === false) {
                     return true;
                 }
             }

@@ -28,6 +28,7 @@
 
 namespace OPNsense\Syslog;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 
@@ -50,14 +51,26 @@ class Syslog extends BaseModel
                 $parentNode = $node->getParentNode();
                 $ptagname = $parentNode->getInternalXMLTagName();
                 $tagname = $node->getInternalXMLTagName();
-                if ($ptagname == 'destination' && in_array($tagname, array('hostname', 'transport'))) {
-                    // protocol family check
-                    if (in_array((string)$parentNode->transport, array('udp4', 'udp6', 'tcp4', 'tcp6'))) {
-                        $ipproto = ((string)$parentNode->transport)[3];
-                        $hostproto = strpos((string)$parentNode->hostname, ":") === false ? "4" : "6";
-                        if (Util::isIpAddress((string)$parentNode->hostname) && $ipproto != $hostproto) {
-                            $messages->appendMessage(new \Phalcon\Validation\Message(
-                                gettext("Transport protocol does not match address in hostname"),
+                $transport = (string)$parentNode->transport;
+                if ($ptagname == 'destination') {
+                    if (in_array($tagname, array('hostname', 'transport'))) {
+                        // protocol family check
+                        if (in_array($transport, ['udp4', 'udp6', 'tcp4', 'tcp6', 'tls4', 'tls6'])) {
+                            $ipproto = ((string)$parentNode->transport)[3];
+                            $hostproto = strpos((string)$parentNode->hostname, ":") === false ? "4" : "6";
+                            if (Util::isIpAddress((string)$parentNode->hostname) && $ipproto != $hostproto) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Transport protocol does not match address in hostname"),
+                                    $key
+                                ));
+                            }
+                        }
+                    }
+                    if (in_array($tagname, ['certificate', 'transport']) && in_array($transport, ['tls4', 'tls6'])) {
+                        // certificate availability
+                        if (empty((string)$parentNode->certificate)) {
+                            $messages->appendMessage(new Message(
+                                gettext("A certificate is required for tls types"),
                                 $key
                             ));
                         }

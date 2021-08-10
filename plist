@@ -394,7 +394,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Nextcloud.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Base/Filters/QueryFilter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/UIModelGrid.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/ViewTranslator.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Backend.php
@@ -802,6 +801,7 @@
 /usr/local/opnsense/scripts/suricata/queryInstalledRules.py
 /usr/local/opnsense/scripts/suricata/rule-updater.py
 /usr/local/opnsense/scripts/suricata/setup.sh
+/usr/local/opnsense/scripts/syslog/generate_certs
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
@@ -867,6 +867,7 @@
 /usr/local/opnsense/service/modules/template.py
 /usr/local/opnsense/service/run_unittests.py
 /usr/local/opnsense/service/templates/OPNsense/Auth/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Auth/csh.cshrc
 /usr/local/opnsense/service/templates/OPNsense/Auth/ipsec.pam
 /usr/local/opnsense/service/templates/OPNsense/Auth/motd
 /usr/local/opnsense/service/templates/OPNsense/Auth/sshd.pam

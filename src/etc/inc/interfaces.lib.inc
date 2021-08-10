@@ -267,24 +267,25 @@ function legacy_interfaces_details($intf = null)
                 }
             }
             if (isset($mask)) {
-                $tmp = array("ipaddr" => $line_parts[1], "subnetbits" => $mask);
+                $tmp = ['ipaddr' => $line_parts[1], 'subnetbits' => $mask, 'tunnel' => false];
                 if ($line_parts[2] == '-->') {
+                    $tmp['tunnel'] = true;
                     $tmp['endpoint'] = $line_parts[3];
                 }
                 if (isset($vhid)) {
                     $tmp['vhid'] = $vhid;
                 }
-                $result[$current_interface]["ipv4"][] = $tmp;
+                $result[$current_interface]['ipv4'][] = $tmp;
             }
         } elseif (strpos($line, "\tinet6 ") !== false) {
             // IPv6 information
             $addr = strtok($line_parts[1], '%');
-            $tmp = array(
+            $tmp = [
                 'deprecated' => false,
                 'ipaddr' => $addr,
                 'link-local' => strpos($addr, 'fe80:') === 0,
                 'tunnel' => false,
-            );
+            ];
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
                     $tmp['subnetbits'] = intval($line_parts[$i + 1]);
@@ -299,9 +300,9 @@ function legacy_interfaces_details($intf = null)
                 }
             }
             if (isset($tmp['subnetbits'])) {
-                $result[$current_interface]["ipv6"][] = $tmp;
+                $result[$current_interface]['ipv6'][] = $tmp;
                 // sort link local to bottom, leave rest of sorting as-is (primary address on top)
-                usort($result[$current_interface]["ipv6"], function ($a, $b) {
+                usort($result[$current_interface]['ipv6'], function ($a, $b) {
                     return $a['link-local'] - $b['link-local'];
                 });
             }

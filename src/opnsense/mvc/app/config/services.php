@@ -5,7 +5,8 @@ use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
-use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\Session\Manager;
+use Phalcon\Session\Adapter\Stream;
 use OPNsense\Core\Config;
 use OPNsense\Core\Routing;
 
@@ -43,13 +44,13 @@ $di->set('view', function () use ($config) {
         $view->setViewsDir($viewDirs);
     }
     $view->registerEngines(array(
-        '.volt' => function ($view, $di) use ($config) {
+        '.volt' => function ($view) use ($config) {
 
-            $volt = new VoltEngine($view, $di);
+            $volt = new VoltEngine($view, $this);
 
             $volt->setOptions(array(
-                'compiledPath' => $config->application->cacheDir,
-                'compiledSeparator' => '_'
+                'path' => $config->application->cacheDir,
+                'separator' => '_'
             ));
             // register additional volt template functions
             $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
@@ -75,7 +76,12 @@ $di->set('modelsMetadata', function () {
  * Start the session the first time some component request the session service
  */
 $di->setShared('session', function () {
-    $session = new SessionAdapter();
+    $session = new Manager();
+    $files = new Stream([
+        'savePath' => session_save_path(),
+        'prefix'   => 'sess_',
+    ]);
+    $session->setAdapter($files);
     $session->start();
     // Set session response cookie, unfortunalty we need to read the config here to determine if secure option is
     // a valid choice.
@@ -97,6 +103,6 @@ $di->setShared('session', function () {
  */
 $di->set('router', function () use ($config) {
     $routing = new Routing($config->application->controllersDir, "ui");
-    $routing->getRouter()->handle();
+    $routing->getRouter()->handle($_SERVER['REQUEST_URI']);
     return $routing->getRouter();
 });

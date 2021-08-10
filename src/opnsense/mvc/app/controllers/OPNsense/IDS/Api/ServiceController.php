@@ -29,12 +29,12 @@
 namespace OPNsense\IDS\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
-use OPNsense\Base\Filters\QueryFilter;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Cron\Cron;
 use OPNsense\IDS\IDS;
 use Phalcon\Filter;
+use Phalcon\Filter\FilterFactory;
 
 /**
  * Class ServiceController
@@ -173,8 +173,11 @@ class ServiceController extends ApiMutableServiceControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
             // create filter to sanitize input data
-            $filter = new Filter();
-            $filter->add('query', new QueryFilter());
+            $filter = new Filter([
+                'query' => function ($value) {
+                    return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
+                }
+            ]);
 
             // fetch query parameters (limit results to prevent out of memory issues)
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
@@ -219,7 +222,7 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $this->sessionClose();
         $backend = new Backend();
-        $filter = new Filter();
+        $filter = (new FilterFactory())->newInstance();
         $id = $filter->sanitize($alertId, "int");
         $response = $backend->configdpRun("ids query alerts", array(1, 0, "filepos/" . $id, $fileid));
         $result = json_decode($response, true);

@@ -34,7 +34,7 @@ use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\ExclusionIn;
-use Phalcon\Validation\Message;
+use Phalcon\Messages\Message;
 use OPNsense\Firewall\Util;
 
 /**
@@ -201,12 +201,19 @@ class AliasContentField extends BaseField
             }
             if (
                 strpos($network, "!") === 0 &&
-                  (Util::isIpAddress(substr($network, 1)) || Util::isSubnet(substr($network, 1)))
+                  (
+                    Util::isIpAddress(substr($network, 1)) ||
+                    Util::isSubnet(substr($network, 1)) ||
+                    Util::isWildcard(substr($network, 1))
+                  )
             ) {
                 // exclude address or network (https://www.freebsd.org/doc/handbook/firewalls-pf.html 30.3.2.4)
                 continue;
             } elseif (
-                !Util::isAlias($network) && !Util::isIpAddress($network) && !Util::isSubnet($network) &&
+                !Util::isAlias($network) &&
+                !Util::isIpAddress($network) &&
+                !Util::isSubnet($network) &&
+                !Util::isWildcard($network) &&
                     !($ipaddr_count == 2 && $domain_alias_count == 0)
             ) {
                 $messages[] = sprintf(

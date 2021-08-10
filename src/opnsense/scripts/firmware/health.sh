@@ -33,6 +33,7 @@ TMPFILE=/tmp/pkg_check.exclude
 : > ${LOCKFILE}
 
 MTREE_PATTERNS="
+./etc/csh.cshrc
 ./etc/group
 ./etc/hosts
 ./etc/master.passwd

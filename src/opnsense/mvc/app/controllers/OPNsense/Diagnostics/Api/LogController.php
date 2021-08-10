@@ -30,7 +30,6 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Base\Filters\QueryFilter;
 use Phalcon\Filter;
 
 /**
@@ -45,8 +44,12 @@ class LogController extends ApiControllerBase
         $action = count($arguments) > 1 ? $arguments[1] : "";
         $searchPhrase = '';
         // create filter to sanitize input data
-        $filter = new Filter();
-        $filter->add('query', new QueryFilter());
+        $filter = new Filter([
+            'query' => function ($value) {
+                return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
+            }
+        ]);
+
         $backend = new Backend();
         if ($this->request->isPost() && substr($name, -6) == 'Action') {
             $this->sessionClose();

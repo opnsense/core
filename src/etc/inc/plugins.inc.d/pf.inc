@@ -178,7 +178,45 @@ function pf_xmlrpc_sync()
         'description' => gettext('Firewall Groups'),
         'section' => 'ifgroups.ifgroupentry',
         'id' => 'ifgroups',
-        'services' => ["pf"],
+        'services' => ['pf'],
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Rules'),
+        'help' => gettext('Synchronize the firewall rules to the other HA host.'),
+        'section' => 'filter',
+        'id' => 'rules',
+        'services' => ['pf'],
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Schedules'),
+        'help' => gettext('Synchronize the firewall schedules to the other HA host.'),
+        'section' => 'schedules',
+        'id' => 'schedules',
+        'services' => ['pf'],
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Categories'),
+        'section' => 'OPNsense.Firewall.Category',
+        'id' => 'categories',
+    );
+    $result[] = array(
+        'description' => gettext('Firewall Log Templates'),
+        'section' => 'OPNsense.Firewall.Lvtemplate',
+        'id' => 'lvtemplate',
+    );
+    $result[] = array(
+        'description' => gettext('Aliases'),
+        'help' => gettext('Synchronize the aliases over to the other HA host.'),
+        'section' => 'OPNsense.Firewall.Alias',
+        'id' => 'aliases',
+        'services' => ['pf'],
+    );
+    $result[] = array(
+        'description' => gettext('NAT'),
+        'help' => gettext('Synchronize the NAT rules over to the other HA host.'),
+        'section' => 'nat',
+        'id' => 'nat',
+        'services' => ['pf'],
     );
 
     return $result;
