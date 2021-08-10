@@ -89,6 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['proto'] = isset($a_laggs[$id]['proto']) ? $a_laggs[$id]['proto'] : null;
     $pconfig['descr'] = isset($a_laggs[$id]['descr']) ? $a_laggs[$id]['descr'] : null;
     $pconfig['lacp_fast_timeout'] = !empty($a_laggs[$id]['lacp_fast_timeout']);
+    $pconfig['use_flowid'] = isset($a_laggs[$id]['use_flowid']) ? $a_laggs[$id]['use_flowid'] : null;
+    $pconfig['lacp_strict'] = isset($a_laggs[$id]['lacp_strict']) ? $a_laggs[$id]['lacp_strict'] : null;
     $pconfig['mtu'] = isset($a_laggs[$id]['mtu']) ? $a_laggs[$id]['mtu'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate and save form data
@@ -132,6 +134,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['proto'] = $pconfig['proto'];
         $lagg['mtu'] = $pconfig['mtu'];
         $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
+        if (in_array($pconfig['use_flowid'], ['0', '1'])) {
+            $lagg['use_flowid'] = $pconfig['use_flowid'];
+        }
+        if (in_array($pconfig['lacp_strict'], ['0', '1'])) {
+            $lagg['lacp_strict'] = $pconfig['lacp_strict'];
+        }
         if (isset($id)) {
             $lagg['laggif'] = $a_laggs[$id]['laggif'];
         }
@@ -166,12 +174,13 @@ legacy_html_escape_form_data($pconfig);
     $( document ).ready(function() {
         $("#proto").change(function(){
             if ($("#proto").val() == 'lacp') {
-                $("#lacp_fast_timeout").parent().parent().show();
-                $("#lacp_fast_timeout").prop( "disabled", false );
+                $(".proto_lacp").parent().parent().show();
+                $(".proto_lacp").prop( "disabled", false );
             } else {
-                $("#lacp_fast_timeout").parent().parent().hide();
-                $("#lacp_fast_timeout").prop( "disabled", true );
+                $(".proto_lacp").parent().parent().hide();
+                $(".proto_lacp").prop( "disabled", true );
             }
+            $('.selectpicker').selectpicker('refresh');
         });
         $("#proto").change();
     });
@@ -282,9 +291,49 @@ legacy_html_escape_form_data($pconfig);
                   <tr>
                     <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
                     <td>
-                      <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
+                      <input name="lacp_fast_timeout" id="lacp_fast_timeout" class="proto_lacp" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
                       <div class="hidden" data-for="help_for_lacp_fast_timeout">
                         <?=gettext("Enable lacp fast-timeout on the interface."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_use_flowid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use flowid"); ?></td>
+                    <td>
+                      <select name="use_flowid" class="selectpicker proto_lacp" id="use_flowid">
+                          <option value=""><?=gettext("Default");?></option>
+                          <option value="1" <?=$pconfig['use_flowid'] === "1" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("Yes");?>
+                          </option>
+                          <option value="0" <?=$pconfig['use_flowid'] === "0" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("No");?>
+                          </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_use_flowid">
+                          <?=gettext(
+                              "Use the RSS hash from the network card if available, otherwise a hash is locally calculated. ".
+                              "The default depends on the system tunable in net.link.lagg.default_use_flowid."
+                          )?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_lacp_strict" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use strict"); ?></td>
+                    <td>
+                      <select name="lacp_strict" class="selectpicker proto_lacp" id="lacp_strict">
+                          <option value=""><?=gettext("Default");?></option>
+                          <option value="1" <?=$pconfig['lacp_strict'] === "1" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("Yes");?>
+                          </option>
+                          <option value="0" <?=$pconfig['lacp_strict'] === "0" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("No");?>
+                          </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_lacp_strict">
+                          <?=gettext(
+                              "Enable lacp strict compliance on the interface. ".
+                              "The default depends on the system tunable in net.link.lagg.lacp.default_strict_mode."
+                          )?>
                       </div>
                     </td>
                   </tr>
