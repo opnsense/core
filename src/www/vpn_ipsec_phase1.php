@@ -825,7 +825,8 @@ include("head.inc");
                         'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
                         'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
                         'keyid tag' => array( 'desc' => gettext('KeyID tag'), 'mobile' => true ),
-                        'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ));
+                        'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ),
+                        'auto' => array( 'desc' => gettext('Automatic'), 'mobile' => true ));
                       foreach ($my_identifier_list as $id_type => $id_params) :
 ?>
                         <option value="<?=$id_type;?>" <?php if ($id_type == $pconfig['myid_type']) {
@@ -854,7 +855,8 @@ endforeach; ?>
                         'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
                         'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
                         'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
-                        'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ));
+                        'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ),
+                        'auto' => array( 'desc' => gettext('Automatic'), 'mobile' => true ));
                       foreach ($peer_identifier_list as $id_type => $id_params) :
                         if (!empty($pconfig['mobile']) && !$id_params['mobile']) {
                           continue;
