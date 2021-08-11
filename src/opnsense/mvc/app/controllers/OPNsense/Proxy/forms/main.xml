@@ -185,7 +185,7 @@
                 <advanced>true</advanced>
             </field>
             <field>
-                <id>memory_cache_mode</id>
+                <id>proxy.general.cache.local.memory_cache_mode</id>
                 <label>Memory cache mode</label>
                 <type>dropdown</type>
                 <help>
