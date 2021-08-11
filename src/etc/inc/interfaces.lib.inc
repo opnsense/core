@@ -330,7 +330,8 @@ function legacy_interfaces_details($intf = null)
         } elseif (preg_match("/lagg options:(.*)$/", $line, $matches)) {
             $next_line = $ifconfig_data[$lineid + 1];
             $result[$current_interface]['laggoptions'] = ['flags' => explode(
-                ",", strtolower(substr($next_line, strpos($next_line, '<') + 1, -1))
+                ',',
+                strtolower(substr($next_line, strpos($next_line, '<') + 1, -1))
             )];
             $next_line = $ifconfig_data[$lineid + 2];
             $result[$current_interface]['laggoptions']['flowid_shift'] = trim(explode(":", $next_line)[1]);
