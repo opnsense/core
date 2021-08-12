@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/proxy</mount>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <description>
         (squid) proxy settings
     </description>
@@ -131,6 +131,22 @@
                       <ValidationMessage>Specify a maximum object size. (number of MB's)</ValidationMessage>
                       <Required>N</Required>
                     </maximum_object_size>
+                    <maximum_object_size_in_memory type="IntegerField">
+                      <MinimumValue>1</MinimumValue>
+                      <MaximumValue>99999</MaximumValue>
+                      <ValidationMessage>Specify a maximum object size in memory. (number of KB's)</ValidationMessage>
+                      <Required>N</Required>
+                    </maximum_object_size_in_memory>
+                    <memory_cache_mode type="OptionField">
+                        <default>always</default>
+                        <Required>N</Required>
+                        <BlankDesc>Default</BlankDesc>
+                        <OptionValues>
+                            <always>Keep all most recent files (always)</always>
+                            <disk>Keep most recent HIT files(disk)</disk>
+                            <network>Keep only files fetched from network (network)</network>
+                        </OptionValues>
+                    </memory_cache_mode>
                     <size type="IntegerField">
                         <default>100</default>
                         <MinimumValue>1</MinimumValue>

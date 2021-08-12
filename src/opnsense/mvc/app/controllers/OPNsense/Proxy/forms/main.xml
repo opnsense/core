@@ -178,6 +178,25 @@
                 <advanced>true</advanced>
             </field>
             <field>
+                <id>proxy.general.cache.local.maximum_object_size_in_memory</id>
+                <label>Maximum object size in memory (KB)</label>
+                <type>text</type>
+                <help>Set the maximum object size in memory (default 512KB when left empty).</help>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.general.cache.local.memory_cache_mode</id>
+                <label>Memory cache mode</label>
+                <type>dropdown</type>
+                <help>
+                    Controls which objects to keep in the memory cache (cache_mem)
+                    always:	Keep most recently fetched objects in memory (default)
+                    disk: Only disk cache hits are kept in memory, which means an object must first be cached on disk and then hit a second time before cached in memory.
+                    network: Only objects fetched from network is kept in memory
+                </help>
+                <advanced>true</advanced>
+            </field>
+            <field>
                 <id>proxy.general.cache.local.cache_linux_packages</id>
                 <label>Enable Linux Package Cache</label>
                 <type>checkbox</type>
