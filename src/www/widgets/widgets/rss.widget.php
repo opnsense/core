@@ -38,11 +38,12 @@ function textLimit($string, $length, $replacer = '...')
     return $string;
 }
 
-if (!empty($_POST['rssfeed'])) {
-    $config['widgets']['rssfeed'] = str_replace("\n", ",", htmlspecialchars($_POST['rssfeed'], ENT_QUOTES | ENT_HTML401));
-    $config['widgets']['rssmaxitems'] = str_replace("\n", ",", htmlspecialchars($_POST['rssmaxitems'], ENT_QUOTES | ENT_HTML401));
-    $config['widgets']['rsswidgetheight'] = htmlspecialchars($_POST['rsswidgetheight'], ENT_QUOTES | ENT_HTML401);
-    $config['widgets']['rsswidgettextlength'] = htmlspecialchars($_POST['rsswidgettextlength'], ENT_QUOTES | ENT_HTML401);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
+    $config['widgets']['rssfeed'] = str_replace("\n", ",", htmlspecialchars($pconfig['rssfeed'], ENT_QUOTES | ENT_HTML401));
+    $config['widgets']['rssmaxitems'] = str_replace("\n", ",", htmlspecialchars($pconfig['rssmaxitems'], ENT_QUOTES | ENT_HTML401));
+    $config['widgets']['rsswidgetheight'] = htmlspecialchars($pconfig['rsswidgetheight'], ENT_QUOTES | ENT_HTML401);
+    $config['widgets']['rsswidgettextlength'] = htmlspecialchars($pconfig['rsswidgettextlength'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved RSS Widget feed via Dashboard");
     header(url_safe('Location: /index.php'));
     exit;
@@ -54,9 +55,9 @@ if (!empty($config['widgets']['rssfeed'])) {
     $textarea_txt =  str_replace(",", "\n", $config['widgets']['rssfeed']);
 } else {
     // Set a default feed if none exists
-    $rss_feed_s = "https://opnsense.org/feed/";
-    $config['widgets']['rssfeed'] = "https://opnsense.org/feed/";
-    $textarea_txt = "";
+    $rss_feed_s = 'https://forum.opnsense.org/index.php?board=11.0&action=.xml;limit=20;type=rss2';
+    $config['widgets']['rssfeed'] = $rss_feed_s;
+    $textarea_txt = '';
 }
 
 if (!empty($config['widgets']['rssmaxitems']) && is_numeric($config['widgets']['rssmaxitems'])) {
