@@ -57,6 +57,7 @@ class DHCPDLease(object):
         :param lines: lease section as list item
         :return: dictionary
         """
+        hostname_override = None
         lease = dict()
         lease['address'] = lines[0].split()[1]
         for line in lines:
@@ -73,9 +74,14 @@ class DHCPDLease(object):
                 field_value = {'hardware-type': parts[1], 'mac-address': parts[2].split(';')[0]}
             elif field_name in('uid', 'client-hostname') and len(parts) >= 2 and parts[1].find('"') > -1:
                 field_value = parts[1].split('"')[1]
+            elif field_name == 'set' and len(parts) >= 4 and parts[1] == 'hostname-override' and parts[3].find('"') > -1:
+                hostname_override = parts[3].split('"')[1]
 
             if field_value is not None:
                 lease[field_name] = field_value
+
+        if hostname_override is not None:
+            lease['client-hostname'] = hostname_override
 
         return lease
 
