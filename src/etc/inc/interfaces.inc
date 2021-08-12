@@ -2896,9 +2896,10 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     killbypid('/var/run/rtsold.pid', 'TERM', true);
 
     $rtsoldcommand = exec_safe(
-        '/usr/sbin/rtsold -p %s -O %s -R %s -a',
+        '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a',
         array(
             '/var/run/rtsold.pid',
+            '/var/etc/rtsold_script.sh',
             '/var/etc/rtsold_script.sh',
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
         )
