@@ -81,6 +81,11 @@ outputs:
         - stats:
            threads: yes
         - alert:
+{% if not helpers.empty('OPNsense.IDS.general.LogPayload') %}
+             payload: yes
+             payload-buffer-size: 100kb
+             payload-printable: yes
+{% endif %}
              # packet: yes              # enable dumping of packet (without stream segments)
              # metadata: no             # enable inclusion of app layer metadata with alert. Default yes
              # http-body: yes           # Requires metadata; enable dumping of http body in Base64
