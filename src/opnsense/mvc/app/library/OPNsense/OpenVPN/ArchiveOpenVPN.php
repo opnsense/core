@@ -96,7 +96,11 @@ class ArchiveOpenVPN extends PlainOpenVPN
             }
         }
         if (!empty($this->config['tls'])) {
-            $conf[] = "tls-auth {$base_filename}-tls.key 1";
+            if ($this->config['tlsmode'] === 'crypt') {
+                $conf[] = "tls-crypt {$base_filename}-tls.key";
+            } else {
+                $conf[] = "tls-auth {$base_filename}-tls.key 1";
+            }
             file_put_contents("{$content_dir}/{$base_filename}-tls.key", trim(base64_decode($this->config['tls'])));
         }
         file_put_contents("{$content_dir}/{$base_filename}.ovpn", implode("\n", $conf));
