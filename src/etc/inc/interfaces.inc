@@ -3380,7 +3380,7 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
         $pt_variable = "{$Protocol_Timing}";
         ${$pt_variable} = "";
         if ($wancfg[$Protocol_Timing] != "") {
-            ${$pt_variable} = "{$PT_Name} {$wancfg[$Protocol_Timing]};\n";
+            ${$pt_variable} = "\t{$PT_Name} {$wancfg[$Protocol_Timing]};\n";
         }
     }
 
