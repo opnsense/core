@@ -819,12 +819,11 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 openvpn_add_keyfile($crl['text'], $conf, $mode_id, "crl-verify");
             }
             if ($settings['tls']) {
-                if ($mode == "server") {
-                    $tlsopt = 0;
+                if ($settings['tlsmode'] == "crypt") {
+                    openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-crypt");
                 } else {
-                    $tlsopt = 1;
+                    openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-auth", $mode == "server" ? 0 : 1);
                 }
-                openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-auth", $tlsopt);
             }
             break;
     }

@@ -29,6 +29,9 @@
       <cfg_TlsAuth direction="1">
         <key/>
       </cfg_TlsAuth>
+      <cfg_TlsCrypt>
+        <key/>
+      </cfg_TlsCrypt>
       <cfg_dynamic_param_lst />
     </cfg_sslconnection>
   </cfg_ssl>
