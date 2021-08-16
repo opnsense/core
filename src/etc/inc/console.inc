@@ -132,7 +132,7 @@ EOD;
 
     $ifnames = array_keys($iflist);
 
-        echo <<<EOD
+    echo <<<EOD
 
 You now have the opportunity to configure LAGGs.  If you don't require LAGGs
 for initial connectivity, say no here and use the GUI to configure LAGGs later.
@@ -153,16 +153,14 @@ EOD;
     if (isset($config['laggs']['lagg'][0])) {
         echo "\nLAGG interfaces:\n\n";
         foreach ($config['laggs']['lagg'] as $lagg) {
-            $members = implode(",", $lagg['members']);
             echo sprintf(
                 "% -16s%s\n",
                 "{$lagg['laggif']}",
-                "member interfaces {$members}"
+                "member interfaces {$lagg['members']}"
             );
             $iflist_all[$lagg['laggif']] = array();
-
-            if (!isset($iflist[$lagg['laggif']]))
-                $iflist[$lagg['laggif']] = $lagg;
+            // XXX: get_interface_list() doesn't return lagg interfaces.
+            $iflist[$lagg['laggif']] = ["up" => 1, "mac" => ""];
         }
     }
 
@@ -548,7 +546,6 @@ EOD;
         if (!is_array($iflist)) {
             echo "No interfaces found!\n";
         } else {
-            $lagg_capable = 0;
             foreach ($unused_ifs as $iface => $ifa) {
                 echo sprintf(
                     "% -8s%s%s\n",
@@ -556,11 +553,10 @@ EOD;
                     $ifa['mac'],
                     $ifa['up'] ? "   (up)" : ""
                 );
-                $lagg_capable++;
             }
         }
 
-        if ($lagg_capable == 0) {
+        if (empty($unused_ifs)) {
             echo "No LAGG-capable interfaces detected.\n";
             return;
         }
@@ -578,7 +574,7 @@ EOD;
                 continue;
             }
             $lagg['members'] = str_replace(" ", "", $members_str);
-            
+
             foreach($members as $member) {
                 unset($unused_ifs[$member]);
             }
