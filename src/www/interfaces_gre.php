@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
-        if (gre_inuse($a_gres[$id]['greif'])) {
+        if (is_interface_assigned($a_gres[$id]['greif'])) {
             $input_errors[] = gettext("This GRE tunnel cannot be deleted because it is still being used as an interface.");
         } else {
             mwexec("/sbin/ifconfig " . escapeshellarg($a_gres[$id]['greif']) . " destroy");

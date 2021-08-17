@@ -30,15 +30,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function gif_inuse($gif_intf) {
-    foreach (legacy_config_get_interfaces() as $if => $intf) {
-        if ($intf['if'] == $gif_intf) {
-            return true;
-        }
-    }
-    return false;
-}
-
 $a_gifs = &config_read_array('gifs', 'gif') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -48,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
-        if (gif_inuse($a_gifs[$id]['gifif'])) {
+        if (is_interface_assigned($a_gifs[$id]['gifif'])) {
             $input_errors[] = gettext("This gif TUNNEL cannot be deleted because it is still being used as an interface.");
         } else {
             mwexec("/sbin/ifconfig " . escapeshellarg($a_gifs[$id]['gifif']) . " destroy");

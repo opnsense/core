@@ -125,17 +125,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         // remove client
+        $response = ["status" => "failed", "message" => gettext("not found")];
         if (isset($id)) {
-            openvpn_delete('client', $a_client[$id]);
-            unset($a_client[$id]);
-            write_config();
+            $vpn_id = !empty($a_client[$id]) ? $a_client[$id]['vpnid'] : null;
+            if ($vpn_id !== null && is_interface_assigned("ovpnc{$vpn_id}")) {
+                $response = [
+                    "status" => "failed",
+                    "message" => gettext("This tunnel cannot be deleted because it is still being used as an interface.")
+                ];
+            } elseif ($vpn_id !== null) {
+                openvpn_delete('client', $a_client[$id]);
+                unset($a_client[$id]);
+                write_config();
+                $response = ["status" => "ok"];
+            }
         }
-        header(url_safe('Location: /vpn_openvpn_client.php'));
+        echo json_encode($response);
         exit;
     } elseif ($act == "del_x") {
         if (!empty($pconfig['rule']) && is_array($pconfig['rule'])) {
             foreach ($pconfig['rule'] as $rulei) {
-                if (isset($a_client[$rulei])) {
+                $vpn_id = !empty($a_client[$rulei]) ? $a_client[$rulei]['vpnid'] : null;
+                // XXX: silently ignore entries that can't be removed, no clean option to pass messages in form result
+                if ($vpn_id !== null && !is_interface_assigned("ovpnc{$vpn_id}")) {
                     openvpn_delete('client', $a_client[$rulei]);
                     unset($a_client[$rulei]);
                 }
@@ -387,8 +399,26 @@ $( document ).ready(function() {
                     label: "<?= gettext("Yes");?>",
                     action: function(dialogRef) {
                       $.post(window.location, {act: 'del', id:id}, function(data) {
-                            location.reload();
-                      });
+                          if (data.status == 'failed' && data.message !== undefined) {
+                              dialogRef.close();
+                              BootstrapDialog.show({
+                                  type:BootstrapDialog.TYPE_DANGER,
+                                  title: "<?= gettext("OpenVPN");?>",
+                                  message: data.message,
+                                  buttons: [
+                                    {
+                                      label: "<?= gettext("Close");?>",
+                                      action: function(dialogRef) {
+                                        dialogRef.close();
+                                      }
+                                    }
+                                  ]
+                              });
+                              return;
+                          } else {
+                              location.reload();
+                          }
+                      }, 'json');
                       dialogRef.close();
                   }
               }]

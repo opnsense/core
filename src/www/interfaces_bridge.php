@@ -32,15 +32,6 @@ require_once("interfaces.inc");
 
 $a_bridges = &config_read_array('bridges', 'bridged') ;
 
-function bridge_inuse($bridge_if) {
-    foreach (legacy_config_get_interfaces() as $if => $intf) {
-        if ($intf['if'] == $bridge_if) {
-            return true;
-        }
-    }
-    return false;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     if (!empty($a_bridges[$_POST['id']])) {
@@ -48,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
-        if (bridge_inuse($a_bridges[$id]['bridgeif'])) {
+        if (is_interface_assigned($a_bridges[$id]['bridgeif'])) {
             $input_errors[] = gettext("This bridge cannot be deleted because it is assigned as an interface.");
         } else {
             if (!does_interface_exist($a_bridges[$id]['bridgeif'])) {
