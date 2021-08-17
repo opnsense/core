@@ -312,17 +312,6 @@ class LDAP extends Base implements IAuthConnector
         $options["caseInSensitiveUsernames"]["validate"] = function ($value) {
             return array();
         };
-        $options["ldap_sync_create_local_users"] = array();
-        $options["ldap_sync_create_local_users"]["name"] = gettext("Automatic user creation");
-        $options["ldap_sync_create_local_users"]["help"] = gettext(
-          "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
-          "successful login with group memberships returned for the user."
-        );
-        $options["ldap_sync_create_local_users"]["type"] = "checkbox";
-        $options["ldap_sync_create_local_users"]["validate"] = function ($value) {
-            return array();
-        };
-
         return $options;
     }
 

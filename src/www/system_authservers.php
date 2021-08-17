@@ -90,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
             $pconfig['ldap_sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            $pconfig['ldap_sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
                 $pconfig['ldap_sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
             }
@@ -243,6 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['ldap_sync_memberof']);
               $server['ldap_sync_memberof_groups'] = !empty($pconfig['ldap_sync_memberof_groups']) ? implode(",", $pconfig['ldap_sync_memberof_groups']) : array();
+              $server['ldap_sync_create_local_users'] = !empty($pconfig['ldap_sync_create_local_users']);
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
@@ -313,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $all_authfields = array(
     'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
     'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
-    'ldap_read_properties', 'ldap_sync_memberof', 'radius_host',
+    'ldap_read_properties', 'ldap_sync_memberof', 'ldap_sync_create_local_users', 'radius_host',
     'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
 );
 
@@ -485,9 +487,11 @@ $( document ).ready(function() {
         if ($(this).is(":checked")) {
             $("#ldap_sync_memberof").prop('disabled', false);
             $("#ldap_sync_memberof_groups").prop('disabled', false);
+            $("#ldap_sync_create_local_users").prop('disabled', false);
         } else {
             $("#ldap_sync_memberof").prop('disabled', true);
             $("#ldap_sync_memberof_groups").prop('disabled', true);
+            $("#ldap_sync_create_local_users").prop('disabled', true);
         }
     });
     $("#ldap_read_properties").change();
@@ -764,6 +768,18 @@ endif; ?>
                     <div class="hidden" data-for="help_for_ldap_sync_memberof_groups">
                       <?= gettext("Limit the groups which may be used by ldap, keep empty to consider all local groups in OPNsense. ".
                                   "When groups are selected, you can assign unassigned groups to the user manually ");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_sync_create_local_users" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic user creation"); ?></td>
+                  <td>
+                    <input id="ldap_sync_create_local_users" name="ldap_sync_create_local_users" type="checkbox" <?= empty($pconfig['ldap_sync_create_local_users']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_ldap_sync_create_local_users">
+                      <?= gettext(
+                        "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
+                        "successful login with group memberships returned for the user."
+                      );?>
                     </div>
                   </td>
                 </tr>
