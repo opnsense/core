@@ -1,6 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2021 Jasper Roloff
+ * Copyright (C) 2021 Jürgen Walch
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
@@ -360,8 +362,10 @@ function ipsec_get_phase1_src(&$ph1ent)
     }
     if ($ph1ent['protocol'] == "inet6") {
         return get_interface_ipv6($if);
-    } else {
+    } elseif ($ph1ent['protocol'] == "inet") {
         return get_interface_ip($if);
+    } else { // protocol is 'any', which means dual stack (IPv4+IPv6)
+        return get_interface_ip($if) . ',' . get_interface_ipv6($if);
     }
 }
 

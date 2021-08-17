@@ -1,6 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2021 Jasper Roloff
+ * Copyright (C) 2021 Jürgen Walch
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
@@ -394,6 +396,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if ($pconfig['protocol'] == "any") {
+      if ($pconfig['iketype'] != "ikev2") {
+        $input_errors[] = gettext("Protocol 'IPv4+IPv6' can only be used with IKEv2 type VPNs.");
+      }
+
+      if (empty($pconfig['mobile'])) {
+        $input_errors[] = gettext("Protocol 'IPv4+IPv6' can only be used with mobile VPNs.");
+      }
+    }
+
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
@@ -692,6 +704,7 @@ include("head.inc");
                       <select name="protocol">
                       <?php
                       $protocols = array("inet" => "IPv4", "inet6" => "IPv6");
+                      if (!empty($pconfig['mobile'])) $protocols["any"] = "IPv4+IPv6";
                       foreach ($protocols as $protocol => $name) :
                       ?>
                         <option value="<?=$protocol;?>"  <?=$protocol == $pconfig['protocol'] ? "selected=\"selected\"" : "";?> >
@@ -702,6 +715,7 @@ include("head.inc");
                       </select>
                       <div class="hidden" data-for="help_for_protocol">
                         <?=gettext("Select the Internet Protocol family from this dropdown."); ?>
+                        <?= !empty($pconfig['mobile']) ? gettext("Option 'IPv4+IPv6' works only together with IKEv2, not with IKEv1!") : ""; ?>
                       </div>
                     </td>
                   </tr>
