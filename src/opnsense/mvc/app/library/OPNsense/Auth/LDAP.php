@@ -118,6 +118,11 @@ class LDAP extends Base implements IAuthConnector
     private $ldapSyncMemberOf = false;
 
     /**
+     * when set, allow local user creation
+     */
+    private $ldapSyncCreateLocalUsers = false;
+
+    /**
      * limit the groups which will be considered for sync, empty means all
      */
     private $ldapSyncMemberOfLimit = null;
@@ -288,6 +293,9 @@ class LDAP extends Base implements IAuthConnector
         if (!empty($config['caseInSensitiveUsernames'])) {
             $this->caseInSensitiveUsernames = true;
         }
+        if (!empty($config['ldap_sync_create_local_users'])) {
+            $this->ldapSyncCreateLocalUsers = true;
+        }
     }
 
     /**
@@ -304,6 +312,17 @@ class LDAP extends Base implements IAuthConnector
         $options["caseInSensitiveUsernames"]["validate"] = function ($value) {
             return array();
         };
+        $options["ldap_sync_create_local_users"] = array();
+        $options["ldap_sync_create_local_users"]["name"] = gettext("Automatic user creation");
+        $options["ldap_sync_create_local_users"]["help"] = gettext(
+          "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
+          "successful login with group memberships returned for the user."
+        );
+        $options["ldap_sync_create_local_users"]["type"] = "checkbox";
+        $options["ldap_sync_create_local_users"]["validate"] = function ($value) {
+            return array();
+        };
+
         return $options;
     }
 
@@ -503,9 +522,15 @@ class LDAP extends Base implements IAuthConnector
             $diff_lgrp = array_intersect($sync_groups, array_keys($ldap_groups));
             if ($diff_lgrp != $diff_ugrp) {
                 // update when changed
+                if ($user == null && $this->ldapSyncCreateLocalUsers) {
+                    // user creation when enabled
+                    $add_user = json_decode((new Backend())->configdpRun("auth add user", array($username)), true);
+                    if (!empty($add_user) && $add_user['status'] == 'ok') {
+                        Config::getInstance()->forceReload();
+                        $user = $this->getUser($username);
+                    }
+                }
                 if ($user == null) {
-                    // user creation not supported (yet)
-                    // XXX: we might consider this in the future, since legacy code is involved in creating users
                     return;
                 }
                 // Lock our configuration while updating, remove now unassigned groups and add new ones
