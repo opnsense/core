@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
-        if (lagg_inuse($a_laggs[$id]['laggif'])) {
+        if (is_interface_assigned($a_laggs[$id]['laggif'])) {
             $input_errors[] = gettext("This LAGG interface cannot be deleted because it is still being used.");
         } else {
             mwexecf('/sbin/ifconfig %s destroy', $a_laggs[$id]['laggif']);

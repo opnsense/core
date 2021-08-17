@@ -30,19 +30,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function vlan_inuse($vlan_intf)
-{
-    global $config;
-
-    foreach ($config['interfaces'] as $if => $intf) {
-        if ($intf['if'] == $vlan_intf) {
-            return $if;
-        }
-    }
-
-    return false;
-}
-
 $a_vlans = &config_read_array('vlans', 'vlan');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -52,11 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['action']) && $_POST['action'] == "del" && isset($id)) {
-        if (($ifid = vlan_inuse($a_vlans[$id]['vlanif'])) !== false) {
-            $ifdescr = empty($config['interfaces'][$ifid]['descr']) ? $ifid : $config['interfaces'][$ifid]['descr'];
-            $input_errors[] = sprintf(
-              gettext("This VLAN cannot be deleted because it is still being used as an interface (%s).")
-              , $ifdescr);
+        if (is_interface_assigned($a_vlans[$id]['vlanif'])) {
+            $input_errors[] = gettext("This VLAN cannot be deleted because it is assigned as an interface.");
         } else {
             if (does_interface_exist($a_vlans[$id]['vlanif'])) {
                 legacy_interface_destroy($a_vlans[$id]['vlanif']);

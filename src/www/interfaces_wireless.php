@@ -29,25 +29,12 @@
 
 require_once("guiconfig.inc");
 
-function clone_inuse($cloneif)
-{
-    global $config;
-
-    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
-        if ($config['interfaces'][$if]['if'] == $cloneif) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 $a_clones = &config_read_array('wireless', 'clone');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     if (!empty($_POST['action']) && $_POST['action'] == "del" && !empty($a_clones[$_POST['id']])) {
-        if (clone_inuse($a_clones[$_POST['id']]['cloneif'])) {
+        if (is_interface_assigned($a_clones[$_POST['id']]['cloneif'])) {
             /* check if still in use */
             $input_errors[] = gettext("This wireless clone cannot be deleted because it is assigned as an interface.");
         } else {

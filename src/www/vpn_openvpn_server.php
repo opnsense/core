@@ -136,12 +136,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         // action delete
-        if (isset($a_server[$id])) {
+        $vpn_id = !empty($a_server[$id]) ? $a_server[$id]['vpnid'] : null;
+        if ($vpn_id !== null && is_interface_assigned("ovpns{$vpn_id}")) {
+            $response = [
+                "status" => "failed",
+                "message" => gettext("This tunnel cannot be deleted because it is still being used as an interface.")
+            ];
+        } elseif ($vpn_id !== null) {
             openvpn_delete('server', $a_server[$id]);
             unset($a_server[$id]);
             write_config();
+            $response = ["status" => "ok"];
         }
-        header(url_safe('Location: /vpn_openvpn_server.php'));
+        echo json_encode($response);
         exit;
     } elseif ($act == "toggle") {
         if (isset($id)) {
@@ -469,8 +476,26 @@ $( document ).ready(function() {
                   label: "<?= gettext("Yes");?>",
                   action: function(dialogRef) {
                     $.post(window.location, {act: 'del', id:id}, function(data) {
+                      if (data.status == 'failed' && data.message !== undefined) {
+                          dialogRef.close();
+                          BootstrapDialog.show({
+                              type:BootstrapDialog.TYPE_DANGER,
+                              title: "<?= gettext("OpenVPN");?>",
+                              message: data.message,
+                              buttons: [
+                                {
+                                  label: "<?= gettext("Close");?>",
+                                  action: function(dialogRef) {
+                                    dialogRef.close();
+                                  }
+                                }
+                              ]
+                          });
+                          return;
+                      } else {
                           location.reload();
-                    });
+                      }
+                    }, 'json');
                     dialogRef.close();
                 }
             }]
