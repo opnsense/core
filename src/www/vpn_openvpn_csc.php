@@ -117,10 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /vpn_openvpn_csc.php'));
         exit;
     } else {
-        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], gettext('IPv4 Tunnel Network'), false, 'ipv4', true)) {
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], gettext('IPv4 Tunnel Network'), false, 'ipv4')) {
             $input_errors[] = $result;
         }
-        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], gettext('IPv6 Tunnel Network'), false, 'ipv6', true)) {
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], gettext('IPv6 Tunnel Network'), false, 'ipv6')) {
             $input_errors[] = $result;
         }
         if ($result = openvpn_validate_cidr($pconfig['local_network'], gettext('IPv4 Local Network'), true, 'ipv4')) {
