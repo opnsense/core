@@ -1,8 +1,6 @@
 <?php
 
 /*
- * Copyright (C) 2021 Jasper Roloff
- * Copyright (C) 2021 Jürgen Walch
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
