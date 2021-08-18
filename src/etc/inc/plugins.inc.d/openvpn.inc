@@ -306,76 +306,39 @@ function openvpn_validate_port($value, $name)
     return false;
 }
 
-function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv4', $allow_hosts = false)
+function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv4')
 {
-    $error_multi = gettext("The field '%s' must contain only valid %s CIDR range(s) separated by commas.");
-    $error_single = gettext("The field '%s' must contain a single valid %s CIDR range.");
+    $error_multi = gettext("'%s' in '%s' may only contain valid %s CIDR range(s) separated by commas.");
+    $error_single = gettext("'%s' in '%s' is not a single valid %s CIDR range");
 
-    $value = trim($value);
     $error = false;
-    if (empty($value)) {
-        return false;
-    }
-    $networks = explode(',', $value);
-
-    if (!$multiple && (count($networks) > 1)) {
-        return sprintf($error_single, $name, $ipproto);
-    }
-
-    foreach ($networks as $network) {
-        if ($ipproto == 'ipv4') {
-            $error = !openvpn_validate_cidr_ipv4($network, $allow_hosts);
-        } else {
-            $error = !openvpn_validate_cidr_ipv6($network);
-        }
-        if ($error) {
-            break;
-        }
-    }
-
-    if ($error) {
-        if (!$multiple) {
-            return sprintf($error_single, $name, $ipproto);
-        }
-
-        return sprintf($error_multi, $name, $ipproto);
-    }
-
-    return false;
-}
-
-function openvpn_validate_cidr_ipv4($value, $allow_hosts = false)
-{
-    $value = trim($value);
     if (!empty($value)) {
-        list($ip, $prefix) = explode('/', $value);
-        if (!is_ipaddrv4($ip) || !is_numeric($prefix) || $prefix > 32 || $prefix < 0) {
-            return false;
-        }
-        if (!$allow_hosts) {
-            $mask = (0xffffffff << (32 - $prefix)) & 0xffffffff;
-            if ((ip2long($ip) & $mask) != ip2long($ip)) {
-                return false;
+        $networks = explode(',', $value);
+        if (!$multiple && (count($networks) > 1)) {
+            return sprintf($error_single, $value, $name, $ipproto);
+        } else {
+            foreach ($networks as $network) {
+                list($ip, $prefix) = explode('/', $network);
+                if ($error) {
+                    break;
+                } elseif ($ipproto == 'ipv4') {
+                    $error = !is_ipaddrv4($ip) || !is_numeric($prefix) || $prefix > 32 || $prefix < 0;
+                } else {
+                    $error = !is_ipaddrv6($ip) || (!empty($prefix) && (!is_numeric($prefix) || $prefix > 128 || $prefix < 0));
+                }
             }
         }
     }
-    return true;
+
+    if ($error && !$multiple) {
+        return sprintf($error_single, $value, $name, $ipproto);
+    } elseif ($error) {
+        return sprintf($error_multi, $value, $name, $ipproto);
+    } else {
+       return $error;
+    }
 }
 
-function openvpn_validate_cidr_ipv6($value)
-{
-    $value = trim($value);
-    if (!empty($value)) {
-        list($ipv6, $prefix) = explode('/', $value);
-        if (empty($prefix)) {
-            $prefix = '128';
-        }
-        if (!is_ipaddrv6($ipv6) || !is_numeric($prefix) || $prefix > 128 || $prefix < 0) {
-            return false;
-        }
-    }
-    return true;
-}
 
 function openvpn_add_dhcpopts(&$settings, &$conf)
 {
