@@ -35,7 +35,7 @@ import dns.resolver
 import syslog
 from hashlib import md5
 from . import geoip
-from . import net_wildcard_iterator
+from . import net_wildcard_iterator, AsyncDNSResolver
 from .arpcache import ArpCache
 
 class Alias(object):
@@ -49,8 +49,6 @@ class Alias(object):
             :return: None
         """
         self._known_aliases = known_aliases
-        self._dnsResolver = dns.resolver.Resolver()
-        self._dnsResolver.timeout = 2
         self._is_changed = None
         self._has_expired = None
         self._ttl = ttl
@@ -85,6 +83,7 @@ class Alias(object):
         self._filename_alias_hash = '/var/db/aliastables/%s.md5.txt' % self._name
         # the generated alias contents, without dependencies
         self._filename_alias_content = '/var/db/aliastables/%s.self.txt' % self._name
+        self._dnsResolver = AsyncDNSResolver(self._name)
 
     def _parse_address(self, address):
         """ parse addresses and hostnames, yield only valid addresses and networks
@@ -125,19 +124,8 @@ class Alias(object):
             except (ipaddress.AddressValueError, ValueError):
                 pass
 
-        # try to resolve provided address
-        could_resolve = False
-        for record_type in ['A', 'AAAA']:
-            try:
-                for rdata in self._dnsResolver.query(address, record_type):
-                    yield str(rdata)
-                could_resolve = True
-            except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers, dns.name.EmptyLabel):
-                pass
-
-        if not could_resolve:
-            # log when none could be found
-            syslog.syslog(syslog.LOG_ERR, 'unable to resolve %s for alias %s' % (address, self._name))
+        # try to resolve provided address (queue for retrieval)
+        self._dnsResolver.add(address)
 
     def _fetch_url(self, url):
         """ return unparsed (raw) alias entries without dependencies
@@ -244,18 +232,15 @@ class Alias(object):
                 else:
                     undo_content = ""
                 try:
+                    address_parser = self.get_parser()
+                    for item in self.items():
+                        if address_parser:
+                            for address in address_parser(item):
+                                self._resolve_content.add(address)
+                    # resolve hostnames (async) if there are any in the collected set
+                    self._resolve_content = self._resolve_content.union(self._dnsResolver.collect().addresses())
                     with open(self._filename_alias_content, 'w') as f_out:
-                        for item in self.items():
-                            address_parser = self.get_parser()
-                            if address_parser:
-                                for address in address_parser(item):
-                                    if address not in self._resolve_content:
-                                        # flush new alias content (without dependencies) to disk, so progress can easliy
-                                        # be followed, large lists of domain names can take quite some resolve time.
-                                        f_out.write('%s\n' % address)
-                                        f_out.flush()
-                                        # preserve addresses
-                                        self._resolve_content.add(address)
+                        f_out.write('\n'.join(self._resolve_content))
                 except IOError:
                     # parse issue, keep data as-is, flush previous content to disk
                     with open(self._filename_alias_content, 'w') as f_out:
