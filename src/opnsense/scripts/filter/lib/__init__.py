@@ -119,12 +119,7 @@ class AsyncDNSResolver:
                                         self._request_queue.append(addr.target)
                                     else:
                                         self._response.add(addr.address)
-                    elif type(response) in [
-                            dns.resolver.NoAnswer,
-                            dns.resolver.NXDOMAIN,
-                            dns.exception.Timeout,
-                            dns.resolver.NoNameservers,
-                            dns.name.EmptyLabel]:
+                    elif type(response) in [dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers]:
                         if str(response) not in collected_errors:
                             syslog.syslog(syslog.LOG_ERR, '%s [for %s]' % (response, self._origin))
                             collected_errors.add(str(response))
