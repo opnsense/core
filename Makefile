@@ -289,7 +289,7 @@ plist-check:
 	@mkdir -p ${WRKDIR}
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
 	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
-	@if ! diff -uq ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
+	@if ! diff -q ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
 		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new || true; \
 		echo ">>> Package file lists do not match.  Please run 'make plist-fix'." >&2; \
 		rm ${WRKDIR}/plist.*; \
