@@ -99,14 +99,20 @@ if __name__ == '__main__':
                             record = {
                                 'timestamp': None,
                                 'parser': None,
+                                'facility': 1,
+                                'severity': 3,
                                 'process_name': '',
+                                'pid': None,
                                 'rnum': row_number
                             }
                             frmt = format_container.get_format(rec['line'])
                             if frmt:
-                                record['timestamp'] = frmt.timestamp(rec['line'])
-                                record['process_name'] = frmt.process_name(rec['line'])
-                                record['line'] = frmt.line(rec['line'])
+                                record['timestamp'] = frmt.timestamp
+                                record['process_name'] = frmt.process_name
+                                record['pid'] = frmt.pid
+                                record['facility'] = frmt.facility
+                                record['severity'] = frmt.severity_str
+                                record['line'] = frmt.line
                                 record['parser'] = frmt.name
                             else:
                                 record['line'] = rec['line']

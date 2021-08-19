@@ -100,7 +100,10 @@
                     <thead>
                     <tr>
                         <th data-column-id="timestamp" data-width="11em" data-type="string">{{ lang._('Date') }}</th>
+                        <th data-column-id="facility" data-type="string" data-visible="false">{{ lang._('Facility') }}</th>
+                        <th data-column-id="severity" data-type="string" data-width="2em">{{ lang._('Severity') }}</th>
                         <th data-column-id="process_name" data-width="2em" data-type="string">{{ lang._('Process') }}</th>
+                        <th data-column-id="pid" data-width="2em" data-type="numeric" data-visible="false">{{ lang._('PID') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
                         <th data-column-id="rnum" data-type="numeric" data-formatter="page"  data-width="2em"></th>
                     </tr>

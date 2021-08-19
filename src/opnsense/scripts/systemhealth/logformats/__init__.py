@@ -34,6 +34,10 @@ class BaseLogFormat:
     def __init__(self, filename):
         self._filename = filename
         self._priority = 255
+        self._line = ""
+
+    def set_line(self, line):
+        self._line = line
 
     @property
     def name(self):
@@ -51,23 +55,58 @@ class BaseLogFormat:
         """
         return False
 
-    @staticmethod
-    def timestamp(line):
+    @property
+    def timestamp(self):
         """ Extract timestamp from line
         """
         pass
 
-    @staticmethod
-    def line(line):
+    @property
+    def line(self):
         """ Return line (without timestamp)
         """
         return line
 
-    @staticmethod
-    def process_name(line):
+    @property
+    def process_name(self):
         """ Return process name
         """
         return ""
+
+    @property
+    def pid(self):
+        """ Return pid
+        """
+        return None
+
+    @property
+    def facility(self):
+        """ syslog facility
+        """
+        return None
+
+    @property
+    def severity(self):
+        """ syslog severity
+        """
+        return None
+
+    @property
+    def severity_str(self):
+        severity = self.severity
+        options = {
+            0: 'Emergency',
+            1: 'Alert',
+            2: 'Critical',
+            3: 'Error',
+            4: 'Warning',
+            5: 'Notice',
+            6: 'Informational',
+            7: 'Debug'
+        }
+        if severity in options:
+            return options[severity]
+        return None
 
 
 class FormatContainer:
@@ -92,4 +131,5 @@ class FormatContainer:
     def get_format(self, line):
         for handler in self._handlers:
             if handler.match(line):
+                handler.set_line(line)
                 return handler
