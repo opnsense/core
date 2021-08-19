@@ -100,6 +100,7 @@ function set_networking_interfaces_ports($probe = false)
             continue;
         }
         $iflist[$iface] = $ifa;
+        interfaces_bring_up($iface);
     }
 
     if ($probe) {
@@ -123,7 +124,6 @@ EOD;
 
     if (count($iflist)) {
         foreach ($iflist as $iface => $ifa) {
-            interfaces_bring_up($iface);
             echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
     } else {
@@ -133,9 +133,6 @@ EOD;
     $ifnames = array_keys($iflist);
 
     echo <<<EOD
-
-You now have the opportunity to configure LAGGs.  If you don't require LAGGs
-for initial connectivity, say no here and use the GUI to configure LAGGs later.
 
 Do you want to configure LAGGs now? ${yes_no_prompt}
 EOD;
@@ -165,9 +162,6 @@ EOD;
     }
 
     echo <<<EOD
-
-You now have the opportunity to configure VLANs.  If you don't require VLANs
-for initial connectivity, say no here and use the GUI to configure VLANs later.
 
 Do you want to configure VLANs now? ${yes_no_prompt}
 EOD;
