@@ -160,7 +160,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-zlib \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-dnspython2 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
