@@ -25,12 +25,12 @@
 """
 import re
 import datetime
-from . import BaseLogFormat
+from . import NewBaseLogFormat
 squid_ext_timeformat = r'.*(\[\d{1,2}/[A-Za-z]{3}/\d{4}:\d{1,2}:\d{1,2}:\d{1,2} \+\d{4}\]).*'
 squid_timeformat = r'^(\d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}).*'
 
 
-class SquidLogFormat(BaseLogFormat):
+class SquidLogFormat(NewBaseLogFormat):
     def __init__(self, filename):
         super().__init__(filename)
         self._priority = 100
@@ -53,7 +53,7 @@ class SquidLogFormat(BaseLogFormat):
         return self._line[19:].strip()
 
 
-class SquidExtLogFormat(BaseLogFormat):
+class SquidExtLogFormat(NewBaseLogFormat):
     def __init__(self, filename):
         super().__init__(filename)
         self._priority = 120
@@ -78,7 +78,7 @@ class SquidExtLogFormat(BaseLogFormat):
         return line.replace(grp, '')
 
 
-class SquidJsonLogFormat(BaseLogFormat):
+class SquidJsonLogFormat(NewBaseLogFormat):
     def __init__(self, filename):
         super().__init__(filename)
         self._priority = 140

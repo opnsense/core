@@ -37,7 +37,7 @@ import sre_constants
 import ujson
 import datetime
 import glob
-from logformats import FormatContainer
+from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
 import argparse
@@ -107,13 +107,20 @@ if __name__ == '__main__':
                             }
                             frmt = format_container.get_format(rec['line'])
                             if frmt:
-                                record['timestamp'] = frmt.timestamp
-                                record['process_name'] = frmt.process_name
-                                record['pid'] = frmt.pid
-                                record['facility'] = frmt.facility
-                                record['severity'] = frmt.severity_str
-                                record['line'] = frmt.line
-                                record['parser'] = frmt.name
+                                if issubclass(frmt.__class__, BaseLogFormat):
+                                    # backwards compatibility, old style log handler
+                                    record['timestamp'] = frmt.timestamp(rec['line'])
+                                    record['process_name'] = frmt.process_name(rec['line'])
+                                    record['line'] = frmt.line(rec['line'])
+                                    record['parser'] = frmt.name
+                                else:
+                                    record['timestamp'] = frmt.timestamp
+                                    record['process_name'] = frmt.process_name
+                                    record['pid'] = frmt.pid
+                                    record['facility'] = frmt.facility
+                                    record['severity'] = frmt.severity_str
+                                    record['line'] = frmt.line
+                                    record['parser'] = frmt.name
                             else:
                                 record['line'] = rec['line']
                             result['rows'].append(record)

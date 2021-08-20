@@ -25,9 +25,9 @@
 """
 import re
 import datetime
-from . import BaseLogFormat
+from . import NewBaseLogFormat
 
-class SysLogFormat(BaseLogFormat):
+class SysLogFormat(NewBaseLogFormat):
     def __init__(self, filename):
         super(SysLogFormat, self).__init__(filename)
         self._priority = 2
@@ -61,7 +61,7 @@ class SysLogFormat(BaseLogFormat):
         return response[:tmp].strip().split()[-1] if tmp > -1 else ""
 
 
-class SysLogFormatEpoch(BaseLogFormat):
+class SysLogFormatEpoch(NewBaseLogFormat):
     def __init__(self, filename):
         super(SysLogFormatEpoch, self).__init__(filename)
         self._priority = 3
@@ -80,7 +80,7 @@ class SysLogFormatEpoch(BaseLogFormat):
         return self._line[14:].strip()
 
 
-class SysLogFormatRFC5424(BaseLogFormat):
+class SysLogFormatRFC5424(NewBaseLogFormat):
     def __init__(self, filename):
         super().__init__(filename)
         self._priority = 1

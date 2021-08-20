@@ -28,7 +28,7 @@ import glob
 import importlib
 import sys
 
-class BaseLogFormat:
+class LogFormat:
     """ Log format handler
     """
     def __init__(self, filename):
@@ -55,6 +55,38 @@ class BaseLogFormat:
         """
         return False
 
+
+class BaseLogFormat(LogFormat):
+    """ Legacy log format handler
+    """
+    @staticmethod
+    def match(line):
+        """ Does this formatter fit for the provided line
+        """
+        return False
+
+    @staticmethod
+    def timestamp(line):
+        """ Extract timestamp from line
+        """
+        pass
+
+    @staticmethod
+    def line(line):
+        """ Return line (without timestamp)
+        """
+        return line
+
+    @staticmethod
+    def process_name(line):
+        """ Return process name
+        """
+        return ""
+
+
+class NewBaseLogFormat(LogFormat):
+    """ log format handler
+    """
     @property
     def timestamp(self):
         """ Extract timestamp from line
@@ -123,7 +155,8 @@ class FormatContainer:
         for module_name in dir(sys.modules[__name__]):
             for attribute_name in dir(getattr(sys.modules[__name__], module_name)):
                 cls = getattr(getattr(sys.modules[__name__], module_name), attribute_name)
-                if isinstance(cls, type) and issubclass(cls, BaseLogFormat) and cls != BaseLogFormat:
+                if isinstance(cls, type) and issubclass(cls, LogFormat)\
+                        and cls not in (LogFormat, BaseLogFormat, NewBaseLogFormat):
                     all_handlers.append(cls(self._filename))
 
         self._handlers = sorted(all_handlers, key=lambda k: k.prio)
