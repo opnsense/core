@@ -51,6 +51,7 @@ if __name__ == '__main__':
     parser.add_argument('--offset', help='begin at row number', default='')
     parser.add_argument('--filename', help='log file name (excluding .log extension)', default='')
     parser.add_argument('--module', help='module', default='core')
+    parser.add_argument('--severity', help='comma separated list of severities', default='')
     inputargs = parser.parse_args()
 
     result = {'filters': inputargs.filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
@@ -64,7 +65,8 @@ if __name__ == '__main__':
             )
         if os.path.isdir(log_basename):
             # new syslog-ng local targets use an extra directory level
-            for filename in sorted(glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0])), reverse=True):
+            filenames = glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0]))
+            for filename in sorted(filenames, reverse=True):
                 log_filenames.append(filename)
         # legacy log output is always stiched last
         log_filenames.append("%s.log" % log_basename)
@@ -73,6 +75,7 @@ if __name__ == '__main__':
 
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
+        severity = inputargs.severity.split(',') if inputargs.severity.strip() != '' else []
         try:
             filter = inputargs.filter.replace('*', '.*').lower()
             if filter.find('*') == -1:
@@ -123,7 +126,8 @@ if __name__ == '__main__':
                                     record['parser'] = frmt.name
                             else:
                                 record['line'] = rec['line']
-                            result['rows'].append(record)
+                            if len(severity) == 0 or record['severity'] in severity:
+                                result['rows'].append(record)
                         elif limit > 0 and result['total_rows'] > offset + limit:
                             # do not fetch data until end of file...
                             break

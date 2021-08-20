@@ -34,7 +34,7 @@
               rowCount:[20,50,100,200,500,1000,-1],
               formatters:{
                   page: function (column, row) {
-                      if ($("input.search-field").val() !== "") {
+                      if ($("input.search-field").val() !== "" || $('#severity_filter').val().length > 0) {
                           return '<button type="button" class="btn btn-xs btn-default action-page bootgrid-tooltip" data-row-id="' +
                                 row.rnum + '" title="{{ lang._('Go to page') }}"><span class="fa fa-arrow-right fa-fw"></span></button>';
                       } else {
@@ -42,8 +42,17 @@
                       }
                   },
               },
+              requestHandler: function(request){
+                  if ( $('#severity_filter').val().length > 0) {
+                      request['severity'] = $('#severity_filter').val();
+                  }
+                  return request;
+              },
           },
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
+      });
+      $("#severity_filter").change(function(){
+          $('#grid-log').bootgrid('reload');
       });
 
       grid_log.on("loaded.rs.jquery.bootgrid", function(){
@@ -52,6 +61,7 @@
               $("#grid-log").bootgrid("search",  "");
               let new_page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
               $("input.search-field").val("");
+              $("#severity_filter").selectpicker('deselectAll');
               // XXX: a bit ugly, but clearing the filter triggers a load event.
               setTimeout(function(){
                   $("ul.pagination > li:last > a").data('page', new_page).click();
@@ -83,12 +93,23 @@
       // download (filtered) items
       $("#exportbtn").click(function(event){
           let download_link = "/api/diagnostics/log/{{module}}/{{scope}}/export";
+          let params = [];
+
           if ($("input.search-field").val() !== "") {
-              download_link = download_link + "?searchPhrase=" + encodeURIComponent($("input.search-field").val());
+              params.push("searchPhrase=" + encodeURIComponent($("input.search-field").val()));
+          }
+          if ( $('#severity_filter').val().length > 0) {
+              params.push("severity=" + encodeURIComponent($('#severity_filter').val().join(",")));
+          }
+          if (params.length > 0) {
+              download_link = download_link + "?" + params.join("&");
           }
           $('<a></a>').attr('href',download_link).get(0).click();
       });
       updateServiceControlUI('{{service}}');
+
+      // move filter into action header
+      $("#severity_filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
     });
 </script>
 
@@ -96,6 +117,21 @@
     <div class="content-box-main">
         <div class="table-responsive">
             <div  class="col-sm-12">
+                <div class="hidden">
+                    <!-- filter per type container -->
+                    <div id="severity_filter_container" class="btn-group">
+                        <select id="severity_filter"  data-title="{{ lang._('Severity') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                            <option value="Emergency">{{ lang._('Emergency') }}</option>
+                            <option value="Alert">{{ lang._('Alert') }}</option>
+                            <option value="Critical">{{ lang._('Critical') }}</option>
+                            <option value="Error">{{ lang._('Error') }}</option>
+                            <option value="Warning">{{ lang._('Warning') }}</option>
+                            <option value="Notice">{{ lang._('Notice') }}</option>
+                            <option value="Informational">{{ lang._('Informational') }}</option>
+                            <option value="Debug">{{ lang._('Debug') }}</option>
+                        </select>
+                    </div>
+                </div>
                 <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive" data-store-selection="true">
                     <thead>
                     <tr>

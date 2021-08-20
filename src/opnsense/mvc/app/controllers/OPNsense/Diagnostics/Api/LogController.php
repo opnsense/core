@@ -43,6 +43,7 @@ class LogController extends ApiControllerBase
         $scope = count($arguments) > 0 ? $arguments[0] : "";
         $action = count($arguments) > 1 ? $arguments[1] : "";
         $searchPhrase = '';
+        $severities = '';
         // create filter to sanitize input data
         $filter = new Filter([
             'query' => function ($value) {
@@ -64,9 +65,20 @@ class LogController extends ApiControllerBase
                 if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                     $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
                 }
+                if ($this->request->getPost('severity', 'string', '') != "") {
+                    $severities = $this->request->getPost('severity');
+                    $severities = is_array($severities) ? implode(",", $severities) : $severities;
+                    $severities = $filter->sanitize($severities, "query");
+                }
 
-                $response = $backend->configdpRun("system diag log", array($itemsPerPage,
-                    ($currentPage - 1) * $itemsPerPage, $searchPhrase, $module, $scope));
+                $response = $backend->configdpRun("system diag log", [
+                    $itemsPerPage,
+                    ($currentPage - 1) * $itemsPerPage,
+                    $searchPhrase,
+                    $module,
+                    $scope,
+                    $severities
+                ]);
                 $result = json_decode($response, true);
                 if ($result != null) {
                     $result['rowCount'] = count($result['rows']);
@@ -80,7 +92,14 @@ class LogController extends ApiControllerBase
                 if ($this->request->get('searchPhrase', 'string', '') != "") {
                     $searchPhrase = $filter->sanitize($this->request->get('searchPhrase'), "query");
                 }
-                $response = $backend->configdpRun("system diag log", array(0, 0, $searchPhrase, $module, $scope));
+                if ($this->request->get('severity', 'string', '') != "") {
+                    $severities = $this->request->get('severity');
+                    $severities = is_array($severities) ? implode(",", $severities) : $severities;
+                    $severities = $filter->sanitize($severities, "query");
+                }
+                $response = $backend->configdpRun("system diag log", [
+                    0, 0, $searchPhrase, $module, $scope, $severities
+                ]);
                 $this->response->setRawHeader("Content-Type: text/csv");
                 $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
                 foreach (json_decode($response, true)['rows'] as $row) {
