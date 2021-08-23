@@ -28,12 +28,16 @@ import glob
 import importlib
 import sys
 
-class BaseLogFormat:
+class LogFormat:
     """ Log format handler
     """
     def __init__(self, filename):
         self._filename = filename
         self._priority = 255
+        self._line = ""
+
+    def set_line(self, line):
+        self._line = line
 
     @property
     def name(self):
@@ -45,6 +49,16 @@ class BaseLogFormat:
         """
         return self._priority
 
+    @staticmethod
+    def match(line):
+        """ Does this formatter fit for the provided line
+        """
+        return False
+
+
+class BaseLogFormat(LogFormat):
+    """ Legacy log format handler
+    """
     @staticmethod
     def match(line):
         """ Does this formatter fit for the provided line
@@ -70,6 +84,63 @@ class BaseLogFormat:
         return ""
 
 
+class NewBaseLogFormat(LogFormat):
+    """ log format handler
+    """
+    @property
+    def timestamp(self):
+        """ Extract timestamp from line
+        """
+        pass
+
+    @property
+    def line(self):
+        """ Return line (without timestamp)
+        """
+        return line
+
+    @property
+    def process_name(self):
+        """ Return process name
+        """
+        return ""
+
+    @property
+    def pid(self):
+        """ Return pid
+        """
+        return None
+
+    @property
+    def facility(self):
+        """ syslog facility
+        """
+        return None
+
+    @property
+    def severity(self):
+        """ syslog severity
+        """
+        return None
+
+    @property
+    def severity_str(self):
+        severity = self.severity
+        options = {
+            0: 'Emergency',
+            1: 'Alert',
+            2: 'Critical',
+            3: 'Error',
+            4: 'Warning',
+            5: 'Notice',
+            6: 'Informational',
+            7: 'Debug'
+        }
+        if severity in options:
+            return options[severity]
+        return None
+
+
 class FormatContainer:
     def __init__(self, filename):
         self._handlers = list()
@@ -84,7 +155,8 @@ class FormatContainer:
         for module_name in dir(sys.modules[__name__]):
             for attribute_name in dir(getattr(sys.modules[__name__], module_name)):
                 cls = getattr(getattr(sys.modules[__name__], module_name), attribute_name)
-                if isinstance(cls, type) and issubclass(cls, BaseLogFormat) and cls != BaseLogFormat:
+                if isinstance(cls, type) and issubclass(cls, LogFormat)\
+                        and cls not in (LogFormat, BaseLogFormat, NewBaseLogFormat):
                     all_handlers.append(cls(self._filename))
 
         self._handlers = sorted(all_handlers, key=lambda k: k.prio)
@@ -92,4 +164,5 @@ class FormatContainer:
     def get_format(self, line):
         for handler in self._handlers:
             if handler.match(line):
+                handler.set_line(line)
                 return handler

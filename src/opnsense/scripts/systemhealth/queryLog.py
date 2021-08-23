@@ -37,7 +37,7 @@ import sre_constants
 import ujson
 import datetime
 import glob
-from logformats import FormatContainer
+from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader, fetch_clog
 import argparse
@@ -51,6 +51,7 @@ if __name__ == '__main__':
     parser.add_argument('--offset', help='begin at row number', default='')
     parser.add_argument('--filename', help='log file name (excluding .log extension)', default='')
     parser.add_argument('--module', help='module', default='core')
+    parser.add_argument('--severity', help='comma separated list of severities', default='')
     inputargs = parser.parse_args()
 
     result = {'filters': inputargs.filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
@@ -64,7 +65,8 @@ if __name__ == '__main__':
             )
         if os.path.isdir(log_basename):
             # new syslog-ng local targets use an extra directory level
-            for filename in sorted(glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0])), reverse=True):
+            filenames = glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0]))
+            for filename in sorted(filenames, reverse=True):
                 log_filenames.append(filename)
         # legacy log output is always stiched last
         log_filenames.append("%s.log" % log_basename)
@@ -73,6 +75,7 @@ if __name__ == '__main__':
 
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
+        severity = inputargs.severity.split(',') if inputargs.severity.strip() != '' else []
         try:
             filter = inputargs.filter.replace('*', '.*').lower()
             if filter.find('*') == -1:
@@ -99,18 +102,32 @@ if __name__ == '__main__':
                             record = {
                                 'timestamp': None,
                                 'parser': None,
+                                'facility': 1,
+                                'severity': 3,
                                 'process_name': '',
+                                'pid': None,
                                 'rnum': row_number
                             }
                             frmt = format_container.get_format(rec['line'])
                             if frmt:
-                                record['timestamp'] = frmt.timestamp(rec['line'])
-                                record['process_name'] = frmt.process_name(rec['line'])
-                                record['line'] = frmt.line(rec['line'])
-                                record['parser'] = frmt.name
+                                if issubclass(frmt.__class__, BaseLogFormat):
+                                    # backwards compatibility, old style log handler
+                                    record['timestamp'] = frmt.timestamp(rec['line'])
+                                    record['process_name'] = frmt.process_name(rec['line'])
+                                    record['line'] = frmt.line(rec['line'])
+                                    record['parser'] = frmt.name
+                                else:
+                                    record['timestamp'] = frmt.timestamp
+                                    record['process_name'] = frmt.process_name
+                                    record['pid'] = frmt.pid
+                                    record['facility'] = frmt.facility
+                                    record['severity'] = frmt.severity_str
+                                    record['line'] = frmt.line
+                                    record['parser'] = frmt.name
                             else:
                                 record['line'] = rec['line']
-                            result['rows'].append(record)
+                            if len(severity) == 0 or record['severity'] in severity:
+                                result['rows'].append(record)
                         elif limit > 0 and result['total_rows'] > offset + limit:
                             # do not fetch data until end of file...
                             break

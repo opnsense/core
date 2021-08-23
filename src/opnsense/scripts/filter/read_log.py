@@ -129,12 +129,21 @@ if __name__ == '__main__':
                 rule = dict()
                 metadata = dict()
                 # rule metadata (unique hash, hostname, timestamp)
-                log_ident = re.split('filterlog[^:]*:', record['line'])
-                tmp = log_ident[0].split()
+                if re.search('filterlog\[\d*\]:', record['line']):
+                    # rfc3164 format
+                    log_ident = re.split('filterlog[^:]*:', record['line'])
+                    tmp = log_ident[0].split()
+                    metadata['__host__'] = tmp.pop()
+                    metadata['__timestamp__'] = ' '.join(tmp)
+                    rulep = log_ident[1].strip().split(',')
+                else:
+                    # rfc5424 format
+                    tmp = record['line'].split()
+                    metadata['__timestamp__'] = tmp[1].split('+')[0]
+                    metadata['__host__'] = tmp[2]
+                    rulep = tmp[-1].strip().split(',')
+
                 metadata['__digest__'] = md5(record['line'].encode()).hexdigest()
-                metadata['__host__'] = tmp.pop()
-                metadata['__timestamp__'] = ' '.join(tmp)
-                rulep = log_ident[1].strip().split(',')
                 update_rule(rule, metadata, rulep, fields_general)
 
                 if 'action' not in rule:
