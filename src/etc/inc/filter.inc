@@ -72,7 +72,7 @@ function filter_rules_sort()
             return -1;
         } elseif (isset($b['floating'])) {
             return 1;
-        } elseif ($a['interface'] == $b['interface']) {
+        } elseif ($a['interface'] != $b['interface']) {
             return $a['seq'] - $b['seq'];
         } elseif ($a['interface'] == $b['interface']) {
             return 0;
