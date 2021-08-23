@@ -39,7 +39,6 @@
             toggle:'/api/firewall/alias/toggleItem/',
             options:{
                 requestHandler: function(request){
-                    let selected = $('#type_filter').find("option:selected").val();
                     if ( $('#type_filter').val().length > 0) {
                         request['type'] = $('#type_filter').val();
                     }
