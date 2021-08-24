@@ -1839,7 +1839,7 @@ function ipsec_get_configured_vtis()
             foreach ($phase2items as $idx => $phase2) {
                 if (empty($phase2['reqid'])) {
                     continue;
-                } elseif ((!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
+                } elseif ((!isset($ph1ent['mobile']) && $ph1ent['iketype'] == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
                     // isolated tunnels, every tunnel it's own reqid
                     $reqid = $phase2['reqid'];
                     $descr = empty($phase2['descr']) ? $ph1ent['descr'] : $phase2['descr'];
