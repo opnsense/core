@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              * then ensure that we are not running DHCP on the wan which
              * will make a lot of ISP's unhappy.
              */
-            if (!empty($config['interfaces']['lan']) && !empty($config['dhcpd']['wan']) && !empty($config['dhcpd']['wan']) ) {
+            if (!empty($config['interfaces']['lan']) && !empty($config['dhcpd']['wan']) ) {
                 unset($config['dhcpd']['wan']);
             }
             link_interface_to_vlans($realid);
