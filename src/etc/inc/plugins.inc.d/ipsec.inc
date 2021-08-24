@@ -1827,6 +1827,7 @@ function ipsec_get_configured_vtis()
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
     foreach ($a_phase1 as $ph1ent) {
         if (empty($ph1ent['disabled'])) {
+            $keyexchange = !empty($ph1ent['iketype']) ? $ph1ent['iketype'] : "ikev1";
             $phase2items = array();
             $phase2reqids = array();
             foreach ($a_phase2 as $ph2ent) {
