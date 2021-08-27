@@ -477,39 +477,44 @@ class SettingsController extends ApiMutableModelControllerBase
             $update_count = 0;
             foreach (explode(",", $sids) as $sid) {
                 $ruleinfo = $this->getRuleInfoAction($sid);
-                $current_action = null;
-                foreach ($ruleinfo['action'] as $key => $act) {
-                    if (!empty($act['selected'])) {
-                        $current_action = $key;
-                    }
-                }
-                if (!empty($ruleinfo)) {
-                    if ($enabled == null) {
-                        // toggle state
-                        if ($ruleinfo['enabled'] == 1) {
-                            $new_state = 0;
-                        } else {
-                            $new_state = 1;
-                        }
-                    } elseif ($enabled == 1) {
-                        $new_state = 1;
-                    } elseif ($enabled == "alert") {
-                        $current_action = "alert";
-                        $new_state = 1;
-                    } elseif ($enabled == "drop") {
-                        $current_action = "drop";
-                        $new_state = 1;
-                    } else {
-                        $new_state = 0;
-                    }
-                    if ($new_state == 1) {
-                        $this->getModel()->enableRule($sid)->action = $current_action;
-                    } else {
-                        $this->getModel()->disableRule($sid)->action = $current_action;
-                    }
-                    $update_count++;
-                }
-            }
+				if($ruleinfo != null){					
+					$current_action = null;
+					foreach ($ruleinfo['action'] as $key => $act) {
+						if (!empty($act['selected'])) {
+							$current_action = $key;
+						}
+					}
+					if (!empty($ruleinfo)) {
+						if ($enabled == null) {
+							// toggle state
+							if ($ruleinfo['enabled'] == 1) {
+								$new_state = 0;
+							} else {
+								$new_state = 1;
+							}
+						} elseif ($enabled == 1) {
+							$new_state = 1;
+						} elseif ($enabled == "alert") {
+							$current_action = "alert";
+							$new_state = 1;
+						} elseif ($enabled == "drop") {
+							$current_action = "drop";
+							$new_state = 1;
+						} else {
+							$new_state = 0;
+						}
+						if ($new_state == 1) {
+							$this->getModel()->enableRule($sid)->action = $current_action;
+						} else {
+							$this->getModel()->disableRule($sid)->action = $current_action;
+						}
+						$update_count++;
+					}
+				}else{				  
+					   $result = array("result" => "failed");
+					   return $result;
+					}
+				}
             if ($update_count > 0) {
                 return $this->save();
             }
