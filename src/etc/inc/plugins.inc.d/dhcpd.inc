@@ -308,6 +308,12 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\tAdvDefaultLifetime 0;\n";
         }
 
+        if (!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'static' && ip_in_subnet($ifcfgipv6, "fe80::/64")) {
+            $radvdconf .= "\tAdvRASrcAddress {\n";
+            $radvdconf .= "\t\t".$ifcfgipv6.";\n";
+            $radvdconf .= "\t};\n";
+        }
+        
         $stanzas = array();
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $realif, $ifconfig_details);
