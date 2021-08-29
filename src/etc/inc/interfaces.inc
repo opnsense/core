@@ -3880,23 +3880,6 @@ function link_interface_to_bridge($int)
     }
 }
 
-function link_interface_to_group($int)
-{
-    global $config;
-
-    $result = array();
-
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            if (in_array($int, explode(" ", $group['members']))) {
-                $result[$group['ifname']] = $int;
-            }
-        }
-    }
-
-    return $result;
-}
-
 function link_interface_to_gre($interface)
 {
     global $config;

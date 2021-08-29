@@ -34,23 +34,28 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-function link_interface_to_vlans($int)
+function link_interface_to_group($int)
 {
     global $config;
 
-    if (isset($config['vlans']['vlan'])) {
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if ($int == $vlan['if']) {
-                interfaces_bring_up($int);
+    $result = [];
+
+    if (isset($config['ifgroups']['ifgroupentry'])) {
+        foreach ($config['ifgroups']['ifgroupentry'] as $group) {
+            if (in_array($int, explode(" ", $group['members']))) {
+                $result[$group['ifname']] = $int;
             }
         }
     }
+
+    return $result;
 }
 
-
-function list_interfaces() {
+function list_interfaces()
+{
     global $config;
-    $interfaces  = array();
+
+    $interfaces = [];
 
     // define config sections to fetch interfaces from.
     $config_sections = array();
@@ -180,19 +185,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // no validation errors, delete entry
             unset($config['interfaces'][$id]['enable']);
-            $realid = get_real_interface($id);
-            interface_bring_down($id);   /* down the interface */
-
-            unset($config['interfaces'][$id]);  /* delete the specified OPTn or LAN*/
+            interface_bring_down($id);
 
             if (isset($config['dhcpd'][$id])) {
                 unset($config['dhcpd'][$id]);
                 plugins_configure('dhcp', false, array('inet'));
             }
+
             if (isset($config['dhcpdv6'][$id])) {
                 unset($config['dhcpdv6'][$id]);
                 plugins_configure('dhcp', false, array('inet6'));
             }
+
             if (isset($config['filter']['rule'])) {
                 foreach ($config['filter']['rule'] as $x => $rule) {
                     if ($rule['interface'] == $id) {
@@ -200,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }
+
             if (isset($config['nat']['rule'])) {
                 foreach ($config['nat']['rule'] as $x => $rule) {
                     if ($rule['interface'] == $id) {
@@ -208,16 +213,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            unset($config['interfaces'][$id]);
+
             write_config();
 
-            /* If we are in firewall/routing mode (not single interface)
-             * then ensure that we are not running DHCP on the wan which
-             * will make a lot of ISP's unhappy.
-             */
-            if (!empty($config['interfaces']['lan']) && !empty($config['dhcpd']['wan']) && !empty($config['dhcpd']['wan']) ) {
-                unset($config['dhcpd']['wan']);
-            }
-            link_interface_to_vlans($realid);
             header(url_safe('Location: /interfaces_assign.php'));
             exit;
         }
