@@ -169,8 +169,14 @@ include("head.inc");
                         continue;
                     }
                     $icon = '';
-                    $carp_statuses = $interfaces_details[get_real_interface($carp['interface'])]['carp'];
-                    $intf_status = $carp_statuses[array_search($carp['vhid'], array_column($carp_statuses, 'vhid'))]['status'];
+                    $intf = get_real_interface($carp['interface']);
+                    if (
+                        !empty($interfaces_details[$intf]) && !empty($interfaces_details[$intf]['carp'][$carp['vhid']])
+                    ) {
+                        $intf_status = $interfaces_details[$intf]['carp'][$carp['vhid']]['status'];
+                    } else {
+                        $intf_status = null;
+                    }
                     if (($carpcount > 0 && !$status)) {
                         $icon = "fa fa-remove fa-fw text-danger";
                         $intf_status = 'DISABLED';
