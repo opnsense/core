@@ -31,7 +31,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 function openvpn_configure()
 {
     return array(
