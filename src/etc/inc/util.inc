@@ -1532,7 +1532,7 @@ function is_interface_assigned($interface)
     }
     if (isset($config['vlans']['vlan'])) {
         foreach ($config['vlans']['vlan'] as $vlan) {
-            if($vlan['if'] == $interface) {
+            if ($vlan['if'] == $interface) {
                 return true;
             }
         }

@@ -335,7 +335,7 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
     } elseif ($error) {
         return sprintf($error_multi, $value, $name, $ipproto);
     } else {
-       return $error;
+        return $error;
     }
 }
 

@@ -569,7 +569,7 @@ EOD;
             }
             $lagg['members'] = str_replace(" ", "", $members_str);
 
-            foreach($members as $member) {
+            foreach ($members as $member) {
                 unset($unused_ifs[$member]);
             }
         } else {
