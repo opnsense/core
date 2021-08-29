@@ -29,7 +29,6 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("interfaces.lib.inc");
 
 $a_vip = &config_read_array('virtualip', 'vip');
 
