@@ -126,12 +126,6 @@ function match_wireless_interface($int)
 
 function interfaces_bring_up($interface)
 {
-    if (!$interface) {
-        log_error('interfaces_bring_up() was called but no variable defined.');
-        log_error('Backtrace: ' . debug_backtrace());
-        return;
-    }
-
     legacy_interface_flags($interface, 'up');
 }
 
