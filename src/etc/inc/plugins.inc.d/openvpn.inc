@@ -903,7 +903,7 @@ function openvpn_restart($mode, $settings, $carp_event = false)
         list ($interface, $vhid) = explode("_vip", $settings['interface']);
         $carp_statuses = legacy_interface_details(get_real_interface($interface))['carp'];
         if (
-            $carp_statuses[array_search($vhid, array_column($carp_statuses, 'vhid'))]['status'] == 'BACKUP'
+            $carp_statuses[$vhid]['status'] == 'BACKUP'
         ) {
             /* do not restart a client if we are a CARP backup instance */
             return;
