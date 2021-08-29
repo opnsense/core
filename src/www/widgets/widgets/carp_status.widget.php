@@ -40,8 +40,15 @@ config_read_array('virtualip', 'vip');
         if ($carp['mode'] != "carp") {
             continue;
         }
-        $carp_statuses = $interfaces_details[get_real_interface($carp['interface'])]['carp'];
-        $status = $carp_statuses[array_search($carp['vhid'], array_column($carp_statuses, 'vhid'))]['status'];?>
+        $intf = get_real_interface($carp['interface']);
+        if (
+            !empty($interfaces_details[$intf]) && !empty($interfaces_details[$intf]['carp'][$carp['vhid']])
+        ) {
+            $status = $interfaces_details[$intf]['carp'][$carp['vhid']]['status'];
+        } else {
+            $status = null;
+        }
+?>
     <tr>
       <td>
           <i class="fa fa-exchange fa-fw text-success"></i>
