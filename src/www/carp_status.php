@@ -29,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("interfaces.lib.inc");
 
 $a_vip = &config_read_array('virtualip', 'vip');
 
@@ -163,26 +164,28 @@ include("head.inc");
                 </tr>
 <?php
                 else:
+                  $interfaces_details = legacy_interfaces_details();
                   foreach ($a_vip as $carp):
                     if ($carp['mode'] != "carp") {
                         continue;
                     }
                     $icon = '';
-                    $intf_status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
+                    $intf_carp_statuses = $interfaces_details[get_real_interface($carp['interface'])]['carp'];
+                    $intf_status = $intf_carp_statuses[array_search($carp['vhid'], array_column($intf_carp_statuses, 'vhid'))]['status'];
                     if (($carpcount > 0 && !$status)) {
                         $icon = "fa fa-remove fa-fw text-danger";
-                        $intf_status = gettext('DISABLED');
-                    } elseif ($intf_status == gettext('MASTER')) {
+                        $intf_status = 'DISABLED';
+                    } elseif ($intf_status == 'MASTER') {
                         $icon = "fa fa-play fa-fw text-success";
-                    } elseif ($intf_status == gettext('BACKUP')) {
+                    } elseif ($intf_status == 'BACKUP') {
                         $icon = "fa fa-play fa-fw text-muted";
-                    } elseif ($intf_status == gettext('INIT')) {
+                    } elseif ($intf_status == 'INIT') {
                         $icon = "fa fa-info-circle fa-fw";
                     }?>
                 <tr>
                   <td><?=convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$carp['vhid']}" ;?></td>
                   <td><?=$carp['subnet'];?></td>
-                  <td><span class="<?=$icon;?>"></span> <?=$intf_status;?></td>
+                  <td><span class="<?=$icon;?>"></span> <?=gettext($intf_status);?></td>
                 </tr>
 <?php
                   endforeach;
