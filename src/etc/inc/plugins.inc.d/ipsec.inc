@@ -436,7 +436,7 @@ function ipsec_parse_phase2($ikeid)
                     $result['leftsubnets'][] = $tmpsubnet;
                 }
                 if (!isset($ph2ent['mobile'])) {
-                    $result['rightsubnets'][] = $right_spec;
+                    $result['rightsubnets'][] = $ph1ent['remote-gateway'];
                 }
             }
             $uniqids[] = $ph2ent['uniqid'];
