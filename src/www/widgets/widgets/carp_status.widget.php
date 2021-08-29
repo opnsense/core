@@ -29,17 +29,20 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("interfaces.lib.inc");
 
 config_read_array('virtualip', 'vip');
 
 ?>
 <table class="table table-striped table-condensed">
 <?php
+    $interfaces_details = legacy_interfaces_details();
     foreach ($config['virtualip']['vip'] as $carp):
         if ($carp['mode'] != "carp") {
             continue;
         }
-        $status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");?>
+        $carp_statuses = $interfaces_details[get_real_interface($carp['interface'])]['carp'];
+        $status = $carp_statuses[array_search($carp['vhid'], array_column($carp_statuses, 'vhid'))]['status'];?>
     <tr>
       <td>
           <i class="fa fa-exchange fa-fw text-success"></i>
@@ -52,18 +55,18 @@ config_read_array('virtualip', 'vip');
       <td>
 <?php
       if (get_single_sysctl('net.inet.carp.allow') <= 0 ) {
-          $status = gettext("DISABLED");
+          $status = "DISABLED";
           echo "<span class=\"fa fa-remove fa-fw text-danger\" title=\"$status\" ></span>";
-      } elseif ($status == gettext("MASTER")) {
+      } elseif ($status == "MASTER") {
           echo "<span class=\"fa fa-play fa-fw text-success\" title=\"$status\" ></span>";
-      } elseif ($status == gettext("BACKUP")) {
+      } elseif ($status == "BACKUP") {
           echo "<span class=\"fa fa-play fa-fw text-muted\" title=\"$status\" ></span>";
-      } elseif ($status == gettext("INIT")) {
+      } elseif ($status == "INIT") {
           echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status\" ></span>";
       }
       if (!empty($carp['subnet'])):?>
         &nbsp;
-        <?=htmlspecialchars($status);?> &nbsp;
+        <?=htmlspecialchars(gettext($status));?> &nbsp;
         <?=htmlspecialchars($carp['subnet']);?>
 <?php
       endif;?>
