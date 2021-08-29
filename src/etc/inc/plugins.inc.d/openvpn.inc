@@ -31,7 +31,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("interfaces.lib.inc");
 
 function openvpn_configure()
 {
