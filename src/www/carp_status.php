@@ -169,22 +169,26 @@ include("head.inc");
                         continue;
                     }
                     $icon = '';
-                    $intf_carp_statuses = $interfaces_details[get_real_interface($carp['interface'])]['carp'];
-                    $intf_status = $intf_carp_statuses[array_search($carp['vhid'], array_column($intf_carp_statuses, 'vhid'))]['status'];
+                    $carp_statuses = $interfaces_details[get_real_interface($carp['interface'])]['carp'];
+                    $intf_status = $carp_statuses[array_search($carp['vhid'], array_column($carp_statuses, 'vhid'))]['status'];
                     if (($carpcount > 0 && !$status)) {
                         $icon = "fa fa-remove fa-fw text-danger";
                         $intf_status = 'DISABLED';
+                        $intf_status_i18n = gettext('DISABLED');
                     } elseif ($intf_status == 'MASTER') {
                         $icon = "fa fa-play fa-fw text-success";
+                        $intf_status_i18n = gettext('MASTER');
                     } elseif ($intf_status == 'BACKUP') {
                         $icon = "fa fa-play fa-fw text-muted";
+                        $intf_status_i18n = gettext('BACKUP');
                     } elseif ($intf_status == 'INIT') {
                         $icon = "fa fa-info-circle fa-fw";
+                        $intf_status_i18n = gettext('INIT');
                     }?>
                 <tr>
                   <td><?=convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$carp['vhid']}" ;?></td>
                   <td><?=$carp['subnet'];?></td>
-                  <td><span class="<?=$icon;?>"></span> <?=gettext($intf_status);?></td>
+                  <td><span class="<?=$icon;?>"></span> <?=$intf_status_i18n;?></td>
                 </tr>
 <?php
                   endforeach;
