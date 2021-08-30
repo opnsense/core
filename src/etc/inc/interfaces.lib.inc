@@ -72,16 +72,6 @@ function legacy_interface_flags($ifs, $flag, $report_errors = true)
     }
 }
 
-function legacy_interface_rename($ifs, $name)
-{
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
-
-    exec($cmd . ' 2>&1', $out, $ret);
-    if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
-    }
-}
-
 function legacy_interface_create($ifs, $name = null)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
@@ -98,7 +88,14 @@ function legacy_interface_create($ifs, $name = null)
     }
 
     if (!empty($name)) {
-        legacy_interface_rename($new, $name);
+        $cmd = '/sbin/ifconfig ' . escapeshellarg($new) . ' name ' . escapeshellarg($name);
+
+        exec($cmd . ' 2>&1', $out, $ret);
+        if ($ret) {
+            log_error('The command `' . $cmd . '\' failed to execute');
+        }
+
+        /* return new name here anyway to force proper device not found errors later */
         $new = $name;
     }
 
