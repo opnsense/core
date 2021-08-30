@@ -286,6 +286,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Please enter an address for 'My Identifier'");
     } elseif ($pconfig['myid_type'] == "keyid tag" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a keyid tag for 'My Identifier'");
+    } elseif ($pconfig['myid_type'] == "raw tag" && $pconfig['myid_data'] == "") {
+        $input_errors[] = gettext("Please enter a raw tag for 'My Identifier'");
     } elseif ($pconfig['myid_type'] == "fqdn" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a fully qualified domain name for 'My Identifier'");
     } elseif ($pconfig['myid_type'] == "user_fqdn" && $pconfig['myid_data'] == "") {
@@ -316,6 +318,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if ($pconfig['peerid_type'] == "keyid tag" and $pconfig['peerid_data'] == "") {
             $input_errors[] = gettext("Please enter a keyid tag for 'Peer Identifier'");
+        }
+        if ($pconfig['peerid_type'] == "raw tag" and $pconfig['peerid_data'] == "") {
+            $input_errors[] = gettext("Please enter a raw tag for 'Peer Identifier'");
         }
         if ($pconfig['peerid_type'] == "fqdn" and $pconfig['peerid_data'] == "") {
             $input_errors[] = gettext("Please enter a fully qualified domain name for 'Peer Identifier'");
@@ -825,6 +830,7 @@ include("head.inc");
                         'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
                         'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
                         'keyid tag' => array( 'desc' => gettext('KeyID tag'), 'mobile' => true ),
+                        'raw tag' => array( 'desc' => gettext('Raw tag'), 'mobile' => true ),
                         'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ));
                       foreach ($my_identifier_list as $id_type => $id_params) :
 ?>
@@ -854,7 +860,8 @@ endforeach; ?>
                         'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
                         'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
                         'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
-                        'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ));
+                        'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ),
+                        'raw tag' => array( 'desc' =>gettext('Raw tag'), 'mobile' => true ));
                       foreach ($peer_identifier_list as $id_type => $id_params) :
                         if (!empty($pconfig['mobile']) && !$id_params['mobile']) {
                           continue;
