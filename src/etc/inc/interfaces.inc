@@ -4488,28 +4488,6 @@ function is_ipaddr_configured($ipaddr, $ignore_if = '')
     }
 }
 
-/*
- * get_carp_interface_status($carpinterface): returns the status of a carp ip
- */
-function get_carp_interface_status($carpinterface)
-{
-    $carp_query = [];
-
-    /* XXX: Need to find a better way for this! */
-    list ($interface, $vhid) = explode("_vip", $carpinterface);
-    $interface = get_real_interface($interface);
-    exec("/sbin/ifconfig $interface | /usr/bin/grep -v grep | /usr/bin/grep carp: | /usr/bin/grep 'vhid {$vhid}'", $carp_query);
-    foreach ($carp_query as $int) {
-        if (stristr($int, "MASTER")) {
-            return gettext("MASTER");
-        } elseif (stristr($int, "BACKUP")) {
-            return gettext("BACKUP");
-        } elseif (stristr($int, "INIT")) {
-            return gettext("INIT");
-        }
-    }
-    return gettext('DISABLED');
-}
 
 function make_ipv6_64_address($prefix, $suffix)
 {

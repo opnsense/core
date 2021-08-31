@@ -163,26 +163,35 @@ include("head.inc");
                 </tr>
 <?php
                 else:
+                  $intf_details = legacy_interfaces_details();
                   foreach ($a_vip as $carp):
                     if ($carp['mode'] != "carp") {
                         continue;
                     }
                     $icon = '';
-                    $intf_status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
+                    $intf = get_real_interface($carp['interface']);
+                    if (!empty($intf_details[$intf]) && !empty($intf_details[$intf]['carp'][$carp['vhid']])) {
+                        $intf_status = $intf_details[$intf]['carp'][$carp['vhid']]['status'];
+                    } else {
+                        $intf_status = null;
+                    }
                     if (($carpcount > 0 && !$status)) {
                         $icon = "fa fa-remove fa-fw text-danger";
-                        $intf_status = gettext('DISABLED');
-                    } elseif ($intf_status == gettext('MASTER')) {
+                        $intf_status_i18n = gettext('DISABLED');
+                    } elseif ($intf_status == 'MASTER') {
                         $icon = "fa fa-play fa-fw text-success";
-                    } elseif ($intf_status == gettext('BACKUP')) {
+                        $intf_status_i18n = gettext('MASTER');
+                    } elseif ($intf_status == 'BACKUP') {
                         $icon = "fa fa-play fa-fw text-muted";
-                    } elseif ($intf_status == gettext('INIT')) {
+                        $intf_status_i18n = gettext('BACKUP');
+                    } elseif ($intf_status == 'INIT') {
                         $icon = "fa fa-info-circle fa-fw";
+                        $intf_status_i18n = gettext('INIT');
                     }?>
                 <tr>
                   <td><?=convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$carp['vhid']}" ;?></td>
                   <td><?=$carp['subnet'];?></td>
-                  <td><span class="<?=$icon;?>"></span> <?=$intf_status;?></td>
+                  <td><span class="<?=$icon;?>"></span> <?=$intf_status_i18n;?></td>
                 </tr>
 <?php
                   endforeach;

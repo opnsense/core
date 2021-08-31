@@ -339,7 +339,7 @@ function legacy_interfaces_details($intf = null)
             if (empty($result[$current_interface]["carp"])) {
                 $result[$current_interface]["carp"] = array();
             }
-            $result[$current_interface]["carp"][] = array(
+            $result[$current_interface]["carp"][$line_parts[3]] = array(
                 "status" => $line_parts[1],
                 "vhid" => $line_parts[3],
                 "advbase" => $line_parts[5],
