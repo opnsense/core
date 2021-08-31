@@ -898,11 +898,17 @@ function openvpn_restart($mode, $settings, $carp_event = false)
     }
 
     if (
-        strstr($settings['interface'], '_vip') && $mode == 'client' &&
-        get_carp_interface_status($settings['interface']) == gettext('BACKUP')
+        strstr($settings['interface'], '_vip') && $mode == 'client'
     ) {
-        /* do not restart a client if we are a CARP backup instance */
-        return;
+        list ($interface, $vhid) = explode("_vip", $settings['interface']);
+        $interface_details = legacy_interface_details(get_real_interface($interface));
+        if (
+            !empty($interface_details) && !empty($interface_details['carp'][$vhid]) && 
+            $interface_details['carp'][$vhid]['status'] == 'BACKUP'
+        ) {
+            /* do not restart a client if we are a CARP backup instance */
+            return;
+        }
     }
 
     @unlink("/var/etc/openvpn/{$mode_id}.sock");

@@ -35,11 +35,20 @@ config_read_array('virtualip', 'vip');
 ?>
 <table class="table table-striped table-condensed">
 <?php
+    $interfaces_details = legacy_interfaces_details();
     foreach ($config['virtualip']['vip'] as $carp):
         if ($carp['mode'] != "carp") {
             continue;
         }
-        $status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");?>
+        $intf = get_real_interface($carp['interface']);
+        if (
+            !empty($interfaces_details[$intf]) && !empty($interfaces_details[$intf]['carp'][$carp['vhid']])
+        ) {
+            $status = $interfaces_details[$intf]['carp'][$carp['vhid']]['status'];
+        } else {
+            $status = null;
+        }
+?>
     <tr>
       <td>
           <i class="fa fa-exchange fa-fw text-success"></i>
@@ -52,18 +61,21 @@ config_read_array('virtualip', 'vip');
       <td>
 <?php
       if (get_single_sysctl('net.inet.carp.allow') <= 0 ) {
-          $status = gettext("DISABLED");
-          echo "<span class=\"fa fa-remove fa-fw text-danger\" title=\"$status\" ></span>";
-      } elseif ($status == gettext("MASTER")) {
-          echo "<span class=\"fa fa-play fa-fw text-success\" title=\"$status\" ></span>";
-      } elseif ($status == gettext("BACKUP")) {
-          echo "<span class=\"fa fa-play fa-fw text-muted\" title=\"$status\" ></span>";
-      } elseif ($status == gettext("INIT")) {
-          echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status\" ></span>";
+          $status_i18n = gettext("DISABLED");
+          echo "<span class=\"fa fa-remove fa-fw text-danger\" title=\"$status_i18n\" ></span>";
+      } elseif ($status == "MASTER") {
+          $status_i18n = gettext("MASTER");
+          echo "<span class=\"fa fa-play fa-fw text-success\" title=\"$status_i18n\" ></span>";
+      } elseif ($status == "BACKUP") {
+          $status_i18n = gettext("BACKUP");
+          echo "<span class=\"fa fa-play fa-fw text-muted\" title=\"$status_i18n\" ></span>";
+      } elseif ($status == "INIT") {
+          $status_i18n = gettext("INIT");
+          echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status_i18n\" ></span>";
       }
       if (!empty($carp['subnet'])):?>
         &nbsp;
-        <?=htmlspecialchars($status);?> &nbsp;
+        <?=htmlspecialchars($status_i18n);?> &nbsp;
         <?=htmlspecialchars($carp['subnet']);?>
 <?php
       endif;?>
