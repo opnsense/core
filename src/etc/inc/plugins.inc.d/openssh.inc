@@ -219,11 +219,16 @@ function openssh_configure_do($verbose = false, $interface = '')
             continue;
         }
 
-        if (count($listeners) < 16) {
-            $listeners[] = $tmpaddr;
-        } else {
+        if (count($listeners) >= 16) {
             log_error("The SSH listening address $tmpaddr cannot be added due to MAX_LISTEN_SOCKS limit reached.");
+            continue;
         }
+
+        if ($info['family'] == 'inet6') {
+            $tmpaddr = "[$tmpaddr]";
+        }
+
+        $listeners[] = $tmpaddr;
     }
 
     foreach ($listeners as $listener) {
