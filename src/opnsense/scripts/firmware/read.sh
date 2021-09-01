@@ -27,5 +27,5 @@
 LOCKFILE="/tmp/pkg_upgrade.progress"
 
 if [ -f ${LOCKFILE} ]; then
-	cat ${LOCKFILE} | sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}:/${SUBSCRIPTION}:gi'
+	cat ${LOCKFILE} | sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION}/:gi'
 fi
