@@ -224,10 +224,6 @@ function openssh_configure_do($verbose = false, $interface = '')
             continue;
         }
 
-        if ($info['family'] == 'inet6') {
-            $tmpaddr = "[$tmpaddr]";
-        }
-
         $listeners[] = $tmpaddr;
     }
 
