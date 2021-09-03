@@ -460,7 +460,7 @@ $( document ).ready(function() {
 <?php
                         elseif ($field['type'] == 'password'):?>
 
-                        <input name="<?=$fieldId;?>" type="password" value="<?=$field['value'];?>" />
+                        <input name="<?=$fieldId;?>" type="password" value="<?=$pconfig[$fieldId];?>" />
 <?php
                         elseif ($field['type'] == 'textarea'):?>
                         <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>
