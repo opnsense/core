@@ -546,6 +546,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Syslog/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.xml
