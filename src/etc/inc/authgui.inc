@@ -204,7 +204,7 @@ set_language();
 /*
  * redirect to first allowed page if requesting a wrong url
  */
-if ($_SERVER['REQUEST_URI']  == '/') {
+if ($_SERVER['REQUEST_URI'] == '/') {
     $page = '/index.php';
 } else {
     /* reconstruct page uri to use actual script location, mimic realpath() behaviour */
@@ -228,7 +228,7 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
         header(url_safe("Location: /{$page}"));
         exit;
     } else {
-        display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
+        display_error_form(gettext('No page assigned to this user! Click here to logout.'));
         exit;
     }
 }
@@ -236,8 +236,10 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
 /*
  * determine if the user is allowed access to the requested page
  */
-function display_error_form($http_code, $desc)
+function display_error_form($text)
 {
+    global $g;
+
     $themename = htmlspecialchars(get_current_theme());
 
     ?><!doctype html>
@@ -255,26 +257,25 @@ function display_error_form($http_code, $desc)
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title><?=$http_code?></title>
+    <title><?= gettext('Error') ?> | <?= $g['product_name'] ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
 
+    <script src="/ui/js/jquery-3.5.1.min.js"></script>
+
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
   </head>
   <body class="page-login">
-    <div id="errordesc">
-      <h1>&nbsp;</h1>
-      <a href="/index.php?logout">
-      <p id="errortext" style="vertical-align: middle; text-align: center;">
-        <span style="color: #000000; font-weight: bold;">
-          <?=$desc;?>
-        </span>
+    <div id=container">
+      <p>&nbsp;</p>
+      <p style="text-align: center;">
+        <a href="/index.php?logout"><?= $text ?></a>
       </p>
     </div>
   </body>
-</html><?php
-} // end function
+</html>
+<?php }
 
 function display_login_form($Login_Error)
 {
@@ -318,7 +319,7 @@ function display_login_form($Login_Error)
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title><?=gettext("Login"); ?></title>
+    <title><?= gettext('Login') ?> | <?= $g['product_name'] ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
@@ -390,4 +391,4 @@ function display_login_form($Login_Error)
 
     </body>
   </html>
-<?php } // end function
+<?php }
