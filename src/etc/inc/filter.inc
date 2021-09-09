@@ -74,8 +74,6 @@ function filter_rules_sort()
             return 1;
         } elseif ($a['interface'] == $b['interface']) {
             return $a['seq'] - $b['seq'];
-        } elseif ($a['interface'] == $b['interface']) {
-            return 0;
         } elseif ($a['interface'] == 'wan') {
             return -1;
         } elseif ($b['interface'] == 'wan') {
