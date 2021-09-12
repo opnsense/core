@@ -395,6 +395,11 @@ include("head.inc");
                     <tr>
                       <td><?= gettext("LAGG Options") ?></td>
                       <td>
+<?php
+                          if (!empty($ifinfo['lagghash'])):?>
+                          <?= gettext("lagghash") ?>=<?=$ifinfo['lagghash'] ?><br/>
+<?php
+                          endif;?>
                           <?= gettext("flags") ?>=<?= implode(",", $ifinfo['laggoptions']['flags']) ?><br/>
                           <?= gettext("flowid_shift") ?>:<?=$ifinfo['laggoptions']['flowid_shift'] ?>
 <?php

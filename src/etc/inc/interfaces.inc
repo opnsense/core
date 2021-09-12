@@ -614,8 +614,20 @@ function interface_lagg_configure(&$lagg)
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
+    if ($lagg['proto'] == 'lacp' || $lagg['proto'] == 'loadbalance') {
+        if (!empty($lagg['hash_layers'])) {
+            mwexec("/sbin/ifconfig {$laggif} lagghash " . escapeshellarg($lagg['hash_layers']));
+        }
+        if (isset($lagg['use_flowid'])) {
+            if (!empty($lagg['use_flowid'])) {
+                mwexec("/sbin/ifconfig {$laggif} use_flowid");
+            } else {
+                mwexec("/sbin/ifconfig {$laggif} -use_flowid");
+            }
+        }
+    }
     if ($lagg['proto'] == 'lacp') {
-        foreach (['lacp_fast_timeout', 'use_flowid', 'lacp_strict'] as $attr) {
+        foreach (['lacp_fast_timeout', 'lacp_strict'] as $attr) {
             if (isset($lagg[$attr])) {
                 if (!empty($lagg[$attr])) {
                     mwexec("/sbin/ifconfig {$laggif} {$attr}");

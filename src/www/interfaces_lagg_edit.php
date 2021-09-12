@@ -74,6 +74,7 @@ function available_interfaces($selected_id = null)
 }
 
 $laggprotos = array("none", "lacp", "failover", "fec", "loadbalance", "roundrobin");
+$lagghashlayers = array("l2", "l3", "l4");
 
 $a_laggs = &config_read_array('laggs', 'lagg');
 
@@ -88,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['members'] = isset($a_laggs[$id]['members']) ? explode(",", $a_laggs[$id]['members']) : array();
     $pconfig['proto'] = isset($a_laggs[$id]['proto']) ? $a_laggs[$id]['proto'] : null;
     $pconfig['descr'] = isset($a_laggs[$id]['descr']) ? $a_laggs[$id]['descr'] : null;
+    $pconfig['hash_layers'] = isset($a_laggs[$id]['hash_layers']) ? explode(",", $a_laggs[$id]['hash_layers']) : array();
     $pconfig['lacp_fast_timeout'] = !empty($a_laggs[$id]['lacp_fast_timeout']);
     $pconfig['use_flowid'] = isset($a_laggs[$id]['use_flowid']) ? $a_laggs[$id]['use_flowid'] : null;
     $pconfig['lacp_strict'] = isset($a_laggs[$id]['lacp_strict']) ? $a_laggs[$id]['lacp_strict'] : null;
@@ -118,6 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Protocol supplied is invalid");
     }
 
+    if (isset($pconfig['hash_layers'])) {
+      if (array_diff($pconfig['hash_layers'], $lagghashlayers)) {
+          $input_errors[] = gettext("Hash Layers specified are invalid");
+      }
+    }
+
     if (!empty($pconfig['mtu'])) {
         $mtu_low = 576;
         $mtu_high = 65535;
@@ -132,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['descr'] = $pconfig['descr'];
         $lagg['laggif'] = $pconfig['laggif'];
         $lagg['proto'] = $pconfig['proto'];
+        $lagg['hash_layers'] = implode(',', $pconfig['hash_layers']);
         $lagg['mtu'] = $pconfig['mtu'];
         $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
         if (in_array($pconfig['use_flowid'], ['0', '1'])) {
@@ -173,13 +182,24 @@ legacy_html_escape_form_data($pconfig);
   <script>
     $( document ).ready(function() {
         $("#proto").change(function(){
-            if ($("#proto").val() == 'lacp') {
+            let proto = $("#proto").val();
+
+            if (proto == 'lacp') {
                 $(".proto_lacp").parent().parent().show();
                 $(".proto_lacp").prop( "disabled", false );
             } else {
                 $(".proto_lacp").parent().parent().hide();
                 $(".proto_lacp").prop( "disabled", true );
             }
+
+            if (proto == 'lacp' || proto == 'loadbalance') {
+                $(".proto_uses_hashing").parent().parent().show();
+                $(".proto_uses_hashing").prop( "disabled", false );
+            } else {
+                $(".proto_uses_hashing").parent().parent().hide();
+                $(".proto_uses_hashing").prop( "disabled", true );
+            }
+
             $('.selectpicker').selectpicker('refresh');
         });
         $("#proto").change();
@@ -289,6 +309,28 @@ legacy_html_escape_form_data($pconfig);
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_hash_layers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash Layers"); ?></td>
+                    <td>
+                      <select name="hash_layers[]" multiple="multiple" class="selectpicker proto_uses_hashing">
+<?php
+                      foreach ($lagghashlayers as $hashlayer):?>
+                        <option value="<?=$hashlayer;?>" <?=!empty($pconfig['hash_layers']) && in_array($hashlayer, $pconfig['hash_layers']) ? "selected=\"selected\"" : "";?>>
+                            <?=strtoupper($hashlayer);?>
+                        </option>
+<?php
+                      endforeach;?>
+                      </select>
+                      <div class="hidden" data-for="help_for_hash_layers">
+                        <?=gettext("Set the packet layers to hash for aggregation protocols which load balance."); ?><br/>
+                        <ul>
+                          <li><?=gettext("L2: src/dst mac address and optional vlan number."); ?></li>
+                          <li><?=gettext("L3: src/dst address for IPv4 or IPv6."); ?></li>
+                          <li><?=gettext("L4: src/dst port for TCP/UDP/SCTP."); ?></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
                     <td>
                       <input name="lacp_fast_timeout" id="lacp_fast_timeout" class="proto_lacp" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
@@ -300,7 +342,7 @@ legacy_html_escape_form_data($pconfig);
                   <tr>
                     <td><a id="help_for_use_flowid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use flowid"); ?></td>
                     <td>
-                      <select name="use_flowid" class="selectpicker proto_lacp" id="use_flowid">
+                      <select name="use_flowid" class="selectpicker proto_uses_hashing" id="use_flowid">
                           <option value=""><?=gettext("Default");?></option>
                           <option value="1" <?=$pconfig['use_flowid'] === "1" ? "selected=\"selected\"": ""?>>
                               <?=gettext("Yes");?>
