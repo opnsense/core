@@ -88,7 +88,7 @@ function legacy_interface_create($ifs, $name = null)
     }
 
     if (!empty($name)) {
-        $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
+        $cmd = '/sbin/ifconfig ' . escapeshellarg($new) . ' name ' . escapeshellarg($name);
 
         exec($cmd . ' 2>&1', $out, $ret);
         if ($ret) {
