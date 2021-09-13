@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
 
 $a_gifs = &config_read_array('gifs', 'gif');
 
@@ -114,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $gif['gifif'] = interface_gif_configure($gif);
+        ifgroup_setup();
         if ($gif['gifif'] == "" || !stristr($gif['gifif'], "gif")) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {

@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
 
 $a_vlans = &config_read_array('vlans', 'vlan');
 
@@ -111,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $vlan['vlanif'] = interface_vlan_configure($vlan);
         }
+        ifgroup_setup();
         if ($vlan['vlanif'] == "" || !stristr($vlan['vlanif'], "vlan")) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
