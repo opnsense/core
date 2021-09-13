@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
 
 $a_gres = &config_read_array('gres', 'gre');
 
@@ -89,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
         $gre['greif'] = interface_gre_configure($gre);
+        ifgroup_setup();
         if ($gre['greif'] == "" || !stristr($gre['greif'], "gre")) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {

@@ -145,6 +145,12 @@ foreach (array_keys($restartifs) as $ifname) {
     system_routing_configure(false, $ifname);
 }
 
+/*
+ * Interface reconfigure finished here so sync
+ * firewall groups in case of destroy/create use.
+ */
+ifgroup_setup();
+
 $cacheip = @file_get_contents($cacheip_file);
 
 if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
