@@ -156,8 +156,12 @@ class Util
                     }
 
                     if (!empty($alias['content'])) {
-                        $tmp = array_slice(explode("\n", $alias['content']), 0, 10);
-                        asort($tmp);
+                        $content = explode("\n", $alias['content']);
+                        $tmp = array_slice($content, 0, 10);
+                        asort($tmp, SORT_NATURAL);
+                        if (count($content) > 10) {
+                            $tmp[] = '[...]';
+                        }
                         self::$aliasDescriptions[$alias['name']] .= implode("<br/>", $tmp);
                     }
                 }
