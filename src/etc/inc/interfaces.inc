@@ -4599,6 +4599,41 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     return $result;
 }
 
+function interfaces_primary_address($interface, $realif = null, $ifconfig_details = null)
+{
+    $ifcfgip = $network = $subnetbits = null;
+
+    if ($realif === null) {
+        $realif = get_real_interface($interface);
+    }
+
+    $interfaces_a = config_read_array('interfaces');
+
+    foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
+        if ($info['family'] != 'inet') {
+            continue;
+        }
+
+        $addrparts = explode('/', $tmpaddr);
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && strpos($vip['subnet'], ':') === false) {
+                 /* matching alias cannot be primary address */
+                if ($vip['subnet'] == $addrparts[0]) {
+                    continue 2;
+                }
+            }
+        }
+
+        $network = gen_subnet($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
+        $subnetbits = $addrparts[1];
+        $ifcfgip = $addrparts[0];
+        break; /* all done */
+    }
+
+    return [ $ifcfgip, $network, $subnetbits ];
+}
+
 function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
