@@ -2658,8 +2658,8 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     $rd6lan = convert_128bit_to_ipv6($rd6lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
     $lanif = get_real_interface($interface, 'inet6');
-    $oip = find_interface_ipv6($lanif);
-    if (is_ipaddrv6($oip)) {
+    list ($oip) = interfaces_primary_address6($interface, $lanif);
+    if (!empty($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
     }
 
@@ -2699,8 +2699,8 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
     $sixto4lan = convert_128bit_to_ipv6($sixto4lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
     $lanif = get_real_interface($interface, 'inet6');
-    $oip = find_interface_ipv6($lanif);
-    if (is_ipaddrv6($oip)) {
+    list ($oip) = interfaces_primary_address6($interface, $lanif);
+    if (!empty($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
     }
 
