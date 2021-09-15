@@ -168,16 +168,18 @@ function system_resolvconf_generate($verbose = false)
 {
     global $config;
 
-    $syscfg = config_read_array('system');
-
     if ($verbose) {
         echo 'Generating /etc/resolv.conf...';
         flush();
     }
 
+    $syscfg = config_read_array('system');
     $resolvconf = '';
+    $search = [];
+
     if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
+        $search[] = $syscfg['domain'];
     }
 
     if (!isset($syscfg['dnslocalhost']) && (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable']))) {
@@ -185,9 +187,7 @@ function system_resolvconf_generate($verbose = false)
     }
 
     if (isset($syscfg['dnsallowoverride'])) {
-        foreach (get_searchdomains() as $searchserver) {
-            $resolvconf .= "search {$searchserver}\n";
-        }
+        $search = array_merge($search, get_searchdomains());
         foreach (get_nameservers() as $nameserver) {
             $resolvconf .= "nameserver $nameserver\n";
         }
@@ -197,6 +197,22 @@ function system_resolvconf_generate($verbose = false)
         foreach ($syscfg['dnsserver'] as $ns) {
             $resolvconf .= "nameserver $ns\n";
         }
+    }
+
+    if (count($search)) {
+        $result = $search[0];
+        /* resolv.conf search keyword limit is 6 domains, 256 characters */
+        foreach (range(2, 6) as $len) {
+            if (count($search) < $len) {
+                break;
+            }
+            $temp = implode(' ', array_slice($search, 0, $len));
+            if (strlen($temp) >= 256) {
+                break;
+            }
+            $result = $temp;
+        }
+        $resolvconf .= "search {$result}\n";
     }
 
     $tempfile = tempnam('/tmp', 'resolv.conf');
