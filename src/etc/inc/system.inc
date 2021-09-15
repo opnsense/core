@@ -90,6 +90,7 @@ function get_default_sysctl_value($id)
         'net.inet.icmp.log_redirect' => '0',
         'net.inet.icmp.reply_from_interface' => '1',
         'net.inet.ip.accept_sourceroute' => '0',
+        'net.inet.ip.forwarding' => '1',
         'net.inet.ip.intr_queue_maxlen' => '1000',
         'net.inet.ip.portrange.first' => '1024',
         'net.inet.ip.random_id' => '1',
@@ -106,6 +107,7 @@ function get_default_sysctl_value($id)
         'net.inet.udp.blackhole' => '1',
         'net.inet.udp.checksum' => 1,
         'net.inet.udp.maxdgram' => '57344',
+        'net.inet6.ip6.forwarding' => '1',
         'net.inet6.ip6.prefer_tempaddr' => '0',
         'net.inet6.ip6.redirect' => '1',
         'net.inet6.ip6.use_tempaddr' => '0',
@@ -114,6 +116,7 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_member' => '1',
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
+        'net.link.vlan.mtag_pcp' => '1',
         'net.local.dgram.maxdgram' => '8192',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
@@ -140,6 +143,9 @@ function system_sysctl_get()
         'net.enc.out.ipsec_bpf_mask' => 'default',
         'net.enc.out.ipsec_filter_mask' => 'default',
         'net.inet.icmp.reply_from_interface' => 'default',
+        'net.inet.ip.forwarding' => 'default',
+        'net.inet6.ip6.forwarding' => 'default',
+        'net.link.vlan.mtag_pcp' => 'default',
         'net.local.dgram.maxdgram' => 'default',
     );
 
@@ -508,11 +514,6 @@ function system_routing_configure($verbose = false, $interface = '')
     }
 
     system_staticroutes_configure($interface);
-
-    set_sysctl(array(
-        'net.inet.ip.forwarding' => '1',
-        'net.inet6.ip6.forwarding' => '1',
-    ));
 
     if ($verbose) {
         echo "done.\n";
