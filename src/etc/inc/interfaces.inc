@@ -1076,8 +1076,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             $pfctlflush[$realif] = 1;
         }
 
-        $ip4 = find_interface_ip($realif);
-        if (is_ipaddrv4($ip4)) {
+        list ($ip4) = interfaces_primary_address($interface, $realif);
+        if (!empty($ip4)) {
             mwexecf('/sbin/ifconfig %s delete %s', array($realif, $ip4));
         }
     }
@@ -1095,8 +1095,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             $pfctlflush[$realifv6] = 1;
         }
 
-        $ip6 = find_interface_ipv6($realifv6);
-        if (is_ipaddrv6($ip6)) {
+        list ($ip6) = interfaces_primary_address6($interface, $realifv6);
+        if (!empty($ip6)) {
             mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realifv6, $ip6));
         }
     }
