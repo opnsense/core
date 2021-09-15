@@ -2618,16 +2618,19 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     global $config;
 
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
+
     if (empty($wancfg)) {
         log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
     }
 
     $ip4address = get_interface_ip($lancfg['track6-interface']);
+
     if (!is_ipaddrv4($ip4address)) {
         log_error("The interface IPv4 address '{$ip4address}' on interface '{$lancfg['track6-interface']}' is invalid, not configuring 6RD tracking");
         return;
     }
+
     $hexwanv4 = return_hex_ipv4($ip4address);
 
     /* create the long prefix notation for math, save the prefix length */
@@ -2667,10 +2670,12 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
     $ip4address = get_interface_ip($lancfg['track6-interface']);
+
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
         log_error("The interface IPv4 address '{$ip4address}' on interface '{$lancfg['track6-interface']}' is not public, not configuring 6to4 tracking");
         return;
     }
+
     $hexwanv4 = return_hex_ipv4($ip4address);
 
     /* create the long prefix notation for math, save the prefix length */
@@ -2709,18 +2714,17 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
         return;
     }
 
-    $wanif = get_real_interface($interface);
-    $ip4address = find_interface_ip($wanif);
+    $ip4address = get_interface_ip($interface);
 
     if (!is_ipaddrv4($ip4address)) {
-        log_error("The interface IPv4 address '{$ip4address}' on interface '{$wanif}' is invalid, not configuring 6RD tunnel");
+        log_error("The interface IPv4 address '{$ip4address}' on interface '{$interface}' is invalid, not configuring 6RD tunnel");
         return false;
     }
 
     $hexwanv4 = return_hex_ipv4(!empty($wancfg['prefix-6rd-v4addr']) ? $wancfg['prefix-6rd-v4addr'] : $ip4address);
 
     if (!is_numeric($wancfg['prefix-6rd-v4plen']) || $wancfg['prefix-6rd-v4plen'] < 0 || $wancfg['prefix-6rd-v4plen'] > 32) {
-        log_error("The interface IPv4 prefix '{$wancfg['prefix-6rd-v4plen']}' on interface '{$wanif}' is invalid, assuming zero");
+        log_error("The interface IPv4 prefix '{$wancfg['prefix-6rd-v4plen']}' on interface '{$interface}' is invalid, assuming zero");
         $wancfg['prefix-6rd-v4plen'] = 0;
     }
 
@@ -2785,11 +2789,10 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
         return;
     }
 
-    $wanif = get_real_interface($interface);
-    $ip4address = find_interface_ip($wanif);
+    $ip4address = get_interface_ip($interface);
 
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
-        log_error("The interface IPv4 address '{$ip4address}' on interface '{$wanif}' is not public, not configuring 6to4 tunnel");
+        log_error("The interface IPv4 address '{$ip4address}' on interface '{$interface}' is not public, not configuring 6to4 tunnel");
         return false;
     }
 
