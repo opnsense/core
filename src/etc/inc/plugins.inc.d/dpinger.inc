@@ -175,14 +175,13 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
             if (is_linklocal($gateway['monitor'])) {
                 /* link local monitor needs a link local address for the "src" part */
-                $gwifip = find_interface_ipv6_ll($gateway['if'], $ifconfig_details);
+                $gwifip = interfaces_linklocal_address6($gateway['if'], null, $ifconfig_details);
             } else {
-                /* monitor is a routable address, so use a routable address for the "src" part */
-                $gwifip = find_interface_ipv6($gateway['if'], $ifconfig_details);
+                $gwifip = interfaces_primary_address6($gateway['if'], null, $ifconfig_details);
             }
 
-            if (!is_ipaddrv6($gwifip)) {
-                log_error(sprintf('The %s IPv6 gateway address is invalid, skipping.', $name));
+            if (empty($gwifip)) {
+                log_error(sprintf('The %s IPv6 gateway address could not be found, skipping.', $name));
                 continue;
             }
 
@@ -195,9 +194,6 @@ function dpinger_configure_do($verbose = false, $gwname = null)
             }
             if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
                 $gateway['gateway'] .= "%{$gateway['if']}";
-            }
-            if (is_linklocal($gwifip) && strpos($gwifip, '%') === false) {
-                $gwifip .= "%{$gateway['if']}";
             }
 
             /* flush the monitor unconditionally */

@@ -3950,17 +3950,6 @@ function find_interface_networkv6($realif, $subnet = true, $ifconfig_details = n
     return "{$addr}/${net}";
 }
 
-function find_interface_ipv6_ll($realif, $ifconfig_details = null)
-{
-    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
-
-    if (!isset($ifinfo['ipaddr6_ll'])) {
-        return null;
-    }
-
-    return $ifinfo['ipaddr6_ll'];
-}
-
 function ip_in_interface_alias_subnet($interface, $ipalias)
 {
     global $config;
@@ -4571,7 +4560,42 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     return $result;
 }
 
-function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null)
+function interfaces_primary_address($interface, $realif = null, $ifconfig_details = null)
+{
+    $ifcfgip = $network = $subnetbits = null;
+
+    if ($realif === null) {
+        $realif = get_real_interface($interface);
+    }
+
+    $interfaces_a = config_read_array('interfaces');
+
+    foreach (interfaces_addresses($realif, true, $ifconfig_details) as $tmpaddr => $info) {
+        if ($info['family'] != 'inet') {
+            continue;
+        }
+
+        $addrparts = explode('/', $tmpaddr);
+
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] == $interface && $vip['mode'] == 'ipalias' && strpos($vip['subnet'], ':') === false) {
+                 /* matching alias cannot be primary address */
+                if ($vip['subnet'] == $addrparts[0]) {
+                    continue 2;
+                }
+            }
+        }
+
+        $network = gen_subnet($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
+        $subnetbits = $addrparts[1];
+        $ifcfgip = $addrparts[0];
+        break; /* all done */
+    }
+
+    return [ $ifcfgip, $network, $subnetbits ];
+}
+
+function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null, $linklocal = false)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
@@ -4586,7 +4610,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
             continue;
         }
 
-        if (!isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+        if (!isset($interfaces_a[$interface]['dhcp6prefixonly']) && !$linklocal) {
             if ($info['scope']) {
                 continue;
             }
@@ -4614,8 +4638,16 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
         $subnetbitsv6 = $addrparts[1];
         $ifcfgipv6 = $addrparts[0];
+        if ($linklocal) {
+            $ifcfgipv6 .= "%{$realif}";
+        }
         break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
+}
+
+function interfaces_linklocal_address6($interface, $realif = null, $ifconfig_details = null)
+{
+    return interfaces_primary_address6($interface, $realif, $ifconfig_details, true);
 }
