@@ -3983,9 +3983,9 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
         return get_configured_carp_interface_list($interface);
     }
 
-    $realif = get_real_interface($interface, $ifconfig_details);
+    list ($ip) = interfaces_primary_address($interface, null, $ifconfig_details);
 
-    return find_interface_ip($realif);
+    return $ip;
 }
 
 function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
