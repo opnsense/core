@@ -187,8 +187,7 @@ function carp_sync_xml($url, $username, $password, $sections, $debug)
         foreach($transport_data['dhcpd'] as $dhcpif => $dhcpifconf) {
             if (isset($dhcpifconf['failover_peerip']) && $dhcpifconf['failover_peerip'] != '') {
                 $int = guess_interface_from_ip($dhcpifconf['failover_peerip']);
-                $intip = interfaces_primary_address($int);
-                $transport_data['dhcpd'][$dhcpif]['failover_peerip'] = $intip;
+                $transport_data['dhcpd'][$dhcpif]['failover_peerip'] = get_interface_ip($int);
             }
         }
     }
