@@ -2787,6 +2787,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     $wanif = get_real_interface($interface);
     $ip4address = find_interface_ip($wanif);
+
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
         log_error("The interface IPv4 address '{$ip4address}' on interface '{$wanif}' is not public, not configuring 6to4 tunnel");
         return false;
