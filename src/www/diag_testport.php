@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $nc_args .= ' -6';
                 break;
             case 'ipv6-ll':
-                list ($ifaddr) = interfaces_linklocal_address6($pconfig['interface']);
+                list ($ifaddr) = interfaces_scoped_address6($pconfig['interface']);
                 $nc_args .= ' -6';
                 break;
             default:

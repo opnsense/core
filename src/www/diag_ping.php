@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             case 'ipv6-ll':
                 $command .= '6';
-                list ($ifaddr) = interfaces_linklocal_address6($pconfig['interface']);
+                list ($ifaddr) = interfaces_scoped_address6($pconfig['interface']);
                 break;
             default:
                 list ($ifaddr) = interfaces_primary_address($pconfig['interface']);

@@ -4648,7 +4648,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
 }
 
-function interfaces_linklocal_address6($interface, $realif = null, $ifconfig_details = null)
+function interfaces_scoped_address6($interface, $realif = null, $ifconfig_details = null)
 {
     return interfaces_primary_address6($interface, $realif, $ifconfig_details, true);
 }

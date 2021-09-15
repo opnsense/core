@@ -534,7 +534,7 @@ function unbound_add_host_entries($ifconfig_details = null)
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
         }
         if (empty($config['unbound']['noreglladdr6'])) {
-            list ($lladdr6) = interfaces_linklocal_address6($interface, null, $ifconfig_details);
+            list ($lladdr6) = interfaces_scoped_address6($interface, null, $ifconfig_details);
             if (!empty($lladdr6)) {
                 /* cannot embed scope */
                 $lladdr6 = explode('%', $lladdr6)[0];
