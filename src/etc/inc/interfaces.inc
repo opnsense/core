@@ -3896,17 +3896,6 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-function find_interface_ip($realif, $ifconfig_details = null)
-{
-    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
-
-    if (!isset($ifinfo['ipaddr'])) {
-        return null;
-    }
-
-    return $ifinfo['ipaddr'];
-}
-
 function find_interface_network($realif, $subnet = true, $ifconfig_details = null)
 {
     $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
@@ -3923,17 +3912,6 @@ function find_interface_network($realif, $subnet = true, $ifconfig_details = nul
     }
 
     return "{$addr}/${net}";
-}
-
-function find_interface_ipv6($realif, $ifconfig_details = null)
-{
-    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
-
-    if (!isset($ifinfo['ipaddr6'])) {
-        return null;
-    }
-
-    return $ifinfo['ipaddr6'];
 }
 
 function find_interface_networkv6($realif, $subnet = true, $ifconfig_details = null)
