@@ -1415,7 +1415,7 @@ endforeach;?>
                               </tr>
                           </table>
                           <div class="hidden" data-for="help_for_set-prio">
-                              <?= gettext('Set the priority code point in a 802.1Q VLAN header of packets matching this rule. If both priorities are set here, packets with a TOS of "lowdelay" or TCP ACKs with no data payload will be assigned the latter.') ?>
+                              <?= gettext('Set the priority code point in a 802.1Q VLAN header for packets matching this rule. If both priorities are set here, packets with a TOS of "lowdelay" or TCP ACKs with no data payload will be assigned the latter.') ?>
                           </div>
                     </td>
                   </tr>
