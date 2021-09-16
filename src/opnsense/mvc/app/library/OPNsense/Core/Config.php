@@ -152,7 +152,7 @@ class Config extends Singleton
                         if (!isset($result["${xmlNodeName}@attributes"])) {
                             $result["${xmlNodeName}@attributes"] = [];
                         }
-			$result["${xmlNodeName}@attributes"][$AttrKey] = $AttrValue->__toString();
+                        $result["${xmlNodeName}@attributes"][$AttrKey] = $AttrValue->__toString();
                     }
                 }
             }
@@ -213,7 +213,7 @@ class Config extends Singleton
                     $node->addAttribute($attrKey, $attrValue);
                 }
                 continue;
-	    } elseif (strstr($itemKey , '@attributes') !== false) {
+            } elseif (strstr($itemKey, '@attributes') !== false) {
                 $origname = str_replace('@attributes', '', $itemKey);
                 if (count($node->$origname)) {
                     // copy xml attributes
