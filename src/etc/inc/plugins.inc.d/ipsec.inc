@@ -1065,7 +1065,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     if (!isset($iflist) || !is_array($iflist)) {
                         $iflist = get_configured_interface_with_descr();
                     }
-                    $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
@@ -1093,9 +1092,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     }
                     /* if no valid src IP was found in configured interfaces, try the vips */
                     if (is_null($srcip)) {
-                        foreach ($viplist as $vip) {
-                            if (ip_in_subnet($vip['ipaddr'], $local_subnet)) {
-                                $srcip = $vip['ipaddr'];
+                        foreach (config_read_array('virtualip', 'vip') as $vip) {
+                            if (ip_in_subnet($vip['subnet'], $local_subnet)) {
+                                $srcip = $vip['subnet'];
                                 break;
                             }
                         }
