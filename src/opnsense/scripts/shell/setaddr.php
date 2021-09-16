@@ -491,7 +491,7 @@ function console_configure_dhcpd($version = 4)
                 if (!$is_inrange) {
                     echo "This IP address must be in the interface's subnet\n";
                 }
-                $not_inorder = ($version === 6) ? (inet_pton($dhcpendip) < inet_pton($dhcpstartip)) : ip_less_than($dhcpendip, $dhcpstartip);
+                $not_inorder = ($version === 6) ? (inet_pton($dhcpendip) < inet_pton($dhcpstartip)) : ip2ulong($dhcpendip) < ip2ulong($dhcpstartip);
                 if ($not_inorder) {
                     echo "The end address of the DHCP range must be >= the start address\n";
                 }
