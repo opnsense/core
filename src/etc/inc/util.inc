@@ -478,7 +478,7 @@ function find_smallest_cidr($ips)
     }
 
     for ($bits = 0; $bits <= 32; $bits += 1) {
-        $mask = 0xffffffff << $bits;
+        $mask = (0xffffffff << $bits) & 0xffffffff;
         $test = [];
         foreach ($ips as $ip) {
             $test[$ip & $mask] = true;
