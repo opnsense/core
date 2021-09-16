@@ -1859,25 +1859,13 @@ function ipsec_get_configured_vtis()
                     $configured_intf[$intfnm]['descr'] = $descr;
                     $configured_intf[$intfnm]['networks'] = array();
                 }
+
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
-                // calculate netmask for the provided tunnel
-                if ($inet == 'inet6') {
-                    // XXX: we don't support 128bit integers, only the last 64 bits are considered to calculate the
-                    //      subnet size.
-                    $tunnel_int64 = [];
-                    foreach (['tunnel_local', 'tunnel_remote'] as $fieldname) {
-                        $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
-                        $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
-                    }
-                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
-                } else {
-                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
-                }
 
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
+                    'mask' => find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']], $inet),
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -470,119 +470,59 @@ function ip2ulong($ip)
     return sprintf("%u", ip2long32($ip));
 }
 
-/* Find out how many IPs are contained within a given IP range
- *  e.g. 192.168.0.0 to 192.168.0.255 returns 256
- */
-function ip_range_size($startip, $endip)
+/* Find the smallest possible subnet mask for given IP range */
+function find_smallest_cidr($ips, $family = 'inet')
 {
-    if (is_ipaddr($startip) && is_ipaddr($endip)) {
-        // Operate as unsigned long because otherwise it wouldn't work
-        //   when crossing over from 127.255.255.255 / 128.0.0.0 barrier
-        return abs(ip2ulong($startip) - ip2ulong($endip)) + 1;
-    }
-    return -1;
+    return $family == 'inet6' ?
+        find_smallest_cidr6($ips) :
+        find_smallest_cidr4($ips);
 }
 
-/* Find the smallest possible subnet mask which can contain a given number of IPs
- *  e.g. 512 IPs can fit in a /23, but 513 IPs need a /22
- */
-function find_smallest_cidr($number)
+/* Find the smallest possible subnet mask for given IPv4 range */
+function find_smallest_cidr4($ips)
 {
-    $smallest = 1;
-    for ($b = 32; $b > 0; $b--) {
-        $smallest = ($number <= pow(2, $b)) ? $b : $smallest;
-    }
-    return (32 - $smallest);
-}
-
-/* Return the previous IP address before the given address */
-function ip_before($ip)
-{
-    return long2ip32(ip2long($ip) - 1);
-}
-
-/* Return the next IP address after the given address */
-function ip_after($ip)
-{
-    return long2ip32(ip2long($ip) + 1);
-}
-
-/* Return true if the first IP is 'before' the second */
-function ip_less_than($ip1, $ip2)
-{
-    // Compare as unsigned long because otherwise it wouldn't work when
-    //   crossing over from 127.255.255.255 / 128.0.0.0 barrier
-    return ip2ulong($ip1) < ip2ulong($ip2);
-}
-
-/* Return true if the first IP is 'after' the second */
-function ip_greater_than($ip1, $ip2)
-{
-    // Compare as unsigned long because otherwise it wouldn't work
-    //   when crossing over from 127.255.255.255 / 128.0.0.0 barrier
-    return ip2ulong($ip1) > ip2ulong($ip2);
-}
-
-/* Convert a range of IPs to an array of subnets which can contain the range. */
-function ip_range_to_subnet_array($startip, $endip)
-{
-    if (!is_ipaddr($startip) || !is_ipaddr($endip)) {
-        return array();
+    foreach ($ips as $id => $ip) {
+        $ips[$id] = ip2long($ip);
     }
 
-    // Container for subnets within this range.
-    $rangesubnets = array();
-
-    // Figure out what the smallest subnet is that holds the number of IPs in the given range.
-    $cidr = find_smallest_cidr(ip_range_size($startip, $endip));
-
-    // Loop here to reduce subnet size and retest as needed. We need to make sure
-    //   that the target subnet is wholly contained between $startip and $endip.
-    for (; $cidr <= 32; $cidr++) {
-        // Find the network and broadcast addresses for the subnet being tested.
-        $targetsub_min = gen_subnet($startip, $cidr);
-        $targetsub_max = gen_subnet_max($startip, $cidr);
-
-        // Check best case where the range is exactly one subnet.
-        if (($targetsub_min == $startip) && ($targetsub_max == $endip)) {
-            // Hooray, the range is exactly this subnet!
-            return array("{$startip}/{$cidr}");
+    for ($bits = 0; $bits <= 32; $bits += 1) {
+        $mask = (0xffffffff << $bits) & 0xffffffff;
+        $test = [];
+        foreach ($ips as $ip) {
+            $test[$ip & $mask] = true;
         }
-
-        // These remaining scenarios will find a subnet that uses the largest
-        //  chunk possible of the range being tested, and leave the rest to be
-        //  tested recursively after the loop.
-
-        // Check if the subnet begins with $startip and ends before $endip
-        if (($targetsub_min == $startip) && ip_less_than($targetsub_max, $endip)) {
-            break;
-        }
-
-        // Check if the subnet ends at $endip and starts after $startip
-        if (ip_greater_than($targetsub_min, $startip) && ($targetsub_max == $endip)) {
-            break;
-        }
-
-        // Check if the subnet is between $startip and $endip
-        if (ip_greater_than($targetsub_min, $startip) && ip_less_than($targetsub_max, $endip)) {
+        if (count($test) == 1) {
+            /* one element means CIDR size matches all */
             break;
         }
     }
 
-    // Some logic that will recursivly search from $startip to the first IP before the start of the subnet we just found.
-    // NOTE: This may never be hit, the way the above algo turned out, but is left for completeness.
-    if ($startip != $targetsub_min) {
-        $rangesubnets = array_merge($rangesubnets, ip_range_to_subnet_array($startip, ip_before($targetsub_min)));
+    return 32 - $bits;
+}
+
+/* Find the smallest possible subnet mask for given IPv6 range */
+function find_smallest_cidr6($ips)
+{
+    foreach ($ips as $id => $ip) {
+        $ips[$id] = unpack('N*', inet_pton($ip));
     }
 
-    // Add in the subnet we found before, to preserve ordering
-    $rangesubnets[] = "{$targetsub_min}/{$cidr}";
-
-    // And some more logic that will search after the subnet we found to fill in to the end of the range.
-    if ($endip != $targetsub_max) {
-        $rangesubnets = array_merge($rangesubnets, ip_range_to_subnet_array(ip_after($targetsub_max), $endip));
+    for ($bits = 0; $bits <= 128; $bits += 1) {
+        $mask1 = (0xffffffff << max($bits - 96, 0)) & 0xffffffff;
+        $mask2 = (0xffffffff << max($bits - 64, 0)) & 0xffffffff;
+        $mask3 = (0xffffffff << max($bits - 32, 0)) & 0xffffffff;
+        $mask4 = (0xffffffff << $bits) & 0xffffffff;
+        $test = [];
+        foreach ($ips as $ip) {
+            $test[sprintf('%032b%032b%032b%032b', $ip[1] & $mask1, $ip[2] & $mask2, $ip[3] & $mask3, $ip[4] & $mask4)] = true;
+        }
+        if (count($test) == 1) {
+            /* one element means CIDR size matches all */
+            break;
+        }
     }
-    return $rangesubnets;
+
+    return 128 - $bits;
 }
 
 /* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
