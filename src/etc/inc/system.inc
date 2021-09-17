@@ -1213,6 +1213,7 @@ function system_login_configure($verbose = false)
     /* setup /etc/ttys */
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
+
     $on_off_secure_u = $serial_enabled ? (isset($config['system']['serialusb']) ? 'on' : 'onifconsole') . ' secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
     if (isset($config['system']['disableconsolemenu'])) {
@@ -1222,6 +1223,7 @@ function system_login_configure($verbose = false)
         $console_type = 'al.Pc';
         $serial_type = 'al.3wire.' . $serialspeed;
     }
+
     foreach ($etc_ttys_lines as $tty) {
         /* virtual terminals */
         foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
@@ -1239,11 +1241,16 @@ function system_login_configure($verbose = false)
             }
         }
 
-        if (!empty($tty)) {
+        if (!empty($tty) && strpos($tty, 'xc0') === false) {
             /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
         }
     }
+
+    if (file_exists('/dev/xc0')) {
+        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+    }
+
     fclose($fd);
 
     if ($verbose) {
