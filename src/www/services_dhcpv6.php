@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
@@ -54,7 +54,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /index.php'));
         exit;
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // handle identifiers and actions
+    if (!empty($_POST['if']) && !empty($config['interfaces'][$_POST['if']])) {
+        $if = $_POST['if'];
+    }
+    if (!empty($_POST['act'])) {
+        $act = $_POST['act'];
+    } else {
+        $act = null;
+    }
+}
 
+$ifcfgip = $config['interfaces'][$if]['ipaddrv6'];
+$ifcfgsn = $config['interfaces'][$if]['subnetv6'];
+
+if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+    list ($ifcfgip, $networkv6) = interfaces_primary_address6($if);
+    $ifcfgsn = explode('/', $networkv6)[1];
+    $prefix_array = array();
+    $prefix_array = explode(':', $ifcfgip);
+    $prefix_array[4] = '0';
+    $prefix_array[5] = '0';
+    $prefix_array[6] = '0';
+    $prefix_array[7] = '0';
+    $wifprefix = Net_IPv6::compress(implode(':', $prefix_array));
+    $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']) - 1;
+}
+
+$subnet_start = gen_subnetv6($ifcfgip, $ifcfgsn);
+$subnet_end = gen_subnetv6_max($ifcfgip, $ifcfgsn);
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     if (!empty($config['dhcpdv6'][$if]['range'])) {
@@ -95,15 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // handle identifiers and actions
-    if (!empty($_POST['if']) && !empty($config['interfaces'][$_POST['if']])) {
-        $if = $_POST['if'];
-    }
-    if (!empty($_POST['act'])) {
-        $act = $_POST['act'];
-    } else {
-        $act = null;
-    }
     $pconfig = $_POST;
     $input_errors = array();
 
@@ -192,11 +214,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (count($input_errors) == 0) {
-            /* make sure the range lies within the current subnet */
-            list ($ifcfgip, $ifcfgsn) = explode('/', find_interface_networkv6(get_real_interface($if, 'inet6'), false));
-            $subnet_start = gen_subnetv6($ifcfgip, $ifcfgsn);
-            $subnet_end = gen_subnetv6_max($ifcfgip, $ifcfgsn);
-
             $range_from = $pconfig['range_from'];
             $range_to = $pconfig['range_to'];
 
@@ -206,15 +223,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (!empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
-                if (is_ipaddrv6($ifcfgip) && !empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
-                    if ((!is_inrange_v6($range_from, $subnet_start, $subnet_end)) ||
-                        (!is_inrange_v6($range_to, $subnet_start, $subnet_end))) {
-                        $input_errors[] = gettext("The specified range lies outside of the current subnet.");
-                    }
+               /* make sure the range lies within the current subnet */
+                if ((!is_inrange_v6($range_from, $subnet_start, $subnet_end)) ||
+                    (!is_inrange_v6($range_to, $subnet_start, $subnet_end))) {
+                    $input_errors[] = gettext('The specified range lies outside of the current subnet.');
                 }
 
+                /* single IP subnet does not have enough addresses */
+                if ($subnet_start == $subnet_end) {
+                    $input_errors[] = gettext('The range is unavailable (single host network mask /128 used).');
                 /* "from" cannot be higher than "to" */
-                if (inet_pton($pconfig['range_from']) > inet_pton($pconfig['range_to'])) {
+                } elseif (inet_pton($pconfig['range_from']) > inet_pton($pconfig['range_to'])) {
                     $input_errors[] = gettext("The range is invalid (first element higher than second element).");
                 }
 
@@ -332,20 +351,6 @@ legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
-list ($wifcfgip, $networkv6) = interfaces_primary_address6($if);
-$wifcfgsn = explode('/', $networkv6)[1];
-
-if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
-    $prefix_array = array();
-    $prefix_array = explode(':', $wifcfgip);
-    $prefix_array[4] = '0';
-    $prefix_array[5] = '0';
-    $prefix_array[6] = '0';
-    $prefix_array[7] = '0';
-    $wifprefix = Net_IPv6::compress(implode(':', $prefix_array));
-    $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']) - 1;
-}
-
 ?>
 <body>
 <script>
@@ -455,11 +460,11 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
                     </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet");?></td>
-                      <td><?= gen_subnetv6($wifcfgip, $wifcfgsn) ?></td>
+                      <td><?= $subnet_start ?></td>
                     </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet mask");?></td>
-                      <td><?= htmlspecialchars($wifcfgsn) ?> <?= gettext('bits') ?></td>
+                      <td><?= htmlspecialchars($ifcfgsn) ?> <?= gettext('bits') ?></td>
                     </tr>
 <?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
                      <tr>
@@ -474,16 +479,21 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
 <?php endif ?>
 <?php endif ?>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available range");?></td>
-                      <td>
-<?php
-                        $range_from = gen_subnetv6($wifcfgip, $wifcfgsn);
-                        $range_from++;
-                        $range_to = gen_subnetv6_max($wifcfgip, $wifcfgsn);?>
-                        <?=$range_from;?> - <?=$range_to;?>
 <?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
-                        <br/>
-                        <?= gettext('Prefix subnet will be prefixed to the available range.') ?>
+                      <td><a id="help_for_available_range" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Available range') ?></td>
+<?php else: ?>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Available range') ?></td>
+<?php endif ?>
+                      <td>
+<?php if ($subnet_start == $subnet_end): ?>
+                        <span class="text-danger"><?= gettext('No available address range for configured interface subnet size.') ?></span>
+<?php else: ?>
+                        <?= $subnet_start ?> - <?= $subnet_end ?>
+<?php endif ?>
+<?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
+                        <div class="hidden" data-for="help_for_available_range">
+                            <?= gettext('Prefix subnet will be prefixed to the available range.') ?>
+                        </div>
 <?php endif ?>
                       </td>
                     </tr>

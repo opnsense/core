@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -453,6 +453,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+$range_from = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) & gen_subnet_mask_long($config['interfaces'][$if]['subnet']))) + 1;
+$range_to = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) | (~gen_subnet_mask_long($config['interfaces'][$if]['subnet'])))) - 1;
+
 $service_hook = 'dhcpd';
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
@@ -667,20 +670,18 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available range");?></td>
                       <td>
-<?php
-                        $range_from = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) & gen_subnet_mask_long($config['interfaces'][$if]['subnet']))) + 1;
-                        $range_to = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) | (~gen_subnet_mask_long($config['interfaces'][$if]['subnet'])))) - 1;?>
-                        <?=long2ip32($range_from);?> - <?=long2ip32($range_to);?>
-<?php
-                        if (isset($pool) || ($act == "newpool")): ?>
+<?php if ($range_to <= $range_from): ?>
+                        <span class="text-danger"><?= gettext('No available address range for configured interface subnet size.') ?></span>
+<?php else: ?>
+                        <?= long2ip32($range_from) ?> - <?= long2ip32($range_to) ?>
+<?php endif ?>
+<?php if (isset($pool) || ($act == "newpool")): ?>
                         <br />In-use DHCP Pool Ranges:
                           <br /><?=htmlspecialchars($config['dhcpd'][$if]['range']['from']); ?>-<?=htmlspecialchars($config['dhcpd'][$if]['range']['to']);?>
-<?php
-                          foreach ($a_pools as $p): ?>
+<?php foreach ($a_pools as $p): ?>
                           <br /><?= htmlspecialchars($p['range']['from']); ?>-<?=htmlspecialchars($p['range']['to']); ?>
-<?php
-                          endforeach;
-                        endif;?>
+<?php endforeach ?>
+<?php endif ?>
                       </td>
                     </tr>
                     <tr>
