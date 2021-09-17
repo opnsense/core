@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -577,7 +577,7 @@ $( document ).ready(function() {
     <div class="container-fluid">
       <div class="row">
         <?php print_service_banner('firewall'); ?>
-        <div id="fw-alert-box" class="col-xs-12 <?=!is_subsystem_dirty('filter') && !isset($savemsg) ? "hidden":"";?>">
+        <div id="fw-alert-box" class="col-xs-12 <?=!is_subsystem_dirty('filter') && !isset($savemsg) && !isset($config['syslog']['forceuserlog']) ? "hidden":"";?>">
           <div class="alert alert-info" role="alert">
             <div id="fw-alert-changes" class="fw-alert-messages <?=!is_subsystem_dirty('filter') ? "hidden":"";?>">
                 <label for="btn_apply">
@@ -587,6 +587,9 @@ $( document ).ready(function() {
             </div>
             <div id="fw-alert-message" class="fw-alert-messages <?=!isset($savemsg) ? "hidden":"";?>">
                 <?=isset($savemsg) ? $savemsg : "";?>
+            </div>
+            <div id="fw-alert-log" class="fw-alert-messages <?=!isset($config['syslog']['forceuserlog']) ? "hidden":"";?>">
+                <?=gettext("Enforced logging of custom rules is enabled.<br /> Will produce an excessive number of log records. Disable after debugging.");?>
             </div>
           </div>
         </div>
