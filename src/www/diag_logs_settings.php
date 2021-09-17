@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2007 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
+    $pconfig['forceuserlog'] = !empty($config['syslog']['forceuserlog']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -109,11 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $oldnologdefaultpass = isset($config['syslog']['nologdefaultpass']);
             $oldnologbogons = isset($config['syslog']['nologbogons']);
             $oldnologprivatenets = isset($config['syslog']['nologprivatenets']);
+            $oldforceuserlog = isset($config['syslog']['forceuserlog']);
             $oldnologlighttpd = isset($config['syslog']['nologlighttpd']);
             $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
             $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
             $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
             $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
+            $config['syslog']['forceuserlog'] = !empty($pconfig['forceuserlog']);
             $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
 
             write_config();
@@ -123,7 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (($oldnologdefaultblock !== isset($config['syslog']['nologdefaultblock']))
               || ($oldnologdefaultpass !== isset($config['syslog']['nologdefaultpass']))
               || ($oldnologbogons !== isset($config['syslog']['nologbogons']))
-              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))) {
+              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))
+              || ($oldforceuserlog !== isset($config['syslog']['forceuserlog']))) {
               filter_configure();
             }
 
@@ -273,6 +277,16 @@ $(document).ready(function() {
                     <td>
                       <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
                       <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_forceuserlog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log All Custom Firewall Rules') ?></td>
+                    <td>
+                      <input name="forceuserlog" type="checkbox" id="forceuserlog" value="yes" <?php if ($pconfig['forceuserlog']) echo "checked=\"checked\""; ?> />
+                      <?=gettext("Force custom rules logging");?>
+                      <div class="hidden" data-for="help_for_forceuserlog">
+                        <?=gettext("Hint: for debugging purposes. Will produce an excessive number of log records. Disable after debugging.");?>
+                      </div>
                     </td>
                   </tr>
                   <tr>
