@@ -470,7 +470,7 @@ function ip2ulong($ip)
     return sprintf("%u", ip2long32($ip));
 }
 
-/* Find the smallest possible subnet mask for given IP range given */
+/* Find the smallest possible subnet mask for given IPv4 range */
 function find_smallest_cidr($ips)
 {
     foreach ($ips as $id => $ip) {
@@ -490,6 +490,31 @@ function find_smallest_cidr($ips)
     }
 
     return 32 - $bits;
+}
+
+/* Find the smallest possible subnet mask for given IPv6 range */
+function find_smallest_cidr6($ips)
+{
+    foreach ($ips as $id => $ip) {
+        $ips[$id] = unpack('N*', inet_pton($ip));
+    }
+
+    for ($bits = 0; $bits <= 128; $bits += 1) {
+        $mask1 = (0xffffffff << max($bits - 96, 0)) & 0xffffffff;
+        $mask2 = (0xffffffff << max($bits - 64, 0)) & 0xffffffff;
+        $mask3 = (0xffffffff << max($bits - 32, 0)) & 0xffffffff;
+        $mask4 = (0xffffffff << $bits) & 0xffffffff;
+        $test = [];
+        foreach ($ips as $ip) {
+            $test[sprintf('%032b%032b%032b%032b', $ip[1] & $mask1, $ip[2] & $mask2, $ip[3] & $mask3, $ip[4] & $mask4)] = true;
+        }
+        if (count($test) == 1) {
+            /* one element means CIRD size matches all */
+            break;
+        }
+    }
+
+    return 128 - $bits;
 }
 
 /* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
