@@ -470,8 +470,16 @@ function ip2ulong($ip)
     return sprintf("%u", ip2long32($ip));
 }
 
+/* Find the smallest possible subnet mask for given IP range */
+function find_smallest_cidr($ips, $family = 'inet')
+{
+    return $family == 'inet6' ?
+        find_smallest_cidr6($ips) :
+        find_smallest_cidr4($ips);
+}
+
 /* Find the smallest possible subnet mask for given IPv4 range */
-function find_smallest_cidr($ips)
+function find_smallest_cidr4($ips)
 {
     foreach ($ips as $id => $ip) {
         $ips[$id] = ip2long($ip);

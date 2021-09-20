@@ -1861,13 +1861,11 @@ function ipsec_get_configured_vtis()
                 }
 
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
-                $mask = $inet == 'inet6' ? find_smallest_cidr6([$phase2['tunnel_local'], $phase2['tunnel_remote']]) :
-                    find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']]);
 
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
+                    'mask' => find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']], $inet),
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }
