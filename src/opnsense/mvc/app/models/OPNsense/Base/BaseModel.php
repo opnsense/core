@@ -168,7 +168,7 @@ abstract class BaseModel
         // copy xml tag attributes to Field
         if ($config_data != null) {
             foreach ($config_data->attributes() as $AttrKey => $AttrValue) {
-                $internal_data->setAttributeValue($AttrKey, $AttrValue->__toString());
+                $internal_data->setAttributeValue($AttrKey, (string)$AttrValue);
             }
         }
 
@@ -224,7 +224,7 @@ abstract class BaseModel
                 }
                 if ($config_data != null && isset($config_data->$tagName)) {
                     // set field content from config (if available)
-                    $fieldObject->setValue($config_data->$tagName->__toString());
+                    $fieldObject->setValue((string)$config_data->$tagName);
                 }
             } else {
                 // add new child node container, always try to pass config data
@@ -247,7 +247,7 @@ abstract class BaseModel
                             $node_count++;
                             // Array items are identified by a UUID, read from attribute or create a new one
                             if (isset($conf_section->attributes()->uuid)) {
-                                $tagUUID = $conf_section->attributes()['uuid']->__toString();
+                                $tagUUID = (string)$conf_section->attributes()['uuid'];
                             } else {
                                 $tagUUID = $internal_data->generateUUID();
                             }
@@ -432,7 +432,7 @@ abstract class BaseModel
                     }
                 }
                 if (count($node_validators) > 0) {
-                    $validation_data[$key] = $node->__toString();
+                    $validation_data[$key] = (string)$node;
                 }
             }
         }

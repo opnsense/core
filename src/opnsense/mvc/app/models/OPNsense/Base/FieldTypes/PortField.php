@@ -176,7 +176,7 @@ class PortField extends BaseListField
         if ($this->internalMultiSelect) {
             return parent::getNodeData();
         } else {
-            return $this->__toString();
+            return (string)$this;
         }
     }
 

@@ -589,7 +589,7 @@ abstract class BaseField
      */
     public function getNodeData()
     {
-        return $this->__toString();
+        return (string)$this;
     }
 
 

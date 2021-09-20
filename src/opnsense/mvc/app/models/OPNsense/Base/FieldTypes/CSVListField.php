@@ -80,7 +80,7 @@ class CSVListField extends BaseField
     public function getNodeData()
     {
         $result = array ();
-        $selectlist = explode($this->separatorchar, $this->__toString());
+        $selectlist = explode($this->separatorchar, (string)$this);
 
         foreach ($this->selectOptions as $optKey => $optValue) {
             $result[$optKey] = array("value" => $optValue, "selected" => 0);
