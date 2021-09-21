@@ -92,25 +92,6 @@ function filter_rules_sort()
     }
 }
 
-function filter_pflog_start($verbose = false)
-{
-    if ($verbose) {
-        echo 'Starting PFLOG...';
-        flush();
-    }
-
-    killbypid('/var/run/filterlog.pid', 'TERM', true);
-
-    /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexec('/sbin/ifconfig pflog0 promisc');
-
-    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-}
-
 function filter_configure()
 {
     /*
@@ -305,12 +286,13 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
                 foreach (array(500, null) as $dstport) {
                     $rule = array(
-                        "interface" => $intf,
-                        "dstport" => $dstport,
-                        "staticnatport" => !empty($dstport),
-                        "destination" => array("any" => true),
-                        "ipprotocol" => 'inet',
-                        "descr" => "Automatic outbound rule"
+                        'descr' => 'Automatic outbound rule',
+                        'destination' => array('any' => true),
+                        'dstport' => $dstport,
+                        'interface' => $intf,
+                        'ipprotocol' => 'inet',
+                        'log' => !empty($config['syslog']['logoutboundnat']),
+                        'staticnatport' => !empty($dstport),
                     );
                     foreach ($intfv4 as $network) {
                         $rule['source'] = array("network" => $network);
@@ -576,10 +558,20 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
     }
 
     if ($verbose) {
-        echo "done.\n";
+        echo '.';
+        flush();
     }
 
-    filter_pflog_start($verbose);
+    /* enable permanent promiscuous mode to avoid dmesg noise */
+    mwexec('/sbin/ifconfig pflog0 promisc');
+
+    /* bring up new instance of filterlog to load new rules */
+    killbypid('/var/run/filterlog.pid', 'TERM', true);
+    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 
     unlock($filterlck);
 }
