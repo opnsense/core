@@ -513,7 +513,7 @@ function unbound_add_host_entries($ifconfig_details = null)
             continue;
         }
 
-        list ($laddr) = interfaces_primary_address($interface, null, $ifconfig_details);
+        list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
         if (!empty($laddr)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
@@ -523,7 +523,7 @@ function unbound_add_host_entries($ifconfig_details = null)
             $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
         }
-        list ($laddr6) = interfaces_primary_address6($interface, null, $ifconfig_details);
+        list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
         if (!empty($laddr6)) {
             $domain = $config['system']['domain'];
             if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
@@ -534,7 +534,7 @@ function unbound_add_host_entries($ifconfig_details = null)
             $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
         }
         if (empty($config['unbound']['noreglladdr6'])) {
-            list ($lladdr6) = interfaces_scoped_address6($interface, null, $ifconfig_details);
+            list ($lladdr6) = interfaces_scoped_address6($interface, $ifconfig_details);
             if (!empty($lladdr6)) {
                 /* cannot embed scope */
                 $lladdr6 = explode('%', $lladdr6)[0];

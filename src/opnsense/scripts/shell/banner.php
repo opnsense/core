@@ -91,7 +91,7 @@ foreach ($iflist as $ifname => $ifcfg) {
         $network = $ifdetails[$realif]['ipv4'][0]['ipaddr'] . "/" .  $ifdetails[$realif]['ipv4'][0]['subnetbits'];
     }
 
-    list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifname, null, $ifdetails);
+    list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifname, $ifdetails);
     $network6 = "{$primary6}/{$subnet6}";
 
     $tobanner = "{$ifcfg['descr']} ({$realif})";
