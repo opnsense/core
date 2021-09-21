@@ -1415,7 +1415,7 @@ endforeach;?>
                               </tr>
                           </table>
                           <div class="hidden" data-for="help_for_set-prio">
-                              <?= gettext('Set the priority of packets matching this rule. If both priorities are set here, packets with a TOS of "lowdelay" or TCP ACKs with no data payload will be assigned the latter. If the packets are transmitted on a VLAN interface, the queueing priority will be written as the priority code point in the 802.1Q VLAN header.') ?>
+                              <?= gettext('Set the priority code point in a 802.1Q VLAN header for packets matching this rule. If both priorities are set here, packets with a TOS of "lowdelay" or TCP ACKs with no data payload will be assigned the latter.') ?>
                           </div>
                     </td>
                   </tr>
@@ -1429,7 +1429,7 @@ endforeach;?>
 <?php endforeach ?>
                         </select>
                         <div class="hidden" data-for="help_for_prio">
-                          <?=gettext('Match on the priority of packets.');?>
+                          <?=gettext('Only match packets which have the given queueing priority assigned.');?>
                         </div>
                       </td>
                   </tr>
