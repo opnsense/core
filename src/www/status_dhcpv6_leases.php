@@ -85,27 +85,11 @@ function parse_duid($duid_string)
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-$leasesfile = dhcpd_dhcpv6_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $leases_content = array();
-
-    $fin = @fopen($leasesfile, "r");
-    $section = array();
-    if ($fin) {
-        while (($line = fgets($fin, 4096)) !== false) {
-            if (strpos($line, "ia-") !== false) {
-                $section = array();
-            } elseif (strpos($line, "}") === 0 && count($section) > 0) {
-                $output = implode($section, "");
-                $leases_content[] = $output;
-            }
-            $section[] = rtrim($line, "\n;");
-        }
-        fclose($fin);
-    }
-
+    $leases_content = dhcpd_leases(6);
     $leases_count = count($leases_content);
+
     exec("/usr/sbin/ndp -an", $rawdata);
     $ndpdata = array();
     foreach ($rawdata as $line) {
@@ -315,13 +299,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($duids[$slease['duid']])) {
             /* update lease with static data */
             foreach ($slease as $key => $value) {
-                if (!empty($value)) {
+                if (!empty($value) || $key == 'start' || $key == 'end') {
                     $leases[$duids[$slease['duid']]][$key] = $slease[$key];
                 }
             }
         } else {
             $leases[] = $slease;
-	}
+        }
     }
 
     if (isset($_GET['order']) && in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
@@ -342,6 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
+        $leasesfile = '/var/dhcpd/var/db/dhcpd6.leases'; /* XXX needs wrapper */
         $fin = @fopen($leasesfile, "r");
         $fout = @fopen($leasesfile.".new", "w");
         if ($fin) {
@@ -520,8 +505,8 @@ endif;?>
                   <td><?=$duid_content;?></td>
                   <td><?= !empty($data['hostname']) ? html_safe($data['hostname']) : '' ?></td>
                   <td><?= html_safe($data['descr']);?></td>
-                  <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
-                  <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
+                  <td><?= !empty($data['start']) ? adjust_utc($data['start']) : '' ?></td>
+                  <td><?= !empty($data['end']) ? adjust_utc($data['end']) : '' ?></td>
                   <td>
                     <i class="fa fa-<?=$data['online']=='online' ? 'signal' : 'ban';?>" title="<?=$data['online'];?>" data-toggle="tooltip"></i>
                   </td>
@@ -580,8 +565,8 @@ endif;?>
                   </td>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$data['duid'];?></td>
-                  <td><?=$data['type'] != "static" ? adjust_utc($data['start']) : "";?></td>
-                  <td><?=$data['type'] != "static" ? adjust_utc($data['end']) : "";?></td>
+                  <td><?= !empty($data['start']) ? adjust_utc($data['start']) : '' ?></td>
+                  <td><?= !empty($data['end']) ? adjust_utc($data['end']) : '' ?></td>
                   <td><?=$data['act'];?></td>
                 </tr>
 <?php
