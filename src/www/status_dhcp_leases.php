@@ -59,18 +59,11 @@ function remove_duplicate($array, $field)
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-$leasesfile = dhcpd_dhcpv4_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $awk = "/usr/bin/awk";
-    /* this pattern sticks comments into a single array item */
-    $cleanpattern = "'{ gsub(\"#.*\", \"\");} { gsub(\";\", \"\"); print;}'";
-    /* We then split the leases file by } */
-    $splitpattern = "'BEGIN { RS=\"}\";} {for (i=1; i<=NF; i++) printf \"%s \", \$i; printf \"}\\n\";}'";
-
-    /* stuff the leases file in a proper format into an array by line */
-    exec("/bin/cat {$leasesfile} | {$awk} {$cleanpattern} | {$awk} {$splitpattern}", $leases_content);
+    $leases_content = dhcpd_leases(4);
     $leases_count = count($leases_content);
+
     exec("/usr/sbin/arp -an", $rawdata);
     $arpdata_ip = array();
     $arpdata_mac = array();
@@ -222,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             continue;
         }
 
-        $slease = array();
+        $slease = [];
         $slease['ip'] = $static['ipaddr'];
         $slease['type'] = 'static';
         $slease['mac'] = $static['mac'];
@@ -236,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($macs[$slease['mac']])) {
             /* update lease with static data */
             foreach ($slease as $key => $value) {
-                if (!empty($value)) {
+                if (!empty($value) || $key == 'start' || $key == 'end') {
                     $leases[$macs[$slease['mac']]][$key] = $slease[$key];
                 }
             }
@@ -263,6 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
         killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
+        $leasesfile = '/var/dhcpd/var/db/dhcpd.leases'; /* XXX needs wrapper */
         $fin = @fopen($leasesfile, "r");
         $fout = @fopen($leasesfile.".new", "w");
         if ($fin) {
