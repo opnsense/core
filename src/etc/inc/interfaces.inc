@@ -126,12 +126,6 @@ function match_wireless_interface($int)
 
 function interfaces_bring_up($interface)
 {
-    if (!$interface) {
-        log_error('interfaces_bring_up() was called but no variable defined.');
-        log_error('Backtrace: ' . debug_backtrace());
-        return;
-    }
-
     legacy_interface_flags($interface, 'up');
 }
 
@@ -2619,16 +2613,19 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     global $config;
 
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
+
     if (empty($wancfg)) {
         log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
     }
 
     $ip4address = get_interface_ip($lancfg['track6-interface']);
+
     if (!is_ipaddrv4($ip4address)) {
         log_error("The interface IPv4 address '{$ip4address}' on interface '{$lancfg['track6-interface']}' is invalid, not configuring 6RD tracking");
         return;
     }
+
     $hexwanv4 = return_hex_ipv4($ip4address);
 
     /* create the long prefix notation for math, save the prefix length */
@@ -2668,10 +2665,12 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
     $ip4address = get_interface_ip($lancfg['track6-interface']);
+
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
         log_error("The interface IPv4 address '{$ip4address}' on interface '{$lancfg['track6-interface']}' is not public, not configuring 6to4 tracking");
         return;
     }
+
     $hexwanv4 = return_hex_ipv4($ip4address);
 
     /* create the long prefix notation for math, save the prefix length */
@@ -4612,7 +4611,7 @@ function interfaces_primary_address($interface, $realif = null, $ifconfig_detail
     return [ $ifcfgip, $network, $subnetbits ];
 }
 
-function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null)
+function interfaces_primary_address6($interface, $realif = null, $ifconfig_details = null, $linklocal = false)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
@@ -4627,7 +4626,7 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
             continue;
         }
 
-        if (!isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+        if (!isset($interfaces_a[$interface]['dhcp6prefixonly']) && !$linklocal) {
             if ($info['scope']) {
                 continue;
             }
@@ -4655,8 +4654,16 @@ function interfaces_primary_address6($interface, $realif = null, $ifconfig_detai
         $networkv6 = gen_subnetv6($addrparts[0], $addrparts[1]) . "/{$addrparts[1]}";
         $subnetbitsv6 = $addrparts[1];
         $ifcfgipv6 = $addrparts[0];
+        if ($linklocal) {
+            $ifcfgipv6 .= "%{$realif}";
+        }
         break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
+}
+
+function interfaces_scoped_address6($interface, $realif = null, $ifconfig_details = null)
+{
+    return interfaces_primary_address6($interface, $realif, $ifconfig_details, true);
 }
