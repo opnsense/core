@@ -1958,3 +1958,26 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
 
     return $staticmap;
 }
+
+function dhcpd_leases($inet = 4)
+{
+    $file = $inet == 6 ? '/var/dhcpd/var/db/dhcpd6.leases' : '/var/dhcpd/var/db/dhcpd.leases';
+    $token = $inet == 6 ? 'ia-' : 'lease';
+    $content = [];
+    $section = [];
+
+    $fin = @fopen($file, 'r');
+    if ($fin) {
+        while (($line = fgets($fin, 4096)) !== false) {
+            if (strpos($line, $token) === 0) {
+                $section = [];
+            } elseif (strpos($line, '}') === 0 && count($section) > 0) {
+                $content[] = implode($section, '');
+            }
+            $section[] = rtrim($line, "\n;");
+        }
+        fclose($fin);
+    }
+
+    return $content;
+}
