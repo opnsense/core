@@ -58,11 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             case 'ipv6-ll':
                 $command .= '6';
-                $realif = get_real_interface($pconfig['interface'], 'inet6');
-                $ifaddr = find_interface_ipv6_ll($realif) . "%{$realif}";
+                list ($ifaddr) = interfaces_scoped_address6($pconfig['interface']);
                 break;
             default:
-                $ifaddr = find_interface_ip(get_real_interface($pconfig['interface']));
+                list ($ifaddr) = interfaces_primary_address($pconfig['interface']);
                 break;
         }
         $srcip = '';

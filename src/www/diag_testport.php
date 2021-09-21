@@ -75,16 +75,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         switch ($pconfig['ipprotocol']) {
             case 'ipv6':
                 list ($ifaddr) = interfaces_primary_address6($pconfig['interface']);
-                $nc_args .= " -6";
+                $nc_args .= ' -6';
                 break;
             case 'ipv6-ll':
-                $realif = get_real_interface($pconfig['interface'], 'inet6');
-                $ifaddr = find_interface_ipv6_ll($realif) . "%{$realif}";
-                $nc_args .= " -6";
+                list ($ifaddr) = interfaces_scoped_address6($pconfig['interface']);
+                $nc_args .= ' -6';
                 break;
             default:
-                $ifaddr = find_interface_ip(get_real_interface($pconfig['interface']));
-                $nc_args .= " -4";
+                list ($ifaddr) = interfaces_primary_address($pconfig['interface']);
+                $nc_args .= ' -4';
                 break;
         }
 
@@ -92,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $nc_args .= exec_safe(' -s %s ', $ifaddr);
         }
 
-        $cmd_action = exec_safe("/usr/bin/nc {$nc_args} %s %s", array($pconfig['host'], $pconfig['port']));
+        $cmd_action = "/usr/bin/nc {$nc_args} " . exec_safe('%s %s', [$pconfig['host'], $pconfig['port']]);
         $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
         if (is_resource($process)) {
              $cmd_output = "# $cmd_action\n";
