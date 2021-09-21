@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
+    $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -110,10 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $oldnologbogons = isset($config['syslog']['nologbogons']);
             $oldnologprivatenets = isset($config['syslog']['nologprivatenets']);
             $oldnologlighttpd = isset($config['syslog']['nologlighttpd']);
+            $oldlogoutboundnat = isset($config['syslog']['logoutboundnat']);
             $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
             $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
             $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
             $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
+            $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
             $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
 
             write_config();
@@ -123,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (($oldnologdefaultblock !== isset($config['syslog']['nologdefaultblock']))
               || ($oldnologdefaultpass !== isset($config['syslog']['nologdefaultpass']))
               || ($oldnologbogons !== isset($config['syslog']['nologbogons']))
+              || ($oldlogoutboundnat !== isset($config['syslog']['logoutboundnat']))
               || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))) {
               filter_configure();
             }
@@ -134,8 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 configd_run('webgui restart 2', true);
                 $savemsg .= "<br />" . gettext("WebGUI process is restarting.");
             }
-
-            filter_pflog_start();
         }
     }
 }
@@ -259,6 +261,13 @@ $(document).ready(function() {
                       <div class="hidden" data-for="help_for_logdefaultblock">
                         <?=gettext("Hint: packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
                       </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?php if ($pconfig['logoutboundnat']) echo "checked=\"checked\""; ?> />
+                      <?= gettext('Log packets processed by automatic outbound NAT rules') ?>
                     </td>
                   </tr>
                   <tr>
