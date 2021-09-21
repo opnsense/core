@@ -58,7 +58,7 @@ if __name__ == '__main__':
                 table_size = max(planned_size, table_size)
                 table_updated = datetime.fromtimestamp(os.path.getmtime(filename)).isoformat()
 
-            result[table_name] = {
+            result['details'][table_name] = {
                 'count': table_size,
                 'updated': table_updated
             }
