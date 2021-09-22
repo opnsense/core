@@ -35,7 +35,6 @@ use OPNsense\Base\FieldTypes\TextField;
 use OPNsense\Base\FieldTypes\IntegerField;
 use OPNsense\Core\Backend;
 
-
 class AliasField extends ArrayField
 {
     private static $reservedItems = [
