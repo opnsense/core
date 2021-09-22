@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $nc_args .= exec_safe(' -s %s ', $ifaddr);
         }
 
-        $cmd_action = "/usr/bin/nc {$nc_args} " . exec_safe('%s %s', [$pconfig['host'], $pconfig['port']]);
+        $cmd_action = "/usr/bin/nc -v {$nc_args} " . exec_safe('%s %s', [$pconfig['host'], $pconfig['port']]);
         $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
         if (is_resource($process)) {
              $cmd_output = "# $cmd_action\n";
