@@ -161,25 +161,6 @@ class Plugin
     }
 
     /**
-     * fetch gateway (names) for provided interface, would return both ipv4/ipv6
-     * @param string $intf interface (e.g. em0, igb0,...)
-     */
-    public function getInterfaceGateways($intf)
-    {
-        $result = array();
-        $protos_found = array();
-        foreach ($this->gatewayMapping as $key => $gw) {
-            if ($gw['type'] == 'gateway' && $gw['interface'] == $intf) {
-                if (!in_array($gw['proto'], $protos_found)) {
-                    $result[] = $key;
-                    $protos_found[] = $gw['proto'];
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
      *  Fetch gateway
      *  @param string $gw gateway name
      */
