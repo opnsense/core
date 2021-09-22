@@ -268,18 +268,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                     );
 
                     // find gateway
-                    $gwname = null;
-                    foreach ($fw->getInterfaceMapping() as $intfnm => $intf) {
-                        if ($intfnm == $interface) {
-                            foreach ($fw->getInterfaceGateways($intf['if']) as $gwnm) {
-                                $gw = $fw->getGateway($gwnm);
-                                if ($gw['proto'] == $ph1ent['protocol']) {
-                                    $gwname = $gwnm;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
                     // register rules
                     $fw->registerFilterRule(
                         500000,
