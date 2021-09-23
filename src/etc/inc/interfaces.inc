@@ -614,9 +614,10 @@ function interface_lagg_configure(&$lagg)
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
-    if ($lagg['proto'] == 'lacp') {
+    if (in_array($lagg['proto'], ['lacp', 'loadbalance'])) {
         foreach (['lacp_fast_timeout', 'use_flowid', 'lacp_strict'] as $attr) {
-            if (isset($lagg[$attr])) {
+            $attr_proto = strpos($attr, 'lacp_') !== false ? 'lacp' : $lagg['proto'];
+            if (isset($lagg[$attr]) && $attr_proto == $lagg['proto']) {
                 if (!empty($lagg[$attr])) {
                     mwexec("/sbin/ifconfig {$laggif} {$attr}");
                 } else {
@@ -624,6 +625,8 @@ function interface_lagg_configure(&$lagg)
                 }
             }
         }
+        $configured_hash = !empty($lagg['lagghash']) ? $lagg['lagghash'] : "l2,l3,l4";
+        mwexec("/sbin/ifconfig {$laggif} lagghash " . escapeshellarg($configured_hash));
     }
     interfaces_bring_up($laggif);
 

@@ -322,6 +322,9 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['channel'] = $matches[1];
         } elseif (preg_match("/ssid (\".*?\"|\S*)/", $line, $matches)) {
             $result[$current_interface]['ssid'] = $matches[1];
+        } elseif (preg_match("/laggproto (\S+) lagghash (\S+)$/", $line, $matches)) {
+            $result[$current_interface]['laggproto'] = $matches[1];
+            $result[$current_interface]['lagghash'] = $matches[2];
         } elseif (preg_match("/laggproto (.*)$/", $line, $matches)) {
             $result[$current_interface]['laggproto'] = $matches[1];
         } elseif (preg_match("/lagg options:(.*)$/", $line, $matches)) {
