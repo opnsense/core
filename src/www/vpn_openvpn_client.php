@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
             ,local_port,server_addr,server_port,resolve_retry,remote_random,reneg-sec
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
-            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest
+            ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,tlsmode
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
             ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,server_addr,server_port,resolve_retry,proxy_addr,proxy_port,remote_random
                 ,proxy_authtype,proxy_user,proxy_passwd,description,mode,crypto,digest
                 ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
-                ,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec
+                ,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,tlsmode
                 ,verbosity_level,interface";
 
             foreach (explode(",", $copy_fields) as $fieldname) {

@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
-                ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
+                ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1,tlsmode
                 ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
 
             foreach (explode(",", $copy_fields) as $fieldname) {
