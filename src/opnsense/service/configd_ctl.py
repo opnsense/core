@@ -125,7 +125,11 @@ if args.e:
         rlist, _, _ = select([sys.stdin], [], [], args.t)
         if rlist:
             last_message_stamp = time.time()
-            stashed_lines.append(sys.stdin.readline())
+            r_line = sys.stdin.readline()
+            if len(r_line) == 0:
+                #EOFError. pipe broken?
+                sys.exit(-1)
+            stashed_lines.append(r_line)
 
         if len(stashed_lines) >= 1 and (args.t is None or time.time() - last_message_stamp > args.t):
             # emit event trigger(s) to syslog
