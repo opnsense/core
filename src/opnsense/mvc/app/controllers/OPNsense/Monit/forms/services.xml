@@ -79,6 +79,13 @@
       <help><![CDATA[Optionally define a (list of) service(s) which are required before monitoring this one, if any of the dependencies are either stopped or unmonitored this service will stop/unmonitor too.]]></help>
    </field>
    <field>
+      <id>service.polltime</id>
+      <label>Poll Time</label>
+      <type>text</type>
+      <advanced>true</advanced>
+      <help><![CDATA[Set the service poll time. Either as a number of cycles &quot;&lt;NUMBER&gt; CYCLES&quot; or Cron-style &quot;* 8-19 * * 1-5&quot;]]></help>
+   </field>
+   <field>
       <id>service.description</id>
       <label>Description</label>
       <type>text</type>

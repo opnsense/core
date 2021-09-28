@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.10</version>
+   <version>1.0.11</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -277,6 +277,11 @@
             <multiple>Y</multiple>
             <Required>N</Required>
          </depends>
+         <polltime type="TextField">
+            <Required>N</Required>
+            <mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</mask>
+            <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
+         </polltime>
       </service>
       <test type="ArrayField">
          <name type="TextField">

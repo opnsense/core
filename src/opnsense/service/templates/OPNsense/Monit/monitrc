@@ -152,6 +152,13 @@ check {{ service.type }} {{ service.name }} {{ path }}
 {%       endif %}
 {%      endfor %}
 {%     endif %}
+{%     if service.polltime is defined %}
+{%       set polltime = service.polltime %}
+{%       if "cycles" not in polltime.lower() %}
+{%         set polltime = "\"" ~ polltime ~ "\"" %}
+{%       endif %}
+   every {{ polltime }}
+{%     endif %}
 {%    endif %}
 
 {%   endfor %}
