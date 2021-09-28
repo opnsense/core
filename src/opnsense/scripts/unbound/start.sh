@@ -46,5 +46,5 @@ done
 
 chown -R unbound:unbound /var/unbound
 
-/usr/local/sbin/unbound -c /var/unbound/unbound.conf
+/usr/local/sbin/unbound -c /var/unbound/unbound.conf 2>&1 | logger -t unbound
 /usr/local/opnsense/scripts/unbound/cache.sh load
