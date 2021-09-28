@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig = array();
     $form_fields = array('mode', 'vhid', 'advskew', 'advbase', 'password', 'subnet', 'subnet_bits'
-                        , 'descr' ,'type', 'interface', 'gateway' );
+                        , 'descr' ,'type', 'interface', 'gateway', 'noipv6ra' );
 
     if (isset($configId)) {
         // 1-on-1 copy of config data
@@ -182,6 +182,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $vipent['noexpand'] = true;
         }
 
+        if (empty($pconfig['noipv6ra']) && is_ipaddrv6($pconfig['subnet']) && 
+          ($pconfig['mode'] == 'ipalias' || $pconfig['mode'] == 'carp')) {
+            // noipv6ra, only used for IPv6 aliases/CARPs
+            $vipent['noipv6ra'] = true;
+        }
+
         // virtual ip UI keeps track of its changes in a separate file
         // (which is only use on apply in firewall_virtual_ip)
         // add or change this administration here.
@@ -247,6 +253,8 @@ $( document ).ready(function() {
         $("#noexpand").attr('disabled', true);
         $("#noexpandrow").addClass("hidden");
         $("#max_vhid").attr('disabled', true);
+        $("#noipv6ra").attr('disabled', true);
+        $("#noipv6rarow").addClass("hidden");
 
         switch ($(this).val()) {
             case "ipalias":
@@ -296,6 +304,22 @@ $( document ).ready(function() {
 
     // IPv4/IPv6 select
     hook_ipv4v6('ipv4v6net', 'network-id');
+
+    $('input[name="subnet"]').change(function(){
+      let mode = $("#mode").val();
+      if(mode === 'ipalias' || mode === 'carp'){
+        if($(this).data('ipv4v6') === '6'){
+          $("#noipv6ra").attr('disabled', false);
+          $("#noipv6rarow").removeClass("hidden");
+        } else {
+          $("#noipv6ra").attr('disabled', true);
+          $("#noipv6rarow").addClass("hidden");
+        }
+      } else {
+          $("#noipv6ra").attr('disabled', true);
+          $("#noipv6rarow").addClass("hidden");       
+      }
+    }).change();
 });
 
 </script>
@@ -457,6 +481,15 @@ $( document ).ready(function() {
                         <br/>
                         <?=gettext("The frequency that this machine will advertise. 0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
                       </div>
+                    </td>
+                  </tr>
+                  <tr id="noipv6rarow">
+                    <td><a id="help_for_noipv6ra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Prefix Advertisement");?></td>
+                    <td>
+                          <input id="noipv6ra" name="noipv6ra" type="checkbox" class="form-control unknown" id="noipv6ra" <?= empty($pconfig['noipv6ra']) ? "checked=\"checked\"" : "" ; ?> />
+                          <div class="hidden" data-for="help_for_noipv6ra">
+                            <?=gettext("Include the corresponding IPv6 prefix into router advertisements.");?>
+                          </div>
                     </td>
                   </tr>
                   <tr>
