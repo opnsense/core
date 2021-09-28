@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.9</version>
+   <version>1.0.10</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -144,6 +144,7 @@
                <icmp>Ping failed</icmp>
                <instance>Monit instance changed</instance>
                <invalid>Invalid type</invalid>
+               <link>Link down</link>
                <nonexist>Does not exist</nonexist>
                <packetin>Download packets exceeded</packetin>
                <packetout>Upload packets exceeded</packetout>
