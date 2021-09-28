@@ -72,16 +72,6 @@ function legacy_interface_flags($ifs, $flag, $report_errors = true)
     }
 }
 
-function legacy_interface_rename($ifs, $name)
-{
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
-
-    exec($cmd . ' 2>&1', $out, $ret);
-    if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
-    }
-}
-
 function legacy_interface_create($ifs, $name = null)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
@@ -98,7 +88,14 @@ function legacy_interface_create($ifs, $name = null)
     }
 
     if (!empty($name)) {
-        legacy_interface_rename($new, $name);
+        $cmd = '/sbin/ifconfig ' . escapeshellarg($new) . ' name ' . escapeshellarg($name);
+
+        exec($cmd . ' 2>&1', $out, $ret);
+        if ($ret) {
+            log_error('The command `' . $cmd . '\' failed to execute');
+        }
+
+        /* return new name here anyway to force proper device not found errors later */
         $new = $name;
     }
 
@@ -325,6 +322,9 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['channel'] = $matches[1];
         } elseif (preg_match("/ssid (\".*?\"|\S*)/", $line, $matches)) {
             $result[$current_interface]['ssid'] = $matches[1];
+        } elseif (preg_match("/laggproto (\S+) lagghash (\S+)$/", $line, $matches)) {
+            $result[$current_interface]['laggproto'] = $matches[1];
+            $result[$current_interface]['lagghash'] = $matches[2];
         } elseif (preg_match("/laggproto (.*)$/", $line, $matches)) {
             $result[$current_interface]['laggproto'] = $matches[1];
         } elseif (preg_match("/lagg options:(.*)$/", $line, $matches)) {
@@ -360,7 +360,7 @@ function legacy_interfaces_details($intf = null)
             if (empty($result[$current_interface]["carp"])) {
                 $result[$current_interface]["carp"] = array();
             }
-            $result[$current_interface]["carp"][] = array(
+            $result[$current_interface]["carp"][$line_parts[3]] = array(
                 "status" => $line_parts[1],
                 "vhid" => $line_parts[3],
                 "advbase" => $line_parts[5],
@@ -506,43 +506,4 @@ function legacy_get_interface_addresses($ifs, $ifconfig_details = null)
         }
     }
     return $addrs;
-}
-
-function legacy_serial_devices()
-{
-    // collect 3g/4g modems
-    $dmesg = array();
-    exec('/sbin/sysctl -a', $dmesg);
-    $modems = array();
-    foreach ($dmesg as $line) {
-        if (strpos($line, 'dev.u3g.') === 0) {
-            $portnum = explode('.', $line)[2];
-            if (is_numeric($portnum)) {
-                if (!isset($modems[$portnum])) {
-                    $modems[$portnum] = array();
-                }
-                if (strpos($line, '%desc:') !== false) {
-                    $modems[$portnum]['descr'] = explode('%desc:', $line)[1];
-                } elseif (strpos($line, '%pnpinfo:') !== false) {
-                    foreach (explode(' ', explode('%pnpinfo:', $line)[1]) as $prop) {
-                        $tmp = explode('=', $prop);
-                        if (count($tmp) == 2) {
-                            $modems[$portnum][$tmp[0]] = $tmp[1];
-                        }
-                    }
-                }
-            }
-        }
-    }
-    $serialports = array();
-    foreach (glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE) as $device) {
-        $serialports[$device] = array('descr' => '');
-        $tty = explode('.', explode('cua', $device)[1])[0];
-        foreach ($modems as $modem) {
-            if (isset($modem['ttyname']) && $modem['ttyname'] == $tty) {
-                $serialports[$device] = $modem;
-            }
-        }
-    }
-    return $serialports;
 }

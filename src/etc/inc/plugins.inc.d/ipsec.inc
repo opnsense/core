@@ -268,18 +268,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                     );
 
                     // find gateway
-                    $gwname = null;
-                    foreach ($fw->getInterfaceMapping() as $intfnm => $intf) {
-                        if ($intfnm == $interface) {
-                            foreach ($fw->getInterfaceGateways($intf['if']) as $gwnm) {
-                                $gw = $fw->getGateway($gwnm);
-                                if ($gw['proto'] == $ph1ent['protocol']) {
-                                    $gwname = $gwnm;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
                     // register rules
                     $fw->registerFilterRule(
                         500000,
@@ -436,7 +425,7 @@ function ipsec_parse_phase2($ikeid)
                     $result['leftsubnets'][] = $tmpsubnet;
                 }
                 if (!isset($ph2ent['mobile'])) {
-                    $result['rightsubnets'][] = $right_spec;
+                    $result['rightsubnets'][] = $ph1ent['remote-gateway'];
                 }
             }
             $uniqids[] = $ph2ent['uniqid'];
@@ -1076,7 +1065,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     if (!isset($iflist) || !is_array($iflist)) {
                         $iflist = get_configured_interface_with_descr();
                     }
-                    $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
@@ -1104,9 +1092,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     }
                     /* if no valid src IP was found in configured interfaces, try the vips */
                     if (is_null($srcip)) {
-                        foreach ($viplist as $vip) {
-                            if (ip_in_subnet($vip['ipaddr'], $local_subnet)) {
-                                $srcip = $vip['ipaddr'];
+                        foreach (config_read_array('virtualip', 'vip') as $vip) {
+                            if (ip_in_subnet($vip['subnet'], $local_subnet)) {
+                                $srcip = $vip['subnet'];
                                 break;
                             }
                         }
@@ -1860,25 +1848,13 @@ function ipsec_get_configured_vtis()
                     $configured_intf[$intfnm]['descr'] = $descr;
                     $configured_intf[$intfnm]['networks'] = array();
                 }
+
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
-                // calculate netmask for the provided tunnel
-                if ($inet == 'inet6') {
-                    // XXX: we don't support 128bit integers, only the last 64 bits are considered to calculate the
-                    //      subnet size.
-                    $tunnel_int64 = [];
-                    foreach (['tunnel_local', 'tunnel_remote'] as $fieldname) {
-                        $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
-                        $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
-                    }
-                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
-                } else {
-                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
-                }
 
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
+                    'mask' => find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']], $inet),
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }

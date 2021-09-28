@@ -267,10 +267,7 @@ include_once("head.inc");
                         <td>
                           <input name="regdhcpdomain" type="text" id="regdhcpdomain" value="<?= $pconfig['regdhcpdomain'] ?>"/>
                           <div class="hidden" data-for="help_for_regdhcpdomain">
-                            <?= gettext("The domain name to use for DHCP hostname registration. " .
-                              "If empty, the default system domain is used. Note that all DHCP " .
-                              "leases will be assigned to the same domain. If this is undesired, " .
-                              "static DHCP lease registration is able to provide coherent mappings.") ?>
+                            <?= gettext("The default domain name to use for DHCP lease registration. If empty, the system domain is used.") ?>
                           </div>
                         </td>
                       </tr>

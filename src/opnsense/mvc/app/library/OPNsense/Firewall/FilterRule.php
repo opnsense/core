@@ -236,8 +236,9 @@ class FilterRule extends Rule
                         $rule['state']['options'][] = "tcp.established " . $rule['statetimeout'];
                     }
                     if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
+                        $otbl = !empty($rule['overload']) ? $rule['overload'] : "virusprot";
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
-                                             "/" . $rule['max-src-conn-rates'] . ", overload <virusprot> flush global ";
+                                             "/" . $rule['max-src-conn-rates'] . ", overload <{$otbl}> flush global ";
                     }
                 }
             }

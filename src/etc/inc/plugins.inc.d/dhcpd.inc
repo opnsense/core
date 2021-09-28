@@ -316,7 +316,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         
         $stanzas = array();
 
-        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $realif, $ifconfig_details);
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -468,7 +468,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $dnslist = array();
 
-        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $realif, $ifconfig_details);
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $ifconfig_details);
 
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
@@ -1284,7 +1284,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            list ($ifcfgipv6) = interfaces_primary_address6($ifname, null, $ifconfig_details);
+            list ($ifcfgipv6) = interfaces_primary_address6($ifname, $ifconfig_details);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
@@ -1438,7 +1438,7 @@ EOD;
             continue;
         }
 
-        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, null, $ifconfig_details);
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
             log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
             continue;
@@ -1900,7 +1900,7 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
 
             $ifconf = config_read_array('interfaces', $dhcpif);
             list ($ipaddrv6) = $inet == 6 && isset($ifconf['dhcpd6track6allowoverride']) ?
-                interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
+                interfaces_primary_address6($dhcpif, $ifconfig_details) : [null];
 
             foreach ($dhcpifconf['staticmap'] as $host) {
                 if (empty($host[$ipaddr])) {

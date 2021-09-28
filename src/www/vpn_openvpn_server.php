@@ -201,8 +201,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], gettext('IPv4 Tunnel Network'), false, 'ipv4')) {
             $input_errors[] = $result;
-        } elseif (!empty($pconfig['tunnel_network'])) {
-            // Check IPv4 tunnel_network pool size
+        } elseif (!empty($pconfig['tunnel_network']) && (strpos($pconfig['mode'], "p2p_") === false)) {
+            // Check IPv4 tunnel_network pool size for Remote Access modes
             list($ipv4tunnel_base, $ipv4tunnel_prefix) = explode('/',trim($pconfig['tunnel_network']));
             if ($pconfig['dev_mode'] == "tun") {
                 if ($ipv4tunnel_prefix > 28 && empty($pconfig['topology_subnet'])) {
@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
-                ,netbios_ntype,netbios_scope,verbosity_level,wins_server1
+                ,netbios_ntype,netbios_scope,verbosity_level,wins_server1,tlsmode
                 ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
 
             foreach (explode(",", $copy_fields) as $fieldname) {

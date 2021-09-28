@@ -31,12 +31,15 @@
 import subprocess
 import os
 import ujson
+from datetime import datetime
+
 
 if __name__ == '__main__':
     result = {
         'status': 'ok',
         'size': 0,
-        'used': 0
+        'used': 0,
+        'details': {}
     }
     tables_count = 0
     table_name = None
@@ -45,12 +48,20 @@ if __name__ == '__main__':
             table_name = line.split()[1].strip()
         if "Addresses:" in line and table_name is not None:
             table_size = int("".join(filter(str.isdigit, line)))
-            if os.path.isfile("/var/db/aliastables/%s.txt" % table_name):
-                tmp = open("/var/db/aliastables/%s.txt" % table_name).read()
+            table_updated = None
+            filename = "/var/db/aliastables/%s.txt" % table_name
+            if os.path.isfile(filename):
+                tmp = open(filename).read()
                 planned_size  = tmp.count('\n') + 1 if len(tmp) > 0 else 0
                 # if planned size doesn't fit the table, make sure we report intented size
                 # used size can be divert a bit if pfctl optimizes as well.
                 table_size = max(planned_size, table_size)
+                table_updated = datetime.fromtimestamp(os.path.getmtime(filename)).isoformat()
+
+            result['details'][table_name] = {
+                'count': table_size,
+                'updated': table_updated
+            }
             result['used'] += table_size
 
     for line in subprocess.run(['/sbin/pfctl', '-sm'], capture_output=True, text=True).stdout.strip().split('\n'):

@@ -1,5 +1,7 @@
 /boot/brand-opnsense.4th
 /boot/logo-hourglass.4th
+/boot/lua/brand-opnsense.lua
+/boot/lua/logo-hourglass.lua
 /usr/local/bin/python3
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
@@ -78,6 +80,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20200313
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210104
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210629
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210903
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
@@ -200,6 +203,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
+/usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ACCESS_DENIED.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ACL_TIME_QUOTA_EXCEEDED.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_AGENT_CONFIGURE.html
@@ -244,7 +248,7 @@
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ZERO_SIZE_OBJECT.html
 /usr/local/opnsense/data/proxy/template_error_pages/error-details.txt
 /usr/local/opnsense/data/proxy/template_error_pages/errorpage.css
-/usr/local/opnsense/firmware-message
+/usr/local/opnsense/firmware-upgrade
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -542,6 +546,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Syslog/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.xml

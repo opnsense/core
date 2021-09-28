@@ -90,6 +90,7 @@ function get_default_sysctl_value($id)
         'net.inet.icmp.log_redirect' => '0',
         'net.inet.icmp.reply_from_interface' => '1',
         'net.inet.ip.accept_sourceroute' => '0',
+        'net.inet.ip.forwarding' => '1',
         'net.inet.ip.intr_queue_maxlen' => '1000',
         'net.inet.ip.portrange.first' => '1024',
         'net.inet.ip.random_id' => '1',
@@ -106,6 +107,7 @@ function get_default_sysctl_value($id)
         'net.inet.udp.blackhole' => '1',
         'net.inet.udp.checksum' => 1,
         'net.inet.udp.maxdgram' => '57344',
+        'net.inet6.ip6.forwarding' => '1',
         'net.inet6.ip6.prefer_tempaddr' => '0',
         'net.inet6.ip6.redirect' => '1',
         'net.inet6.ip6.use_tempaddr' => '0',
@@ -114,6 +116,7 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_member' => '1',
         'net.link.bridge.pfil_onlyip' => '0',
         'net.link.tap.user_open' => '1',
+        'net.link.vlan.mtag_pcp' => '1',
         'net.local.dgram.maxdgram' => '8192',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
@@ -140,6 +143,9 @@ function system_sysctl_get()
         'net.enc.out.ipsec_bpf_mask' => 'default',
         'net.enc.out.ipsec_filter_mask' => 'default',
         'net.inet.icmp.reply_from_interface' => 'default',
+        'net.inet.ip.forwarding' => 'default',
+        'net.inet6.ip6.forwarding' => 'default',
+        'net.link.vlan.mtag_pcp' => 'default',
         'net.local.dgram.maxdgram' => 'default',
     );
 
@@ -162,16 +168,18 @@ function system_resolvconf_generate($verbose = false)
 {
     global $config;
 
-    $syscfg = config_read_array('system');
-
     if ($verbose) {
         echo 'Generating /etc/resolv.conf...';
         flush();
     }
 
+    $syscfg = config_read_array('system');
     $resolvconf = '';
+    $search = [];
+
     if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
+        $search[] = $syscfg['domain'];
     }
 
     if (!isset($syscfg['dnslocalhost']) && (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable']))) {
@@ -179,9 +187,7 @@ function system_resolvconf_generate($verbose = false)
     }
 
     if (isset($syscfg['dnsallowoverride'])) {
-        foreach (get_searchdomains() as $searchserver) {
-            $resolvconf .= "search {$searchserver}\n";
-        }
+        $search = array_merge($search, get_searchdomains());
         foreach (get_nameservers() as $nameserver) {
             $resolvconf .= "nameserver $nameserver\n";
         }
@@ -191,6 +197,22 @@ function system_resolvconf_generate($verbose = false)
         foreach ($syscfg['dnsserver'] as $ns) {
             $resolvconf .= "nameserver $ns\n";
         }
+    }
+
+    if (count($search)) {
+        $result = $search[0];
+        /* resolv.conf search keyword limit is 6 domains, 256 characters */
+        foreach (range(2, 6) as $len) {
+            if (count($search) < $len) {
+                break;
+            }
+            $temp = implode(' ', array_slice($search, 0, $len));
+            if (strlen($temp) >= 256) {
+                break;
+            }
+            $result = $temp;
+        }
+        $resolvconf .= "search {$result}\n";
     }
 
     $tempfile = tempnam('/tmp', 'resolv.conf');
@@ -508,11 +530,6 @@ function system_routing_configure($verbose = false, $interface = '')
     }
 
     system_staticroutes_configure($interface);
-
-    set_sysctl(array(
-        'net.inet.ip.forwarding' => '1',
-        'net.inet6.ip6.forwarding' => '1',
-    ));
 
     if ($verbose) {
         echo "done.\n";
@@ -1159,6 +1176,7 @@ function system_login_configure($verbose = false)
     /* setup /etc/ttys */
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
+
     $on_off_secure_u = $serial_enabled ? (isset($config['system']['serialusb']) ? 'on' : 'onifconsole') . ' secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
     if (isset($config['system']['disableconsolemenu'])) {
@@ -1168,6 +1186,7 @@ function system_login_configure($verbose = false)
         $console_type = 'al.Pc';
         $serial_type = 'al.3wire.' . $serialspeed;
     }
+
     foreach ($etc_ttys_lines as $tty) {
         /* virtual terminals */
         foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
@@ -1185,11 +1204,16 @@ function system_login_configure($verbose = false)
             }
         }
 
-        if (!empty($tty)) {
+        if (!empty($tty) && strpos($tty, 'xc0') === false) {
             /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
         }
     }
+
+    if (file_exists('/dev/xc0')) {
+        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+    }
+
     fclose($fd);
 
     if ($verbose) {

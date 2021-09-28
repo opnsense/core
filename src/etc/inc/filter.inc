@@ -72,10 +72,8 @@ function filter_rules_sort()
             return -1;
         } elseif (isset($b['floating'])) {
             return 1;
-        } elseif ($a['interface'] != $b['interface']) {
-            return $a['seq'] - $b['seq'];
         } elseif ($a['interface'] == $b['interface']) {
-            return 0;
+            return $a['seq'] - $b['seq'];
         } elseif ($a['interface'] == 'wan') {
             return -1;
         } elseif ($b['interface'] == 'wan') {
@@ -91,25 +89,6 @@ function filter_rules_sort()
     /* strip the sequence numbers again */
     for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
         unset($config['filter']['rule'][$i]['seq']);
-    }
-}
-
-function filter_pflog_start($verbose = false)
-{
-    if ($verbose) {
-        echo 'Starting PFLOG...';
-        flush();
-    }
-
-    killbypid('/var/run/filterlog.pid', 'TERM', true);
-
-    /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexec('/sbin/ifconfig pflog0 promisc');
-
-    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
-
-    if ($verbose) {
-        echo "done.\n";
     }
 }
 
@@ -284,12 +263,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
                 foreach (array(500, null) as $dstport) {
                     $rule = array(
-                        "interface" => $intf,
-                        "dstport" => $dstport,
-                        "staticnatport" => !empty($dstport),
-                        "destination" => array("any" => true),
-                        "ipprotocol" => 'inet',
-                        "descr" => "Automatic outbound rule"
+                        'descr' => 'Automatic outbound rule',
+                        'destination' => array('any' => true),
+                        'dstport' => $dstport,
+                        'interface' => $intf,
+                        'ipprotocol' => 'inet',
+                        'log' => !empty($config['syslog']['logoutboundnat']),
+                        'staticnatport' => !empty($dstport),
                     );
                     foreach ($intfv4 as $network) {
                         $rule['source'] = array("network" => $network);
@@ -546,10 +526,20 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     if ($verbose) {
-        echo "done.\n";
+        echo '.';
+        flush();
     }
 
-    filter_pflog_start($verbose);
+    /* enable permanent promiscuous mode to avoid dmesg noise */
+    mwexec('/sbin/ifconfig pflog0 promisc');
+
+    /* bring up new instance of filterlog to load new rules */
+    killbypid('/var/run/filterlog.pid', 'TERM', true);
+    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 
     unlock($filterlck);
 }

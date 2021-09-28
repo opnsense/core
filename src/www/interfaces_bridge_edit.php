@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("filter.inc");
 
 $a_bridges = &config_read_array('bridges', 'bridged');
 
@@ -143,25 +144,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        $bridge = array();
+        $bridge = [];
+
         // booleans
         foreach (['enablestp', 'linklocal'] as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $bridge[$fieldname] = true;
             }
         }
+
         // 1 on 1 copy
         $copy_fields = array('descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt');
         foreach ($copy_fields as $fieldname) {
-            if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != "") {
+            if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != '') {
                 $bridge[$fieldname] = $pconfig[$fieldname];
             } else {
                 $bridge[$fieldname] = null;
             }
         }
-        if ($pconfig['span'] != "none") {
+        if ($pconfig['span'] != 'none') {
             $bridge['span'] = $pconfig['span'];
         }
+
         // simple array fields
         $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
         foreach ($array_fields as $fieldname) {
@@ -169,25 +173,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $bridge[$fieldname] = implode(',', $pconfig[$fieldname]);
             }
         }
+
         // array key/value sets
-        $bridge['ifpriority'] = "";
-        $bridge['ifpathcost'] = "";
+        $bridge['ifpriority'] = '';
+        $bridge['ifpathcost'] = '';
         foreach ($ifacelist as $ifn => $ifdescr) {
-          if (isset($pconfig['ifpriority_'.$ifn]) && $pconfig['ifpriority_'.$ifn] != "") {
-              if (!empty($bridge['ifpriority'])) {
-                  $bridge['ifpriority'] .= ',';
-              }
-              $bridge['ifpriority'] .= $ifn.":".$pconfig['ifpriority_'.$ifn];
-          }
-          if (isset($pconfig['ifpathcost_'.$ifn]) && $pconfig['ifpathcost_'.$ifn] != "") {
-              if (!empty($bridge['ifpathcost'])) {
-                  $bridge['ifpathcost'] .= ',';
-              }
-              $bridge['ifpathcost'] .= $ifn.":".$pconfig['ifpathcost_'.$ifn];
-          }
+            if (isset($pconfig['ifpriority_'.$ifn]) && $pconfig['ifpriority_' . $ifn] != '') {
+                if (!empty($bridge['ifpriority'])) {
+                    $bridge['ifpriority'] .= ',';
+                }
+                $bridge['ifpriority'] .= $ifn . ':' . $pconfig['ifpriority_' . $ifn];
+            }
+            if (isset($pconfig['ifpathcost_' . $ifn]) && $pconfig['ifpathcost_' . $ifn] != '') {
+                if (!empty($bridge['ifpathcost'])) {
+                    $bridge['ifpathcost'] .= ',';
+                }
+                $bridge['ifpathcost'] .= $ifn . ':' . $pconfig['ifpathcost_' . $ifn];
+            }
         }
 
         interface_bridge_configure($bridge);
+        ifgroup_setup();
         if ($bridge['bridgeif'] == "" || !stristr($bridge['bridgeif'], "bridge")) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
