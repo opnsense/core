@@ -330,8 +330,8 @@ fi
 
 packages_is_size="$(opnsense-update -SRp)"
 if [ -n "${packages_is_size}" ]; then
-    upgrade_major_message=$(cat /usr/local/opnsense/firmware-message 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
-    upgrade_major_version=$(cat /usr/local/opnsense/firmware-upgrade 2> /dev/null)
+    upgrade_major_message=$(cat /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | sed 's/"/\\&/g' | tr '\n' ' ')
+    upgrade_major_version=$(opnsense-update -vR)
     upgrade_needs_reboot="1"
     sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
 

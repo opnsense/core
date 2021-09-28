@@ -204,6 +204,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
+/usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ACCESS_DENIED.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ACL_TIME_QUOTA_EXCEEDED.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_AGENT_CONFIGURE.html
@@ -248,7 +249,6 @@
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ZERO_SIZE_OBJECT.html
 /usr/local/opnsense/data/proxy/template_error_pages/error-details.txt
 /usr/local/opnsense/data/proxy/template_error_pages/errorpage.css
-/usr/local/opnsense/firmware-message
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
