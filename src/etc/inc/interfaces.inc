@@ -4542,6 +4542,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     'bind' => true,
                     'bits' => $address['subnetbits'],
                     'deprecated' => !empty($address['deprecated']),
+                    'tentative' => !empty($address['tentative']),
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
                     'interface' => !empty($ifcache[$realif]) ? $ifcache[$realif] : null,
                     'key' => $key,
@@ -4613,7 +4614,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
         }
 
         foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['alias'] || $addr['scope']) {
+            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
                 continue;
             }
 
@@ -4635,7 +4636,7 @@ function interfaces_scoped_address6($interface, $ifconfig_details = null)
 
     if (!empty($interfaces_a[$interface])) {
         foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['alias'] || !$addr['scope']) {
+            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
                 continue;
             }
 
