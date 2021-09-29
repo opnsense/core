@@ -77,6 +77,10 @@ function webgui_configure_do($verbose = false, $interface = '')
             continue;
         }
 
+        if (!$info['bind']) {
+            continue;
+        }
+
         $listeners[] = $tmpaddr;
     }
 

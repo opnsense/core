@@ -186,6 +186,10 @@ EOF;
                 continue;
             }
 
+            if (!$info['bind']) {
+                continue;
+            }
+
             $addresses[] = $tmpaddr;
         }
 
@@ -681,6 +685,10 @@ function unbound_acls_subnets()
     $subnets = array('127.0.0.1/8', '::1/64');
 
     foreach (interfaces_addresses(array_keys($active_interfaces), true) as $subnet => $info) {
+        if (!$info['bind']) {
+            continue;
+        }
+
         if (!empty($active_interfaces[$info['name']]['net4']) && is_subnetv4($subnet)) {
             $subnet = explode('/', $subnet)[0] . '/' . $active_interfaces[$info['name']]['net4'];
         } elseif (!empty($active_interfaces[$info['name']]['net6']) && is_subnetv6($subnet) && !$info['scope']) {

@@ -4535,13 +4535,16 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     $suffix = "/{$address['subnetbits']}";
                     $scope = '';
                 }
-                $result["{$address['ipaddr']}{$scope}{$suffix}"] = [
+                $key = "{$address['ipaddr']}{$scope}{$suffix}";
+                $result[$key] = [
                     'address' => $address['ipaddr'],
                     'alias' => false,
+                    'bind' => true,
                     'bits' => $address['subnetbits'],
                     'deprecated' => !empty($address['deprecated']),
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
                     'interface' => !empty($ifcache[$realif]) ? $ifcache[$realif] : null,
+                    'key' => $key,
                     'name' => $realif,
                     'scope' => !empty($address['link-local']),
                 ];
@@ -4549,21 +4552,25 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
         }
     }
 
-    foreach ($result as $addr => $info) {
+    foreach ($result as &$info) {
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if (empty($info['interface']) || $info['interface'] != $vip['interface'] || $vip['mode'] != 'ipalias') {
                 continue;
             }
 
             if ($info['family'] == 'inet' && strpos($vip['subnet'], ':') === false) {
-                $result[$addr]['alias'] = $vip['subnet'] == $info['address'];
+                $info['alias'] = $vip['subnet'] == $info['address'];
             } elseif ($info['family'] == 'inet6' && strpos($vip['subnet'], ':') !== false) {
                 /*
                  * Since we do not know what subnet value was given by user
                  * uncompress/compress to match correctly compressed system
                  * value.
                  */
-                $result[$addr]['alias'] = Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $info['address'];
+                $info['alias'] = Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $info['address'];
+            }
+
+            if ($info['alias'] && !empty($vip['nobind'])) {
+                $info['bind'] = false;
             }
         }
     }
