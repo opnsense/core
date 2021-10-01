@@ -24,6 +24,17 @@ CMD_SETADDR="/usr/local/opnsense/scripts/shell/setaddr.php"
 CMD_SETPORTS="/usr/local/opnsense/scripts/shell/setports.php"
 CMD_SHELL="/bin/csh"
 
+# Allow setting a different shell as user,
+# without skipping opnsense-shell
+# Create a file named .CMD_SHELL in your home directory
+# and just add one line containing the path to the desired shell,
+# i.e. /usr/local/bin/bash
+# The shell must be listed in /etc/shells!
+if [ -f ~/.CMD_SHELL ]; then
+	DESIRED_SHELL=$(head ~/.CMD_SHELL)
+	grep -x -q "$DESIRED_SHELL" /etc/shells && CMD_SHELL="$DESIRED_SHELL"
+fi
+
 # rc.d may call this while being root using `su -m user -c ...'
 # and it has arguments to pass through to the shell.  It creates
 # a problem for us as su(1) assumes a full root shell and has no
