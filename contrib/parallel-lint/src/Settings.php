@@ -44,7 +44,7 @@ class Settings
      * If path contains directory, only file with these extensions are checked
      * @var array
      */
-    public $extensions = array('php', 'phtml', 'php3', 'php4', 'php5', 'phpt');
+    public $extensions = array();
 
     /**
      * Array of file or directories to check
