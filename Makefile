@@ -29,10 +29,10 @@ all:
 .include "Mk/defaults.mk"
 
 CORE_ABI?=	21.7
-CORE_MESSAGE?=	The song remains the same
-CORE_NAME?=	opnsense
+CORE_MESSAGE?=	Business as usual
+CORE_NAME?=	opnsense-business
 CORE_NICKNAME?=	Noble Nightingale
-CORE_TYPE?=	community
+CORE_TYPE?=	business
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
@@ -176,6 +176,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			unbound \
 			wpa_supplicant \
 			zip \
+			os-OPNBEcore \
 			${CORE_DEPENDS_${CORE_ARCH}}
 
 WRKDIR?=${.CURDIR}/work
