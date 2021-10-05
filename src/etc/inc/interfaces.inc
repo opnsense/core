@@ -1122,8 +1122,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/var/etc/nameserver_v6{$realifv6}");
     @unlink("/var/etc/searchdomain_{$realif}");
     @unlink("/var/etc/searchdomain_v6{$realifv6}");
-    @unlink("/tmp/{$realif}up");
-    @unlink("/tmp/{$realifv6}upv6");
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_pdinfo");
