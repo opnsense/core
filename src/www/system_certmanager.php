@@ -1450,7 +1450,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_key_usage_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('keyUsage');?></td>
                     <td>
-                      <select name="key_usage_sign_csr[]" title="<?html_safe(gettext("Select keyUsage"));?>" multiple="multiple" id="key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="key_usage_sign_csr[]" title="<?= html_safe(gettext('Select keyUsage')) ?>" multiple="multiple" id="key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                       foreach ($key_usages as $key => $human_readable): ?>
                         <option value="<?=$key;?>" id="key_usage_sign_csr_<?=$key;?>">
@@ -1473,7 +1473,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_extended_key_usage_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('extendedKeyUsage');?></td>
                     <td>
-                      <select name="extended_key_usage_sign_csr[]" title="<?html_safe(gettext("Select extendedKeyUsage"));?>" multiple="multiple" id="extended_key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="extended_key_usage_sign_csr[]" title="<?= html_safe(gettext('Select extendedKeyUsage')) ?>" multiple="multiple" id="extended_key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                       foreach ($extended_key_usages as $key => $human_readable): ?>
                         <option value="<?=$key;?>" id="extended_key_usage_sign_csr_<?= str_replace('.', '_', $key);?>">
