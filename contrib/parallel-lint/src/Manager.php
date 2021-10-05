@@ -140,7 +140,7 @@ class Manager
     protected function getFilesFromPaths(array $paths, array $extensions, array $excluded = array())
     {
         $extensions = array_map('preg_quote', $extensions, array_fill(0, count($extensions), '`'));
-        $regex = '`\.(?:' . implode('|', $extensions) . ')$`iD';
+        $regex = count($extensions) ? '`\.(?:' . implode('|', $extensions) . ')$`iD' : '`.+`iD';
         $files = array();
 
         foreach ($paths as $path) {
