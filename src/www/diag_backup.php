@@ -231,6 +231,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['rebootafterrestore'])) {
                         $do_reboot = true;
                     }
+                    if (!empty($pconfig['templatereloadafterrestore'])) {
+                        $do_templatereload = true;
+                    }
                     $savemsg = gettext("The configuration area has been restored.");
                 }
             } else {
@@ -241,6 +244,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($cnf->restoreBackup($filename)) {
                     if (!empty($pconfig['rebootafterrestore'])) {
                         $do_reboot = true;
+                    }
+                    if (!empty($pconfig['templatereloadafterrestore'])) {
+                        $do_templatereload = true;
                     }
                     $config = parse_config();
                     /* extract out rrd items, unset from $config when done */
@@ -402,6 +408,8 @@ $( document ).ready(function() {
                     <input name="conffile" type="file" id="conffile" /><br/>
                     <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
                     <?=gettext("Reboot after a successful restore."); ?><br/>
+                    <input name="templatereloadafterrestore" type="checkbox" id="templatereloadafterrestore" />
+                    <?=gettext("Reload all templates after a successful restore."); ?><br/>
                     <input name="decrypt" type="checkbox" id="decryptconf"/>
                     <?=gettext("Configuration file is encrypted."); ?>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
@@ -495,6 +503,10 @@ $( document ).ready(function() {
 <?php
 
 include("foot.inc");
+
+if ($do_templatereload) {
+    configd_run('template reload *');
+}
 
 if ($do_reboot) {
     configd_run('system reboot', true);
