@@ -814,6 +814,7 @@ function system_firmware_configure($verbose = false)
 
 function system_trust_configure($verbose = false)
 {
+    global $config;
     if ($verbose) {
         echo 'Writing trust files...';
         flush();
@@ -836,21 +837,39 @@ function system_trust_configure($verbose = false)
                     }
                 }
                 $ca .= "\n# {$entry['descr']}\n";
+                $include_intermediates = !empty($config['system']['store_intermediate_certs']);
                 foreach ($user_cas as $user_ca) {
                     if (!empty(trim($user_ca))) {
                         $certinfo = @openssl_x509_parse($user_ca);
+                        $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
+                        $authoritykey = "";
+                        if (!empty($certext['authorityKeyIdentifier'])) {
+                            $authoritykey = trim(str_replace('keyid:', '', $certext['authorityKeyIdentifier']));
+                        }
+                        $subjectkey = $certext['subjectKeyIdentifier'];
+                        $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
+
+                        $error_line = "";
                         if (!empty($certinfo['validTo']) && $certinfo['validTo_time_t'] < time()) {
                             $error_line = sprintf(
-                                "refusing to import %s from %s (expired @ %s)",
+                                "(system local trust) refusing to import %s from %s (expired @ %s)",
                                 $certinfo['name'],
                                 $entry['descr'],
                                 date('r', $certinfo['validFrom_time_t'])
                             );
-                            log_error($error_line);
-                            $ca .= "#" .  str_replace("\n", "", $error_line);
-                            continue;
+                        } elseif (!$include_intermediates && !$is_self_signed) {
+                            $error_line = sprintf(
+                                "(system local trust) skip intermediate certificate %s from %s",
+                                $certinfo['name'],
+                                $entry['descr']
+                            );
                         }
-                        $ca .= $user_ca;
+                        if (!empty($error_line)) {
+                            syslog(LOG_NOTICE, $error_line);
+                            $ca .= "#" .  str_replace("\n", "", $error_line);
+                        } else {
+                            $ca .= $user_ca;
+                        }
                     }
                 }
             }
