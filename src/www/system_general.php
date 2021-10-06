@@ -212,6 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* time zone change first */
         system_timezone_configure();
+        system_trust_configure();
 
         prefer_ipv4_or_ipv6();
         system_hostname_configure();
@@ -361,7 +362,7 @@ $( document ).ready(function() {
                 <input name="store_intermediate_certs" type="checkbox" id="store_intermediate_certs" <?= !empty($pconfig['store_intermediate_certs']) ? "checked=\"checked\"" : "";?> />
                 <div class="hidden" data-for="help_for_trust_store_intermediate_certs">
                   <?=gettext(
-                    "Allow local defined intermediate certificate authorities to be used in the local trust store ".
+                    "Allow local defined intermediate certificate authorities to be used in the local trust store. ".
                     "We advise to only store root certificates to prevent cross signed ones causing breakage when included but expired later in the chain."
                   ); ?>
                 </div>
