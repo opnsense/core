@@ -4,7 +4,7 @@
 
 for STAGE in B P; do
 	if opnsense-update -${STAGE}; then
-		echo -n "Issuing required reboot..."
+		echo "Rebooting now."
 		reboot
 	fi
 done
