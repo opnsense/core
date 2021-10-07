@@ -351,14 +351,10 @@ lint-exec:
 .endif
 .endfor
 
+LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
+
 lint-php:
-	@find ${.CURDIR}/src \
-	    ! -name "*.xml" ! -name "*.xml.sample" ! -name "*.eot" \
-	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
-	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
-	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
-	    ! -name "*.tgz" ! -name "*.xml.dist" ! -name "*.tgb" \
-	    -type f -print0 | xargs -0 -n1 php -l
+	@${LINTBIN} src
 
 lint: plist-check lint-shell lint-xml lint-exec lint-php
 
