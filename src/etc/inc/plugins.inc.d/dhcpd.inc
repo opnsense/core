@@ -1888,11 +1888,10 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     }
 }
 
-function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null)
+function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses=true, $proto=null)
 {
     $staticmap = [];
-
-    foreach ([4, 6] as $inet) {
+    foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
         $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
 
         foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
@@ -1905,7 +1904,7 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                 interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
 
             foreach ($dhcpifconf['staticmap'] as $host) {
-                if (empty($host[$ipaddr])) {
+                if (empty($host[$ipaddr]) && $valid_addresses) {
                     /* we only return proper entries with an IP address */
                     continue;
                 }

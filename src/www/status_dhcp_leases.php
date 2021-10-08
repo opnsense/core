@@ -210,11 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    foreach (dhcpd_staticmap() as $static) {
-        if (!isset($static['ipaddr'])) {
-            continue;
-        }
-
+    foreach (dhcpd_staticmap("not.found", legacy_interfaces_details(), false, 4) as $static) {
         $slease = [];
         $slease['ip'] = $static['ipaddr'];
         $slease['type'] = 'static';
@@ -229,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($macs[$slease['mac']])) {
             /* update lease with static data */
             foreach ($slease as $key => $value) {
-                if (!empty($value) || $key == 'start' || $key == 'end') {
+                if (!empty($value)) {
                     $leases[$macs[$slease['mac']]][$key] = $slease[$key];
                 }
             }
