@@ -275,7 +275,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $duids = [];
     foreach ($leases as $i => $this_lease) {
         if (!empty($this_lease['duid'])) {
-            $duids[$this_lease['duid']] = $i;
+            if (!isset($duids[$this_lease['duid']])) {
+                $duids[$this_lease['duid']] = [];
+            }
+            $duids[$this_lease['duid']][] = $i;
         }
     }
 
@@ -296,7 +299,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             /* update lease with static data */
             foreach ($slease as $key => $value) {
                 if (!empty($value)) {
-                    $leases[$duids[$slease['duid']]][$key] = $slease[$key];
+                    foreach ($duids[$slease['duid']] as $idx) {
+                        $leases[$idx][$key] = $value;
+                    }
                 }
             }
         } else {
