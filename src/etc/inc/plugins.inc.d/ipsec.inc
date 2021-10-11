@@ -1154,6 +1154,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $strongswanTree['charon']['cisco_unity'] = 'yes';
         }
+        if (!empty($config['ipsec']['max_ikev1_exchanges'])) {
+            $strongswanTree['charon']['max_ikev1_exchanges'] = $config['ipsec']['max_ikev1_exchanges'];
+        }
 
         // Debugging configuration
         // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
