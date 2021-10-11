@@ -434,7 +434,7 @@ class Action(object):
 
             # build script command to execute, shared for both types
             script_command = self.command
-            if self.parameters is not None and type(self.parameters) == str and len(parameters) > 0:
+            if self.parameters is not None and type(self.parameters) == str:
                 script_arguments = self.parameters
                 if script_arguments.find('%s') > -1:
                     # use command execution parameters in action parameter template
