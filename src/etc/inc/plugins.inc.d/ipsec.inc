@@ -1508,6 +1508,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
+                if (!empty($ph1ent['closeaction'])) {
+                    $closeaction_line = "closeaction = {$ph1ent['closeaction']}";
+                } else {
+                    $closeaction_line = '';
+                }
+
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
                     if (empty($ph1ent['dpd_action'])) {
                         if (in_array($conn_auto, array('route', 'start'))) {
@@ -1665,6 +1671,7 @@ conn con<<connectionId>>
   {$forceencaps}
   installpolicy = {$installpolicy}
   type = {$parsed_phase2['type']}
+  {$closeaction_line}
   {$dpdline}
   {$inactivityline}
   {$keyingtriesline}
