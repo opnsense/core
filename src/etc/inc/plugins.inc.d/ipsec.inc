@@ -221,6 +221,8 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
         !isset($config['system']['disablevpnrules']) &&
             isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])
     ) {
+        $enable_replyto = empty($config['system']['disablereplyto']);
+        $enable_routeto = empty($config['system']['pf_disable_force_gw']);
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!isset($ph1ent['disabled'])) {
                 // detect remote ip
@@ -266,42 +268,31 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                     );
 
                     // find gateway
-                    $gwname = null;
-                    foreach ($fw->getInterfaceMapping() as $intfnm => $intf) {
-                        if ($intfnm == $interface) {
-                            foreach ($fw->getInterfaceGateways($intf['if']) as $gwnm) {
-                                $gw = $fw->getGateway($gwnm);
-                                if ($gw['proto'] == $ph1ent['protocol']) {
-                                    $gwname = $gwnm;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
                     // register rules
                     $fw->registerFilterRule(
                         500000,
                         array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 500,
-                              "gateway" => $gwname, "disablereplyto" => true),
+                              "gateway" => $enable_routeto ? $gwname : null, "disablereplyto" => true),
                         $baserule
                     );
                     $fw->registerFilterRule(
                         500000,
                         array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 500,
-                              "reply-to" => $gwname),
+                              "reply-to" => $enable_replyto ? $gwname : null),
                         $baserule
                     );
                     if ($ph1ent['nat_traversal'] != "off") {
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "out", "protocol" => "udp", "to" => $rgip, "to_port" => 4500,
-                                  "gateway" => $gwname, "disablereplyto" => true),
+                                  "gateway" => $enable_routeto ? $gwname : null, "disablereplyto" => true),
                             $baserule
                         );
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "in", "protocol" => "udp", "from" => $rgip, "to_port" => 4500,
-                                  "reply-to" => $gwname),
+                                  "reply-to" => $enable_replyto ? $gwname : null),
                             $baserule
                         );
                     }
@@ -309,13 +300,13 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "out", "protocol" => $proto, "to" => $rgip,
-                                  "gateway" => $gwname, "disablereplyto" => true),
+                                  "gateway" => $enable_routeto ? $gwname : null, "disablereplyto" => true),
                             $baserule
                         );
                         $fw->registerFilterRule(
                             500000,
                             array("direction" => "in", "protocol" => $proto, "from" => $rgip,
-                                  "reply-to" => $gwname),
+                                  "reply-to" => $enable_replyto ? $gwname : null),
                             $baserule
                         );
                     }
@@ -434,7 +425,7 @@ function ipsec_parse_phase2($ikeid)
                     $result['leftsubnets'][] = $tmpsubnet;
                 }
                 if (!isset($ph2ent['mobile'])) {
-                    $result['rightsubnets'][] = $right_spec;
+                    $result['rightsubnets'][] = $ph1ent['remote-gateway'];
                 }
             }
             $uniqids[] = $ph2ent['uniqid'];
@@ -790,8 +781,6 @@ function ipsec_resolve($hostname)
 
 function ipsec_find_id(&$ph1ent, $side = 'local')
 {
-    $id_data = null;
-    $id_type = null;
     if ($side == "local") {
         $id_type = $ph1ent['myid_type'];
         $id_data = isset($ph1ent['myid_data']) ? $ph1ent['myid_data'] : null;
@@ -802,29 +791,33 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
         if (isset($ph1ent['mobile'])) {
             return null;
         }
+    } else {
+        return null;
     }
 
-    switch ($id_type) {
-        case "myaddress":
-            $thisid_data = ipsec_get_phase1_src($ph1ent);
-            break;
-        case "dyn_dns":
-            $thisid_data = ipsec_resolve($id_data);
-            break;
-        case "peeraddress":
-            $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
-            break;
-        case "fqdn":
-            $thisid_data = !empty($id_data) ? "fqdn:{$id_data}" : null;
-            break;
-        case "keyid tag":
-            $thisid_data = !empty($id_data) ? "keyid:{$id_data}" : null;
-            break;
-        default:
-            $thisid_data = !empty($id_data) ? "{$id_data}" : null;
-            break;
+    if ($id_type == "myaddress") {
+        $thisid_data = ipsec_get_phase1_src($ph1ent);
+    } elseif ($id_type == "dyn_dns") {
+        $thisid_data = ipsec_resolve($id_data);
+    } elseif ($id_type == "peeraddress") {
+        $thisid_data = ipsec_resolve($ph1ent['remote-gateway']);
+    } elseif (empty($id_data)) {
+        $thisid_data = null;
+    } elseif (in_array($id_type, ["asn1dn", "fqdn"])) {
+        if (strpos($id_data, "#") !== false) {
+            $thisid_data = "\"{$id_type}:{$id_data}\"";
+        } else {
+            $thisid_data = "{$id_type}:{$id_data}";
+        }
+    } elseif ($id_type == "keyid tag") {
+        $thisid_data = "keyid:{$id_data}";
+    } elseif ($id_type == "user_fqdn") {
+        $thisid_data = "userfqdn:{$id_data}";
+    } else {
+        $thisid_data = $id_data;
     }
-    return $thisid_data;
+
+    return trim($thisid_data);
 }
 
 /* include all configuration functions */
@@ -1072,7 +1065,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     if (!isset($iflist) || !is_array($iflist)) {
                         $iflist = get_configured_interface_with_descr();
                     }
-                    $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
@@ -1100,9 +1092,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     }
                     /* if no valid src IP was found in configured interfaces, try the vips */
                     if (is_null($srcip)) {
-                        foreach ($viplist as $vip) {
-                            if (ip_in_subnet($vip['ipaddr'], $local_subnet)) {
-                                $srcip = $vip['ipaddr'];
+                        foreach (config_read_array('virtualip', 'vip') as $vip) {
+                            if (ip_in_subnet($vip['subnet'], $local_subnet)) {
+                                $srcip = $vip['subnet'];
                                 break;
                             }
                         }
@@ -1149,6 +1141,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $strongswanTree['charon']['cisco_unity'] = 'yes';
+        }
+        if (!empty($config['ipsec']['max_ikev1_exchanges'])) {
+            $strongswanTree['charon']['max_ikev1_exchanges'] = $config['ipsec']['max_ikev1_exchanges'];
         }
 
         // Debugging configuration
@@ -1342,7 +1337,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 /* XXX" Traffic selectors? */
                 $pskconf .= " : " . ipsec_get_key_type($ph1keyfile) . " {$ph1keyfile}\n";
             } elseif (!empty($ph1ent['pre-shared-key'])) {
-                $myid = isset($ph1ent['mobile']) ? trim(ipsec_find_id($ph1ent, "local")) : "";
+                $myid = isset($ph1ent['mobile']) ? ipsec_find_id($ph1ent, "local") : "";
                 $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer");
 
                 if (!empty($peerid_data)) {
@@ -1467,6 +1462,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $keyexchange = $ph1ent['iketype'];
                     $mobike = !empty($ph1ent['mobike']) ? "mobike = no" : "mobike = yes";
                 }
+
+                $closeaction = !empty($ph1ent['close_action']) ? $ph1ent['close_action'] : "none";
 
                 $right_spec = '%any';
                 $right_any = '';
@@ -1664,6 +1661,7 @@ conn con<<connectionId>>
   aggressive = {$aggressive}
   fragmentation = yes
   keyexchange = {$keyexchange}
+  closeaction = {$closeaction}
   {$mobike}
   {$reauth}
   {$rekey}
@@ -1839,7 +1837,7 @@ function ipsec_get_configured_vtis()
             foreach ($phase2items as $idx => $phase2) {
                 if (empty($phase2['reqid'])) {
                     continue;
-                } elseif ((!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
+                } elseif ((!isset($ph1ent['mobile']) && $ph1ent['iketype'] == 'ikev1') || isset($ph1ent['tunnel_isolation'])) {
                     // isolated tunnels, every tunnel it's own reqid
                     $reqid = $phase2['reqid'];
                     $descr = empty($phase2['descr']) ? $ph1ent['descr'] : $phase2['descr'];
@@ -1856,25 +1854,13 @@ function ipsec_get_configured_vtis()
                     $configured_intf[$intfnm]['descr'] = $descr;
                     $configured_intf[$intfnm]['networks'] = array();
                 }
+
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
-                // calculate netmask for the provided tunnel
-                if ($inet == 'inet6') {
-                    // XXX: we don't support 128bit integers, only the last 64 bits are considered to calculate the
-                    //      subnet size.
-                    $tunnel_int64 = [];
-                    foreach (['tunnel_local', 'tunnel_remote'] as $fieldname) {
-                        $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
-                        $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
-                    }
-                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
-                } else {
-                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
-                }
 
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
+                    'mask' => find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']], $inet),
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }

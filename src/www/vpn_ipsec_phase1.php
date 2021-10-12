@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['interface'] = "wan";
     $pconfig['iketype'] = "ikev2";
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
-    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
+    ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,close_action,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
@@ -143,6 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dhgroup'] = array('14');
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
+        $pconfig['close_action'] = "none";
         $pconfig['installpolicy'] = true;
         $pconfig['authservers'] = array();
 
@@ -398,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
-        ,nat_traversal,auto,mobike";
+        ,nat_traversal,close_action,auto,mobike";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -825,7 +826,8 @@ include("head.inc");
                         'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
                         'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
                         'keyid tag' => array( 'desc' => gettext('KeyID tag'), 'mobile' => true ),
-                        'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ));
+                        'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ),
+                        'auto' => array( 'desc' => gettext('Automatic'), 'mobile' => true ));
                       foreach ($my_identifier_list as $id_type => $id_params) :
 ?>
                         <option value="<?=$id_type;?>" <?php if ($id_type == $pconfig['myid_type']) {
@@ -854,7 +856,8 @@ endforeach; ?>
                         'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
                         'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
                         'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
-                        'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ));
+                        'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ),
+                        'auto' => array( 'desc' => gettext('Automatic'), 'mobile' => true ));
                       foreach ($peer_identifier_list as $id_type => $id_params) :
                         if (!empty($pconfig['mobile']) && !$id_params['mobile']) {
                           continue;
@@ -1150,6 +1153,28 @@ endforeach; ?>
                       <div class="hidden" data-for="help_for_nat_traversal">
                           <?=gettext("Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in UDP packets) if needed, " .
                                                   "which can help with clients that are behind restrictive firewalls."); ?>
+                      </div>
+                    </td>
+                    <tr>
+                    <td><a id="help_for_close_action" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Close Action"); ?></td>
+                    <td>
+                      <select name="close_action">
+                        <option value="none" <?= isset($pconfig['close_action']) && $pconfig['close_action'] == "none" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Ignore"); ?>
+                        </option>
+                        <option value="clear" <?= isset($pconfig['close_action']) && $pconfig['close_action'] == "clear" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Clear"); ?>
+                        </option>
+                        <option value="hold" <?= isset($pconfig['close_action']) && $pconfig['close_action'] == "hold" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Hold"); ?>
+                        </option>
+                        <option value="restart" <?= isset($pconfig['close_action']) && $pconfig['close_action'] == "restart" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Restart"); ?>
+                        </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_close_action">
+                          <?=gettext("What to do when the remote side closes a phase 2 SA. Leave at 'Ignore' if the peer uses reauthentication or uniqueids checking.");?><br />
+                          <?=gettext("Clear: close the child SA. Hold: try to re-establish the child SA. Restart: immediately re-negotiate the child SA.");?>
                       </div>
                     </td>
                   </tr>
