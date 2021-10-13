@@ -39,9 +39,11 @@ if __name__ == '__main__':
     fieldnames = None
     field_max_width = dict()
     result = {'headers': [], 'details': []}
-    sp = subprocess.run(['/usr/bin/top','-aHSn','999999'], capture_output=True, text=True)
+    sp = subprocess.run(['/usr/bin/top','-aHSn','-d2','999999'], capture_output=True, text=True)
     is_header = True
-    for line in sp.stdout.strip().split('\n'):
+    # grab second display so that CPU time data appears
+    topData = sp.stdout.strip().split('\n\n',2)[2]
+    for line in topData.split('\n'):
         # end of header, start of top detection
         if line.find('USERNAME') > -1 and line.find('COMMAND') > -1:
             is_header = False
