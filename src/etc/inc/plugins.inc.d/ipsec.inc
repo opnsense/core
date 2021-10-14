@@ -1940,6 +1940,13 @@ function ipsec_configure_vti($verbose = false)
     foreach ($configured_intf as $intf => $intf_details) {
         // create required interfaces
         $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
+        if (empty($intf_details['local'])) {
+            log_error(sprintf("Unable to construct VTI interface, local tunnel endpoint for %s not found", $intf));
+            continue;
+        } elseif (empty($intf_details['remote'])) {
+            log_error(sprintf("Unable to construct VTI interface, remote tunnel endpoint for %s not found", $intf));
+            continue;
+        }
         if (empty($current_interfaces[$intf])) {
             // prevent ipsec vti interface to hit 32768 limit (create numbered, rename and attach afterwards)
             if (legacy_interface_create("ipsec", $intf) != null) {
