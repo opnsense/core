@@ -3768,19 +3768,33 @@ function guess_interface_from_ip($ipaddress)
 
     /* create a route table we can search */
     exec("/usr/bin/netstat -rnWf " . $family, $output, $ret);
+
+    /* search for the route with the largest subnet mask */
+    $largest_mask = 0;
+    $best_if = null;
+
     foreach ($output as $line) {
         $fields = preg_split("/\s+/", $line);
         if (is_subnet($fields[0])) {
             if (ip_in_subnet($ipaddress, $fields[0])) {
-                return $fields[5];
+                list($ip, $mask) = explode('/', $fields[0]);
+                if ($mask > $largest_mask) {
+                    $best_if = $fields[5];
+                    $largest_mask = $mask;
+                }
             }
         }
+    }
+
+    if (!empty($best_if)) {
+        return $best_if;
     }
 
     $ret = exec_command("/sbin/route -n get {$ipaddress} | /usr/bin/awk '/interface/ { print \$2; };'");
     if (empty($ret)) {
         return false;
     }
+
     return $ret;
 }
 
