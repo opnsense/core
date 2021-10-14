@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
     $pconfig['auto_routes_disable'] = isset($config['ipsec']['auto_routes_disable']);
+    $pconfig['max_ikev1_exchanges'] = !empty($config['ipsec']['max_ikev1_exchanges']) ? $config['ipsec']['max_ikev1_exchanges'] : null;
     if (!empty($config['ipsec']['passthrough_networks'])) {
         $pconfig['passthrough_networks'] = explode(',', $config['ipsec']['passthrough_networks']);
     } else {
@@ -64,6 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         $pconfig['passthrough_networks'] = array();
+    }
+
+    if (!empty($pconfig['max_ikev1_exchanges']) && (
+        (int)$pconfig['max_ikev1_exchanges'] != $pconfig['max_ikev1_exchanges'] ||
+        (int)$pconfig['max_ikev1_exchanges'] < 0
+    )) {
+        $input_errors[] = gettext('Maximum IKEv1 phase 2 exchanges should be a positive integer number.');
     }
 
     // save form data
@@ -99,6 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['ipsec']['auto_routes_disable'] = true;
         } elseif (isset($config['ipsec']['auto_routes_disable'])) {
             unset($config['ipsec']['auto_routes_disable']);
+        }
+
+        if (!empty($pconfig['max_ikev1_exchanges'])) {
+            $config['ipsec']['max_ikev1_exchanges'] = $pconfig['max_ikev1_exchanges'];
+        } elseif (isset($config['ipsec']['max_ikev1_exchanges'])) {
+            unset($config['ipsec']['max_ikev1_exchanges']);
         }
 
         write_config();
@@ -198,6 +212,18 @@ if (isset($input_errors) && count($input_errors) > 0) {
                             <?=gettext("By default, IPsec installs routes when a tunnel becomes active. " .
                                                   "Select this option to prevent automatically adding routes" .
                                                   " to the system routing table. See charon.install_routes"); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_max_ikev1_exchanges" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum IKEv1 phase 2 exchanges"); ?></td>
+                      <td style="width:78%" class="vtable">
+                        <input name="max_ikev1_exchanges" type="text" id="max_ikev1_exchanges" value="<?=$pconfig['max_ikev1_exchanges'];?>" />
+                        <div class="hidden" data-for="help_for_max_ikev1_exchanges">
+                            <?=gettext(
+                              "Maximum number of IKEv1 phase 2 exchanges per IKE_SA to keep state about and track concurrently. ".
+                              "When using multiple phase 2 definitions a higher value than the default (3) would be advisable to prevent re-keying issues."
+                            ); ?>
                         </div>
                       </td>
                     </tr>

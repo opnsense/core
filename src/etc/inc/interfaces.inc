@@ -1122,8 +1122,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     @unlink("/var/etc/nameserver_v6{$realifv6}");
     @unlink("/var/etc/searchdomain_{$realif}");
     @unlink("/var/etc/searchdomain_v6{$realifv6}");
-    @unlink("/tmp/{$realif}up");
-    @unlink("/tmp/{$realifv6}upv6");
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_pdinfo");
@@ -4594,19 +4592,15 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
 {
     $ifcfgip = $network = $subnetbits = null;
 
-    $interfaces_a = config_read_array('interfaces');
-
-    if (!empty($interfaces_a[$interface])) {
-        foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet' || $addr['alias']) {
-                continue;
-            }
-
-            $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-            $subnetbits = $addr['bits'];
-            $ifcfgip = $addr['address'];
-            break; /* all done */
+    foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        if ($addr['family'] != 'inet' || $addr['alias']) {
+            continue;
         }
+
+        $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+        $subnetbits = $addr['bits'];
+        $ifcfgip = $addr['address'];
+        break; /* all done */
     }
 
     return [ $ifcfgip, $network, $subnetbits ];
@@ -4618,22 +4612,20 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
 
     $interfaces_a = config_read_array('interfaces');
 
-    if (!empty($interfaces_a[$interface])) {
-        if (isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
-            /* extend the search scope for a viable GUA to tracking interfaces */
-            $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
+    if (isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+        /* extend the search scope for a viable GUA to tracking interfaces */
+        $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
+    }
+
+    foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
+            continue;
         }
 
-        foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
-                continue;
-            }
-
-            $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-            $subnetbitsv6 = $addr['bits'];
-            $ifcfgipv6 = $addr['address'];
-            break; /* all done */
-        }
+        $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+        $subnetbitsv6 = $addr['bits'];
+        $ifcfgipv6 = $addr['address'];
+        break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
@@ -4643,19 +4635,15 @@ function interfaces_scoped_address6($interface, $ifconfig_details = null)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
-    $interfaces_a = config_read_array('interfaces');
-
-    if (!empty($interfaces_a[$interface])) {
-        foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
-                continue;
-            }
-
-            $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-            $subnetbitsv6 = $addr['bits'];
-            $ifcfgipv6 = "{$addr['address']}%{$addr['name']}";
-            break; /* all done */
+    foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
+            continue;
         }
+
+        $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+        $subnetbitsv6 = $addr['bits'];
+        $ifcfgipv6 = "{$addr['address']}%{$addr['name']}";
+        break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];

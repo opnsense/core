@@ -1142,6 +1142,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $strongswanTree['charon']['cisco_unity'] = 'yes';
         }
+        if (!empty($config['ipsec']['max_ikev1_exchanges'])) {
+            $strongswanTree['charon']['max_ikev1_exchanges'] = $config['ipsec']['max_ikev1_exchanges'];
+        }
 
         // Debugging configuration
         // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
@@ -1505,6 +1508,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
+                if (!empty($ph1ent['closeaction'])) {
+                    $closeaction_line = "closeaction = {$ph1ent['closeaction']}";
+                } else {
+                    $closeaction_line = '';
+                }
+
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
                     if (empty($ph1ent['dpd_action'])) {
                         if (in_array($conn_auto, array('route', 'start'))) {
@@ -1662,6 +1671,7 @@ conn con<<connectionId>>
   {$forceencaps}
   installpolicy = {$installpolicy}
   type = {$parsed_phase2['type']}
+  {$closeaction_line}
   {$dpdline}
   {$inactivityline}
   {$keyingtriesline}
@@ -1929,6 +1939,13 @@ function ipsec_configure_vti($verbose = false)
     foreach ($configured_intf as $intf => $intf_details) {
         // create required interfaces
         $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
+        if (empty($intf_details['local'])) {
+            log_error(sprintf("Unable to construct VTI interface, local tunnel endpoint for %s not found", $intf));
+            continue;
+        } elseif (empty($intf_details['remote'])) {
+            log_error(sprintf("Unable to construct VTI interface, remote tunnel endpoint for %s not found", $intf));
+            continue;
+        }
         if (empty($current_interfaces[$intf])) {
             // prevent ipsec vti interface to hit 32768 limit (create numbered, rename and attach afterwards)
             if (legacy_interface_create("ipsec", $intf) != null) {

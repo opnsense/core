@@ -1446,9 +1446,14 @@ Grid.prototype.append = function(rows)
         var appendedRows = [];
         for (var i = 0; i < rows.length; i++)
         {
-            if (appendRow.call(this, rows[i]))
+            var row = rows[i];
+            for (var j = 0; j < this.columns.length; j++) {
+                var column = this.columns[j];
+                row[column.id] = column.converter.from(row[column.id]);
+            }
+            if (appendRow.call(this, row))
             {
-                appendedRows.push(rows[i]);
+                appendedRows.push(row);
             }
         }
         sortRows.call(this);
