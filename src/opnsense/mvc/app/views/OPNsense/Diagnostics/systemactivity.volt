@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 selection: true,
                 multiSelect: true,
                 labels: {
-                    noResults: "<?= gettext('Waiting for data...') ?>"
+                    noResults: "{{ lang._('Waiting for data...') }}"
                 }
             };
             if ($("#grid-top").hasClass('bootgrid-table')) {
