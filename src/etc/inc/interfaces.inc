@@ -3777,6 +3777,7 @@ function guess_interface_from_ip($ipaddress)
     /* search for the route with the largest subnet mask */
     $largest_mask = 0;
     $best_if = null;
+
     foreach ($output as $line) {
         $fields = preg_split("/\s+/", $line);
         if (is_subnet($fields[0])) {
@@ -3789,14 +3790,16 @@ function guess_interface_from_ip($ipaddress)
             }
         }
     }
-    if (isset($best_if)) {
-      return $best_if;
+
+    if (!empty($best_if)) {
+        return $best_if;
     }
 
     $ret = exec_command("/sbin/route -n get {$ipaddress} | /usr/bin/awk '/interface/ { print \$2; };'");
     if (empty($ret)) {
         return false;
     }
+
     return $ret;
 }
 
