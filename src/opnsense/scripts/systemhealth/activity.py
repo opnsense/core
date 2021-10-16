@@ -39,16 +39,15 @@ if __name__ == '__main__':
     fieldnames = None
     field_max_width = dict()
     result = {'headers': [], 'details': []}
-    tidpid = {}
     is_header = True
-    sp = subprocess.run(['/usr/bin/top','-aHSTn','-d2','999999'], capture_output=True, text=True)
-    sp2 = subprocess.run(['/usr/bin/procstat','-ath'], capture_output=True, text=True)
-    procData = sp2.stdout.strip().split('\n')
+    tidpid = dict()
+    for line in subprocess.run(['/usr/bin/procstat','-ath'], capture_output=True, text=True).stdout.split('\n'):
+        parts = line.split(maxsplit=2)
+        if len(parts) > 1:
+            tidpid[parts[1]] = parts[0]
     # grab second display so that CPU time data appears
-    topData = sp.stdout.strip().split('\n\n',2)[2]
-    for line in procData:
-        lineData = line.strip().split(' ',2)
-        tidpid[lineData[1]] = lineData[0]
+    sp = subprocess.run(['/usr/bin/top','-aHSTn','-d2','999999'], capture_output=True, text=True)
+    topData = sp.stdout.strip().split('\n\n',2)[-1]
     for line in topData.split('\n'):
         # end of header, start of top detection
         if line.find('USERNAME') > -1 and line.find('COMMAND') > -1:
@@ -60,21 +59,16 @@ if __name__ == '__main__':
         else:
             # parse details including fieldnames (leave original)
             if fieldnames is None:
-                fieldnames = line.split()
-                # add PID column
-                fieldnames.append('PID')
+                fieldnames = ['PID'] + line.split()
             else:
-                tmp = line.split()
+                tmp = line.split(maxsplit=10)
                 record = {'C': '0'}
                 for field_id in range(len(fieldnames)):
                     fieldname = fieldnames[field_id]
-                    if field_id == len(fieldnames)-2:
-                        record[fieldname] = ' '.join(tmp[field_id:])
-                    elif field_id == len(fieldnames)-1:
-                        # insert PID to the record
-                        record[fieldname] = tidpid[record['THR']] if record['THR'] in tidpid else 'n/a'
+                    if field_id == 0:  # PID
+                        record[fieldname] = tidpid[tmp[0]] if tmp[0] in tidpid else 'n/a'
                     else:
-                        record[fieldname] = tmp[field_id]
+                        record[fieldname] = tmp[field_id - 1]
 
                     if fieldname not in field_max_width or field_max_width[fieldname] < len(record[fieldname]):
                         field_max_width[fieldname] = len(record[fieldname])
@@ -91,8 +85,6 @@ if __name__ == '__main__':
         if fieldnames is not None:
             format_str = ""
             header_fields = {}
-            # move PID column to the first
-            fieldnames.insert(0, fieldnames.pop(fieldnames.index('PID')))
             for fieldname in fieldnames:
                 format_str = '%s %%(%s)-%ds'%(format_str,fieldname, field_max_width[fieldname]+1)
                 header_fields[fieldname] = fieldname
