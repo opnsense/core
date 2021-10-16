@@ -39,9 +39,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajax: false,
                 selection: true,
                 multiSelect: true,
-                labels: {
-                    noResults: "{{ lang._('Waiting for data...') }}"
-                }
             };
             if ($("#grid-top").hasClass('bootgrid-table')) {
                 $("#grid-top").bootgrid('clear');
