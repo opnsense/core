@@ -3773,19 +3773,33 @@ function guess_interface_from_ip($ipaddress)
 
     /* create a route table we can search */
     exec("/usr/bin/netstat -rnWf " . $family, $output, $ret);
+
+    /* search for the route with the largest subnet mask */
+    $largest_mask = 0;
+    $best_if = null;
+
     foreach ($output as $line) {
         $fields = preg_split("/\s+/", $line);
         if (is_subnet($fields[0])) {
             if (ip_in_subnet($ipaddress, $fields[0])) {
-                return $fields[5];
+                list($ip, $mask) = explode('/', $fields[0]);
+                if ($mask > $largest_mask) {
+                    $best_if = $fields[5];
+                    $largest_mask = $mask;
+                }
             }
         }
+    }
+
+    if (!empty($best_if)) {
+        return $best_if;
     }
 
     $ret = exec_command("/sbin/route -n get {$ipaddress} | /usr/bin/awk '/interface/ { print \$2; };'");
     if (empty($ret)) {
         return false;
     }
+
     return $ret;
 }
 
@@ -4581,19 +4595,15 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
 {
     $ifcfgip = $network = $subnetbits = null;
 
-    $interfaces_a = config_read_array('interfaces');
-
-    if (!empty($interfaces_a[$interface])) {
-        foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet' || $addr['alias']) {
-                continue;
-            }
-
-            $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-            $subnetbits = $addr['bits'];
-            $ifcfgip = $addr['address'];
-            break; /* all done */
+    foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        if ($addr['family'] != 'inet' || $addr['alias']) {
+            continue;
         }
+
+        $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+        $subnetbits = $addr['bits'];
+        $ifcfgip = $addr['address'];
+        break; /* all done */
     }
 
     return [ $ifcfgip, $network, $subnetbits ];
@@ -4605,22 +4615,20 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
 
     $interfaces_a = config_read_array('interfaces');
 
-    if (!empty($interfaces_a[$interface])) {
-        if (isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
-            /* extend the search scope for a viable GUA to tracking interfaces */
-            $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
+    if (isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+        /* extend the search scope for a viable GUA to tracking interfaces */
+        $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
+    }
+
+    foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
+            continue;
         }
 
-        foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
-                continue;
-            }
-
-            $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-            $subnetbitsv6 = $addr['bits'];
-            $ifcfgipv6 = $addr['address'];
-            break; /* all done */
-        }
+        $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+        $subnetbitsv6 = $addr['bits'];
+        $ifcfgipv6 = $addr['address'];
+        break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
@@ -4630,19 +4638,15 @@ function interfaces_scoped_address6($interface, $ifconfig_details = null)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
-    $interfaces_a = config_read_array('interfaces');
-
-    if (!empty($interfaces_a[$interface])) {
-        foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-            if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
-                continue;
-            }
-
-            $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-            $subnetbitsv6 = $addr['bits'];
-            $ifcfgipv6 = "{$addr['address']}%{$addr['name']}";
-            break; /* all done */
+    foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
+            continue;
         }
+
+        $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+        $subnetbitsv6 = $addr['bits'];
+        $ifcfgipv6 = "{$addr['address']}%{$addr['name']}";
+        break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];

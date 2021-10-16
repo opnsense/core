@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 for field_id in range(len(fieldnames)):
                     fieldname = fieldnames[field_id]
                     if field_id == 0:  # PID
-                        record[fieldname] = tidpid[tmp[0]] if tmp[0] in tidpid else 'n/a'
+                        record[fieldname] = tidpid[tmp[0]] if tmp[0] in tidpid else ''
                     else:
                         record[fieldname] = tmp[field_id - 1]
 
