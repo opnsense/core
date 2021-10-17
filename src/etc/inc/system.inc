@@ -186,6 +186,11 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
+    if (isset($syscfg['domainsearchlist'])) {
+        /* add custom search list to search list */
+        $search = array_merge($search, explode(' ',$syscfg['domainsearchlist']));
+    }
+
     if (isset($syscfg['dnsallowoverride'])) {
         $search = array_merge($search, get_searchdomains());
         foreach (get_nameservers() as $nameserver) {
