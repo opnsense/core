@@ -579,12 +579,12 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netflow.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netstat.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/networkinsight.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traffic.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/treeview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
@@ -702,7 +702,7 @@
 /usr/local/opnsense/scripts/filter/list_states.py
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
-/usr/local/opnsense/scripts/filter/pfinfo.py
+/usr/local/opnsense/scripts/filter/pfstatistcs.py
 /usr/local/opnsense/scripts/filter/pftablecount.py
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
@@ -1732,7 +1732,6 @@
 /usr/local/www/diag_ipsec_spd.php
 /usr/local/www/diag_logs_settings.php
 /usr/local/www/diag_packet_capture.php
-/usr/local/www/diag_pf_info.php
 /usr/local/www/diag_ping.php
 /usr/local/www/diag_testport.php
 /usr/local/www/diag_traceroute.php

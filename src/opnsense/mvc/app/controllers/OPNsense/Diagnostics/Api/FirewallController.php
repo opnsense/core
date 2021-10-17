@@ -348,4 +348,13 @@ class FirewallController extends ApiControllerBase
         }
         return ["result" => "failed"];
     }
+
+    /**
+     * retrieve various pf statistics
+     * @return mixed
+     */
+    public function pfStatistcsAction($section=null)
+    {
+        return json_decode((new Backend())->configdpRun('filter diag info', [$section]), true);
+    }
 }
