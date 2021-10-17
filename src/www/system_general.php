@@ -84,6 +84,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
+    /* Domain search list Validation 256 char length max */
+    if (!empty($pconfig['domainsearchlist'])) {
+      if (strlen($pconfig['domainsearchlist']) > 256) {
+        $input_errors[] = gettext("Custom domain search list can not exceed 256 char length");
+      } else {
+        foreach (explode(' ',$pconfig['domainsearchlist']) as $searchdomain) {
+          if (!is_domain($searchdomain)) {
+            $input_errors[] = gettext("The custom domain search list may only contain valid domain name");
+          }
+        }
+      }
+    }
+
     /* collect direct attached networks and static routes */
     $direct_networks_list = array();
     foreach ($all_intf_details as $ifname => $ifcnf) {
