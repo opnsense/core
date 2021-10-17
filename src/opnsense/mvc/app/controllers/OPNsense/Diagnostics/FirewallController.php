@@ -72,7 +72,7 @@ class FirewallController extends IndexController
      */
     public function statisticsAction()
     {
-      $this->view->tabs = [
+        $this->view->tabs = [
           [
             "name" => "info",
             "caption" => gettext("info"),
@@ -93,8 +93,8 @@ class FirewallController extends IndexController
             "caption" => gettext("interfaces"),
             "endpoint" => "/api/diagnostics/firewall/pf_statistcs/interfaces"
           ]
-      ];
-      $this->view->default_tab = "info";
-      $this->view->pick('OPNsense/Diagnostics/treeview');
+        ];
+        $this->view->default_tab = "info";
+        $this->view->pick('OPNsense/Diagnostics/treeview');
     }
 }
