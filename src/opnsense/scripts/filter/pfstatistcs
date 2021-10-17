@@ -27,6 +27,7 @@
 
 """
 import datetime
+import sys
 import subprocess
 import ujson
 
@@ -96,13 +97,16 @@ def pfctl_interfaces():
     return result
 
 def main():
-    return {
+    result = {
         'info': pfctl_info(),
         'memory': pfctl_memory(),
         'timeouts': pfctl_timeouts(),
         'interfaces': pfctl_interfaces()
     }
 
-
+    if len(sys.argv) > 1 and sys.argv[1] in result:
+        return result[sys.argv[1]]
+    else:
+        return result
 
 print(ujson.dumps(main()))
