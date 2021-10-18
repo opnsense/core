@@ -324,7 +324,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/TunnelController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/TunnelsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogKeyPair.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -589,6 +591,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
