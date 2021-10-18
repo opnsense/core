@@ -330,6 +330,13 @@ function ipsec_xmlrpc_sync()
     return $result;
 }
 
+function ipsec_run()
+{
+    return array(
+        'link_interface_to_ipsec' => 'link_interface_to_ipsec:2',
+    );
+}
+
 /*
  * Return phase1 local address
  */
@@ -1820,13 +1827,16 @@ function generate_strongswan_conf(array $tree, $level = 0): string
 function ipsec_get_configured_vtis()
 {
     global $config;
-    $configured_intf = array();
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
-    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
+
+    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
+    $configured_intf = [];
+
     foreach ($a_phase1 as $ph1ent) {
         if (empty($ph1ent['disabled'])) {
-            $phase2items = array();
-            $phase2reqids = array();
+            $phase2items = [];
+            $phase2reqids = [];
+
             foreach ($a_phase2 as $ph2ent) {
                 if (
                     $ph2ent['mode'] == 'route-based' &&
@@ -1838,6 +1848,7 @@ function ipsec_get_configured_vtis()
                     }
                 }
             }
+
             foreach ($phase2items as $idx => $phase2) {
                 if (empty($phase2['reqid'])) {
                     continue;
@@ -1852,11 +1863,12 @@ function ipsec_get_configured_vtis()
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
                 if (empty($tunnels[$intfnm])) {
-                    $configured_intf[$intfnm] = array("reqid" => $reqid);
+                    $configured_intf[$intfnm] = ['reqid' => $reqid];
                     $configured_intf[$intfnm]['local'] = ipsec_get_phase1_src($ph1ent);
                     $configured_intf[$intfnm]['remote'] = $ph1ent['remote-gateway'];
+                    $configured_intf[$intfnm]['interface'] = $ph1ent['interface'];
                     $configured_intf[$intfnm]['descr'] = $descr;
-                    $configured_intf[$intfnm]['networks'] = array();
+                    $configured_intf[$intfnm]['networks'] = [];
                 }
 
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
@@ -1872,6 +1884,19 @@ function ipsec_get_configured_vtis()
     }
 
     return $configured_intf;
+}
+
+function link_interface_to_ipsec($unused, $interface)
+{
+    $linked = [];
+
+    foreach (ipsec_get_configured_vtis() as $ipsec => $info) {
+        if ($info['interface'] == $interface) {
+            $linked = $ipsec;
+        }
+    }
+
+    return $linked;
 }
 
 /**
