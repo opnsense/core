@@ -39,14 +39,17 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajax: false,
                 selection: true,
                 multiSelect: true,
-                labels: {
-                    noResults: "{{ lang._('Waiting for data...') }}"
-                }
             };
             if ($("#grid-top").hasClass('bootgrid-table')) {
                 $("#grid-top").bootgrid('clear');
             } else {
-                $("#grid-top").bootgrid(gridopt);
+                $("#grid-top")
+                    .bootgrid(gridopt)
+                    .on("loaded.rs.jquery.bootgrid", function (e) {
+                        if ($('#grid-top tbody tr').length == 1 && $("#grid-top").bootgrid("getSearchPhrase") == '') {
+                            $("#grid-top td").text("{{ lang._('Waiting for data...') }}");
+                        }
+                    });
             }
             ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
                         if (status == "success") {
