@@ -1120,7 +1120,7 @@ EOD;
 
                 if (isset($sm['ddnsupdate'])) {
                     if (($sm['ddnsdomain'] != '') && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
-                        $smdnscfg .= "    ddns-domainname \"{$sm['ddnsdomain']}\";\n";
+                        $smdnscfg .= "  ddns-domainname \"{$sm['ddnsdomain']}\";\n";
                     }
                 }
 
