@@ -1092,7 +1092,7 @@ EOD;
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdconf .= "  option host-name \"{$dhhostname}\";\n";
                     if (isset($sm['ddnsupdate'])) {
-                        $dhcpdconf .= "  option ddns-hostname \"{$dhhostname}\";\n";
+                        $dhcpdconf .= "  ddns-hostname \"{$dhhostname}\";\n";
                     }
                     $dhcpdconf .= "  set hostname-override = config-option host-name;\n";
                 }
@@ -1566,7 +1566,7 @@ EOD;
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdv6conf .= "  option host-name {$dhhostname};\n";
                     if ($need_ddns_updates) {
-                        $dhcpdv6conf .= "  option ddns-hostname {$dhhostname};\n";
+                        $dhcpdv6conf .= "  ddns-hostname {$dhhostname};\n";
                     }
                     $dhcpdv6conf .= "  set hostname-override = config-option host-name;\n";
                 }
