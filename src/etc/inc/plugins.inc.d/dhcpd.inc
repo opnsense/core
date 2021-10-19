@@ -875,7 +875,6 @@ EOPP;
                     $newddnszone['ddnsdomainalgorithm'] = !empty($poolconf['ddnsdomainalgorithm']) ? $poolconf['ddnsdomainalgorithm'] : "hmac-md5";
                     $ddns_zones[] = $newddnszone;
                 }
-                $pdnscfg .= "    ddns-update-style interim;\n";
             }
 
             if (
@@ -1188,8 +1187,10 @@ EOD;
     }
 
     if ($need_ddns_updates) {
+        $dhcpdconf .= "\n";
         $dhcpdconf .= "ddns-update-style interim;\n";
         $dhcpdconf .= "update-static-leases on;\n";
+        $dhcpdconf .= "\n";
         $dhcpdconf .= dhcpd_zones($ddns_zones);
     }
 
