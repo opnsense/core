@@ -102,6 +102,10 @@
                               $tree.tree('openNode', $tree.tree('getNodeById', key));
                           }
                       }
+                      //open node on label click
+                      $tree.bind('tree.click', function(e) {
+                          $tree.tree('toggle', e.node);
+                      });
                   } else {
                       let curent_state = $tree.tree('getState');
                       $tree.tree('loadData', dict_to_tree(data));
