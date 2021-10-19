@@ -96,12 +96,37 @@ def pfctl_interfaces():
 
     return result
 
+def pfctl_rules():
+    result = dict()
+    headings = { 
+        "rules": "filter rules",
+        "nat": "nat rules"
+    }
+    for key in headings:
+        result[headings[key]] = dict()
+        rule = None
+        for line in subprocess.run(['/sbin/pfctl', '-vvs' + key], capture_output=True, text=True).stdout.split("\n"):
+            if len(line) > 0 and line[0] not in ["\t", " "]:
+                rule = line.strip()
+                result[headings[key]][rule] = dict()
+            elif rule is not None and "Evaluations" in line:
+               r_stats = line[line.find("[")+1:line.find("]")].strip().split()
+               for i in range(0, len(r_stats), 2):
+                   result[headings[key]][rule][r_stats[i][:-1]] = r_stats[i+1].strip()
+            elif rule is not None and "State Creations" in line:
+               r_stats = line[line.find("[")+1:line.find("]")].strip().split()
+               result[headings[key]][rule]['Inserted'] = ' '.join(r_stats[1:5])
+               result[headings[key]][rule]['State Creations'] = r_stats[-1]
+
+    return result
+
 def main():
     result = {
         'info': pfctl_info(),
         'memory': pfctl_memory(),
         'timeouts': pfctl_timeouts(),
-        'interfaces': pfctl_interfaces()
+        'interfaces': pfctl_interfaces(),
+        'rules': pfctl_rules()
     }
 
     if len(sys.argv) > 1 and sys.argv[1] in result:

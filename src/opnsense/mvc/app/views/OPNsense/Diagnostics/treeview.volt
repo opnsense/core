@@ -78,6 +78,7 @@
                       $tree.tree({
                           data: dict_to_tree(data),
                           autoOpen: false,
+                          autoEscape: false,
                           dragAndDrop: false,
                           selectable: false,
                           closedIcon: $('<i class="fa fa-plus-square-o"></i>'),
