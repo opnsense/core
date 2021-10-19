@@ -874,7 +874,6 @@ EOPP;
                     $newddnszone['ddnsdomainalgorithm'] = !empty($poolconf['ddnsdomainalgorithm']) ? $poolconf['ddnsdomainalgorithm'] : "hmac-md5";
                     $ddns_zones[] = $newddnszone;
                 }
-                $pdnscfg .= "    ddns-update-style interim;\n";
             }
 
             if (
@@ -1119,6 +1118,9 @@ EOD;
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdconf .= "  option host-name \"{$dhhostname}\";\n";
+                    if ($need_ddns_updates) {
+                        $dhcpdconf .= "  ddns-hostname \"{$dhhostname}\";\n";
+                    }
                     $dhcpdconf .= "  set hostname-override = config-option host-name;\n";
                 }
                 if (!empty($sm['filename'])) {
@@ -1144,9 +1146,8 @@ EOD;
 
                 if (isset($sm['ddnsupdate'])) {
                     if (($sm['ddnsdomain'] != '') && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
-                        $smdnscfg .= "    ddns-domainname \"{$sm['ddnsdomain']}\";\n";
+                        $smdnscfg .= "  ddns-domainname \"{$sm['ddnsdomain']}\";\n";
                     }
-                    $smdnscfg .= "    ddns-update-style interim;\n";
                 }
 
                 if (!empty($sm['dnsserver']) && ($sm['dnsserver'][0]) && ($sm['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
@@ -1213,7 +1214,7 @@ EOD;
     }
 
     if ($need_ddns_updates) {
-        $dhcpdconf .= "ddns-update-style interim;\n";
+        $dhcpdconf .= "\nddns-update-style interim;\n";
         $dhcpdconf .= "update-static-leases on;\n";
         $dhcpdconf .= dhcpd_zones($ddns_zones);
     }
@@ -1594,6 +1595,9 @@ EOD;
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdv6conf .= "  option host-name {$dhhostname};\n";
+                    if ($need_ddns_updates) {
+                        $dhcpdv6conf .= "  ddns-hostname {$dhhostname};\n";
+                    }
                 }
                 if (!empty($sm['filename'])) {
                     $dhcpdv6conf .= "  filename \"{$sm['filename']}\";\n";
