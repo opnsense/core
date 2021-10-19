@@ -1122,7 +1122,6 @@ EOD;
                     if (($sm['ddnsdomain'] != '') && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
                         $smdnscfg .= "    ddns-domainname \"{$sm['ddnsdomain']}\";\n";
                     }
-                    $smdnscfg .= "    ddns-update-style interim;\n";
                 }
 
                 if (!empty($sm['dnsserver']) && ($sm['dnsserver'][0]) && ($sm['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
