@@ -1102,6 +1102,9 @@ EOD;
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdconf .= "  option host-name \"{$dhhostname}\";\n";
+                    if (isset($sm['ddnsupdate'])) {
+                        $dhcpdconf .= "  option ddns-hostname \"{$dhhostname}\";\n";
+                    }
                 }
                 if (!empty($sm['filename'])) {
                     $dhcpdconf .= "  filename \"{$sm['filename']}\";\n";
@@ -1571,6 +1574,9 @@ EOD;
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdv6conf .= "  option host-name {$dhhostname};\n";
+                    if ($need_ddns_updates) {
+                        $dhcpdv6conf .= "  option ddns-hostname {$dhhostname};\n";
+                    }
                 }
                 if (!empty($sm['filename'])) {
                     $dhcpdv6conf .= "  filename \"{$sm['filename']}\";\n";
