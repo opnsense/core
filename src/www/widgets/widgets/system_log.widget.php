@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 
-if ((is_numeric($_POST['systemlogfiltercount'])) && (is_numeric($_POST['systemlogentriesupdateinterval']))) {
+if (is_numeric($_POST['systemlogfiltercount']) && is_numeric($_POST['systemlogentriesupdateinterval'])) {
     $config['widgets']['systemlogfiltercount'] = $_POST['systemlogfiltercount'];
     $config['widgets']['systemlogupdateinterval'] = $_POST['systemlogentriesupdateinterval'];
     write_config("Saved Widget System Log Filter Setting");
