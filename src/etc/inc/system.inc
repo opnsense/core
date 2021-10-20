@@ -822,7 +822,7 @@ function system_trust_configure($verbose = false)
                 $certlist = str_replace("\r", '', base64_decode($entry['crt']));
                 $user_cas = [""];
                 foreach (explode("\n", $certlist) as $row) {
-                    $user_cas[count($user_cas)-1] .= $row ."\n";
+                    $user_cas[count($user_cas) - 1] .= $row . "\n";
                     if (strpos($row, '---END') > 0) {
                         $user_cas[] = "";
                     }
