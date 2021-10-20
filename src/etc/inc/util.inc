@@ -492,7 +492,7 @@ function find_smallest_cidr4($ips)
             $test[$ip & $mask] = true;
         }
         if (count($test) == 1) {
-            /* one element means CIRD size matches all */
+            /* one element means CIDR size matches all */
             break;
         }
     }
@@ -517,7 +517,7 @@ function find_smallest_cidr6($ips)
             $test[sprintf('%032b%032b%032b%032b', $ip[1] & $mask1, $ip[2] & $mask2, $ip[3] & $mask3, $ip[4] & $mask4)] = true;
         }
         if (count($test) == 1) {
-            /* one element means CIRD size matches all */
+            /* one element means CIDR size matches all */
             break;
         }
     }
