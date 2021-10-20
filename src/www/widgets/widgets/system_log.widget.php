@@ -53,7 +53,7 @@ $systemlogupdateinterval = isset($config['widgets']['systemlogupdateinterval']) 
             <?php for ($i = 1; $i <= 50; $i++) {?>
             <option value="<?= html_safe($i) ?>" <?php if ($systemlogEntriesToFetch == $i) { echo "selected=\"selected\"";}?>><?= html_safe($i) ?></option>
             <?php } ?>
-            </select>
+          </select>
         </td>
         <td>
           <input id="submit_system_log_widget" name="submit_system_log_widget" type="submit" class="btn btn-primary formbtn" style="float: right;" value="<?= html_safe(gettext('Save')) ?>">
