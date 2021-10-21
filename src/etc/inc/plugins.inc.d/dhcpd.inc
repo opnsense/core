@@ -308,6 +308,13 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\tAdvDefaultLifetime 0;\n";
         }
 
+        if (is_linklocal($ifcfgipv6)) {
+            $radvdconf .= "\tAdvSourceLLAddress off;\n";
+            $radvdconf .= "\tAdvRASrcAddress{\n";
+            $radvdconf .= "\t\t{$ifcfgipv6};\n";
+            $radvdconf .= "\t}\n";
+        }
+
         $stanzas = array();
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
