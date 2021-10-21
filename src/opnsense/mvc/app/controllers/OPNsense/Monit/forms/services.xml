@@ -27,7 +27,7 @@
       <id>service.match</id>
       <label>Match</label>
       <type>text</type>
-      <help><![CDATA[Find the process by regular expression. Test your pattern with <br><b>monit procmatch &lt;PATTERN&gt;</b>]]></help>
+      <help><![CDATA[Find the process by regular expression. Test your pattern with <br><b>monit procmatch PATTERN</b>]]></help>
    </field>
    <field>
       <id>service.path</id>
