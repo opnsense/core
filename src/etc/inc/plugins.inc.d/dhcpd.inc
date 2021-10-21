@@ -310,9 +310,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         if (is_linklocal($ifcfgipv6)) {
             $radvdconf .= "\tAdvSourceLLAddress off;\n";
-            $radvdconf .= "\tAdvRASrcAddress{\n";
+            $radvdconf .= "\tAdvRASrcAddress {\n";
             $radvdconf .= "\t\t{$ifcfgipv6};\n";
-            $radvdconf .= "\t}\n";
+            $radvdconf .= "\t};\n";
         }
 
         $stanzas = array();
