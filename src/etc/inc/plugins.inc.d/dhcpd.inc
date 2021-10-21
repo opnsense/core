@@ -323,7 +323,11 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet']) || is_linklocal($vip['subnet'])) {
+            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            }
+
+            if (is_linklocal($vip['subnet']) || !empty($vip['nobind'])) {
                 continue;
             }
 
@@ -514,7 +518,11 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet']) || is_linklocal($vip['subnet'])) {
+            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            }
+
+            if (is_linklocal($vip['subnet']) || !empty($vip['nobind'])) {
                 continue;
             }
 
