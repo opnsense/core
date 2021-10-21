@@ -43,7 +43,13 @@ POSSIBILITY OF SUCH DAMAGE.
             if ($("#grid-top").hasClass('bootgrid-table')) {
                 $("#grid-top").bootgrid('clear');
             } else {
-                $("#grid-top").bootgrid(gridopt);
+                $("#grid-top")
+                    .bootgrid(gridopt)
+                    .on("loaded.rs.jquery.bootgrid", function (e) {
+                        if ($('#grid-top tbody tr').length == 1 && $("#grid-top").bootgrid("getSearchPhrase") == '') {
+                            $("#grid-top td").text("{{ lang._('Waiting for data...') }}");
+                        }
+                    });
             }
             ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
                         if (status == "success") {
@@ -92,7 +98,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 <table id="grid-top" class="table table-condensed table-hover table-striped table-responsive">
                     <thead>
                     <tr>
-                        <th data-column-id="PID" data-type="numeric" data-identifier="true">{{ lang._('PID') }}</th>
+                        <th data-column-id="THR" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('THR') }}</th>
+                        <th data-column-id="PID" data-type="string">{{ lang._('PID') }}</th>
                         <th data-column-id="USERNAME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('USERNAME') }}</th>
                         <th data-column-id="PRI" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('PRI') }}</th>
                         <th data-column-id="NICE" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('NICE') }}</th>

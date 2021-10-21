@@ -94,7 +94,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             $searchPhrase = $this->request->getPost('searchPhrase');
             $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $records) {
                 foreach ($records[$key] as $itemval) {
-                    if (strpos($itemval, $searchPhrase)) {
+                    if (strpos($itemval, $searchPhrase) !== false) {
                         return true;
                     }
                 }

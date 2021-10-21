@@ -219,6 +219,10 @@ function openssh_configure_do($verbose = false, $interface = '')
             continue;
         }
 
+        if (!$info['bind']) {
+            continue;
+        }
+
         if (count($listeners) >= 16) {
             log_error("The SSH listening address $tmpaddr cannot be added due to MAX_LISTEN_SOCKS limit reached.");
             continue;

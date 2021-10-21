@@ -281,6 +281,7 @@ function legacy_interfaces_details($intf = null)
                 'deprecated' => false,
                 'ipaddr' => $addr,
                 'link-local' => strpos($addr, 'fe80:') === 0,
+                'tentative' => false,
                 'tunnel' => false,
             ];
             for ($i = 0; $i < count($line_parts) - 1; ++$i) {
@@ -290,6 +291,8 @@ function legacy_interfaces_details($intf = null)
                     $tmp['vhid'] = $line_parts[$i + 1];
                 } elseif ($line_parts[$i] == 'deprecated') {
                     $tmp['deprecated'] = true;
+                } elseif ($line_parts[$i] == 'tentative') {
+                    $tmp['tentative'] = true;
                 }
                 if ($line_parts[$i] == '-->') {
                     $tmp['tunnel'] = true;

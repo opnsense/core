@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
@@ -48,13 +48,9 @@ function find_last_used_vhid() {
     return $vhid;
 }
 
-
-// create new vip array if none existent
 $a_vip = &config_read_array('virtualip', 'vip');
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // input record id, if valid
     if (isset($_GET['dup']) && isset($a_vip[$_GET['dup']]))  {
         $configId = $_GET['dup'];
         $after = $configId;
@@ -62,23 +58,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
         $configId = $id;
     }
-    $pconfig = array();
-    $form_fields = array('mode', 'vhid', 'advskew', 'advbase', 'password', 'subnet', 'subnet_bits'
-                        , 'descr' ,'type', 'interface', 'gateway' );
+
+    $pconfig = [];
+    $form_fields = [
+        'advbase',
+        'advskew',
+        'descr',
+        'gateway',
+        'interface',
+        'mode',
+        'noexpand',
+        'password',
+        'subnet',
+        'subnet_bits',
+        'type',
+        'vhid',
+    ];
+
+    // initialize empty form fields
+    foreach ($form_fields as $fieldname) {
+        $pconfig[$fieldname] = null;
+    }
+    $pconfig['bind'] = null;
 
     if (isset($configId)) {
         // 1-on-1 copy of config data
         foreach ($form_fields as $fieldname) {
             if (isset($a_vip[$configId][$fieldname])) {
-                $pconfig[$fieldname] = $a_vip[$configId][$fieldname] ;
+                $pconfig[$fieldname] = $a_vip[$configId][$fieldname];
             }
         }
-    }
-
-    // initialize empty form fields
-    foreach ($form_fields as $fieldname) {
-        if (!isset($pconfig[$fieldname])) {
-            $pconfig[$fieldname] = null ;
+        if (empty($a_vip[$configId]['nobind'])) {
+            $pconfig['bind'] = 'yes';
         }
     }
 }  elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -165,13 +176,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        $vipent = array();
+        $vipent = [];
         // defaults
         $vipent['type'] = "single";
         $vipent['subnet_bits'] = "32";
         // 1-on-1 copy attributes
-        foreach (array('mode', 'interface', 'descr', 'type', 'subnet_bits', 'subnet', 'vhid'
-                      ,'advskew','advbase','password', 'gateway') as $fieldname) {
+        foreach (['mode', 'interface', 'descr', 'type', 'subnet_bits', 'subnet', 'vhid',
+            'advskew','advbase','password', 'gateway'] as $fieldname) {
             if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != "") {
                 $vipent[$fieldname] = $pconfig[$fieldname];
             }
@@ -180,6 +191,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['noexpand'])) {
             // noexpand, only used for proxyarp
             $vipent['noexpand'] = true;
+        }
+        if (empty($pconfig['bind'])) {
+            // noexpand, only used for proxyarp
+            $vipent['nobind'] = true;
         }
 
         // virtual ip UI keeps track of its changes in a separate file
@@ -239,7 +254,8 @@ $( document ).ready(function() {
         $("#type").attr('disabled', true);
         $("#gateway").attr('disabled', true);
         $("#subnet_bits").attr('disabled', true);
-        $("#noexpand").attr('disabled', true);
+        $("#bind").attr('disabled', true);
+        $("#bindrow").addClass("hidden");
         $("#password").attr('disabled', true);
         $("#vhid").attr('disabled', true);
         $("#advskew").attr('disabled', true);
@@ -254,6 +270,8 @@ $( document ).ready(function() {
               $("#gateway").attr('disabled', false);
               $("#vhid").attr('disabled', false);
               $("#subnet_bits").attr('disabled', false);
+              $("#bind").attr('disabled', false);
+              $("#bindrow").removeClass("hidden");
               $("#typenote").html("<?= html_safe(gettext('Please provide a single IP address.')) ?>");
               break;
             case "carp":
@@ -388,6 +406,14 @@ $( document ).ready(function() {
                         </div>
                       </td>
                   </tr>
+                  <tr id="bindrow">
+                      <td><a id="help_for_bind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Allow service binding') ?> </td>
+                      <td>
+                          <input id="bind" name="bind" type="checkbox" class="form-control" id="bind" <?= !empty($pconfig['bind']) ? 'checked="checked"' : '' ?> />
+                          <div class="hidden" data-for="help_for_bind">
+                            <?= gettext('Assigning services to the virtual IP\'s interface will automatically include this address. Uncheck to prevent binding to this address instead.');?>
+                          </div>
+                  </tr>
                   <tr>
                       <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
                       <td>
@@ -400,7 +426,7 @@ $( document ).ready(function() {
                   <tr id="noexpandrow">
                       <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion");?> </td>
                       <td>
-                          <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
+                          <input id="noexpand" name="noexpand" type="checkbox" class="form-control" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
                           <div class="hidden" data-for="help_for_noexpand">
                             <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>
                           </div>
@@ -462,7 +488,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
                     <td>
-                      <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                      <input name="descr" type="text" class="form-control" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_adv">
                         <?=gettext("You may enter a description here for your reference (not parsed).");?>
                       </div>

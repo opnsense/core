@@ -132,6 +132,10 @@ function dnsmasq_configure_do($verbose = false)
                 continue;
             }
 
+            if (!$info['bind']) {
+                continue;
+            }
+
             $addresses[] = $tmpaddr;
         }
 
