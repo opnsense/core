@@ -150,7 +150,10 @@ class UIModelGrid
                 if ($searchPhrase != '') {
                     $searchFound = false;
                     foreach ($fields as $fieldname) {
-                        if (strpos(strtolower($row[$fieldname]), strtolower($searchPhrase)) !== false) {
+                        if (
+                            isset($row[$fieldname]) &&
+                            strpos(strtolower($row[$fieldname]), strtolower($searchPhrase)) !== false
+                        ) {
                             $searchFound = true;
                             break;
                         }
