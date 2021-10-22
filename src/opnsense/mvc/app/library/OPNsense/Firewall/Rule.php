@@ -277,6 +277,10 @@ abstract class Rule
                 }
                 if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
                     $port = str_replace('-', ':', $rule[$tag]['port']);
+                    if (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
+                        // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
+                        $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
+                    }
                     if (Util::isPort($port)) {
                         $rule[$target . "_port"] = $port;
                     } elseif (Util::isAlias($port)) {
@@ -286,6 +290,9 @@ abstract class Rule
                             $rule['disabled'] = true;
                             $this->log("Unable to map port {$port}, empty?");
                         }
+                    } elseif (!empty($port)) {
+                        $rule['disabled'] = true;
+                        $this->log("Unable to map port {$port}, config error?");
                     }
                 }
                 if (!isset($rule[$target])) {
