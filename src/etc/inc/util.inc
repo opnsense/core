@@ -573,10 +573,9 @@ function is_ipaddrv4($ipaddr)
     }
 }
 
-/* returns true if $ipaddr is a valid linklocal address */
+/* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    /* ipv6 link-local addresses are in fe80::/10, i.e. starting at fe80:: and ending at febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff */
     return preg_match("/^fe[89ab][0-9a-f]:/i", $ipaddr);
 }
 
