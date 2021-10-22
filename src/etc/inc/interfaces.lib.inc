@@ -410,12 +410,16 @@ function legacy_interface_details($intf)
 function configure_interface_hardware($ifs)
 {
     global $config;
+
     $hwsettings = $config['system'];
-    if (stristr($ifs, "_vlan")) {
+
+    if (strstr($ifs, '_vlan')) {
         /* skip vlans for checksumming  */
         return;
     }
+
     $intf_details = legacy_interface_details($ifs);
+
     //  interface overwrites
     foreach ($config['interfaces'] as $iface => $ifconf) {
         if (!empty($ifconf['if']) && $ifconf['if'] == $ifs) {
@@ -425,6 +429,7 @@ function configure_interface_hardware($ifs)
             break;
         }
     }
+
     if (!empty($intf_details)) {
         // get current settings
         $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);

@@ -1817,7 +1817,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
     }
 
     // Sync the mode on the clone creation page with the configured mode on the interface
-    if (stristr($ifcfg['if'], '_wlan') && !empty($config['wireless']['clone'])) {
+    if (strstr($ifcfg['if'], '_wlan') && !empty($config['wireless']['clone'])) {
         foreach ($config['wireless']['clone'] as &$clone) {
             if ($clone['cloneif'] == $ifcfg['if']) {
                 if ($sync_changes) {
@@ -2489,7 +2489,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     if (!empty($wancfg['mtu'])) {
         $intf_stats = legacy_interface_stats($realhwif);
-        if (stristr($realif, "_vlan")) {
+        if (strstr($realif, '_vlan')) {
             // max mtu to parent
             $mtu = $wancfg['mtu'] < $intf_stats['mtu'] ? $wancfg['mtu'] : $intf_stats['mtu'];
             if ($mtu != $intf_stats['mtu']) {
@@ -3569,7 +3569,7 @@ function convert_friendly_interface_to_friendly_descr($interface)
             if (isset($config['interfaces'][$interface])) {
                 return !empty($config['interfaces'][$interface]['descr']) ?
                     $config['interfaces'][$interface]['descr'] : strtoupper($interface);
-            } elseif (stristr($interface, '_vip')) {
+            } elseif (strstr($interface, '_vip')) {
                 if (isset($config['virtualip']['vip'])) {
                     foreach ($config['virtualip']['vip'] as $counter => $vip) {
                         if ($vip['mode'] == 'carp') {
@@ -3639,7 +3639,7 @@ function get_parent_interface($interface, $avoidrecurse = false)
             case "static":
             default:
                 // Handle _vlans
-                if (stristr($realif, "_vlan")) {
+                if (strstr($realif, '_vlan')) {
                     if (isset($config['vlans']['vlan'])) {
                         foreach ($config['vlans']['vlan'] as $vlanidx => $vlan) {
                             if ($ifcfg['if'] == $vlan['vlanif']) {
@@ -3663,17 +3663,17 @@ function get_parent_interface($interface, $avoidrecurse = false)
 
 function interface_get_wireless_base($wlif)
 {
-    if (!stristr($wlif, "_wlan")) {
+    if (!strstr($wlif, '_wlan')) {
         return $wlif;
     } else {
-        return substr($wlif, 0, stripos($wlif, "_wlan"));
+        return substr($wlif, 0, stripos($wlif, '_wlan'));
     }
 }
 
 function interface_get_wireless_clone($wlif)
 {
-    if (!stristr($wlif, "_wlan")) {
-        return $wlif . "_wlan0";
+    if (!strstr($wlif, '_wlan')) {
+        return $wlif . '_wlan0';
     } else {
         return $wlif;
     }
