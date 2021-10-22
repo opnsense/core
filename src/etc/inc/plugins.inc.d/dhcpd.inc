@@ -308,11 +308,17 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\tAdvDefaultLifetime 0;\n";
         }
 
+        /*
+         * Only a CARP VIP can inject a link-local address and it
+         * means we need to force that address into the RA message
+         * for failover to work.
+         */
         if (is_linklocal($ifcfgipv6)) {
-            $radvdconf .= "\tAdvSourceLLAddress off;\n";
             $radvdconf .= "\tAdvRASrcAddress {\n";
             $radvdconf .= "\t\t{$ifcfgipv6};\n";
             $radvdconf .= "\t};\n";
+            /* to avoid wrong MAC being stuck in failover case only */
+            $radvdconf .= "\tAdvSourceLLAddress off;\n";
         }
 
         $stanzas = array();
