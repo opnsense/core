@@ -576,7 +576,8 @@ function is_ipaddrv4($ipaddr)
 /* returns true if $ipaddr is a valid linklocal address */
 function is_linklocal($ipaddr)
 {
-    return (strtolower(substr($ipaddr, 0, 5)) == "fe80:");
+    /* ipv6 link-local addresses are in fe80::/10, i.e. starting at fe80:: and ending at febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff */
+    return preg_match("/^fe[89ab][0-9a-f]:/i", $ipaddr);
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
