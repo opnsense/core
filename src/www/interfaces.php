@@ -401,6 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
     $pconfig['gateway_interface'] =  isset($a_interfaces[$if]['gateway_interface']);
+    $pconfig['promisc'] =  isset($a_interfaces[$if]['promisc']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -1015,6 +1016,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
             $new_config['blockbogons'] = !empty($pconfig['blockbogons']);
             $new_config['gateway_interface'] = !empty($pconfig['gateway_interface']);
+            $new_config['promisc'] = !empty($pconfig['promisc']);
             if (!empty($pconfig['mtu'])) {
                 $new_config['mtu'] = $pconfig['mtu'];
             }
@@ -1926,6 +1928,19 @@ include("head.inc");
                         </tr>
 <?php
                         endif;?>
+                        <tr>
+                          <td><a id="help_for_promisc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Promiscuous mode') ?></td>
+                          <td>
+                            <input id="promisc" name="promisc" type="checkbox" value="yes" <?=!empty($pconfig['promisc']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_promisc">
+                              <?=gettext(
+                                  "Put interface into permanently promiscuous mode. ".
+                                  "Only to be used for specific usecases requiring the interface to receive all packets being received. ".
+                                  "When unsure, leave this disabled."
+                              ); ?>
+                            </div>
+                          </td>
+                        </tr>
                         <tr>
                           <td><a id="help_for_gateway_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic gateway policy') ?></td>
                           <td>

@@ -2339,8 +2339,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
     $realhwif = $realhwif_array[0];
 
+    $ifconfig_details = legacy_interfaces_details();
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
-        $ifconfig_details = legacy_interfaces_details();
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
 
@@ -2398,22 +2398,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * which triggers the interface config again, which attempts to
      * spoof the MAC again which cycles the link again...
      */
-    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif))) {
-        mwexecf('/sbin/ifconfig %s link %s', array($realhwif, $wancfg['spoofmac']));
-
-        /* All vlans need to spoof their parent mac address, too. */
-        if (isset($config['vlans']['vlan'])) {
-            foreach ($config['vlans']['vlan'] as $vlan) {
-                if ($vlan['if'] == $realhwif) {
-                    mwexecf('/sbin/ifconfig %s link %s', array($vlan['vlanif'], $wancfg['spoofmac']));
-                }
-            }
-        }
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realif))) {
+        mwexecf('/sbin/ifconfig %s link %s', array($realif, $wancfg['spoofmac']));
     }
 
     /* only try to set media properties on (parent) device when requested */
     if (!empty($wancfg['media']) || !empty($wancfg['mediaopt'])) {
-        $intf_details = legacy_interface_details($realhwif);
+        $intf_details = $ifconfig_details[$realhwif];
         $media_changed = stripos($intf_details['media_raw'], $wancfg['media']) == false;
         if (!empty($wancfg['mediaopt'])) {
             $media_changed |= stripos($intf_details['media_raw'], $wancfg['mediaopt']) == false;
@@ -2428,6 +2419,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             }
             mwexec($cmd);
         }
+    }
+    if (in_array('ppromisc', $ifconfig_details[$realif]['flags']) !== !empty($wancfg['promisc'])) {
+        mwexec("/sbin/ifconfig " . $realif . " " . (empty($wancfg['promisc']) ? "-" : "") . "promisc");
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
