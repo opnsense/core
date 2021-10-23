@@ -91,7 +91,7 @@ class TunnelController extends ApiControllerBase
                 if ($config->virtualip->count() > 0) {
                     foreach ($config->virtualip->children() as $node) {
                         if (!empty((string)$node->vhid)) {
-                            $key = (string)$node->interface . "_vip". (string)$node->vhid;
+                            $key = (string)$node->interface . '_vip' . (string)$node->vhid;
                         } else {
                             $key = (string)$node->subnet;
                         }
@@ -101,7 +101,7 @@ class TunnelController extends ApiControllerBase
             }
             foreach ($config->ipsec->phase1 as $p1) {
                 $interface = (string)$p1->interface;
-                $ph1type= ['ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'];
+                $ph1type = ['ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'];
                 $item = [
                     "id" => $idx,
                     "disabled" => !empty((string)$p1->disabled),
