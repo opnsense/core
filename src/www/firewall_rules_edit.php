@@ -680,17 +680,21 @@ include("head.inc");
       // IPv4/IPv6 select
       hook_ipv4v6('ipv4v6net', 'network-id');
 
-      // align dropdown source from/to port
-      $("#srcbeginport").change(function(){
-          $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
-          $('#srcendport').selectpicker('refresh');
-          $('#srcendport').change();
+      // align dropdown source from/to port but not on first load
+      $("#srcbeginport").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+          if (previousValue != null) {
+              $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
+              $('#srcendport').selectpicker('refresh');
+              $('#srcendport').change();
+          }
       });
-      // align dropdown destination from/to port
-      $("#dstbeginport").change(function(){
-          $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
-          $('#dstendport').selectpicker('refresh');
-          $('#dstendport').change();
+      // align dropdown destination from/to port but not on first load
+      $("#dstbeginport").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+          if (previousValue != null) {
+              $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
+              $('#dstendport').selectpicker('refresh');
+              $('#dstendport').change();
+          }
       });
 
       $(".input_tcpflags_any").click(function(){
