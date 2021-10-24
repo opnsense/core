@@ -232,6 +232,7 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]["macaddr"] = "00:00:00:00:00:00";
             $result[$current_interface]["ipv4"] = [];
             $result[$current_interface]["ipv6"] = [];
+            $result[$current_interface]["supported_media"] = [];
             if (preg_match("/ mtu ([0-9]*).*$/", $line, $matches)) {
                 $result[$current_interface]["mtu"] = $matches[1];
             }
@@ -323,6 +324,8 @@ function legacy_interfaces_details($intf = null)
                 $result[$current_interface]['media'] = $matches[1];
             }
             $result[$current_interface]['media_raw'] = substr(trim($line), 7);
+        } elseif (preg_match("/media (.*)/", $line, $matches)) {
+            $result[$current_interface]["supported_media"][] = str_replace(" mediaopt ", " ", trim($matches[1]));
         } elseif (preg_match("/status: (.*)$/", $line, $matches)) {
             $result[$current_interface]['status'] = $matches[1];
         } elseif (preg_match("/channel (\S*)/", $line, $matches)) {

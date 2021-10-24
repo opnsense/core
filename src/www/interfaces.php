@@ -1390,21 +1390,7 @@ if (isset($a_interfaces[$if]['wireless'])) {
 }
 
 // Find all possible media options for the interface
-$mediaopts_list = array();
-$optlist_intf = get_parent_interface($pconfig['if']);
-if (count($optlist_intf) > 0) {
-    exec("/sbin/ifconfig -m {$optlist_intf[0]} | grep \"media \"", $mediaopts);
-    foreach ($mediaopts as $mediaopt){
-        preg_match("/media (.*)/", $mediaopt, $matches);
-        if (preg_match("/(.*) mediaopt (.*)/", $matches[1], $matches1)){
-            // there is media + mediaopt like "media 1000baseT mediaopt full-duplex"
-            array_push($mediaopts_list, $matches1[1] . " " . $matches1[2]);
-        } else {
-            // there is only media like "media 1000baseT"
-            array_push($mediaopts_list, $matches[1]);
-        }
-    }
-}
+$mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'];
 
 include("head.inc");
 ?>
@@ -1907,7 +1893,7 @@ include("head.inc");
                           </td>
                         </tr>
 <?php
-                        if (count($mediaopts_list) > 0):?>
+                        if (count($mediaopts_list) > 1):?>
                         <tr>
                             <td><a id="help_for_mediaopt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Speed and duplex");?>  </td>
                             <td>
@@ -1957,6 +1943,8 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
+<?php
+                if (count($mediaopts_list) > 1):?>
                 <!-- Hardware settings -->
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
@@ -2029,6 +2017,8 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
+<?php
+                endif;?>
                 <!-- static IPv4 -->
                 <div class="tab-content content-box col-xs-12 __mb" id="staticv4" style="display:none">
                   <div class="table-responsive">
