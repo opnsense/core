@@ -38,6 +38,10 @@ use OPNsense\Core\Config;
  */
 class TunnelController extends ApiControllerBase
 {
+
+    /***
+     * generic legacy search action, reads post variables for filters and page navigation.
+     */
     private function search($records)
     {
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
@@ -76,6 +80,10 @@ class TunnelController extends ApiControllerBase
            'rows' => $formatted,
         ];
     }
+
+    /***
+     * search phase 1 entries in legacy config returning a standard structure as we use in the mvc variant
+     */
     public function searchPhase1Action()
     {
         $items = [];
@@ -102,6 +110,40 @@ class TunnelController extends ApiControllerBase
             foreach ($config->ipsec->phase1 as $p1) {
                 $interface = (string)$p1->interface;
                 $ph1type = ['ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'];
+                $ph1algos = [
+                      'aes' => 'AES',
+                      'aes128gcm16' => '128 bit AES-GCM with 128 bit ICV',
+                      'aes192gcm16' => '192 bit AES-GCM with 128 bit ICV',
+                      'aes256gcm16' => '256 bit AES-GCM with 128 bit ICV',
+                      'camellia' => 'Camellia',
+                      'blowfish' => 'Blowfish',
+                      '3des' => '3DES',
+                      'cast128' => 'CAST128',
+                      'des' => 'DES'
+                ];
+                $ph1authmethos = [
+                    'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
+                    'xauth_rsa_server' => 'Mutual RSA + Xauth',
+                    'xauth_psk_server' => 'Mutual PSK + Xauth',
+                    'eap-tls' => 'EAP-TLS',
+                    'psk_eap-tls' => 'RSA (local) + EAP-TLS (remote)',
+                    'eap-mschapv2' => 'EAP-MSCHAPV2',
+                    'rsa_eap-mschapv2' => 'Mutual RSA + EAP-MSCHAPV2',
+                    'eap-radius' => 'EAP-RADIUS',
+                    'rsasig' => 'Mutual RSA',
+                    'pubkey' => 'Mutual Public Key',
+                    'pre_shared_key' => 'Mutual PSK'
+                ];
+                $ph1proposal = $ph1algos[(string)$p1->{"encryption-algorithm"}->name];
+                if ((string)$p1->{"encryption-algorithm"}->keylen == 'auto') {
+                    $ph1proposal .= " {$p1->{"encryption-algorithm"}->keylen} (auto)";
+                } elseif (!empty((string)$p1->{"encryption-algorithm"}->keylen)) {
+                    $ph1proposal .= sprintf(" ({$p1->{"encryption-algorithm"}->keylen} %s)", gettext("bits"));
+                }
+                $ph1proposal .= " + " . strtoupper((string)$p1->{"hash-algorithm"});
+                if (!empty($p1->dhgroup)) {
+                    $ph1proposal .= " + " . gettext("DH Group") . " {$p1->dhgroup}";
+                }
                 $item = [
                     "id" => $idx,
                     "disabled" => !empty((string)$p1->disabled),
@@ -111,6 +153,8 @@ class TunnelController extends ApiControllerBase
                     "remote_gateway" => (string)$p1->{"remote-gateway"},
                     "mobile" => !empty((string)$p1->mobile),
                     "mode" => (string)$p1->mode,
+                    "proposal" => $ph1proposal,
+                    "authentication" => $ph1authmethos[(string)$p1->authentication_method],
                     "description" => (string)$p1->descr
                 ];
                 $item['type'] = "{$item['protocol']} {$item['iketype']}";

@@ -9,6 +9,13 @@
                     return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
                         '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-clone"></span></button>' +
                         '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                  },
+                  "gateway": function (column, row) {
+                      if (row.mobile) {
+                          return '<strong>{{ lang._('Mobile Client') }}</strong>';
+                      } else {
+                          return row.remote_gateway ;
+                      }
                   }
               }
           }
@@ -21,11 +28,11 @@
     <table id="grid-phase1" class="table table-condensed table-hover table-striped">
         <thead>
           <tr>
-              <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">ID</th>
-              <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
-              <th data-column-id="remote_gateway" data-width="20em" data-type="string">{{ lang._('Remote Gateway') }}</th>
-              <th data-column-id="mode" data-width="20em" data-type="string">{{ lang._('Mode') }}</th>
-              <th data-column-id="proposal" data-type="string">{{ lang._('Phase 1 Proposal') }}</th>
+              <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+              <th data-column-id="type" data-type="string" data-width="7em">{{ lang._('Type') }}</th>
+              <th data-column-id="remote_gateway" data-formatter="gateway" data-width="20em" data-type="string">{{ lang._('Remote Gateway') }}</th>
+              <th data-column-id="mode" data-width="10em" data-type="string">{{ lang._('Mode') }}</th>
+              <th data-column-id="proposal" data-width="20em" data-type="string">{{ lang._('Phase 1 Proposal') }}</th>
               <th data-column-id="authentication" data-type="string">{{ lang._('Authentication') }}</th>
               <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
               <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
