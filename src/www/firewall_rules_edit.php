@@ -610,12 +610,8 @@ include("head.inc");
       $('[for!=""][for]').each(function(){
           var refObj = $("#"+$(this).attr("for"));
           if (refObj.is("select")) {
-              // trigger update_related when value changed
-              refObj.on('changed.bs.select', function () {
-                refObj.trigger('update_related');
-              });
               // connect on change event to select box (show/hide)
-              refObj.on('update_related', function(){
+              refObj.on('change refreshed.bs.select', function(){
                 if ($(this).find(":selected").attr("data-other") == "true") {
                     // show related controls
                     $('*[for="'+$(this).attr("id")+'"]').each(function(){
@@ -637,7 +633,7 @@ include("head.inc");
                 }
               });
               // update initial
-              refObj.trigger('update_related');
+              refObj.change();
 
               // connect on change to input to save data to selector
               if ($(this).attr("name") == undefined) {
@@ -671,7 +667,6 @@ include("head.inc");
             }
             $("#"+field).prop('disabled', port_disabled);
             $("#"+field).selectpicker('refresh');
-            $("#"+field).trigger('update_related');
           });
           if ($("#proto").val() == 'tcp') {
               $(".input_tcpflags_any,.input_flags").prop('disabled', false);
@@ -685,16 +680,14 @@ include("head.inc");
       hook_ipv4v6('ipv4v6net', 'network-id');
 
       // align dropdown source from/to port
-      $("#srcbeginport").on('changed.bs.select', function() {
+      $("#srcbeginport").change(function(){
           $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
           $('#srcendport').selectpicker('refresh');
-          $('#srcendport').trigger('update_related');
       });
       // align dropdown destination from/to port
-      $("#dstbeginport").on('changed.bs.select', function() {
+      $("#dstbeginport").change(function(){
           $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
           $('#dstendport').selectpicker('refresh');
-          $('#dstendport').trigger('update_related');
       });
 
       $(".input_tcpflags_any").click(function(){
