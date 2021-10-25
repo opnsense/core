@@ -610,8 +610,12 @@ include("head.inc");
       $('[for!=""][for]').each(function(){
           var refObj = $("#"+$(this).attr("for"));
           if (refObj.is("select")) {
+              // trigger update_related when value changed
+              refObj.on('changed.bs.select', function () {
+                refObj.trigger('update_related');
+              });
               // connect on change event to select box (show/hide)
-              refObj.change(function(){
+              refObj.on('update_related', function(){
                 if ($(this).find(":selected").attr("data-other") == "true") {
                     // show related controls
                     $('*[for="'+$(this).attr("id")+'"]').each(function(){
@@ -633,7 +637,7 @@ include("head.inc");
                 }
               });
               // update initial
-              refObj.change();
+              refObj.trigger('update_related');
 
               // connect on change to input to save data to selector
               if ($(this).attr("name") == undefined) {
@@ -667,7 +671,7 @@ include("head.inc");
             }
             $("#"+field).prop('disabled', port_disabled);
             $("#"+field).selectpicker('refresh');
-            $("#"+field).change();
+            $("#"+field).trigger('update_related');
           });
           if ($("#proto").val() == 'tcp') {
               $(".input_tcpflags_any,.input_flags").prop('disabled', false);
@@ -680,21 +684,17 @@ include("head.inc");
       // IPv4/IPv6 select
       hook_ipv4v6('ipv4v6net', 'network-id');
 
-      // align dropdown source from/to port but not on first load
-      $("#srcbeginport").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-          if (previousValue != null) {
-              $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
-              $('#srcendport').selectpicker('refresh');
-              $('#srcendport').change();
-          }
+      // align dropdown source from/to port
+      $("#srcbeginport").on('changed.bs.select', function() {
+          $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
+          $('#srcendport').selectpicker('refresh');
+          $('#srcendport').trigger('update_related');
       });
-      // align dropdown destination from/to port but not on first load
-      $("#dstbeginport").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-          if (previousValue != null) {
-              $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
-              $('#dstendport').selectpicker('refresh');
-              $('#dstendport').change();
-          }
+      // align dropdown destination from/to port
+      $("#dstbeginport").on('changed.bs.select', function() {
+          $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
+          $('#dstendport').selectpicker('refresh');
+          $('#dstendport').trigger('update_related');
       });
 
       $(".input_tcpflags_any").click(function(){
