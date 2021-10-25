@@ -86,6 +86,31 @@ class TunnelController extends ApiControllerBase
      */
     public function searchPhase1Action()
     {
+        $ph1type = ['ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'];
+        $ph1algos = [
+              'aes' => 'AES',
+              'aes128gcm16' => '128 bit AES-GCM with 128 bit ICV',
+              'aes192gcm16' => '192 bit AES-GCM with 128 bit ICV',
+              'aes256gcm16' => '256 bit AES-GCM with 128 bit ICV',
+              'camellia' => 'Camellia',
+              'blowfish' => 'Blowfish',
+              '3des' => '3DES',
+              'cast128' => 'CAST128',
+              'des' => 'DES'
+        ];
+        $ph1authmethos = [
+            'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
+            'xauth_rsa_server' => 'Mutual RSA + Xauth',
+            'xauth_psk_server' => 'Mutual PSK + Xauth',
+            'eap-tls' => 'EAP-TLS',
+            'psk_eap-tls' => 'RSA (local) + EAP-TLS (remote)',
+            'eap-mschapv2' => 'EAP-MSCHAPV2',
+            'rsa_eap-mschapv2' => 'Mutual RSA + EAP-MSCHAPV2',
+            'eap-radius' => 'EAP-RADIUS',
+            'rsasig' => 'Mutual RSA',
+            'pubkey' => 'Mutual Public Key',
+            'pre_shared_key' => 'Mutual PSK'
+        ];
         $items = [];
         $this->sessionClose();
         $config = Config::getInstance()->object();
@@ -109,31 +134,6 @@ class TunnelController extends ApiControllerBase
             }
             foreach ($config->ipsec->phase1 as $p1) {
                 $interface = (string)$p1->interface;
-                $ph1type = ['ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'];
-                $ph1algos = [
-                      'aes' => 'AES',
-                      'aes128gcm16' => '128 bit AES-GCM with 128 bit ICV',
-                      'aes192gcm16' => '192 bit AES-GCM with 128 bit ICV',
-                      'aes256gcm16' => '256 bit AES-GCM with 128 bit ICV',
-                      'camellia' => 'Camellia',
-                      'blowfish' => 'Blowfish',
-                      '3des' => '3DES',
-                      'cast128' => 'CAST128',
-                      'des' => 'DES'
-                ];
-                $ph1authmethos = [
-                    'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
-                    'xauth_rsa_server' => 'Mutual RSA + Xauth',
-                    'xauth_psk_server' => 'Mutual PSK + Xauth',
-                    'eap-tls' => 'EAP-TLS',
-                    'psk_eap-tls' => 'RSA (local) + EAP-TLS (remote)',
-                    'eap-mschapv2' => 'EAP-MSCHAPV2',
-                    'rsa_eap-mschapv2' => 'Mutual RSA + EAP-MSCHAPV2',
-                    'eap-radius' => 'EAP-RADIUS',
-                    'rsasig' => 'Mutual RSA',
-                    'pubkey' => 'Mutual Public Key',
-                    'pre_shared_key' => 'Mutual PSK'
-                ];
                 $ph1proposal = $ph1algos[(string)$p1->{"encryption-algorithm"}->name];
                 if ((string)$p1->{"encryption-algorithm"}->keylen == 'auto') {
                     $ph1proposal .= " {$p1->{"encryption-algorithm"}->keylen} (auto)";
@@ -146,7 +146,7 @@ class TunnelController extends ApiControllerBase
                 }
                 $item = [
                     "id" => $idx,
-                    "disabled" => !empty((string)$p1->disabled),
+                    "enabled" => empty((string)$p1->disabled) ? "1" : "0",
                     "protocol" => $p1->protocol == "inet" ? "IPv4" : "IPv6",
                     "iketype" => $ph1type[(string)$p1->iketype],
                     "interface" => !empty($ifs[$interface]) ? $ifs[$interface] : $interface,
@@ -158,6 +158,57 @@ class TunnelController extends ApiControllerBase
                     "description" => (string)$p1->descr
                 ];
                 $item['type'] = "{$item['protocol']} {$item['iketype']}";
+                $items[] = $item;
+                $idx++;
+            }
+        }
+        return $this->search($items);
+    }
+
+    /***
+     * search phase 2 entries in legacy config returning a standard structure as we use in the mvc variant
+     */
+    public function searchPhase2Action()
+    {
+        $items = [];
+        $this->sessionClose();
+        $config = Config::getInstance()->object();
+        if (!empty($config->ipsec->phase2)) {
+            $idx = 0;
+            $ifs = [];
+            if ($config->interfaces->count() > 0) {
+                foreach ($config->interfaces->children() as $key => $node) {
+                    $ifs[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+                }
+            }
+            foreach ($config->ipsec->phase2 as $p2) {
+                $p2mode = array_search(
+                    (string)$p2->mode, [
+                      "IPv4 tunnel" => "tunnel",
+                      "IPv6 tunnel" => "tunnel6",
+                      "transport" => "transport",
+                      "Route-based" => "route-based"
+                    ]
+                );
+                if (in_array((string)$p2->mode, ['tunnel', 'tunnel6'])) {
+                    $local_subnet = (string)$p2->localid;
+                    $remote_subnet = (string)$p2->remoteid;
+                } elseif ((string)$p2->mode == "route-based") {
+                    $local_subnet = (string)$p2->tunnel_local;
+                    $remote_subnet = (string)$p2->tunnel_remote;
+                } else {
+                    $local_subnet = "";
+                    $remote_subnet = "";
+                }
+                $item = [
+                    "id" => $idx,
+                    "enabled" => empty((string)$p2->disabled) ? "1" : "0",
+                    "protocol" => $p2->protocol == "esp" ? "ESP" : "AH",
+                    "mode" => $p2mode,
+                    "local_subnet" => $local_subnet,
+                    "remote_subnet" => $remote_subnet,
+                    "description" => (string)$p2->descr
+                ];
                 $items[] = $item;
                 $idx++;
             }

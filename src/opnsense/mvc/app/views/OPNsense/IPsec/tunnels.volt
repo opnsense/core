@@ -1,23 +1,40 @@
 
 <script>
   $(function () {
-      const $grid = $('#grid-phase1').UIBootgrid({
+      const formatters = {
+          "commands": function (column, row) {
+            return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+          },
+          "gateway": function (column, row) {
+              if (row.mobile) {
+                  return '<strong>{{ lang._('Mobile Client') }}</strong>';
+              } else {
+                  return row.remote_gateway ;
+              }
+          },
+          "mode_type": function (column, row) {
+              return row.protocol + " " + row.mode;
+          },
+          "rowtoggle": function (column, row) {
+              if (parseInt(row[column.id], 2) === 1) {
+                  return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + row.uuid + '"></span>';
+              } else {
+                  return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
+              }
+          }
+      };
+      const $grid_phase1 = $('#grid-phase1').UIBootgrid({
           search: '/api/ipsec/tunnel/search_phase1',
           options: {
-              formatters: {
-                  "commands": function (column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.id + '"><span class="fa fa-fw fa-trash-o"></span></button>';
-                  },
-                  "gateway": function (column, row) {
-                      if (row.mobile) {
-                          return '<strong>{{ lang._('Mobile Client') }}</strong>';
-                      } else {
-                          return row.remote_gateway ;
-                      }
-                  }
-              }
+              formatters: formatters
+          }
+      });
+      const $grid_phase2 = $('#grid-phase2').UIBootgrid({
+          search: '/api/ipsec/tunnel/search_phase2',
+          options: {
+              formatters: formatters
           }
       });
   });
@@ -29,6 +46,7 @@
         <thead>
           <tr>
               <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+              <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
               <th data-column-id="type" data-type="string" data-width="7em">{{ lang._('Type') }}</th>
               <th data-column-id="remote_gateway" data-formatter="gateway" data-width="20em" data-type="string">{{ lang._('Remote Gateway') }}</th>
               <th data-column-id="mode" data-width="10em" data-type="string">{{ lang._('Mode') }}</th>
@@ -60,7 +78,8 @@
         <thead>
           <tr>
               <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">ID</th>
-              <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
+              <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+              <th data-column-id="type" data-type="string" data-formatter="mode_type">{{ lang._('Type') }}</th>
               <th data-column-id="local_subnet" data-width="20em" data-type="string">{{ lang._('Local Subnet') }}</th>
               <th data-column-id="remote_subnet" data-width="20em" data-type="string">{{ lang._('Remote Subnet') }}</th>
               <th data-column-id="proposal" data-type="string">{{ lang._('Phase 2 Proposal') }}</th>
