@@ -92,6 +92,11 @@ class FirewallController extends IndexController
             "name" => "interfaces",
             "caption" => gettext("interfaces"),
             "endpoint" => "/api/diagnostics/firewall/pf_statistcs/interfaces"
+          ],
+          [
+            "name" => "rules",
+            "caption" => gettext("rules"),
+            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/rules"
           ]
       ];
       $this->view->default_tab = "info";
