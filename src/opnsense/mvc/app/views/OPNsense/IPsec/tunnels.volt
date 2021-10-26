@@ -53,7 +53,9 @@
                   let rows = $("#grid-phase1").bootgrid("getSelectedRows");
                   let current_rows = $("#grid-phase1").bootgrid("getCurrentRows");
                   $.each(rows, function(key, seq){
-                      ids.push(current_rows[seq].ikeid);
+                      if (current_rows[seq] !== undefined) {
+                          ids.push(current_rows[seq].ikeid);
+                      }
                   });
                   if (ids.length > 0) {
                       request['ikeid'] = ids[0];
