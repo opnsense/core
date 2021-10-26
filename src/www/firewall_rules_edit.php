@@ -611,7 +611,7 @@ include("head.inc");
           var refObj = $("#"+$(this).attr("for"));
           if (refObj.is("select")) {
               // connect on change event to select box (show/hide)
-              refObj.change(function(){
+              refObj.on('change refreshed.bs.select', function(){
                 if ($(this).find(":selected").attr("data-other") == "true") {
                     // show related controls
                     $('*[for="'+$(this).attr("id")+'"]').each(function(){
@@ -667,7 +667,6 @@ include("head.inc");
             }
             $("#"+field).prop('disabled', port_disabled);
             $("#"+field).selectpicker('refresh');
-            $("#"+field).change();
           });
           if ($("#proto").val() == 'tcp') {
               $(".input_tcpflags_any,.input_flags").prop('disabled', false);
@@ -684,13 +683,11 @@ include("head.inc");
       $("#srcbeginport").change(function(){
           $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
           $('#srcendport').selectpicker('refresh');
-          $('#srcendport').change();
       });
       // align dropdown destination from/to port
       $("#dstbeginport").change(function(){
           $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
           $('#dstendport').selectpicker('refresh');
-          $('#dstendport').change();
       });
 
       $(".input_tcpflags_any").click(function(){
