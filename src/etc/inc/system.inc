@@ -80,7 +80,7 @@ function get_default_sysctl_value($id)
         'hw.syscons.kbd_reboot' => '0',
         'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(), /* XXX support comconsole_port if needed */
         'kern.ipc.maxsockbuf' => '4262144',
-        'kern.randompid' => '347',
+        'kern.randompid' => '1',
         'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
         'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
         'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
