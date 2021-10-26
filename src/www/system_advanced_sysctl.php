@@ -226,12 +226,14 @@ $( document ).ready(function() {
 <?php endif ?>
                 </td>
                 <td>
-<?php if ($a_sysctl[$tunable['tunable']]['type'] == 'w'): ?>
+<?php if (empty($a_sysctl[$tunable['tunable']]['type'])): ?>
+                  <span class="text-danger"><?= gettext('unsupported') ?></span>
+<?php elseif ($a_sysctl[$tunable['tunable']]['type'] == 'w'): ?>
                   <?= gettext('runtime') ?>
 <?php elseif ($a_sysctl[$tunable['tunable']]['type'] == 't'): ?>
                   <?= gettext('boot-time') ?>
-<?php else: ?>
-                  <?= gettext('read-only') ?>
+<?php elseif ($a_sysctl[$tunable['tunable']]['type'] == 'r'): ?>
+                  <span class="text-danger"><?= gettext('read-only') ?></span>
 <?php endif ?>
                 </td>
                 <td>

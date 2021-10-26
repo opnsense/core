@@ -48,6 +48,10 @@ if __name__ == '__main__':
         if len(parts) > 1:
             if parts[0] in result:
                 result[parts[0]].update({'description': parts[1]})
+            else:
+                # sysctl entries exist that seem to have no value?
+                item = {'name': parts[0], 'value': '', 'type': 'r', 'description': parts[1]}
+                result[parts[0]] = item
     sp = subprocess.run(['/sbin/sysctl', '-aNT'], capture_output=True, text=True)
     for line in sp.stdout.split("\n"):
         part = line.strip()
