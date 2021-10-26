@@ -119,7 +119,7 @@ class TunnelController extends ApiControllerBase
             $ifs = [];
             if ($config->interfaces->count() > 0) {
                 foreach ($config->interfaces->children() as $key => $node) {
-                    $ifs[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+                    $ifs[$key] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 if ($config->virtualip->count() > 0) {
                     foreach ($config->virtualip->children() as $node) {
@@ -135,9 +135,7 @@ class TunnelController extends ApiControllerBase
             foreach ($config->ipsec->phase1 as $p1) {
                 $interface = (string)$p1->interface;
                 $ph1proposal = $ph1algos[(string)$p1->{"encryption-algorithm"}->name];
-                if ((string)$p1->{"encryption-algorithm"}->keylen == 'auto') {
-                    $ph1proposal .= " {$p1->{"encryption-algorithm"}->keylen} (auto)";
-                } elseif (!empty((string)$p1->{"encryption-algorithm"}->keylen)) {
+                if (!empty((string)$p1->{"encryption-algorithm"}->keylen)) {
                     $ph1proposal .= sprintf(" ({$p1->{"encryption-algorithm"}->keylen} %s)", gettext("bits"));
                 }
                 $ph1proposal .= " + " . strtoupper((string)$p1->{"hash-algorithm"});
@@ -146,6 +144,7 @@ class TunnelController extends ApiControllerBase
                 }
                 $item = [
                     "id" => $idx,
+                    "ikeid" => intval((string)$p1->ikeid),
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
                     "protocol" => $p1->protocol == "inet" ? "IPv4" : "IPv6",
                     "iketype" => $ph1type[(string)$p1->iketype],
@@ -170,6 +169,26 @@ class TunnelController extends ApiControllerBase
      */
     public function searchPhase2Action()
     {
+        $selected_ikeid = intval($this->request->getPost('ikeid', 'int', -1));
+        $ph2algos = [
+            'aes' => 'AES',
+            'aes128gcm16' => 'aes128gcm16',
+            'aes192gcm16' => 'aes192gcm16',
+            'aes256gcm16' => 'aes256gcm16',
+            'blowfish' => 'Blowfish',
+            '3des' => '3DES',
+            'cast128' => 'CAST128',
+            'des' => 'DES',
+            'null' => gettext("NULL (no encryption)")
+        ];
+        $ph2halgos = [
+            'hmac_md5' => 'MD5',
+            'hmac_sha1' => 'SHA1',
+            'hmac_sha256' => 'SHA256',
+            'hmac_sha384' => 'SHA384',
+            'hmac_sha512' => 'SHA512',
+            'aesxcbc' => 'AES-XCBC'
+        ];
         $items = [];
         $this->sessionClose();
         $config = Config::getInstance()->object();
@@ -178,10 +197,15 @@ class TunnelController extends ApiControllerBase
             $ifs = [];
             if ($config->interfaces->count() > 0) {
                 foreach ($config->interfaces->children() as $key => $node) {
-                    $ifs[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+                    $ifs[$key] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($key);
                 }
             }
             foreach ($config->ipsec->phase2 as $p2) {
+                $ikeid = intval((string)$p2->ikeid);
+                if ($ikeid != $selected_ikeid) {
+                    $idx++;
+                    continue;
+                }
                 $p2mode = array_search(
                     (string)$p2->mode,
                     [
@@ -192,8 +216,33 @@ class TunnelController extends ApiControllerBase
                     ]
                 );
                 if (in_array((string)$p2->mode, ['tunnel', 'tunnel6'])) {
-                    $local_subnet = (string)$p2->localid;
-                    $remote_subnet = (string)$p2->remoteid;
+                    foreach (['localid', 'remoteid'] as $id) {
+                        $content = (string)$p2->$id->type;
+                        switch ((string)$p2->$id->type) {
+                          case "address":
+                              $content = "{$p2->$id->address}";
+                              break;
+                          case "network":
+                              $content = "{$p2->$id->address}/{$p2->$id->netbits}";
+                              break;
+                          case "mobile":
+                              $content = gettext("Mobile Client");
+                              break;
+                          case "none":
+                              $content = gettext("None");
+                              break;
+                          default:
+                              if (!empty($ifs[(string)$p2->$id->type])) {
+                                  $content = $ifs[(string)$p2->$id->type];
+                              }
+                              break;
+                        }
+                        if ($id == 'localid') {
+                            $local_subnet = $content;
+                        } else {
+                            $remote_subnet = $content;
+                        }
+                    }
                 } elseif ((string)$p2->mode == "route-based") {
                     $local_subnet = (string)$p2->tunnel_local;
                     $remote_subnet = (string)$p2->tunnel_remote;
@@ -201,13 +250,36 @@ class TunnelController extends ApiControllerBase
                     $local_subnet = "";
                     $remote_subnet = "";
                 }
+                $ph2proposal = "";
+                foreach ($p2->{"encryption-algorithm-option"} as $node) {
+                    if (!empty($ph2proposal)) {
+                        $ph2proposal .= " , ";
+                    }
+                    $ph2proposal .= $ph2algos[(string)$node->name];
+                    if ((string)$node->keylen == 'auto') {
+                        $ph2proposal .= " (auto) ";
+                    } elseif (!empty((string)$node->keylen)) {
+                        $ph2proposal .= sprintf(" ({$node->keylen} %s) ", gettext("bits"));
+                    }
+                }
+                $ph2proposal .= " + ";
+                $idx = 0;
+                foreach ($p2->{"hash-algorithm-option"} as $node) {
+                    $ph2proposal .= ($idx++) > 0 ? " , " : "";
+                    $ph2proposal .= $ph2halgos[(string)$node];
+                }
+                if (!empty((string)$p2->pfsgroup)) {
+                    $ph2proposal .= sprintf("+ %s %s", gettext("DH Group"), "{$p2->pfsgroup}");
+                }
                 $item = [
                     "id" => $idx,
+                    "ikeid" => $ikeid,
                     "enabled" => empty((string)$p2->disabled) ? "1" : "0",
                     "protocol" => $p2->protocol == "esp" ? "ESP" : "AH",
                     "mode" => $p2mode,
                     "local_subnet" => $local_subnet,
                     "remote_subnet" => $remote_subnet,
+                    "proposal" => $ph2proposal,
                     "description" => (string)$p2->descr
                 ];
                 $items[] = $item;

@@ -28,13 +28,40 @@
       const $grid_phase1 = $('#grid-phase1').UIBootgrid({
           search: '/api/ipsec/tunnel/search_phase1',
           options: {
-              formatters: formatters
+              formatters: formatters,
+              multiSelect: false,
+              rowSelect: true,
+              selection: true
+          }
+      }).on("selected.rs.jquery.bootgrid", function(e, rows) {
+        $("#grid-phase2").bootgrid('reload');
+      }).on("deselected.rs.jquery.bootgrid", function(e, rows) {
+          $("#grid-phase2").bootgrid('reload');
+      }).on("loaded.rs.jquery.bootgrid", function (e) {
+          let ids = $("#grid-phase1").bootgrid("getCurrentRows");
+          if (ids.length > 0) {
+              $("#grid-phase1").bootgrid('select', [ids[0].id]);
           }
       });
       const $grid_phase2 = $('#grid-phase2').UIBootgrid({
           search: '/api/ipsec/tunnel/search_phase2',
           options: {
-              formatters: formatters
+              formatters: formatters,
+              useRequestHandlerOnGet: true,
+              requestHandler: function(request) {
+                  let ids = [];
+                  let rows = $("#grid-phase1").bootgrid("getSelectedRows");
+                  let current_rows = $("#grid-phase1").bootgrid("getCurrentRows");
+                  $.each(rows, function(key, seq){
+                      ids.push(current_rows[seq].ikeid);
+                  });
+                  if (ids.length > 0) {
+                      request['ikeid'] = ids[0];
+                  } else {
+                      request['ikeid'] = "__not_found__";
+                  }
+                  return request;
+              }
           }
       });
   });
@@ -45,8 +72,9 @@
     <table id="grid-phase1" class="table table-condensed table-hover table-striped">
         <thead>
           <tr>
-              <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
               <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+              <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+              <th data-column-id="ikeid" data-type="numeric" data-visible="false">{{ lang._('ikeid') }}</th>
               <th data-column-id="type" data-type="string" data-width="7em">{{ lang._('Type') }}</th>
               <th data-column-id="remote_gateway" data-formatter="gateway" data-width="20em" data-type="string">{{ lang._('Remote Gateway') }}</th>
               <th data-column-id="mode" data-width="10em" data-type="string">{{ lang._('Mode') }}</th>
@@ -79,10 +107,10 @@
           <tr>
               <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">ID</th>
               <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-              <th data-column-id="type" data-type="string" data-formatter="mode_type">{{ lang._('Type') }}</th>
-              <th data-column-id="local_subnet" data-width="20em" data-type="string">{{ lang._('Local Subnet') }}</th>
-              <th data-column-id="remote_subnet" data-width="20em" data-type="string">{{ lang._('Remote Subnet') }}</th>
-              <th data-column-id="proposal" data-type="string">{{ lang._('Phase 2 Proposal') }}</th>
+              <th data-column-id="type" data-width="8em" data-type="string" data-formatter="mode_type">{{ lang._('Type') }}</th>
+              <th data-column-id="local_subnet" data-width="18em" data-type="string">{{ lang._('Local Subnet') }}</th>
+              <th data-column-id="remote_subnet" data-width="18em" data-type="string">{{ lang._('Remote Subnet') }}</th>
+              <th data-column-id="proposal" data-width="20em" data-type="string">{{ lang._('Phase 2 Proposal') }}</th>
               <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
               <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
           </tr>
