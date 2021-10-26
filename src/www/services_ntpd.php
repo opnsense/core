@@ -298,7 +298,7 @@ include("head.inc");
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
-                        <?= gettext('The "iburst" option enables faster clock synchronisation on startup at the expense of the peer - use with care.') ?>
+                        <?= gettext('The "iburst" option enables faster clock synchronisation on startup at the expense of the peer.') ?>
                         <br />
                         <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
                       </div>
