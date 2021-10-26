@@ -77,9 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['timeservers_host'] = array();
     $pconfig['timeservers_noselect'] = array();
     $pconfig['timeservers_prefer'] = array();
+    $pconfig['timeservers_iburst'] = array();
     if (!empty($config['system']['timeservers'])) {
         $pconfig['timeservers_noselect'] = !empty($a_ntpd['noselect']) ? explode(' ', $a_ntpd['noselect']) : array();
         $pconfig['timeservers_prefer'] = !empty($a_ntpd['prefer']) ? explode(' ', $a_ntpd['prefer']) : array();
+        $pconfig['timeservers_iburst'] = !empty($a_ntpd['iburst']) ? explode(' ', $a_ntpd['iburst']) : array();
         $pconfig['timeservers_host'] = explode(' ', $config['system']['timeservers']);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -112,10 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['timeservers'] = trim(implode(' ', $pconfig['timeservers_host']));
         $a_ntpd['noselect'] = !empty($pconfig['timeservers_noselect']) ? trim(implode(' ', $pconfig['timeservers_noselect'])) : null;
         $a_ntpd['prefer'] = !empty($pconfig['timeservers_prefer']) ? trim(implode(' ', $pconfig['timeservers_prefer'])) : null;
+        $a_ntpd['iburst'] = !empty($pconfig['timeservers_iburst']) ? trim(implode(' ', $pconfig['timeservers_iburst'])) : null;
         $a_ntpd['interface'] = !empty($pconfig['interface']) ? implode(',', $pconfig['interface']) : null;
 
         // unset empty
-        foreach (array('noselect', 'prefer', 'interface') as $fieldname) {
+        foreach (array('noselect', 'prefer', 'iburst', 'interface') as $fieldname) {
             if (empty($a_ntpd[$fieldname])) {
                 unset($a_ntpd[$fieldname]);
             }
@@ -251,6 +254,7 @@ include("head.inc");
                             <th></th>
                             <th><?=gettext("Network"); ?></th>
                             <th><?=gettext("Prefer"); ?></th>
+                            <th><?=gettext("Iburst"); ?></th>
                             <th><?=gettext("Do not use"); ?></th>
                           </tr>
                         </thead>
@@ -269,6 +273,9 @@ include("head.inc");
                             </td>
                             <td>
                               <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
+                            </td>
+                            <td>
+                              <input name="timeservers_iburst[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_iburst']) && in_array($timeserver, $pconfig['timeservers_iburst']) ? 'checked="checked"' : '' ?>/>
                             </td>
                             <td>
                               <input name="timeservers_noselect[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_noselect']) && in_array($timeserver,  $pconfig['timeservers_noselect']) ? 'checked="checked"' : '' ?>/>
@@ -290,6 +297,8 @@ include("head.inc");
                         <?=gettext('When no servers are specified NTP will be completely disabled.'); ?>
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
+                        <br />
+                        <?= gettext('The "iburst" option enables faster clock synchronisation on startup at the expense of the peer.') ?>
                         <br />
                         <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
                       </div>

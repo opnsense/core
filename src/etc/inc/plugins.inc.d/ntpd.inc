@@ -322,11 +322,16 @@ function ntpd_configure_do($verbose = false)
 
     $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : array();
     $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : array();
+    $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : array();
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-        $ntpcfg .= "server {$ts} iburst maxpoll 9";
+        $ntpcfg .= "server {$ts}";
+        if (in_array($ts, $iburst)) {
+            $ntpcfg .= ' iburst';
+        }
+        $ntpcfg .= ' maxpoll 9';
         if (in_array($ts, $prefer)) {
             $ntpcfg .= ' prefer';
         }
