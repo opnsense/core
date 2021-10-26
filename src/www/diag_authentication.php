@@ -68,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (is_array($attr_value)) {
                     $attr_value = implode(",", $attr_value);
                 }
-                $attr_value = str_replace("\n", "<br/>", $attr_value);
-                $savemsg .= "{$attr_name} => {$attr_value}<br/>";
+                $attr_value = str_replace("\n", "<br/>", htmlspecialchars($attr_value));
+                $savemsg .= htmlspecialchars($attr_name) . " => {$attr_value}<br/>";
             }
         } else {
             $input_errors[] = gettext("Authentication failed.");
