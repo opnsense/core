@@ -133,8 +133,6 @@ function get_default_sysctl_value($id)
 
 function system_sysctl_get()
 {
-    global $config;
-
     /* list of unconditional sysctls not necessarily present in config */
     $sysctls = array(
         'hw.ixl.enable_head_writeback' => 'default',
@@ -154,8 +152,15 @@ function system_sysctl_get()
     }
 
     foreach ($sysctls as $key => &$value) {
-        if ($value == 'default') {
-            $value = get_default_sysctl_value($key);
+        if ($value != 'default') {
+            continue;
+        }
+
+        $value = get_default_sysctl_value($key);
+
+        if ($value === null) {
+            log_error('warning: ignoring missing default tunable request: ' . $key);
+            unset($sysctls[$key]);
         }
     }
 
