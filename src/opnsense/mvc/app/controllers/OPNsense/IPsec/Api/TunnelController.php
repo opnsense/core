@@ -183,7 +183,8 @@ class TunnelController extends ApiControllerBase
             }
             foreach ($config->ipsec->phase2 as $p2) {
                 $p2mode = array_search(
-                    (string)$p2->mode, [
+                    (string)$p2->mode,
+                    [
                       "IPv4 tunnel" => "tunnel",
                       "IPv6 tunnel" => "tunnel6",
                       "transport" => "transport",
