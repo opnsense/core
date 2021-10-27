@@ -219,23 +219,23 @@ class TunnelController extends ApiControllerBase
                     foreach (['localid', 'remoteid'] as $id) {
                         $content = (string)$p2->$id->type;
                         switch ((string)$p2->$id->type) {
-                          case "address":
-                              $content = "{$p2->$id->address}";
-                              break;
-                          case "network":
-                              $content = "{$p2->$id->address}/{$p2->$id->netbits}";
-                              break;
-                          case "mobile":
-                              $content = gettext("Mobile Client");
-                              break;
-                          case "none":
-                              $content = gettext("None");
-                              break;
-                          default:
-                              if (!empty($ifs[(string)$p2->$id->type])) {
-                                  $content = $ifs[(string)$p2->$id->type];
-                              }
-                              break;
+                            case "address":
+                                $content = "{$p2->$id->address}";
+                                break;
+                            case "network":
+                                $content = "{$p2->$id->address}/{$p2->$id->netbits}";
+                                break;
+                            case "mobile":
+                                $content = gettext("Mobile Client");
+                                break;
+                            case "none":
+                                $content = gettext("None");
+                                break;
+                            default:
+                                if (!empty($ifs[(string)$p2->$id->type])) {
+                                    $content = $ifs[(string)$p2->$id->type];
+                                }
+                                break;
                         }
                         if ($id == 'localid') {
                             $local_subnet = $content;
