@@ -1214,6 +1214,11 @@ EOD;
         $dhcpdconf .= dhcpd_zones($ddns_zones);
     }
 
+    /* check if exists a custom file to include */
+    if (file_exists("/var/dhcpd/etc/dhcpd.conf.custom")) {
+        $dhcpdconf .= "\ninclude "/etc/dhcpd.conf.custom";\n";
+    }
+
     @file_put_contents('/var/dhcpd/etc/dhcpd.conf', $dhcpdconf);
     @touch('/var/dhcpd/var/db/dhcpd.leases');
     @unlink('/var/dhcpd/var/run/dhcpd.pid');
