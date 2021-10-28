@@ -230,17 +230,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                 if (isset($ph1ent['mobile'])) {
                     $rgip = "any";
                 } elseif (!is_ipaddr($ph1ent['remote-gateway'])) {
-                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A;
-                    $dns_qry_outfield = $ph1ent['protocol'] == 'inet6' ? "ipv6" : "ip";
-                    $dns_records = @dns_get_record($ph1ent['remote-gateway'], $dns_qry_type);
-                    if (is_array($dns_records)) {
-                        foreach ($dns_records as $dns_record) {
-                            if (!empty($dns_record[$dns_qry_outfield])) {
-                                $rgip = $dns_record[$dns_qry_outfield];
-                                break;
-                            }
-                        }
-                    }
+                    $rgip = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
                 } else {
                     $rgip = $ph1ent['remote-gateway'];
                 }
@@ -773,14 +763,20 @@ function ipsec_lookup_keypair($uuid)
     return $node ? $node->getNodes() : null;
 }
 
-function ipsec_resolve($hostname)
+function ipsec_resolve($hostname, $ipproto='inet')
 {
     if (!is_ipaddr($hostname)) {
-        /* XXX IPv4-only */
-        $ip = gethostbyname($hostname);
-        if ($ip && $ip != $hostname) {
-            $hostname = $ip;
+        $dns_qry_type = $ipproto == 'inet6' ? DNS_AAAA : DNS_A;
+        $dns_qry_outfield = $ipproto == 'inet6' ? "ipv6" : "ip";
+        $dns_records = @dns_get_record($hostname, $dns_qry_type);
+        if (is_array($dns_records)) {
+            foreach ($dns_records as $dns_record) {
+                if (!empty($dns_record[$dns_qry_outfield])) {
+                    return $dns_record[$dns_qry_outfield];
+                }
+            }
         }
+        return null;
     }
 
     return $hostname;
@@ -1921,10 +1917,20 @@ function ipsec_configure_vti($verbose = false)
 
     // drop changed or not existing interfaces and tunnel endpoints
     foreach ($current_interfaces as $intf => $intf_details) {
+        $local_configured = $configured_intf[$intf]['local'];
+        $remote_configured = $configured_intf[$intf]['remote'];
+        if (!empty($configured_intf[$intf])) {
+            if (!is_ipaddr($configured_intf[$intf]['local'])) {
+                $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
+            }
+            if (!is_ipaddr($configured_intf[$intf]['remote'])) {
+                $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
+            }
+        }
         if (
             empty($configured_intf[$intf])
-            || $configured_intf[$intf]['local'] != $intf_details['tunnel']['src_addr']
-            || $configured_intf[$intf]['remote'] != $intf_details['tunnel']['dest_addr']
+            || $local_configured != $intf_details['tunnel']['src_addr']
+            || $remote_configured != $intf_details['tunnel']['dest_addr']
         ) {
             log_error(sprintf("destroy interface %s", $intf));
             legacy_interface_destroy($intf);
