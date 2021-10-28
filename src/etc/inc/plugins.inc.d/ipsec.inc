@@ -230,17 +230,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                 if (isset($ph1ent['mobile'])) {
                     $rgip = "any";
                 } elseif (!is_ipaddr($ph1ent['remote-gateway'])) {
-                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A;
-                    $dns_qry_outfield = $ph1ent['protocol'] == 'inet6' ? "ipv6" : "ip";
-                    $dns_records = @dns_get_record($ph1ent['remote-gateway'], $dns_qry_type);
-                    if (is_array($dns_records)) {
-                        foreach ($dns_records as $dns_record) {
-                            if (!empty($dns_record[$dns_qry_outfield])) {
-                                $rgip = $dns_record[$dns_qry_outfield];
-                                break;
-                            }
-                        }
-                    }
+                    $rgip = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
                 } else {
                     $rgip = $ph1ent['remote-gateway'];
                 }
@@ -257,7 +247,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                             }
                         }
                     }
-                    $interface = explode("_vip", $ph1ent['interface'])[0];
+                    $interface = explode('_vip', $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
                                       "log" => !isset($config['syslog']['nologdefaultpass']),
                                       "quick" => false,
@@ -766,14 +756,20 @@ function ipsec_lookup_keypair($uuid)
     return $node ? $node->getNodes() : null;
 }
 
-function ipsec_resolve($hostname)
+function ipsec_resolve($hostname, $ipproto = 'inet')
 {
     if (!is_ipaddr($hostname)) {
-        /* XXX IPv4-only */
-        $ip = gethostbyname($hostname);
-        if ($ip && $ip != $hostname) {
-            $hostname = $ip;
+        $dns_qry_type = $ipproto == 'inet6' ? DNS_AAAA : DNS_A;
+        $dns_qry_outfield = $ipproto == 'inet6' ? "ipv6" : "ip";
+        $dns_records = @dns_get_record($hostname, $dns_qry_type);
+        if (is_array($dns_records)) {
+            foreach ($dns_records as $dns_record) {
+                if (!empty($dns_record[$dns_qry_outfield])) {
+                    return $dns_record[$dns_qry_outfield];
+                }
+            }
         }
+        return null;
     }
 
     return $hostname;
@@ -1827,13 +1823,16 @@ function generate_strongswan_conf(array $tree, $level = 0): string
 function ipsec_get_configured_vtis()
 {
     global $config;
-    $configured_intf = array();
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
-    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
+
+    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
+    $configured_intf = [];
+
     foreach ($a_phase1 as $ph1ent) {
         if (empty($ph1ent['disabled'])) {
-            $phase2items = array();
-            $phase2reqids = array();
+            $phase2items = [];
+            $phase2reqids = [];
+
             foreach ($a_phase2 as $ph2ent) {
                 if (
                     $ph2ent['mode'] == 'route-based' &&
@@ -1845,6 +1844,7 @@ function ipsec_get_configured_vtis()
                     }
                 }
             }
+
             foreach ($phase2items as $idx => $phase2) {
                 if (empty($phase2['reqid'])) {
                     continue;
@@ -1859,11 +1859,12 @@ function ipsec_get_configured_vtis()
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
                 if (empty($tunnels[$intfnm])) {
-                    $configured_intf[$intfnm] = array("reqid" => $reqid);
+                    $configured_intf[$intfnm] = ['reqid' => $reqid];
                     $configured_intf[$intfnm]['local'] = ipsec_get_phase1_src($ph1ent);
                     $configured_intf[$intfnm]['remote'] = $ph1ent['remote-gateway'];
+                    $configured_intf[$intfnm]['interface'] = $ph1ent['interface'];
                     $configured_intf[$intfnm]['descr'] = $descr;
-                    $configured_intf[$intfnm]['networks'] = array();
+                    $configured_intf[$intfnm]['networks'] = [];
                 }
 
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
@@ -1903,10 +1904,20 @@ function ipsec_configure_vti($verbose = false)
 
     // drop changed or not existing interfaces and tunnel endpoints
     foreach ($current_interfaces as $intf => $intf_details) {
+        $local_configured = $configured_intf[$intf]['local'];
+        $remote_configured = $configured_intf[$intf]['remote'];
+        if (!empty($configured_intf[$intf])) {
+            if (!is_ipaddr($configured_intf[$intf]['local'])) {
+                $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
+            }
+            if (!is_ipaddr($configured_intf[$intf]['remote'])) {
+                $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
+            }
+        }
         if (
             empty($configured_intf[$intf])
-            || $configured_intf[$intf]['local'] != $intf_details['tunnel']['src_addr']
-            || $configured_intf[$intf]['remote'] != $intf_details['tunnel']['dest_addr']
+            || $local_configured != $intf_details['tunnel']['src_addr']
+            || $remote_configured != $intf_details['tunnel']['dest_addr']
         ) {
             log_error(sprintf("destroy interface %s", $intf));
             legacy_interface_destroy($intf);
