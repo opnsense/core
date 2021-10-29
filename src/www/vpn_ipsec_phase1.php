@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries
-    ,closeaction,sha256_96";
+    ,closeaction";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -108,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ikeid'] = $config['ipsec']['phase1'][$p1index]['ikeid'];
         }
         $pconfig['disabled'] = isset($config['ipsec']['phase1'][$p1index]['disabled']);
+        $pconfig['sha256_96'] = !empty($config['ipsec']['phase1'][$p1index]['sha256_96']);
         $pconfig['installpolicy'] = empty($config['ipsec']['phase1'][$p1index]['noinstallpolicy']); // XXX: reversed
 
         foreach (array('authservers', 'dhgroup', 'hash-algorithm') as $fieldname) {
@@ -347,10 +348,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Invalid argument for close action.');
     }
 
-    if (!empty($pconfig['sha256_96'])) {
-        $ph1ent['sha256_96'] = true;
-    }
-
     if (!empty($pconfig['dpd_enable'])) {
         if (!is_numeric($pconfig['dpd_delay'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD delay.");
@@ -407,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
-        ,nat_traversal,auto,mobike,closeaction,sha256_96";
+        ,nat_traversal,auto,mobike,closeaction";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -423,6 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $ph1ent['disabled'] = !empty($pconfig['disabled']);
+        $ph1ent['sha256_96'] = !empty($pconfig['sha256_96']);
         $ph1ent['noinstallpolicy'] = empty($pconfig['installpolicy']); // XXX: reversed
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
         if (!empty($pconfig['mobile'])) {
