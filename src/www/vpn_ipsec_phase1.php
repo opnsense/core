@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries
-    ,closeaction";
+    ,closeaction,sha256_96";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -403,7 +403,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
-        ,nat_traversal,auto,mobike,closeaction";
+        ,nat_traversal,auto,mobike,closeaction,sha256_96";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -1137,6 +1137,19 @@ endforeach; ?>
                       <input name="tunnel_isolation" type="checkbox" id="tunnel_isolation" value="yes" <?= !empty($pconfig['tunnel_isolation']) ? 'checked="checked"' : '' ?>/>
                       <div class="hidden" data-for="help_for_tunnel_isolation">
                         <?= gettext('This option will create a tunnel for each phase 2 entry for IKEv2 interoperability with e.g. FortiGate devices.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_sha256_96" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('SHA256 96 Bit Truncation') ?></td>
+                    <td>
+                      <input name="sha256_96" type="checkbox" id="sha256_96" value="yes" <?= !empty($pconfig['sha256_96']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" data-for="help_for_sha256_96">
+                        <?= gettext(
+                          "For compatibility with implementations that incorrectly use 96-bit (instead of 128-bit) truncation this ".
+                          "option may be enabled to configure the shorter truncation length. This is not negotiated, so this only works ".
+                          "with peers that use the incorrect truncation length (or have this option enabled), e.g. Forcepoint Sidewinder."
+                        ) ?>
                       </div>
                     </td>
                   </tr>
