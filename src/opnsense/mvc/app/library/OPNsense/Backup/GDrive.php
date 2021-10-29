@@ -69,7 +69,7 @@ class Gdrive extends Base implements IBackupProvider
                 "instructions on how to acquire one can be found here %s "),
                 "<a href='https://docs.opnsense.org/manual/how-tos/cloud_backup.html'
                         target='_blank'>
-                    https://docs.opnsense.org/manual/how-tos/cloud_backup.html</a>
+                    https://docs.opnsense.org/manual/how-tos/cloud_backup.html</a>"
             ),
             "value" => null
         );
