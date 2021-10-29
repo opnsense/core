@@ -577,19 +577,6 @@ function system_staticroutes_configure($interface = '')
     }
 }
 
-function system_syslogd_extra_local($logsocket)
-{
-    $logdir = dirname($logsocket);
-
-    if (!is_dir($logdir)) {
-        /* create if needed to avoid startup error */
-        mwexecf('/bin/mkdir -p %s', $logdir);
-    }
-
-    /* emit extra args for syslogd invoke */
-    return exec_safe('-l %s ', $logsocket);
-}
-
 function system_syslogd_start($verbose = false, $restart = false, $async = false)
 {
     global $config;
@@ -631,9 +618,6 @@ function system_syslogd_start($verbose = false, $restart = false, $async = false
             $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
             if (!isset($syslogcfg['disablelocallogging'])) {
                 $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
-            }
-            if (!empty($logConfig['local'])) {
-                $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
             }
         }
         $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
