@@ -4633,7 +4633,7 @@ function interfaces_scoped_address6($interface, $ifconfig_details = null)
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || !$addr['scope']) {
             continue;
         }
 
