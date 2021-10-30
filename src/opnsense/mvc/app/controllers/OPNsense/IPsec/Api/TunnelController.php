@@ -143,8 +143,7 @@ class TunnelController extends ApiControllerBase
                     $ph1proposal .= " + " . gettext("DH Group") . " {$p1->dhgroup}";
                 }
                 $item = [
-                    "id" => $idx,
-                    "ikeid" => intval((string)$p1->ikeid),
+                    "id" => intval((string)$p1->ikeid),   // ikeid should be unique
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
                     "protocol" => $p1->protocol == "inet" ? "IPv4" : "IPv6",
                     "iketype" => $ph1type[(string)$p1->iketype],
@@ -193,7 +192,7 @@ class TunnelController extends ApiControllerBase
         $this->sessionClose();
         $config = Config::getInstance()->object();
         if (!empty($config->ipsec->phase2)) {
-            $idx = 0;
+            $p2idx = 0;
             $ifs = [];
             if ($config->interfaces->count() > 0) {
                 foreach ($config->interfaces->children() as $key => $node) {
@@ -203,7 +202,7 @@ class TunnelController extends ApiControllerBase
             foreach ($config->ipsec->phase2 as $p2) {
                 $ikeid = intval((string)$p2->ikeid);
                 if ($ikeid != $selected_ikeid) {
-                    $idx++;
+                    $p2idx++;
                     continue;
                 }
                 $p2mode = array_search(
@@ -272,7 +271,7 @@ class TunnelController extends ApiControllerBase
                     $ph2proposal .= sprintf("+ %s %s", gettext("DH Group"), "{$p2->pfsgroup}");
                 }
                 $item = [
-                    "id" => $idx,
+                    "id" => $p2idx,
                     "ikeid" => $ikeid,
                     "enabled" => empty((string)$p2->disabled) ? "1" : "0",
                     "protocol" => $p2->protocol == "esp" ? "ESP" : "AH",
@@ -283,9 +282,71 @@ class TunnelController extends ApiControllerBase
                     "description" => (string)$p2->descr
                 ];
                 $items[] = $item;
-                $idx++;
+                $p2idx++;
             }
         }
         return $this->search($items);
+    }
+
+    /**
+     * delete phase 1 including associated phase 2 entries
+     */
+    public function delPhase1Action($ikeid)
+    {
+        if ($this->request->isPost()) {
+            $phase_ids = [];
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            foreach ([$config->ipsec->phase1, $config->ipsec->phase2] as $phid => $phase) {
+                $phase_ids[$phid] = [];
+                if (!empty($phase)) {
+                    $idx = 0;
+                    foreach ($phase as $p) {
+                        if(intval((string)$p->ikeid) == intval($ikeid)) {
+                            $phase_ids[$phid][] = $idx;
+                        }
+                        $idx++;
+                    }
+                    foreach (array_reverse($phase_ids[$phid]) as $idx) {
+                        unset($phase[$idx]);
+                    }
+                }
+            }
+            Config::getInstance()->save();
+            if (!empty($phase_ids[0])) {
+                @touch("/tmp/ipsec.dirty");
+            }
+            return [
+              'status' => 'ok',
+              'phase1count' => count($phase_ids[0]), // should be 1 as ikeid is unique
+              'phase2count' => count($phase_ids[1]),
+            ];
+        }
+        return ['status' => 'failed'];
+    }
+
+
+    /**
+     * delete phase 2 entry
+     */
+    public function delPhase2Action($seqid)
+    {
+        if ($this->request->isPost()) {
+            $phase_ids = [];
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            if (isset($config->ipsec->phase2[intval($seqid)])) {
+                unset($config->ipsec->phase2[intval($seqid)]);
+                Config::getInstance()->save();
+                if (!empty($phase_ids[0])) {
+                    @touch("/tmp/ipsec.dirty");
+                }
+                return ['status' => 'ok'];
+            }
+            return ['status' => 'not_found'];
+        }
+        return ['status' => 'failed'];
     }
 }

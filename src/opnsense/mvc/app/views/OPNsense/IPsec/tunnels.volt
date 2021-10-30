@@ -27,6 +27,7 @@
       };
       const $grid_phase1 = $('#grid-phase1').UIBootgrid({
           search: '/api/ipsec/tunnel/search_phase1',
+          del: '/api/ipsec/tunnel/del_phase1/',
           options: {
               formatters: formatters,
               multiSelect: false,
@@ -45,6 +46,7 @@
       });
       const $grid_phase2 = $('#grid-phase2').UIBootgrid({
           search: '/api/ipsec/tunnel/search_phase2',
+          del: '/api/ipsec/tunnel/del_phase2/',
           options: {
               formatters: formatters,
               useRequestHandlerOnGet: true,
@@ -54,7 +56,7 @@
                   let current_rows = $("#grid-phase1").bootgrid("getCurrentRows");
                   $.each(rows, function(key, seq){
                       if (current_rows[seq] !== undefined) {
-                          ids.push(current_rows[seq].ikeid);
+                          ids.push(current_rows[seq].id);
                       }
                   });
                   if (ids.length > 0) {
@@ -75,8 +77,7 @@
         <thead>
           <tr>
               <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-              <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-              <th data-column-id="ikeid" data-type="numeric" data-visible="false">{{ lang._('ikeid') }}</th>
+              <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">{{ lang._('ikeid') }}</th>
               <th data-column-id="type" data-type="string" data-width="7em">{{ lang._('Type') }}</th>
               <th data-column-id="remote_gateway" data-formatter="gateway" data-width="20em" data-type="string">{{ lang._('Remote Gateway') }}</th>
               <th data-column-id="mode" data-width="10em" data-type="string">{{ lang._('Mode') }}</th>
