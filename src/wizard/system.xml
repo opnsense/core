@@ -544,7 +544,7 @@ if (!empty(trim($_POST['lanipaddress']))) {
 
     if (!empty($input_errors)) {
         $stepid--;
-    } else {
+    } elseif (!empty($config['dhcpd']['lan']['range']['from'])) {
         $ft = explode(".", $_POST['lanipaddress']);
         $ft_ip = $ft[0] . "." . $ft[1] . "." . $ft[2] . ".";
         $config['dhcpd']['lan']['range']['from'] = $ft_ip . "10";
