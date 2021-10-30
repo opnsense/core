@@ -1511,8 +1511,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
-                if (!empty($ph1ent['sha256_96'])) {
-                    $sha256_96_line = "sha256_96 = {$ph1ent['sha256_96']}";
+                if (isset($ph1ent['sha256_96'])) {
+                    $sha256_96_line = "sha256_96 = yes";
                 } else {
                     $sha256_96_line = '';
                 }

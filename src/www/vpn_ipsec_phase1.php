@@ -347,6 +347,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Invalid argument for close action.');
     }
 
+    if (!empty($pconfig['sha256_96'])) {
+        $ph1ent['sha256_96'] = true;
+    }
+
     if (!empty($pconfig['dpd_enable'])) {
         if (!is_numeric($pconfig['dpd_delay'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD delay.");
