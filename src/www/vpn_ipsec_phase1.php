@@ -848,7 +848,7 @@ endforeach; ?>
                     </td>
                   </tr>
 <?php
-                  if (empty($pconfig['mobile'])):?>
+                  if ($pconfig['authentication_method'] == "xauth_psk_server" || empty($pconfig['mobile'])):?>
                   <tr class="auth_opt auth_eap_tls auth_psk auth_pubkey">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
@@ -874,7 +874,7 @@ endforeach; ?>
 ?>
                       </select>
                       <input name="peerid_data" type="text" id="peerid_data" size="30" value="<?=$pconfig['peerid_data'];?>" />
-<?php if (!empty($pconfig['mobile'])) {
+<?php if ($pconfig['authentication_method'] == "xauth_psk_server" || !empty($pconfig['mobile'])) {
 ?>
                       <small><?=gettext("NOTE: This is known as the \"group\" setting on some VPN client implementations."); ?></small>
                     <?php
