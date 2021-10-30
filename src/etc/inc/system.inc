@@ -819,7 +819,7 @@ function system_trust_configure($verbose = false)
                         $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
                         $authoritykey = "";
                         if (!empty($certext['authorityKeyIdentifier'])) {
-                            $authoritykey = trim(str_replace('keyid:', '', $certext['authorityKeyIdentifier']));
+                            $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
                         }
                         $subjectkey = $certext['subjectKeyIdentifier'];
                         $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
