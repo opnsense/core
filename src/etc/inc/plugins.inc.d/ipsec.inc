@@ -1509,6 +1509,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
+                if (isset($ph1ent['sha256_96'])) {
+                    $sha256_96_line = "sha256_96 = yes";
+                } else {
+                    $sha256_96_line = '';
+                }
+
                 if (!empty($ph1ent['closeaction'])) {
                     $closeaction_line = "closeaction = {$ph1ent['closeaction']}";
                 } else {
@@ -1673,6 +1679,7 @@ conn con<<connectionId>>
   installpolicy = {$installpolicy}
   type = {$parsed_phase2['type']}
   {$closeaction_line}
+  {$sha256_96_line}
   {$dpdline}
   {$inactivityline}
   {$keyingtriesline}

@@ -108,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ikeid'] = $config['ipsec']['phase1'][$p1index]['ikeid'];
         }
         $pconfig['disabled'] = isset($config['ipsec']['phase1'][$p1index]['disabled']);
+        $pconfig['sha256_96'] = !empty($config['ipsec']['phase1'][$p1index]['sha256_96']);
         $pconfig['installpolicy'] = empty($config['ipsec']['phase1'][$p1index]['noinstallpolicy']); // XXX: reversed
 
         foreach (array('authservers', 'dhgroup', 'hash-algorithm') as $fieldname) {
@@ -419,6 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $ph1ent['disabled'] = !empty($pconfig['disabled']);
+        $ph1ent['sha256_96'] = !empty($pconfig['sha256_96']);
         $ph1ent['noinstallpolicy'] = empty($pconfig['installpolicy']); // XXX: reversed
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
         if (!empty($pconfig['mobile'])) {
@@ -1137,6 +1139,19 @@ endforeach; ?>
                       <input name="tunnel_isolation" type="checkbox" id="tunnel_isolation" value="yes" <?= !empty($pconfig['tunnel_isolation']) ? 'checked="checked"' : '' ?>/>
                       <div class="hidden" data-for="help_for_tunnel_isolation">
                         <?= gettext('This option will create a tunnel for each phase 2 entry for IKEv2 interoperability with e.g. FortiGate devices.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_sha256_96" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('SHA256 96 Bit Truncation') ?></td>
+                    <td>
+                      <input name="sha256_96" type="checkbox" id="sha256_96" value="yes" <?= !empty($pconfig['sha256_96']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" data-for="help_for_sha256_96">
+                        <?= gettext(
+                          "For compatibility with implementations that incorrectly use 96-bit (instead of 128-bit) truncation this ".
+                          "option may be enabled to configure the shorter truncation length. This is not negotiated, so this only works ".
+                          "with peers that use the incorrect truncation length (or have this option enabled), e.g. Forcepoint Sidewinder."
+                        ) ?>
                       </div>
                     </td>
                   </tr>
