@@ -144,6 +144,7 @@ class TunnelController extends ApiControllerBase
                 }
                 $item = [
                     "id" => intval((string)$p1->ikeid),   // ikeid should be unique
+                    "seqid" => $idx,
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
                     "protocol" => $p1->protocol == "inet" ? "IPv4" : "IPv6",
                     "iketype" => $ph1type[(string)$p1->iketype],
@@ -272,6 +273,7 @@ class TunnelController extends ApiControllerBase
                 }
                 $item = [
                     "id" => $p2idx,
+                    "uniqid" => (string)$p2->uniqid, // XXX: a bit convoluted, should probably replace id at some point
                     "ikeid" => $ikeid,
                     "enabled" => empty((string)$p2->disabled) ? "1" : "0",
                     "protocol" => $p2->protocol == "esp" ? "ESP" : "AH",
@@ -303,7 +305,7 @@ class TunnelController extends ApiControllerBase
                 if (!empty($phase)) {
                     $idx = 0;
                     foreach ($phase as $p) {
-                        if(intval((string)$p->ikeid) == intval($ikeid)) {
+                        if (intval((string)$p->ikeid) == intval($ikeid)) {
                             $phase_ids[$phid][] = $idx;
                         }
                         $idx++;
@@ -326,6 +328,41 @@ class TunnelController extends ApiControllerBase
         return ['status' => 'failed'];
     }
 
+    /**
+     * toggle if phase 1 is enabled
+     */
+    public function togglePhase1Action($ikeid, $enabled = null)
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            if (!empty($config->ipsec->phase1)) {
+                $idx = 0;
+                foreach ($config->ipsec->phase1 as $p1) {
+                    if (intval((string)$p1->ikeid) == intval($ikeid)) {
+                        if ($enabled == "0" || $enabled == "1") {
+                            $new_status = $enabled == "1" ? "0" : "1";
+                        } else {
+                            $new_status = $config->ipsec->phase1[$idx]->disabled == "1" ? "0" : "1";
+                        }
+                        if ($new_status == "1") {
+                           $config->ipsec->phase1[$idx]->disabled = $new_status;
+                        } elseif (isset($config->ipsec->phase1[$idx]->disabled)) {
+                            unset($config->ipsec->phase1[$idx]->disabled);
+                        }
+
+                        Config::getInstance()->save();
+                        @touch("/tmp/ipsec.dirty");
+                        return ['status' => 'ok', 'disabled' => $new_status];
+                    }
+                    $idx++;
+                }
+            }
+            return ['status' => 'not_found'];
+        }
+        return ['status' => 'failed'];
+    }
 
     /**
      * delete phase 2 entry
@@ -333,19 +370,72 @@ class TunnelController extends ApiControllerBase
     public function delPhase2Action($seqid)
     {
         if ($this->request->isPost()) {
-            $phase_ids = [];
             $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
-            if (isset($config->ipsec->phase2[intval($seqid)])) {
+            if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
                 unset($config->ipsec->phase2[intval($seqid)]);
                 Config::getInstance()->save();
-                if (!empty($phase_ids[0])) {
-                    @touch("/tmp/ipsec.dirty");
-                }
+                @touch("/tmp/ipsec.dirty");
                 return ['status' => 'ok'];
             }
             return ['status' => 'not_found'];
+        }
+        return ['status' => 'failed'];
+    }
+
+    /**
+     * toggle if phase 2 is enabled
+     */
+    public function togglePhase2Action($seqid, $enabled = null)
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
+                if ($enabled == "0" || $enabled == "1") {
+                    $new_status = $enabled == "1" ? "0" : "1";
+                } else {
+                    $new_status = $config->ipsec->phase2[intval($seqid)]->disabled == "1" ? "0" : "1";
+                }
+                if ($new_status == "1") {
+                    $config->ipsec->phase2[intval($seqid)]->disabled = $new_status;
+                } elseif (isset($config->ipsec->phase2[intval($seqid)]->disabled)) {
+                    unset($config->ipsec->phase2[intval($seqid)]->disabled);
+                }
+
+                Config::getInstance()->save();
+                @touch("/tmp/ipsec.dirty");
+                return ['status' => 'ok', 'disabled' => $new_status];
+            }
+            return ['status' => 'not_found'];
+        }
+        return ['status' => 'failed'];
+    }
+
+    /**
+     * toggle if IPsec is enabled
+     */
+    public function toggleAction($enabled = null)
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            if ($enabled == "0" || $enabled == "1") {
+                $new_status = $enabled == "1";
+            } else {
+                $new_status = !isset($config->ipsec->enable);
+            }
+            if ($new_status) {
+                $config->ipsec->enable = true;
+            } elseif (isset($config->ipsec->enable)) {
+                unset($config->ipsec->enable);
+            }
+            Config::getInstance()->save();
+            @touch("/tmp/ipsec.dirty");
+            return ['status' => 'ok'];
         }
         return ['status' => 'failed'];
     }
