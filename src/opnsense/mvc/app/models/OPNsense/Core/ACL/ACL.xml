@@ -321,6 +321,7 @@
             <pattern>api/diagnostics/firewall/log*</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
+            <pattern>api/diagnostics/lvtemplate/*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-dynamic>
     <page-diagnostics-logs-firewall-summary>
