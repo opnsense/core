@@ -68,7 +68,6 @@
           });
       });
 
-
       const formatters = {
           "commands": function (column, row) {
             let btns = '';
@@ -152,8 +151,27 @@
           }
       });
       updateServiceControlUI('ipsec');
+      // reformat bootgrid headers to show type of content (phase 1 or 2)
+      $("div.actionBar").each(function(){
+          let heading_text = "";
+          if ($(this).closest(".bootgrid-header").attr("id").includes("phase1")) {
+              heading_text = "{{ lang._('Phase 1') }}";
+          } else {
+              heading_text = "{{ lang._('Phase 2') }}";
+          }
+          $(this).parent().prepend($('<td class="col-sm-2 theading-text">'+heading_text+'</div>'));
+          $(this).removeClass("col-sm-12");
+          $(this).addClass("col-sm-10");
+      });
   });
 </script>
+
+<style>
+  .theading-text {
+      font-weight: 800;
+      font-style: italic;
+  }
+</style>
 
 
 <div class="alert alert-info alert-dismissible hidden" role="alert" id="responseMsg"></div>
