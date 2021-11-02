@@ -220,6 +220,7 @@ $.fn.UIBootgrid = function (params) {
      * add event
      */
     this.command_add = function(event) {
+        event.stopPropagation();
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
             let saveDlg = $("#btn_"+editDlg+"_save").unbind('click');
@@ -256,6 +257,7 @@ $.fn.UIBootgrid = function (params) {
      * edit event
      */
     this.command_edit = function(event) {
+        event.stopPropagation();
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
             let uuid = $(this).data("row-id");
@@ -279,6 +281,7 @@ $.fn.UIBootgrid = function (params) {
      * delete event
      */
     this.command_delete = function(event) {
+        event.stopPropagation();
         let uuid=$(this).data("row-id");
         stdDialogRemoveItem($.fn.UIBootgrid.defaults.removeWarningText,function() {
             ajaxCall(params['del'] + uuid, {},function(data,status){
@@ -292,6 +295,7 @@ $.fn.UIBootgrid = function (params) {
      * delete selected event
      */
     this.command_delete_selected = function(event) {
+        event.stopPropagation();
         stdDialogRemoveItem($.fn.UIBootgrid.defaults.removeWarningText,function(){
             const rows = $("#" + this_grid.attr('id')).bootgrid('getSelectedRows');
             if (rows !== undefined){
@@ -311,6 +315,7 @@ $.fn.UIBootgrid = function (params) {
      * copy event
      */
     this.command_copy = function(event) {
+        event.stopPropagation();
         const editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
             const uuid = $(this).data("row-id");
@@ -344,6 +349,7 @@ $.fn.UIBootgrid = function (params) {
      * info event
      */
     this.command_info = function(event) {
+        event.stopPropagation();
         const uuid = $(this).data("row-id");
         ajaxGet(params['info'] + uuid, {}, function(data, status) {
             if(status === 'success') {
@@ -359,6 +365,7 @@ $.fn.UIBootgrid = function (params) {
      * toggle event
      */
     this.command_toggle = function(event) {
+        event.stopPropagation();
         const uuid = $(this).data("row-id");
         $(this).addClass("fa-spinner fa-pulse");
         ajaxCall(params['toggle'] + uuid, {},function(data,status){
