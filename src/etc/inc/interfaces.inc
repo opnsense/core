@@ -2340,6 +2340,14 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realhwif = $realhwif_array[0];
 
     $ifconfig_details = legacy_interfaces_details();
+    if (empty($ifconfig_details[$realif])) {
+        if ($verbose) {
+            echo "exit.\n";
+            flush();
+        }
+        log_error(sprintf('Unable to configure unexisting interface %s', $realif));
+        return;
+    }
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
