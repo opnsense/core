@@ -1,7 +1,7 @@
 <menu>
     <VPN>
         <IPsec cssClass="fa fa-lock fa-fw" order="10">
-            <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
+            <Tunnels order="10" VisibleName="Tunnel Settings" url="/ui/ipsec/tunnels">
                 <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*" visibility="hidden"/>
             </Tunnels>

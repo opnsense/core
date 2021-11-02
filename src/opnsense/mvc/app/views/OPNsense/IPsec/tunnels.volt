@@ -3,7 +3,7 @@
   $(function () {
       function attach_legacy_actions() {
           $(".legacy_action").unbind('click').click(function(e){
-              e.preventDefault();
+              e.stopPropagation();
               if ($(this).data('scope') === 'phase1') {
                   if ($(this).hasClass('command-add')) {
                       window.location = '/vpn_ipsec_phase1.php';
@@ -80,8 +80,10 @@
                 data_tags = 'data-row-id="' + row.id + '" data-scope="phase2" data-row-uniqid="' + row.uniqid + '"';
             }
             btns = btns + '<button type="button" class="btn btn-xs legacy_action btn-default command-edit bootgrid-tooltip" ' + data_tags + '><span class="fa fa-fw fa-pencil"></span></button> ' +
-                '<button type="button" class="btn btn-xs btn-default legacy_action command-copy bootgrid-tooltip" ' + data_tags + '><span class="fa fa-fw fa-clone"></span></button>' +
-                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" ' + data_tags + '><span class="fa fa-fw fa-trash-o"></span></button>';
+                '<button type="button" class="btn btn-xs btn-default legacy_action command-copy bootgrid-tooltip" ' + data_tags + '><span class="fa fa-fw fa-clone"></span></button>';
+
+            // delete buttons use standard mvc functionality, id should map to the unique id used by the delete endpoint
+            btns = btns +'<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.id + '" ><span class="fa fa-fw fa-trash-o"></span></button>';
             return btns;
           },
           "gateway": function (column, row) {
@@ -210,9 +212,10 @@
                 <button data-action="add" type="button" title="{{ lang._('add phase 1 entry') }}" data-scope="phase1" class="btn btn-xs btn-primary legacy_action command-add">
                     <span class="fa fa-fw fa-plus"></span>
                 </button>
+                {# multi select isn't supported on master/detail views
                 <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default">
                     <span class="fa fa-fw fa-trash-o"></span>
-                </button>
+                </button> #}
             </td>
         </tr>
         </tfoot>

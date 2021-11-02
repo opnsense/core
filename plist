@@ -1831,7 +1831,6 @@
 /usr/local/www/system_usermanager_import_ldap.php
 /usr/local/www/system_usermanager_passwordmg.php
 /usr/local/www/system_usermanager_settings_ldapacpicker.php
-/usr/local/www/vpn_ipsec.php
 /usr/local/www/vpn_ipsec_keys.php
 /usr/local/www/vpn_ipsec_keys_edit.php
 /usr/local/www/vpn_ipsec_mobile.php
