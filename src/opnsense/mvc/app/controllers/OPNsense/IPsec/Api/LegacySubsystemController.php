@@ -33,7 +33,6 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
-
 /**
  * Class LegacySubsystemController
  * @package OPNsense\IPsec\Api

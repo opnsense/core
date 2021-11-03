@@ -347,7 +347,7 @@ class TunnelController extends ApiControllerBase
                             $new_status = $config->ipsec->phase1[$idx]->disabled == "1" ? "0" : "1";
                         }
                         if ($new_status == "1") {
-                           $config->ipsec->phase1[$idx]->disabled = $new_status;
+                            $config->ipsec->phase1[$idx]->disabled = $new_status;
                         } elseif (isset($config->ipsec->phase1[$idx]->disabled)) {
                             unset($config->ipsec->phase1[$idx]->disabled);
                         }

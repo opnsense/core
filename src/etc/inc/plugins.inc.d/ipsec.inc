@@ -763,7 +763,7 @@ function ipsec_lookup_keypair($uuid)
     return $node ? $node->getNodes() : null;
 }
 
-function ipsec_resolve($hostname, $ipproto='inet')
+function ipsec_resolve($hostname, $ipproto = 'inet')
 {
     if (!is_ipaddr($hostname)) {
         $dns_qry_type = $ipproto == 'inet6' ? DNS_AAAA : DNS_A;
