@@ -2331,7 +2331,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realif = get_real_interface($interface);
     $ifconfig_details = legacy_interfaces_details();
     if (empty($ifconfig_details[$realif])) {
-        log_error(sprintf('Unable to configure unexisting interface %s (%s)', $interface, $realif));
+        log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realif));
         return;
     }
 
@@ -2341,9 +2341,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     $realifv6 = get_real_interface($interface, 'inet6');
-    $realhwif_array = get_parent_interface($interface);
-    // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
-    $realhwif = $realhwif_array[0];
 
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
@@ -2354,6 +2351,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_bring_down($interface);
         }
     }
+
+    list ($realhwif) = get_parent_interface($interface);
 
     $interface_to_check = $realif;
     switch ($wancfg['ipaddr']) {
@@ -3526,12 +3525,9 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
             return $if;
         }
 
-        $int = get_parent_interface($if, true);
-        if (is_array($int)) {
-            foreach ($int as $iface) {
-                if ($iface == $interface) {
-                    return $if;
-                }
+        foreach (get_parent_interface($if, true) as $iface) {
+            if ($iface == $interface) {
+                return $if;
             }
         }
     }
@@ -3610,7 +3606,7 @@ function get_parent_interface($interface, $avoidrecurse = false)
 {
     global $config;
 
-    $parents = array();
+    $parents = [];
 
     $realif = get_real_interface($interface);
 
@@ -3640,8 +3636,6 @@ function get_parent_interface($interface, $avoidrecurse = false)
                     }
                 }
                 break;
-            case "dhcp":
-            case "static":
             default:
                 // Handle _vlans
                 if (strstr($realif, '_vlan')) {
@@ -3732,12 +3726,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
                                 if (isset($cfg['dhcp6usev4iface'])) {
                                     $realif = $cfg['if'];
                                 } else {
-                                    $parents = get_parent_interface($interface);
-                                    if (!empty($parents[0])) {
-                                        $realif = $parents[0];
-                                    } else {
-                                        $realif = $cfg['if'];
-                                    }
+                                    list ($realif) = get_parent_interface($interface);
                                 }
                                 break;
                             default:

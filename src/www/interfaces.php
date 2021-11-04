@@ -885,7 +885,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (stristr($a_interfaces[$if]['if'], "_vlan")) {
-                $parentif = get_parent_interface($a_interfaces[$if]['if'])[0];
+                list ($parentif) = get_parent_interface($a_interfaces[$if]['if']);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
                     $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
@@ -896,10 +896,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         continue;
                     }
 
-                    $realhwif_array = get_parent_interface($ifdata['if']);
-                    // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
-                    $parent_realhwif = $realhwif_array[0];
-
+                    list ($parent_realhwif) = get_parent_interface($ifdata['if']);
                     if ($parent_realhwif != $a_interfaces[$if]['if']) {
                         continue;
                     }
