@@ -2328,26 +2328,23 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $wandescr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
 
+    $realif = get_real_interface($interface);
+    $ifconfig_details = legacy_interfaces_details();
+    if (empty($ifconfig_details[$realif])) {
+        log_error(sprintf('Unable to configure unexisting interface %s (%s)', $interface, $realif));
+        return;
+    }
+
     if ($verbose) {
         echo sprintf('Configuring %s interface...', $wandescr);
         flush();
     }
 
-    $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
     $realhwif_array = get_parent_interface($interface);
     // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
     $realhwif = $realhwif_array[0];
 
-    $ifconfig_details = legacy_interfaces_details();
-    if (empty($ifconfig_details[$realif])) {
-        if ($verbose) {
-            echo "exit.\n";
-            flush();
-        }
-        log_error(sprintf('Unable to configure unexisting interface %s', $realif));
-        return;
-    }
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
