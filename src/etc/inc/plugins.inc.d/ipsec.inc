@@ -320,13 +320,6 @@ function ipsec_xmlrpc_sync()
     return $result;
 }
 
-function ipsec_run()
-{
-    return array(
-        'link_interface_to_ipsec' => 'link_interface_to_ipsec:2',
-    );
-}
-
 /*
  * Return phase1 local address
  */
@@ -1887,19 +1880,6 @@ function ipsec_get_configured_vtis()
     }
 
     return $configured_intf;
-}
-
-function link_interface_to_ipsec($unused, $interface)
-{
-    $linked = [];
-
-    foreach (ipsec_get_configured_vtis() as $ipsec => $info) {
-        if ($info['interface'] == $interface) {
-            $linked = $ipsec;
-        }
-    }
-
-    return $linked;
 }
 
 /**

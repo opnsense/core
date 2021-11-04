@@ -98,8 +98,6 @@ if (!empty($bridgetmp)) {
     interface_bridge_add_member($bridgetmp, $interface_real);
 }
 
-$ipsecs = plugins_run('link_interface_to_ipsec', false, array($interface));
-
 system_resolvconf_generate();
 system_hosts_generate();
 
@@ -137,12 +135,6 @@ foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as
 
     foreach ($gres as $gre) {
         if ($ifparent['if'] == $gre['greif']) {
-            $restartifs[$ifname] = 1;
-        }
-    }
-
-    foreach ($ipsecs as $ipsec) {
-        if ($ifparent['if'] == $ipsec) {
             $restartifs[$ifname] = 1;
         }
     }
