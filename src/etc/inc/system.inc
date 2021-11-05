@@ -610,99 +610,16 @@ function system_syslogd_start($verbose = false, $restart = false, $async = false
     }
 
     if ($async) {
-        configd_run('syslog restart');
-
-        if ($verbose) {
-            echo "done.\n";
-        }
-
-        return;
-    }
-
-    configd_run('template reload OPNsense/Syslog');
-
-    if (empty($config['syslog']['disable_clog'])) {
-        $syslogcfg = config_read_array('syslog');
-
-        $log_directive = '%';
-        $syslogd_extra = '';
-
-        $syslogconf = '';
-
-        $syslogconfs = array();
-
-        foreach (plugins_syslog() as $plugin_name => $plugin_details) {
-            $syslogconfs[$plugin_name] = $plugin_details;
-        }
-
-        $separatelogfacilities = array();
-        foreach ($syslogconfs as $logTopic => $logConfig) {
-            $syslogconf .= "!" . implode(',', $logConfig['facility']) . "\n";
-            $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
-            if (!isset($syslogcfg['disablelocallogging'])) {
-                $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
-            }
-        }
-        $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
-
-        asort($separatelogfacilities);
-        $facilitylist = implode(',', array_unique($separatelogfacilities));
-        $syslogconf .= "!-{$facilitylist}\n";
-        if (!isset($syslogcfg['disablelocallogging'])) {
-            /* XXX non-system local redirects look unused */
-            $syslogconf .= <<<EOD
-local3.*							{$log_directive}/var/log/vpn.log
-local4.*							{$log_directive}/var/log/portalauth.log
-local7.*							{$log_directive}/var/log/dhcpd.log
-*.notice;kern.debug;lpr.info;mail.crit;daemon.none		{$log_directive}/var/log/system.log
-news.err;local0.none;local3.none;local4.none			{$log_directive}/var/log/system.log
-local7.none							{$log_directive}/var/log/system.log
-security.*							{$log_directive}/var/log/system.log
-auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
-*.emerg								*
-
-EOD;
-        }
-
-        file_put_contents('/var/etc/syslog.conf', $syslogconf);
-        $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
-
-        // setup log files for all facilities including default
-        $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
-        $syslog_files = array_keys($syslogconfs);
-        $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
-        foreach ($syslog_files as $syslog_fn) {
-            $filename = "/var/log/" . basename($syslog_fn) . ".log";
-            if (!file_exists($filename)) {
-                mwexecf('/usr/local/sbin/clog -i -s %s %s', array($default_logfile_size, $filename));
-            }
-            mwexecf('chmod 0600 %s', array($filename));
-        }
-    }
-
-    // deploy certificates (separate caller in case we ever remove clog, in which case we can move all to configd)
-    mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
-    if (!empty($config['syslog']['disable_clog'])) {
-        // non legacy mode
-        killbypid('/var/run/syslog.pid', 'TERM', true);
+        // Loopback in background
+        configd_run('syslog restart', true);
+    } else {
+        configd_run('template reload OPNsense/Syslog');
+        mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
         if (!$restart && isvalidpid('/var/run/syslog-ng.pid')) {
             mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
         } else {
             mwexecf("/usr/sbin/service syslog-ng restart");
         }
-    } elseif (!$restart && isvalidpid('/var/run/syslog.pid')) {
-        killbypid('/var/run/syslog.pid', 'HUP');
-        if (isvalidpid('/var/run/syslog-ng.pid')) {
-            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
-        } else {
-            mwexecf("/usr/sbin/service syslog-ng restart");
-        }
-    } else {
-        killbypid('/var/run/syslog.pid', 'TERM', true);
-        mwexecf("/usr/sbin/service syslog-ng stop");
-        @unlink("/var/run/legacy_log");
-        mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
-        mwexecf("/usr/sbin/service syslog-ng start");
     }
 
     if ($verbose) {
@@ -711,52 +628,11 @@ EOD;
 }
 
 /**
- * stop syslog + syslog-ng
+ * stop syslog-ng
  */
 function system_syslogd_stop()
 {
-    killbypid('/var/run/syslog.pid', 'TERM', true);
     mwexecf("/usr/sbin/service syslog-ng stop");
-}
-
-function system_clear_log($logfile, $restart_syslogd = true)
-{
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
-
-    foreach (glob($logfile . '.*') as $rotated) {
-        @unlink($rotated);
-    }
-
-    /* preserve file ownership and permissions */
-    if (file_exists($logfile)) {
-        $handle = fopen($logfile, 'r+');
-        if ($handle) {
-            ftruncate($handle, 0);
-            fclose($handle);
-        }
-    }
-
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
-}
-
-function system_clear_clog($logfile, $restart_syslogd = true)
-{
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
-
-    $syslogcfg = config_read_array('syslog');
-
-    $log_size = isset($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
-    mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
-
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
 }
 
 /*

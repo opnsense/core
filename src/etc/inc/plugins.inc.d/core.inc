@@ -105,19 +105,6 @@ function core_services()
         'name' => 'cron',
     );
 
-    if (empty($config['syslog']['disable_clog'])) {
-        $services[] = array(
-            'description' => gettext('Legacy Syslog Daemon'),
-            'php' => array(
-                "stop" => array('system_syslogd_stop'),
-                "start" => array('system_syslogd_start'),
-                "restart" => array('system_syslogd_start')
-            ),
-            'pidfile' => '/var/run/syslog.pid',
-            'name' => 'syslogd',
-        );
-    }
-
     $services[] = array(
         'description' => gettext('Syslog-ng Daemon'),
         'php' => array(

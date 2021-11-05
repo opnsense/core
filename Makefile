@@ -184,7 +184,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			strongswan \
 			sudo \
 			syslog-ng \
-			syslogd \
 			unbound \
 			wpa_supplicant \
 			zip \
