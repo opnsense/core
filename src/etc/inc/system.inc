@@ -600,7 +600,7 @@ function system_staticroutes_configure($interface = '')
     }
 }
 
-function system_syslogd_start($verbose = false, $restart = false, $async = false)
+function system_syslogd_start($verbose = false)
 {
     global $config;
 
@@ -609,17 +609,13 @@ function system_syslogd_start($verbose = false, $restart = false, $async = false
         flush();
     }
 
-    if ($async) {
-        // Loopback in background
-        configd_run('syslog restart', true);
+    configd_run('template reload OPNsense/Syslog');
+    mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs');
+
+    if (isvalidpid('/var/run/syslog-ng.pid')) {
+        mwexecf('/usr/local/sbin/syslog-ng-ctl reload');
     } else {
-        configd_run('template reload OPNsense/Syslog');
-        mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
-        if (!$restart && isvalidpid('/var/run/syslog-ng.pid')) {
-            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
-        } else {
-            mwexecf("/usr/sbin/service syslog-ng restart");
-        }
+        mwexecf('/usr/sbin/service syslog-ng restart');
     }
 
     if ($verbose) {
@@ -627,12 +623,9 @@ function system_syslogd_start($verbose = false, $restart = false, $async = false
     }
 }
 
-/**
- * stop syslog-ng
- */
 function system_syslogd_stop()
 {
-    mwexecf("/usr/sbin/service syslog-ng stop");
+    mwexecf('/usr/sbin/service syslog-ng stop');
 }
 
 /*

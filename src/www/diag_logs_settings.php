@@ -36,7 +36,9 @@ require_once("system.inc");
 
 function clear_all_log_files()
 {
-    $it = new RecursiveDirectoryIterator("/var/log");
+    system_syslogd_stop();
+
+    $it = new RecursiveDirectoryIterator('/var/log');
     foreach(new RecursiveIteratorIterator($it) as $file) {
         if ($file->isFile() && strpos($file->getFilename(), '.log') > -1) {
             if (strpos($file->getFilename(), 'flowd') === false) {
@@ -44,6 +46,7 @@ function clear_all_log_files()
             }
         }
     }
+
     system_syslogd_start();
     plugins_configure('dhcp');
 }
@@ -107,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config();
 
-            system_syslogd_start(false, true);
+            system_syslogd_start();
 
             if (($oldnologdefaultblock !== isset($config['syslog']['nologdefaultblock']))
               || ($oldnologdefaultpass !== isset($config['syslog']['nologdefaultpass']))
