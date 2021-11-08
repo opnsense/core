@@ -36,7 +36,6 @@ require_once("system.inc");
 
 function clear_all_log_files()
 {
-    killbyname('syslogd');
     $it = new RecursiveDirectoryIterator("/var/log");
     foreach(new RecursiveIteratorIterator($it) as $file) {
         if ($file->isFile() && strpos($file->getFilename(), '.log') > -1) {
