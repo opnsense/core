@@ -600,7 +600,7 @@ function system_staticroutes_configure($interface = '')
     }
 }
 
-function system_syslogd_start($verbose = false)
+function system_syslog_start($verbose = false)
 {
     global $config;
 
@@ -623,7 +623,7 @@ function system_syslogd_start($verbose = false)
     }
 }
 
-function system_syslogd_stop()
+function system_syslog_stop()
 {
     mwexecf('/usr/sbin/service syslog-ng stop');
 }

@@ -93,7 +93,7 @@ system_firmware_configure(true);
 system_trust_configure(true);
 system_hostname_configure(true);
 system_hosts_generate(true);
-system_syslogd_start(true);
+system_syslog_start(true);
 
 interfaces_configure(true);
 
@@ -119,14 +119,14 @@ rrd_configure(true);
 system_powerd_configure(true);
 
 /*
- * Give syslogd a kick after everything else has been
+ * Give syslog a kick after everything else has been
  * initialized, otherwise it can occasionally fail to
  * route syslog messages properly on both IPv4 and IPv6.
  *
  * XXX dynamic addressing might not be set up here yet,
  * because these events are blocked by /var/run/booting
  */
-system_syslogd_start(true);
+system_syslog_start(true);
 
 system_console_unmute();
 

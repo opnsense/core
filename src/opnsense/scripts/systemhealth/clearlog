@@ -55,7 +55,7 @@ if (isset($opts['m']) && isset($opts['f'])) {
         foreach (glob("{$basename}/{$fname}_*.log") as $filename) {
             @unlink($filename);
         }
-        system_syslogd_start();
+        system_syslog_start();
     }
 
     if (is_file($filename)) {
@@ -69,7 +69,7 @@ if (isset($opts['m']) && isset($opts['f'])) {
                 fclose($handle);
             }
         }
-        system_syslogd_start();
+        system_syslog_start();
         // XXX: should probably add some plugin hook for this.
         if ($fname == 'dhcpd' && $mname == 'core') {
             plugins_configure('dhcp');

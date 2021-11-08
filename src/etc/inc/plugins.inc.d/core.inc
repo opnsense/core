@@ -108,9 +108,9 @@ function core_services()
     $services[] = array(
         'description' => gettext('Syslog-ng Daemon'),
         'php' => array(
-            "stop" => array('system_syslogd_stop'),
-            "start" => array('system_syslogd_start'),
-            "restart" => array('system_syslogd_start')
+            'stop' => array('system_syslog_stop'),
+            'start' => array('system_syslog_start'),
+            'restart' => array('system_syslog_start')
         ),
         'pidfile' => '/var/run/syslog-ng.pid',
         'name' => 'syslog-ng',
