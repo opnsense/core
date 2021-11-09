@@ -180,7 +180,7 @@ class IDS extends BaseModel
             $default_types = $this->action_list;
             if (array_key_exists($default, $default_types)) {
                 foreach ($default_types as $key => $value) {
-                    if ($key ==  $default) {
+                    if ($key == $default) {
                         $default_types[$key]['selected'] = 1;
                     } else {
                         $default_types[$key]['selected'] = 0;

@@ -400,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
-    $pconfig['gateway_interface'] =  isset($a_interfaces[$if]['gateway_interface']);
+    $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);

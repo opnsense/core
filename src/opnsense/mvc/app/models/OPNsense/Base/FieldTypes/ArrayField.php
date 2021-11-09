@@ -161,10 +161,10 @@ class ArrayField extends BaseField
                 if (isset($node->internalChildnodes[$fieldName])) {
                     if (is_numeric((string)$node->$fieldName)) {
                         // align numeric values right for sorting, not perfect but works for integer type values
-                        $sortKey .=  sprintf("%" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
+                        $sortKey .= sprintf("%" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
                     } else {
                         // normal text sorting, align left
-                        $sortKey .=  sprintf("%-" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
+                        $sortKey .= sprintf("%-" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
                     }
                 }
             }
