@@ -50,6 +50,7 @@ rm -f ${JSONFILE}
 base_to_reboot=""
 connection="error"
 download_size=""
+force_all=
 itemcount=0
 kernel_to_reboot=""
 last_check="unknown"
@@ -72,6 +73,12 @@ os_version=$(uname -sr)
 product_id=$(opnsense-version -n)
 product_target=opnsense${product_suffix}
 product_version=$(opnsense-version -v)
+product_abi=$(opnsense-version -a)
+product_xabi=$(opnsense-version -x)
+
+if [ -n "${product_xabi}" -a "${product_abi}" != "${product_xabi}" ]; then
+	force_all="-f"
+fi
 
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
@@ -123,7 +130,7 @@ else
     : > ${OUTFILE}
 
     # now check what happens when we would go ahead
-    (pkg upgrade -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    (pkg upgrade ${force_all} -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     if  [ -n "${CUSTOMPKG}" ]; then
         (pkg install -Un "${CUSTOMPKG}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     elif [ "${product_id}" != "${product_target}" ]; then
@@ -278,7 +285,7 @@ else
         RQUERY=$(pkg rquery %v opnsense-update)
         RQUERY=${RQUERY%%_*}
 
-        if [ "$(pkg version -t ${LQUERY} ${RQUERY})" = "<" ]; then
+        if [ -n "${force_all}" -o "$(pkg version -t ${LQUERY} ${RQUERY})" = "<" ]; then
             kernel_to_reboot="${RQUERY}"
             base_to_reboot="${RQUERY}"
         fi
@@ -291,15 +298,16 @@ else
 
         if [ -n "${base_to_reboot}" ]; then
             base_to_delete="$(opnsense-version -v base)"
-            base_is_size="$(opnsense-update -bfSr $base_to_reboot)"
-            if [ "$base_to_reboot" != "$base_to_delete" -a -n "$base_is_size" ]; then
+            base_is_size="$(opnsense-update -bfSr ${base_to_reboot})"
+            if [ "${base_to_reboot}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
+	        # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
-                    packages_upgraded=$packages_upgraded","
+                    packages_upgraded=${packages_upgraded}","
                 fi
-                packages_upgraded=$packages_upgraded"{\"name\":\"base\",\"size\":\"$base_is_size\","
-                packages_upgraded=$packages_upgraded"\"repository\":\"${product_repo}\","
-                packages_upgraded=$packages_upgraded"\"current_version\":\"$base_to_delete\","
-                packages_upgraded=$packages_upgraded"\"new_version\":\"$base_to_reboot\"}"
+                packages_upgraded=${packages_upgraded}"{\"name\":\"base\",\"size\":\"${base_is_size}\","
+                packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
+                packages_upgraded=${packages_upgraded}"\"current_version\":\"${base_to_delete}\","
+                packages_upgraded=${packages_upgraded}"\"new_version\":\"${base_to_reboot}\"}"
                 upgrade_needs_reboot="1"
             fi
         fi
@@ -312,15 +320,16 @@ else
 
         if [ -n "${kernel_to_reboot}" ]; then
             kernel_to_delete="$(opnsense-version -v kernel)"
-            kernel_is_size="$(opnsense-update -fkSr $kernel_to_reboot)"
-            if [ "$kernel_to_reboot" != "$kernel_to_delete" -a -n "$kernel_is_size" ]; then
+            kernel_is_size="$(opnsense-update -fkSr ${kernel_to_reboot})"
+            if [ "${kernel_to_reboot}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
+	        # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
-                    packages_upgraded=$packages_upgraded","
+                    packages_upgraded=${packages_upgraded}","
                 fi
-                packages_upgraded=$packages_upgraded"{\"name\":\"kernel\",\"size\":\"$kernel_is_size\","
-                packages_upgraded=$packages_upgraded"\"repository\":\"${product_repo}\","
-                packages_upgraded=$packages_upgraded"\"current_version\":\"$kernel_to_delete\","
-                packages_upgraded=$packages_upgraded"\"new_version\":\"$kernel_to_reboot\"}"
+                packages_upgraded=${packages_upgraded}"{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\","
+                packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
+                packages_upgraded=${packages_upgraded}"\"current_version\":\"${kernel_to_delete}\","
+                packages_upgraded=${packages_upgraded}"\"new_version\":\"${kernel_to_reboot}\"}"
                 upgrade_needs_reboot="1"
             fi
         fi

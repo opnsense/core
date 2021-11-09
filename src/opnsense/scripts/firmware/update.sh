@@ -38,7 +38,8 @@ mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
 
-if [ "${CMD}" = "force" ]; then
+# figure out if we are crossing ABIs
+if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then
 	DO_FORCE="-f"
 fi
 

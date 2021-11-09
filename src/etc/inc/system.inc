@@ -652,7 +652,8 @@ function system_firmware_configure($verbose = false)
         flush();
     }
 
-    $args = [];
+    /* calculate the effective ABI */
+    $args = [ exec_safe('-A %s',  trim(shell_exec('opnsense-version -x'))) ];
 
     if (!empty($config['system']['firmware']['mirror'])) {
         $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror']));
