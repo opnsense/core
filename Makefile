@@ -44,19 +44,15 @@ _CORE_NEXT=	${CORE_ABI:C/\./ /}
 .if ${_CORE_NEXT:[2]} == 7 # community
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
 CORE_NEXT:=	${CORE_NEXT}.1
-CORE_ALTABI?=	${CORE_ABI}
 .elif ${_CORE_NEXT:[2]} == 10 # business
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
 CORE_NEXT:=	${CORE_NEXT}.4
-CORE_ALTABI?=	${_CORE_NEXT:[1]}.7
 .elif ${_CORE_NEXT:[2]} == 1 # community
 CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
-CORE_ALTABI?=	${CORE_ABI}
 .elif ${_CORE_NEXT:[2]} == 4 # business
 CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.10
-CORE_ALTABI?=	${_CORE_NEXT:[1]}.1
 .else
 .error Unsupported minor version for CORE_ABI=${CORE_ABI}
 .endif

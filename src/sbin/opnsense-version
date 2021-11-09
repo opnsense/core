@@ -25,6 +25,7 @@
 
 DEFAULTS="\${product_name} \${product_version}"
 VERSIONDIR="/usr/local/opnsense/version"
+PLUGINCTL="/usr/local/sbin/pluginctl"
 OPENSSL="/usr/local/bin/openssl"
 PKG="/usr/local/sbin/pkg-static"
 TARGET="core"
@@ -74,7 +75,7 @@ while getopts AacefHiNnsVvwx OPT; do
 		OUTPUT="${OUTPUT} \${product_website}"
 		;;
 	x)
-		OUTPUT="${OUTPUT} \${product_altabi}"
+		OUTPUT="${OUTPUT} \${target_abi_major}.\${target_abi_minor}"
 		;;
 	*)
 		echo "Usage: man ${0##*/}" >&2
@@ -127,6 +128,36 @@ core)
 	if [ -z "${OUTPUT%%*product_size*}" -a -f ${PKG} ]; then
 		RESULT=$(${PKG} info -s ${product_id})
 		product_size=${RESULT##* }
+	fi
+	if [ -z "${OUTPUT%%*target_abi*}" -a -f ${PLUGINCTL} ]; then
+		target_abi_major=${product_abi%%.*}
+		target_abi_minor=${product_abi#*.}
+
+		IS_BUSINESS=$(echo ${product_name} | grep -c -- '-business')
+		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.mirror | \
+		    grep -c 'opnsense-update\.deciso\.com')
+
+		if [ "${IS_BUSINESS}${WANT_BUSINESS}" = "01" -o ]; then
+			case ${target_abi_minor} in
+			1[0-2])
+				target_abi_major=$((target_abi_major + 1))
+				target_abi_minor=$((target_abi_minor - 9))
+				;;
+			*)
+				target_abi_minor=$((target_abi_minor + 3))
+				;;
+			esac
+		elif [ "${IS_BUSINESS}${WANT_BUSINESS}" = "10" ]; then
+			case ${target_abi_minor} in
+			[1-3])
+				target_abi_major=$((target_abi_major - 1))
+				target_abi_minor=$((target_abi_minor + 9))
+				;;
+			*)
+				target_abi_minor=$((target_abi_minor - 3))
+				;;
+			esac
+		fi
 	fi
 	;;
 *)
