@@ -80,7 +80,7 @@ if __name__ == '__main__':
             filter = inputargs.filter.replace('*', '.*').lower()
             if filter.find('*') == -1:
                 # no wildcard operator, assume partial match
-                filter =  ".*%s.*" % filter
+                filter = ".*%s.*" % filter
             filter_regexp = re.compile(filter)
         except sre_constants.error:
             # remove illegal expression

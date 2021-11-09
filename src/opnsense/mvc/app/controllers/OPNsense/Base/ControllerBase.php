@@ -196,7 +196,7 @@ class ControllerBase extends ControllerRoot
         }
 
         // parse product properties, use template (.in) when not found
-        $firmware_product_fn =  __DIR__ . '/../../../../../version/core';
+        $firmware_product_fn = __DIR__ . '/../../../../../version/core';
         $firmware_product_fn = !is_file($firmware_product_fn) ? $firmware_product_fn . ".in" : $firmware_product_fn;
         $product_vars = json_decode(file_get_contents($firmware_product_fn), true);
         foreach ($product_vars as $product_key => $product_var) {
@@ -234,7 +234,7 @@ class ControllerBase extends ControllerRoot
             if (empty($policies[$policy_name])) {
                 $policies[$policy_name] = "";
             }
-            $policies[$policy_name] .=  " {$policy_content}";
+            $policies[$policy_name] .= " {$policy_content}";
         }
         $csp = "";
         foreach ($policies as $policy_name => $policy) {

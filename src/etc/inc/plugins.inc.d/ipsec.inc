@@ -667,7 +667,7 @@ function ipsec_dump_spd()
                         $upperspec = explode("/", $linea[0]);
                         $cursp['proto'] = $upperspec[0];
                         list($cursp['src'], $cursp['dst']) = explode("-", $upperspec[2]);
-                        $cursp['reqid'] =  substr($upperspec[3], strpos($upperspec[3], "#") + 1);
+                        $cursp['reqid'] = substr($upperspec[3], strpos($upperspec[3], "#") + 1);
                         break;
                 }
             }
@@ -1161,7 +1161,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if (isset($a_client['net_list'])) {
                 foreach ($a_phase2 as $ph2ent) {
                     if (!isset($ph2ent['disabled']) && isset($ph2ent['mobile'])) {
-                        $net_list[] =  ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+                        $net_list[] = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     }
                 }
             }
