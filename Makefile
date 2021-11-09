@@ -41,12 +41,20 @@ CORE_TYPE?=	community
 .endfor
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
-.if ${_CORE_NEXT:[2]} == 7
+.if ${_CORE_NEXT:[2]} == 7 # community
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
 CORE_NEXT:=	${CORE_NEXT}.1
-.else
+.elif ${_CORE_NEXT:[2]} == 10 # business
+CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
+CORE_NEXT:=	${CORE_NEXT}.4
+.elif ${_CORE_NEXT:[2]} == 1 # community
 CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
+.elif ${_CORE_NEXT:[2]} == 4 # business
+CORE_NEXT=	${_CORE_NEXT:[1]}
+CORE_NEXT:=	${CORE_NEXT}.10
+.else
+.error Unsupported minor version for CORE_ABI=${CORE_ABI}
 .endif
 
 .if exists(${GIT}) && exists(${GITVERSION}) && exists(${.CURDIR}/.git)
