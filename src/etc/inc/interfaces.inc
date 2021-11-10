@@ -4550,7 +4550,6 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
         return $result;
     }
 
-
     $realifs = array_unique($realifs);
     if (!empty($ifconfig_details)) {
         $intf_details = $ifconfig_details;
