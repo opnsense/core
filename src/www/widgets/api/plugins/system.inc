@@ -130,7 +130,8 @@ function system_api_disk()
     }
 
     $result['devices'] = array();
-    exec("/bin/df -Tht ufs,tmpfs,zfs,cd9660", $disk_info);
+    exec('/bin/df -Tht ufs,zfs,cd9660 | /usr/bin/grep -v "tmpfs"', $disk_info);
+    exec('/bin/df -Tht tmpfs', $disk_info);
     foreach ($disk_info as $line) {
         if (strpos($line,'Mounted on') === false) {
             $parts = preg_split('/\s+/', $line);
