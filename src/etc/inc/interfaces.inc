@@ -2424,6 +2424,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             mwexec($cmd);
         }
     }
+
+    /* set p(ermanent)-promiscuous mode required for e.g. VLAN MAC spoofing */
     if (in_array('ppromisc', $ifconfig_details[$realif]['flags']) !== !empty($wancfg['promisc'])) {
         mwexec("/sbin/ifconfig " . $realif . " " . (empty($wancfg['promisc']) ? "-" : "") . "promisc");
     }
