@@ -4119,7 +4119,7 @@ function interfaces_staticarp_configure($if)
     }
 }
 
-function get_interfaces_info($include_unlinked=false)
+function get_interfaces_info($include_unlinked = false)
 {
     global $config;
 
