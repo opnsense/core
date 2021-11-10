@@ -329,10 +329,16 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] == $dhcpv6if && is_ipaddrv6($vip['subnet'])) {
-                $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
-                $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
+            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
             }
+
+            if (is_linklocal($vip['subnet'])) {
+                continue;
+            }
+
+            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+            $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
         }
 
         /* VIPs may duplicate readings from system */
@@ -519,6 +525,10 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            }
+
+            if (is_linklocal($vip['subnet'])) {
                 continue;
             }
 
