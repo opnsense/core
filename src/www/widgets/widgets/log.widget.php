@@ -234,7 +234,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
       <th data-column-id="__digest__" data-type="string" class="hidden"><?= gettext('Hash') ?></th>
       <th data-column-id="action" data-type="icon" class="text-center"><?= gettext('Act') ?></th>
       <th data-column-id="__timestamp__" data-type="time"><?= gettext('Time') ?></th>
-      <th data-column-id="interface" data-type="interface" class="text-center"><?= gettext('Interface') ?></th>
+      <th data-column-id="interface" data-type="interface" class="text-center"><?= gettext('I/F') ?></th>
       <th data-column-id="src" data-type="source_address"><?= gettext('Source') ?></th>
       <th data-column-id="dst" data-type="destination_address"><?= gettext('Destination') ?></th>
       <th data-column-id="dstport" data-type="destination_port"><?= gettext('Port') ?></th>
