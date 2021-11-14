@@ -84,13 +84,13 @@ class RuleCache(object):
                                     src_section = section_name.split('metadata_', 1)[1]
 
                                 if  src_section in src_pointer:
-                                    rule_data = src_pointer[src_section]
+                                    rule_data = set(src_pointer[src_section].split("\n"))
                                 elif src_section in rule['metadata']:
                                     # metadata field is actually a rule field (category)
-                                    rule_data = rule['metadata'][src_section]
+                                    rule_data = set(rule['metadata'][src_section].split("\n"))
                                 else:
-                                    rule_data = None
-                                if rule_data not in configured_policies[policy_id][section_name]:
+                                    rule_data = set()
+                                if not rule_data.intersection(configured_policies[policy_id][section_name]):
                                     is_matched = False
                         if is_matched:
                             policy_match = policy_id
@@ -190,10 +190,15 @@ class RuleCache(object):
                                 for mdtag in list(csv.reader([value], delimiter=","))[0]:
                                     parts = mdtag.split(maxsplit=1)
                                     if parts:
-                                        record['metadata'][parts[0]] = parts[1] if len(parts) > 1 else None
+                                        if parts[0] in record['metadata'] and record['metadata'][parts[0]] is not None:
+                                            new_content = "%s\n%s" % (record['metadata'][parts[0]], parts[1])
+                                        elif parts[0] in record['metadata']:
+                                            new_content = parts[1]
+                                        else:
+                                            new_content = parts[1] if len(parts) > 1 else None
+                                        record['metadata'][parts[0]] = new_content
                             else:
                                 record[prop] = value
-
                     rule_info_record['metadata'] = record
 
                 yield rule_info_record
@@ -276,11 +281,12 @@ class RuleCache(object):
                             "value": rule_info_record['metadata'][prop]
                         })
                     for prop in rule_info_record['metadata']['metadata']:
-                        rule_properties.append({
-                            "sid": rule_info_record['metadata']['sid'],
-                            "property": prop,
-                            "value": rule_info_record['metadata']['metadata'][prop]
-                        })
+                        for val in rule_info_record['metadata']['metadata'][prop].split("\n"):
+                            rule_properties.append({
+                                "sid": rule_info_record['metadata']['sid'],
+                                "property": prop,
+                                "value": val
+                            })
 
             cur.executemany(rules_sql, rules)
             cur.executemany(rule_prop_sql, rule_properties)
@@ -439,7 +445,10 @@ class RuleCache(object):
             for row in cur.fetchall():
                 if row[0] not in rule_props:
                     rule_props[row[0]] = dict()
-                rule_props[row[0]][row[1]] = row[2]
+                if row[1] in rule_props[row[0]]:
+                    rule_props[row[0]][row[1]] = "%s\n%s" % (rule_props[row[0]][row[1]], row[2])
+                else:
+                    rule_props[row[0]][row[1]] = row[2]
 
             for record in result['rows']:
                 if record['sid'] in rule_props:
