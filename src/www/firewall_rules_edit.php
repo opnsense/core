@@ -335,13 +335,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['floating']) && !empty($pconfig['gateway']) && (empty($pconfig['direction']) || $pconfig['direction'] == "any")) {
         $input_errors[] = gettext("You can not use gateways in Floating rules without choosing a direction.");
-    } elseif (empty($pconfig['floating']) && $pconfig['direction'] != "in" && !empty($pconfig['gateway'])) {
-        // XXX: Technically this is not completely true, but since you can only send to other destinations reachable
-        //      from the selected interface in this case, it will likely be confusing for our users.
-        //      Policy based routing rules on inbound traffic can use the correct outbound interface, which is the
-        //      scenario that is most commonly used .
-        //      For compatibilty reasons, we only apply this on non-floating rules.
-        $input_errors[] = gettext("Policy based routing (gateway setting) is only supported on inbound rules.");
     }
 
     if (!in_array($pconfig['protocol'], array("tcp","tcp/udp"))) {
