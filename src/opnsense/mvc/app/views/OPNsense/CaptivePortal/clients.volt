@@ -98,7 +98,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         $.each(data[i], function(key, value) {
                             record[key] = value !== null  ? value : "";
                         });
-                        record['startTime'] = moment(parseInt(record['startTime'])*1000);
                         table.push(record);
                     }
                     $("#grid-clients").bootgrid('append', table);
