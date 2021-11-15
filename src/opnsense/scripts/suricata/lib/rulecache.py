@@ -195,7 +195,7 @@ class RuleCache(object):
                                         elif parts[0] in record['metadata']:
                                             new_content = parts[1]
                                         else:
-                                            new_content = parts[1] if len(parts) > 1 else None
+                                            new_content = parts[1] if len(parts) > 1 else ""
                                         record['metadata'][parts[0]] = new_content
                             else:
                                 record[prop] = value
