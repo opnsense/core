@@ -67,6 +67,7 @@
 /usr/local/etc/opnsense-beep.d/low
 /usr/local/etc/opnsense-beep.d/start
 /usr/local/etc/opnsense-beep.d/stop
+/usr/local/etc/opnsense-update.conf
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20150402
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160104
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20160630
