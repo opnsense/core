@@ -38,6 +38,11 @@ changelog_remove()
 	echo '[]' > ${DESTDIR}/index.json
 }
 
+changelog_checksum()
+{
+	echo $(sha256 -q "${1}" 2> /dev/null || true)
+}
+
 changelog_fetch()
 {
 	CORE_ABI=$(opnsense-version -a)
@@ -52,11 +57,17 @@ changelog_fetch()
 
 	URL="${URLPREFIX}/sets/changelog.txz"
 
-	rm -rf ${WORKDIR}
 	mkdir -p ${WORKDIR}
 
+	CHECKSUM=$(changelog_checksum ${WORKDIR}/changelog.txz)
+
+	${FETCH} -mo ${WORKDIR}/changelog.txz "${URL}"
+
+	if [ "${CHECKSUM}" = "$(changelog_checksum ${WORKDIR}/changelog.txz)" ]; then
+		exit 1
+	fi
+
 	${FETCH} -o ${WORKDIR}/changelog.txz.sig "${URL}.sig"
-	${FETCH} -o ${WORKDIR}/changelog.txz "${URL}"
 	opnsense-verify -q ${WORKDIR}/changelog.txz
 
 	changelog_remove
