@@ -71,6 +71,20 @@ if [ -n "${DO_SCRIPT}" ]; then
 else
 	SELECTED=${1}
 	shift
+
+	FOUND=
+
+	for COMMAND in ${COMMANDS}; do
+		if [ "${SELECTED}" != ${COMMAND} ]; then
+			continue
+		fi
+
+		FOUND=1
+	done
+
+	if [ -z "${FOUND}" ]; then
+		exit 0
+	fi
 fi
 
 if [ -n "${DO_RANDOM}" ]; then
@@ -80,12 +94,7 @@ fi
 if [ -f "${SELECTED}" ]; then
 	${FLOCK} ${LOCKFILE} ${SELECTED} "${@}"
 	exit ${?}
+else
+	${FLOCK} ${LOCKFILE} ${BASEDIR}/${SELECTED}.sh "${@}"
+	# backend expects us to avoid returning errors
 fi
-
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
-	fi
-
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh "${@}"
-done
