@@ -82,6 +82,7 @@ def exec_config_cmd(exec_command):
 parser = argparse.ArgumentParser()
 parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
+parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
 parser.add_argument(
     "-t",
     help="threshold between events,  wait this interval before executing commands, combine input into single events",
@@ -143,6 +144,8 @@ if args.e:
 else:
     # normal execution mode
     for exec_command in exec_commands:
+        if args.d:
+            exec_command = '&' + exec_command
         result=exec_config_cmd(exec_command=exec_command)
         if result is None:
             sys.exit(-1)
