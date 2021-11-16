@@ -100,8 +100,10 @@ function core_services()
     $services[] = array(
         'description' => gettext('Cron'),
         'php' => array(
-            "restart" => array('system_cron_configure')
+            'start' => ['system_cron_configure'],
+            'restart' => ['system_cron_configure'],
         ),
+        'pidfile' => '/var/run/cron.pid',
         'name' => 'cron',
     );
 

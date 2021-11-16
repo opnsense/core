@@ -872,7 +872,7 @@ function system_devd_configure($verbose = false)
     }
 }
 
-function system_cron_configure($verbose = false, $defer = false)
+function system_cron_configure($verbose = false)
 {
     function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*')
     {
@@ -931,9 +931,7 @@ function system_cron_configure($verbose = false, $defer = false)
 
     configd_run('template reload OPNsense/Cron');
 
-    if (!$defer) {
-        configd_run('cron restart');
-    }
+    mwexec('/etc/rc.d/cron restart');
 
     if ($verbose) {
         echo "done.\n";
