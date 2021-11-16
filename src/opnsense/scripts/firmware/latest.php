@@ -35,10 +35,10 @@ $ret = json_decode(@file_get_contents($changelogfile), true);
 if ($ret != null) {
     foreach ($ret as $entry) {
         if ($entry['series'] == $series) {
-	    if (version_compare($entry['version'], $version, '>')) {
-	        $version = $entry['version'];
-	    }
-	}
+            if (version_compare($entry['version'], $version, '>')) {
+                $version = $entry['version'];
+            }
+        }
     }
 }
 
