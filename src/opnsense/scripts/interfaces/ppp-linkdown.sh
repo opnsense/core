@@ -57,7 +57,7 @@ elif [ "${AF}" = "inet6" ]; then
 	done
 fi
 
-daemon -f /usr/local/opnsense/service/configd_ctl.py dns reload
+/usr/local/sbin/configctl -d dns reload
 
 UPTIME=$(opnsense/scripts/interfaces/ppp-uptime.sh ${IF})
 if [ -n "${UPTIME}" -a -f "/conf/${IF}.log" ]; then

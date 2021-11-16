@@ -2993,12 +2993,14 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
     $dhcp6cscript .= "\t\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
     $dhcp6cscript .= "\tfi\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t# XXX async?\n";
+    $dhcp6cscript .= "\t/usr/local/sbin/configctl interface newipv6 {$wanif}\n";
     $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "EXIT|RELEASE)\n";
     $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
     $dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
-    $dhcp6cscript .= "\t/usr/local/opnsense/service/configd_ctl.py interface newipv6 {$wanif}\n";
+    $dhcp6cscript .= "\t# XXX async?\n";
+    $dhcp6cscript .= "\t/usr/local/sbin/configctl interface newipv6 {$wanif}\n";
     $dhcp6cscript .= "\t;;\n";
     $dhcp6cscript .= "*)\n";
     $dhcp6cscript .= "\t;;\n";

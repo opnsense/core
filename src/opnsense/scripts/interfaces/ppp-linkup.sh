@@ -30,10 +30,10 @@ if [ "${2}" = "inet" ]; then
 		fi
 	fi
 
-	daemon -f /usr/local/opnsense/service/configd_ctl.py interface newip ${1}
+	/usr/local/sbin/configctl -d interface newip ${1}
 elif [ "${2}" = "inet6" ]; then
-	echo ${4} |cut -d% -f1 > /tmp/${1}_routerv6
-	echo ${3} |cut -d% -f1 > /tmp/${1}_ipv6
+	echo ${4} | cut -d% -f1 > /tmp/${1}_routerv6
+	echo ${3} | cut -d% -f1 > /tmp/${1}_ipv6
 
 	if grep -q dnsallowoverride /conf/config.xml; then
 		# write nameservers to file
@@ -52,7 +52,7 @@ elif [ "${2}" = "inet6" ]; then
 		fi
 	fi
 
-	daemon -f /usr/local/opnsense/service/configd_ctl.py interface newipv6 ${1}
+	/usr/local/sbin/configctl -d interface newipv6 ${1}
 fi
 
 touch /tmp/${1}_uptime
