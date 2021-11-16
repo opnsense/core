@@ -28,13 +28,16 @@
 set -e
 
 DESTDIR="/usr/local/opnsense/changelog"
-WORKDIR="/tmp/changelog"
 FETCH="fetch -qT 5"
 
 changelog_remove()
 {
 	mkdir -p ${DESTDIR}
-	rm -rf ${DESTDIR}/*
+
+	for FILE in $(find ${DESTDIR} -depth 1 \! -name 'changelog.txz*'); do
+		rm -rf ${FILE}
+	done
+
 	echo '[]' > ${DESTDIR}/index.json
 }
 
@@ -57,22 +60,21 @@ changelog_fetch()
 
 	URL="${URLPREFIX}/sets/changelog.txz"
 
-	mkdir -p ${WORKDIR}
+	mkdir -p ${DESTDIR}
 
-	CHECKSUM=$(changelog_checksum ${WORKDIR}/changelog.txz)
+	CHECKSUM=$(changelog_checksum ${DESTDIR}/changelog.txz)
 
-	${FETCH} -mo ${WORKDIR}/changelog.txz "${URL}"
+	${FETCH} -mo ${DESTDIR}/changelog.txz "${URL}"
 
-	if [ "${CHECKSUM}" = "$(changelog_checksum ${WORKDIR}/changelog.txz)" ]; then
-		exit 1
+	if [ "${CHECKSUM}" != "$(changelog_checksum ${DESTDIR}/changelog.txz)" ]; then
+		${FETCH} -o ${DESTDIR}/changelog.txz.sig "${URL}.sig"
 	fi
 
-	${FETCH} -o ${WORKDIR}/changelog.txz.sig "${URL}.sig"
-	opnsense-verify -q ${WORKDIR}/changelog.txz
+	opnsense-verify -q ${DESTDIR}/changelog.txz
 
 	changelog_remove
 
-	tar -C ${DESTDIR} -xJf ${WORKDIR}/changelog.txz
+	tar -C ${DESTDIR} -xJf ${DESTDIR}/changelog.txz
 }
 
 changelog_show()
@@ -88,6 +90,10 @@ COMMAND=${1}
 VERSION=${2}
 
 if [ "${COMMAND}" = "fetch" ]; then
+	changelog_fetch
+elif [ "${COMMAND}" = "cron" ]; then
+	# pause for at least 10 minutes spread out over the next 12 hours
+	sleep $(jot -r 1 600 43800)
 	changelog_fetch
 elif [ "${COMMAND}" = "remove" ]; then
 	changelog_remove
