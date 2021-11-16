@@ -43,8 +43,39 @@ update
 upgrade
 "
 
-SELECTED=${1}
-shift
+DO_RANDOM=
+DO_SCRIPT=
+
+while getopts r:s: OPT; do
+	case ${OPT} in
+	r)
+		DO_RANDOM="-r $(jot -r 1 1 ${OPTARG})"
+		;;
+	s)
+		# make sure the script exists
+		if [ ! -f "${OPTARG}" ]; then
+			exit 1
+		fi
+		DO_SCRIPT="-s ${OPTARG}"
+		;;
+	*)
+		# ignore unknown
+		;;
+	esac
+done
+
+shift $((${OPTIND} - 1))
+
+if [ -n "${DO_SCRIPT}" ]; then
+	SELECTED=${DO_SCRIPT#"-s "}
+else
+	SELECTED=${1}
+	shift
+fi
+
+if [ -n "${DO_RANDOM}" ]; then
+	sleep ${DO_RANDOM#"-r "}
+fi
 
 if [ -f "${SELECTED}" ]; then
 	${FLOCK} ${LOCKFILE} ${SELECTED} "${@}"
