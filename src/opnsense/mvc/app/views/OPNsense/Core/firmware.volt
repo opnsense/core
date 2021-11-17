@@ -56,6 +56,7 @@
                 let show_log = '';
 
                 $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
+                $.needs_reboot = data['needs_reboot'];
 
                 // show upgrade list
                 $('#upgrade').show();
@@ -220,7 +221,7 @@
     function upgrade_ui(major)
     {
         let reboot_msg = "";
-        if ( $.upgrade_needs_reboot == "1" || major === true) {
+        if (major === true || $.needs_reboot == "1") {
             reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";

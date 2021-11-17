@@ -287,7 +287,7 @@ class FirmwareController extends ApiControllerBase
                         $this->formatBytes($active_size)
                     );
                 }
-                if ($response['upgrade_needs_reboot'] == 1) {
+                if ($response['needs_reboot'] == 1) {
                     $response['status_msg'] = sprintf(
                         '%s %s',
                         $response['status_msg'],

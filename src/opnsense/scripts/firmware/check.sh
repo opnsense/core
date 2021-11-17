@@ -47,20 +47,21 @@ CUSTOMPKG=${1}
 rm -f ${JSONFILE}
 : > ${LOCKFILE}
 
-base_to_reboot=""
+base_to_reboot=
 connection="error"
-download_size=""
+download_size=
 force_all=
 itemcount=0
-kernel_to_reboot=""
+kernel_to_reboot=
 last_check="unknown"
 linecount=0
-packages_downgraded=""
-packages_new=""
-packages_upgraded=""
+needs_reboot="0"
+packages_downgraded=
+packages_new=
+packages_upgraded=
 product_repo="OPNsense"
 repository="error"
-sets_upgraded=""
+sets_upgraded=
 upgrade_needs_reboot="0"
 
 product_suffix="-$(pluginctl -g system.firmware.type)"
@@ -308,7 +309,8 @@ else
                 packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
                 packages_upgraded=${packages_upgraded}"\"current_version\":\"${base_to_delete}\","
                 packages_upgraded=${packages_upgraded}"\"new_version\":\"${base_to_reboot}\"}"
-                upgrade_needs_reboot="1"
+                upgrade_needs_reboot="1" # XXX remove faulty value in 22.1.x
+                needs_reboot="1"
             fi
         fi
 
@@ -330,7 +332,8 @@ else
                 packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
                 packages_upgraded=${packages_upgraded}"\"current_version\":\"${kernel_to_delete}\","
                 packages_upgraded=${packages_upgraded}"\"new_version\":\"${kernel_to_reboot}\"}"
-                upgrade_needs_reboot="1"
+                upgrade_needs_reboot="1" # XXX remove faulty value in 22.1.x
+                needs_reboot="1"
             fi
         fi
     fi
@@ -340,7 +343,8 @@ packages_is_size="$(opnsense-update -SRp)"
 if [ -n "${packages_is_size}" ]; then
     upgrade_major_version=$(opnsense-update -vR)
     upgrade_major_message=$(sed -e 's/"/\\&/g' -e "s/%%UPGRADE_RELEASE%%/${upgrade_major_version}/g" /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | tr '\n' ' ')
-    upgrade_needs_reboot="1"
+    upgrade_needs_reboot="1" # provided for API convenience only
+
     sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
 
     kernel_to_delete="$(opnsense-version -v kernel)"
@@ -368,6 +372,7 @@ cat > ${JSONFILE} << EOF
     "downgrade_packages":[${packages_downgraded}],
     "download_size":"${download_size}",
     "last_check":"${last_check}",
+    "needs_reboot":"${needs_reboot}",
     "new_packages":[${packages_new}],
     "os_version":"${os_version}",
     "product_id":"${product_id}",
