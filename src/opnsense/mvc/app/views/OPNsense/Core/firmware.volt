@@ -81,6 +81,8 @@
 
                 packagesInfo(false);
             } else if (data['status'] == "upgrade") {
+                $.status_reboot = data['status_reboot'];
+
                 if (data['upgrade_major_message'] != '') {
                     /* we trust this data, it was signed by us and secured by csrf */
                     stdDialogInform(
@@ -219,7 +221,7 @@
     {
         if (major !== true && $.status_reboot != "1") {
             backend('update');
-	} else {
+        } else {
             let reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
