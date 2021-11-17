@@ -210,6 +210,7 @@ class FirmwareController extends ApiControllerBase
             $active_array = &$response['all_packages'];
             $active_size = $update_size;
             $active_status = 'update';
+            $active_reboot = '0';
 
             $sorted = [];
 
@@ -291,13 +292,14 @@ class FirmwareController extends ApiControllerBase
                     ($active_status == 'update' && $response['needs_reboot'] == 1) ||
                     ($active_status == 'upgrade' && $response['upgrade_needs_reboot'] == 1)
                 ) {
-                    $response['status_reboot'] = '1';
+                    $active_reboot = '1';
                     $response['status_msg'] = sprintf(
                         '%s %s',
                         $response['status_msg'],
                         gettext('This update requires a reboot.')
                     );
                 }
+                $response['status_reboot'] = $active_reboot;
                 $response['status'] = $active_status;
             } elseif (!$active_count) {
                 $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
