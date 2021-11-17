@@ -291,6 +291,7 @@ class FirmwareController extends ApiControllerBase
                     ($active_status == 'update' && $response['needs_reboot'] == 1) ||
                     ($active_status == 'upgrade' && $response['upgrade_needs_reboot'] == 1)
                 ) {
+                    $response['status_reboot'] = '1';
                     $response['status_msg'] = sprintf(
                         '%s %s',
                         $response['status_msg'],
