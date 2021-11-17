@@ -58,7 +58,7 @@ def exec_config_cmd(exec_command):
         sock.connect(configd_socket_name)
     except socket.error:
         syslog_error('unable to connect to configd socket (@%s)'%configd_socket_name)
-        print('unable to connect to configd socket (@%s)'%configd_socket_name)
+        print('unable to connect to configd socket (@%s)'%configd_socket_name, file=sys.stderr)
         return None
 
     try:
@@ -73,8 +73,8 @@ def exec_config_cmd(exec_command):
 
         return ''.join(data)[:-3]
     except:
-        print ('error in configd communication %s, see syslog for details')
         syslog_error('error in configd communication \n%s'%traceback.format_exc())
+        print ('error in configd communication %s, see syslog for details', file=sys.stderr)
     finally:
         sock.close()
 
@@ -83,6 +83,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
+parser.add_argument("-q", help="run quietly by muting standard output", action="store_true")
 parser.add_argument(
     "-t",
     help="threshold between events,  wait this interval before executing commands, combine input into single events",
@@ -106,7 +107,7 @@ while not os.path.exists(configd_socket_name):
     i += 1
 
 if not os.path.exists(configd_socket_name):
-    print('configd socket missing (@%s)'%configd_socket_name)
+    print('configd socket missing (@%s)'%configd_socket_name, file=sys.stderr)
     sys.exit(-1)
 
 
@@ -149,4 +150,5 @@ else:
         result=exec_config_cmd(exec_command=exec_command)
         if result is None:
             sys.exit(-1)
-        print('%s' % (result.strip()))
+        if not args.q:
+            print('%s' % (result.strip()))
