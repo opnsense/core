@@ -495,6 +495,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_2.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.xml
