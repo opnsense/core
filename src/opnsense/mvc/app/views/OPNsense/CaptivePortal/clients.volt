@@ -84,6 +84,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             });
                         });
                     });
+                    $(this).find(".bootgrid-tooltip").each(function (index) {
+                        $(this).tooltip();
+                    });
                 });
             }
             ajaxGet("/api/captiveportal/session/list/"+zoneid+"/", {}, function(data, status) {
