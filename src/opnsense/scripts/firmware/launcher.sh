@@ -52,10 +52,6 @@ while getopts r:s: OPT; do
 		DO_RANDOM="-r $(jot -r 1 1 ${OPTARG})"
 		;;
 	s)
-		# make sure the script exists
-		if [ ! -f "${OPTARG}" ]; then
-			exit 1
-		fi
 		DO_SCRIPT="-s ${OPTARG}"
 		;;
 	*)
@@ -67,34 +63,40 @@ done
 shift $((${OPTIND} - 1))
 
 if [ -n "${DO_SCRIPT}" ]; then
-	SELECTED=${DO_SCRIPT#"-s "}
+	COMMAND=${DO_SCRIPT#"-s "}
 else
-	SELECTED=${1}
-	shift
-
 	FOUND=
 
 	for COMMAND in ${COMMANDS}; do
-		if [ "${SELECTED}" != ${COMMAND} ]; then
+		if [ "${1}" != ${COMMAND} ]; then
 			continue
 		fi
 
 		FOUND=1
 	done
 
-	if [ -z "${FOUND}" ]; then
-		exit 0
+	if [ -n "${FOUND}" ]; then
+		COMMAND=${BASEDIR}/${1}.sh
+	else
+		COMMAND=
 	fi
+
+	shift
+fi
+
+# make sure the script exists
+if [ ! -f "${COMMAND}" ]; then
+	exit 0
 fi
 
 if [ -n "${DO_RANDOM}" ]; then
 	sleep ${DO_RANDOM#"-r "}
 fi
 
-if [ -f "${SELECTED}" ]; then
-	${FLOCK} ${LOCKFILE} ${SELECTED} "${@}"
-	exit ${?}
-else
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${SELECTED}.sh "${@}"
-	# backend expects us to avoid returning errors
+${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
+RET=${?}
+
+# backend expects us to avoid returning errors
+if [ -n "${DO_SCRIPT}" ]; then
+	exit ${RET}
 fi
