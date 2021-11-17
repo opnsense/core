@@ -8,6 +8,3 @@
 /bin/rm -f /var/etc/nameserver_${1}
 /bin/rm -f /var/etc/searchdomain_${1}
 /bin/rm -f /var/etc/searchdomain_v6${1}
-
-# XXX async? needed at all?
-/usr/local/sbin/configctl filter reload
