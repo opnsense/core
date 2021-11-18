@@ -889,7 +889,7 @@ function ipsec_configure_spd()
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
                     $tunnel_src = ipsec_get_phase1_src($ph1ent);
-                    $tunnel_dst = ipsec_resolve($ph1ent['remote-gateway']);
+                    $tunnel_dst = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
 
                     // XXX: remove me, temporary logging to validate https://github.com/opnsense/core/issues/1773
                     $peerid_spec = ipsec_find_id($ph1ent, "peer");
