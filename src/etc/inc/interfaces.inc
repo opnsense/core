@@ -3972,7 +3972,13 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
 function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 {
     if (strstr($interface, '_vip')) {
-        return get_configured_carp_interface_list($interface);
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['mode'] == 'carp') {
+                if ($interface == "{$vip['interface']}_vip{$vip['vhid']}" && is_ipaddrv4($vip['subnet'])) {
+                    return $vip['subnet'];
+                }
+            }
+        }
     }
 
     list ($ip) = interfaces_primary_address($interface, $ifconfig_details);
@@ -3983,7 +3989,13 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
 {
     if (strstr($interface, '_vip')) {
-        return get_configured_carp_interface_list($interface, 'inet6');
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['mode'] == 'carp') {
+                if ($interface == "{$vip['interface']}_vip{$vip['vhid']}" && is_ipaddrv6($vip['subnet'])) {
+                    return $vip['subnet'];
+                }
+            }
+        }
     }
 
     list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
