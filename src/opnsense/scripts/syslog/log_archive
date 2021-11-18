@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2021 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,8 @@ foreach(new RecursiveIteratorIterator($it) as $file) {
         }
     }
 }
-// remove expired logs
+
+// remove expired logs and set latest.log symlink
 foreach ($relevant_logs as $log_subject => $items)  {
     if (count($items) > $preserve_logs) {
         rsort($items);
@@ -59,4 +60,11 @@ foreach ($relevant_logs as $log_subject => $items)  {
             @unlink($filename);
         }
     }
+
+    $target = "/var/log/{$log_subject}/{$log_subject}_" . date('Ymd') . '.log';
+    $link = "/var/log/{$log_subject}/latest.log";
+
+    @touch($target);
+    @unlink($link);
+    @symlink($target, $link);
 }
