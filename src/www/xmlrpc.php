@@ -62,8 +62,8 @@ function authenticate_user($username, $password)
         if ($authenticator != null && $authenticator->authenticate($username, $password)) {
             $authResult = $authenticator->getLastAuthProperties();
             if (array_key_exists('username', $authResult)) {
-	        $username = $authResult['username'];
-	    }
+                 $username = $authResult['username'];
+            }
             return $username;
         }
     }
