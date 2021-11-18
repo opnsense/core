@@ -235,12 +235,10 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             continue;
         }
 
-        /* XXX static mode is a little iffy: we can't set it on a non-VHID VIP and should migrate to a checkbox */
-        $static_mode = !empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] == 'static';
         $carp_mode = false;
         $src_addr = false;
 
-        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'static' ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
+        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         }
@@ -354,7 +352,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix " . ($carp_mode || $static_mode ? "off" : "on") . ";\n";
+            $radvdconf .= "\t\tDeprecatePrefix " . ($carp_mode || !empty($dhcpv6ifconf['rastatic']) ? "off" : "on") . ";\n";
             switch ($dhcpv6ifconf['ramode']) {
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
@@ -385,7 +383,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
                 $radvdconf .= "\troute {$raroute} {\n";
-                if ($carp_mode || $static_mode) {
+                if ($carp_mode || !empty($dhcpv6ifconf['rastatic'])) {
                     $radvdconf .= "\t\tRemoveRoute off;\n";
                 }
                 if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {

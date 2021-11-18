@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
     $pconfig['radisablerdnss'] = isset($config['dhcpdv6'][$if]['radisablerdnss']);
     $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
+    $pconfig['rastatic'] = !empty($config['dhcpdv6'][$if]['rastatic']);
 
     // defaults
     if (empty($pconfig['ramininterval'])) {
@@ -178,6 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $config['dhcpdv6'][$if]['rasamednsasdhcp6'] = !empty($pconfig['rasamednsasdhcp6']);
         $config['dhcpdv6'][$if]['radisablerdnss'] = !empty($pconfig['radisablerdnss']);
+        $config['dhcpdv6'][$if]['rastatic'] = !empty($pconfig['rastatic']);
 
         if (count($pconfig['raroutes'])) {
             $config['dhcpdv6'][$if]['raroutes'] = implode(',', $pconfig['raroutes']);
@@ -322,11 +324,10 @@ include("head.inc");
                         $aliaslistif[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
                     } ?>
                   <tr>
-                    <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
+                    <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Source Address') ?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= gettext('dynamic') ?></option>
-                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= gettext('static') ?></option>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= gettext('Automatic') ?></option>
 <?php foreach ($carplistif as $ifname => $descr): ?>
                         <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= $descr ?></option>
 <?php endforeach ?>
@@ -335,7 +336,16 @@ include("head.inc");
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
-                        <?= sprintf(gettext("Select the Interface for the Router Advertisement (RA) Daemon."))?>
+                        <?= gettext('Select the source address embedded in the RA messages. If a CARP address is used static mode is assumed.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_rastatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Static Mode') ?></td>
+                    <td>
+                      <input id="rastatic" name="rastatic" type="checkbox" value="yes" <?= !empty($pconfig['rastatic']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" data-for="help_for_rastatic">
+                        <?= gettext('When a CARP address is not configured using the source address setting the adverisement behaviour can still be made static with this option.') ?>
                       </div>
                     </td>
                   </tr>
