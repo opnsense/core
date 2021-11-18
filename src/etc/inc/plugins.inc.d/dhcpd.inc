@@ -235,10 +235,11 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             continue;
         }
 
-        /*
-         * Check if we need to listen on a CARP interface.  A CARP setup will try
-         * to leave the clients configured: RemoveRoute off / DeprecatePrefix off
-         */
+        /* XXX static mode is a little iffy: we can't set it on a non-VHID VIP and should migrate to a checkbox */
+        $static_mode = !empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] == 'static';
+        $carp_mode = false;
+        $src_addr = false;
+
         $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'static' ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
@@ -308,22 +309,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\tAdvDefaultLifetime 0;\n";
         }
 
-        /*
-         * Only a CARP VIP can inject a link-local address and it
-         * means we need to force that address into the RA message
-         * for failover to work.
-         */
-        if (is_linklocal($ifcfgipv6)) {
-            $radvdconf .= "\tAdvRASrcAddress {\n";
-            $radvdconf .= "\t\t{$ifcfgipv6};\n";
-            $radvdconf .= "\t};\n";
-            /* to avoid wrong MAC being stuck in failover case only */
-            $radvdconf .= "\tAdvSourceLLAddress off;\n";
-        }
+        $stanzas = [];
 
-        $stanzas = array();
-
-        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+        list ($unused, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -333,7 +321,15 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 continue;
             }
 
-            if (is_linklocal($vip['subnet']) || !empty($vip['nobind'])) {
+            if (is_linklocal($vip['subnet'])) {
+                if ($ifcfgipv6 == $vip['subnet']) {
+                    $carp_mode = !empty($vip['vhid']);
+                    $src_addr = true;
+                }
+                continue;
+            }
+
+            if (!empty($vip['nobind'])) {
                 continue;
             }
 
@@ -341,12 +337,24 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
         }
 
+        if ($src_addr) {
+            /* inject configured link-local address into the RA message */
+            $radvdconf .= "\tAdvRASrcAddress {\n";
+            $radvdconf .= "\t\t{$ifcfgipv6};\n";
+            $radvdconf .= "\t};\n";
+        }
+
+        if ($carp_mode) {
+            /* to avoid wrong MAC being stuck during failover */
+            $radvdconf .= "\tAdvSourceLLAddress off;\n";
+        }
+
         /* VIPs may duplicate readings from system */
         $stanzas = array_unique($stanzas);
 
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix " . (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on") . ";\n";
+            $radvdconf .= "\t\tDeprecatePrefix " . ($carp_mode || $static_mode ? "off" : "on") . ";\n";
             switch ($dhcpv6ifconf['ramode']) {
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
@@ -377,7 +385,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
                 $radvdconf .= "\troute {$raroute} {\n";
-                if (!empty($dhcpv6ifconf['rainterface'])) {
+                if ($carp_mode || $static_mode) {
                     $radvdconf .= "\t\tRemoveRoute off;\n";
                 }
                 if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {

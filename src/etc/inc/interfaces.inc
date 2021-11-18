@@ -3971,6 +3971,10 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
 
 function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 {
+    if (is_ipaddrv4($interface)) {
+        return $interface;
+    }
+
     if (strstr($interface, '_vip')) {
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if ($vip['mode'] == 'carp') {
@@ -3988,6 +3992,10 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 
 function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
 {
+    if (is_ipaddrv6($interface)) {
+        return $interface;
+    }
+
     if (strstr($interface, '_vip')) {
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if ($vip['mode'] == 'carp') {
@@ -4580,14 +4588,14 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
             }
 
             if ($info['family'] == 'inet' && strpos($vip['subnet'], ':') === false) {
-                $info['alias'] = $vip['subnet'] == $info['address'];
+                $info['alias'] = $info['alias'] || $vip['subnet'] == $info['address'];
             } elseif ($info['family'] == 'inet6' && strpos($vip['subnet'], ':') !== false) {
                 /*
                  * Since we do not know what subnet value was given by user
                  * uncompress/compress to match correctly compressed system
                  * value.
                  */
-                $info['alias'] = Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $info['address'];
+                $info['alias'] = $info['alias'] || Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $info['address'];
             }
 
             if ($info['alias'] && !empty($vip['nobind'])) {

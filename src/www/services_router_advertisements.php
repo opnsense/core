@@ -309,22 +309,29 @@ include("head.inc");
                   </tr>
 <?php
                     $carplist = get_configured_carp_interface_list();
-                    $carplistif = array();
-                    $friendlyif = convert_friendly_interface_to_friendly_descr($if);
-                    if (count($carplist) > 0) {
-                      foreach ($carplist as $ifname => $vip) {
-                        if ((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
-                          $carplistif[$ifname] = $vip;
+                    $aliaslist = get_configured_ip_aliases_list();
+                    $carplistif = [];
+                    $ailiaslistif = [];
+                    foreach ($carplist as $ifname => $vip) {
+                      if ((preg_match("/^{$if}_/", $ifname)) && (is_linklocal($vip))) {
+                        $carplistif[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
                       }
+                    }
+                    foreach ($aliaslist as $vip => $ifname) {
+                      if ($ifname == $if && (is_linklocal($vip)))
+                        $aliaslistif[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
                     } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= $friendlyif . " (" . gettext('dynamic') . ")" ?></option>
-                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= $friendlyif  . " (" . gettext('static') . ")" ?></option>
-<?php foreach ($carplistif as $ifname => $vip): ?>
-                        <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= convert_friendly_interface_to_friendly_descr($ifname) ?></option>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= gettext('dynamic') ?></option>
+                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= gettext('static') ?></option>
+<?php foreach ($carplistif as $ifname => $descr): ?>
+                        <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= $descr ?></option>
+<?php endforeach ?>
+<?php foreach ($aliaslistif as $vip => $descr): ?>
+                        <option value="<?= html_safe($vip) ?>" <?= $pconfig['rainterface'] == $vip ? 'selected="selected"' : '' ?>><?= $descr ?></option>
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
