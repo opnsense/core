@@ -58,7 +58,8 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'fail
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
-  'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport', 'omapialgorithm', 'omapikey', 'minsecs');
+  'filename32arm', 'filename64arm', 'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport',
+  'omapialgorithm', 'omapikey', 'minsecs');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -983,6 +984,10 @@ include("head.inc");
                           <input name="filename32" type="text" id="filename32" value="<?=$pconfig['filename32'];?>" /><br />
                           <?=gettext('Set UEFI 64bit filename');?>
                           <input name="filename64" type="text" id="filename64" value="<?=$pconfig['filename64'];?>" /><br />
+                          <?=gettext('Set UEFI ARM 32bit filename');?>
+                          <input name="filename32arm" type="text" id="filename32arm" value="<?=$pconfig['filename32arm'];?>" /><br />
+                          <?=gettext('Set UEFI ARM 64bit filename');?>
+                          <input name="filename64arm" type="text" id="filename64arm" value="<?=$pconfig['filename64arm'];?>" /><br />
                           <?=gettext("Note: You need both a filename and a boot server configured for this to work!");?><br/>
                           <?=gettext("You will need all three filenames and a boot server configured for UEFI to work!");?>
                           <br/><br/>
