@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2016 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
@@ -310,6 +310,7 @@ include("head.inc");
 <?php
                     $carplist = get_configured_carp_interface_list();
                     $carplistif = array();
+                    $friendlyif = convert_friendly_interface_to_friendly_descr($if);
                     if (count($carplist) > 0) {
                       foreach ($carplist as $ifname => $vip) {
                         if ((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
@@ -320,10 +321,10 @@ include("head.inc");
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
-                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= strtoupper($if) . " (" . gettext('dynamic') . ")" ?></option>
-                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= strtoupper($if)  . " (" . gettext('static') . ")" ?></option>
+                        <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= $friendlyif . " (" . gettext('dynamic') . ")" ?></option>
+                        <option value="static" <?= $pconfig['rainterface'] == 'static' ? 'selected="selected"' : '' ?>><?= $friendlyif  . " (" . gettext('static') . ")" ?></option>
 <?php foreach ($carplistif as $ifname => $vip): ?>
-                        <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= strtoupper($ifname) . " ($vip)" ?></option>
+                        <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= convert_friendly_interface_to_friendly_descr($ifname) ?></option>
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">

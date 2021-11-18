@@ -3577,7 +3577,7 @@ function convert_friendly_interface_to_friendly_descr($interface)
                     foreach ($config['virtualip']['vip'] as $counter => $vip) {
                         if ($vip['mode'] == 'carp') {
                             if ($interface == "{$vip['interface']}_vip{$vip['vhid']}") {
-                                return "{$vip['subnet']} - {$vip['descr']}";
+                                return "{$vip['descr']} ({$vip['subnet']})";
                             }
                         }
                     }
