@@ -54,17 +54,17 @@ foreach(new RecursiveIteratorIterator($it) as $file) {
 
 // remove expired logs and set latest.log symlink
 foreach ($relevant_logs as $log_subject => $items)  {
+    rsort($items);
     if (count($items) > $preserve_logs) {
-        rsort($items);
         foreach (array_slice($items, $preserve_logs) as $filename) {
             @unlink($filename);
         }
     }
-
-    $target = "/var/log/{$log_subject}/{$log_subject}_" . date('Ymd') . '.log';
-    $link = "/var/log/{$log_subject}/latest.log";
-
-    @touch($target);
-    @unlink($link);
-    @symlink($target, $link);
+    // latest is always top of rsorted list $items[0]
+    $current_target = @readlink($link);
+    if ($current_target != $items[0]) {
+        $link = "/var/log/{$log_subject}/latest.log";
+        @unlink($link);
+        @symlink($items[0], $link);
+    }
 }
