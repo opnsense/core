@@ -31,7 +31,7 @@ namespace OPNsense\Cron\Migrations;
 use OPNsense\Base\BaseModelMigration;
 
 /**
- * migrate unboundplus jobs to unbound
+ * migrate firmware jobs to a random delay action
  */
 class M1_0_3 extends BaseModelMigration
 {
