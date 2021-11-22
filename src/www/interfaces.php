@@ -884,20 +884,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
             }
 
-            if (stristr($a_interfaces[$if]['if'], "_vlan")) {
-                list ($parentif) = get_parent_interface($a_interfaces[$if]['if']);
+            if (strstr($a_interfaces[$if]['if'], '_vlan')) {
+                list ($parentif) = get_parent_interface($if);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
                     $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
                 }
             } else {
                 foreach ($config['interfaces'] as $idx => $ifdata) {
-                    if (($idx == $if) || !preg_match('/_vlan[0-9]/', $ifdata['if'])) {
+                    if ($idx == $if || !strstr($ifdata['if'], '_vlan')) {
                         continue;
                     }
 
-                    list ($parent_realhwif) = get_parent_interface($ifdata['if']);
-                    if ($parent_realhwif != $a_interfaces[$if]['if']) {
+                    list ($parentif) = get_parent_interface($idx);
+                    if ($parentif != $a_interfaces[$if]['if']) {
                         continue;
                     }
 

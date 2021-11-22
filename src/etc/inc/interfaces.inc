@@ -3501,31 +3501,23 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
 /* convert fxp0 -> wan, etc. */
 function convert_real_interface_to_friendly_interface_name($interface = 'wan')
 {
-    global $config;
-
-    if (!isset($config['interfaces'])) {
-        /* some people do trigger this, I don't know why :) */
-        return null;
-    }
-
     // search direct
     $all_interfaces = legacy_config_get_interfaces();
-    foreach ($all_interfaces as $if => $ifname) {
-        if ($if == $interface || $ifname['if'] == $interface) {
-            return $if;
+    foreach ($all_interfaces as $ifname => $ifcfg) {
+        if ($ifname == $interface || $ifcfg['if'] == $interface) {
+            return $ifname;
         }
     }
 
     // search related
-    foreach ($all_interfaces as $if => $ifname) {
-        if (get_real_interface($if) == $interface) {
-            return $if;
+    foreach (array_keys($all_interfaces) as $ifname) {
+        if (get_real_interface($ifname) == $interface) {
+            return $ifname;
         }
 
-        foreach (get_parent_interface($if, true) as $iface) {
-            if ($iface == $interface) {
-                return $if;
-            }
+        list ($ifparent) = get_parent_interface($ifname);
+        if ($ifparent == $interface) {
+            return $ifparent;
         }
     }
 
@@ -3599,18 +3591,13 @@ function convert_friendly_interface_to_friendly_descr($interface)
  *      -- returns empty array if an invalid interface is passed
  *  (Only handles ppps and vlans now.)
  */
-function get_parent_interface($interface, $avoidrecurse = false)
+function get_parent_interface($interface)
 {
     global $config;
 
     $parents = [];
 
     $realif = get_real_interface($interface);
-
-    // If we got a real interface, find it's friendly assigned name
-    if ($interface == $realif && $avoidrecurse == false) {
-        $interface = convert_real_interface_to_friendly_interface_name($interface);
-    }
 
     if (!empty($interface) && isset($config['interfaces'][$interface])) {
         $ifcfg = $config['interfaces'][$interface];
