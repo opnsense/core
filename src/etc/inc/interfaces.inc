@@ -2338,7 +2338,6 @@ function interface_configure_parent($realif)
 
     /* need to check that the interface exists #3270 */
     if (!does_interface_exist($realif)) {
-        interfaces_vlan_configure(false, $realif);
         interfaces_lagg_configure(false, $realif);
         interfaces_bridge_configure(false, 0, $realif);
         plugins_configure('openvpn_prepare', false, array($realif));
