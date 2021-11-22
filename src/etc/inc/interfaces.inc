@@ -2524,24 +2524,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_vips_configure(false, $interface);
 
     if (!file_exists("/var/run/booting")) {
-        unset($gre);
         $gre = link_interface_to_gre($interface);
         if (!empty($gre)) {
             array_walk($gre, 'interface_gre_configure');
         }
 
-        unset($gif);
         $gif = link_interface_to_gif($interface);
         if (!empty($gif)) {
             array_walk($gif, 'interface_gif_configure');
         }
 
-        if ($linkupevent == false || substr($realif, 0, 4) == "ovpn") {
-            unset($bridgetmp);
-            $bridgetmp = link_interface_to_bridge($interface);
-            if (!empty($bridgetmp)) {
-                interface_bridge_add_member($bridgetmp, $realif);
-            }
+        $bridgetmp = link_interface_to_bridge($interface);
+        if (!empty($bridgetmp)) {
+            interface_bridge_add_member($bridgetmp, $realif);
         }
     }
 
