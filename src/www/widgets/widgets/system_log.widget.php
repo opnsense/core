@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Kulikov.A <kulikov.a@gmail.com>
+ * Copyright (C) 2021 A. Kulikov <kulikov.a@gmail.com>
  * Copyright (C) 2015 S. Linke <dev@devsash.de>
  * All rights reserved.
  *
