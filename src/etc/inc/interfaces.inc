@@ -2316,6 +2316,35 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
+function interface_configure_parent($realif)
+{
+    if (empty($realif)) {
+        return;
+    }
+
+    /*
+     * Interface code must figure out if the call is for them so
+     * we start all but when we pass an interface the name will
+     * be matched so most will be a NOP.
+     *
+     * Verbose printing ($verbose) is off in the block because
+     * we are reconfiguring a specific interface and the verbose
+     * print was already started above.
+     */
+
+    /* make sure tunnel inside IP is set when interface changes #3702 */
+    interfaces_gre_configure(false, 0, $realif);
+    interfaces_gif_configure(false, 0, $realif);
+
+    /* need to check that the interface exists #3270 */
+    if (!does_interface_exist($realif)) {
+        interfaces_vlan_configure(false, $realif);
+        interfaces_lagg_configure(false, $realif);
+        interfaces_bridge_configure(false, 0, $realif);
+        plugins_configure('openvpn_prepare', false, array($realif));
+    }
+}
+
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
 {
     global $config;
@@ -2329,9 +2358,28 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $wandescr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
 
     $realif = get_real_interface($interface);
+    $realifv6 = get_real_interface($interface, 'inet6');
+
+    switch ($wancfg['ipaddr']) {
+        case 'pppoe':
+        case 'l2tp':
+        case 'pptp':
+        case 'ppp':
+            /* hardware device underneath software node */
+            list ($realhwif) = get_parent_interface($interface);
+            break;
+        default:
+            /* hardware device remains a hardware device */
+            $realhwif = $realif;
+            break;
+    }
+
+    /* XXX ideally we should give up inlining parent configuration */
+    interface_configure_parent($realhwif);
+
     $ifconfig_details = legacy_interfaces_details();
-    if (empty($ifconfig_details[$realif])) {
-        log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realif));
+    if (empty($ifconfig_details[$realhwif])) {
+        log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realhwif));
         return;
     }
 
@@ -2340,9 +2388,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         flush();
     }
 
-    $realifv6 = get_real_interface($interface, 'inet6');
-
-    if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
+    /* XXX mpd5 $realif(v6) does not exist at this point in time */
+    if (!file_exists('/var/run/booting') && substr($realif, 0, 4) != 'ovpn') {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
 
@@ -2352,46 +2399,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    list ($realhwif) = get_parent_interface($interface);
-
-    $interface_to_check = $realif;
-    switch ($wancfg['ipaddr']) {
-        case 'pppoe':
-        case 'l2tp':
-        case 'pptp':
-        case 'ppp':
-            $interface_to_check = $realhwif;
-            break;
-    }
-
-    /* XXX we come up empty here in edge cases, which is silly AND dangerous */
-    if (empty($interface_to_check)) {
-        log_error("Interface {$interface} device lookup came up empty");
-    } else {
-        /*
-         * Interface code must figure out if the call is for them so
-         * we start all but when we pass an interface the name will
-         * be matched so most will be a NOP.
-         *
-         * Verbose printing ($verbose) is off in the block because
-         * we are reconfiguring a specific interface and the verbose
-         * print was already started above.
-         */
-
-        /* make sure tunnel inside IP is set when interface changes #3702 */
-        interfaces_gre_configure(false, 0, $interface_to_check);
-        interfaces_gif_configure(false, 0, $interface_to_check);
-
-        /* need to check that the interface exists #3270 */
-        if (!does_interface_exist($interface_to_check)) {
-            interfaces_vlan_configure(false, $interface_to_check);
-            interfaces_lagg_configure(false, $interface_to_check);
-            interfaces_bridge_configure(false, 0, $interface_to_check);
-            plugins_configure('openvpn_prepare', false, array($interface_to_check));
-        }
-    }
-
-    /* wireless configuration? */
+    /* XXX wireless configuration */
     if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
         interface_wireless_configure($realif, $wancfg, $wancfg['wireless']);
     }
@@ -2402,11 +2410,11 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * which triggers the interface config again, which attempts to
      * spoof the MAC again which cycles the link again...
      */
-    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realif))) {
-        mwexecf('/sbin/ifconfig %s link %s', array($realif, $wancfg['spoofmac']));
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif))) {
+        mwexecf('/sbin/ifconfig %s link %s', array($realhwif, $wancfg['spoofmac']));
     }
 
-    /* only try to set media properties on (parent) device when requested */
+    /* only try to set media properties when requested */
     if (!empty($wancfg['media']) || !empty($wancfg['mediaopt'])) {
         $intf_details = $ifconfig_details[$realhwif];
         $media_changed = stripos($intf_details['media_raw'], $wancfg['media']) == false;
@@ -2426,8 +2434,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* set p(ermanent)-promiscuous mode required for e.g. VLAN MAC spoofing */
-    if (in_array('ppromisc', $ifconfig_details[$realif]['flags']) !== !empty($wancfg['promisc'])) {
-        mwexec("/sbin/ifconfig " . $realif . " " . (empty($wancfg['promisc']) ? "-" : "") . "promisc");
+    if (in_array('ppromisc', $ifconfig_details[$realhwif]['flags']) !== !empty($wancfg['promisc'])) {
+        mwexec("/sbin/ifconfig " . $realhwif . " " . (empty($wancfg['promisc']) ? "-" : "") . "promisc");
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
@@ -3611,8 +3619,8 @@ function get_parent_interface($interface)
                         foreach ($config['ppps']['ppp'] as $pppidx => $ppp) {
                             if ($ifcfg['if'] == $ppp['if']) {
                                 $ports = explode(',', $ppp['ports']);
-                                foreach ($ports as $pid => $parent_if) {
-                                    $parents[$pid] = get_real_interface($parent_if);
+                                foreach ($ports as $pid => $parentif) {
+                                    $parents[$pid] = get_real_interface($parentif);
                                 }
                                 break;
                             }
