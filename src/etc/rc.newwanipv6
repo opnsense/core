@@ -55,14 +55,13 @@ if (empty($argument)) {
     $interface_real = $argument;
 }
 
-$ip = get_interface_ipv6($interface);
-
 if (!isset($config['interfaces'][$interface]['enable'])) {
-    log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
+    log_error("Interface '{$interface}' ($interface_real) is disabled or empty, nothing to do.");
     return;
 }
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
+$ip = get_interface_ipv6($interface);
 
 log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
