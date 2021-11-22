@@ -34,41 +34,44 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("system.inc");
 
-function handle_argument_group($iface, $argument2)
+function handle_argument_group($action, $realif)
 {
     global $config;
 
-    if (isset($config['interfaces'][$iface])) {
+    $interface = convert_real_interface_to_friendly_interface_name($realif);
+    if (empty($interface)) {
+        return;
+    }
+
+    if (isset($config['interfaces'][$interface])) {
         // set defaults
         $ipaddr = '0.0.0.0';
         $ip6addr = '::';
-        if (isset($config['interfaces'][$iface]['ipaddr'])) {
-            $ipaddr = $config['interfaces'][$iface]['ipaddr'];
+        if (isset($config['interfaces'][$interface]['ipaddr'])) {
+            $ipaddr = $config['interfaces'][$interface]['ipaddr'];
         }
-        if (isset($config['interfaces'][$iface]['ipaddrv6'])) {
-            $ip6addr = $config['interfaces'][$iface]['ipaddrv6'];
+        if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
+            $ip6addr = $config['interfaces'][$interface]['ipaddrv6'];
         }
         if (is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr)) {
-            $friendly = convert_friendly_interface_to_friendly_descr($iface);
-            log_error("Hotplug event detected for {$friendly}({$iface}) but ignoring since interface is configured with static IP ({$ipaddr} {$ip6addr})");
-            interfaces_staticarp_configure($iface);
+            log_error("Hotplug event detected for {$interface}({$realif}) but ignoring since interface is configured with static IP ({$ipaddr} {$ip6addr})");
+            interfaces_staticarp_configure($interface);
             /* NOTE: Do not generate event for OpenVPN since the daemon does that for us. */
-            if (substr($iface, 0, 4) != "ovpn") {
-                if ($argument2 == "start" || $argument2 == "up") {
-                    $iface = get_real_interface($iface);
-                    configdp_run('interface newip', array($iface));
+            if (substr($interface, 0, 4) != "ovpn") {
+                if ($action == 'start') {
+                    configdp_run('interface newip', array($realif));
                 }
             }
         } else {
-            switch ($argument2) {
+            switch ($action) {
                 case "stop":
-                    log_error("DEVD Ethernet detached event for {$iface}");
-                    interface_bring_down($iface);
+                    log_error("DEVD Ethernet detached event for {$interface}");
+                    interface_bring_down($interface);
                     break;
                 case "start":
-                    log_error("DEVD Ethernet attached event for {$iface}");
-                    log_error("HOTPLUG: Configuring interface {$iface}");
-                    interface_configure(false, $iface, true, true);
+                    log_error("DEVD Ethernet attached event for {$interface}");
+                    log_error("HOTPLUG: Configuring interface {$interface}");
+                    interface_configure(false, $interface, true, true);
                     break;
             }
             filter_configure();
@@ -85,10 +88,7 @@ if (!file_exists("/var/run/booting")) {
     switch($action) {
       case "start":
       case "stop":
-          $interface = convert_real_interface_to_friendly_interface_name($argv[2]);
-          if (!empty($interface)) {
-              handle_argument_group($interface, $action);
-          }
+          handle_argument_group($argv[1], $argv[2]);
           break;
       default:
           log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
