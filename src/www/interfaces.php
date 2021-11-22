@@ -1387,7 +1387,7 @@ if (isset($a_interfaces[$if]['wireless'])) {
 }
 
 // Find all possible media options for the interface
-$mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'];
+$mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ?? [];
 
 include("head.inc");
 ?>
