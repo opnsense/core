@@ -359,11 +359,11 @@ $( document ).ready(function() {
                       <table class="table table-condensed">
                         <tr>
                           <td><?= gettext('Password') ?></td>
-                          <td><input name="encrypt_password" type="password"/></td>
+                          <td><input name="encrypt_password" type="password" autocomplete="new-password"/></td>
                         </tr>
                         <tr>
                           <td><?= gettext('Confirmation') ?></td>
-                          <td><input name="encrypt_passconf" type="password"/> </td>
+                          <td><input name="encrypt_passconf" type="password" autocomplete="new-password"/> </td>
                         </tr>
                       </table>
                     </div>
@@ -408,7 +408,7 @@ $( document ).ready(function() {
                       <table class="table table-condensed">
                         <tr>
                           <td><?= gettext('Password') ?></td>
-                          <td><input name="decrypt_password" type="password"/></td>
+                          <td><input name="decrypt_password" type="password" autocomplete="new-password"/></td>
                         </tr>
                       </table>
                     </div>
@@ -460,7 +460,7 @@ $( document ).ready(function() {
 <?php
                         elseif ($field['type'] == 'password'):?>
 
-                        <input name="<?=$fieldId;?>" type="password" value="<?=$pconfig[$fieldId];?>" />
+                        <input name="<?=$fieldId;?>" type="password" autocomplete="new-password" value="<?=$pconfig[$fieldId];?>" />
 <?php
                         elseif ($field['type'] == 'textarea'):?>
                         <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>

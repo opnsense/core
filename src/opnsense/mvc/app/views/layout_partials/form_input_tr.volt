@@ -84,7 +84,7 @@
             &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_{{ id }}" style="display:none"><i class="fa fa-paste"></i> <small>{{ lang._('Paste') }}</small></a>
             {% endif %}
         {% elseif type == "password" %}
-            <input type="password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
+            <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }}></textarea>
         {% elseif type == "info" %}
