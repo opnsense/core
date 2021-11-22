@@ -2347,7 +2347,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
+                            <input name="password" type="password" autocomplete="new-password" id="password" value="<?=$pconfig['password'];?>" />
                           </td>
                         </tr>
                         <tr>
@@ -2415,7 +2415,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="pppoe_password" type="password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
+                            <input name="pppoe_password" type="password" autocomplete="new-password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
                           </td>
                         </tr>
                         <tr>
@@ -2490,7 +2490,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="pptp_password" type="password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
+                            <input name="pptp_password" type="password" autocomplete="new-password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
                           </td>
                         </tr>
                         <tr>
