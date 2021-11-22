@@ -2316,7 +2316,7 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
-function interface_configure_parent($realif)
+function interface_virtual_create($realif)
 {
     if (empty($realif)) {
         return;
@@ -2374,7 +2374,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* XXX ideally we should give up inlining parent configuration */
-    interface_configure_parent($realhwif);
+    interface_virtual_create($realhwif);
 
     $ifconfig_details = legacy_interfaces_details();
     if (empty($ifconfig_details[$realhwif])) {
