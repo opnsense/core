@@ -3713,10 +3713,10 @@ function get_real_interface($interface = 'wan', $family = 'all')
                             case 'ppp':
                             case 'l2tp':
                             case 'pptp':
-                                if (isset($cfg['dhcp6usev4iface'])) {
+                                list ($realif) = get_parent_interface($interface);
+                                if (isset($cfg['dhcp6usev4iface']) || strpos($realif, '/') === 0) {
+                                    /* parent interface not usable on user request or if device node */
                                     $realif = $cfg['if'];
-                                } else {
-                                    list ($realif) = get_parent_interface($interface);
                                 }
                                 break;
                             default:
