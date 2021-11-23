@@ -652,15 +652,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $reqdfieldsn = array(gettext("IPv4 address"),gettext("Subnet bit count"),gettext("Gateway"));
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
-            case "none":
-                if (isset($config['virtualip']['vip'])) {
-                    foreach ($config['virtualip']['vip'] as $vip) {
-                        if (is_ipaddrv4($vip['subnet']) && $vip['interface'] == $if) {
-                            $input_errors[] = gettext("This interface is referenced by IPv4 VIPs. Please delete those before setting the interface to 'none' configuration.");
-                        }
-                    }
-                }
-                break;
             case "dhcp":
                 if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
@@ -712,15 +703,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             case "dhcp6":
                 if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
-                }
-                break;
-            case "none":
-                if (isset($config['virtualip']['vip'])) {
-                    foreach ($config['virtualip']['vip'] as $vip) {
-                        if (is_ipaddrv6($vip['subnet']) && $vip['interface'] == $if) {
-                            $input_errors[] = gettext("This interface is referenced by IPv6 VIPs. Please delete those before setting the interface to 'none' configuration.");
-                        }
-                    }
                 }
                 break;
             case '6rd':
