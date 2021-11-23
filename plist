@@ -1718,6 +1718,7 @@
 /usr/local/share/man/man8/opnsense-beep.8.gz
 /usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/share/man/man8/opnsense-installer.8.gz
+/usr/local/share/man/man8/opnsense-log.8.gz
 /usr/local/share/man/man8/opnsense-shell.8.gz
 /usr/local/share/man/man8/opnsense-version.8.gz
 /usr/local/wizard/openvpn.xml
