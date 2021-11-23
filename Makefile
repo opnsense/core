@@ -119,7 +119,7 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2021
 
 CORE_DEPENDS_amd64?=	beep \
-			suricata
+			suricata-devel
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
