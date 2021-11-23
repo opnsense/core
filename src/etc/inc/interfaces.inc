@@ -2376,8 +2376,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interface_virtual_create($realhwif);
 
     $ifconfig_details = legacy_interfaces_details();
-    if ((strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
-        (strpos($realhwif, '/') === 0 && !file_exists($realhwif))) {
+    if (
+        (strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
+        (strpos($realhwif, '/') === 0 && !file_exists($realhwif))
+    ) {
         log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realhwif));
         return;
     }
