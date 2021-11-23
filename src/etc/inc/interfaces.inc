@@ -2377,7 +2377,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interface_virtual_create($realhwif);
 
     $ifconfig_details = legacy_interfaces_details();
-    if (empty($ifconfig_details[$realhwif])) {
+    if ((strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
+        (strpos($realhwif, '/') === 0 && !file_exists($realhwif))) {
         log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realhwif));
         return;
     }
@@ -2387,7 +2388,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         flush();
     }
 
-    /* XXX mpd5 $realif(v6) does not exist at this point in time */
+    /* XXX mpd5 $realif(v6) may not exist at this point in time */
+    /* XXX mpd5 $realhwif may be a device node path */
+
     if (!file_exists('/var/run/booting') && substr($realif, 0, 4) != 'ovpn') {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
@@ -2410,7 +2413,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * spoof the MAC again which cycles the link again...
      */
     if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif))) {
-        mwexecf('/sbin/ifconfig %s link %s', array($realhwif, $wancfg['spoofmac']));
+        mwexecf('/sbin/ifconfig %s link %s', [$realhwif, $wancfg['spoofmac']]);
     }
 
     /* only try to set media properties when requested */
@@ -2433,11 +2436,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* set p(ermanent)-promiscuous mode required for e.g. VLAN MAC spoofing */
-    if (in_array('ppromisc', $ifconfig_details[$realhwif]['flags']) !== !empty($wancfg['promisc'])) {
-        mwexec("/sbin/ifconfig " . $realhwif . " " . (empty($wancfg['promisc']) ? "-" : "") . "promisc");
+    if (in_array('ppromisc', $ifconfig_details[$realhwif]['flags'] ?? []) !== !empty($wancfg['promisc'])) {
+        mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
+    /* XXX pass down $ifconfig_details */
+    /* XXX maybe spoofmac, media and promisc can live here too? */
     configure_interface_hardware($realhwif);
 
     switch ($wancfg['ipaddr']) {
