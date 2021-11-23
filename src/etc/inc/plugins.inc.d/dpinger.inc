@@ -141,11 +141,13 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                         break;
                     }
                 }
-                if ($gwifip == null) {
-                    list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
-                    log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
-                }
             }
+
+            if ($gwifip == null) {
+                list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
+                log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
+            }
+
             if (!is_ipaddrv4($gwifip)) {
                 log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
                 continue;
