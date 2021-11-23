@@ -2360,10 +2360,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realifv6 = get_real_interface($interface, 'inet6');
 
     switch ($wancfg['ipaddr']) {
-        case 'pppoe':
         case 'l2tp':
-        case 'pptp':
         case 'ppp':
+        case 'pppoe':
+        case 'pptp':
             /* hardware device underneath software node */
             list ($realhwif) = get_parent_interface($interface);
             break;
@@ -3591,12 +3591,8 @@ function convert_friendly_interface_to_friendly_descr($interface)
 
 /*
  *  get_parent_interface($interface):
- *      --returns the (real or virtual) parent interface(s) array for a given interface friendly name (i.e. wan)
- *        or virtual interface (i.e. vlan)
- *        (We need array because MLPPP and bridge interfaces have more than one parent.)
+ *      -- returns the parent real interface array for a given interface name (i.e. wan) or virtual interface (i.e. vlan)
  *      -- returns $interface passed in if $interface parent is not found
- *      -- returns empty array if an invalid interface is passed
- *  (Only handles ppps and vlans now.)
  */
 function get_parent_interface($interface)
 {
@@ -3606,29 +3602,26 @@ function get_parent_interface($interface)
 
     $realif = get_real_interface($interface);
 
-    if (!empty($interface) && isset($config['interfaces'][$interface])) {
+    if (!empty($config['interfaces'][$interface])) {
         $ifcfg = $config['interfaces'][$interface];
         switch ($ifcfg['ipaddr']) {
-            case "ppp":
-            case "pppoe":
-            case "pptp":
-            case "l2tp":
-                if (empty($parents)) {
-                    if (isset($config['ppps']['ppp'])) {
-                        foreach ($config['ppps']['ppp'] as $pppidx => $ppp) {
-                            if ($ifcfg['if'] == $ppp['if']) {
-                                $ports = explode(',', $ppp['ports']);
-                                foreach ($ports as $pid => $parentif) {
-                                    $parents[$pid] = get_real_interface($parentif);
-                                }
-                                break;
+            case 'l2tp':
+            case 'ppp':
+            case 'pppoe':
+            case 'pptp':
+                if (isset($config['ppps']['ppp'])) {
+                    foreach ($config['ppps']['ppp'] as $pppidx => $ppp) {
+                        if ($ifcfg['if'] == $ppp['if']) {
+                            $ports = explode(',', $ppp['ports']);
+                            foreach ($ports as $pid => $parentif) {
+                                $parents[$pid] = get_real_interface($parentif);
                             }
+                            break;
                         }
                     }
                 }
                 break;
             default:
-                // Handle _vlans
                 if (strstr($realif, '_vlan')) {
                     if (isset($config['vlans']['vlan'])) {
                         foreach ($config['vlans']['vlan'] as $vlanidx => $vlan) {
