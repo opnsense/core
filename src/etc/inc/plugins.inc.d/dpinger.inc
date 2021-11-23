@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2020 Deciso B.V.
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2010 Ermal Luçi
@@ -142,7 +142,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                     }
                 }
                 if ($gwifip == null) {
-                    $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0]['ipaddr'];
+                    list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
                     log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
                 }
             }
