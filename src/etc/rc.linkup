@@ -39,56 +39,74 @@ function handle_argument_group($action, $realif)
     global $config;
 
     $interface = convert_real_interface_to_friendly_interface_name($realif);
+
     if (empty($interface)) {
         return;
     }
 
-    if (isset($config['interfaces'][$interface])) {
-        // set defaults
-        $ipaddr = '0.0.0.0';
-        $ip6addr = '::';
-        if (isset($config['interfaces'][$interface]['ipaddr'])) {
-            $ipaddr = $config['interfaces'][$interface]['ipaddr'];
-        }
-        if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
-            $ip6addr = $config['interfaces'][$interface]['ipaddrv6'];
-        }
-        if (is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr)) {
-            log_error("Hotplug event detected for {$interface}({$realif}) but ignoring since interface is configured with static IP ({$ipaddr} {$ip6addr})");
-            interfaces_staticarp_configure($interface);
-            if ($action == 'start') {
+    if (empty($config['interfaces'][$interface])) {
+        return;
+    }
+
+    if (!isset($config['interfaces'][$interface]['enable'])) {
+        return;
+    }
+
+    $ipaddr = '0.0.0.0';
+    $ip6addr = '::';
+
+    if (isset($config['interfaces'][$interface]['ipaddr'])) {
+        $ipaddr = $config['interfaces'][$interface]['ipaddr'];
+    }
+
+    if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
+        $ip6addr = $config['interfaces'][$interface]['ipaddrv6'];
+    }
+
+    $is_static = is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr);
+
+    switch ($action) {
+        case 'stop':
+            log_error(sprintf(
+                "DEVD: Ethernet detached event for %s %s(%s)",
+                $is_static ? 'static' : 'dynamic',
+                $interface,
+                $realif
+            ));
+            if ($is_static) {
+                interfaces_staticarp_configure($interface);
+            } else {
+                interface_bring_down($interface);
+                filter_configure();
+            }
+            break;
+        case 'start':
+            log_error(sprintf(
+                "DEVD: Ethernet attached event for %s %s(%s)",
+                $is_static ? 'static' : 'dynamic',
+                $interface,
+                $realif
+            ));
+            if ($is_static) {
+                interfaces_staticarp_configure($interface);
                 configdp_run('interface newip', array($realif));
+            } else {
+                interface_configure(false, $interface, true, true);
+                filter_configure();
             }
-        } else {
-            switch ($action) {
-                case "stop":
-                    log_error("DEVD Ethernet detached event for {$interface}");
-                    interface_bring_down($interface);
-                    break;
-                case "start":
-                    log_error("DEVD Ethernet attached event for {$interface}");
-                    log_error("HOTPLUG: Configuring interface {$interface}");
-                    interface_configure(false, $interface, true, true);
-                    break;
-            }
-            filter_configure();
-        }
+            break;
+        default:
+            log_error("DEVD: The action parameter passed is wrong ($action)");
+            break;
     }
 }
 
-if (!file_exists("/var/run/booting")) {
-    if ($argc < 3) {
-        log_error("HOTPLUG event: The number of required parameters not passed!");
-        exit;
-    }
-    $action = $argv[1];
-    switch($action) {
-      case "start":
-      case "stop":
-          handle_argument_group($argv[1], $argv[2]);
-          break;
-      default:
-          log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
-          break;
-    }
+if (file_exists('/var/run/booting')) {
+    exit;
 }
+
+if ($argc < 3) {
+    exit;
+}
+
+handle_argument_group($argv[1], $argv[2]);
