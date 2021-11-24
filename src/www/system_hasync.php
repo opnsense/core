@@ -231,7 +231,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Remote System Password') ?></td>
                   <td>
-                    <input  type="password" autocomplete="new-password" name="password" value="<?=$pconfig['password']; ?>" />
+                    <input type="password" autocomplete="new-password" name="password" value="<?=$pconfig['password']; ?>" />
                     <div class="hidden" data-for="help_for_password">
                       <?=gettext('Enter the web GUI password of the system entered above for synchronizing your configuration.') ?><br />
                       <div class="well well-sm">
