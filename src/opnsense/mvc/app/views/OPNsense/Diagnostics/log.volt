@@ -26,6 +26,9 @@
 
 <script>
     $( document ).ready(function() {
+      if (window.localStorage && localStorage.getItem('log_max_severity_{{module}}_{{scope}}')) {
+          $('#severity_filter').val(localStorage.getItem('log_max_severity_{{module}}_{{scope}}')).change();
+      }
       let grid_log = $("#grid-log").UIBootgrid({
           options:{
               sorting:false,
@@ -44,7 +47,9 @@
               },
               requestHandler: function(request){
                   if ( $('#severity_filter').val().length > 0) {
-                      request['severity'] = $('#severity_filter').val();
+                      let severities = ["Emergency", "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug"];
+                      let selectedSeverity = $('#severity_filter').val();
+                      request['severity'] = severities.slice(0,severities.indexOf(selectedSeverity) + 1);
                   }
                   return request;
               },
@@ -52,6 +57,9 @@
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
       });
       $("#severity_filter").change(function(){
+          if (window.localStorage) {
+              localStorage.setItem('log_max_severity_{{module}}_{{scope}}', $("#severity_filter").val());
+          }
           $('#grid-log').bootgrid('reload');
       });
 
@@ -120,12 +128,12 @@
                 <div class="hidden">
                     <!-- filter per type container -->
                     <div id="severity_filter_container" class="btn-group">
-                        <select id="severity_filter"  data-title="{{ lang._('Severity') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                        <select id="severity_filter"  data-title="{{ lang._('Maximum severity level') }}" class="selectpicker" data-width="200px">
                             <option value="Emergency">{{ lang._('Emergency') }}</option>
                             <option value="Alert">{{ lang._('Alert') }}</option>
                             <option value="Critical">{{ lang._('Critical') }}</option>
                             <option value="Error">{{ lang._('Error') }}</option>
-                            <option value="Warning">{{ lang._('Warning') }}</option>
+                            <option value="Warning" selected>{{ lang._('Warning') }}</option>
                             <option value="Notice">{{ lang._('Notice') }}</option>
                             <option value="Informational">{{ lang._('Informational') }}</option>
                             <option value="Debug">{{ lang._('Debug') }}</option>
