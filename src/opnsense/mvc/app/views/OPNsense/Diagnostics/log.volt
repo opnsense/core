@@ -26,6 +26,11 @@
 
 <script>
     $( document ).ready(function() {
+      // map available severity values to array
+      severities = $('#severity_filter option').map(function(){
+          return (this.value ? this.value : null);
+      }).get();
+
       if (window.localStorage && localStorage.getItem('log_max_severity_{{module}}_{{scope}}')) {
           $('#severity_filter').val(localStorage.getItem('log_max_severity_{{module}}_{{scope}}')).change();
       }
@@ -47,7 +52,6 @@
               },
               requestHandler: function(request){
                   if ( $('#severity_filter').val().length > 0) {
-                      let severities = ["Emergency", "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug"];
                       let selectedSeverity = $('#severity_filter').val();
                       request['severity'] = severities.slice(0,severities.indexOf(selectedSeverity) + 1);
                   }
