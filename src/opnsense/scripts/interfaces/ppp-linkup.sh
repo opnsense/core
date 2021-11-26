@@ -3,13 +3,6 @@
 export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
 if [ "${2}" = "inet" ]; then
-	OLD_ROUTER=`cat /tmp/${1}_router`
-	if [ -n "${OLD_ROUTER}" ]; then
-		echo "Removing states to old router ${OLD_ROUTER}" | logger -t ppp-linkup
-		pfctl -i ${1} -k 0.0.0.0/0 -k ${OLD_ROUTER}/32
-		pfctl -i ${1} -k ${OLD_ROUTER}/32 -k 0.0.0.0/0
-	fi
-
 	echo ${4} > /tmp/${1}_router
 	echo ${3} > /tmp/${1}_ip
 
