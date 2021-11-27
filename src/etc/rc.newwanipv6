@@ -107,10 +107,6 @@ if (count(link_interface_to_track6($interface, true))) {
 system_resolvconf_generate();
 system_hosts_generate();
 
-/* ensured above that this is an IP address */
-$ip_file = "/var/db/{$interface}_ipv6";
-@file_put_contents($ip_file, $ip);
-
 $cacheip_file = "/var/db/{$interface}_cacheipv6";
 $cacheip = @file_get_contents($cacheip_file);
 

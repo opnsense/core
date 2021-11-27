@@ -141,10 +141,6 @@ foreach (array_keys($restartifs) as $ifname) {
  */
 ifgroup_setup();
 
-/* ensured above that this is an IP address */
-$ip_file = "/var/db/{$interface}_ip";
-@file_put_contents($ip_file, $ip);
-
 $cacheip_file = "/var/db/{$interface}_cacheip";
 $cacheip = @file_get_contents($cacheip_file);
 
