@@ -70,17 +70,13 @@ log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) 
  * to reconfigure an interface.  OpenVPN might be in tap(4)
  * mode and not have an IP address.
  */
-if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') {
+if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
     return;
 }
 
-$configip = $config['interfaces'][$interface]['ipaddrv6'];
-
 $searchdomain_file = "/var/etc/searchdomain_v6{$interface_real}";
 $nameserver_file = "/var/etc/nameserver_v6{$interface_real}";
-$cacheip_file = "/var/db/{$interface}_cacheipv6";
-$ip_file = "/var/db/{$interface}_ipv6";
 
 $new_domain_name_servers = getenv('new_domain_name_servers');
 if (!empty($new_domain_name_servers)) {
@@ -102,10 +98,6 @@ if (!empty($new_domain_name)) {
     @file_put_contents($searchdomain_file, $new_domain_name);
 }
 
-if (is_ipaddr($ip)) {
-    @file_put_contents($ip_file, $ip);
-}
-
 interfaces_vips_configure(false, $interface);
 
 if (count(link_interface_to_track6($interface, true))) {
@@ -115,31 +107,26 @@ if (count(link_interface_to_track6($interface, true))) {
 system_resolvconf_generate();
 system_hosts_generate();
 
+/* ensured above that this is an IP address */
+$ip_file = "/var/db/{$interface}_ipv6";
+@file_put_contents($ip_file, $ip);
+
+$cacheip_file = "/var/db/{$interface}_cacheipv6";
 $cacheip = @file_get_contents($cacheip_file);
 
-if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
-    if (is_ipaddr($ip)) {
-        if ($ip == $cacheip) {
-            if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
-                /* PPP reconnect loop avoidance */
-                return;
-            }
-        } else {
-            if (is_ipaddr($cacheip) && does_interface_exist($interface_real)) {
-                mwexec("/sbin/ifconfig {$interface_real} inet6 {$cacheip} delete");
-            }
+if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
+    if ($ip == $cacheip) {
+        if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
+            /* PPP reconnect loop avoidance */
+            return;
         }
     }
-
-    @unlink($cacheip_file);
 
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
     filter_configure_sync();
 
-    if (is_ipaddr($ip)) {
-        @file_put_contents($cacheip_file, $ip);
-    }
+    @file_put_contents($cacheip_file, $ip);
 
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));

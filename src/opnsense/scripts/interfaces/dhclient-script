@@ -55,7 +55,6 @@ arp_flush() {
 
 
 delete_old_address() {
-	rm -f /var/db/${interface}_ip
 	eval "$IFCONFIG $interface inet -alias $old_ip_address $medium"
 }
 
@@ -71,12 +70,9 @@ add_new_address() {
 	$LOGGER "New Broadcast Address ($interface): $new_broadcast_address"
 	$LOGGER "New Routers ($interface): $new_routers"
 
-	# This is necessary otherwise dpinger will try to ping all 1s address
-        # XXX still true?!
 	if [ -n "$new_routers" ] && [ "$new_routers" != "255.255.255.255" ]; then
 		echo $new_routers > /tmp/${interface}_router
 	fi
-	echo $new_ip_address > /var/db/${interface}_ip
 }
 
 delete_old_alias() {

@@ -1114,9 +1114,6 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     /* clear stale state files associated with this interface */
-    @unlink("/var/db/{$interface}_ip");
-    @unlink("/var/db/{$interface}_ipv6");
-    /* do not unlink cacheip(v6) variants for state kill in rc.newwanip(v6) scripts */
     @unlink("/var/etc/nameserver_{$realif}");
     @unlink("/var/etc/nameserver_v6{$realifv6}");
     @unlink("/var/etc/searchdomain_{$realif}");
