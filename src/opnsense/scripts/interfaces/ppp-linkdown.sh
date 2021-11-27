@@ -28,27 +28,25 @@ if [ "${AF}" = "inet" ]; then
 		rm -f /var/etc/nameserver_${IF}
 	fi
 
-	# Do not remove gateway used during filter reload.
-	rm -f /tmp/${IF}_router /tmp/${IF}_ip
+	rm -f /tmp/${IF}_router
 elif [ "${AF}" = "inet6" ]; then
 	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
 		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)
 	fi
+
 	if [ -n "${GW}" -a "${DEFAULTGW}" = "${GW}" ]; then
 		echo "Removing stale PPPoE gateway ${GW} on ${AF}" | logger -t ppp-linkdown
 		route delete -${AF} default "${GW}"
 	fi
 
 	if [ -f "/var/etc/nameserver_v6${IF}" ]; then
-		# Remove old entries
 		for nameserver in $(cat /var/etc/nameserver_v6${IF}); do
 			route delete ${nameserver}
 		done
 		rm -f /var/etc/nameserver_v6${IF}
 	fi
 
-	# Do not remove gateway used during filter reload.
-	rm -f /tmp/${IF}_routerv6 /tmp/${IF}_ipv6
+	rm -f /tmp/${IF}_routerv6
 
 	# remove previous SLAAC addresses as the ISP may
 	# not respond to these in the upcoming session

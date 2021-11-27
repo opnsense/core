@@ -4,7 +4,6 @@ export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
 if [ "${2}" = "inet" ]; then
 	echo ${4} > /tmp/${1}_router
-	echo ${3} > /tmp/${1}_ip
 
 	if grep -q dnsallowoverride /conf/config.xml; then
 		# write nameservers to file
@@ -26,7 +25,6 @@ if [ "${2}" = "inet" ]; then
 	/usr/local/sbin/configctl -d interface newip ${1}
 elif [ "${2}" = "inet6" ]; then
 	echo ${4} | cut -d% -f1 > /tmp/${1}_routerv6
-	echo ${3} | cut -d% -f1 > /tmp/${1}_ipv6
 
 	if grep -q dnsallowoverride /conf/config.xml; then
 		# write nameservers to file
