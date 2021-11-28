@@ -6,5 +6,5 @@
 /bin/rm -f /tmp/${1}_routerv6
 /bin/rm -f /var/etc/nameserver_v6${1}
 /bin/rm -f /var/etc/nameserver_${1}
-/bin/rm -f /var/etc/searchdomain_${1}
-/bin/rm -f /var/etc/searchdomain_v6${1}
+/bin/rm -f /tmp/searchdomain_${1}
+/bin/rm -f /tmp/searchdomain_v6${1}

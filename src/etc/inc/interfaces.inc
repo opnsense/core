@@ -1116,8 +1116,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     /* clear stale state files associated with this interface */
     @unlink("/var/etc/nameserver_{$realif}");
     @unlink("/var/etc/nameserver_v6{$realifv6}");
-    @unlink("/var/etc/searchdomain_{$realif}");
-    @unlink("/var/etc/searchdomain_v6{$realifv6}");
+    @unlink("/tmp/searchdomain_{$realif}");
+    @unlink("/tmp/searchdomain_v6{$realifv6}");
     @unlink("/tmp/{$realif}_router");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_pdinfo");
