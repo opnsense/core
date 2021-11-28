@@ -311,7 +311,7 @@ function get_searchdomains()
 {
     $master_list = array();
 
-    $search_list = glob('/tmp/searchdomain_*');
+    $search_list = glob('/tmp/*_searchdomain*');
 
     if (is_array($search_list)) {
         foreach ($search_list as $fdns) {

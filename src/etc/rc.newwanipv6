@@ -75,7 +75,7 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     return;
 }
 
-$searchdomain_file = "/tmp/searchdomain_v6{$interface_real}";
+$searchdomain_file = "/tmp/{$interface_real}_searchdomainv6";
 $nameserver_file = "/tmp/nameserver_v6{$interface_real}";
 
 /* XXX from configd we don't get the caller's environment at all? */

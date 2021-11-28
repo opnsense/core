@@ -234,7 +234,7 @@ add_new_resolv_conf() {
 				route add $nameserver -iface $interface
 			fi
 		done
-		echo $new_domain_name > /tmp/searchdomain_$interface
+		echo $new_domain_name > /tmp/${interface}_searchdomain
 	fi
 
 	return 0
