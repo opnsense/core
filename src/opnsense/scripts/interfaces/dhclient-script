@@ -215,22 +215,22 @@ add_new_routes() {
 add_new_resolv_conf() {
 	$LOGGER "Creating resolv.conf"
 
-	if [ -f "/var/etc/nameserver_$interface" ]; then
+	if [ -f "/tmp/nameserver_$interface" ]; then
 		# Remove old entries
-		for nameserver in `cat /var/etc/nameserver_$interface`; do
+		for nameserver in $(cat /tmp/nameserver_$interface); do
 			route delete $nameserver >/dev/null 2>&1
 		done
 	fi
 
 	if [ -n "$new_domain_name_servers" ]; then
-		rm -f /var/etc/nameserver_$interface
+		rm -f /tmp/nameserver_$interface
 		ALLOWOVERRIDE=$(grep -c dnsallowoverride /conf/config.xml)
 		for nameserver in $new_domain_name_servers; do
 			# Add a route to the nameserver out the correct interface
 			# so that mulitple wans work correctly with multiple dns
 			# also backup the nameserver for later route removal
 			if [ $ALLOWOVERRIDE -gt 0 ]; then
-				echo $nameserver >>/var/etc/nameserver_$interface
+				echo $nameserver >> /tmp/nameserver_$interface
 				route add $nameserver -iface $interface
 			fi
 		done

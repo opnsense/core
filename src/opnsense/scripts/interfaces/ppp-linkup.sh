@@ -7,16 +7,16 @@ if [ "${2}" = "inet" ]; then
 
 	if grep -q dnsallowoverride /conf/config.xml; then
 		# write nameservers to file
-		echo -n "" > /var/etc/nameserver_${1}
+		: > /tmp/nameserver_${1}
 		if echo "${6}" | grep -q dns1; then
-			DNS1=`echo "${6}" | awk '{print $2}'`
-			echo "${DNS1}" >> /var/etc/nameserver_${1}
+			DNS1=$(echo "${6}" | awk '{print $2}')
+			echo "${DNS1}" >> /tmp/nameserver_${1}
 			route delete "${DNS1}" ${4}
 			route add "${DNS1}" ${4}
 		fi
 		if echo "${7}" | grep -q dns2; then
-			DNS2=`echo "${7}" | awk '{print $2}'`
-			echo "${DNS2}" >> /var/etc/nameserver_${1}
+			DNS2=$(echo "${7}" | awk '{print $2}')
+			echo "${DNS2}" >> /tmp/nameserver_${1}
 			route delete "${DNS2}" ${4}
 			route add "${DNS2}" ${4}
 		fi
@@ -28,16 +28,16 @@ elif [ "${2}" = "inet6" ]; then
 
 	if grep -q dnsallowoverride /conf/config.xml; then
 		# write nameservers to file
-		echo -n "" > /var/etc/nameserver_v6${1}
+		: > /tmp/nameserver_v6${1}
 		if echo "${6}" | grep -q dns1; then
-			DNS1=`echo "${6}" | awk '{print $2}'`
-			echo "${DNS1}" >> /var/etc/nameserver_v6${1}
+			DNS1=$(echo "${6}" | awk '{print $2}')
+			echo "${DNS1}" >> /tmp/nameserver_v6${1}
 			route delete -inet6 "${DNS1}" ${4}
 			route add -inet6 "${DNS1}" ${4}
 		fi
 		if echo "${7}" | grep -q dns2; then
-			DNS2=`echo "${7}" | awk '{print $2}'`
-			echo "${DNS2}" >> /var/etc/nameserver_v6${1}
+			DNS2=$(echo "${7}" | awk '{print $2}')
+			echo "${DNS2}" >> /tmp/nameserver_v6${1}
 			route delete -inet6 "${DNS2}" ${4}
 			route add -inet6 "${DNS2}" ${4}
 		fi

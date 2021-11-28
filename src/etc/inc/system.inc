@@ -335,7 +335,7 @@ function get_nameservers($interface = null)
     global $config;
     $master_list = array();
 
-    $dns_lists = glob('/var/etc/nameserver_*');
+    $dns_lists = glob('/tmp/nameserver_*');
     $exclude_interfaces = array();
 
     if (!empty($interface)) {
@@ -343,8 +343,8 @@ function get_nameservers($interface = null)
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
         $dns_lists = array(
-            "/var/etc/nameserver_{$realif}",
-            "/var/etc/nameserver_v6{$realifv6}",
+            "/tmp/nameserver_{$realif}",
+            "/tmp/nameserver_v6{$realifv6}",
         );
     }
 

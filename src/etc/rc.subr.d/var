@@ -153,9 +153,6 @@ fi
 # old config files are stored in this place
 mkdir -p /var/etc
 
-# clear nameserver, searchdomain and IP cache files
-rm -f /var/etc/nameserver_*
-
 # Clear all files in this directory to prevent stale state of
 # services.  At one point this also helped to prevent shutdown(8)
 # from dropping "nologin" into the directory, preventing login on

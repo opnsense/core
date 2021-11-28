@@ -20,12 +20,12 @@ if [ "${AF}" = "inet" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	if [ -f "/var/etc/nameserver_${IF}" ]; then
+	if [ -f "/tmp/nameserver_${IF}" ]; then
 		# Remove old entries
-		for nameserver in $(cat /var/etc/nameserver_${IF}); do
+		for nameserver in $(cat /tmp/nameserver_${IF}); do
 			route delete ${nameserver}
 		done
-		rm -f /var/etc/nameserver_${IF}
+		rm -f /tmp/nameserver_${IF}
 	fi
 
 	rm -f /tmp/${IF}_router
@@ -39,11 +39,11 @@ elif [ "${AF}" = "inet6" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	if [ -f "/var/etc/nameserver_v6${IF}" ]; then
-		for nameserver in $(cat /var/etc/nameserver_v6${IF}); do
+	if [ -f "/tmp/nameserver_v6${IF}" ]; then
+		for nameserver in $(cat /tmp/nameserver_v6${IF}); do
 			route delete ${nameserver}
 		done
-		rm -f /var/etc/nameserver_v6${IF}
+		rm -f /tmp/nameserver_v6${IF}
 	fi
 
 	rm -f /tmp/${IF}_routerv6

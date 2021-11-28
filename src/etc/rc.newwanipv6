@@ -76,8 +76,9 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
 }
 
 $searchdomain_file = "/tmp/searchdomain_v6{$interface_real}";
-$nameserver_file = "/var/etc/nameserver_v6{$interface_real}";
+$nameserver_file = "/tmp/nameserver_v6{$interface_real}";
 
+/* XXX from configd we don't get the caller's environment at all? */
 $new_domain_name_servers = getenv('new_domain_name_servers');
 if (!empty($new_domain_name_servers)) {
     $name_servers = explode(" ", $new_domain_name_servers);
@@ -93,6 +94,7 @@ if (!empty($new_domain_name_servers)) {
     }
 }
 
+/* XXX from configd we don't get the caller's environment at all? */
 $new_domain_name = getenv('new_domain_name');
 if (!empty($new_domain_name)) {
     @file_put_contents($searchdomain_file, $new_domain_name);
