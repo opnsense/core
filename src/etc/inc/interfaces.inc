@@ -2998,11 +2998,11 @@ REQUEST)
     if [ -n "\${PDINFO}" ]; then
         echo \${PDINFO} > /tmp/{$wanif}_pdinfo
     fi
-    /usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"
-    /usr/local/sbin/configctl -d interface newipv6 {$wanif}\n";
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+    /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
     rm -f /tmp/{$wanif}_pdinfo
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
