@@ -2988,26 +2988,29 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
         @unlink("/var/etc/dhcp6c_{$interface}.conf");
     }
 
-    $dhcp6cscript = "#!/bin/sh\n";
-    $dhcp6cscript .= "if [ -n '" . (!empty($syscfg['dhcp6_debug']) ? 'debug' : '') . "' ]; then\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif}\"\n";
-    $dhcp6cscript .= "fi\n";
-    $dhcp6cscript .= "case \$REASON in\n";
-    $dhcp6cscript .= "REQUEST)\n";
-    $dhcp6cscript .= "\tif [ -n \"\${PDINFO}\" ]; then\n";
-    $dhcp6cscript .= "\t\techo \${PDINFO} > /tmp/{$wanif}_pdinfo\n";
-    $dhcp6cscript .= "\tfi\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\t/usr/local/sbin/configctl -d interface newipv6 {$wanif}\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "EXIT|RELEASE)\n";
-    $dhcp6cscript .= "\t/usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"\n";
-    $dhcp6cscript .= "\trm -f /tmp/{$wanif}_pdinfo\n";
-    $dhcp6cscript .= "\t/usr/local/sbin/configctl -d interface newipv6 {$wanif}\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "*)\n";
-    $dhcp6cscript .= "\t;;\n";
-    $dhcp6cscript .= "esac\n";
+    $dhcp6cscript = <<<EOF
+#!/bin/sh
+if [ -n "{$syscfg['dhcp6_debug']}" ]; then
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
+fi
+case \$REASON in
+REQUEST)
+    if [ -n "\${PDINFO}" ]; then
+        echo \${PDINFO} > /tmp/{$wanif}_pdinfo
+    fi
+    /usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"
+    /usr/local/sbin/configctl -d interface newipv6 {$wanif}\n";
+    ;;
+EXIT|RELEASE)
+    /usr/bin/logger -t dhcp6c \"dhcp6c \$REASON on {$wanif} - running newipv6\"
+    rm -f /tmp/{$wanif}_pdinfo
+    /usr/local/sbin/configctl -d interface newipv6 {$wanif}
+    ;;
+*)
+    ;;
+esac
+
+EOF;
 
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
