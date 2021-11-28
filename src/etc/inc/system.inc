@@ -335,17 +335,17 @@ function get_nameservers($interface = null)
     global $config;
     $master_list = array();
 
-    $dns_lists = glob('/tmp/nameserver_*');
+    $dns_lists = glob('/tmp/*_nameserver*');
     $exclude_interfaces = array();
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
-        $dns_lists = array(
-            "/tmp/nameserver_{$realif}",
-            "/tmp/nameserver_v6{$realifv6}",
-        );
+        $dns_lists = [
+            "/tmp/{$realif}_nameserver",
+            "/tmp/{$realifv6}_nameserverv6",
+        ];
     }
 
     if (isset($config['system']['dnsallowoverride_exclude'])) {
