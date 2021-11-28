@@ -155,7 +155,6 @@ mkdir -p /var/etc
 
 # clear nameserver, searchdomain and IP cache files
 rm -f /var/etc/nameserver_* /var/etc/searchdomain_*
-rm -f /var/db/*_cacheip /var/db/*_cacheipv6
 
 # Clear all files in this directory to prevent stale state of
 # services.  At one point this also helped to prevent shutdown(8)

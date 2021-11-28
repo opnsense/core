@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -107,7 +107,7 @@ if (count(link_interface_to_track6($interface, true))) {
 system_resolvconf_generate();
 system_hosts_generate();
 
-$cacheip_file = "/var/db/{$interface}_cacheipv6";
+$cacheip_file = "/tmp/{$interface}_oldipv6";
 $cacheip = @file_get_contents($cacheip_file);
 
 if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
