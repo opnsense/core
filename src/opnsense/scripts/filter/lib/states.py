@@ -136,8 +136,6 @@ def query_states(rule_label, filter_str):
                 'nat_port': None,
                 'iface': parts[0],
                 'proto': parts[1],
-                'src_addr': parse_address(parts[2])['addr'],
-                'src_port': parse_address(parts[2])['port'],
                 'ipproto': parse_address(parts[2])['ipproto']
             }
             if parts[3].find('(') > -1:
@@ -146,13 +144,15 @@ def query_states(rule_label, filter_str):
                 if parts[3].find(':') > -1:
                    record['nat_port'] = parts[3].split(':')[1][:-1]
 
-            record['dst_addr'] = parse_address(parts[-2])['addr']
-            record['dst_port'] = parse_address(parts[-2])['port']
-
             if parts[-3] == '->':
                 record['direction'] = 'out'
             else:
                 record['direction'] = 'in'
+
+            record['dst_addr'] = parse_address(parts[-2])['addr'] if record['direction'] == 'out' else parse_address(parts[2])['addr']
+            record['dst_port'] = parse_address(parts[-2])['port'] if record['direction'] == 'out' else parse_address(parts[2])['port']
+            record['src_addr'] = parse_address(parts[2])['addr'] if record['direction'] == 'out' else parse_address(parts[-2])['addr']
+            record['src_port'] = parse_address(parts[2])['port'] if record['direction'] == 'out' else parse_address(parts[-2])['port']
 
             record['state'] = parts[-1]
 
