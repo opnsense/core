@@ -225,15 +225,12 @@ add_new_resolv_conf() {
         rm -f /tmp/${interface}_nameserver
 
 	if [ -n "$new_domain_name_servers" ]; then
-		ALLOWOVERRIDE=$(grep -c dnsallowoverride /conf/config.xml)
 		for nameserver in $new_domain_name_servers; do
 			# Add a route to the nameserver out the correct interface
 			# so that mulitple wans work correctly with multiple dns
 			# also backup the nameserver for later route removal
-			if [ $ALLOWOVERRIDE -gt 0 ]; then
-				echo $nameserver >> /tmp/${interface}_nameserver
-				route add $nameserver -iface $interface
-			fi
+			echo $nameserver >> /tmp/${interface}_nameserver
+			route add $nameserver -iface $interface
 		done
 	fi
 

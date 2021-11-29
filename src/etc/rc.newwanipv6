@@ -75,31 +75,6 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     return;
 }
 
-$searchdomain_file = "/tmp/{$interface_real}_searchdomainv6";
-$nameserver_file = "/tmp/{$interface_real}_nameserverv6";
-
-/* XXX from configd we don't get the caller's environment at all? */
-$new_domain_name_servers = getenv('new_domain_name_servers');
-if (!empty($new_domain_name_servers)) {
-    $name_servers = explode(" ", $new_domain_name_servers);
-    $valid_ns = array();
-    foreach ($name_servers as $ns) {
-        if (is_ipaddr(trim($ns))) {
-            $valid_ns[] = trim($ns);
-        }
-    }
-
-    if (count($valid_ns) > 0) {
-        @file_put_contents($nameserver_file, implode("\n", $valid_ns));
-    }
-}
-
-/* XXX from configd we don't get the caller's environment at all? */
-$new_domain_name = getenv('new_domain_name');
-if (!empty($new_domain_name)) {
-    @file_put_contents($searchdomain_file, $new_domain_name);
-}
-
 interfaces_vips_configure(false, $interface);
 
 if (count(link_interface_to_track6($interface, true))) {

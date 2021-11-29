@@ -336,7 +336,7 @@ function get_nameservers($interface = null)
     $master_list = array();
 
     $dns_lists = glob('/tmp/*_nameserver*');
-    $exclude_interfaces = array();
+    $exclude_interfaces = [];
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
@@ -349,16 +349,16 @@ function get_nameservers($interface = null)
     }
 
     if (isset($config['system']['dnsallowoverride_exclude'])) {
-        foreach (explode(",", $config['system']['dnsallowoverride_exclude']) as $intf) {
+        foreach (explode(',', $config['system']['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
-                $exclude_interfaces[] = $config['interfaces'][$intf]['if'];
+                $exclude_interfaces[] = get_real_interface($intf);
+                $exclude_interfaces[] = get_real_interface($intf, 'inet6');
             }
         }
     }
 
     foreach ($dns_lists as $fdns) {
-        $intf = explode("_", $fdns)[1];
-        $intf = strpos($intf, "v6") === 0 ? substr($intf, 2) : $intf;
+        $intf = explode('_', basename($fdns))[0];
         if (in_array($intf, $exclude_interfaces)) {
             continue;
         }
