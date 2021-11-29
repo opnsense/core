@@ -730,10 +730,10 @@ function interface_gre_configure(&$gre, $grekey = "")
     interfaces_bring_up($greif);
 
     if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$greif}_router", $gre['tunnel-remote-addr']);
+        file_put_contents("/tmp/{$greif}_router", "${gre['tunnel-remote-addr']}\n");
     }
     if (is_ipaddrv6($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$greif}_routerv6", $gre['tunnel-remote-addr']);
+        file_put_contents("/tmp/{$greif}_routerv6", "{$gre['tunnel-remote-addr']}\n");
     }
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
@@ -853,10 +853,10 @@ function interface_gif_configure(&$gif, $gifkey = "")
     interfaces_bring_up($gifif);
 
     if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gifif}_router", $gif['tunnel-remote-addr']);
+        file_put_contents("/tmp/{$gifif}_router", "{$gif['tunnel-remote-addr']}\n");
     }
     if (is_ipaddrv6($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gifif}_routerv6", $gif['tunnel-remote-addr']);
+        file_put_contents("/tmp/{$gifif}_routerv6", "{$gif['tunnel-remote-addr']}\n");
     }
 
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
@@ -2875,8 +2875,8 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
 
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}");
+    file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}\n");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}\n");
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
