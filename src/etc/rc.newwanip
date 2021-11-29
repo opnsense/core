@@ -142,7 +142,7 @@ foreach (array_keys($restartifs) as $ifname) {
 ifgroup_setup();
 
 $cacheip_file = "/tmp/{$interface_real}_oldip";
-$cacheip = @file_get_contents($cacheip_file);
+$cacheip = trim(@file_get_contents($cacheip_file));
 
 if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddr'])) {
     system_routing_configure(false, $interface);
@@ -159,7 +159,7 @@ if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddr'])) 
         mwexecf('/sbin/pfctl -k %s', $cacheip);
     }
 
-    @file_put_contents($cacheip_file, $ip);
+    @file_put_contents($cacheip_file, $ip . PHP_EOL);
 
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));
