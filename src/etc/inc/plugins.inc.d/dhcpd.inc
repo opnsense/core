@@ -1078,6 +1078,8 @@ EOD;
             if (!empty($dhcpifconf['nextserver'])) {
                 $dhcpdconf .= "  next-server {$dhcpifconf['nextserver']};\n";
             }
+            $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
+            $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
             if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
                 $dhcpdconf .= "  if option arch = 00:06 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
@@ -1086,9 +1088,9 @@ EOD;
                 $dhcpdconf .= "  } else if option arch = 00:09 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
                 $dhcpdconf .= "  } else if option arch = 00:0a {\n";
-                $dhcpdconf .= "    filename \"{$dhcpifconf['filename32arm'] || $dhcpifconf['filename32']}\";\n";
+                $dhcpdconf .= "    filename \"{$arm32}\";\n";
                 $dhcpdconf .= "  } else if option arch = 00:0b {\n";
-                $dhcpdconf .= "    filename \"{$dhcpifconf['filename64arm'] || $dhcpifconf['filename64']}\";\n";
+                $dhcpdconf .= "    filename \"{$arm64}\";\n";
                 $dhcpdconf .= "  } else {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
                 $dhcpdconf .= "  }\n\n";
