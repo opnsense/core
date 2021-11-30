@@ -1138,7 +1138,7 @@ EOD;
 =======
             $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
             $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
-            if (!empty($dhcpdconf['ipxeaddress'])) {
+            if (!empty($dhcpifconf['ipxeaddress'])) {
                 $dhcpdconf .= "  if exists user-class and option user-class = \"iPXE\" {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['ipxeaddress']}\";\n";
                 $dhcpdconf .= "  }\n\n";
