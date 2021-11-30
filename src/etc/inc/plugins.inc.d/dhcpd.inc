@@ -1080,7 +1080,11 @@ EOD;
             }
             $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
             $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
-            if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
+            if (!empty($dhcpdconf['ipxeaddress'])) {
+                $dhcpdconf .= "  if exists user-class and option user-class = \"iPXE\" {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['ipxeaddress']}\";\n";
+                $dhcpdconf .= "  }\n\n";
+            } elseif (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
                 $dhcpdconf .= "  if option arch = 00:06 {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
                 $dhcpdconf .= "  } else if option arch = 00:07 {\n";

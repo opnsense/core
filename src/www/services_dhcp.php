@@ -57,7 +57,7 @@ function reconfigure_dhcpd()
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
-  'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
+  'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'ipxeaddress', 'filename', 'filename32', 'filename64',
   'filename32arm', 'filename64arm', 'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport',
   'omapialgorithm', 'omapikey', 'minsecs');
 
@@ -978,6 +978,10 @@ include("head.inc");
                           <br/><br/>
                           <?=gettext('Set next-server IP');?>
                           <input name="nextserver" type="text" id="nextserver" value="<?=$pconfig['nextserver'];?>" /><br />
+                          <?=gettext('Set iPXE address');?>
+                          <input name="ipxeaddress" type="text" id="ipxeaddress" value="<?=$pconfig['ipxeaddress'];?>" /><br />
+                          <?=gettext("Note: Setting an iPXE address will ignore the filename fields below!");?>
+                          <br/><br/>
                           <?=gettext('Set default bios filename');?>
                           <input name="filename" type="text" id="filename" value="<?=$pconfig['filename'];?>" /><br />
                           <?=gettext('Set UEFI 32bit filename');?>
