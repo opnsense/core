@@ -1079,6 +1079,7 @@ EOD;
                 $dhcpdconf .= "  next-server {$dhcpifconf['nextserver']};\n";
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
             $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
             if (!empty($dhcpifconf['ipxeaddress'])) {
@@ -1100,6 +1101,8 @@ EOD;
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
                 $dhcpdconf .= "  }\n\n";
 =======
+=======
+>>>>>>> 4758cbdd4 (feat: add ipxe configuration to dhcp netboot options)
 
             $conditional = false;
             $filemap = [
@@ -1129,7 +1132,32 @@ EOD;
                     $dhcpdconf .= "  }";
                 }
                 $dhcpdconf .= "\n";
+<<<<<<< HEAD
 >>>>>>> cc443a706 (dhcp: rewrite conditionals to adapt to configured reality)
+=======
+=======
+            $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
+            $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
+            if (!empty($dhcpdconf['ipxeaddress'])) {
+                $dhcpdconf .= "  if exists user-class and option user-class = \"iPXE\" {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['ipxeaddress']}\";\n";
+                $dhcpdconf .= "  }\n\n";
+            } elseif (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
+                $dhcpdconf .= "  if option arch = 00:06 {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
+                $dhcpdconf .= "  } else if option arch = 00:07 {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
+                $dhcpdconf .= "  } else if option arch = 00:09 {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
+                $dhcpdconf .= "  } else if option arch = 00:0a {\n";
+                $dhcpdconf .= "    filename \"{$arm32}\";\n";
+                $dhcpdconf .= "  } else if option arch = 00:0b {\n";
+                $dhcpdconf .= "    filename \"{$arm64}\";\n";
+                $dhcpdconf .= "  } else {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
+                $dhcpdconf .= "  }\n\n";
+>>>>>>> 15e4076bd (feat: add ipxe configuration to dhcp netboot options)
+>>>>>>> 4758cbdd4 (feat: add ipxe configuration to dhcp netboot options)
             } elseif (!empty($dhcpifconf['filename'])) {
                 $dhcpdconf .= "  filename \"{$dhcpifconf['filename']}\";\n";
             }
