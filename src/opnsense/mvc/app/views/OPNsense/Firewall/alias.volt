@@ -513,6 +513,8 @@
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
+                            <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
+                            <th data-column-id="last_updated" data-type="string">{{ lang._('Last updated') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
                         </thead>

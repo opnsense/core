@@ -41,12 +41,20 @@ CORE_TYPE?=	business
 .endfor
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
-.if ${_CORE_NEXT:[2]} == 7
+.if ${_CORE_NEXT:[2]} == 7 # community
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
 CORE_NEXT:=	${CORE_NEXT}.1
-.else
+.elif ${_CORE_NEXT:[2]} == 10 # business
+CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
+CORE_NEXT:=	${CORE_NEXT}.4
+.elif ${_CORE_NEXT:[2]} == 1 # community
 CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
+.elif ${_CORE_NEXT:[2]} == 4 # business
+CORE_NEXT=	${_CORE_NEXT:[1]}
+CORE_NEXT:=	${CORE_NEXT}.10
+.else
+.error Unsupported minor version for CORE_ABI=${CORE_ABI}
 .endif
 
 .if exists(${GIT}) && exists(${GITVERSION}) && exists(${.CURDIR}/.git)
@@ -160,7 +168,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-zlib \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-dnspython2 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \

@@ -308,6 +308,19 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\tAdvDefaultLifetime 0;\n";
         }
 
+        /*
+         * Only a CARP VIP can inject a link-local address and it
+         * means we need to force that address into the RA message
+         * for failover to work.
+         */
+        if (is_linklocal($ifcfgipv6)) {
+            $radvdconf .= "\tAdvRASrcAddress {\n";
+            $radvdconf .= "\t\t{$ifcfgipv6};\n";
+            $radvdconf .= "\t};\n";
+            /* to avoid wrong MAC being stuck in failover case only */
+            $radvdconf .= "\tAdvSourceLLAddress off;\n";
+        }
+
         $stanzas = array();
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $realif, $ifconfig_details);
@@ -316,10 +329,16 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] == $dhcpv6if && is_ipaddrv6($vip['subnet'])) {
-                $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
-                $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
+            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
             }
+
+            if (is_linklocal($vip['subnet'])) {
+                continue;
+            }
+
+            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
+            $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
         }
 
         /* VIPs may duplicate readings from system */
@@ -506,6 +525,10 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
             if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+                continue;
+            }
+
+            if (is_linklocal($vip['subnet'])) {
                 continue;
             }
 
@@ -1888,11 +1911,10 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     }
 }
 
-function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null)
+function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses = true, $proto = null)
 {
     $staticmap = [];
-
-    foreach ([4, 6] as $inet) {
+    foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
         $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
 
         foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
@@ -1905,7 +1927,7 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                 interfaces_primary_address6($dhcpif, null, $ifconfig_details) : [null];
 
             foreach ($dhcpifconf['staticmap'] as $host) {
-                if (empty($host[$ipaddr])) {
+                if (empty($host[$ipaddr]) && $valid_addresses) {
                     /* we only return proper entries with an IP address */
                     continue;
                 }

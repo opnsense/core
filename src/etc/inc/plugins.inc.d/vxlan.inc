@@ -99,7 +99,7 @@ function vxlan_configure_interface($verbose = false)
             if ($param == 'vxlandev') {
                 $intfnm = (string)$vxlan->$param;
                 if (!empty($cnf->interfaces->$intfnm)) {
-                    $value = $cnf->interfaces->$intfnm->if->__toString();
+                    $value = (string)$cnf->interfaces->$intfnm->if;
                 }
             } else {
                 $value = (string)$vxlan->$param;

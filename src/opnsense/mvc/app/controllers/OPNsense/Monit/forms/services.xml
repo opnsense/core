@@ -27,7 +27,7 @@
       <id>service.match</id>
       <label>Match</label>
       <type>text</type>
-      <help><![CDATA[Find the process by regular expression. Test your pattern with <br><b>monit procmatch &lt;PATTERN&gt;</b>]]></help>
+      <help><![CDATA[Find the process by regular expression. Test your pattern with <br><b>monit procmatch <i>PATTERN</i></b>]]></help>
    </field>
    <field>
       <id>service.path</id>
@@ -77,6 +77,13 @@
       <label>Depends</label>
       <type>select_multiple</type>
       <help><![CDATA[Optionally define a (list of) service(s) which are required before monitoring this one, if any of the dependencies are either stopped or unmonitored this service will stop/unmonitor too.]]></help>
+   </field>
+   <field>
+      <id>service.polltime</id>
+      <label>Poll Time</label>
+      <type>text</type>
+      <advanced>true</advanced>
+      <help><![CDATA[Set the service poll time. Either as a number of cycles "<i>NUMBER</i> CYCLES" or Cron-style "* 8-19 * * 1-5"]]></help>
    </field>
    <field>
       <id>service.description</id>

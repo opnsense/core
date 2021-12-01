@@ -23,8 +23,14 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
+import asyncio
+import dns.resolver
 import ipaddress
 import itertools
+import syslog
+import time
+from dns.rdatatype import RdataType
+from dns.asyncresolver import Resolver
 
 
 def net_wildcard_iterator(network: str):
@@ -62,3 +68,75 @@ def net_wildcard_iterator(network: str):
                     yield ipaddress.IPv6Network((this_ip, wildcard.max_prefixlen - mask_length), strict=False)
                 else:
                     yield ipaddress.IPv4Network((this_ip, wildcard.max_prefixlen - mask_length), strict=False)
+
+
+class AsyncDNSResolver:
+    """ Asynchronous DNS resolver, collect addresses for hostnames collected in request queue.
+        simple example usecase collecting addresses associated with two domains:
+
+        asyncresolver = AsyncDNSResolver()
+        asyncresolver.add('www.example.com')
+        asyncresolver.add('mail.example.com')
+        asyncresolver.collect()
+        print(asyncresolver.addresses())
+    """
+    batch_size = 100
+    report_size = 10000
+
+    def __init__(self, origin="<unknown>"):
+        self._request_queue = list()
+        self._requested = set()
+        self._response = set()
+        self._origin = origin
+        self._domains_queued = 0
+
+    def add(self, hostname):
+        self._request_queue.append(hostname)
+
+    async def request_ittr(self, loop):
+        dnsResolver = Resolver()
+        dnsResolver.timeout = 2
+        collected_errors = set()
+        while len(self._request_queue) > 0:
+            tasks = []
+            while len(tasks) < self.batch_size and len(self._request_queue) > 0:
+                hostname = self._request_queue.pop()
+                if hostname not in self._requested:
+                    self._domains_queued += 1
+                    # make sure we only request a host once
+                    for record_type in ['A', 'AAAA']:
+                        tasks.append(dnsResolver.resolve(hostname, record_type))
+                    self._requested.add(hostname)
+            if len(tasks) > 0:
+                responses = await asyncio.gather(*tasks, return_exceptions=True)
+                for response in responses:
+                    if type(response) is dns.resolver.Answer:
+                        for item in response.response.answer:
+                            if type(item) is dns.rrset.RRset:
+                                for addr in item.items:
+                                    if addr.rdtype is RdataType.CNAME:
+                                        # query cname (recursion)
+                                        self._request_queue.append(addr.target)
+                                    else:
+                                        self._response.add(addr.address)
+                    elif type(response) in [dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers]:
+                        if str(response) not in collected_errors:
+                            syslog.syslog(syslog.LOG_ERR, '%s [for %s]' % (response, self._origin))
+                            collected_errors.add(str(response))
+            if self._domains_queued % self.report_size == 0:
+                syslog.syslog(syslog.LOG_NOTICE, 'requested %d hostnames for %s' % (self._domains_queued, self._origin))
+
+    def collect(self):
+        if len(self._request_queue) > 0:
+            start_time = time.time()
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            asyncio.run(self.request_ittr(loop))
+            loop.close()
+            syslog.syslog(syslog.LOG_NOTICE, 'resolving %d hostnames (%d addresses) for %s took %.2f seconds' % (
+                self._domains_queued, len(self._response), self._origin, time.time() - start_time
+            ))
+        return self
+
+    def addresses(self):
+        return self._response

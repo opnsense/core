@@ -37,10 +37,6 @@
             <description>FourDots (HTTPS, Belgrade, RS)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.as24220.net/opnsense</url>
-            <description>Hostcentral (HTTP, Melbourne, Australia)</description>
-        </mirror>
-        <mirror>
             <url>https://opnsense-mirror.hiho.ch</url>
             <description>HiHo (HTTPS, Zurich, CH)</description>
         </mirror>

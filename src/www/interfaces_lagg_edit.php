@@ -89,6 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['proto'] = isset($a_laggs[$id]['proto']) ? $a_laggs[$id]['proto'] : null;
     $pconfig['descr'] = isset($a_laggs[$id]['descr']) ? $a_laggs[$id]['descr'] : null;
     $pconfig['lacp_fast_timeout'] = !empty($a_laggs[$id]['lacp_fast_timeout']);
+    $pconfig['use_flowid'] = isset($a_laggs[$id]['use_flowid']) ? $a_laggs[$id]['use_flowid'] : null;
+    $pconfig['lagghash'] = isset($a_laggs[$id]['lagghash']) ? explode(',', $a_laggs[$id]['lagghash']) : [];
+    $pconfig['lacp_strict'] = isset($a_laggs[$id]['lacp_strict']) ? $a_laggs[$id]['lacp_strict'] : null;
     $pconfig['mtu'] = isset($a_laggs[$id]['mtu']) ? $a_laggs[$id]['mtu'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate and save form data
@@ -112,6 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (!empty($pconfig['lagghash'])){
+        foreach ((array)$pconfig['lagghash'] as $item) {
+            if (!in_array($item, ['l2', 'l3', 'l4'])) {
+                $input_errors[] = sprintf(gettext('Invalid lagghash value \'%s\''), $item);
+            }
+        }
+    }
+
     if (!in_array($pconfig['proto'], $laggprotos)) {
         $input_errors[] = gettext("Protocol supplied is invalid");
     }
@@ -119,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['mtu'])) {
         $mtu_low = 576;
         $mtu_high = 65535;
-        if ($pconfig['mtu'] < $mtu_low || $pconfig['mtu'] > $mtu_high) {
+        if ($pconfig['mtu'] < $mtu_low || $pconfig['mtu'] > $mtu_high || (string)((int)$pconfig['mtu']) != $pconfig['mtu'] ) {
             $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
         }
     }
@@ -132,6 +143,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['proto'] = $pconfig['proto'];
         $lagg['mtu'] = $pconfig['mtu'];
         $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
+        if (in_array($pconfig['use_flowid'], ['0', '1'])) {
+            $lagg['use_flowid'] = $pconfig['use_flowid'];
+        }
+        if (in_array($pconfig['lacp_strict'], ['0', '1'])) {
+            $lagg['lacp_strict'] = $pconfig['lacp_strict'];
+        }
+        if (!empty($pconfig['lagghash'])) {
+            $lagg['lagghash'] = implode(',', $pconfig['lagghash']);
+        }
         if (isset($id)) {
             $lagg['laggif'] = $a_laggs[$id]['laggif'];
         }
@@ -165,13 +185,12 @@ legacy_html_escape_form_data($pconfig);
   <script>
     $( document ).ready(function() {
         $("#proto").change(function(){
-            if ($("#proto").val() == 'lacp') {
-                $("#lacp_fast_timeout").parent().parent().show();
-                $("#lacp_fast_timeout").prop( "disabled", false );
-            } else {
-                $("#lacp_fast_timeout").parent().parent().hide();
-                $("#lacp_fast_timeout").prop( "disabled", true );
-            }
+            let this_proto = $("#proto").val();
+            $(".proto").closest('tr').hide();
+            $(".proto").prop( "disabled", true );
+            $(".proto_"+this_proto).closest('tr').show();
+            $(".proto_"+this_proto).prop( "disabled", false );
+            $('.selectpicker').selectpicker('refresh');
         });
         $("#proto").change();
     });
@@ -282,9 +301,63 @@ legacy_html_escape_form_data($pconfig);
                   <tr>
                     <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
                     <td>
-                      <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
+                      <input name="lacp_fast_timeout" id="lacp_fast_timeout" class="proto proto_lacp" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
                       <div class="hidden" data-for="help_for_lacp_fast_timeout">
                         <?=gettext("Enable lacp fast-timeout on the interface."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_use_flowid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use flowid"); ?></td>
+                    <td>
+                      <select name="use_flowid" class="selectpicker proto proto_lacp proto_loadbalance" id="use_flowid">
+                          <option value=""><?=gettext("Default");?></option>
+                          <option value="1" <?=$pconfig['use_flowid'] === "1" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("Yes");?>
+                          </option>
+                          <option value="0" <?=$pconfig['use_flowid'] === "0" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("No");?>
+                          </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_use_flowid">
+                          <?=gettext(
+                              "Use the RSS hash from the network card if available, otherwise a hash is locally calculated. ".
+                              "The default depends on the system tunable in net.link.lagg.default_use_flowid."
+                          )?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_lagghash" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash Layers"); ?>
+                    <td>
+                        <select name="lagghash[]" title="<?=gettext("Default");?>" multiple="multiple" class="selectpicker proto proto_lacp proto_loadbalance">
+                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst mac address and optional vlan number."); ?></option>
+                            <option value="l3" <?=in_array('l3', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L3: src/dst address for IPv4 or IPv6."); ?></option>
+                            <option value="l4" <?=in_array('l4', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L4: src/dst port for TCP/UDP/SCTP."); ?></option>
+                        </select>
+                        <div class="hidden" data-for="help_for_lagghash">
+                           <?=gettext("Set the packet layers to hash for aggregation protocols which load balance."); ?><br/>
+                         </div>
+                       </td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_lacp_strict" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use strict"); ?></td>
+                    <td>
+                      <select name="lacp_strict" class="selectpicker proto proto_lacp" id="lacp_strict">
+                          <option value=""><?=gettext("Default");?></option>
+                          <option value="1" <?=$pconfig['lacp_strict'] === "1" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("Yes");?>
+                          </option>
+                          <option value="0" <?=$pconfig['lacp_strict'] === "0" ? "selected=\"selected\"": ""?>>
+                              <?=gettext("No");?>
+                          </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_lacp_strict">
+                          <?=gettext(
+                              "Enable lacp strict compliance on the interface. ".
+                              "The default depends on the system tunable in net.link.lagg.lacp.default_strict_mode."
+                          )?>
                       </div>
                     </td>
                   </tr>

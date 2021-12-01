@@ -581,7 +581,7 @@ function interface_lagg_configure(&$lagg)
             // Already configured, detach child interfaces before attempting to configure.
             // Prevents vlans to loose parent.
             if (!empty($interface_stats[$laggif]['laggport'])) {
-                foreach ($interface_stats[$laggif]['laggport'] as $laggport) {
+                foreach (array_keys($interface_stats[$laggif]['laggport']) as $laggport) {
                     mwexec("/sbin/ifconfig {$laggif} -laggport {$laggport}");
                 }
             }
@@ -614,12 +614,20 @@ function interface_lagg_configure(&$lagg)
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
-    if (!empty($lagg['lacp_fast_timeout'])) {
-        mwexec("/sbin/ifconfig {$laggif} lacp_fast_timeout");
-    } elseif ($lagg['proto'] == 'lacp') {
-        mwexec("/sbin/ifconfig {$laggif} -lacp_fast_timeout");
+    if (in_array($lagg['proto'], ['lacp', 'loadbalance'])) {
+        foreach (['lacp_fast_timeout', 'use_flowid', 'lacp_strict'] as $attr) {
+            $attr_proto = strpos($attr, 'lacp_') !== false ? 'lacp' : $lagg['proto'];
+            if (isset($lagg[$attr]) && $attr_proto == $lagg['proto']) {
+                if (!empty($lagg[$attr])) {
+                    mwexec("/sbin/ifconfig {$laggif} {$attr}");
+                } else {
+                    mwexec("/sbin/ifconfig {$laggif} -{$attr}");
+                }
+            }
+        }
+        $configured_hash = !empty($lagg['lagghash']) ? $lagg['lagghash'] : "l2,l3,l4";
+        mwexec("/sbin/ifconfig {$laggif} lagghash " . escapeshellarg($configured_hash));
     }
-
     interfaces_bring_up($laggif);
 
     return $laggif;
@@ -3768,19 +3776,33 @@ function guess_interface_from_ip($ipaddress)
 
     /* create a route table we can search */
     exec("/usr/bin/netstat -rnWf " . $family, $output, $ret);
+
+    /* search for the route with the largest subnet mask */
+    $largest_mask = 0;
+    $best_if = null;
+
     foreach ($output as $line) {
         $fields = preg_split("/\s+/", $line);
         if (is_subnet($fields[0])) {
             if (ip_in_subnet($ipaddress, $fields[0])) {
-                return $fields[5];
+                list($ip, $mask) = explode('/', $fields[0]);
+                if ($mask > $largest_mask) {
+                    $best_if = $fields[5];
+                    $largest_mask = $mask;
+                }
             }
         }
+    }
+
+    if (!empty($best_if)) {
+        return $best_if;
     }
 
     $ret = exec_command("/sbin/route -n get {$ipaddress} | /usr/bin/awk '/interface/ { print \$2; };'");
     if (empty($ret)) {
         return false;
     }
+
     return $ret;
 }
 
@@ -3856,23 +3878,6 @@ function link_interface_to_bridge($int)
             }
         }
     }
-}
-
-function link_interface_to_group($int)
-{
-    global $config;
-
-    $result = array();
-
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            if (in_array($int, explode(" ", $group['members']))) {
-                $result[$group['ifname']] = $int;
-            }
-        }
-    }
-
-    return $result;
 }
 
 function link_interface_to_gre($interface)
@@ -4006,7 +4011,6 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
 
 function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 {
-    /* XXX maybe we should make a proper lookup */
     if (strstr($interface, '_vip')) {
         return get_configured_carp_interface_list($interface);
     }
@@ -4018,7 +4022,6 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
 
 function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
 {
-    /* XXX maybe we should make a proper lookup */
     if (strstr($interface, '_vip')) {
         return get_configured_carp_interface_list($interface, 'inet6');
     }
@@ -4116,7 +4119,7 @@ function interfaces_staticarp_configure($if)
     }
 }
 
-function get_interfaces_info()
+function get_interfaces_info($include_unlinked = false)
 {
     global $config;
 
@@ -4125,13 +4128,25 @@ function get_interfaces_info()
     $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
     $ifup = legacy_interface_listget('up');
     $result = array();
+    $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+    $known_interfaces = [];
+    foreach ($interfaces as $ifdescr => $interface) {
+        $interfaces[$ifdescr]['if'] = get_real_interface($ifdescr);
+        $interfaces[$ifdescr]['ifv6'] = get_real_interface($ifdescr, 'inet6');
+        $known_interfaces[] = $interface['if'];
+        $known_interfaces[] = $interface['ifv6'];
+    }
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifdescr => $ifcnf) {
-        $ifinfo = array();
+    if ($include_unlinked) {
+        $unassigned_descr = gettext("Unassigned");
+        foreach ($all_intf_details as $if => $ifdata) {
+            if (!in_array($if, $known_interfaces)) {
+                $interfaces[$if] = ["descr" => $unassigned_descr, "if" => $if, "ifv6" => $if, 'unassigned' => true];
+            }
+        }
+    }
 
-        $ifinfo['if'] = get_real_interface($ifdescr);
-        $ifinfo['ifv6'] = get_real_interface($ifdescr, 'inet6');
-
+    foreach ($interfaces as $ifdescr => $ifinfo) {
         $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
         $ifinfo['statusv6'] = (is_array($ifup) && in_array($ifinfo['ifv6'], $ifup)) ? 'up' : 'down';
 
@@ -4534,7 +4549,6 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     if (!count($realifs)) {
         return $result;
     }
-
 
     $realifs = array_unique($realifs);
     if (!empty($ifconfig_details)) {

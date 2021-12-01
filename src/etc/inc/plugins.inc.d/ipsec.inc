@@ -268,18 +268,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                     );
 
                     // find gateway
-                    $gwname = null;
-                    foreach ($fw->getInterfaceMapping() as $intfnm => $intf) {
-                        if ($intfnm == $interface) {
-                            foreach ($fw->getInterfaceGateways($intf['if']) as $gwnm) {
-                                $gw = $fw->getGateway($gwnm);
-                                if ($gw['proto'] == $ph1ent['protocol']) {
-                                    $gwname = $gwnm;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
                     // register rules
                     $fw->registerFilterRule(
                         500000,
@@ -1154,6 +1143,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $strongswanTree['charon']['cisco_unity'] = 'yes';
         }
+        if (!empty($config['ipsec']['max_ikev1_exchanges'])) {
+            $strongswanTree['charon']['max_ikev1_exchanges'] = $config['ipsec']['max_ikev1_exchanges'];
+        }
 
         // Debugging configuration
         // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
@@ -1517,6 +1509,18 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
+                if (isset($ph1ent['sha256_96'])) {
+                    $sha256_96_line = "sha256_96 = yes";
+                } else {
+                    $sha256_96_line = '';
+                }
+
+                if (!empty($ph1ent['closeaction'])) {
+                    $closeaction_line = "closeaction = {$ph1ent['closeaction']}";
+                } else {
+                    $closeaction_line = '';
+                }
+
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
                     if (empty($ph1ent['dpd_action'])) {
                         if (in_array($conn_auto, array('route', 'start'))) {
@@ -1674,6 +1678,8 @@ conn con<<connectionId>>
   {$forceencaps}
   installpolicy = {$installpolicy}
   type = {$parsed_phase2['type']}
+  {$closeaction_line}
+  {$sha256_96_line}
   {$dpdline}
   {$inactivityline}
   {$keyingtriesline}
@@ -1860,25 +1866,13 @@ function ipsec_get_configured_vtis()
                     $configured_intf[$intfnm]['descr'] = $descr;
                     $configured_intf[$intfnm]['networks'] = array();
                 }
+
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
-                // calculate netmask for the provided tunnel
-                if ($inet == 'inet6') {
-                    // XXX: we don't support 128bit integers, only the last 64 bits are considered to calculate the
-                    //      subnet size.
-                    $tunnel_int64 = [];
-                    foreach (['tunnel_local', 'tunnel_remote'] as $fieldname) {
-                        $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
-                        $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
-                    }
-                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
-                } else {
-                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
-                }
 
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
+                    'mask' => find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']], $inet),
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }

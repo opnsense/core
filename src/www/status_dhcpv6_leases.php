@@ -275,15 +275,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $duids = [];
     foreach ($leases as $i => $this_lease) {
         if (!empty($this_lease['duid'])) {
-            $duids[$this_lease['duid']] = $i;
+            if (!isset($duids[$this_lease['duid']])) {
+                $duids[$this_lease['duid']] = [];
+            }
+            $duids[$this_lease['duid']][] = $i;
         }
     }
 
-    foreach (dhcpd_staticmap() as $static) {
-        if (!isset($static['ipaddrv6'])) {
-            continue;
-        }
-
+    foreach (dhcpd_staticmap("not.found", legacy_interfaces_details(), false, 6) as $static) {
         $slease = [];
         $slease['ip'] = $static['ipaddrv6'];
         $slease['if'] = $static['interface'];
@@ -299,8 +298,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($duids[$slease['duid']])) {
             /* update lease with static data */
             foreach ($slease as $key => $value) {
-                if (!empty($value) || $key == 'start' || $key == 'end') {
-                    $leases[$duids[$slease['duid']]][$key] = $slease[$key];
+                if (!empty($value)) {
+                    foreach ($duids[$slease['duid']] as $idx) {
+                        $leases[$idx][$key] = $value;
+                    }
                 }
             }
         } else {

@@ -20,6 +20,7 @@ source s_all {
 {%  for sfilename in helpers.glob("OPNsense/Syslog/sources/*.conf") %}{%
         include sfilename without context
 %}
+
 {%  endfor %}
 
 };

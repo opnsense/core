@@ -88,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
-    ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries";
+    ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries
+    ,closeaction";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -107,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ikeid'] = $config['ipsec']['phase1'][$p1index]['ikeid'];
         }
         $pconfig['disabled'] = isset($config['ipsec']['phase1'][$p1index]['disabled']);
+        $pconfig['sha256_96'] = !empty($config['ipsec']['phase1'][$p1index]['sha256_96']);
         $pconfig['installpolicy'] = empty($config['ipsec']['phase1'][$p1index]['noinstallpolicy']); // XXX: reversed
 
         foreach (array('authservers', 'dhgroup', 'hash-algorithm') as $fieldname) {
@@ -342,6 +344,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (!empty($pconfig['closeaction']) && !in_array($pconfig['closeaction'], ['clear', 'hold', 'restart'])) {
+        $input_errors[] = gettext('Invalid argument for close action.');
+    }
+
     if (!empty($pconfig['dpd_enable'])) {
         if (!is_numeric($pconfig['dpd_delay'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD delay.");
@@ -398,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
-        ,nat_traversal,auto,mobike";
+        ,nat_traversal,auto,mobike,closeaction";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -414,6 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $ph1ent['disabled'] = !empty($pconfig['disabled']);
+        $ph1ent['sha256_96'] = !empty($pconfig['sha256_96']);
         $ph1ent['noinstallpolicy'] = empty($pconfig['installpolicy']); // XXX: reversed
         $ph1ent['private-key'] =isset($pconfig['privatekey']) ? base64_encode($pconfig['privatekey']) : null;
         if (!empty($pconfig['mobile'])) {
@@ -1136,9 +1143,22 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_sha256_96" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('SHA256 96 Bit Truncation') ?></td>
+                    <td>
+                      <input name="sha256_96" type="checkbox" id="sha256_96" value="yes" <?= !empty($pconfig['sha256_96']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" data-for="help_for_sha256_96">
+                        <?= gettext(
+                          "For compatibility with implementations that incorrectly use 96-bit (instead of 128-bit) truncation this ".
+                          "option may be enabled to configure the shorter truncation length. This is not negotiated, so this only works ".
+                          "with peers that use the incorrect truncation length (or have this option enabled), e.g. Forcepoint Sidewinder."
+                        ) ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><a id="help_for_nat_traversal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("NAT Traversal"); ?></td>
                     <td>
-                      <select name="nat_traversal">
+                      <select name="nat_traversal" class="selectpicker">
                         <option value="off" <?= isset($pconfig['nat_traversal']) && $pconfig['nat_traversal'] == "off" ? "selected=\"selected\"" :"" ;?> >
                           <?=gettext("Disable"); ?>
                         </option>
@@ -1165,6 +1185,39 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_closeaction" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Close Action"); ?></td>
+                    <td>
+                      <select name="closeaction" class="selectpicker">
+                        <option value="" <?= empty($pconfig['closeaction']) ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("None"); ?>
+                        </option>
+                        <option value="clear" <?= $pconfig['closeaction'] == "clear" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Clear"); ?>
+                        </option>
+                        <option value="hold" <?= $pconfig['closeaction'] == "hold" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Hold"); ?>
+                        </option>
+                        <option value="restart" <?= $pconfig['closeaction'] == "restart" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Restart"); ?>
+                        </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_closeaction">
+                          <?=gettext(
+                            "Defines the action to take if the remote peer unexpectedly closes a CHILD_SA. ".
+                            "A closeaction should not be used if the peer uses reauthentication or uniqueids checking, ".
+                            "as these events might trigger the defined action when not desired. "
+                          )?>
+                          <br/></br>
+                          <?=gettext(
+                            "With clear the connection is closed with no further actions taken. ".
+                            "hold installs a trap policy, which will catch matching traffic and tries to re-negotiate ".
+                            "the connection on demand. restart will immediately trigger an attempt ".
+                            "to re-negotiate the connection. The default is none and disables the close action."
+                          )?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><a id="help_for_dpd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Dead Peer Detection"); ?></td>
                     <td>
                       <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> />
@@ -1185,7 +1238,7 @@ endforeach; ?>
                           <?=gettext("Number of consecutive failures allowed before disconnect."); ?>
                         </div>
                         <br />
-                        <select name="dpd_action">
+                        <select name="dpd_action" class="selectpicker">
                           <option value="" <?=empty($pconfig['dpd_action']) ?  "selected=\"selected\"" : ""; ?>><?=gettext("default");?></option>
                           <option value="restart" <?=$pconfig['dpd_action'] == "restart" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Restart the tunnel");?></option>
                           <option value="clear" <?=$pconfig['dpd_action'] == "clear" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Stop the tunnel");?></option>

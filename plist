@@ -204,6 +204,7 @@
 /usr/local/opnsense/contrib/simplepie/phpunit.xml.dist
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
+/usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ACCESS_DENIED.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ACL_TIME_QUOTA_EXCEEDED.html
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_AGENT_CONFIGURE.html
@@ -248,7 +249,6 @@
 /usr/local/opnsense/data/proxy/template_error_pages/ERR_ZERO_SIZE_OBJECT.html
 /usr/local/opnsense/data/proxy/template_error_pages/error-details.txt
 /usr/local/opnsense/data/proxy/template_error_pages/errorpage.css
-/usr/local/opnsense/firmware-message
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -324,7 +324,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/TunnelController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/TunnelsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogKeyPair.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -577,18 +579,19 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netflow.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netstat.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/networkinsight.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traffic.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/treeview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
@@ -699,7 +702,7 @@
 /usr/local/opnsense/scripts/filter/list_states.py
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
-/usr/local/opnsense/scripts/filter/pfinfo.py
+/usr/local/opnsense/scripts/filter/pfstatistcs.py
 /usr/local/opnsense/scripts/filter/pftablecount.py
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
@@ -1729,7 +1732,6 @@
 /usr/local/www/diag_ipsec_spd.php
 /usr/local/www/diag_logs_settings.php
 /usr/local/www/diag_packet_capture.php
-/usr/local/www/diag_pf_info.php
 /usr/local/www/diag_ping.php
 /usr/local/www/diag_testport.php
 /usr/local/www/diag_traceroute.php

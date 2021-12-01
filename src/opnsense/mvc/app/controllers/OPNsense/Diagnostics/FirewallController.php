@@ -66,4 +66,40 @@ class FirewallController extends IndexController
     {
         $this->view->pick('OPNsense/Diagnostics/fw_pftop');
     }
+
+    /**
+     *
+     */
+    public function statisticsAction()
+    {
+      $this->view->tabs = [
+          [
+            "name" => "info",
+            "caption" => gettext("info"),
+            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/info"
+          ],
+          [
+            "name" => "memory",
+            "caption" => gettext("memory"),
+            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/memory"
+          ],
+          [
+            "name" => "timeouts",
+            "caption" => gettext("timeouts"),
+            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/timeouts"
+          ],
+          [
+            "name" => "interfaces",
+            "caption" => gettext("interfaces"),
+            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/interfaces"
+          ],
+          [
+            "name" => "rules",
+            "caption" => gettext("rules"),
+            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/rules"
+          ]
+      ];
+      $this->view->default_tab = "info";
+      $this->view->pick('OPNsense/Diagnostics/treeview');
+    }
 }

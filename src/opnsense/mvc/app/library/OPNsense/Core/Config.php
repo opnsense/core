@@ -104,7 +104,7 @@ class Config extends Singleton
             if (!isset($result['@attributes'])) {
                 $result['@attributes'] = array();
             }
-            $result['@attributes'][$AttrKey] = $AttrValue->__toString();
+            $result['@attributes'][$AttrKey] = (string)$AttrValue;
         }
         // iterate xml children
         foreach ($node->children() as $xmlNode) {
@@ -136,16 +136,16 @@ class Config extends Singleton
                         $result[$xmlNodeName] = array();
                         $result[$xmlNodeName][] = $tmp;
                     }
-                    $result[$xmlNodeName][] = $xmlNode->__toString();
+                    $result[$xmlNodeName][] = (string)$xmlNode;
                 } else {
                     // single content item
                     if (isset($forceList[$xmlNodeName])) {
                         $result[$xmlNodeName] = array();
-                        if ($xmlNode->__toString() != null && trim($xmlNode->__toString()) !== "") {
-                            $result[$xmlNodeName][] = $xmlNode->__toString();
+                        if ((string)$xmlNode != null && trim((string)$xmlNode) !== '') {
+                            $result[$xmlNodeName][] = (string)$xmlNode;
                         }
                     } else {
-                        $result[$xmlNodeName] = $xmlNode->__toString();
+                        $result[$xmlNodeName] = (string)$xmlNode;
                     }
                 }
             }
@@ -532,7 +532,7 @@ class Config extends Singleton
                     $xmlNode = @simplexml_load_file($filename, "SimpleXMLElement", LIBXML_NOERROR | LIBXML_ERR_NONE);
                     if (isset($xmlNode->revision)) {
                         $result[$filename] = $this->toArray(null, $xmlNode->revision);
-                        $result[$filename]['version'] = $xmlNode->version->__toString();
+                        $result[$filename]['version'] = (string)$xmlNode->version;
                         $result[$filename]['filesize'] = filesize($filename);
                     }
                 }

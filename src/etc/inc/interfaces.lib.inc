@@ -72,16 +72,6 @@ function legacy_interface_flags($ifs, $flag, $report_errors = true)
     }
 }
 
-function legacy_interface_rename($ifs, $name)
-{
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
-
-    exec($cmd . ' 2>&1', $out, $ret);
-    if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
-    }
-}
-
 function legacy_interface_create($ifs, $name = null)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
@@ -98,7 +88,14 @@ function legacy_interface_create($ifs, $name = null)
     }
 
     if (!empty($name)) {
-        legacy_interface_rename($new, $name);
+        $cmd = '/sbin/ifconfig ' . escapeshellarg($new) . ' name ' . escapeshellarg($name);
+
+        exec($cmd . ' 2>&1', $out, $ret);
+        if ($ret) {
+            log_error('The command `' . $cmd . '\' failed to execute');
+        }
+
+        /* return new name here anyway to force proper device not found errors later */
         $new = $name;
     }
 
@@ -213,7 +210,7 @@ function legacy_interfaces_details($intf = null)
         $tmp_intf = '';
     }
 
-    $cmd = '/sbin/ifconfig -m ' . $tmp_intf;
+    $cmd = '/sbin/ifconfig -m -v ' . $tmp_intf;
     exec($cmd . ' 2>&1', $ifconfig_data, $ret);
     if ($ret) {
         /* only error if no explicit interface was choosen */
@@ -224,7 +221,7 @@ function legacy_interfaces_details($intf = null)
     }
 
     $current_interface = null;
-    foreach ($ifconfig_data as $line) {
+    foreach ($ifconfig_data as $lineid => $line) {
         $line_parts = explode(' ', $line);
         if (strpos(trim($line), 'flags=') !== false && $line[0] != "\t") {
             $current_interface = explode(':', $line)[0];
@@ -325,13 +322,37 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['channel'] = $matches[1];
         } elseif (preg_match("/ssid (\".*?\"|\S*)/", $line, $matches)) {
             $result[$current_interface]['ssid'] = $matches[1];
+        } elseif (preg_match("/laggproto (\S+) lagghash (\S+)$/", $line, $matches)) {
+            $result[$current_interface]['laggproto'] = $matches[1];
+            $result[$current_interface]['lagghash'] = $matches[2];
         } elseif (preg_match("/laggproto (.*)$/", $line, $matches)) {
             $result[$current_interface]['laggproto'] = $matches[1];
-        } elseif (preg_match("/laggport: (.*)$/", $line, $matches)) {
+        } elseif (preg_match("/lagg options:(.*)$/", $line, $matches)) {
+            $next_line = $ifconfig_data[$lineid + 1];
+            $result[$current_interface]['laggoptions'] = ['flags' => explode(
+                ',',
+                strtolower(substr($next_line, strpos($next_line, '<') + 1, -1))
+            )];
+            $next_line = $ifconfig_data[$lineid + 2];
+            $result[$current_interface]['laggoptions']['flowid_shift'] = trim(explode(":", $next_line)[1]);
+            $next_line = $ifconfig_data[$lineid + 3];
+            if (strpos($next_line, "rr_limit:") !== false) {
+                $result[$current_interface]['laggoptions']['rr_limit'] = trim(explode(":", $next_line)[1]);
+            }
+        } elseif (preg_match("/lagg statistics:(.*)$/", $line, $matches)) {
+            $result[$current_interface]['laggstatistics'] = [];
+            $next_line = $ifconfig_data[$lineid + 1];
+            $result[$current_interface]['laggstatistics']['active ports'] = trim(explode(":", $next_line)[1]);
+            $next_line = $ifconfig_data[$lineid + 1];
+            $result[$current_interface]['laggstatistics']['flapping'] =  trim(explode(":", $next_line)[1]);
+        } elseif (preg_match("/laggport: (.*)\Wflags=\d+<(.*)> state=\d+<(.*)>$/", $line, $matches)) {
             if (empty($result[$current_interface]['laggport'])) {
                 $result[$current_interface]['laggport'] = array();
             }
-            $result[$current_interface]['laggport'][] = explode(' ', trim($matches[1]))[0];
+            $result[$current_interface]['laggport'][trim($matches[1])] = [
+                "flags" => explode(",", strtolower($matches[2])),
+                "state" => explode(",", strtolower($matches[3])),
+            ];
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
             $result[$current_interface]['groups'] = $line_parts;

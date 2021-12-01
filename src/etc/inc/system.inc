@@ -577,19 +577,6 @@ function system_staticroutes_configure($interface = '')
     }
 }
 
-function system_syslogd_extra_local($logsocket)
-{
-    $logdir = dirname($logsocket);
-
-    if (!is_dir($logdir)) {
-        /* create if needed to avoid startup error */
-        mwexecf('/bin/mkdir -p %s', $logdir);
-    }
-
-    /* emit extra args for syslogd invoke */
-    return exec_safe('-l %s ', $logsocket);
-}
-
 function system_syslogd_start($verbose = false, $restart = false, $async = false)
 {
     global $config;
@@ -631,9 +618,6 @@ function system_syslogd_start($verbose = false, $restart = false, $async = false
             $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
             if (!isset($syslogcfg['disablelocallogging'])) {
                 $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
-            }
-            if (!empty($logConfig['local'])) {
-                $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
             }
         }
         $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
@@ -822,7 +806,7 @@ function system_trust_configure($verbose = false)
                 $certlist = str_replace("\r", '', base64_decode($entry['crt']));
                 $user_cas = [""];
                 foreach (explode("\n", $certlist) as $row) {
-                    $user_cas[count($user_cas)-1] .= $row ."\n";
+                    $user_cas[count($user_cas) - 1] .= $row . "\n";
                     if (strpos($row, '---END') > 0) {
                         $user_cas[] = "";
                     }
@@ -835,7 +819,7 @@ function system_trust_configure($verbose = false)
                         $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
                         $authoritykey = "";
                         if (!empty($certext['authorityKeyIdentifier'])) {
-                            $authoritykey = trim(str_replace('keyid:', '', $certext['authorityKeyIdentifier']));
+                            $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
                         }
                         $subjectkey = $certext['subjectKeyIdentifier'];
                         $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
@@ -1213,6 +1197,7 @@ function system_login_configure($verbose = false)
     /* setup /etc/ttys */
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
+
     $on_off_secure_u = $serial_enabled ? (isset($config['system']['serialusb']) ? 'on' : 'onifconsole') . ' secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
     if (isset($config['system']['disableconsolemenu'])) {
@@ -1222,6 +1207,7 @@ function system_login_configure($verbose = false)
         $console_type = 'al.Pc';
         $serial_type = 'al.3wire.' . $serialspeed;
     }
+
     foreach ($etc_ttys_lines as $tty) {
         /* virtual terminals */
         foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
@@ -1239,11 +1225,16 @@ function system_login_configure($verbose = false)
             }
         }
 
-        if (!empty($tty)) {
+        if (!empty($tty) && strpos($tty, 'xc0') === false) {
             /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
         }
     }
+
+    if (file_exists('/dev/xc0')) {
+        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+    }
+
     fclose($fd);
 
     if ($verbose) {
