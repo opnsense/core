@@ -1078,6 +1078,7 @@ EOD;
             if (!empty($dhcpifconf['nextserver'])) {
                 $dhcpdconf .= "  next-server {$dhcpifconf['nextserver']};\n";
             }
+<<<<<<< HEAD
             $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
             $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
             if (!empty($dhcpifconf['ipxeaddress'])) {
@@ -1098,9 +1099,41 @@ EOD;
                 $dhcpdconf .= "  } else {\n";
                 $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
                 $dhcpdconf .= "  }\n\n";
+=======
+
+            $conditional = false;
+            $filemap = [
+                '00:06' => 'filename32',
+                '00:07' => 'filename64',
+                '00:09' => 'filename64',
+                '00:0a' => 'filename32arm',
+                '00:0b' => 'filename64arm',
+            ];
+
+            foreach ($filemap as $arch => $file) {
+                if (empty($dhcpifconf[$file])) {
+                    continue;
+                }
+
+                $dhcpdconf .= $conditional ? ' else ' : '  ';
+                $dhcpdconf .= "if option arch = {$arch} {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf[$file]}\";\n";
+                $dhcpdconf .= "  }";
+
+                $conditional = true;
+            }
+            if ($conditional) {
+                if (!empty($dhcpifconf['filename'])) {
+                    $dhcpdconf .= "  else {\n";
+                    $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
+                    $dhcpdconf .= "  }";
+                }
+                $dhcpdconf .= "\n";
+>>>>>>> cc443a706 (dhcp: rewrite conditionals to adapt to configured reality)
             } elseif (!empty($dhcpifconf['filename'])) {
                 $dhcpdconf .= "  filename \"{$dhcpifconf['filename']}\";\n";
             }
+
             if (!empty($dhcpifconf['rootpath'])) {
                 $dhcpdconf .= "  option root-path \"{$dhcpifconf['rootpath']}\";\n";
             }
