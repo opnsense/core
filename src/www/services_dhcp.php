@@ -967,29 +967,28 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Network booting') ?></td>
                       <td>
                         <div id="shownetbootbox">
                           <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
                           <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
-                          <strong><?=gettext("Enables network booting.");?></strong>
+                          <?= gettext('Enable network booting') ?>
                           <br/><br/>
                           <?=gettext('Set next-server IP');?>
                           <input name="nextserver" type="text" id="nextserver" value="<?=$pconfig['nextserver'];?>" /><br />
                           <?=gettext('Set default bios filename');?>
                           <input name="filename" type="text" id="filename" value="<?=$pconfig['filename'];?>" /><br />
-                          <?=gettext('Set UEFI 32bit filename');?>
+                          <?=gettext('Set x86 UEFI (32-bit) filename');?>
                           <input name="filename32" type="text" id="filename32" value="<?=$pconfig['filename32'];?>" /><br />
-                          <?=gettext('Set UEFI 64bit filename');?>
+                          <?=gettext('Set x64 UEFI/EBC (64-bit) filename');?>
                           <input name="filename64" type="text" id="filename64" value="<?=$pconfig['filename64'];?>" /><br />
-                          <?=gettext('Set UEFI ARM 32bit filename');?>
+                          <?=gettext('Set ARM UEFI (32-bit) filename');?>
                           <input name="filename32arm" type="text" id="filename32arm" value="<?=$pconfig['filename32arm'];?>" /><br />
-                          <?=gettext('Set UEFI ARM 64bit filename');?>
+                          <?=gettext('Set ARM UEFI (64-bit) filename');?>
                           <input name="filename64arm" type="text" id="filename64arm" value="<?=$pconfig['filename64arm'];?>" /><br />
-                          <?=gettext("Note: You need both a filename and a boot server configured for this to work!");?><br/>
-                          <?=gettext("You will need all three filenames and a boot server configured for UEFI to work!");?>
+                          <?= gettext('You need both a filename and a boot server configured for this to work.') ?><br/>
                           <br/><br/>
                           <?=gettext('Set root-path string');?>
                           <input name="rootpath" type="text" id="rootpath" size="90" value="<?=$pconfig['rootpath'];?>" /><br />

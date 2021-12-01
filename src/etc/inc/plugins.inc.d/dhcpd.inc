@@ -1078,25 +1078,39 @@ EOD;
             if (!empty($dhcpifconf['nextserver'])) {
                 $dhcpdconf .= "  next-server {$dhcpifconf['nextserver']};\n";
             }
-            $arm64 = $dhcpifconf['filename64arm'] ?? $dhcpifconf['filename'];
-            $arm32 = $dhcpifconf['filename32arm'] ?? $dhcpifconf['filename'];
-            if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
-                $dhcpdconf .= "  if option arch = 00:06 {\n";
-                $dhcpdconf .= "    filename \"{$dhcpifconf['filename32']}\";\n";
-                $dhcpdconf .= "  } else if option arch = 00:07 {\n";
-                $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
-                $dhcpdconf .= "  } else if option arch = 00:09 {\n";
-                $dhcpdconf .= "    filename \"{$dhcpifconf['filename64']}\";\n";
-                $dhcpdconf .= "  } else if option arch = 00:0a {\n";
-                $dhcpdconf .= "    filename \"{$arm32}\";\n";
-                $dhcpdconf .= "  } else if option arch = 00:0b {\n";
-                $dhcpdconf .= "    filename \"{$arm64}\";\n";
-                $dhcpdconf .= "  } else {\n";
-                $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
-                $dhcpdconf .= "  }\n\n";
+
+            $conditional = false;
+            $filemap = [
+                '00:06' => 'filename32',
+                '00:07' => 'filename64',
+                '00:09' => 'filename64',
+                '00:0a' => 'filename32arm',
+                '00:0b' => 'filename64arm',
+            ];
+
+            foreach ($filemap as $arch => $file) {
+                if (empty($dhcpifconf[$file])) {
+                    continue;
+                }
+
+                $dhcpdconf .= $conditional ? ' else ' : '  ';
+                $dhcpdconf .= "if option arch = {$arch} {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf[$file]}\";\n";
+                $dhcpdconf .= "  }";
+
+                $conditional = true;
+            }
+            if ($conditional) {
+                if (!empty($dhcpifconf['filename'])) {
+                    $dhcpdconf .= "  else {\n";
+                    $dhcpdconf .= "    filename \"{$dhcpifconf['filename']}\";\n";
+                    $dhcpdconf .= "  }";
+                }
+                $dhcpdconf .= "\n";
             } elseif (!empty($dhcpifconf['filename'])) {
                 $dhcpdconf .= "  filename \"{$dhcpifconf['filename']}\";\n";
             }
+
             if (!empty($dhcpifconf['rootpath'])) {
                 $dhcpdconf .= "  option root-path \"{$dhcpifconf['rootpath']}\";\n";
             }
