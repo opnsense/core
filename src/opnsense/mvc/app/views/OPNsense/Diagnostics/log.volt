@@ -123,7 +123,8 @@
               params.push("searchPhrase=" + encodeURIComponent($("input.search-field").val()));
           }
           if ( $('#severity_filter').val().length > 0) {
-              params.push("severity=" + encodeURIComponent($('#severity_filter').val().join(",")));
+              let r_severity = filter_exact ? $('#severity_filter').val() : severities.slice(0,severities.indexOf($('#severity_filter').val()) + 1);
+              params.push("severity=" + encodeURIComponent(r_severity.join(",")));
           }
           if (params.length > 0) {
               download_link = download_link + "?" + params.join("&");
