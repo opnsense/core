@@ -28,6 +28,7 @@
     $( document ).ready(function() {
       var filter_exact = false;
       let s_filter_val = "Warning";
+      var page = 0;
       // map available severity values to array
       severities = $('#severity_filter option').map(function(){
           return (this.value ? this.value : null);
@@ -80,16 +81,21 @@
       });
 
       grid_log.on("loaded.rs.jquery.bootgrid", function(){
+          if (page > 0) {
+              $("ul.pagination > li:last > a").data('page', page).click();
+              page = 0;
+          }
+
           $(".action-page").click(function(event){
               event.preventDefault();
               $("#grid-log").bootgrid("search",  "");
-              let new_page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
+              page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
               $("input.search-field").val("");
-              $("#severity_filter").selectpicker('deselectAll');
-              // XXX: a bit ugly, but clearing the filter triggers a load event.
-              setTimeout(function(){
-                  $("ul.pagination > li:last > a").data('page', new_page).click();
-              }, 100);
+              if ($("#exact_severity").hasClass("fa-toggle-on")) {
+                  $("#severity_filter").selectpicker('deselectAll');
+              } else {
+                  $("#severity_filter").val("Debug").change();
+              }
           });
       });
 
