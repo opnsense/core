@@ -2355,18 +2355,11 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    switch ($wancfg['ipaddr']) {
-        case 'l2tp':
-        case 'ppp':
-        case 'pppoe':
-        case 'pptp':
-            /* hardware device underneath software node */
-            list ($realhwif) = get_parent_interface($interface);
-            break;
-        default:
-            /* hardware device remains a hardware device */
-            $realhwif = $realif;
-            break;
+    /* hardware device underneath software node */
+    $realhwif = get_parent_interface($interface);
+    if ($realhwif === null) {
+        /* hardware device remains a hardware device */
+        $realhwif = $realif;
     }
 
     /* XXX ideally we should give up inlining parent configuration */
@@ -3540,8 +3533,7 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
 
     // search unnecessary?
     foreach (array_keys($all_interfaces) as $ifname) {
-        list ($ifparent) = get_parent_interface($ifname);
-        if ($ifparent == $interface) {
+        if (get_parent_interface($ifname) == $interface) {
             return $ifname;
         }
     }
@@ -3607,18 +3599,11 @@ function convert_friendly_interface_to_friendly_descr($interface)
     return $ifdesc;
 }
 
-/*
- *  get_parent_interface($interface):
- *      -- returns the parent real interface array for a given interface name (i.e. wan) or virtual interface (i.e. vlan)
- *      -- returns $interface passed in if $interface parent is not found
- */
 function get_parent_interface($interface)
 {
     global $config;
 
-    $parents = [];
-
-    $realif = get_real_interface($interface);
+    /* XXX this never supported multiple parents beyond this point */
 
     if (!empty($config['interfaces'][$interface])) {
         $ifcfg = $config['interfaces'][$interface];
@@ -3632,31 +3617,46 @@ function get_parent_interface($interface)
                         if ($ifcfg['if'] == $ppp['if']) {
                             $ports = explode(',', $ppp['ports']);
                             foreach ($ports as $pid => $parentif) {
-                                $parents[$pid] = get_real_interface($parentif);
+                                return get_real_interface($parentif);
                             }
-                            break;
                         }
                     }
                 }
                 break;
             default:
-                if (strstr($realif, '_vlan')) {
-                    if (isset($config['vlans']['vlan'])) {
-                        foreach ($config['vlans']['vlan'] as $vlanidx => $vlan) {
-                            if ($ifcfg['if'] == $vlan['vlanif']) {
-                                $parents[0] = $vlan['if'];
-                                break;
-                            }
-                        }
-                    }
-                }
                 break;
         }
     }
 
-    if (empty($parents)) {
-        $parents[0] = $realif;
+    return null;
+}
+
+/* collect hardware device parents for VLAN, LAGG and bridges */
+function interface_parent_devices($interface)
+{
+    global $config;
+
+    $parents = [];
+
+    if (empty($config['interfaces'][$interface])) {
+        return $parents;
     }
+
+    $ifcfg = $config['interfaces'][$interface];
+
+    if (strstr($ifcfg['if'], '_vlan')) {
+        if (isset($config['vlans']['vlan'])) {
+            foreach ($config['vlans']['vlan'] as $vlanidx => $vlan) {
+                if ($ifcfg['if'] == $vlan['vlanif']) {
+                    $parents[] = $vlan['if'];
+                    break;
+                }
+            }
+        }
+    }
+
+    /* XXX LAGG */
+    /* XXX bridge */
 
     return $parents;
 }
@@ -3724,7 +3724,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
                             case 'ppp':
                             case 'l2tp':
                             case 'pptp':
-                                list ($realif) = get_parent_interface($interface);
+                                $realif = get_parent_interface($interface);
                                 if (isset($cfg['dhcp6usev4iface']) || strpos($realif, '/') === 0) {
                                     /* parent interface not usable on user request or if device node */
                                     $realif = $cfg['if'];
