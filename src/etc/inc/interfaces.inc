@@ -3536,10 +3536,13 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
         if (get_real_interface($ifname) == $interface) {
             return $ifname;
         }
+    }
 
+    // search unnecessary?
+    foreach (array_keys($all_interfaces) as $ifname) {
         list ($ifparent) = get_parent_interface($ifname);
         if ($ifparent == $interface) {
-            return $ifparent;
+            return $ifname;
         }
     }
 
@@ -3657,7 +3660,6 @@ function get_parent_interface($interface)
 
     return $parents;
 }
-
 
 function interface_get_wireless_base($wlif)
 {
