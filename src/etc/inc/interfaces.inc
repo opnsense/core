@@ -3645,18 +3645,32 @@ function interface_parent_devices($interface)
     $ifcfg = $config['interfaces'][$interface];
 
     if (strstr($ifcfg['if'], '_vlan')) {
-        if (isset($config['vlans']['vlan'])) {
-            foreach ($config['vlans']['vlan'] as $vlanidx => $vlan) {
-                if ($ifcfg['if'] == $vlan['vlanif']) {
-                    $parents[] = $vlan['if'];
-                    break;
-                }
+        foreach (config_read_array('vlans', 'vlan') as $vlan) {
+            if ($ifcfg['if'] == $vlan['vlanif']) {
+                $parents[] = $vlan['if'];
+                break;
+            }
+        }
+    } elseif (strstr($ifcfg['if'], 'bridge')) {
+        foreach (config_read_array('bridges', 'bridged') as $bridge) {
+            if ($ifcfg['if'] == $bridge['bridgeif']) {
+                foreach (explode(',', $bridge['members']) as $member) {
+                    /* bridge stores members as configured interfaces */
+                    $parents[] = get_real_interface($member);
+		}
+		break;
+            }
+        }
+    } elseif (strstr($ifcfg['if'], 'lagg')) {
+        foreach (config_read_array('laggs', 'lagg') as $lagg) {
+            if ($ifcfg['if'] == $lagg['laggif']) {
+                foreach (explode(',', $lagg['members']) as $member) {
+                    $parents[] = $member;
+		}
+		break;
             }
         }
     }
-
-    /* XXX LAGG */
-    /* XXX bridge */
 
     return $parents;
 }
