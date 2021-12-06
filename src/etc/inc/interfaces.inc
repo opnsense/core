@@ -3657,8 +3657,8 @@ function interface_parent_devices($interface)
                 foreach (explode(',', $bridge['members']) as $member) {
                     /* bridge stores members as configured interfaces */
                     $parents[] = get_real_interface($member);
-		}
-		break;
+                }
+                break;
             }
         }
     } elseif (strstr($ifcfg['if'], 'lagg')) {
@@ -3666,8 +3666,8 @@ function interface_parent_devices($interface)
             if ($ifcfg['if'] == $lagg['laggif']) {
                 foreach (explode(',', $lagg['members']) as $member) {
                     $parents[] = $member;
-		}
-		break;
+                }
+                break;
             }
         }
     }
