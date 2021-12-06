@@ -3531,13 +3531,6 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
         }
     }
 
-    // search unnecessary?
-    foreach (array_keys($all_interfaces) as $ifname) {
-        if (get_parent_interface($ifname) == $interface) {
-            return $ifname;
-        }
-    }
-
     if ($interface == 'enc0') {
         return 'IPsec';
     }
