@@ -414,7 +414,7 @@ function legacy_interface_details($intf)
  * configure interface hardware settings
  * @param string $ifs interface name
  */
-function configure_interface_hardware($ifs)
+function configure_interface_hardware($ifs, $intf_details = null)
 {
     global $config;
 
@@ -425,9 +425,13 @@ function configure_interface_hardware($ifs)
         return;
     }
 
-    $intf_details = legacy_interface_details($ifs);
+    if ($intf_details !== null) {
+        $intf_details = $intf_details[$ifs];
+    } else {
+        $intf_details = legacy_interface_details($ifs);
+    }
 
-    //  interface overwrites
+    /* interface overwrites */
     foreach ($config['interfaces'] as $iface => $ifconf) {
         if (!empty($ifconf['if']) && $ifconf['if'] == $ifs) {
             if (!empty($ifconf['hw_settings_overwrite'])) {

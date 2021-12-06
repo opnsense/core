@@ -2439,9 +2439,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
-    /* XXX pass down $ifconfig_details */
     /* XXX maybe spoofmac, media and promisc can live here too? */
-    configure_interface_hardware($realhwif);
+    /* XXX a lagg or vlan or bridge could be resolved inside this function */
+    configure_interface_hardware($realhwif, $ifconfig_details);
 
     switch ($wancfg['ipaddr']) {
         case 'dhcp':
