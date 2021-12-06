@@ -2355,11 +2355,18 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    /* hardware device underneath software node */
-    $realhwif = get_parent_interface($interface);
-    if ($realhwif === null) {
-        /* hardware device remains a hardware device */
-        $realhwif = $realif;
+    switch ($wancfg['ipaddr']) {
+        case 'l2tp':
+        case 'ppp':
+        case 'pppoe':
+        case 'pptp':
+            /* hardware device underneath software node */
+            $realhwif = get_ppp_parent($wancfg['if']);
+            break;
+        default:
+            /* hardware device remains a hardware device */
+            $realhwif = $realif;
+            break;
     }
 
     /* XXX ideally we should give up inlining parent configuration */
@@ -3592,32 +3599,12 @@ function convert_friendly_interface_to_friendly_descr($interface)
     return $ifdesc;
 }
 
-function get_parent_interface($interface)
+function get_ppp_parent($ifcfg_if)
 {
-    global $config;
-
-    /* XXX this never supported multiple parents beyond this point */
-
-    if (!empty($config['interfaces'][$interface])) {
-        $ifcfg = $config['interfaces'][$interface];
-        switch ($ifcfg['ipaddr']) {
-            case 'l2tp':
-            case 'ppp':
-            case 'pppoe':
-            case 'pptp':
-                if (isset($config['ppps']['ppp'])) {
-                    foreach ($config['ppps']['ppp'] as $pppidx => $ppp) {
-                        if ($ifcfg['if'] == $ppp['if']) {
-                            $ports = explode(',', $ppp['ports']);
-                            foreach ($ports as $pid => $parentif) {
-                                return get_real_interface($parentif);
-                            }
-                        }
-                    }
-                }
-                break;
-            default:
-                break;
+    foreach (config_read_array('ppps', 'ppp') as $ppp) {
+        if ($ifcfg_if == $ppp['if']) {
+            $ports = explode(',', $ppp['ports']);
+            return get_real_interface($ports[0]);
         }
     }
 
@@ -3715,9 +3702,9 @@ function get_real_interface($interface = 'wan', $family = 'all')
                     case '6to4':
                         $realif = "{$interface}_stf";
                         break;
-                    case 'pppoe':
-                    case 'ppp':
                     case 'l2tp':
+                    case 'ppp':
+                    case 'pppoe':
                     case 'pptp':
                         if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
                             $realif = interface_get_wireless_clone($cfg['if']);
@@ -3727,11 +3714,11 @@ function get_real_interface($interface = 'wan', $family = 'all')
                         break;
                     default:
                         switch ($cfg['ipaddr']) {
-                            case 'pppoe':
-                            case 'ppp':
                             case 'l2tp':
+                            case 'ppp':
+                            case 'pppoe':
                             case 'pptp':
-                                $realif = get_parent_interface($interface);
+                                $realif = get_ppp_parent($cfg['if']);
                                 if (isset($cfg['dhcp6usev4iface']) || strpos($realif, '/') === 0) {
                                     /* parent interface not usable on user request or if device node */
                                     $realif = $cfg['if'];
