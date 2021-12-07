@@ -657,6 +657,8 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
 
         if (!empty($realif) && $realif != $gre['greif']) {
             continue;
+        } else {
+            log_error(sprintf('Executing inline configuration of GRE tunnel %s', $realif));
         }
 
         if ($checkparent == 1 && strstr($gre['if'], '_vip')) {
@@ -774,6 +776,8 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
 
         if (!empty($realif) && $realif != $gif['gifif']) {
             continue;
+        } else {
+            log_error(sprintf('Executing inline configuration of GIF tunnel %s', $realif));
         }
 
         if ($checkparent == 1 && strstr($gif['if'], '_vip')) {
@@ -2330,10 +2334,6 @@ function interface_virtual_create($interface, $realif)
      * print was already started above.
      */
 
-    /* make sure tunnel inside IP is set when interface changes #3702 */
-    interfaces_gre_configure(false, 0, $realif);
-    interfaces_gif_configure(false, 0, $realif);
-
     /* need to check that the interface exists #3270 */
     if (!does_interface_exist($realif)) {
         interfaces_lagg_configure(false, $realif);
@@ -2379,6 +2379,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     if (interface_virtual_create($interface, $realhwif)) {
         log_error(sprintf('Executed inline creation of non-existent interface %s (%s)', $interface, $realhwif));
     }
+
+    /* make sure tunnel inside IP is set when interface changes #3702 */
+    interfaces_gre_configure(false, 0, $realhwif);
+    interfaces_gif_configure(false, 0, $realhwif);
 
     $ifconfig_details = legacy_interfaces_details();
     if (
