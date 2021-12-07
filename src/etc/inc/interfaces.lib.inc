@@ -420,8 +420,8 @@ function configure_interface_hardware($ifs, $intf_details = null)
 
     $hwsettings = $config['system'];
 
-    if (strstr($ifs, '_vlan')) {
-        /* skip vlans for checksumming  */
+    if (strstr($ifs, '_vlan') || strpos($ifs, '/') === 0) {
+        /* skip checksumming  */
         return;
     }
 
