@@ -2367,7 +2367,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'pppoe':
         case 'pptp':
             /* hardware device underneath software node */
-            $realhwif = get_ppp_parent($wancfg['if']);
+            $realhwif = get_ppp_parent($realif);
             break;
         default:
             /* hardware device remains a hardware device */
@@ -2533,9 +2533,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    if (does_interface_exist($wancfg['if'])) {
-        interfaces_bring_up($wancfg['if']);
-    }
+    interfaces_bring_up($realif);
 
     /* always reconfigure VIPs since late boot configuration may need it too */
     interfaces_vips_configure(false, $interface);
