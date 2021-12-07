@@ -655,9 +655,10 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
             $gre['greif'] = "gre{$i}";
         }
 
-        if (!empty($realif) && $realif != $gre['greif']) {
-            continue;
-        } else {
+        if (!empty($realif)) {
+            if ($realif != $gre['greif']) {
+                continue;
+            }
             log_error(sprintf('Executing inline configuration of GRE tunnel %s', $realif));
         }
 
@@ -774,9 +775,10 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
             $gif['gifif'] = "gif{$i}";
         }
 
-        if (!empty($realif) && $realif != $gif['gifif']) {
-            continue;
-        } else {
+        if (!empty($realif)) {
+            if ($realif != $gif['gifif']) {
+                continue;
+            }
             log_error(sprintf('Executing inline configuration of GIF tunnel %s', $realif));
         }
 
@@ -2380,10 +2382,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         log_error(sprintf('Executed inline creation of non-existent interface %s (%s)', $interface, $realhwif));
     }
 
-    /* make sure tunnel inside IP is set when interface changes #3702 */
-    interfaces_gre_configure(false, 0, $realhwif);
-    interfaces_gif_configure(false, 0, $realhwif);
-
     $ifconfig_details = legacy_interfaces_details();
     if (
         (strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
@@ -2453,6 +2451,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* XXX maybe spoofmac, media and promisc can live here too? */
     /* XXX a lagg or vlan or bridge could be resolved inside this function */
     configure_interface_hardware($realhwif, $ifconfig_details);
+
+    /*
+     * Make sure tunnel address is set when interface is configured as
+     * these lie outside the normal ipaddr/ipaddrv6 configuration schema.
+     */
+    interfaces_gre_configure(false, 0, $realhwif);
+    interfaces_gif_configure(false, 0, $realhwif);
 
     switch ($wancfg['ipaddr']) {
         case 'dhcp':
