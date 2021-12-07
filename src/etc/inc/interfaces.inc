@@ -2312,10 +2312,12 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
-function interface_virtual_create($realif)
+function interface_virtual_create($interface, $realif)
 {
+    $created = false;
+
     if (empty($realif)) {
-        return;
+        return $created;
     }
 
     /*
@@ -2337,7 +2339,11 @@ function interface_virtual_create($realif)
         interfaces_lagg_configure(false, $realif);
         interfaces_bridge_configure(false, 0, $realif);
         plugins_configure('openvpn_prepare', false, array($realif));
+
+        $created = true;
     }
+
+    return $created;
 }
 
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
@@ -2369,8 +2375,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
-    /* XXX ideally we should give up inlining parent configuration */
-    interface_virtual_create($realhwif);
+    /* XXX ideally we should give up inlining "virtual" device configuration */
+    if (interface_virtual_create($interface, $realhwif)) {
+        log_error(sprintf('Executed inline creation of non-existent interface %s (%s)', $interface, $realhwif));
+    }
 
     $ifconfig_details = legacy_interfaces_details();
     if (
@@ -2386,7 +2394,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         flush();
     }
 
-    /* XXX mpd5 $realif(v6) may not exist at this point in time */
     /* XXX mpd5 $realhwif may be a device node path */
 
     if (!file_exists('/var/run/booting') && substr($realif, 0, 4) != 'ovpn') {
