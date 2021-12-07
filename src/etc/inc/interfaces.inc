@@ -3623,26 +3623,20 @@ function get_ppp_parent($ifcfg_if)
 /* collect hardware device parents for VLAN, LAGG and bridges */
 function interface_parent_devices($interface)
 {
-    global $config;
-
     $parents = [];
 
-    if (empty($config['interfaces'][$interface])) {
-        return $parents;
-    }
+    $realif = get_real_interface($interface);
 
-    $ifcfg = $config['interfaces'][$interface];
-
-    if (strstr($ifcfg['if'], '_vlan')) {
+    if (strstr($realif, '_vlan')) {
         foreach (config_read_array('vlans', 'vlan') as $vlan) {
-            if ($ifcfg['if'] == $vlan['vlanif']) {
+            if ($realif == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
                 break;
             }
         }
-    } elseif (strstr($ifcfg['if'], 'bridge')) {
+    } elseif (strstr($realif, 'bridge')) {
         foreach (config_read_array('bridges', 'bridged') as $bridge) {
-            if ($ifcfg['if'] == $bridge['bridgeif']) {
+            if ($realif == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members']) as $member) {
                     /* bridge stores members as configured interfaces */
                     $parents[] = get_real_interface($member);
@@ -3650,9 +3644,9 @@ function interface_parent_devices($interface)
                 break;
             }
         }
-    } elseif (strstr($ifcfg['if'], 'lagg')) {
+    } elseif (strstr($realif, 'lagg')) {
         foreach (config_read_array('laggs', 'lagg') as $lagg) {
-            if ($ifcfg['if'] == $lagg['laggif']) {
+            if ($realif == $lagg['laggif']) {
                 foreach (explode(',', $lagg['members']) as $member) {
                     $parents[] = $member;
                 }
