@@ -738,6 +738,7 @@ function system_trust_configure($verbose = false)
         copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
         @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
         copy($ca_cert_pem, '/etc/ssl/cert.pem');
+        chmod('/etc/ssl/cert.pem', 0644);
     }
 
     if ($verbose) {
