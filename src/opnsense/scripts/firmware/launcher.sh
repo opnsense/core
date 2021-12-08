@@ -43,18 +43,60 @@ update
 upgrade
 "
 
-SELECTED=${1}
-shift
+DO_RANDOM=
+DO_SCRIPT=
 
-if [ -f "${SELECTED}" ]; then
-	${FLOCK} ${LOCKFILE} ${SELECTED} "${@}"
-	exit ${?}
-fi
+while getopts r:s: OPT; do
+	case ${OPT} in
+	r)
+		DO_RANDOM="-r $(jot -r 1 1 ${OPTARG})"
+		;;
+	s)
+		DO_SCRIPT="-s ${OPTARG}"
+		;;
+	*)
+		# ignore unknown
+		;;
+	esac
+done
 
-for COMMAND in ${COMMANDS}; do
-	if [ "${SELECTED}" != ${COMMAND} ]; then
-		continue
+shift $((${OPTIND} - 1))
+
+if [ -n "${DO_SCRIPT}" ]; then
+	COMMAND=${DO_SCRIPT#"-s "}
+else
+	FOUND=
+
+	for COMMAND in ${COMMANDS}; do
+		if [ "${1}" != ${COMMAND} ]; then
+			continue
+		fi
+
+		FOUND=1
+	done
+
+	if [ -n "${FOUND}" ]; then
+		COMMAND=${BASEDIR}/${1}.sh
+	else
+		COMMAND=
 	fi
 
-	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh "${@}"
-done
+	shift
+fi
+
+# make sure the script exists
+if [ ! -f "${COMMAND}" ]; then
+	exit 0
+fi
+
+if [ -n "${DO_RANDOM}" ]; then
+	sleep ${DO_RANDOM#"-r "}
+fi
+
+${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
+RET=${?}
+
+# backend expects us to avoid returning errors
+if [ -n "${DO_SCRIPT}" ]; then
+	exit ${RET}
+fi

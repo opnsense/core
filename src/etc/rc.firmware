@@ -27,6 +27,6 @@
 
 SUBR=/usr/local/etc/rc.firmware.subr
 
-if ! /usr/local/opnsense/scripts/firmware/launcher.sh ${SUBR} "${@}"; then
+if ! /usr/local/opnsense/scripts/firmware/launcher.sh -s ${SUBR} "${@}"; then
 	echo "A firmware action is currently in progress."
 fi
