@@ -98,7 +98,7 @@ if __name__ == '__main__':
                         # count number of downloaded files/rules from this metadata package
                         metadata_sources[rule['metadata_source']] += 1
                     else:
-                        syslog.syslog(syslog.LOG_INFO, 'download skipped %s, same version' % rule['filename'])
+                        syslog.syslog(syslog.LOG_NOTICE, 'download skipped %s, same version' % rule['filename'])
 
     # cleanup: match all installed rulesets against the configured ones and remove uninstalled rules
     md_filenames = [x['filename'] for x in md.list_rules(rule_properties)]
