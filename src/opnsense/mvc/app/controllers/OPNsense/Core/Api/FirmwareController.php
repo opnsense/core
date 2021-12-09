@@ -100,9 +100,21 @@ class FirmwareController extends ApiControllerBase
             $backend->configdRun('firmware probe');
         }
 
-        $response = json_decode(trim($backend->configdRun('firmware product')), true);
-        if ($response != null && $response['product_check'] != null) {
-            $response = $response['product_check'];
+        $product = json_decode(trim($backend->configdRun('firmware product')), true);
+        if ($product == null) {
+            $response = [
+                'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
+                'status' => 'error',
+            ];
+        } elseif ($product['product_check'] == null) {
+            $response = [
+                'product' => $product,
+                'status_msg' => gettext('Firmware status requires to check for update first to provide more information.'),
+                'status' => 'none',
+            ];
+        } else {
+            $response = $product['product_check'];
+            $response['product'] = $product;
 
             $download_size = !empty($response['download_size']) ? $response['download_size'] : 0;
 
@@ -308,11 +320,6 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('Unknown firmware status encountered.');
                 $response['status'] = 'error';
             }
-        } else {
-            $response = array(
-                'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
-                'status' => 'error',
-            );
         }
 
         return $response;
