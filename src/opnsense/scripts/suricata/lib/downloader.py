@@ -107,7 +107,11 @@ class Downloader(object):
                     req_opts['auth'] = auth
                 if headers is not None:
                     req_opts['headers'] = headers
-                req = requests.get(**req_opts)
+                try:
+                    req = requests.get(**req_opts)
+                except requests.exceptions.RequestException as e:
+                    syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e))
+                    return None
                 if 'content-disposition' not in req.headers \
                         or req.headers['content-disposition'].find('filename=') == -1:
                     filename = url.strip().lower().split('?')[0]
