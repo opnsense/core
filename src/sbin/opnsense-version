@@ -32,8 +32,9 @@ TARGET="core"
 OUTPUT=
 
 DO_CHECK=
+DO_ORIGIN=
 
-while getopts AacefHiNnsVvwx OPT; do
+while getopts AacefHiNnOsVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -61,6 +62,9 @@ while getopts AacefHiNnsVvwx OPT; do
 		;;
 	n)
 		OUTPUT="${OUTPUT} \${product_id}"
+		;;
+	O)
+		DO_ORIGIN="-O"
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
@@ -93,6 +97,11 @@ fi
 
 VERSION="${VERSIONDIR}/${TARGET}"
 
+if [ -n "${*}" ]; then
+	echo "Additional arguments are not supported" >&2
+	exit 1
+fi
+
 if [ -n "${DO_CHECK}" ]; then
 	RET=0
 	if [ ! -f ${VERSION} ]; then
@@ -101,14 +110,14 @@ if [ -n "${DO_CHECK}" ]; then
 	exit ${RET}
 fi
 
-if [ -n "${*}" ]; then
-	echo "Additional arguments are not supported" >&2
-	exit 1
-fi
-
 if [ ! -f ${VERSION} ]; then
 	echo "Missing ${VERSION}" >&2
 	exit 1
+fi
+
+if [ -n "${DO_ORIGIN}" ]; then
+	cat ${VERSION}
+	exit 0
 fi
 
 if grep -q '[{}]' ${VERSION}; then
