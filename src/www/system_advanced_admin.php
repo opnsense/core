@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
     $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
+    $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : array();
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -268,6 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
         $config['system']['ssh']['keys'] = !empty($pconfig['ssh-keys']) ? implode(',', $pconfig['ssh-keys']) : null;
+        $config['system']['ssh']['keysig'] = !empty($pconfig['ssh-keysig']) ? implode(',', $pconfig['ssh-keysig']) : null;
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -818,6 +820,24 @@ $(document).ready(function() {
                     </select>
                     <div class="hidden" data-for="help_for_sshkeys">
                       <?=gettext("Specifies the host	key algorithms that the	server offers");?>
+                    </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_sshkeysig" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Public key signature algorithms"); ?></td>
+                <td>
+                    <select name="ssh-keysig[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php
+                    $options = json_decode(configd_run("openssh query key-sig"), true);
+                    foreach ($options = empty($options) ? array() : $options as $option):?>
+                      <option value="<?=$option;?>" <?= !empty($pconfig['ssh-keysig']) && in_array($option, $pconfig['ssh-keysig']) ? 'selected="selected"' : '' ?>>
+                        <?=$option;?>
+                      </option>
+<?php
+                    endforeach;?>
+                    </select>
+                    <div class="hidden" data-for="help_for_sshkeysig">
+                      <?=gettext("The signature algorithms that are used for public key authentication");?>
                     </div>
                 </td>
               </tr>

@@ -203,6 +203,9 @@ function openssh_configure_do($verbose = false, $interface = '')
     if (!empty($sshcfg['keys'])) {
         $sshconf .= "HostKeyAlgorithms {$sshcfg['keys']}\n";
     }
+    if (!empty($sshcfg['keysig'])) {
+        $sshconf .= "PubkeyAcceptedAlgorithms {$sshcfg['keysig']}\n";
+    }
     foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {

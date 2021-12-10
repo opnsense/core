@@ -32,7 +32,7 @@ import argparse
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('option', help='query option',  choices=['kex', 'mac', 'cipher' ,'key'])
+    parser.add_argument('option', help='query option',  choices=['kex', 'mac', 'cipher' ,'key', 'key-sig'])
     args = parser.parse_args()
 
     result = list()
