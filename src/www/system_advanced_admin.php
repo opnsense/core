@@ -373,6 +373,22 @@ include("head.inc");
 
 ?>
 <body>
+<script>
+    $( document ).ready(function() {
+        $("#show-advanced-cryptocryptobtn").click(function (event) {
+            event.preventDefault();
+            $(this).parent().parent().hide();
+            $(".show-advanced-crypto").show();
+            $(window).trigger('resize');
+        });
+        // show advanced when at least one option is set
+        $(".advanced-crypto").each(function () {
+            if ($(this).val() != '') {
+                $("#show-advanced-cryptocryptobtn").click();
+            }
+        });
+    });
+</script>
 <?php include("fbegin.inc"); ?>
 <script>
 
@@ -752,9 +768,15 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                <td>
+                  <button id="show-advanced-cryptocryptobtn" class="btn btn-xs btn-default" value="yes"><?= gettext('Show cryptographic option') ?></button>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshkex" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key exchange algorithms"); ?></td>
                 <td>
-                    <select name="ssh-kex[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                    <select name="ssh-kex[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                     $options = json_decode(configd_run("openssh query kex"), true);
                     foreach ($options = empty($options) ? array() : $options as $option):?>
@@ -769,10 +791,10 @@ $(document).ready(function() {
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Ciphers"); ?></td>
                 <td>
-                    <select name="ssh-ciphers[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                    <select name="ssh-ciphers[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                     $options = json_decode(configd_run("openssh query cipher"), true);
                     foreach ($options = empty($options) ? array() : $options as $option):?>
@@ -787,10 +809,10 @@ $(document).ready(function() {
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshmacs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MACs"); ?></td>
                 <td>
-                    <select name="ssh-macs[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                    <select name="ssh-macs[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                     $options = json_decode(configd_run("openssh query mac"), true);
                     foreach ($options = empty($options) ? array() : $options as $option):?>
@@ -805,10 +827,10 @@ $(document).ready(function() {
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshkeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host key algorithms"); ?></td>
                 <td>
-                    <select name="ssh-keys[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                    <select name="ssh-keys[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                     $options = json_decode(configd_run("openssh query key"), true);
                     foreach ($options = empty($options) ? array() : $options as $option):?>
@@ -823,10 +845,10 @@ $(document).ready(function() {
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshkeysig" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Public key signature algorithms"); ?></td>
                 <td>
-                    <select name="ssh-keysig[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+                    <select name="ssh-keysig[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
                     $options = json_decode(configd_run("openssh query key-sig"), true);
                     foreach ($options = empty($options) ? array() : $options as $option):?>
