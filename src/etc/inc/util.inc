@@ -492,7 +492,7 @@ function find_smallest_cidr4($ips)
             $test[$ip & $mask] = true;
         }
         if (count($test) == 1) {
-            /* one element means CIRD size matches all */
+            /* one element means CIDR size matches all */
             break;
         }
     }
@@ -517,7 +517,7 @@ function find_smallest_cidr6($ips)
             $test[sprintf('%032b%032b%032b%032b', $ip[1] & $mask1, $ip[2] & $mask2, $ip[3] & $mask3, $ip[4] & $mask4)] = true;
         }
         if (count($test) == 1) {
-            /* one element means CIRD size matches all */
+            /* one element means CIDR size matches all */
             break;
         }
     }
@@ -573,10 +573,10 @@ function is_ipaddrv4($ipaddr)
     }
 }
 
-/* returns true if $ipaddr is a valid linklocal address */
+/* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return (strtolower(substr($ipaddr, 0, 5)) == "fe80:");
+    return preg_match("/^fe[89ab][0-9a-f]:/i", $ipaddr);
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
@@ -753,35 +753,22 @@ function is_inrange($test, $start, $end)
     return is_ipaddrv6($test) ? is_inrange_v6($test, $start, $end) : is_inrange_v4($test, $start, $end);
 }
 
-/* XXX: return the configured carp interface list */
-function get_configured_carp_interface_list($carpinterface = '', $family = 'inet')
+function get_configured_carp_interface_list()
 {
-    $iflist = array();
+    $carp_list = [];
 
     foreach (config_read_array('virtualip', 'vip') as $vip) {
-        switch ($vip['mode']) {
-            case 'carp':
-                if (!empty($carpinterface)) {
-                    if ($carpinterface == "{$vip['interface']}_vip{$vip['vhid']}") {
-                        if ($family == 'inet' && is_ipaddrv4($vip['subnet'])) {
-                            return $vip['subnet'];
-                        } elseif ($family == 'inet6' && is_ipaddrv6($vip['subnet'])) {
-                            return $vip['subnet'];
-                        }
-                    }
-                } else {
-                    $iflist["{$vip['interface']}_vip{$vip['vhid']}"] = $vip['subnet'];
-                }
-                break;
+        if ($vip['mode'] == 'carp') {
+            $carp_list["{$vip['interface']}_vip{$vip['vhid']}"] = $vip['subnet'];
         }
     }
 
-    return $iflist;
+    return $carp_list;
 }
 
 function get_configured_ip_aliases_list()
 {
-    $alias_list = array();
+    $alias_list = [];
 
     foreach (config_read_array('virtualip', 'vip') as $vip) {
         if ($vip['mode'] == 'ipalias') {

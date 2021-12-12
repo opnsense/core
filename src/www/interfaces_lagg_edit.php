@@ -186,9 +186,9 @@ legacy_html_escape_form_data($pconfig);
     $( document ).ready(function() {
         $("#proto").change(function(){
             let this_proto = $("#proto").val();
-            $(".proto").parent().parent().hide();
+            $(".proto").closest('tr').hide();
             $(".proto").prop( "disabled", true );
-            $(".proto_"+this_proto).parent().parent().show();
+            $(".proto_"+this_proto).closest('tr').show();
             $(".proto_"+this_proto).prop( "disabled", false );
             $('.selectpicker').selectpicker('refresh');
         });

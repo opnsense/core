@@ -747,7 +747,7 @@ $( document ).ready(function() {
                 <div><?=gettext("Username"); ?> <br/></div>
                 <div><input name="proxy_user" id="proxy_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['proxy_user'];?>" /></div>
                 <div><?=gettext("Password"); ?> </div>
-                <div><input name="proxy_passwd" id="proxy_passwd" type="password" class="form-control pwd" size="20" value="<?=$pconfig['proxy_passwd'];?>" /></div>
+                <div><input name="proxy_passwd" id="proxy_passwd" type="password" autocomplete="new-password" class="form-control pwd" size="20" value="<?=$pconfig['proxy_passwd'];?>" /></div>
               </div>
             </td>
           </tr>
@@ -777,7 +777,7 @@ $( document ).ready(function() {
               <div><?=gettext("Username"); ?></div>
               <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['auth_user'];?>" /></div>
               <div><?=gettext("Password"); ?></div>
-              <div><input name="auth_pass" id="auth_pass" type="password" class="form-control pwd" size="20" value="<?=$pconfig['auth_pass'];?>" /></div>
+              <div><input name="auth_pass" id="auth_pass" type="password" autocomplete="new-password" class="form-control pwd" size="20" value="<?=$pconfig['auth_pass'];?>" /></div>
               <div class="hidden" data-for="help_for_auth_user_pass">
                 <?=gettext("Leave empty when no user name and password are needed."); ?>
               </div>

@@ -145,6 +145,8 @@ abstract class BaseModel
                     }
                     $check_derived = $check_derived->getParentClass();
                 }
+            } else {
+                throw new ModelException("class " . $classname . " missing");
             }
             if (!$is_derived_from_basefield) {
                 // class found, but of wrong type. raise an exception.

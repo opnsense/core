@@ -185,7 +185,7 @@ class Gateways
                             if (empty($dynamic_gw[(string)$gateway->interface])) {
                                 $dynamic_gw[(string)$gateway->interface] = array();
                             }
-                            $gw_arr['dynamic'] =  true;
+                            $gw_arr['dynamic'] = true;
                             $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
                         }
                     }
@@ -448,13 +448,13 @@ class Gateways
                         foreach ($gw_group->item as $item) {
                             list($gw, $tier) = explode("|", $item);
                             if (!isset($tiers[$tier])) {
-                                $tiers[$tier] =  array();
+                                $tiers[$tier] = [];
                             }
                             $tiers[$tier][] = $gw;
                         }
                     }
                     ksort($tiers);
-                    $all_tiers =  array();
+                    $all_tiers = [];
                     foreach ($tiers as $tieridx => $tier) {
                         $all_tiers[$tieridx] = array();
                         if (!isset($result[(string)$gw_group->name])) {

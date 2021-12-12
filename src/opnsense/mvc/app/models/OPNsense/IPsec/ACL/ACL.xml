@@ -9,14 +9,16 @@
             <pattern>api/ipsec/legacy-subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec-keypairs>
-
-    <!-- ACLs for legacy code -->
     <page-vpn-ipsec>
         <name>VPN: IPsec</name>
         <patterns>
-            <pattern>vpn_ipsec.php*</pattern>
+            <pattern>ui/ipsec/tunnels</pattern>
+            <pattern>api/ipsec/tunnel/*</pattern>
+            <pattern>api/ipsec/legacy-subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec>
+
+    <!-- ACLs for legacy code -->
     <page-vpn-ipsec-editphase1>
         <name>VPN: IPsec: Edit Phase 1</name>
         <patterns>

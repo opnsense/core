@@ -20,35 +20,33 @@ if [ "${AF}" = "inet" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	if [ -f "/var/etc/nameserver_${IF}" ]; then
+	if [ -f "/tmp/${IF}_nameserver" ]; then
 		# Remove old entries
-		for nameserver in $(cat /var/etc/nameserver_${IF}); do
+		for nameserver in $(cat /tmp/${IF}_nameserver); do
 			route delete ${nameserver}
 		done
-		rm -f /var/etc/nameserver_${IF}
+		rm -f /tmp/${IF}_nameserver
 	fi
 
-	# Do not remove gateway used during filter reload.
-	rm -f /tmp/${IF}_router /tmp/${IF}_ip
+	rm -f /tmp/${IF}_router
 elif [ "${AF}" = "inet6" ]; then
 	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
 		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)
 	fi
+
 	if [ -n "${GW}" -a "${DEFAULTGW}" = "${GW}" ]; then
 		echo "Removing stale PPPoE gateway ${GW} on ${AF}" | logger -t ppp-linkdown
 		route delete -${AF} default "${GW}"
 	fi
 
-	if [ -f "/var/etc/nameserver_v6${IF}" ]; then
-		# Remove old entries
-		for nameserver in $(cat /var/etc/nameserver_v6${IF}); do
+	if [ -f "/tmp/${IF}_nameserverv6" ]; then
+		for nameserver in $(cat /tmp/${IF}_nameserverv6); do
 			route delete ${nameserver}
 		done
-		rm -f /var/etc/nameserver_v6${IF}
+		rm -f /tmp/${IF}_nameserverv6
 	fi
 
-	# Do not remove gateway used during filter reload.
-	rm -f /tmp/${IF}_routerv6 /tmp/${IF}_ipv6
+	rm -f /tmp/${IF}_routerv6
 
 	# remove previous SLAAC addresses as the ISP may
 	# not respond to these in the upcoming session
@@ -57,7 +55,7 @@ elif [ "${AF}" = "inet6" ]; then
 	done
 fi
 
-daemon -f /usr/local/opnsense/service/configd_ctl.py dns reload
+/usr/local/sbin/configctl -d dns reload
 
 UPTIME=$(opnsense/scripts/interfaces/ppp-uptime.sh ${IF})
 if [ -n "${UPTIME}" -a -f "/conf/${IF}.log" ]; then

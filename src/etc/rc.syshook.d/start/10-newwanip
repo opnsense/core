@@ -4,21 +4,27 @@ for IPV4 in $(find /tmp -type f -name "newwanip_*"); do
 	INTERFACE=$(cat "${IPV4}")
 	rm "${IPV4}"
 
-	echo -n "Reconfiguring IPv4 on ${INTERFACE}: "
-	configctl interface newip ${INTERFACE}
+	echo "Reconfiguring IPv4 on ${INTERFACE}"
+	configctl -dq interface newip ${INTERFACE}
 done
 
 for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
 	INTERFACE=$(cat "${IPV6}")
 	rm "${IPV6}"
 
-	echo -n "Reconfiguring IPv6 on ${INTERFACE}: "
-	configctl interface newipv6 ${INTERFACE}
+	echo "Reconfiguring IPv6 on ${INTERFACE}"
+	configctl -dq interface newipv6 ${INTERFACE}
 done
 
 # Following #3414 there is a missing link between VTI and
 # routing configuration reload so at least for reboot make
-# sure that it is properly executed even if no VTI exists
+# sure that it is properly executed even if no VTI exists.
+#
+# The issue has been redeemed in IPsec through #5263.  It
+# teaches us that device destroy/create has implications
+# on existing routes in the sense that they stop working.
+# Now instead of removing this bit this problem still exists
+# in GRE, GIF and STF interface handling so we keep this
+# for now:
 
-echo -n "Reconfiguring routes: "
-configctl interface routes configure
+configctl -dq interface routes configure

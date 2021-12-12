@@ -295,6 +295,8 @@ EOD;
         }
     }
 
+    $so_reuseport = empty(system_sysctl_get()['net.inet.rss.enabled']) ? 'yes' : 'no';
+
     $unboundconf = <<<EOD
 ##########################
 # Unbound Configuration
@@ -322,7 +324,7 @@ do-ip6: {$do_ip6}
 do-udp: yes
 do-tcp: yes
 do-daemonize: yes
-so-reuseport: yes
+so-reuseport: ${so_reuseport}
 module-config: "{$module_config}"
 cache-max-ttl: {$cache_max_ttl}
 cache-min-ttl: {$cache_min_ttl}

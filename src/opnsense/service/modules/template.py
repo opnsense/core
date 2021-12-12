@@ -35,6 +35,7 @@ import glob
 import re
 import stat
 import syslog
+import shlex
 import collections
 import traceback
 import copy
@@ -64,6 +65,8 @@ class Template(object):
         # register additional filters
         self._j2_env.filters['decode_idna'] = lambda x:x.decode('idna')
         self._j2_env.filters['encode_idna'] = self._encode_idna
+        self._j2_env.filters['shlex_quote'] = shlex.quote
+        self._j2_env.filters['shlex_split'] = shlex.split
         self._j2_env.filters['regex_replace'] = lambda value, pattern, replacement: re.sub(pattern, replacement, value)
 
     @staticmethod

@@ -434,7 +434,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Virtual IP Password");?></td>
                     <td>
-                      <input type='password'  name='password' id="password" value="<?=$pconfig['password'];?>" />
+                      <input type='password' autocomplete='new-password' name='password' id="password" value="<?=$pconfig['password'];?>" />
                       <div class="hidden" data-for="help_for_password">
                         <?=gettext("Enter the VHID group password.");?>
                       </div>

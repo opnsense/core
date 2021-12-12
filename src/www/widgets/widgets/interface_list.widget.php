@@ -159,6 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php else: ?>
       <?= htmlspecialchars($ifinfo['status']) ?>
 <?php endif ?>
+    </td>
     <td style="width:35%; word-break: break-word;">
       <?= empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']) ?>
     </td>

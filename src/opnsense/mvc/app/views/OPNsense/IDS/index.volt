@@ -356,6 +356,8 @@ POSSIBILITY OF SUCH DAMAGE.
                                             new_tr.html(new_tr.html().replace('__template__label__', key));
                                             if (key === 'reference_html') {
                                                 value = $("<textarea/>").html(value).text();
+                                            } else if (value.includes("\n")) {
+                                              value = value.replaceAll("\n", "<br/>");
                                             }
                                             new_tr.find("#__template__").prop("id", key).html(value);
                                             new_tr.show();

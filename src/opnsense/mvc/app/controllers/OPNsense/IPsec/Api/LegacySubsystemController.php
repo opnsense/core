@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2021 Deciso B.V.
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * All rights reserved.
  *
@@ -30,6 +31,7 @@ namespace OPNsense\IPsec\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 /**
  * Class LegacySubsystemController
@@ -45,6 +47,7 @@ class LegacySubsystemController extends ApiControllerBase
     public function statusAction()
     {
         return [
+            'enabled' => isset(Config::getInstance()->object()->ipsec->enable),
             'isDirty' => file_exists('/tmp/ipsec.dirty') // is_subsystem_dirty('ipsec')
         ];
     }
@@ -56,28 +59,14 @@ class LegacySubsystemController extends ApiControllerBase
      */
     public function applyConfigAction()
     {
-        try {
-            if (!$this->request->isPost()) {
-                throw new \Exception(gettext('Request method not allowed, expected POST'));
+        $result = ["status" => "failed"];
+        if ($this->request->isPost()) {
+            $bckresult = trim((new Backend())->configdRun('ipsec reconfigure'));
+            if ($bckresult === 'OK') {
+                $result['message'] = gettext('The changes have been applied successfully.');
+                $result['status'] = "ok";
+                @unlink('/tmp/ipsec.dirty');
             }
-
-            $backend = new Backend();
-            $bckresult = trim($backend->configdRun('ipsec reconfigure'));
-            if ($bckresult !== 'OK') {
-                throw new \Exception($bckresult);
-            }
-
-            // clear_subsystem_dirty('ipsec')
-            if (!@unlink('/tmp/ipsec.dirty')) {
-                throw new \Exception(gettext('Could not remove /tmp/ipsec.dirty to mark subsystem as clean'));
-            }
-
-            return ['message' => gettext('The changes have been applied successfully.')];
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf(
-                gettext('Unable to apply IPsec subsystem configuration: %s'),
-                $e->getMessage()
-            ));
         }
     }
 }

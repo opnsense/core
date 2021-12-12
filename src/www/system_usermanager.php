@@ -617,8 +617,8 @@ $( document ).ready(function() {
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
                     <td>
-                      <input name="passwordfld1" type="password" id="passwordfld1" size="20" value="" /><br/>
-                      <input name="passwordfld2" type="password" id="passwordfld2" size="20" value="" />
+                      <input name="passwordfld1" type="password" autocomplete="new-password" id="passwordfld1" size="20" value="" /><br/>
+                      <input name="passwordfld2" type="password" autocomplete="new-password" id="passwordfld2" size="20" value="" />
                       <small><?= gettext("(confirmation)"); ?></small><br/><br/>
                       <input type="checkbox" name="gen_new_password" <?= !empty($pconfig['gen_new_password']) ? 'checked="checked"' : '' ?>/>
                       <small><?=gettext('Generate a scrambled password to prevent local database logins for this user.') ?></small>

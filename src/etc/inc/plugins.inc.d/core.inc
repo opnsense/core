@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2018-2021 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -100,30 +100,19 @@ function core_services()
     $services[] = array(
         'description' => gettext('Cron'),
         'php' => array(
-            "restart" => array('system_cron_configure')
+            'start' => ['system_cron_configure'],
+            'restart' => ['system_cron_configure'],
         ),
+        'pidfile' => '/var/run/cron.pid',
         'name' => 'cron',
     );
-
-    if (empty($config['syslog']['disable_clog'])) {
-        $services[] = array(
-            'description' => gettext('Legacy Syslog Daemon'),
-            'php' => array(
-                "stop" => array('system_syslogd_stop'),
-                "start" => array('system_syslogd_start'),
-                "restart" => array('system_syslogd_start')
-            ),
-            'pidfile' => '/var/run/syslog.pid',
-            'name' => 'syslogd',
-        );
-    }
 
     $services[] = array(
         'description' => gettext('Syslog-ng Daemon'),
         'php' => array(
-            "stop" => array('system_syslogd_stop'),
-            "start" => array('system_syslogd_start'),
-            "restart" => array('system_syslogd_start')
+            'stop' => array('system_syslog_stop'),
+            'start' => array('system_syslog_start'),
+            'restart' => array('system_syslog_start')
         ),
         'pidfile' => '/var/run/syslog-ng.pid',
         'name' => 'syslog-ng',
@@ -177,12 +166,12 @@ function core_cron()
 
     $jobs = array();
 
-    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '1');
-    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '2');
-    $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '3');
-    $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/syslog/log_archive ', '4');
-
+    $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/syslog/log_archive', '1');
+    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
+    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
+    $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '4');
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
+    $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
 
     if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
         $jobs[]['autocron'] = array(
@@ -219,10 +208,10 @@ function core_cron()
     if (!empty($config['system']['dhparamusage'])) {
         switch ($config['system']['dhparamusage']) {
             case 'weekly':
-                $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '*', '*', '0');
+                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '*', '*', '0');
                 break;
             case 'monthly':
-                $jobs[]['autocron'] = array('configctl system ssl dhparam', '30', '3', '1', '*', '*');
+                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '1', '*', '*');
                 break;
             default:
                 /* cron job operated by user manually or RFC 7919 */
@@ -232,7 +221,7 @@ function core_cron()
 
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
-            $jobs[]['autocron'] = array('configctl system remote backup', 0, 1);
+            $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup', 0, 1);
             break;
         }
     }
@@ -410,7 +399,7 @@ function core_user_changed_groups($verbose = false, $username)
                 foreach ($config['system']['group'] as $group) {
                     $in_group = !empty($group['member']) && in_array($user['uid'], $group['member']);
                     $to_remove = in_array($group['name'], $current_groups) && !$in_group;
-                    $to_add =  !in_array($group['name'], $current_groups) && $in_group;
+                    $to_add = !in_array($group['name'], $current_groups) && $in_group;
                     if ($to_remove || $to_add) {
                         local_group_set($group);
                     }
