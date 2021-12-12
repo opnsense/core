@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2021 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,17 +41,37 @@ function http_basic_auth($http_auth_header)
     if (count($tags) >= 2) {
         $userinfo= explode(':', base64_decode($tags[1]), 2);
         if (count($userinfo) == 2) {
-            if (authenticate_user($userinfo[0], $userinfo[1])) {
+            $username = authenticate_user($userinfo[0], $userinfo[1]);
+            if ($username !== false) {
                 $aclObj = new \OPNsense\Core\ACL();
-                return $aclObj->isPageAccessible($userinfo[0], '/xmlrpc.php');
+                return $aclObj->isPageAccessible($username, '/xmlrpc.php');
             }
         }
     }
 
-    // not authenticated
+    /* not authenticated */
     return false;
 }
 
+function authenticate_user($username, $password)
+{
+    $authFactory = new OPNsense\Auth\AuthenticationFactory();
+
+    foreach(['Local Database', 'Local API'] as $authName) {
+        $authenticator = $authFactory->get($authName);
+        if ($authenticator != null && $authenticator->authenticate($username, $password)) {
+            $authResult = $authenticator->getLastAuthProperties();
+            if (array_key_exists('username', $authResult)) {
+                 $username = $authResult['username'];
+            }
+            return $username;
+        }
+    }
+
+    log_error('Unable to retrieve authenticator for ' . $username);
+
+    return false;
+}
 
 /**
  *   Simple XML-RPC server using IXR_Library

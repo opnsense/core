@@ -130,8 +130,8 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         #   gprof2dot -f pstats /tmp/configd.profile  -o /tmp/callingGraph.dot
         # (https://code.google.com/p/jrfonseca/wiki/Gprof2Dot)
         print ("...<ctrl><c> to stop profiling")
-        profile = cProfile.Profile()
-        profile.enable(subcalls=True)
+        profile = cProfile.Profile(subcalls=True)
+        profile.enable()
         try:
             if len(sys.argv) > 1 and 'simulate' in sys.argv[1:]:
                 print('simulate calls.')

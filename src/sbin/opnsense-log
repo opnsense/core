@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# Copyright (c) 2021 Franco Fichtner <franco@opnsense.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+# OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+DO_COMMAND=cat
+DO_LIST=
+
+while getopts fl OPT; do
+	case ${OPT} in
+	f)
+		DO_COMMAND="tail -F -n0"
+		;;
+	l)
+		DO_LIST="-l"
+		;;
+	*)
+		echo "Usage: man ${0##*/}" >&2
+		exit 1
+		;;
+	esac
+done
+
+shift $((${OPTIND} - 1))
+
+LOGTYPE=${1:-system}
+
+LOGFILE="/var/log/${LOGTYPE}/latest.log"
+LOGLIST=$(find -s /var/log -name latest.log)
+
+if [ -n "${DO_LIST}" ]; then
+	for LOG in ${LOGLIST}; do
+		DIR=$(dirname ${LOG})
+		echo ${DIR##*/}
+	done
+	exit
+fi
+
+if [ ! -e "${LOGFILE}" ]; then
+	echo "No corresponding log '${LOGTYPE}' was found." >&2
+	exit 1
+fi
+
+${DO_COMMAND} "${LOGFILE}"

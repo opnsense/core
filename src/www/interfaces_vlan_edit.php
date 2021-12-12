@@ -173,8 +173,8 @@ legacy_html_escape_form_data($pconfig);
                       }
                       foreach ($all_interface_data as $ifn => $ifinfo):
                         if (strpos($ifn, "_vlan") > 1 || strpos($ifn, "lo") === 0 || strpos($ifn, "enc") === 0 ||
-                              strpos($ifn, "pflog") === 0 || strpos($ifn, "pfsync") === 0 ||
-                              strpos($ifn, "ipsec") === 0){
+                              strpos($ifn, "pflog") === 0 || strpos($ifn, "pfsync") === 0 || strpos($ifn, "bridge") === 0 ||
+                              strpos($ifn, "gre") === 0 || strpos($ifn, "gif") === 0 || strpos($ifn, "ipsec") === 0) {
                             continue;
                         }?>
 

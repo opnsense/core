@@ -83,7 +83,9 @@ class AliasField extends ArrayField
             if (!$node->getInternalIsVirtual()) {
                 // generate new unattached fields, which are only usable to read data from (not synched to config.xml)
                 $current_items = new IntegerField();
+                $current_items->setInternalIsVirtual();
                 $last_updated = new TextField();
+                $last_updated->setInternalIsVirtual();
                 if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
                     $current_items->setValue(self::$current_stats[(string)$node->name]['count']);
                     $last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);

@@ -230,17 +230,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                 if (isset($ph1ent['mobile'])) {
                     $rgip = "any";
                 } elseif (!is_ipaddr($ph1ent['remote-gateway'])) {
-                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A;
-                    $dns_qry_outfield = $ph1ent['protocol'] == 'inet6' ? "ipv6" : "ip";
-                    $dns_records = @dns_get_record($ph1ent['remote-gateway'], $dns_qry_type);
-                    if (is_array($dns_records)) {
-                        foreach ($dns_records as $dns_record) {
-                            if (!empty($dns_record[$dns_qry_outfield])) {
-                                $rgip = $dns_record[$dns_qry_outfield];
-                                break;
-                            }
-                        }
-                    }
+                    $rgip = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
                 } else {
                     $rgip = $ph1ent['remote-gateway'];
                 }
@@ -257,7 +247,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                             }
                         }
                     }
-                    $interface = explode("_vip", $ph1ent['interface'])[0];
+                    $interface = explode('_vip', $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
                                       "log" => !isset($config['syslog']['nologdefaultpass']),
                                       "quick" => false,
@@ -328,13 +318,6 @@ function ipsec_xmlrpc_sync()
     );
 
     return $result;
-}
-
-function ipsec_run()
-{
-    return array(
-        'link_interface_to_ipsec' => 'link_interface_to_ipsec:2',
-    );
 }
 
 /*
@@ -684,7 +667,7 @@ function ipsec_dump_spd()
                         $upperspec = explode("/", $linea[0]);
                         $cursp['proto'] = $upperspec[0];
                         list($cursp['src'], $cursp['dst']) = explode("-", $upperspec[2]);
-                        $cursp['reqid'] =  substr($upperspec[3], strpos($upperspec[3], "#") + 1);
+                        $cursp['reqid'] = substr($upperspec[3], strpos($upperspec[3], "#") + 1);
                         break;
                 }
             }
@@ -773,14 +756,20 @@ function ipsec_lookup_keypair($uuid)
     return $node ? $node->getNodes() : null;
 }
 
-function ipsec_resolve($hostname)
+function ipsec_resolve($hostname, $ipproto = 'inet')
 {
     if (!is_ipaddr($hostname)) {
-        /* XXX IPv4-only */
-        $ip = gethostbyname($hostname);
-        if ($ip && $ip != $hostname) {
-            $hostname = $ip;
+        $dns_qry_type = $ipproto == 'inet6' ? DNS_AAAA : DNS_A;
+        $dns_qry_outfield = $ipproto == 'inet6' ? "ipv6" : "ip";
+        $dns_records = @dns_get_record($hostname, $dns_qry_type);
+        if (is_array($dns_records)) {
+            foreach ($dns_records as $dns_record) {
+                if (!empty($dns_record[$dns_qry_outfield])) {
+                    return $dns_record[$dns_qry_outfield];
+                }
+            }
         }
+        return null;
     }
 
     return $hostname;
@@ -1172,7 +1161,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if (isset($a_client['net_list'])) {
                 foreach ($a_phase2 as $ph2ent) {
                     if (!isset($ph2ent['disabled']) && isset($ph2ent['mobile'])) {
-                        $net_list[] =  ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+                        $net_list[] = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     }
                 }
             }
@@ -1515,6 +1504,12 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
+                if (isset($ph1ent['sha256_96'])) {
+                    $sha256_96_line = "sha256_96 = yes";
+                } else {
+                    $sha256_96_line = '';
+                }
+
                 if (!empty($ph1ent['closeaction'])) {
                     $closeaction_line = "closeaction = {$ph1ent['closeaction']}";
                 } else {
@@ -1679,6 +1674,7 @@ conn con<<connectionId>>
   installpolicy = {$installpolicy}
   type = {$parsed_phase2['type']}
   {$closeaction_line}
+  {$sha256_96_line}
   {$dpdline}
   {$inactivityline}
   {$keyingtriesline}
@@ -1886,19 +1882,6 @@ function ipsec_get_configured_vtis()
     return $configured_intf;
 }
 
-function link_interface_to_ipsec($unused, $interface)
-{
-    $linked = [];
-
-    foreach (ipsec_get_configured_vtis() as $ipsec => $info) {
-        if ($info['interface'] == $interface) {
-            $linked = $ipsec;
-        }
-    }
-
-    return $linked;
-}
-
 /**
  * Configure required Virtual Terminal Interfaces (synchronizes configuration with local interfaces named ipsec%)
  */
@@ -1921,10 +1904,20 @@ function ipsec_configure_vti($verbose = false)
 
     // drop changed or not existing interfaces and tunnel endpoints
     foreach ($current_interfaces as $intf => $intf_details) {
+        $local_configured = $configured_intf[$intf]['local'];
+        $remote_configured = $configured_intf[$intf]['remote'];
+        if (!empty($configured_intf[$intf])) {
+            if (!is_ipaddr($configured_intf[$intf]['local'])) {
+                $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
+            }
+            if (!is_ipaddr($configured_intf[$intf]['remote'])) {
+                $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
+            }
+        }
         if (
             empty($configured_intf[$intf])
-            || $configured_intf[$intf]['local'] != $intf_details['tunnel']['src_addr']
-            || $configured_intf[$intf]['remote'] != $intf_details['tunnel']['dest_addr']
+            || $local_configured != $intf_details['tunnel']['src_addr']
+            || $remote_configured != $intf_details['tunnel']['dest_addr']
         ) {
             log_error(sprintf("destroy interface %s", $intf));
             legacy_interface_destroy($intf);

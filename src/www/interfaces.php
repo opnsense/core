@@ -400,7 +400,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
-    $pconfig['gateway_interface'] =  isset($a_interfaces[$if]['gateway_interface']);
+    $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
+    $pconfig['promisc'] = isset($a_interfaces[$if]['promisc']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -651,15 +652,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $reqdfieldsn = array(gettext("IPv4 address"),gettext("Subnet bit count"),gettext("Gateway"));
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
-            case "none":
-                if (isset($config['virtualip']['vip'])) {
-                    foreach ($config['virtualip']['vip'] as $vip) {
-                        if (is_ipaddrv4($vip['subnet']) && $vip['interface'] == $if) {
-                            $input_errors[] = gettext("This interface is referenced by IPv4 VIPs. Please delete those before setting the interface to 'none' configuration.");
-                        }
-                    }
-                }
-                break;
             case "dhcp":
                 if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
@@ -711,15 +703,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             case "dhcp6":
                 if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
-                }
-                break;
-            case "none":
-                if (isset($config['virtualip']['vip'])) {
-                    foreach ($config['virtualip']['vip'] as $vip) {
-                        if (is_ipaddrv6($vip['subnet']) && $vip['interface'] == $if) {
-                            $input_errors[] = gettext("This interface is referenced by IPv6 VIPs. Please delete those before setting the interface to 'none' configuration.");
-                        }
-                    }
                 }
                 break;
             case '6rd':
@@ -883,23 +866,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
             }
 
-            if (stristr($a_interfaces[$if]['if'], "_vlan")) {
-                $parentif = get_parent_interface($a_interfaces[$if]['if'])[0];
+            if (strstr($a_interfaces[$if]['if'], '_vlan')) {
+                list ($parentif) = interface_parent_devices($if);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
                     $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
                 }
             } else {
                 foreach ($config['interfaces'] as $idx => $ifdata) {
-                    if (($idx == $if) || !preg_match('/_vlan[0-9]/', $ifdata['if'])) {
+                    if ($idx == $if || !strstr($ifdata['if'], '_vlan')) {
                         continue;
                     }
 
-                    $realhwif_array = get_parent_interface($ifdata['if']);
-                    // Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
-                    $parent_realhwif = $realhwif_array[0];
-
-                    if ($parent_realhwif != $a_interfaces[$if]['if']) {
+                    list ($parentif) = interface_parent_devices($idx);
+                    if ($parentif != $a_interfaces[$if]['if']) {
                         continue;
                     }
 
@@ -1015,6 +995,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
             $new_config['blockbogons'] = !empty($pconfig['blockbogons']);
             $new_config['gateway_interface'] = !empty($pconfig['gateway_interface']);
+            $new_config['promisc'] = !empty($pconfig['promisc']);
             if (!empty($pconfig['mtu'])) {
                 $new_config['mtu'] = $pconfig['mtu'];
             }
@@ -1388,21 +1369,7 @@ if (isset($a_interfaces[$if]['wireless'])) {
 }
 
 // Find all possible media options for the interface
-$mediaopts_list = array();
-$optlist_intf = get_parent_interface($pconfig['if']);
-if (count($optlist_intf) > 0) {
-    exec("/sbin/ifconfig -m {$optlist_intf[0]} | grep \"media \"", $mediaopts);
-    foreach ($mediaopts as $mediaopt){
-        preg_match("/media (.*)/", $mediaopt, $matches);
-        if (preg_match("/(.*) mediaopt (.*)/", $matches[1], $matches1)){
-            // there is media + mediaopt like "media 1000baseT mediaopt full-duplex"
-            array_push($mediaopts_list, $matches1[1] . " " . $matches1[2]);
-        } else {
-            // there is only media like "media 1000baseT"
-            array_push($mediaopts_list, $matches[1]);
-        }
-    }
-}
+$mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ?? [];
 
 include("head.inc");
 ?>
@@ -1905,7 +1872,7 @@ include("head.inc");
                           </td>
                         </tr>
 <?php
-                        if (count($mediaopts_list) > 0):?>
+                        if (count($mediaopts_list) > 1):?>
                         <tr>
                             <td><a id="help_for_mediaopt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Speed and duplex");?>  </td>
                             <td>
@@ -1927,6 +1894,19 @@ include("head.inc");
 <?php
                         endif;?>
                         <tr>
+                          <td><a id="help_for_promisc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Promiscuous mode') ?></td>
+                          <td>
+                            <input id="promisc" name="promisc" type="checkbox" value="yes" <?=!empty($pconfig['promisc']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_promisc">
+                              <?=gettext(
+                                  "Put interface into permanently promiscuous mode. ".
+                                  "Only to be used for specific usecases requiring the interface to receive all packets being received. ".
+                                  "When unsure, leave this disabled."
+                              ); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
                           <td><a id="help_for_gateway_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic gateway policy') ?></td>
                           <td>
                             <input id="gateway_interface" name="gateway_interface" type="checkbox" value="yes" <?=!empty($pconfig['gateway_interface']) ? 'checked="checked"' : '' ?>/>
@@ -1942,6 +1922,8 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
+<?php
+                if (count($mediaopts_list) > 1):?>
                 <!-- Hardware settings -->
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
@@ -2014,6 +1996,8 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
+<?php
+                endif;?>
                 <!-- static IPv4 -->
                 <div class="tab-content content-box col-xs-12 __mb" id="staticv4" style="display:none">
                   <div class="table-responsive">
@@ -2345,7 +2329,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
+                            <input name="password" type="password" autocomplete="new-password" id="password" value="<?=$pconfig['password'];?>" />
                           </td>
                         </tr>
                         <tr>
@@ -2413,7 +2397,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="pppoe_password" type="password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
+                            <input name="pppoe_password" type="password" autocomplete="new-password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
                           </td>
                         </tr>
                         <tr>
@@ -2488,7 +2472,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="pptp_password" type="password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
+                            <input name="pptp_password" type="password" autocomplete="new-password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
                           </td>
                         </tr>
                         <tr>

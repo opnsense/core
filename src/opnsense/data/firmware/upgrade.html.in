@@ -5,7 +5,7 @@ seamless and can be performed right here from the web GUI.</p>
 which will retain your settings (selecting "Import Configuration"), then
 reformat the disk and apply a clean system (selecting "Guided Installation").</p>
 <p>You can also upgrade via console / SSH by using option 12 from the menu by
-typing "%%CORE_NEXT%%" when prompted.</p>
+typing "%%UPGRADE_RELEASE%%" when prompted.</p>
 <p>Make sure to read the migration notes and adjust for possible minor breaking
 changes.</p>
 <p>Please backup your configuration, preview the new version via live image or

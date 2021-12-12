@@ -34,65 +34,79 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("system.inc");
 
-function handle_argument_group($iface, $argument2)
+function handle_argument_group($action, $realif)
 {
     global $config;
 
-    if (isset($config['interfaces'][$iface])) {
-        // set defaults
-        $ipaddr = '0.0.0.0';
-        $ip6addr = '::';
-        if (isset($config['interfaces'][$iface]['ipaddr'])) {
-            $ipaddr = $config['interfaces'][$iface]['ipaddr'];
-        }
-        if (isset($config['interfaces'][$iface]['ipaddrv6'])) {
-            $ip6addr = $config['interfaces'][$iface]['ipaddrv6'];
-        }
-        if (is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr)) {
-            $friendly = convert_friendly_interface_to_friendly_descr($iface);
-            log_error("Hotplug event detected for {$friendly}({$iface}) but ignoring since interface is configured with static IP ({$ipaddr} {$ip6addr})");
-            interfaces_staticarp_configure($iface);
-            /* NOTE: Do not generate event for OpenVPN since the daemon does that for us. */
-            if (substr($iface, 0, 4) != "ovpn") {
-                if ($argument2 == "start" || $argument2 == "up") {
-                    $iface = get_real_interface($iface);
-                    configdp_run('interface newip', array($iface));
-                }
+    $interface = convert_real_interface_to_friendly_interface_name($realif);
+
+    if (empty($interface)) {
+        return;
+    }
+
+    if (empty($config['interfaces'][$interface])) {
+        return;
+    }
+
+    if (!isset($config['interfaces'][$interface]['enable'])) {
+        return;
+    }
+
+    $ipaddr = '0.0.0.0';
+    $ip6addr = '::';
+
+    if (isset($config['interfaces'][$interface]['ipaddr'])) {
+        $ipaddr = $config['interfaces'][$interface]['ipaddr'];
+    }
+
+    if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
+        $ip6addr = $config['interfaces'][$interface]['ipaddrv6'];
+    }
+
+    $is_static = is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr);
+
+    switch ($action) {
+        case 'stop':
+            log_error(sprintf(
+                "DEVD: Ethernet detached event for %s %s(%s)",
+                $is_static ? 'static' : 'dynamic',
+                $interface,
+                $realif
+            ));
+            if ($is_static) {
+                interfaces_staticarp_configure($interface);
+            } else {
+                interface_bring_down($interface);
+                filter_configure();
             }
-        } else {
-            switch ($argument2) {
-                case "stop":
-                    log_error("DEVD Ethernet detached event for {$iface}");
-                    interface_bring_down($iface);
-                    break;
-                case "start":
-                    log_error("DEVD Ethernet attached event for {$iface}");
-                    log_error("HOTPLUG: Configuring interface {$iface}");
-                    // Do not try to readd to bridge otherwise em(4) has problems
-                    interface_configure(false, $iface, true, true);
-                    break;
+            break;
+        case 'start':
+            log_error(sprintf(
+                "DEVD: Ethernet attached event for %s %s(%s)",
+                $is_static ? 'static' : 'dynamic',
+                $interface,
+                $realif
+            ));
+            if ($is_static) {
+                interfaces_staticarp_configure($interface);
+                configdp_run('interface newip', array($realif));
+            } else {
+                interface_configure(false, $interface, true, true);
+                filter_configure();
             }
-            filter_configure();
-        }
+            break;
+        default:
+            log_error("DEVD: The action parameter passed is wrong ($action)");
+            break;
     }
 }
 
-if (!file_exists("/var/run/booting")) {
-    if ($argc < 3) {
-        log_error("HOTPLUG event: The number of required parameters not passed!");
-        exit;
-    }
-    $action = $argv[1];
-    switch($action) {
-      case "start":
-      case "stop":
-          $interface = convert_real_interface_to_friendly_interface_name($argv[2]);
-          if (!empty($interface)) {
-              handle_argument_group($interface, $action);
-          }
-          break;
-      default:
-          log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
-          break;
-    }
+if (file_exists('/var/run/booting')) {
+    exit;
 }
+
+if ($argc < 3) {
+    exit;
+}
+
+handle_argument_group($argv[1], $argv[2]);

@@ -366,7 +366,7 @@ abstract class BaseField
      */
     public function isFieldChanged()
     {
-        return $this->internalInitialValue !==  $this->internalValue;
+        return $this->internalInitialValue !== $this->internalValue;
     }
 
     /**

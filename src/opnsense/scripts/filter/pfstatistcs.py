@@ -96,17 +96,42 @@ def pfctl_interfaces():
 
     return result
 
-def main():
-    result = {
-        'info': pfctl_info(),
-        'memory': pfctl_memory(),
-        'timeouts': pfctl_timeouts(),
-        'interfaces': pfctl_interfaces()
+def pfctl_rules():
+    result = dict()
+    headings = {
+        "rules": "filter rules",
+        "nat": "nat rules"
     }
+    for key in headings:
+        result[headings[key]] = dict()
+        rule = None
+        for line in subprocess.run(['/sbin/pfctl', '-vvs' + key], capture_output=True, text=True).stdout.split("\n"):
+            sline = line.strip()
+            if len(line) > 0 and line[0] not in ["\t", " "]:
+                rule = sline
+                result[headings[key]][rule] = dict()
+            elif rule is not None and sline.startswith('[') and sline.endswith(']'):
+                items = sline[1:].strip().lower().split(':')
+                for idx, item in enumerate(items[1:],1):
+                    opt = 'state_creations' if items[idx-1].find('creations') >  -1 else items[idx-1].split()[-1]
+                    val = " ".join(item.split()[:-1]).replace('state', '')
+                    result[headings[key]][rule][opt] = int(val) if val.isdigit() else val
 
-    if len(sys.argv) > 1 and sys.argv[1] in result:
-        return result[sys.argv[1]]
-    else:
-        return result
+    return result
+
+def main():
+    sections = {
+        'info': pfctl_info,
+        'memory': pfctl_memory,
+        'timeouts': pfctl_timeouts,
+        'interfaces': pfctl_interfaces,
+        'rules': pfctl_rules
+    }
+    result = dict()
+    for section in sections:
+        if (len(sys.argv) > 1 and sys.argv[1] == section) or (len(sys.argv) == 1):
+            result[section] = sections[section]()
+
+    return result
 
 print(ujson.dumps(main()))

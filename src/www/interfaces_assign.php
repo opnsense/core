@@ -38,7 +38,7 @@ function link_interface_to_group($int)
 {
     global $config;
 
-    $result = array();
+    $result = [];
 
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
@@ -55,7 +55,7 @@ function list_interfaces()
 {
     global $config;
 
-    $interfaces  = [];
+    $interfaces = [];
 
     // define config sections to fetch interfaces from.
     $config_sections = array();

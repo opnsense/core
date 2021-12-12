@@ -80,7 +80,7 @@ function get_default_sysctl_value($id)
         'hw.syscons.kbd_reboot' => '0',
         'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(), /* XXX support comconsole_port if needed */
         'kern.ipc.maxsockbuf' => '4262144',
-        'kern.randompid' => '347',
+        'kern.randompid' => '1',
         'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
         'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
         'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
@@ -133,8 +133,6 @@ function get_default_sysctl_value($id)
 
 function system_sysctl_get()
 {
-    global $config;
-
     /* list of unconditional sysctls not necessarily present in config */
     $sysctls = array(
         'hw.ixl.enable_head_writeback' => 'default',
@@ -154,8 +152,15 @@ function system_sysctl_get()
     }
 
     foreach ($sysctls as $key => &$value) {
-        if ($value == 'default') {
-            $value = get_default_sysctl_value($key);
+        if ($value != 'default') {
+            continue;
+        }
+
+        $value = get_default_sysctl_value($key);
+
+        if ($value === null) {
+            log_error('warning: ignoring missing default tunable request: ' . $key);
+            unset($sysctls[$key]);
         }
     }
 
@@ -306,7 +311,7 @@ function get_searchdomains()
 {
     $master_list = array();
 
-    $search_list = glob('/var/etc/searchdomain_*');
+    $search_list = glob('/tmp/*_searchdomain*');
 
     if (is_array($search_list)) {
         foreach ($search_list as $fdns) {
@@ -330,30 +335,30 @@ function get_nameservers($interface = null)
     global $config;
     $master_list = array();
 
-    $dns_lists = glob('/var/etc/nameserver_*');
-    $exclude_interfaces = array();
+    $dns_lists = glob('/tmp/*_nameserver*');
+    $exclude_interfaces = [];
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
-        $dns_lists = array(
-            "/var/etc/nameserver_{$realif}",
-            "/var/etc/nameserver_v6{$realifv6}",
-        );
+        $dns_lists = [
+            "/tmp/{$realif}_nameserver",
+            "/tmp/{$realifv6}_nameserverv6",
+        ];
     }
 
     if (isset($config['system']['dnsallowoverride_exclude'])) {
-        foreach (explode(",", $config['system']['dnsallowoverride_exclude']) as $intf) {
+        foreach (explode(',', $config['system']['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
-                $exclude_interfaces[] = $config['interfaces'][$intf]['if'];
+                $exclude_interfaces[] = get_real_interface($intf);
+                $exclude_interfaces[] = get_real_interface($intf, 'inet6');
             }
         }
     }
 
     foreach ($dns_lists as $fdns) {
-        $intf = explode("_", $fdns)[1];
-        $intf = strpos($intf, "v6") === 0 ? substr($intf, 2) : $intf;
+        $intf = explode('_', basename($fdns))[0];
         if (in_array($intf, $exclude_interfaces)) {
             continue;
         }
@@ -595,20 +600,7 @@ function system_staticroutes_configure($interface = '')
     }
 }
 
-function system_syslogd_extra_local($logsocket)
-{
-    $logdir = dirname($logsocket);
-
-    if (!is_dir($logdir)) {
-        /* create if needed to avoid startup error */
-        mwexecf('/bin/mkdir -p %s', $logdir);
-    }
-
-    /* emit extra args for syslogd invoke */
-    return exec_safe('-l %s ', $logsocket);
-}
-
-function system_syslogd_start($verbose = false, $restart = false, $async = false)
+function system_syslog_start($verbose = false)
 {
     global $config;
 
@@ -617,103 +609,13 @@ function system_syslogd_start($verbose = false, $restart = false, $async = false
         flush();
     }
 
-    if ($async) {
-        configd_run('syslog restart');
-
-        if ($verbose) {
-            echo "done.\n";
-        }
-
-        return;
-    }
-
     configd_run('template reload OPNsense/Syslog');
+    mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs');
 
-    if (empty($config['syslog']['disable_clog'])) {
-        $syslogcfg = config_read_array('syslog');
-
-        $log_directive = '%';
-        $syslogd_extra = '';
-
-        $syslogconf = '';
-
-        $syslogconfs = array();
-
-        foreach (plugins_syslog() as $plugin_name => $plugin_details) {
-            $syslogconfs[$plugin_name] = $plugin_details;
-        }
-
-        $separatelogfacilities = array();
-        foreach ($syslogconfs as $logTopic => $logConfig) {
-            $syslogconf .= "!" . implode(',', $logConfig['facility']) . "\n";
-            $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
-            if (!isset($syslogcfg['disablelocallogging'])) {
-                $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
-            }
-            if (!empty($logConfig['local'])) {
-                $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
-            }
-        }
-        $syslogd_extra .= '-p /var/run/legacy_log -S /var/run/legacy_logpriv -k -s -s ';
-
-        asort($separatelogfacilities);
-        $facilitylist = implode(',', array_unique($separatelogfacilities));
-        $syslogconf .= "!-{$facilitylist}\n";
-        if (!isset($syslogcfg['disablelocallogging'])) {
-            /* XXX non-system local redirects look unused */
-            $syslogconf .= <<<EOD
-local3.*							{$log_directive}/var/log/vpn.log
-local4.*							{$log_directive}/var/log/portalauth.log
-local7.*							{$log_directive}/var/log/dhcpd.log
-*.notice;kern.debug;lpr.info;mail.crit;daemon.none		{$log_directive}/var/log/system.log
-news.err;local0.none;local3.none;local4.none			{$log_directive}/var/log/system.log
-local7.none							{$log_directive}/var/log/system.log
-security.*							{$log_directive}/var/log/system.log
-auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
-*.emerg								*
-
-EOD;
-        }
-
-        file_put_contents('/var/etc/syslog.conf', $syslogconf);
-        $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
-
-        // setup log files for all facilities including default
-        $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
-        $syslog_files = array_keys($syslogconfs);
-        $syslog_files = array_merge($syslog_files, array('system', 'vpn'));
-        foreach ($syslog_files as $syslog_fn) {
-            $filename = "/var/log/" . basename($syslog_fn) . ".log";
-            if (!file_exists($filename)) {
-                mwexecf('/usr/local/sbin/clog -i -s %s %s', array($default_logfile_size, $filename));
-            }
-            mwexecf('chmod 0600 %s', array($filename));
-        }
-    }
-
-    // deploy certificates (separate caller in case we ever remove clog, in which case we can move all to configd)
-    mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
-    if (!empty($config['syslog']['disable_clog'])) {
-        // non legacy mode
-        killbypid('/var/run/syslog.pid', 'TERM', true);
-        if (!$restart && isvalidpid('/var/run/syslog-ng.pid')) {
-            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
-        } else {
-            mwexecf("/usr/sbin/service syslog-ng restart");
-        }
-    } elseif (!$restart && isvalidpid('/var/run/syslog.pid')) {
-        killbypid('/var/run/syslog.pid', 'HUP');
-        if (isvalidpid('/var/run/syslog-ng.pid')) {
-            mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
-        } else {
-            mwexecf("/usr/sbin/service syslog-ng restart");
-        }
+    if (isvalidpid('/var/run/syslog-ng.pid')) {
+        mwexecf('/usr/local/sbin/syslog-ng-ctl reload');
     } else {
-        killbypid('/var/run/syslog.pid', 'TERM', true);
-        mwexecf("/usr/sbin/service syslog-ng stop");
-        @unlink("/var/run/legacy_log");
-        mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
-        mwexecf("/usr/sbin/service syslog-ng start");
+        mwexecf('/usr/sbin/service syslog-ng restart');
     }
 
     if ($verbose) {
@@ -721,53 +623,9 @@ EOD;
     }
 }
 
-/**
- * stop syslog + syslog-ng
- */
-function system_syslogd_stop()
+function system_syslog_stop()
 {
-    killbypid('/var/run/syslog.pid', 'TERM', true);
-    mwexecf("/usr/sbin/service syslog-ng stop");
-}
-
-function system_clear_log($logfile, $restart_syslogd = true)
-{
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
-
-    foreach (glob($logfile . '.*') as $rotated) {
-        @unlink($rotated);
-    }
-
-    /* preserve file ownership and permissions */
-    if (file_exists($logfile)) {
-        $handle = fopen($logfile, 'r+');
-        if ($handle) {
-            ftruncate($handle, 0);
-            fclose($handle);
-        }
-    }
-
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
-}
-
-function system_clear_clog($logfile, $restart_syslogd = true)
-{
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
-
-    $syslogcfg = config_read_array('syslog');
-
-    $log_size = isset($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
-    mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
-
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
+    mwexecf('/usr/sbin/service syslog-ng stop');
 }
 
 /*
@@ -794,7 +652,8 @@ function system_firmware_configure($verbose = false)
         flush();
     }
 
-    $args = [];
+    /* calculate the effective ABI */
+    $args = [ exec_safe('-A %s', trim(shell_exec('opnsense-version -x'))) ];
 
     if (!empty($config['system']['firmware']['mirror'])) {
         $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror']));
@@ -844,7 +703,7 @@ function system_trust_configure($verbose = false)
                         $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
                         $authoritykey = "";
                         if (!empty($certext['authorityKeyIdentifier'])) {
-                            $authoritykey = trim(str_replace('keyid:', '', $certext['authorityKeyIdentifier']));
+                            $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
                         }
                         $subjectkey = $certext['subjectKeyIdentifier'];
                         $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
@@ -879,6 +738,7 @@ function system_trust_configure($verbose = false)
         copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
         @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
         copy($ca_cert_pem, '/etc/ssl/cert.pem');
+        chmod('/etc/ssl/cert.pem', 0644);
     }
 
     if ($verbose) {
@@ -1013,7 +873,7 @@ function system_devd_configure($verbose = false)
     }
 }
 
-function system_cron_configure($verbose = false, $defer = false)
+function system_cron_configure($verbose = false)
 {
     function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*')
     {
@@ -1070,9 +930,9 @@ function system_cron_configure($verbose = false, $defer = false)
 
     file_put_contents('/var/cron/tabs/root', $crontab_contents);
 
-    if (!$defer) {
-        configd_run('cron restart');
-    }
+    configd_run('template reload OPNsense/Cron');
+
+    mwexec('/etc/rc.d/cron restart');
 
     if ($verbose) {
         echo "done.\n";

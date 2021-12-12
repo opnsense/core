@@ -277,9 +277,9 @@ if (!empty($config['hasync'])) {
         // no url provided, assume the backup is using the same settings as our box.
         $port = $config['system']['webgui']['port'];
         if (!empty($port)) {
-            $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
+            $synchronizeto = $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
         } else {
-            $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php" ;
+            $synchronizeto = $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php" ;
         }
     }
 

@@ -167,14 +167,20 @@ function system_api_firmware()
     $ret = gettext('Click to check for updates.');
 
     $product = json_decode(configd_run('firmware product'), true);
-    if (
-        !empty($product['product_check']['upgrade_sets']) ||
+
+    /* information from changelog, more accurate for production release */
+    $from_changelog = !empty($product['product_latest']) &&
+        $product['product_latest'] != $product['product_version'];
+
+    /* update status from last check, also includes major releases */
+    $from_check = !empty($product['product_check']['upgrade_sets']) ||
         !empty($product['product_check']['downgrade_packages']) ||
         !empty($product['product_check']['new_packages']) ||
         !empty($product['product_check']['reinstall_packages']) ||
         !empty($product['product_check']['remove_packages']) ||
-        !empty($product['product_check']['upgrade_packages'])
-    ) {
+        !empty($product['product_check']['upgrade_packages']);
+
+    if ($from_changelog || $from_check) {
         $ret = gettext('Click to view pending updates.');
     }
 

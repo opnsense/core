@@ -541,7 +541,7 @@ function filter_core_rules_system($fw, $defaults)
         $fw->registerFilterRule(
             5,
             array('direction' => 'out', 'statetype' => 'keep', 'quick' => false, 'interface' => 'enc0',
-                '#ref' => 'vpn_ipsec.php#enable',
+                '#ref' => '/ui/ipsec/tunnels',
                 'descr' => 'IPsec internal host to host'),
             $defaults['pass']
         );

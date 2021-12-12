@@ -1219,10 +1219,10 @@ Grid.defaults = {
         datetime: {
            // convert datetime type fields from unix timestamp to readable format
            from: function (value) {
-              return moment(parseInt(value)*1000);
+              return value ? moment(parseInt(value)*1000) : "";
            },
            to: function (value) {
-              return value.format("lll");
+              return value ? value.format("lll") : "";
            }
         },
         memsize: {
