@@ -26,6 +26,7 @@
 
 INSTALL="/.probe.for.install.media"
 MNT="/tmp/hdrescue"
+SHELL="/bin/sh"
 WAIT="........."
 
 if [ "$(id -u)" != "0" ]; then
@@ -34,6 +35,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 DO_BOOT=
+DO_MANUAL=
 DO_PASSWORD=
 DO_ZFS=
 
@@ -71,10 +73,13 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-while getopts bpz OPT; do
+while getopts bmpz OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
+		;;
+	m)
+		DO_MANUAL="-m"
 		;;
 	p)
 		DO_PASSWORD="-p"
@@ -280,7 +285,10 @@ while : ; do
 		continue
 	fi
 
-	if [ -n "${DO_PASSWORD}" ]; then
+	if [ -n "${DO_MANUAL}" ]; then
+		echo "# Manual shell mode, old file system available at ${MNT}"
+		${SHELL}
+	elif [ -n "${DO_PASSWORD}" ]; then
 		if [ -f "${MNT}/usr/local/sbin/opnsense-shell" ]; then
 			mount -t devfs devfs ${MNT}/dev
 			chroot ${MNT} /bin/sh /etc/rc.d/ldconfig start
@@ -344,7 +352,7 @@ while : ; do
 	fi
 done
 
-if [ -z "${DO_BOOT}" ]; then
+if [ -z "${DO_BOOT}${DO_MANUAL}${DO_PASSWORD}" ]; then
 	echo "Please reboot."
 fi
 

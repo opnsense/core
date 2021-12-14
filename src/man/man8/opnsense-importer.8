@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd April 21, 2021
+.Dd December 14, 2021
 .Dt OPNSENSE-IMPORTER 8
 .Os
 .Sh NAME
@@ -32,7 +32,7 @@
 .Nd OPNsense import utility
 .Sh SYNOPSIS
 .Nm
-.Op Fl bpz
+.Op Fl bmpz
 .Op Ar disk
 .Sh DESCRIPTION
 The
@@ -61,6 +61,9 @@ Run the importer in boot mode, which only triggers the import timeout
 prompt when no current configuration is found in the system.
 This mode is used for install media duties to allow early configuration
 imports to be able to live-boot into them afterwards.
+.It Fl m
+Run the importer in manual shell mode to access the recovered file
+system for custom repairs.
 .It Fl p
 Run the importer in password reset mode, which mounts the disk and
 invokes the builtin root password prompt and after change adjusts
