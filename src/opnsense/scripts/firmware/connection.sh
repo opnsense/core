@@ -39,12 +39,12 @@ echo "***GOT REQUEST TO AUDIT CONNECTIVITY***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 echo "Checking connectivity for host: ${HOST}" | ${TEE} ${LOCKFILE}
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
-	(ping -c 4 ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
+	(ping -c4 ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
 else
 	echo "No IPv4 address could be found." | ${TEE} ${LOCKFILE}
 fi
 if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
-	(ping6 -c 4 ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
+	(ping6 -c4 ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
 else
 	echo "No IPv6 address could be found." | ${TEE} ${LOCKFILE}
 fi
