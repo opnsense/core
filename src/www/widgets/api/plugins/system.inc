@@ -129,12 +129,13 @@ function system_api_disk()
         }
     }
 
-    $result['devices'] = array();
-    exec("/bin/df -Tht ufs,tmpfs,zfs,cd9660", $disk_info);
+    $types = [ 'ufs', 'tmpfs', 'zfs', 'cd9660' ];
+    $result['devices'] = [];
+    exec('/bin/df -ahT', $disk_info);
     foreach ($disk_info as $line) {
-        if (strpos($line,'Mounted on') === false) {
+        if (strpos($line, 'Filesystem') !== 0) {
             $parts = preg_split('/\s+/', $line);
-            $diskItem = array();
+            $diskItem = [];
             $diskItem['device'] = $parts[0];
             $diskItem['type'] = $parts[1];
             $diskItem['size'] = $parts[2];
@@ -142,7 +143,9 @@ function system_api_disk()
             $diskItem['available'] = $parts[4];
             $diskItem['capacity'] = $parts[5];
             $diskItem['mountpoint'] = $parts[6];
-            $result['devices'][] = $diskItem;
+            if (in_array($diskItem['type'], $types)) {
+                $result['devices'][] = $diskItem;
+            }
         }
     }
 
