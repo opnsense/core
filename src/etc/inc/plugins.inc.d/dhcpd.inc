@@ -309,7 +309,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $stanzas = [];
 
-        list ($unused, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+		if(!isset($dhcpv6ifconf['ipv6usevip']))
+		{
+			list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+		} else {
+			list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details,$getvip="true");
+		}
+		log_error("dhcpd radvd {$ifcfgipv6}");
+        //list ($unused, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -486,8 +493,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         }
 
         $dnslist = array();
-
-        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $ifconfig_details);
 
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
@@ -1327,7 +1332,13 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
-            list ($ifcfgipv6) = interfaces_primary_address6($ifname, $ifconfig_details);
+			if(isset($dhcpdv6cfg[$ifname]['ipv6usevip'])) {
+				list ($ifcfgipv6) = interfaces_primary_address6($ifname, $ifconfig_details,$getvip="true");
+			} else {
+				list ($ifcfgipv6) = interfaces_primary_address6($ifname, $ifconfig_details);
+			}
+
+			//log_error("debug {$ifcfgipv6}");
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;
             }
@@ -1367,7 +1378,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                     $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($range['start']);
                     $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($range['end']);
                 }
-            } else {
+            } elseif (!isset($dhcpdv6cfg[$ifname]['ipv6usevip'])) { // We are using the prefix range
                 if (!empty($dhcpdv6cfg[$ifname]['range']['from']) && !empty($dhcpdv6cfg[$ifname]['range']['to'])) {
                     /* get config entry and marry it to the live prefix */
                     $dhcpdv6cfg[$ifname]['range'] = array(
@@ -1432,7 +1443,14 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                     $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($ipv6_from_pd_from);
                     $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($ipv6_from_pd_to);
                 }
-            }
+            } elseif (isset($dhcpdv6cfg[$ifname]['ipv6usevip'])){
+				$ipv6_from_pd_from = $dhcpdv6cfg[$ifname]['range']['from'];
+                $ipv6_from_pd_to = $dhcpdv6cfg[$ifname]['range']['to'];
+				
+                $dhcpdv6cfg[$ifname]['prefixrange']['from'] = $dhcpdv6cfg[$ifname]['prefixrange']['from'];
+                $dhcpdv6cfg[$ifname]['prefixrange']['to'] = $dhcpdv6cfg[$ifname]['prefixrange']['to'];
+			}
+			
         }
     }
 
@@ -1487,6 +1505,8 @@ EOD;
             continue;
         }
 
+		// Get the VIP in case we need it
+		list ($ifcfgipv6vip,$networkv6vip) = interfaces_primary_address6($dhcpv6if,$ifconfig_details,$getvip="true");
         $dnscfgv6 = "";
 
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
@@ -1523,12 +1543,24 @@ EOD;
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
+			if(empty($dhcpv6ifconf['ipv6usevip'])) {
+				$dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
+			} else {
+				$dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6vip};";
+			}
         } elseif (!empty($dns_arrv6)) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
         }
 
-        $dhcpdv6conf .= "\nsubnet6 {$networkv6} {\n";
+		// subnet is picked from the interface, this can be an issue if you are using a VIP AND a GUA. So let's allow the user
+		// to use thier own subnet.
+
+		if(empty($dhcpv6ifconf['ipv6usevip'])) {
+			$dhcpdv6conf .= "\nsubnet6 {$networkv6} {\n";
+		} else {
+			
+			$dhcpdv6conf .= "\nsubnet6 {$networkv6vip} {\n";
+		}
 
         if (!empty($dhcpv6ifconf['range']['from'])) {
             $dhcpdv6conf .= "  range6 {$dhcpv6ifconf['range']['from']} {$dhcpv6ifconf['range']['to']};\n";

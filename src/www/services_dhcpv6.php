@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 $ifcfgip = $config['interfaces'][$if]['ipaddrv6'];
 $ifcfgsn = $config['interfaces'][$if]['subnetv6'];
-
+$ifconfig_details = legacy_interfaces_details();
 if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     list ($ifcfgip, $networkv6) = interfaces_primary_address6($if);
     $ifcfgsn = explode('/', $networkv6)[1];
@@ -80,10 +80,19 @@ if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     $prefix_array[7] = '0';
     $wifprefix = Net_IPv6::compress(implode(':', $prefix_array));
     $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$if]['track6-interface']) - 1;
+
+	list ($ifcfgvip, $networkv6vip) = interfaces_primary_address6($if,$ifconfig_details,$getvip="true");
+	$ifcfgsnvip = explode('/', $networkv6vip)[1];
+	$ifcfgsnvipnet = explode('/', $networkv6vip)[2];
+
 }
 
 $subnet_start = gen_subnetv6($ifcfgip, $ifcfgsn);
 $subnet_end = gen_subnetv6_max($ifcfgip, $ifcfgsn);
+
+$vipsubnet_start = gen_subnetv6($ifcfgvip, $ifcfgsnvip);
+$vipsubnet_end = gen_subnetv6_max($ifcfgvip, $ifcfgsnvip);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -111,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable'] = isset($config['dhcpdv6'][$if]['enable']);
     $pconfig['ddnsupdate'] = isset($config['dhcpdv6'][$if]['ddnsupdate']);
     $pconfig['netboot'] = isset($config['dhcpdv6'][$if]['netboot']);
+	$pconfig['ipv6usevip'] = isset($config['dhcpdv6'][$if]['ipv6usevip']);
 
     // handle arrays
     $pconfig['staticmap'] = empty($pconfig['staticmap']) ? array() : $pconfig['staticmap'];
@@ -276,6 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dhcpdv6_enable_changed = !empty($pconfig['enable']) != !empty($config['dhcpdv6'][$if]['enable']);
 
             // boolean types
+            $dhcpdconf['ipv6usevip'] = !empty($pconfig['ipv6usevip']);
             $dhcpdconf['netboot'] = !empty($pconfig['netboot']);
             $dhcpdconf['enable'] = !empty($pconfig['enable']);
             $dhcpdconf['ddnsupdate'] = !empty($pconfig['ddnsupdate']);
@@ -468,7 +479,7 @@ include("head.inc");
                     </tr>
 <?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
                      <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Current LAN IPv6 prefix");?></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Current LAN GUA IPv6 prefix");?></td>
                       <td><?= htmlspecialchars($wifprefix) ?></td>
                     </tr>
 <?php if ($pdlen >= 0): ?>
@@ -490,10 +501,30 @@ include("head.inc");
 <?php else: ?>
                         <?= $subnet_start ?> - <?= $subnet_end ?>
 <?php endif ?>
-<?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
+<?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride']) && $vipsubnet_start != null): ?>
                         <div class="hidden" data-for="help_for_available_range">
                             <?= gettext('Prefix subnet will be prefixed to the available range.') ?>
                         </div>
+					<tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("VIP Subnet");?></td>
+                      <td><?= $vipsubnet_start ?></td>
+                    </tr>
+					<tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("VIP Subnet size");?></td>
+                      <td><?= 	$ifcfgsnvip ?></td>
+                    </tr>
+				     <tr>
+					  <td><a id="help_for_ipv6usevip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Override auto prefix"); ?></td>
+                      <td>
+                        <input name="ipv6usevip" type="checkbox" id="ipv6usevip" value="yes" <?=!empty($pconfig['ipv6usevip']) ? "checked=\"checked\"" : ""; ?> />
+                        <strong>
+                          <?=gettext("Use Ipv6 VIP"); ?>
+                        </strong>
+                        <div class="hidden" data-for="help_for_ipv6usevip">
+                          <?=gettext("Select this to use the IPv6 VIP address assigned to this interface."); ?>
+                        </div>
+                      </td>
+					</tr>					
 <?php endif ?>
                       </td>
                     </tr>

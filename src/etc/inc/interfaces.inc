@@ -4626,7 +4626,7 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
     return [ $ifcfgip, $network, $subnetbits ];
 }
 
-function interfaces_primary_address6($interface, $ifconfig_details = null)
+function interfaces_primary_address6($interface, $ifconfig_details = null, $getvip = null)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
@@ -4638,14 +4638,22 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
     }
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias'] || $addr['scope']) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['scope']) {
             continue;
         }
-
-        $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
-        $subnetbitsv6 = $addr['bits'];
-        $ifcfgipv6 = $addr['address'];
-        break; /* all done */
+        if($getvip != null && $addr['alias'] ){         
+            $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+            $subnetbitsv6 = $addr['bits'];
+            $ifcfgipv6 = $addr['address'];
+            log_error("debug1 {$ifcfgipv6}");
+            break;
+        } elseif ($getvip == null && !$addr['alias'] ) {
+            $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+            $subnetbitsv6 = $addr['bits'];
+            $ifcfgipv6 = $addr['address'];
+            log_error("debug2 {$ifcfgipv6}");
+            break; /* all done */
+        }
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
