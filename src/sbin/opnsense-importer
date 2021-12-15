@@ -130,11 +130,6 @@ zfs_load()
 	fi
 
 	export POOLS=$(zfs_probe)
-	if [ -n "${POOLS}" ]; then
-		# insert missing newline due to $()
-		export POOLS="${POOLS}
-"
-	fi
 }
 
 zfs_unload()
@@ -146,13 +141,15 @@ zfs_unload()
 
 zfs_probe()
 {
-	zpool import -aNf
+	zpool import -aNf 2> /dev/null
 
 	zpool get -H cachefile | while read ZPOOL ZMORE; do
+		ZGUID=$(zpool get -H guid ${ZPOOL} | awk '{ print $3 }')
+		ZSIZE=$(zpool get -H size ${ZPOOL} | awk '{ print $3 }')
 		if [ "$(mount | grep -w / | grep -c ${ZPOOL})" = "0" ]; then
-			zpool export ${ZPOOL} >/dev/null 2>/dev/null
+			zpool export ${ZPOOL} > /dev/null 2> /dev/null
 		fi
-		echo "zfs/${ZPOOL}"
+		echo "${ZPOOL} ${ZGUID} ${ZSIZE}"
 	done
 }
 
@@ -168,9 +165,9 @@ import_start()
 		# GPT UFS
 		export PART="/dev/${DEV}p3"
 		return 0
-	elif [ "$(echo ${POOLS} | grep -c ^${DEV}$)" != "0" ]; then
+	elif [ "$(echo ${POOLS} | grep -c "^${DEV} ")" != "0" ]; then
 		# ZFS POOL
-		export POOL="${DEV##zfs/}"
+		export POOL="${DEV}"
 		return 0
 	elif [ -e "/dev/${DEV}s1" ]; then
 		# MBR MSDOS
@@ -197,7 +194,9 @@ POOLS=
 if [ -n "${DO_ZFS}" ]; then
 	zfs_load
 	zfs_unload
-	echo -n "${POOLS}"
+	if [ -n "${POOLS}" ]; then
+		echo "${POOLS}"
+	fi
 	exit 0
 fi
 
@@ -224,7 +223,15 @@ if [ -n "${DO_DEV}" ]; then
 	fi
 fi
 
-DEVS=$(camcontrol devlist; gmirror status -s; graid status -s; echo -n "${POOLS}")
+DEVS=$(
+	camcontrol devlist
+	echo "${POOLS}" | while read ZPOOL ZGUID ZSIZE ZMORE; do
+		printf "%-35s%s\n" "<${ZGUID} ${ZSIZE}>" \
+		    "ZFS pool (${ZPOOL})"
+	done
+	gmirror status -s
+	graid status -s
+)
 
 while : ; do
 	if [ -z "${DO_DEV}" ]; then
