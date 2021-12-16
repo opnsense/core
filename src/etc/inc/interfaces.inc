@@ -1484,27 +1484,6 @@ EOD;
         $i++;
     }
 
-    /* we only support the 3gstats.php for huawei modems for now. Will add more later. */
-    /* We should be able to launch the right version for each modem */
-    /* We can also guess the mondev from the manufacturer */
-    exec("usbconfig | egrep -ie '(huawei)'", $usbmodemoutput);
-    mwexec("/bin/ps auxww|grep \"{$interface}\" |grep \"[3]gstats\" | awk '{print $2}' |xargs kill");
-    foreach ($ports as $port) {
-        $mondev = '';
-        if (preg_match("/huawei/i", implode("\n", $usbmodemoutput))) {
-            $mondev  = substr(basename($port), 0, -1);
-            $devlist = glob("/dev/{$mondev}?");
-            $mondev = basename(end($devlist));
-        }
-        if (preg_match("/zte/i", implode("\n", $usbmodemoutput))) {
-            $mondev  = substr(basename($port), 0, -1) . "1";
-        }
-        if ($mondev != '') {
-            log_error("Starting 3gstats.php on device '{$mondev}' for interface '{$interface}'");
-            mwexec_bg("/usr/local/sbin/3gstats.php {$mondev} {$interface}");
-        }
-    }
-
     return 1;
 }
 
@@ -4229,32 +4208,6 @@ function get_interfaces_info($include_unlinked = false)
                     $ifinfo['pppinfo'] = $dev . " " . gettext("device not present! Is the modem attached to the system?");
                 }
 
-                $usbmodemoutput = array();
-                exec("usbconfig", $usbmodemoutput);
-                $mondev = "/tmp/3gstats.{$ifdescr}";
-                if (file_exists($mondev)) {
-                    $cellstats = file($mondev);
-                    /* skip header */
-                    $a_cellstats = explode(",", $cellstats[1]);
-                    if (preg_match("/huawei/i", implode("\n", $usbmodemoutput))) {
-                        $ifinfo['cell_rssi'] = huawei_rssi_to_string($a_cellstats[1]);
-                        $ifinfo['cell_mode'] = huawei_mode_to_string($a_cellstats[2], $a_cellstats[3]);
-                        $ifinfo['cell_simstate'] = huawei_simstate_to_string($a_cellstats[10]);
-                        $ifinfo['cell_service'] = huawei_service_to_string(trim($a_cellstats[11]));
-                    }
-                    if (preg_match("/zte/i", implode("\n", $usbmodemoutput))) {
-                        $ifinfo['cell_rssi'] = zte_rssi_to_string($a_cellstats[1]);
-                        $ifinfo['cell_mode'] = zte_mode_to_string($a_cellstats[2], $a_cellstats[3]);
-                        $ifinfo['cell_simstate'] = zte_simstate_to_string($a_cellstats[10]);
-                        $ifinfo['cell_service'] = zte_service_to_string(trim($a_cellstats[11]));
-                    }
-                    $ifinfo['cell_upstream'] = $a_cellstats[4];
-                    $ifinfo['cell_downstream'] = trim($a_cellstats[5]);
-                    $ifinfo['cell_sent'] = $a_cellstats[6];
-                    $ifinfo['cell_received'] = trim($a_cellstats[7]);
-                    $ifinfo['cell_bwupstream'] = $a_cellstats[8];
-                    $ifinfo['cell_bwdownstream'] = trim($a_cellstats[9]);
-                }
                 // Calculate cumulative uptime for PPP link. Useful for connections that have per minute/hour contracts so you don't go over!
                 if (isset($ppp['uptime'])) {
                     $ifinfo['ppp_uptime_accumulated'] = "(" . get_ppp_uptime($ifinfo['if']) . ")";
