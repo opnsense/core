@@ -194,7 +194,7 @@
         and for the sender directly reachable, route and next hop is known.]]>
       </descr>
       <tunable>net.inet.ip.redirect</tunable>
-      <value>0</value>
+      <value>default</value>
     </item>
     <item>
       <descr><![CDATA[
