@@ -64,22 +64,26 @@ install_mfs_link()
 remove_mfs_link()
 {
 	ROOT=${ROOTDIR}
-	MFS=$(dirname ${1})
-	NAME=$(basename ${1})
+	MFS=${1}
 
 	# Persistent copies of MFS-bound directories
 	# still there must be moved back into place.
 
-	if [ -d "${ROOT}${MFS}/${NAME}" ]; then
+	if [ -d "${ROOT}${MFS}" ]; then
+		if [ -L "${MFS}" ]; then
+			# reverse the recovery symlink before
+			# moving back the original database
+			rm "${MFS}"
+		fi
 		mkdir -p "${MFS}"
-		# reverse the recovery symlink before
-		# moving back the original database
-		rm -f "${MFS}/${NAME}"
-		mv "${ROOT}${MFS}/${NAME}" "${MFS}/"
+		for DIR in $(find "${ROOT}${MFS}" -depth 1); do
+			mv "${DIR}" "${MFS}/"
+		done
+		rm -r "${ROOT}${MFS}"
 	fi
 
 	# ensure directory always exist
-	mkdir -p "${MFS}/${NAME}"
+	mkdir -p "${MFS}"
 }
 
 # check which directories we need
