@@ -87,6 +87,21 @@ function openssh_stop()
     mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
 }
 
+function openssh_check_querylist($list, $config) {
+    $supported = json_decode(configd_run("openssh query {$list}"));
+    $selected = [];
+    foreach (explode(',', $config) as $elem) {
+        if (in_array($elem, $supported)) {
+            $selected[] = $elem;
+        }
+    }
+
+    if (count($selected) == 0) {
+        syslog(LOG_WARNING, "OpenSSH: No configured {$list} ({$config}) supported - using defaults.");
+    }
+    return implode(',', $selected);
+}
+
 function openssh_configure_do($verbose = false, $interface = '')
 {
     global $config;
@@ -192,20 +207,36 @@ function openssh_configure_do($verbose = false, $interface = '')
         $sshconf .= "PasswordAuthentication no\n";
     }
     if (!empty($sshcfg['kex'])) {
-        $sshconf .= "KexAlgorithms {$sshcfg['kex']}\n";
+        $kexs = openssh_check_querylist('kex', $sshcfg['kex']);
+        if (strlen($kexs) > 0) {
+            $sshconf .= "KexAlgorithms {$kexs}\n";
+        }
     }
     if (!empty($sshcfg['ciphers'])) {
-        $sshconf .= "Ciphers {$sshcfg['ciphers']}\n";
+        $ciphers = openssh_check_querylist('cipher', $sshcfg['ciphers']);
+        if (strlen($ciphers) > 0) {
+            $sshconf .= "Ciphers {$ciphers}\n";
+        }
     }
     if (!empty($sshcfg['macs'])) {
-        $sshconf .= "MACs {$sshcfg['macs']}\n";
+        $macs = openssh_check_querylist('mac', $sshcfg['macs']);
+        if (strlen($macs) > 0) {
+            $sshconf .= "MACs {$macs}\n";
+        }
     }
     if (!empty($sshcfg['keys'])) {
-        $sshconf .= "HostKeyAlgorithms {$sshcfg['keys']}\n";
+        $keys = openssh_check_querylist('key', $sshcfg['keys']);
+        if (strlen($keys) > 0) {
+            $sshconf .= "HostKeyAlgorithms {$keys}\n";
+        }
     }
     if (!empty($sshcfg['keysig'])) {
-        $sshconf .= "PubkeyAcceptedAlgorithms {$sshcfg['keysig']}\n";
+        $keysigs = openssh_check_querylist('key-sig', $sshcfg['keysig']);
+        if (strlen($keysigs) > 0) {
+            $sshconf .= "PubkeyAcceptedAlgorithms {$keysigs}\n";
+        }
     }
+
     foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {
