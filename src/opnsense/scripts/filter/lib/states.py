@@ -140,9 +140,10 @@ def query_states(rule_label, filter_str):
             }
             if parts[3].find('(') > -1:
                 # NAT enabled
-                record['nat_addr'] = parts[3][1:].split(':')[0]
-                if parts[3].find(':') > -1:
-                   record['nat_port'] = parts[3].split(':')[1][:-1]
+                nat_record = parse_address(parts[3][1:-1])
+                record['nat_addr'] = nat_record['addr']
+                if nat_record['port'] != '0':
+                    record['nat_port'] = nat_record['port']
 
             if parts[-3] == '->':
                 record['direction'] = 'out'
