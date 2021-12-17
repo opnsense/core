@@ -37,7 +37,6 @@ MTREE_PATTERNS="
 ./etc/group
 ./etc/hosts
 ./etc/master.passwd
-./etc/motd
 ./etc/newsyslog.conf
 ./etc/pam.d/sshd
 ./etc/pam.d/system
