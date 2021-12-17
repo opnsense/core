@@ -139,10 +139,27 @@ def query_states(rule_label, filter_str):
                 'ipproto': parse_address(parts[2])['ipproto']
             }
             if parts[3].find('(') > -1:
-                # NAT enabled
-                record['nat_addr'] = parts[3][1:].split(':')[0]
-                if parts[3].find(':') > -1:
-                   record['nat_port'] = parts[3].split(':')[1][:-1]
+                # NAT notation includes the NAT address in parenthesis
+                # Expect part[3] to look like these:
+                # (2301:225:247:e2a0::a42d[45958])
+                # (2200:148:200:e2a0::c257[6])
+                # (2301:225:247:e2a0:a4aa:c914:d31a:d2ce[63572])
+                # (10.1.1.10:60634)
+                # Trim the parenthesis using slice notation
+                nat_record = parts[3][1:-1]
+                if nat_record.find('.') > -1:
+                    # Expect this to be IPv4 style
+                    record['nat_addr'] = nat_record.split(':')[0]
+                    if parts[3].find(':') > -1:
+                        # Grab the port if a colon is found
+                        record['nat_port'] = nat_record.split(':')[1]
+                elif nat_record.find(':') > 1:
+                    # Expect this to be IPv6 style
+                    record['nat_addr'] = nat_record.split('[')[0]
+                    if parts[3].find('[') > -1:
+                        # Grab the port if a left bracket is found,
+                        # and slice off the right one
+                        record['nat_port'] = nat_record.split('[')[1][:-1]
 
             if parts[-3] == '->':
                 record['direction'] = 'out'
