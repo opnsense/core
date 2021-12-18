@@ -50,7 +50,9 @@ class FirmwareController extends ApiControllerBase
             /* already processed */
             return $bytes;
         }
-        if ($bytes >= (1024 * 1024 * 1024)) {
+        if ($bytes >= (1024 * 1024 * 1024 * 1024)) {
+            return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024 * 1024), 'TiB');
+        } elseif ($bytes >= (1024 * 1024 * 1024)) {
             return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024), 'GiB');
         } elseif ($bytes >= 1024 * 1024) {
             return sprintf('%.1F%s', $bytes / (1024 * 1024), 'MiB');
