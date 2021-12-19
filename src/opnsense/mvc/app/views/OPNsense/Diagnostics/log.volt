@@ -176,6 +176,8 @@
                   localStorage.setItem('log_severity_{{module}}_{{scope}}', new_val);
               }
               switch_mode(new_val);
+              // keep it open
+              select.selectpicker('toggle');
           });
 
           select.val(value);
