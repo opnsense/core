@@ -71,6 +71,6 @@
         <id>queue.description</id>
         <label>Description</label>
         <type>text</type>
-        <help>Description to identify this pipe.</help>
+        <help>Description to identify this queue.</help>
     </field>
 </form>
