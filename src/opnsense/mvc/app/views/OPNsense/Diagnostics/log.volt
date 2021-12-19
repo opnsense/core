@@ -158,8 +158,9 @@
           select.selectpicker({ header: header_val });
 
           // attach event handler each time header created
-          $("#exact_severity").on("click", function() {
-              filter_exact = !filter_exact
+          $("#exact_severity").on("click", function(event) {
+              event.stopPropagation();
+              filter_exact = !filter_exact;
               let select = $("#severity_filter");
 
               // set new select value to current value or highest value of multiselect
