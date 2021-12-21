@@ -1048,8 +1048,7 @@ function mwexecf_bg($format, $args = array(), $mute = false)
 /* check if an alias exists */
 function is_alias($name)
 {
-    global $aliastable;
-    return array_key_exists($name, $aliastable);
+    return \OPNsense\Firewall\Util::isAlias($name);
 }
 
 function subnet_size($subnet)
@@ -1262,36 +1261,14 @@ function is_URL($url)
     return false;
 }
 
-function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
+function get_staticroutes($returnsubnetsonly=false)
 {
     global $aliastable;
 
-    $allstaticroutes = array();
-    $allsubnets = array();
-
-    /* Loop through routes and expand aliases as we find them. */
+    $allstaticroutes = [];
+    $allsubnets = [];
     foreach (config_read_array('staticroutes', 'route') as $route) {
-        if (is_alias($route['network'])) {
-            if (!isset($aliastable[$route['network']])) {
-                continue;
-            }
-            $subnets = preg_split('/\s+/', $aliastable[$route['network']]);
-            foreach ($subnets as $net) {
-                if (!is_subnet($net)) {
-                    if (is_ipaddrv4($net)) {
-                        $net .= "/32";
-                    } elseif (is_ipaddrv6($net)) {
-                        $net .= "/128";
-                    } elseif ($returnhostnames === false || !is_fqdn($net)) {
-                        continue;
-                    }
-                }
-                $temproute = $route;
-                $temproute['network'] = $net;
-                $allstaticroutes[] = $temproute;
-                $allsubnets[] = $net;
-            }
-        } elseif (is_subnet($route['network'])) {
+        if (is_subnet($route['network'])) {
             $allstaticroutes[] = $route;
             $allsubnets[] = $route['network'];
         }
