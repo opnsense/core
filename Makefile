@@ -332,6 +332,10 @@ upgrade-check:
 		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
 		exit 1; \
 	fi
+	@if [ "$$(${VERSIONBIN} -v)" = "${CORE_PKGVERSION}" ]; then \
+		echo "Installed version already matches ${CORE_PKGVERSION}" >&2; \
+		exit 1; \
+	fi
 
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
@@ -474,8 +478,8 @@ rebase:
 	@git checkout master
 
 test: want-phpunit7-php${CORE_PHP}
-	@if [ "$$(${PKG} query %n-%v ${CORE_NAME})" != "${CORE_NAME}-${CORE_PKGVERSION}" ]; then \
-		echo "Installed version does not match, expected ${CORE_NAME}-${CORE_PKGVERSION}"; \
+	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
+		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
