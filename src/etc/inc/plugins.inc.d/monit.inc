@@ -70,3 +70,10 @@ function monit_xmlrpc_sync()
 
     return $result;
 }
+
+function monit_syslog()
+{
+    $logfacilities = [];
+    $logfacilities['monit'] = ['facility' => ['monit']];
+    return $logfacilities;
+}
