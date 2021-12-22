@@ -50,10 +50,14 @@ class FirmwareController extends ApiControllerBase
             /* already processed */
             return $bytes;
         }
-        if ($bytes >= (1024 * 1024 * 1024)) {
-            return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024), 'GiB');
-        } elseif ($bytes >= 1024 * 1024) {
-            return sprintf('%.1F%s', $bytes / (1024 * 1024), 'MiB');
+        if ($bytes >= 1024 ** 5) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 5), 'PiB');
+        } elseif ($bytes >= 1024 ** 4) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 4), 'TiB');
+        } elseif ($bytes >= 1024 ** 3) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 3), 'GiB');
+        } elseif ($bytes >= 1024 ** 2) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 2), 'MiB');
         } elseif ($bytes >= 1024) {
             return sprintf('%.1F%s', $bytes / 1024, 'KiB');
         } else {
@@ -133,6 +137,9 @@ class FirmwareController extends ApiControllerBase
                 if (preg_match('/\s*(\d+)\s*([a-z])/i', $size, $matches)) {
                     $factor = 1;
                     switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                        case 't':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
                         case 'g':
                             $factor *= 1024;
                             /* FALLTROUGH */
