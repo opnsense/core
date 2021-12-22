@@ -137,6 +137,9 @@ class FirmwareController extends ApiControllerBase
                 if (preg_match('/\s*(\d+)\s*([a-z])/i', $size, $matches)) {
                     $factor = 1;
                     switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                        case 'p':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
                         case 't':
                             $factor *= 1024;
                             /* FALLTROUGH */
