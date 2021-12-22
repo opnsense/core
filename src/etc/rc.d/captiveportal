@@ -130,7 +130,7 @@ captiveportal_stop()
         /bin/pkill -TERM -F /var/run/lighttpd-api-dispatcher.pid
         if [ -f /var/run/lighttpd-api-dispatcher.pid ]; then
             # in case pkill didn't do anything, always remove pid file
-            rm /var/run/lighttpd-api-dispatcher.pid
+            rm -f /var/run/lighttpd-api-dispatcher.pid
         fi
     fi
 
@@ -141,14 +141,14 @@ captiveportal_stop()
         if [ -f $zonepid ]; then
             echo "Stop : zone $zoneid"
             /bin/pkill -TERM -F $zonepid
-            rm $zonepid
+            rm -f $zonepid
         fi
     done
 
     # stopping unconfigured zones (not in $CPZONES list)
     for zonepid in `ls /var/run/lighttpd-cp-zone-*.pid 2>/dev/null`; do
         /bin/pkill -TERM -F $zonepid
-        rm $zonepid
+        rm -f $zonepid
     done
 
     if [ -f /var/run/captiveportal.db.pid ]; then
