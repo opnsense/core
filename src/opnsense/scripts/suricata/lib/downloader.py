@@ -205,7 +205,7 @@ class Downloader(object):
                         target_filename, fetch_result['filename']
                 ))
                 return None
-            if 'cached' not in fetch_result:
+            if not in fetch_result['cached']:
                 syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)
 
     @staticmethod
