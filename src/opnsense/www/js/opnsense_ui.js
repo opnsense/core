@@ -412,16 +412,39 @@ function initFormHelpUI() {
  * handle advanced show/hide
  */
 function initFormAdvancedUI() {
+
+    // handle striped tables hidden rows
+    let targetNodes = $('table.table-striped tbody');
+    let config = { attributes: true, subtree: true, attributeFilter: ["style"] };
+    let callback = function(mutationsList, observer) {
+        mutationsList.forEach(function(mutation) {
+            if (mutation.target.tagName == "TR") {
+                let currentValue = mutation.target.style.display;
+                if (currentValue == "") {
+                    // row is visible
+                    $(mutation.target).next('.dummy_row').remove();
+                } else if (currentValue == "none" && !$(mutation.target).next().hasClass("dummy_row")) {
+                    // row is hidden and no dummy rows after it. insert one to keep stripes order
+                    $(mutation.target).after("<tr data-advanced='hidden_row' class='dummy_row'></tr>");
+                }
+            }
+        });
+    }
+
+    observer = new MutationObserver(callback);
+    // observe all striped tables on page for style changes
+    targetNodes.each(function(index, node) { 
+        observer.observe(node, config);
+    });
+
+    //  handle "advanced mode" toggle
     let elements = $('[id*="show_advanced"]');
     if (window.sessionStorage && sessionStorage.getItem('show_advanced_preset') === 1) {
         // show advanced options when preset was stored
         elements.toggleClass("fa-toggle-on fa-toggle-off");
         elements.toggleClass("text-success text-danger");
     } else {
-        $('[data-advanced*="true"]').hide(function(){
-            // the table row is added to keep correct table striping
-            $(this).after("<tr data-advanced='hidden_row'></tr>");
-        });
+        $('[data-advanced*="true"]').hide();
     }
 
     elements.click(function() {
@@ -429,12 +452,11 @@ function initFormAdvancedUI() {
         elements.toggleClass("text-success text-danger");
         if (elements.hasClass("fa-toggle-on")) {
             $('[data-advanced*="true"]').show();
-            $('[data-advanced*="hidden_row"]').remove(); // the table row is deleted to keep correct table striping
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 1);
             }
         } else {
-            $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>").hide(); // the table row is added to keep correct table striping
+            $('[data-advanced*="true"]').hide()
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 0);
             }
