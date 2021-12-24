@@ -34,6 +34,7 @@ import ipaddress
 import dns.resolver
 import syslog
 from hashlib import md5
+from dns.exception import DNSException
 from . import geoip
 from . import net_wildcard_iterator, AsyncDNSResolver
 from .arpcache import ArpCache
@@ -245,7 +246,8 @@ class Alias(object):
                     self._resolve_content = self._resolve_content.union(self._dnsResolver.collect().addresses())
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write('\n'.join(self._resolve_content))
-                except IOError:
+                except (IOError, DNSException) as e:
+                    syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
                     # parse issue, keep data as-is, flush previous content to disk
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(undo_content)

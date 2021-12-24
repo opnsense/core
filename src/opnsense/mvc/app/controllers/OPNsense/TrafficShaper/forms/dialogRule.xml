@@ -25,8 +25,9 @@
     </field>
     <field>
         <id>rule.proto</id>
-        <label>Proto</label>
+        <label>Protocol</label>
         <type>dropdown</type>
+        <help>Select the applicable protocol</help>
     </field>
     <field>
         <id>rule.iplen</id>
@@ -99,5 +100,6 @@
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
+        <help>Description to identify this rule.</help>
     </field>
 </form>

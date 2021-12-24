@@ -26,6 +26,26 @@
 
 <script>
     $( document ).ready(function() {
+      var filter_exact = false;
+      let s_filter_val = "Warning";
+      s_header = '<a href="#"><i class="fa fa-toggle-off text-danger" id="exact_severity" title="{{ lang._('Toggle between range (max level) and exact severity filter') }}"></i> {{ lang._('Multiselect') }}</a>';
+      m_header = '<a href="#"><i class="fa fa-toggle-on text-success" id="exact_severity" title="{{ lang._('Toggle between range (max level) and exact severity filter') }}"></i> {{ lang._('Multiselect') }}</a>';
+      var page = 0;
+      // map available severity values to array
+      severities = $('#severity_filter option').map(function(){
+          return (this.value ? this.value : null);
+      }).get();
+
+      if (window.localStorage) {
+          if (localStorage.getItem('log_filter_exact_{{module}}_{{scope}}')) {
+              s_filter_val = localStorage.getItem('log_severity_{{module}}_{{scope}}') ? localStorage.getItem('log_severity_{{module}}_{{scope}}').split(',') : [];
+              filter_exact = true;
+          } else {
+              s_filter_val = localStorage.getItem('log_severity_{{module}}_{{scope}}') ? localStorage.getItem('log_severity_{{module}}_{{scope}}').split(',') : s_filter_val;
+          }
+      }
+      switch_mode(s_filter_val);
+
       let grid_log = $("#grid-log").UIBootgrid({
           options:{
               sorting:false,
@@ -44,7 +64,9 @@
               },
               requestHandler: function(request){
                   if ( $('#severity_filter').val().length > 0) {
-                      request['severity'] = $('#severity_filter').val();
+                      let selectedSeverity = $('#severity_filter').val();
+                      // get selected severities or severeties below or equal to selected
+                      request['severity'] = filter_exact ? selectedSeverity : severities.slice(0,severities.indexOf(selectedSeverity) + 1);
                   }
                   return request;
               },
@@ -52,20 +74,28 @@
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
       });
       $("#severity_filter").change(function(){
+          if (window.localStorage) {
+              localStorage.setItem('log_severity_{{module}}_{{scope}}', $("#severity_filter").val());
+          }
           $('#grid-log').bootgrid('reload');
       });
 
       grid_log.on("loaded.rs.jquery.bootgrid", function(){
+          if (page > 0) {
+              $("ul.pagination > li:last > a").data('page', page).click();
+              page = 0;
+          }
+
           $(".action-page").click(function(event){
               event.preventDefault();
               $("#grid-log").bootgrid("search",  "");
-              let new_page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
+              page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
               $("input.search-field").val("");
-              $("#severity_filter").selectpicker('deselectAll');
-              // XXX: a bit ugly, but clearing the filter triggers a load event.
-              setTimeout(function(){
-                  $("ul.pagination > li:last > a").data('page', new_page).click();
-              }, 100);
+              if ($("#exact_severity").hasClass("fa-toggle-on")) {
+                  $("#severity_filter").selectpicker('deselectAll');
+              } else {
+                  $("#severity_filter").val("Debug").change();
+              }
           });
       });
 
@@ -99,18 +129,64 @@
               params.push("searchPhrase=" + encodeURIComponent($("input.search-field").val()));
           }
           if ( $('#severity_filter').val().length > 0) {
-              params.push("severity=" + encodeURIComponent($('#severity_filter').val().join(",")));
+              let r_severity = filter_exact ? $('#severity_filter').val() : severities.slice(0,severities.indexOf($('#severity_filter').val()) + 1);
+              params.push("severity=" + encodeURIComponent(r_severity.join(",")));
           }
           if (params.length > 0) {
               download_link = download_link + "?" + params.join("&");
           }
           $('<a></a>').attr('href',download_link).get(0).click();
       });
+
       updateServiceControlUI('{{service}}');
 
       // move filter into action header
       $("#severity_filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
+
+
+      function switch_mode(value) {
+          let select = $("#severity_filter");
+
+          // switch select mode and destroy selectpicker
+          select.prop("multiple", filter_exact);
+          select.selectpicker('destroy');
+
+          // remove title option. bug in bs-select. fixed in v1.13.18 https://github.com/snapappointments/bootstrap-select/issues/2491
+          select.find('option.bs-title-option').remove();
+
+          let header_val = filter_exact ? m_header : s_header;
+          select.selectpicker({ header: header_val });
+
+          // attach event handler each time header created
+          $("#exact_severity").on("click", function(event) {
+              event.stopPropagation();
+              filter_exact = !filter_exact;
+              let select = $("#severity_filter");
+
+              // set new select value to current value or highest value of multiselect
+              let new_val = Array.isArray(select.val()) ? select.val().pop() : select.val();
+
+              if (window.localStorage) {
+                  if (filter_exact) {
+                      localStorage.setItem('log_filter_exact_{{module}}_{{scope}}', 1);
+                  } else {
+                      localStorage.removeItem('log_filter_exact_{{module}}_{{scope}}');
+                  }
+                  // store user choice
+                  localStorage.setItem('log_severity_{{module}}_{{scope}}', new_val);
+              }
+              switch_mode(new_val);
+              // keep it open
+              select.selectpicker('toggle');
+          });
+
+          select.val(value);
+          // fetch data
+          select.change();
+      }
+
     });
+
 </script>
 
 <div class="content-box">
@@ -120,12 +196,12 @@
                 <div class="hidden">
                     <!-- filter per type container -->
                     <div id="severity_filter_container" class="btn-group">
-                        <select id="severity_filter"  data-title="{{ lang._('Severity') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                        <select id="severity_filter" data-title="{{ lang._('Severity') }}" class="selectpicker" data-width="200px">
                             <option value="Emergency">{{ lang._('Emergency') }}</option>
                             <option value="Alert">{{ lang._('Alert') }}</option>
                             <option value="Critical">{{ lang._('Critical') }}</option>
                             <option value="Error">{{ lang._('Error') }}</option>
-                            <option value="Warning">{{ lang._('Warning') }}</option>
+                            <option value="Warning" selected>{{ lang._('Warning') }}</option>
                             <option value="Notice">{{ lang._('Notice') }}</option>
                             <option value="Informational">{{ lang._('Informational') }}</option>
                             <option value="Debug">{{ lang._('Debug') }}</option>

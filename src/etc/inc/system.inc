@@ -543,7 +543,7 @@ function system_routing_configure($verbose = false, $interface = '')
 
 function system_staticroutes_configure($interface = '')
 {
-    $static_routes = get_staticroutes(false, true);
+    $static_routes = get_staticroutes(false);
     if (count($static_routes)) {
         $ifdetails = legacy_interfaces_details();
         $gateways_arr = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);

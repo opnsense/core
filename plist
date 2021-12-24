@@ -967,6 +967,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/gateways.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/ipsec.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/lighttpd.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/local/monit.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/ntpd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/openvpn.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/pkg.conf
