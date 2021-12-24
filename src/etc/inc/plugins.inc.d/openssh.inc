@@ -93,6 +93,8 @@ function openssh_check_querylist($list, $config) {
     foreach (explode(',', $config) as $elem) {
         if (in_array($elem, $supported)) {
             $selected[] = $elem;
+        } else {
+            syslog(LOG_NOTICE, "OpenSSH: Configured value '{$elem}' of {$list} setting not suppored.");
         }
     }
 
