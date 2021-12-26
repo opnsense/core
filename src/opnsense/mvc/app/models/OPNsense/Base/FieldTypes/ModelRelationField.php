@@ -63,6 +63,11 @@ class ModelRelationField extends BaseField
     private static $internalOptionList = array();
 
     /**
+     * @var string default description for empty item
+     */
+    private $internalEmptyDescription = null;
+
+    /**
      * @var array|null model settings to use for validation
      */
     private $mdlStructure = null;
@@ -198,6 +203,15 @@ class ModelRelationField extends BaseField
     }
 
     /**
+     * set descriptive text for empty value
+     * @param $value string description
+     */
+    public function setBlankDesc($value)
+    {
+        $this->internalEmptyDescription = gettext($value);
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -208,9 +222,13 @@ class ModelRelationField extends BaseField
             isset(self::$internalOptionList[$this->internalCacheKey]) &&
             is_array(self::$internalOptionList[$this->internalCacheKey])
         ) {
+            if (empty($this->internalEmptyDescription)) {
+                $this->internalEmptyDescription = gettext("none");
+            }
+
             // if relation is not required, add empty option
             if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-                $result[""] = array("value" => "none", "selected" => 0);
+                $result[""] = array("value" => $this->internalEmptyDescription, "selected" => empty($this->internalValue));
             }
 
             $datanodes = explode(',', $this->internalValue);
