@@ -166,6 +166,8 @@ function dnsmasq_configure_do($verbose = false)
 
     if (isset($config['dnsmasq']['strict_order'])) {
         $args .= ' --strict-order ';
+    } else {
+        $args .= ' --all-servers ';
     }
 
     if (isset($config['dnsmasq']['domain_needed'])) {
@@ -189,7 +191,7 @@ function dnsmasq_configure_do($verbose = false)
 
     _dnsmasq_add_host_entries();
 
-    mwexec("/usr/local/sbin/dnsmasq --all-servers {$args}");
+    mwexec("/usr/local/sbin/dnsmasq {$args}");
 
     _dnsmasq_dhcpleases_start();
 
