@@ -35,37 +35,12 @@ use OPNsense\Base\Validators\CsvListValidator;
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
  * @package OPNsense\Base\FieldTypes
  */
-class ModelRelationField extends BaseField
+class ModelRelationField extends BaseListField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
-    /**
-     * @var bool field may contain multiple data nodes at once
-     */
-    private $internalMultiSelect = false;
-
     /**
      * @var bool field content should remain sort order
      */
     private $internalIsSorted = false;
-
-    /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "option not in list";
-
-    /**
-     * @var array collected options
-     */
-    private static $internalOptionList = array();
-
-    /**
-     * @var string default description for empty item
-     */
-    private $internalEmptyDescription = null;
 
     /**
      * @var array|null model settings to use for validation
@@ -83,6 +58,11 @@ class ModelRelationField extends BaseField
     private $internalCacheKey = "";
 
     /**
+     * @var array collected options
+     */
+    private static $internalCacheOptionList = array();
+
+    /**
      * load model option list
      * @param boolean $force force option load if we already seen this model before
      */
@@ -90,8 +70,8 @@ class ModelRelationField extends BaseField
     {
         // only collect options once per source/filter combination, we use a static to save our unique option
         // combinations over the running application.
-        if (!isset(self::$internalOptionList[$this->internalCacheKey]) || $force) {
-            self::$internalOptionList[$this->internalCacheKey] = array();
+        if (!isset(self::$internalCacheOptionList[$this->internalCacheKey]) || $force) {
+            self::$internalCacheOptionList[$this->internalCacheKey] = array();
             foreach ($this->mdlStructure as $modelData) {
                 // only handle valid model sources
                 if (!isset($modelData['source']) || !isset($modelData['items']) || !isset($modelData['display'])) {
@@ -146,7 +126,7 @@ class ModelRelationField extends BaseField
                         }
 
                         $uuid = $node->getAttributes()['uuid'];
-                        self::$internalOptionList[$this->internalCacheKey][$uuid] =
+                        self::$internalCacheOptionList[$this->internalCacheKey][$uuid] =
                             (string)$node->$displayKey;
                     }
                 }
@@ -154,9 +134,11 @@ class ModelRelationField extends BaseField
             }
 
             if (!$this->internalIsSorted) {
-                natcasesort(self::$internalOptionList[$this->internalCacheKey]);
+                natcasesort(self::$internalCacheOptionList[$this->internalCacheKey]);
             }
         }
+        // Set for use in BaseListField->getNodeData()
+        $this->internalOptionList = self::$internalCacheOptionList[$this->internalCacheKey];
     }
 
     /**
@@ -184,16 +166,6 @@ class ModelRelationField extends BaseField
     }
 
     /**
-     * select if multiple data nodes may be selected at once
-     * @param $value boolean value Y/N
-     */
-    public function setMultiple($value)
-    {
-        $this->internalMultiSelect = trim(strtoupper($value)) == "Y";
-    }
-
-
-    /**
      * select if sort order should be maintained
      * @param $value boolean value Y/N
      */
@@ -203,61 +175,45 @@ class ModelRelationField extends BaseField
     }
 
     /**
-     * set descriptive text for empty value
-     * @param $value string description
-     */
-    public function setBlankDesc($value)
-    {
-        $this->internalEmptyDescription = gettext($value);
-    }
-
-    /**
      * get valid options, descriptions and selected value
+     * performs sorting on internalOptionsList
+     * Doing this here instead of in loadModelOptions()
+     * otherwise internalIsSorted would have to be set
+     * the first time loadModelOptions() runs. This allows
+     * it to change later.
      * @return array
      */
     public function getNodeData()
     {
-        $result = array ();
         if (
-            isset(self::$internalOptionList[$this->internalCacheKey]) &&
-            is_array(self::$internalOptionList[$this->internalCacheKey])
+            isset($this->internalOptionList) &&
+            is_array($this->internalOptionList)
         ) {
-            if (empty($this->internalEmptyDescription)) {
-                $this->internalEmptyDescription = gettext("none");
-            }
-
-            // if relation is not required, add empty option
-            if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-                $result[""] = array("value" => $this->internalEmptyDescription, "selected" => empty($this->internalValue));
-            }
-
+            // Get selected items into an array.
             $datanodes = explode(',', $this->internalValue);
             if ($this->internalIsSorted) {
+                // Establish an array of keys with the selected keys as the first entires.
                 $optKeys = $datanodes;
-                foreach (array_keys(self::$internalOptionList[$this->internalCacheKey]) as $key) {
+                foreach (array_keys($this->internalOptionList) as $key) {
+                    // Append each non-selected key to the array one-by-one.
                     if (!in_array($key, $optKeys)) {
                         $optKeys[] = $key;
                     }
                 }
-            } else {
-                $optKeys = array_keys(self::$internalOptionList[$this->internalCacheKey]);
-            }
-            foreach ($optKeys as $optKey) {
-                if (isset(self::$internalOptionList[$this->internalCacheKey][$optKey])) {
-                    if (in_array($optKey, $datanodes)) {
-                        $selected = 1;
-                    } else {
-                        $selected = 0;
+                // Perform reordering of the option list based on the newly ordered keys array.
+                $ordered_option_list = array();
+                // Iterate through each key and inject the key:value pair from internalOptionList.
+                foreach ($optKeys as $key) {
+                    // Prevent arbitrary $key values, check that $key is in internalOptionList.
+                    if (in_array($key, array_keys($this->internalOptionList))) {
+                        $ordered_option_list[$key] = $this->internalOptionList[$key];
                     }
-                    $result[$optKey] = array(
-                        "value" => self::$internalOptionList[$this->internalCacheKey][$optKey],
-                        "selected" => $selected
-                    );
                 }
+                $this->internalOptionList = $ordered_option_list;
             }
         }
 
-        return $result;
+        return parent::getNodeData();
     }
 
     /**
@@ -266,22 +222,11 @@ class ModelRelationField extends BaseField
      */
     public function getValidators()
     {
-        $validators = parent::getValidators();
         if ($this->internalValue != null) {
             // if our options come from the same model, make sure to reload the options before validating them
             $this->loadModelOptions($this->internalOptionsFromThisModel);
-            if ($this->internalMultiSelect) {
-                // field may contain more than one entries
-                $validators[] = new CsvListValidator(array(
-                    'message' => $this->internalValidationMessage,
-                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey])
-                ));
-            } else {
-                // single value selection
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey])));
-            }
         }
-        return $validators;
+        // Use validators from BaseListField, includes validations for multi-select, and single-select.
+        return parent::getValidators();
     }
 }
