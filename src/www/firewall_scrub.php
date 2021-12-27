@@ -313,6 +313,7 @@ $( document ).ready(function() {
 <?php
                 $special_nets = get_specialnets();
                 legacy_html_escape_form_data($special_nets);
+                $configured_interfaces = legacy_config_get_interfaces();
                 foreach ($a_scrub as $i => $scrubEntry):?>
                   <tr>
                     <td>
@@ -321,7 +322,16 @@ $( document ).ready(function() {
                           <span class="fa fa-play fa-fw <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                     </td>
-                    <td><?=strtoupper($scrubEntry['interface']);?></td>
+<?php
+                    $scrubEntryInterfaceNames = explode(',', $scrubEntry['interface']);
+                    $scrubEntryInterfaceDescrs = [];
+                    foreach ($scrubEntryInterfaceNames as $scrubEntryInterfaceName) {
+                        if (array_key_exists($scrubEntryInterfaceName, $configured_interfaces)) {
+                            $scrubEntryInterfaceDescrs[] = $configured_interfaces[$scrubEntryInterfaceName]['descr'];
+                        }
+                    }
+                    $scrubEntryInterfaceText = implode(', ', $scrubEntryInterfaceDescrs);?>
+                    <td><?=$scrubEntryInterfaceText;?></td>
                     <td class="hidden-xs hidden-sm">
 <?php
                         if (is_alias($scrubEntry['src'])):?>
