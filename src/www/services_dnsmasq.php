@@ -331,7 +331,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Require domain') ?>
-                    <div class="hidden" data-for="help_for_strict_order">
+                    <div class="hidden" data-for="help_for_domain_needed">
                       <?= gettext('If this option is set, Dnsmasq will '.
                         'not forward A or AAAA queries for plain names, without dots or ' .
                         'domain parts, to upstream name servers. If the name is not known ' .
@@ -344,7 +344,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Do not forward private reverse lookups') ?>
-                    <div class="hidden" data-for="help_for_strict_order">
+                    <div class="hidden" data-for="help_for_no_private_reverse">
                       <?= gettext('If this option is set, Dnsmasq will '.
                         'not forward reverse DNS lookups (PTR) for private addresses ' .
                         '(RFC 1918) to upstream name servers. Any entries in the Domain ' .
