@@ -213,7 +213,7 @@ $( document ).ready(function() {
           $this.attr('title', $this.text());
       }
   });
-    
+
 });
 </script>
 
