@@ -205,6 +205,15 @@ $( document ).ready(function() {
   // watch scroll position and set to last known on page load
   watchScrollPosition();
 
+  // add titles to the fields having long text cut with ellipsis
+  $('.mightOverflow').on('mouseenter', function(){
+      var $this = $(this);
+
+      if(this.offsetWidth < this.scrollWidth && !$this.attr('title')){
+          $this.attr('title', $this.text());
+      }
+  });
+    
 });
 </script>
 
@@ -323,15 +332,13 @@ $( document ).ready(function() {
                         </a>
                     </td>
 <?php
-                    $scrubEntryInterfaceNames = explode(',', $scrubEntry['interface']);
                     $scrubEntryInterfaceDescrs = [];
-                    foreach ($scrubEntryInterfaceNames as $scrubEntryInterfaceName) {
+                    foreach (explode(',', $scrubEntry['interface']) as $scrubEntryInterfaceName) {
                         if (array_key_exists($scrubEntryInterfaceName, $configured_interfaces)) {
-                            $scrubEntryInterfaceDescrs[] = $configured_interfaces[$scrubEntryInterfaceName]['descr'];
+                            $scrubEntryInterfaceDescrs[] = $configured_interfaces[$scrubEntryInterfaceName]['descr'] ?? strtoupper($scrubEntryInterfaceName);
                         }
-                    }
-                    $scrubEntryInterfaceText = implode(', ', $scrubEntryInterfaceDescrs);?>
-                    <td><?=$scrubEntryInterfaceText;?></td>
+                    }?>
+                    <td class="mightOverflow" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30ch;"><?=implode(', ', $scrubEntryInterfaceDescrs);?></td>
                     <td class="hidden-xs hidden-sm">
 <?php
                         if (is_alias($scrubEntry['src'])):?>
