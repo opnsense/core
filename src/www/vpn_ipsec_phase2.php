@@ -183,8 +183,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['localid_type'] = "lan";
         $pconfig['remoteid_type'] = "network";
         $pconfig['protocol'] = "esp";
-        $pconfig['ealgos'] = explode(",", "3des,blowfish,cast128,aes");
-        $pconfig['hash-algorithm-option'] = explode(",", "hmac_sha1,hmac_md5");
+        $pconfig['ealgos'] = ['aes256gcm16'];
+        $pconfig['hash-algorithm-option'] = ['hmac_sha256'];
         $pconfig['pfsgroup'] = "0";
         $pconfig['lifetime'] = "3600";
         $pconfig['uniqid'] = uniqid();
@@ -730,14 +730,12 @@ endif; ?>
                       endforeach; ?>
 
                       <div class="hidden" data-for="help_for_encalg">
-                          <?=gettext("Hint: use 3DES for best compatibility or if you have a hardware " .
-                                                  "crypto accelerator card. Blowfish is usually the fastest in " .
-                                                  "software encryption"); ?>.
+                          <?=gettext("Note: For security reasons avoid the use of DES,3DES,CAST and BLOWFISH protocols"); ?>.
                       </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
+                  <td><a id="help_for_hashalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
 <?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
@@ -746,6 +744,9 @@ endif; ?>
                       </option>
 <?php endforeach ?>
                     </select>
+                    <div class="hidden" data-for="help_for_hashalg">
+                        <?=gettext("Note: For security reasons avoid the use of MD5 and SHA1 algorithms."); ?>
+                    </div>
                   </td>
                 </tr>
                 <tr>
