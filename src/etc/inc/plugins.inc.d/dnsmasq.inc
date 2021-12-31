@@ -184,6 +184,10 @@ function dnsmasq_configure_do($verbose = false)
         $args .= ' --log-queries=extra ';
     }
 
+    if (isset($config['dnsmasq']['no_hosts'])) {
+        $args .= ' --no-hosts ';
+    }
+
     $args .= ' --dns-forward-max=5000 ';
     $args .= ' --cache-size=10000 ';
     $args .= ' --local-ttl=1 ';
