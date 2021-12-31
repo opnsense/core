@@ -264,6 +264,9 @@
                                     case 'info':
                                         log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
                                         break;
+                                    case 'label':
+                                        log_td.text(log_td.html(record[column_name]).text());
+                                        break;
                                     default:
                                         if (record[column_name] != undefined) {
                                             log_td.text(record[column_name]);
@@ -803,7 +806,7 @@
                               <th data-column-id="src" data-type="address">{{ lang._('Source') }}</th>
                               <th data-column-id="dst" data-type="address">{{ lang._('Destination') }}</th>
                               <th data-column-id="protoname" data-type="string">{{ lang._('Proto') }}</th>
-                              <th data-column-id="label" data-type="string">{{ lang._('Label') }}</th>
+                              <th data-column-id="label" data-type="label">{{ lang._('Label') }}</th>
                               <th data-column-id="" data-type="info" style="width:20px;"></th>
                           </tr>
                         </thead>
