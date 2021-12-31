@@ -338,9 +338,9 @@
                                   }
                                   row.append(rid_td);
                                 } else if (icon === null) {
-                                  row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).text(
-                                    sender_details[sorted_keys[i]]
-                                  ));
+                                  let $td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
+                                  $td.text($td.html(sender_details[sorted_keys[i]]).text());
+                                  row.append($td);
                                 } else {
                                   row.append($("<td/>")
                                       .append(icon)
