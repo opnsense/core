@@ -559,7 +559,7 @@ function renderRowCountSelection(actions)
         {
             var item = $(tpl.actionDropDownItem.resolve(getParams.call(that,
                 { text: getText(value), action: value })))
-                    ._bgSelectAria(value === that.rowCount)
+                    ._bgSelectAria(value.toString() === that.rowCount.toString())
                     .on("click" + namespace, menuItemSelector, function (e)
                     {
                         e.preventDefault();
