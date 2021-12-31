@@ -265,7 +265,8 @@
                                         log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
                                         break;
                                     case 'label':
-                                        log_td.text(log_td.html(record[column_name]).text());
+                                        // record data is always html-escaped. no special protection required
+                                        log_td.html(record[column_name]);
                                         break;
                                     default:
                                         if (record[column_name] != undefined) {
@@ -338,9 +339,9 @@
                                   }
                                   row.append(rid_td);
                                 } else if (icon === null) {
-                                  let $td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
-                                  $td.text($td.html(sender_details[sorted_keys[i]]).text());
-                                  row.append($td);
+                                  row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).html(
+                                    sender_details[sorted_keys[i]]
+                                  ));
                                 } else {
                                   row.append($("<td/>")
                                       .append(icon)
