@@ -29,6 +29,7 @@
 namespace OPNsense\IPsec\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * Class KeyPairsController
@@ -111,5 +112,23 @@ class KeyPairsController extends ApiMutableModelControllerBase
         }
 
         return $response;
+    }
+
+    /**
+     * Generate public and private key pair
+     * @return reponse
+     * @throws \ReflectionException
+     */
+    public function genKeysAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('keyType') && $this->request->hasPost('keySize')) {
+            $keyType = preg_replace("/[^A-Za-z0-9 ]/", '', $this->request->getPost('keyType'));
+            $keySize = intval($this->request->getPost('keySize'));
+
+            $backend = new Backend();
+            return $backend->configdRun("ipsec genkeys $keyType $keySize");
+        } else {
+            return [];
+        }
     }
 }

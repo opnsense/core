@@ -30,4 +30,10 @@
             Must be pasted including the '-----BEGIN ...-----' and '-----END [...]-----' headers.
         </help>
     </field>
+    <field>
+        <id>keyPair.generate</id>
+        <label><![CDATA[<em>Key Size (for generation only)</em>]]></label>
+        <type>dropdown</type>
+        <help>Enter the desired key size in bits and press "Generate" to generate a new key pair.</help>
+    </field>
 </form>

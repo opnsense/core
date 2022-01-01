@@ -79,6 +79,37 @@
     // Refresh status of legacy subsystem when grid has changed
     $grid.on('loaded.rs.jquery.bootgrid', updateLegacyStatus);
     updateServiceControlUI('ipsec');
+
+    // Populate bit sizes for key generation
+    const generateSelect = $('#keyPair\\.generate');
+    [1024, 2048, 3072, 4096, 8192].forEach(function(size){
+      let opt = $(`<option>${size}</option>`).appendTo(generateSelect);
+      if (size == 2048) {
+          opt.prop("selected", true);
+      }
+    });
+    generateSelect.selectpicker('refresh');
+
+    // Add "Generate" button to dialog
+    const generateButton = $('<button>{{ lang._('Generate') }}</button>');
+    const generateProgress = $('<i></i>');
+    generateButton.prepend(generateProgress);
+    generateButton.on('click', function(e) {
+      e.preventDefault();
+      generateButton.prop('disabled', true);
+      generateProgress.addClass("fa fa-spinner fa-pulse");
+      keyType = $('#keyPair\\.keyType').val();
+      keySize = generateSelect.val();
+      ajaxCall(url='/api/ipsec/key-pairs/genKeys',
+        sendData={'keyType': keyType, 'keySize': keySize},
+        callback=function(data, status){
+          $('#keyPair\\.publicKey').val(data['pubkey']);
+          $('#keyPair\\.privateKey').val(data['privkey']);
+          generateButton.prop('disabled', false);
+          generateProgress.removeClass("fa fa-spinner fa-pulse");
+        });
+    });
+    $('#row_keyPair\\.generate td:nth-child(3)').prepend(generateButton);
   });
 </script>
 
