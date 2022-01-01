@@ -37,19 +37,26 @@ if __name__ == '__main__':
     # parse input parameter
     keytype = None
     keysize = None
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         keytype = sys.argv[1].strip().lower()
-        if keytype not in ['rsa']:
+        if keytype not in ['rsa', 'ecdsa', 'ed25519', 'ed448']:
             print('Invalid keytype passed')
             sys.exit(1)
 
-        keysize = sys.argv[2].strip()
-        if not keysize.isdigit():
-            print('Invalid keysize passed')
-            sys.exit(1)
-            
+        # Not all keytypes require a key size
+        if len(sys.argv) > 2:
+            keysize = sys.argv[2].strip()
+            if not keysize.isdigit():
+                print('Invalid keysize passed')
+                sys.exit(1)
+            keysize = int(keysize)
+
         if keytype == 'rsa':
-            if int(keysize) < 512 or int(keysize) > 65536:
+            if keysize < 512 or keysize > 65536:
+                print('Invalid keysize passed')
+                sys.exit(1)
+        elif keytype == 'ecdsa':
+            if keysize != 256 and keysize != 384 and keysize != 521:
                 print('Invalid keysize passed')
                 sys.exit(1)
     else:
@@ -59,7 +66,7 @@ if __name__ == '__main__':
     # Generate private key
     spprv = subprocess.run(['/usr/local/sbin/ipsec', 'pki',
         '--gen', '--type', keytype,
-        '--size', keysize,
+        '--size', str(keysize),
         '--outform', 'pem'], capture_output=True, text=True)
     result['privkey'] = spprv.stdout.strip()
 

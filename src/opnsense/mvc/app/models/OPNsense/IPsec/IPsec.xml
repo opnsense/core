@@ -20,6 +20,9 @@
                     <default>rsa</default>
                     <OptionValues>
                         <rsa>RSA</rsa>
+                        <ecdsa>ECDSA</ecdsa>
+                        <ed25519>Ed25519</ed25519>
+                        <ed448>Ed448</ed448>
                     </OptionValues>
                 </keyType>
                 <publicKey type="TextField">

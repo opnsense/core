@@ -80,15 +80,40 @@
     $grid.on('loaded.rs.jquery.bootgrid', updateLegacyStatus);
     updateServiceControlUI('ipsec');
 
-    // Populate bit sizes for key generation
     const generateSelect = $('#keyPair\\.generate');
-    [1024, 2048, 3072, 4096, 8192].forEach(function(size){
-      let opt = $(`<option>${size}</option>`).appendTo(generateSelect);
-      if (size == 2048) {
-          opt.prop("selected", true);
+    const keyTypeSelect = $('#keyPair\\.keyType');
+    // Populate bit sizes for key generation
+    function populateKeySizes() {
+      let keySizes = [];
+      let defaultKeySize = 0;
+      switch (keyTypeSelect.val()) {
+        case "rsa":
+          keySizes = [1024, 2048, 3072, 4096, 8192];
+          defaultKeySize = 2048;
+          break;
+        case "ecdsa":
+          keySizes = [256, 384, 521];
+          defaultKeySize = 384;
+          break;
+        case "ed25519":
+          keySizes = [255];
+          break;
+        case "ed448":
+          keySizes = [488];
+          break;
       }
-    });
-    generateSelect.selectpicker('refresh');
+
+      generateSelect.empty();
+      keySizes.forEach(function(size){
+        let opt = $(`<option>${size}</option>`).appendTo(generateSelect);
+        if (size == defaultKeySize) {
+            opt.prop("selected", true);
+        }
+      });
+      generateSelect.selectpicker('refresh');
+    }
+    keyTypeSelect.change(populateKeySizes);
+    populateKeySizes();
 
     // Add "Generate" button to dialog
     const generateButton = $('<button>{{ lang._('Generate') }}</button>');
@@ -98,7 +123,7 @@
       e.preventDefault();
       generateButton.prop('disabled', true);
       generateProgress.addClass("fa fa-spinner fa-pulse");
-      keyType = $('#keyPair\\.keyType').val();
+      keyType = keyTypeSelect.val();
       keySize = generateSelect.val();
       ajaxCall(url='/api/ipsec/key-pairs/genKeys',
         sendData={'keyType': keyType, 'keySize': keySize},
