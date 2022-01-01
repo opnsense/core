@@ -155,8 +155,9 @@
         <tr>
             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-            <th data-column-id="keyType" data-width="20em" data-type="string">{{ lang._('Key Type') }}</th>
-            <th data-column-id="keySize" data-width="20em" data-type="number">{{ lang._('Key Size') }}</th>
+            <th data-column-id="keyType" data-width="10em" data-type="string">{{ lang._('Key Type') }}</th>
+            <th data-column-id="keySize" data-width="10em" data-type="number">{{ lang._('Key Size') }}</th>
+            <th data-column-id="privateKey" data-width="10em" data-type="string">{{ lang._('Private Key') }}</th>
             <th data-column-id="keyFingerprint" data-type="string">{{ lang._('Key Fingerprint') }}</th>
             <th data-column-id="commands" data-width="7em" data-formatter="commands"
                 data-sortable="false">{{ lang._('Commands') }}</th>

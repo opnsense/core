@@ -47,10 +47,16 @@ class KeyPairsController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase(
+        $data = $this->searchBase(
             'keyPairs.keyPair',
-            ['name', 'keyType', 'keySize', 'keyFingerprint']
+            ['name', 'keyType', 'keySize', 'keyFingerprint', 'privateKey']
         );
+
+        foreach ($data['rows'] as &$row) {
+            $row['privateKey'] = empty($row['privateKey']) ? gettext('no') : gettext('yes');
+        }
+
+        return $data;
     }
 
     /**
