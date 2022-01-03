@@ -34,13 +34,8 @@ require_once 'interfaces.inc';
 
 $result = array();
 $gateways_status = return_gateways_status();
-$ifsinfo = get_interfaces_info();
 foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName() as $gname => $gw) {
     $gatewayItem = array('name' => $gname);
-    $ifdescr = $gw['interface'];
-    $gatewayItem['interface'] = $ifdescr;
-    $ifinfo = $ifsinfo[$ifdescr];
-    $gatewayItem['ipaddr'] = !empty($ifinfo['ipaddr']) ? $ifinfo['ipaddr'] : "~";
     $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : "~";
     if (!empty($gateways_status[$gname])) {
         $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
