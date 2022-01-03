@@ -208,6 +208,15 @@ class InterfaceController extends ApiControllerBase
     }
 
     /**
+     * retrieve status/config for each network adapter
+     * @return mixed
+     */
+    public function getInterfaceConfigAction()
+    {
+        return json_decode((new Backend())->configdRun('interface list ifconfig'), true);
+    }
+
+    /**
      * retrieve system-wide socket statistics (merge netstat with sockstat)
      * @return mixed
      */
