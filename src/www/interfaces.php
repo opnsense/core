@@ -2829,7 +2829,7 @@ include("head.inc");
                         <tr class="dhcpv6_advanced">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix Interface");?></td>
                           <td>
-                            <?=gettext("Prefix Interface "); ?>
+                            <?= gettext('Prefix Interface') ?>
                             <i><?=gettext("Site-Level Aggregation Length"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_len" type="text" id="adv_dhcp6_prefix_interface_statement_sla_len" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_len'];?>" />
                           </td>

@@ -789,7 +789,7 @@ include("head.inc");
                     <td><?=gettext("Associated filter rule");?></td>
                     <td>
                       <input name='associated-rule-id' id='associated-rule-id' type='hidden' value='<?=$pconfig['associated-rule-id'];?>' />
-                      <span class="text-danger"><strong><?=gettext("Note: ");?></strong></span><?=gettext("This is associated to a NAT rule.");?><br />
+                      <span class="text-danger"><strong><?= gettext('Note:') ?></strong></span> <?= gettext('This is associated to a NAT rule.') ?><br />
                       <?=gettext("You cannot edit the interface, protocol, source, or destination of associated filter rules.");?>
                       <br />
 <?php

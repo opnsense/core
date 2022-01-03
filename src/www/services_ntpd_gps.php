@@ -327,8 +327,8 @@ SureGPS =    #Sure Electronics SKG16B
                         <div class="hidden" data-for="help_for_gps">
                           <?=gettext("This option allows you to select a predefined configuration.");?>
                           <br />
-                          <strong><?=gettext("Note: ");?></strong><?=gettext("Select Generic if your GPS is not listed."); ?><br />
-                          <strong><?=gettext("Note: ");?></strong><?=gettext("The predefined configurations assume your GPS has already been set to NMEA mode."); ?>
+                          <strong><?= gettext('Note:') ?></strong> <?= gettext('Select Generic if your GPS is not listed.') ?><br />
+                          <strong><?= gettext('Note:') ?></strong> <?= gettext('The predefined configurations assume your GPS has already been set to NMEA mode.') ?>
                         </div>
                       </td>
                     </tr>
