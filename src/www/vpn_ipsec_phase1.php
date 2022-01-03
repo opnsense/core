@@ -140,8 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['myid_type'] = "myaddress";
         $pconfig['peerid_type'] = "peeraddress";
         $pconfig['authentication_method'] = "pre_shared_key";
-        $pconfig['encryption-algorithm'] = array("name" => "aes", "keylen" => "128");
-        $pconfig['hash-algorithm'] = array('sha256');
+        $pconfig['encryption-algorithm'] = ["name" => "aes256gcm16"];
+        $pconfig['hash-algorithm'] = ['sha256'];
         $pconfig['dhgroup'] = array('14');
         $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
@@ -1007,7 +1007,7 @@ endforeach; ?>
                     <td colspan="2"><b><?=gettext("Phase 1 proposal (Algorithms)"); ?></b></td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
+                    <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm"); ?></td>
                     <td>
                       <select name="ealgo" id="ealgo" data-default-keylen="<?=$pconfig['encryption-algorithm']['keylen'];?>">
 <?php
@@ -1027,6 +1027,9 @@ endforeach; ?>
 
                       <select name="ealgo_keylen" id="ealgo_keylen" width="30">
                       </select>
+                      <div class="hidden" data-for="help_for_encalg">
+                          <?=gettext("Note: For security reasons avoid the use of DES,3DES,CAST and BLOWFISH protocols"); ?>.
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -1051,7 +1054,7 @@ endforeach; ?>
 ?>
                       </select>
                       <div class="hidden" data-for="help_for_halgo">
-                        <?=gettext("Must match the setting chosen on the remote side."); ?>
+                        <?=gettext("Note: For security reasons avoid the use of MD5 and SHA1 algorithms."); ?>
                       </div>
                     </td>
                   </tr>

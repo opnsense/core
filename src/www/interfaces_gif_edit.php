@@ -197,7 +197,7 @@ include("head.inc");
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
                       <div class="hidden" data-for="help_for_remote-addr">
-                        <?=gettext("Peer address where encapsulated gif packets will be sent. "); ?>
+                        <?= gettext('Peer address where encapsulated gif packets will be sent.') ?>
                       </div>
                     </td>
                   </tr>
@@ -211,7 +211,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF tunnel remote address "); ?></td>
+                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('GIF tunnel remote address') ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>

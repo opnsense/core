@@ -674,7 +674,7 @@ POSSIBILITY OF SUCH DAMAGE.
             var selected_log = $("#alert-logfile > option:selected");
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_DANGER,
-                title: '{{ lang._('Remove log file ') }} ' + selected_log.html(),
+                title: '{{ lang._('Remove log file:') }} ' + ' ' + selected_log.html(),
                 message: '{{ lang._('Removing this file will cleanup disk space, but cannot be undone.') }}',
                 buttons: [{
                     icon: 'fa fa-trash-o',
