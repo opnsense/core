@@ -264,15 +264,16 @@ function get_locale_list()
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
-    $locales['it_IT'] = gettext('Italian');
+    $locales['it_IT'] = gettext('Italian'); /* development only */
     $locales['ja_JP'] = gettext('Japanese');
     $locales['no_NO'] = gettext('Norwegian');
+    $locales['po_PL'] = gettext('Polish'); /* development only */
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
     $locales['tr_TR'] = gettext('Turkish');
-    $locales['vi_VN'] = gettext('Vietnamese');
+    $locales['vi_VN'] = gettext('Vietnamese'); /* development only */
 
     return $locales;
 }
