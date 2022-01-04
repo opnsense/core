@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
 """
 
+import argparse
 import sys
 import subprocess
 import ujson
@@ -35,33 +36,23 @@ import ujson
 result = dict()
 if __name__ == '__main__':
     # parse input parameter
-    keytype = None
-    keysize = None
-    if len(sys.argv) > 1:
-        keytype = sys.argv[1].strip().lower()
-        if keytype not in ['rsa', 'ecdsa', 'ed25519', 'ed448']:
-            print('Invalid keytype passed')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--type', help='key type (rsa, ecdsa, ed25519, ed488)',
+        choices=['rsa', 'ecdsa', 'ed25519', 'ed488'], default='rsa')
+    parser.add_argument('--size', help='key size (only for rsa and ecdsa)',
+        type=int, default=0)
+    inputargs = parser.parse_args()
+
+    keytype = inputargs.type
+    keysize = inputargs.size
+    if keytype == 'rsa':
+        if keysize < 512 or keysize > 65536:
+            print('Invalid keysize passed')
             sys.exit(1)
-
-        # Not all keytypes require a key size
-        if len(sys.argv) > 2:
-            keysize = sys.argv[2].strip()
-            if not keysize.isdigit():
-                print('Invalid keysize passed')
-                sys.exit(1)
-            keysize = int(keysize)
-
-        if keytype == 'rsa':
-            if keysize < 512 or keysize > 65536:
-                print('Invalid keysize passed')
-                sys.exit(1)
-        elif keytype == 'ecdsa':
-            if keysize != 256 and keysize != 384 and keysize != 521:
-                print('Invalid keysize passed')
-                sys.exit(1)
-    else:
-        print('Insufficient parameters passed')
-        sys.exit(1)
+    elif keytype == 'ecdsa':
+        if keysize != 256 and keysize != 384 and keysize != 521:
+            print('Invalid keysize passed')
+            sys.exit(1)
 
     # Generate private key
     spprv = subprocess.run(['/usr/local/sbin/ipsec', 'pki',
