@@ -108,6 +108,7 @@ function get_default_sysctl_value($id)
         'net.inet.udp.checksum' => 1,
         'net.inet.udp.maxdgram' => '57344',
         'net.inet6.ip6.forwarding' => '1',
+        'net.inet6.ip6.intr_queue_maxlen' => '1000',
         'net.inet6.ip6.prefer_tempaddr' => '0',
         'net.inet6.ip6.redirect' => '0',
         'net.inet6.ip6.use_tempaddr' => '0',
@@ -142,7 +143,9 @@ function system_sysctl_get()
         'net.enc.out.ipsec_filter_mask' => 'default',
         'net.inet.icmp.reply_from_interface' => 'default',
         'net.inet.ip.forwarding' => 'default',
+        'net.inet.ip.intr_queue_maxlen' => 'default',
         'net.inet6.ip6.forwarding' => 'default',
+        'net.inet6.ip6.intr_queue_maxlen' => 'default',
         'net.link.vlan.mtag_pcp' => 'default',
         'net.local.dgram.maxdgram' => 'default',
     );
