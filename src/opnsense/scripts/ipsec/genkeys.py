@@ -28,38 +28,32 @@
     --------------------------------------------------------------------------------------
 """
 
+import argparse
 import sys
 import subprocess
 import ujson
 
 result = dict()
 if __name__ == '__main__':
-    # parse input parameter
-    keytype = None
-    keysize = None
-    if len(sys.argv) > 2:
-        keytype = sys.argv[1].strip().lower()
-        if keytype not in ['rsa']:
-            print('Invalid keytype passed')
-            sys.exit(1)
+    # parse input parameters
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--type', help='key type (rsa)',
+        choices=['rsa'], default='rsa')
+    parser.add_argument('--size', help='key size',
+        type=int, default=2048)
+    inputargs = parser.parse_args()
 
-        keysize = sys.argv[2].strip()
-        if not keysize.isdigit():
+    keytype = inputargs.type
+    keysize = inputargs.size
+    if keytype == 'rsa':
+        if int(keysize) < 512 or int(keysize) > 65536:
             print('Invalid keysize passed')
             sys.exit(1)
-            
-        if keytype == 'rsa':
-            if int(keysize) < 512 or int(keysize) > 65536:
-                print('Invalid keysize passed')
-                sys.exit(1)
-    else:
-        print('Insufficient parameters passed')
-        sys.exit(1)
 
     # Generate private key
     spprv = subprocess.run(['/usr/local/sbin/ipsec', 'pki',
         '--gen', '--type', keytype,
-        '--size', keysize,
+        '--size', str(keysize),
         '--outform', 'pem'], capture_output=True, text=True)
     result['privkey'] = spprv.stdout.strip()
 
