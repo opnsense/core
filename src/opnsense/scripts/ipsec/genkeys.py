@@ -37,8 +37,8 @@ result = dict()
 if __name__ == '__main__':
     # parse input parameter
     parser = argparse.ArgumentParser()
-    parser.add_argument('--type', help='key type (rsa, ecdsa, ed25519, ed488)',
-        choices=['rsa', 'ecdsa', 'ed25519', 'ed488'], default='rsa')
+    parser.add_argument('--type', help='key type (rsa, ecdsa, ed25519, ed448)',
+        choices=['rsa', 'ecdsa', 'ed25519', 'ed448'], default='rsa')
     parser.add_argument('--size', help='key size (only for rsa and ecdsa)',
         type=int, default=0)
     inputargs = parser.parse_args()

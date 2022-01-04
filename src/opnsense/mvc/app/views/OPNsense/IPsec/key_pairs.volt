@@ -99,7 +99,7 @@
           keySizes = [255];
           break;
         case "ed448":
-          keySizes = [488];
+          keySizes = [448];
           break;
       }
 
