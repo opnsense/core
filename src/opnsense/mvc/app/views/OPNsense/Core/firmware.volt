@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -403,17 +403,17 @@
                     misconfigured_plugins = 1;
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
-                    bold_on = '<span class="text-danger plugin_missing"><b>';
+                    bold_on = '<span class="text-danger"><b>';
                     bold_off = '</b></span>';
                     missing_plugins = 1;
                 } else if (row['installed'] == "1") {
-                    status_text = ' ({{ lang._('installed') }})';
+                    if (row['provided'] == "0") {
+                        status_text = ' ({{ lang._('orphaned') }})';
+                    } else {
+                        status_text = ' ({{ lang._('installed') }})';
+                    }
                     bold_on = '<b>';
                     bold_off = '</b>';
-                }
-                if (row['provided'] == "0" && row['installed'] == "1") {
-                    // this state overwrites installed on purpose
-                    status_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist > tbody').append(
                     '<tr class="plugin_entry">' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
