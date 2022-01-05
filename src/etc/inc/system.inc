@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -132,23 +132,32 @@ function get_default_sysctl_value($id)
     return null;
 }
 
+function system_sysctl_required()
+{
+    return [
+        /* list of required sysctls not necessarily present in config */
+        'hw.ixl.enable_head_writeback',
+        'net.enc.in.ipsec_bpf_mask',
+        'net.enc.in.ipsec_filter_mask',
+        'net.enc.out.ipsec_bpf_mask',
+        'net.enc.out.ipsec_filter_mask',
+        'net.inet.icmp.reply_from_interface',
+        'net.inet.ip.forwarding',
+        'net.inet.ip.intr_queue_maxlen',
+        'net.inet6.ip6.forwarding',
+        'net.inet6.ip6.intr_queue_maxlen',
+        'net.link.vlan.mtag_pcp',
+        'net.local.dgram.maxdgram',
+    ];
+}
+
 function system_sysctl_get()
 {
-    /* list of unconditional sysctls not necessarily present in config */
-    $sysctls = array(
-        'hw.ixl.enable_head_writeback' => 'default',
-        'net.enc.in.ipsec_bpf_mask' => 'default',
-        'net.enc.in.ipsec_filter_mask' => 'default',
-        'net.enc.out.ipsec_bpf_mask' => 'default',
-        'net.enc.out.ipsec_filter_mask' => 'default',
-        'net.inet.icmp.reply_from_interface' => 'default',
-        'net.inet.ip.forwarding' => 'default',
-        'net.inet.ip.intr_queue_maxlen' => 'default',
-        'net.inet6.ip6.forwarding' => 'default',
-        'net.inet6.ip6.intr_queue_maxlen' => 'default',
-        'net.link.vlan.mtag_pcp' => 'default',
-        'net.local.dgram.maxdgram' => 'default',
-    );
+    $sysctls = [];
+
+    foreach (system_sysctl_required() as $tunable) {
+        $sysctls[$tunable] = 'default';
+    }
 
     foreach (config_read_array('sysctl', 'item') as $tunable) {
         $sysctls[$tunable['tunable']] = $tunable['value'];

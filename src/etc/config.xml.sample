@@ -130,11 +130,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Maximum size of the IP input queue]]></descr>
-      <tunable>net.inet.ip.intr_queue_maxlen</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Disable CTRL+ALT+Delete reboot from keyboard.]]></descr>
       <tunable>hw.syscons.kbd_reboot</tunable>
       <value>default</value>

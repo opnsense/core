@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
+$a_system = system_sysctl_required();
 $a_tunable = &config_read_array('sysctl', 'item');
 $a_sysctl = json_decode(configd_run('system sysctl'), true);
 
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $act = null;
     }
-    $pconfig = array();
+    $pconfig = [];
     if (isset($id)) {
         $pconfig['tunable'] = $a_tunable[$id]['tunable'];
         $pconfig['value'] = $a_tunable[$id]['value'];
@@ -90,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
     } elseif (!empty($pconfig['Submit'])) {
-        $tunableent = array();
+        $tunableent = [];
         $tunableent['tunable'] = $pconfig['tunable'];
         $tunableent['value'] = $pconfig['value'];
         $tunableent['descr'] = $pconfig['descr'];
@@ -108,11 +109,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-/* translate hidden strings before HTML escape */
-foreach ($a_tunable as &$tunable) {
+foreach ($a_tunable as $key => &$tunable) {
+    /* translate hidden strings before HTML escape */
     if (!empty($tunable['descr'])) {
         $tunable['descr'] = gettext($tunable['descr']);
     }
+
+    /* add the key for config-bound tunables */
+    $tunable['key'] = $key;
+
+    /* remove system defaults in config items */
+    $pos = array_search($tunable['tunable'], $a_system);
+    if ($pos !== false) {
+        unset($a_system[$pos]);
+    }
+}
+
+foreach ($a_system as $default) {
+    /* display system defaults as well */
+    $a_tunable[] = [ 'tunable' => $default, 'value' => 'default' ];
 }
 
 uasort($a_tunable, function($a, $b) {
@@ -215,7 +230,7 @@ $( document ).ready(function() {
 <?php endif ?>
               </th>
             </tr>
-<?php foreach ($a_tunable as $i => &$tunable): ?>
+<?php foreach ($a_tunable as &$tunable): ?>
               <tr>
                 <td><?= $tunable['tunable'] ?></td>
                 <td>
@@ -248,12 +263,14 @@ $( document ).ready(function() {
 <?php endif ?>
                 </td>
                 <td class="text-nowrap">
-                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>">
+<?php if (array_key_exists('key', $tunable,)): ?>
+                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?= $tunable['key'] ?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>">
                     <i class="fa fa-pencil fa-fw"></i>
                   </a>
-                  <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                  <a id="del_<?= $tunable['key'] ?>" data-id="<?= $tunable['key'] ?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                     <span class="fa fa-trash fa-fw"></span>
                   </a>
+<?php endif ?>
                 </td>
               </tr>
 <?php endforeach ?>
