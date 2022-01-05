@@ -119,10 +119,6 @@ function ipsec_p2_ealgos()
         'aes128gcm16' => array( 'name' => 'aes128gcm16'),
         'aes192gcm16' => array( 'name' => 'aes192gcm16'),
         'aes256gcm16' => array( 'name' => 'aes256gcm16'),
-        'blowfish' => array( 'name' => 'Blowfish', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
-        '3des' => array( 'name' => '3DES' ),
-        'cast128' => array( 'name' => 'CAST128' ),
-        'des' => array( 'name' => 'DES' ),
         'null' => array( 'name' => gettext("NULL (no encryption)"))
     );
 }
@@ -130,7 +126,6 @@ function ipsec_p2_ealgos()
 function ipsec_p2_halgos()
 {
     return array(
-        'hmac_md5' => 'MD5',
         'hmac_sha1' => 'SHA1',
         'hmac_sha256' => 'SHA256',
         'hmac_sha384' => 'SHA384',

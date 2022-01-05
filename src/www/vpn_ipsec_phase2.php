@@ -702,7 +702,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr id="opt_enc">
-                  <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
 <?php
                   foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
@@ -728,10 +728,6 @@ endif; ?>
 
 <?php
                       endforeach; ?>
-
-                      <div class="hidden" data-for="help_for_encalg">
-                          <?=gettext("Note: For security reasons avoid the use of DES,3DES,CAST and BLOWFISH protocols"); ?>.
-                      </div>
                   </td>
                 </tr>
                 <tr>
@@ -745,7 +741,7 @@ endif; ?>
 <?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_hashalg">
-                        <?=gettext("Note: For security reasons avoid the use of MD5 and SHA1 algorithms."); ?>
+                        <?=gettext("Note: For security reasons avoid the use of the SHA1 algorithm."); ?>
                     </div>
                   </td>
                 </tr>

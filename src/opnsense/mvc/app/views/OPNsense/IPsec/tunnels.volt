@@ -127,6 +127,9 @@
               } else {
                   return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.id + '"></span>';
               }
+          },
+          "proposal": function (column, row) {
+            return row.proposal.replace(/unsupported/g, "<em>unsupported</em>");
           }
       };
       const $grid_phase1 = $('#grid-phase1').UIBootgrid({
@@ -256,7 +259,7 @@
               <th data-column-id="type" data-width="8em" data-type="string" data-formatter="mode_type">{{ lang._('Type') }}</th>
               <th data-column-id="local_subnet" data-width="18em" data-type="string">{{ lang._('Local Subnet') }}</th>
               <th data-column-id="remote_subnet" data-width="18em" data-type="string">{{ lang._('Remote Subnet') }}</th>
-              <th data-column-id="proposal" data-width="20em" data-type="string">{{ lang._('Phase 2 Proposal') }}</th>
+              <th data-column-id="proposal" data-width="20em" data-type="string" data-formatter="proposal">{{ lang._('Phase 2 Proposal') }}</th>
               <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
               <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
           </tr>

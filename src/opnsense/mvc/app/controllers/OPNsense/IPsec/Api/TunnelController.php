@@ -175,14 +175,9 @@ class TunnelController extends ApiControllerBase
             'aes128gcm16' => 'aes128gcm16',
             'aes192gcm16' => 'aes192gcm16',
             'aes256gcm16' => 'aes256gcm16',
-            'blowfish' => 'Blowfish',
-            '3des' => '3DES',
-            'cast128' => 'CAST128',
-            'des' => 'DES',
             'null' => gettext("NULL (no encryption)")
         ];
         $ph2halgos = [
-            'hmac_md5' => 'MD5',
             'hmac_sha1' => 'SHA1',
             'hmac_sha256' => 'SHA256',
             'hmac_sha384' => 'SHA384',
@@ -255,21 +250,31 @@ class TunnelController extends ApiControllerBase
                     if (!empty($ph2proposal)) {
                         $ph2proposal .= " , ";
                     }
-                    $ph2proposal .= $ph2algos[(string)$node->name];
-                    if ((string)$node->keylen == 'auto') {
-                        $ph2proposal .= " (auto) ";
-                    } elseif (!empty((string)$node->keylen)) {
-                        $ph2proposal .= sprintf(" ({$node->keylen} %s) ", gettext("bits"));
+
+                    if (isset($ph2algos[(string)$node->name])) {
+                        $ph2proposal .= $ph2algos[(string)$node->name];
+
+                        if ((string)$node->keylen == 'auto') {
+                            $ph2proposal .= " (auto) ";
+                        } elseif (!empty((string)$node->keylen)) {
+                            $ph2proposal .= sprintf(" ({$node->keylen} %s) ", gettext("bits"));
+                        }
+                    } else {
+                        $ph2proposal .= gettext("unsupported");
                     }
                 }
                 $ph2proposal .= " + ";
                 $idx = 0;
                 foreach ($p2->{"hash-algorithm-option"} as $node) {
                     $ph2proposal .= ($idx++) > 0 ? " , " : "";
-                    $ph2proposal .= $ph2halgos[(string)$node];
+                    if (isset($ph2halgos[(string)$node])) {
+                        $ph2proposal .= $ph2halgos[(string)$node];
+                    } else {
+                        $ph2proposal .= gettext("unsupported");
+                    }
                 }
                 if (!empty((string)$p2->pfsgroup)) {
-                    $ph2proposal .= sprintf("+ %s %s", gettext("DH Group"), "{$p2->pfsgroup}");
+                    $ph2proposal .= sprintf(" + %s %s", gettext("DH Group"), "{$p2->pfsgroup}");
                 }
                 $item = [
                     "id" => $p2idx,
