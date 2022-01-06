@@ -115,22 +115,19 @@ function ipsec_p1_authentication_methods()
 function ipsec_p2_ealgos()
 {
     return array(
-        'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
-        'aes128gcm16' => array( 'name' => 'aes128gcm16'),
-        'aes192gcm16' => array( 'name' => 'aes192gcm16'),
-        'aes256gcm16' => array( 'name' => 'aes256gcm16'),
-        'blowfish' => array( 'name' => 'Blowfish', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
-        '3des' => array( 'name' => '3DES' ),
-        'cast128' => array( 'name' => 'CAST128' ),
-        'des' => array( 'name' => 'DES' ),
-        'null' => array( 'name' => gettext("NULL (no encryption)"))
+        'aes128' => array( 'name' => 'aes', 'keylen' => "128", 'descr' => gettext("AES128")),
+        'aes192' => array( 'name' => 'aes', 'keylen' => "192", 'descr' => gettext("AES192")),
+        'aes256' => array( 'name' => 'aes', 'keylen' => "256", 'descr' => gettext("AES256")),
+        'aes128gcm16' => array( 'name' => 'aes128gcm16', 'descr' => 'aes128gcm16'),
+        'aes192gcm16' => array( 'name' => 'aes192gcm16', 'descr' => 'aes192gcm16'),
+        'aes256gcm16' => array( 'name' => 'aes256gcm16', 'descr' => 'aes256gcm16'),
+        'null' => array( 'name' => 'null', 'descr' => gettext("NULL (no encryption)"))
     );
 }
 
 function ipsec_p2_halgos()
 {
     return array(
-        'hmac_md5' => 'MD5',
         'hmac_sha1' => 'SHA1',
         'hmac_sha256' => 'SHA256',
         'hmac_sha384' => 'SHA384',
@@ -371,7 +368,6 @@ function ipsec_parse_phase2($ikeid)
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : array();
-    $p2_ealgos = ipsec_p2_ealgos();
     $ph1ent = current(array_filter($a_phase1, function ($e) use ($ikeid) {
         return $e['ikeid'] == $ikeid;
     }));
@@ -424,59 +420,36 @@ function ipsec_parse_phase2($ikeid)
                 $ph2ent['pfsgroup'] = $a_client['pfs_group'];
             }
             if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'esp') {
-                $ealgoESPsp2arr_details = array();
+                $ealgoESPsp2arr_details = [];
                 if (is_array($ph2ent['encryption-algorithm-option'])) {
-                    foreach ($ph2ent['encryption-algorithm-option'] as $ealg) {
-                        $ealg_id = $ealg['name'];
-                        $ealg_kl = isset($ealg['keylen']) ? $ealg['keylen'] : null;
-
-                        if ($ealg_kl == "auto") {
-                            $key_hi = $p2_ealgos[$ealg_id]['keysel']['hi'];
-                            $key_lo = $p2_ealgos[$ealg_id]['keysel']['lo'];
-                            $key_step = $p2_ealgos[$ealg_id]['keysel']['step'];
-                            /* XXX: in some cases where include ordering is suspect these variables
-                            * are somehow 0 and we enter this loop forever and timeout after 900
-                            * seconds wrecking bootup */
-                            if ($key_hi != 0 and $key_lo != 0 and $key_step != 0) {
-                                for ($keylen = $key_hi; $keylen >= $key_lo; $keylen -= $key_step) {
-                                    if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
-                                        foreach ($ph2ent['hash-algorithm-option'] as $halgo) {
-                                            $halgo = str_replace('hmac_', '', $halgo);
-                                            $tmpealgo = "{$ealg_id}{$keylen}-{$halgo}";
-                                            $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
-                                            if (!empty($modp)) {
-                                                $tmpealgo .= "-{$modp}";
-                                            }
-                                            $ealgoESPsp2arr_details[] = $tmpealgo;
-                                        }
-                                    } else {
-                                        $tmpealgo = "{$ealg_id}{$keylen}";
-                                        $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
-                                        if (!empty($modp)) {
-                                            $tmpealgo .= "-{$modp}";
-                                        }
-                                        $ealgoESPsp2arr_details[] = $tmpealgo;
-                                    }
+                    foreach ($ph2ent['encryption-algorithm-option'] as $algidx => $ealg) {
+                        foreach (ipsec_p2_ealgos() as $algo_name => $algo_data) {
+                            $tmpealgo = "";
+                            if ($algo_name == $ealg['name']) {
+                                $tmpealgo = $algo_name;
+                            } elseif ($algo_data['name'] == $ealg['name']) {
+                                // XXX: extract and convert legacy encryption-algorithm-option setting
+                                //      (pre 22.1 saved values)
+                                if ($ealg['keylen'] == $algo_data['keylen'] || $ealg['keylen'] == "auto") {
+                                    $tmpealgo = $algo_name;
                                 }
                             }
-                        } else {
-                            if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
-                                foreach ($ph2ent['hash-algorithm-option'] as $halgo) {
-                                    $halgo = str_replace('hmac_', '', $halgo);
-                                    $tmpealgo = "{$ealg_id}{$ealg_kl}-{$halgo}";
-                                    $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
-                                    if (!empty($modp)) {
-                                        $tmpealgo .= "-{$modp}";
-                                    }
-                                    $ealgoESPsp2arr_details[] = $tmpealgo;
-                                }
-                            } else {
-                                $tmpealgo = "{$ealg_id}{$ealg_kl}";
+                            if (!empty($tmpealgo)) {
                                 $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
-                                if (!empty($modp)) {
-                                    $tmpealgo .= "-{$modp}";
+                                if (is_array($ph2ent['hash-algorithm-option'])) {
+                                    foreach (array_keys(ipsec_p2_halgos()) as $halgo) {
+                                        if (in_array($halgo, $ph2ent['hash-algorithm-option'])) {
+                                            $ealgoESPsp2arr_details[] = sprintf(
+                                                "%s-%s%s",
+                                                $tmpealgo,
+                                                str_replace('hmac_', '', $halgo),
+                                                !empty($modp) ? "-{$modp}" : ""
+                                            );
+                                        }
+                                    }
+                                } else {
+                                    $ealgoESPsp2arr_details[] = $tmpealgo . (!empty($modp) ? "-{$modp}" : "");
                                 }
-                                $ealgoESPsp2arr_details[] = $tmpealgo;
                             }
                         }
                     }
@@ -1011,6 +984,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         $publickeypath = "/usr/local/etc/ipsec.d/public";
         $privatekeypath = "/usr/local/etc/ipsec.d/private";
 
+        if (get_single_sysctl('net.inet.ipsec.def_policy') == "") {
+            mwexec("/sbin/kldload ipsec");
+        }
         mwexec("/sbin/ifconfig enc0 up");
         set_single_sysctl("net.inet.ip.ipsec_in_use", "1");
 

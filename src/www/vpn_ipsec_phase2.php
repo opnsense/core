@@ -37,33 +37,31 @@ require_once("plugins.inc.d/ipsec.inc");
  */
 function pconfig_to_ealgos($pconfig)
 {
-    $p2_ealgos = ipsec_p2_ealgos();
-
-    $ealgos = array();
+    $ealgos = [];
     if (isset($pconfig['ealgos'])) {
-        foreach ($p2_ealgos as $algo_name => $algo_data) {
+        foreach (ipsec_p2_ealgos() as $algo_name => $algo_data) {
             if (in_array($algo_name, $pconfig['ealgos'])) {
-                $ealg = array();
-                $ealg['name'] = $algo_name;
-                if (isset($algo_data['keysel'])) {
-                    $ealg['keylen'] = $pconfig["keylen_".$algo_name];
-                }
-                $ealgos[] = $ealg;
+                $ealgos[] = ['name' => $algo_name];
             }
         }
     }
-
     return $ealgos;
 }
 
 function ealgos_to_pconfig(& $ealgos, & $pconfig)
 {
-
-    $pconfig['ealgos'] = array();
-    foreach ($ealgos as $algo_data) {
-        $pconfig['ealgos'][] = $algo_data['name'];
-        if (isset($algo_data['keylen'])) {
-            $pconfig["keylen_".$algo_data['name']] = $algo_data['keylen'];
+    $p2_ealgos = ipsec_p2_ealgos();
+    $pconfig['ealgos'] = [];
+    foreach ($ealgos as $cnf_algo_data) {
+        foreach ($p2_ealgos as $algo_name => $algo_data) {
+            if ($algo_name == $cnf_algo_data['name']) {
+                $pconfig['ealgos'][] = $algo_name;
+            } elseif ($algo_data['name'] == $cnf_algo_data['name']) {
+                // XXX: extract and convert legacy encryption-algorithm-option setting
+                if ($cnf_algo_data['keylen'] == $algo_data['keylen'] || $cnf_algo_data['keylen'] == "auto") {
+                    $pconfig['ealgos'][] = $algo_name;
+                }
+            }
         }
     }
 
@@ -165,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'])) {
             ealgos_to_pconfig($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'], $pconfig);
         } else {
-            $pconfig['ealgos'] = array();
+            $pconfig['ealgos'] = [];
         }
 
         if (isset($config['ipsec']['phase2'][$p2index]['mobile'])) {
@@ -412,7 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $ph2ent['encryption-algorithm-option'] = pconfig_to_ealgos($pconfig);
-        ;
+
         if (!empty($pconfig['hash-algorithm-option'])) {
             $ph2ent['hash-algorithm-option'] = $pconfig['hash-algorithm-option'];
         } else {
@@ -702,36 +700,18 @@ endif; ?>
                   </td>
                 </tr>
                 <tr id="opt_enc">
-                  <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
+                      <select name="ealgos[]" class="selectpicker" multiple="multiple">
 <?php
-                  foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
-                    <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=$algodata['name'];?>
+                      foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
+                          <option value="<?=$algo;?>" <?= (is_array($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos'])) ? 'selected="selected"' : '' ?> >
+                            <?=$algodata['descr'];?>
+                          </option>
 <?php
-                      if (isset($algodata['keysel'])) :?>
-                      <select name="keylen_<?=$algo;?>">
-                        <option value="auto"><?=gettext("auto"); ?></option>
-<?php
-                        for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :?>
-                        <option value="<?=$keylen;?>" <?=$keylen == $pconfig["keylen_".$algo] ? "selected=\"selected\"" : "";?>>
-                          <?=$keylen;?> <?=gettext("bits"); ?>
-                        </option>
-<?php
-                        endfor; ?>
+                      endforeach;?>
+
                       </select>
-<?php
-                      else :?>
-                      <br/>
-<?php
-                      endif; ?>
-
-<?php
-                      endforeach; ?>
-
-                      <div class="hidden" data-for="help_for_encalg">
-                          <?=gettext("Note: For security reasons avoid the use of DES,3DES,CAST and BLOWFISH protocols"); ?>.
-                      </div>
                   </td>
                 </tr>
                 <tr>
@@ -745,7 +725,7 @@ endif; ?>
 <?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_hashalg">
-                        <?=gettext("Note: For security reasons avoid the use of MD5 and SHA1 algorithms."); ?>
+                        <?=gettext("Note: For security reasons avoid the use of the SHA1 algorithm."); ?>
                     </div>
                   </td>
                 </tr>
