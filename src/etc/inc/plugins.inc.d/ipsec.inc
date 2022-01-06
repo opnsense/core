@@ -692,14 +692,21 @@ function ipsec_dump_sad()
                         $cursa['reqid'] = substr($reqid, 0, strcspn($reqid, "("));
                         break;
                     case 2:
-                        $cursa['ealgo'] = $linea[1];
+                        if ($linea[0] == 'E:') {
+                            $cursa['ealgo'] = $linea[1];
+                        }
                         break;
                     case 3:
-                        $cursa['aalgo'] = $linea[1];
+                        if ($linea[0] == 'A:') {
+                            $cursa['aalgo'] = $linea[1];
+                        }
                         break;
+                    case 7:
                     case 8:
-                        $sadata = explode("(", $linea[1]);
-                        $cursa['data'] = $sadata[0] . " B";
+                        if ($linea[0] == 'current:') {
+                            $sadata = explode("(", $linea[1]);
+                            $cursa['data'] = $sadata[0] . " B";
+                        }
                         break;
                 }
             }
