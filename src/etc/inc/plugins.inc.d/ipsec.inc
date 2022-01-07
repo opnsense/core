@@ -975,7 +975,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
         /* disallow IPSEC, it is off */
         mwexec("/sbin/ifconfig enc0 down");
-        set_single_sysctl("net.inet.ip.ipsec_in_use", "0");
 
         return 0;
     } else {
@@ -988,7 +987,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
             mwexec("/sbin/kldload ipsec");
         }
         mwexec("/sbin/ifconfig enc0 up");
-        set_single_sysctl("net.inet.ip.ipsec_in_use", "1");
 
         /* needed directories for config files */
         @mkdir($capath);
