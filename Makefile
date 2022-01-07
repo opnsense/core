@@ -28,11 +28,11 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	21.7
+CORE_ABI?=	22.1
 CORE_MESSAGE?=	Carry on my wayward son
-CORE_NAME?=	opnsense-devel
+CORE_NAME?=	opnsense
 CORE_NICKNAME?=	Not Yet
-CORE_TYPE?=	development
+CORE_TYPE?=	community
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
@@ -119,7 +119,7 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2022
 
 CORE_DEPENDS_amd64?=	beep \
-			suricata-devel
+			suricata
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
