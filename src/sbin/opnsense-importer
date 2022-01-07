@@ -225,7 +225,7 @@ fi
 
 DEVS=$(
 	camcontrol devlist
-	echo "${POOLS}" | while read ZPOOL ZGUID ZSIZE ZMORE; do
+	echo -n "${POOLS}" | while read ZPOOL ZGUID ZSIZE ZMORE; do
 		printf "%-35s%s\n" "<${ZGUID} ${ZSIZE}>" \
 		    "ZFS pool (${ZPOOL})"
 	done
