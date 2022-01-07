@@ -1,4 +1,4 @@
 # configuration for opnsense-update(8), do not edit
 
 UPGRADE_HINT="FreeBSD:13:%%CORE_ARCH%%/22.1"
-UPGRADE_RELEASE="22.1.b3"
+UPGRADE_RELEASE="22.1.r1"
