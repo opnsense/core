@@ -263,7 +263,7 @@ class TunnelController extends ApiControllerBase
                         }
                     } else {
                         // Unsupported algorithm, will be ignored
-                        $ph2proposal .= "!!". (string)$node->name;
+                        $ph2proposal .= "!!" . (string)$node->name;
                     }
                 }
                 $ph2proposal .= " + ";

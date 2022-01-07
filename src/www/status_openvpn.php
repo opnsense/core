@@ -35,7 +35,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-function kill_client($port, $client=null)
+function kill_client($port, $client = null)
 {
     $tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
     $errval = '';
