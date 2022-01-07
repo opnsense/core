@@ -27,7 +27,7 @@
 <script>
     $( document ).ready(function() {
       var filter_exact = false;
-      let s_filter_val = "Warning";
+      let s_filter_val = '{{default_log_severity}}';
       s_header = '<a href="#"><i class="fa fa-toggle-off text-danger" id="exact_severity" title="{{ lang._('Toggle between range (max level) and exact severity filter') }}"></i> {{ lang._('Multiselect') }}</a>';
       m_header = '<a href="#"><i class="fa fa-toggle-on text-success" id="exact_severity" title="{{ lang._('Toggle between range (max level) and exact severity filter') }}"></i> {{ lang._('Multiselect') }}</a>';
       var page = 0;
