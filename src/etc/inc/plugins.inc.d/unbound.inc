@@ -30,6 +30,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once('certs.inc');
+
+function export_pem_file($filename, $data, $post_append = null)
+{
+    $pem_content = trim(str_replace("\n\n", "\n", str_replace(
+        "\r",
+        "",
+        base64_decode((string)$data)
+    ) . ($post_append == null ? '' : "\n" . $post_append)));
+    file_put_contents($filename, $pem_content);
+    chmod($filename, 0640);
+}
+
 function unbound_enabled()
 {
     $mdl = new \OPNsense\Unbound\Unbound();
@@ -176,6 +189,10 @@ function unbound_generate_config()
         }
     }
 
+    $port = $general['port'];
+    $port_doh = $general['port_doh'];
+    $port_dot = $general['port_dot'];
+
     $bindints = '';
     if (!empty($general['active_interface'])) {
         $active_interfaces = explode(',', $general['active_interface']);
@@ -196,12 +213,25 @@ function unbound_generate_config()
         }
 
         foreach ($addresses as $address) {
-            $bindints .= "interface: $address\n";
+            $bindints .= "interface: $address@$port\n";
+            if (!empty($general['enable_dot'])) {
+                $bindints .= "interface: $address@$port_dot\n";
+            }
+            if (!empty($general['enable_doh'])) {
+                $bindints .= "interface: $address@$port_doh\n";
+            }
         }
     } else {
-        $bindints .= "interface: 0.0.0.0\n";
-        $bindints .= "interface: ::\n";
-        $bindints .= "interface-automatic: yes\n";
+        $bindints .= "interface: 0.0.0.0@$port\n";
+        $bindints .= "interface: ::@$port\n";
+        if (!empty($general['enable_dot'])) {
+            $bindints .= "interface: 0.0.0.0@$port_dot\n";
+            $bindints .= "interface: ::@$port_dot\n";
+        }
+        if (!empty($general['enable_doh'])) {
+            $bindints .= "interface: 0.0.0.0@$port_doh\n";
+            $bindints .= "interface: ::@$port_doh\n";
+        }
     }
 
     $outgoingints = '';
@@ -223,7 +253,7 @@ function unbound_generate_config()
 
     unbound_add_host_entries($ifconfig_details);
 
-    $port = $general['port'];
+
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
@@ -270,6 +300,38 @@ EOD;
 
     $so_reuseport = empty(system_sysctl_get()['net.inet.rss.enabled']) ? 'yes' : 'no';
 
+    $dohdot_settings = '';
+    if (!empty($general['enable_doh']) || !empty($general['enable_dot'])) {
+        $cert =& lookup_cert($general['dohdot_cert']);
+        $chain = [];
+        $ca_chain = ca_chain_array($cert);
+        if (is_array($ca_chain)) {
+            foreach ($ca_chain as $entry) {
+                $chain[] = base64_decode($entry['crt']);
+            }
+        }
+        if (isset($cert)) {
+            export_pem_file(
+                '/var/unbound/dohdot.pem',
+                $cert['crt'],
+                implode("\n", $chain)
+            );
+            export_pem_file(
+                '/var/unbound/dohdot.key',
+                $cert['prv']
+            );
+            $dohdot_settings .= "# DoH and DoT\n";
+            if (!empty($general['enable_dot'])) {
+                $dohdot_settings .= "tls-port: $port_dot\n";
+            }
+            if (!empty($general['enable_doh'])) {
+                $dohdot_settings .= "https-port: $port_doh\n";
+            }
+            $dohdot_settings .= "tls-service-key: /var/unbound/dohdot.key\n";
+            $dohdot_settings .= "tls-service-pem: /var/unbound/dohdot.pem\n";
+        }
+    }
+
     $unboundconf = <<<EOD
 ##########################
 # Unbound Configuration
@@ -303,6 +365,7 @@ module-config: "{$module_config}"
 {$anchor_file}
 {$forward_local}
 {$dns64_config}
+{$dohdot_settings}
 
 # Interface IP(s) to bind to
 {$bindints}
