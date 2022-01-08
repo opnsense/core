@@ -62,6 +62,26 @@
         'elapsed': "{{ lang._('Elapsed') }}"
     };
 
+    const descriptionNumQuery = {
+        'query': {
+        'type': {
+                'A': "{{ lang._('A') }}",
+                'AAAA': "{{ lang._('AAAA') }}",
+                'CNAME': "{{ lang._('CNAME') }}",
+                'SOA': "{{ lang._('SOA') }}",
+                'PTR': "{{ lang._('PTR') }}",
+                'TXT': "{{ lang._('TXT') }}",
+                'SRV': "{{ lang._('SRV') }}",
+                'NAPTR': "{{ lang._('NAPTR') }}",
+            },
+            'tls': {
+                '__value__': "{{ lang._('DoT') }}"
+            },
+            'https': "{{ lang._('DoH') }}",
+            'ipv6': "{{ lang._('IPv6') }}"
+        }
+    };
+
     function writeDescs(parent, data, descriptions) {
         $.each(descriptions, function(descKey, descValue) {
             if (typeof descValue !== 'object') {
@@ -136,6 +156,19 @@
                             writeDescs(tbody, value, descriptionMapTime);
                             table.append(tbody);
                             statsView.append(table);
+                        } else if (key === "num") {
+                            let title = document.createElement("h2");
+                            title.innerHTML = "Query Types";
+                            statsView.append(title);
+
+                            let table = document.createElement('table');
+                            table.classList.add('table');
+                            table.classList.add('table-striped');
+                            table.style.width = 'auto';
+                            let tbody = document.createElement('tbody');
+                            writeDescs(tbody, value, descriptionNumQuery);
+                            table.append(tbody);
+                            statsView.append(table);
                         }
                     });
                 }
@@ -155,7 +188,7 @@
         // initial fetch
         updateStats();
 
-	updateServiceControlUI('unbound');
+        updateServiceControlUI('unbound');
     });
 </script>
 

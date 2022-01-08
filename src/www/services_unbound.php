@@ -40,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     // boolean values
     $pconfig['enable'] = isset($a_unboundcfg['enable']);
+    $pconfig['enable_dot'] = isset($a_unboundcfg['enable_dot']);
+    $pconfig['enable_doh'] = isset($a_unboundcfg['enable_doh']);
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
     $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
@@ -52,12 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['noregrecords'] = isset($a_unboundcfg['noregrecords']);
     // text values
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
+    $pconfig['port_dot'] = !empty($a_unboundcfg['port_dot']) ? $a_unboundcfg['port_dot'] : null;
+    $pconfig['port_doh'] = !empty($a_unboundcfg['port_doh']) ? $a_unboundcfg['port_doh'] : null;
     $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
     $pconfig['dns64prefix'] = !empty($a_unboundcfg['dns64prefix']) ? $a_unboundcfg['dns64prefix'] : null;
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
     $pconfig['local_zone_type'] = !empty($a_unboundcfg['local_zone_type']) ? $a_unboundcfg['local_zone_type'] : null;
+    // dropdown
+    $pconfig['dohdot_cert'] = $a_unboundcfg['dohdot_cert'];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -85,8 +91,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
+        if (!empty($pconfig['port_dot']) && !is_port($pconfig['port_dot'])) {
+            $input_errors[] = gettext("You must specify a valid DoT port number.");
+        }
+        if (!empty($pconfig['port_doh']) && !is_port($pconfig['port_doh'])) {
+            $input_errors[] = gettext("You must specify a valid DoH port number.");
+        }
         if (!empty($pconfig['local_zone_type']) && !array_key_exists($pconfig['local_zone_type'], unbound_local_zone_types())) {
             $input_errors[] = sprintf(gettext('Local zone type "%s" is not known.'), $pconfig['local_zone_type']);
+        }
+
+        if (!empty($pconfig['dohdot_cert'])) {
+            foreach ($config['cert'] as $cert) {
+                if ($cert['refid'] == $pconfig['dohdot_cert']) {
+                    if (cert_get_purpose($cert['crt'])['server'] == 'No') {
+                        $input_errors[] = gettext(
+                            sprintf('Certificate %s is not intended for server use.', $cert['descr'])
+                        );
+                        break;
+                    }
+                }
+            }
         }
 
         if (count($input_errors) == 0) {
@@ -95,6 +120,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_unboundcfg['port'] = $pconfig['port'];
             } elseif  (isset($a_unboundcfg['port'])) {
                 unset($a_unboundcfg['port']);
+            }
+            if (!empty($pconfig['port_dot'])) {
+                $a_unboundcfg['port_dot'] = $pconfig['port_dot'];
+            } elseif  (isset($a_unboundcfg['port_dot'])) {
+                unset($a_unboundcfg['port_dot']);
+            }
+            if (!empty($pconfig['port_doh'])) {
+                $a_unboundcfg['port_doh'] = $pconfig['port_doh'];
+            } elseif  (isset($a_unboundcfg['port_doh'])) {
+                unset($a_unboundcfg['port_doh']);
             }
             if (!empty($pconfig['regdhcpdomain'])) {
                 $a_unboundcfg['regdhcpdomain'] = $pconfig['regdhcpdomain'];
@@ -119,6 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_unboundcfg['noarecords'] = !empty($pconfig['noarecords']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
+            $a_unboundcfg['enable_dot'] = !empty($pconfig['enable_dot']);
+            $a_unboundcfg['enable_doh'] = !empty($pconfig['enable_doh']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
@@ -136,6 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_unboundcfg['outgoing_interface'])) {
                 unset($a_unboundcfg['outgoing_interface']);
             }
+            // dropdown
+            $a_unboundcfg['dohdot_cert'] = $pconfig['dohdot_cert'];
 
             write_config('Unbound general configuration changed.');
             mark_subsystem_dirty('unbound');
@@ -145,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+$a_cert = isset($config['cert']) ? $config['cert'] : array();
 $interfaces = get_configured_interface_with_descr();
 
 foreach (array('server', 'client') as $mode) {
@@ -214,6 +254,55 @@ include_once("head.inc");
                             <div class="hidden" data-for="help_for_port">
                                 <?=gettext("The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.");?>
                             </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DoH");?></td>
+                        <td>
+                          <input name="enable_doh" type="checkbox" value="yes" <?=!empty($pconfig['enable_doh']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Enable DoH') ?>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_port_doh" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port for DoH");?></td>
+                        <td>
+                            <input name="port_doh" type="text" id="port_doh" placeholder="443" size="6" value="<?=$pconfig['port_doh'];?>" />
+                            <div class="hidden" data-for="help_for_port_doh">
+                                <?=gettext("The port used for responding to DoH queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 443. The OPNsense webinterface or another http server (like nginx) may be already bound to the default https port on one of the selected network interfaces! You'll need to allow access to this port in the firewall configuration.");?>
+                            </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DoT");?></td>
+                        <td>
+                          <input name="enable_dot" type="checkbox" value="yes" <?=!empty($pconfig['enable_dot']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Enable DoT') ?>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_port_dot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port for DoT");?></td>
+                        <td>
+                            <input name="port_dot" type="text" id="port_dot" placeholder="853" size="6" value="<?=$pconfig['port_dot'];?>" />
+                            <div class="hidden" data-for="help_for_port_dot">
+                                <?=gettext("The port used for responding to DoT queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 853. You'll need to allow access to this port in the firewall configuration.");?>
+                            </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_dotdohcert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DoH and DoT Certificate"); ?></td>
+                        <td>
+                          <select name="dohdot_cert" class="selectpicker" data-style="btn-default">
+<?php foreach ($a_cert as $cert): ?>
+<?php if (isset($cert['prv'])): ?>
+                            <option value="<?=$cert['refid'];?>" <?=$pconfig['dohdot_cert'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
+                              <?=$cert['descr'];?>
+                            </option>
+<?php endif ?>
+<?php endforeach ?>
+                          </select>
+                          <div class='hidden' data-for="help_for_dotdohcert">
+                            <?=gettext('DoH and DoT Certificate to use.');?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
