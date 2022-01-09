@@ -90,7 +90,7 @@
 
         const grid_sad = $("#grid-sad").UIBootgrid(
             {
-                search:'/api/diagnostics/ipsec/listSad',
+                search:'/api/diagnostics/ipsec/searchSad',
                 options:{
                     formatters: formatters,
                 }
@@ -101,7 +101,7 @@
 
         const grid_spd = $("#grid-spd").UIBootgrid(
             {
-                search:'/api/diagnostics/ipsec/listSpd',
+                search:'/api/diagnostics/ipsec/searchSpd',
                 options:{
                     formatters: formatters,
                 }
@@ -125,16 +125,16 @@
 </script>
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
-    {% if show_sad %}
+    {% if allow_sad %}
     <li class="active"><a data-toggle="tab" role="tab" href="#sad">{{ lang._('Security Associations') }}</i></a></li>
-    {% endif %}{% if show_spd %}
-    <li{% if not show_sad %} class="active"{% endif %}><a data-toggle="tab" role="tab" href="#spd">{{ lang._('Security Policies') }}</i></a></li>
+    {% endif %}{% if allow_spd %}
+    <li{% if not allow_sad %} class="active"{% endif %}><a data-toggle="tab" role="tab" href="#spd">{{ lang._('Security Policies') }}</i></a></li>
     {% endif %}
 </ul>
 
 <div class="tab-content content-box">
-    {% if show_sad %}
-    <div class="tab-pane{% if show_sad %} active{% endif %}" id="sad" role="tabpanel">
+    {% if allow_sad %}
+    <div class="tab-pane{% if allow_sad %} active{% endif %}" id="sad" role="tabpanel">
         <table id="grid-sad" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
           <tr>
@@ -160,8 +160,8 @@
     </div>
     {% endif %}
 
-    {% if show_spd %}
-    <div class="tab-pane{% if not show_sad %} active{% endif %}" id="spd" role="tabpanel">
+    {% if allow_sad %}
+    <div class="tab-pane{% if not allow_sad %} active{% endif %}" id="spd" role="tabpanel">
         <table id="grid-spd" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
           <tr>

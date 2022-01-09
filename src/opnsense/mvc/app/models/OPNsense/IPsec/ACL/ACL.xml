@@ -64,17 +64,15 @@
     <page-status-ipsec-sad>
         <name>Status: IPsec: SAD</name>
         <patterns>
-            <pattern>ui/diagnostics/ipsec/dbs</pattern>
-            <pattern>api/diagnostics/ipsec/listSad</pattern>
-            <pattern>diag_ipsec_sad.php*</pattern>
+            <pattern>ui/diagnostics/ipsec/status</pattern>
+            <pattern>api/diagnostics/ipsec/searchSad</pattern>
         </patterns>
     </page-status-ipsec-sad>
     <page-status-ipsec-spd>
         <name>Status: IPsec: SPD</name>
         <patterns>
-            <pattern>ui/diagnostics/ipsec/dbs</pattern>
-            <pattern>api/diagnostics/ipsec/listSpd</pattern>
-            <pattern>diag_ipsec_spd.php*</pattern>
+            <pattern>ui/diagnostics/ipsec/status</pattern>
+            <pattern>api/diagnostics/ipsec/searchSpd</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-systemlogs-ipsecvpn>

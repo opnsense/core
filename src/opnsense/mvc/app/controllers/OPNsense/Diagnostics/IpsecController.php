@@ -40,13 +40,13 @@ use OPNsense\Core\ACL;
 class IpsecController extends IndexController
 {
     /**
-     * firewall live log view
+     * IPsec status view
      */
-    public function dbsAction()
+    public function statusAction()
     {
         $acl = new ACL();
-        $this->view->show_sad = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/listSad");
-        $this->view->show_spd = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/listSpd");
-        $this->view->pick('OPNsense/Diagnostics/ipsec_dbs');
+        $this->view->allow_sad = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/searchSad");
+        $this->view->allow_spd = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/searchSpd");
+        $this->view->pick('OPNsense/Diagnostics/ipsec_status');
     }
 }

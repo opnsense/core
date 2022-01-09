@@ -17,7 +17,7 @@
                 <Act url="/diag_ipsec.php?*" visibility="hidden"/>
             </Status>
             <Leases order="70" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
-            <SecurityDatabases order="80" VisibleName="Security Databases" url="/ui/diagnostics/ipsec/dbs"/>
+            <SecurityDatabases order="80" VisibleName="Security Databases" url="/ui/diagnostics/ipsec/status"/>
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/ipsec"/>
         </IPsec>
     </VPN>

@@ -28,10 +28,10 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use Phalcon\Filter;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use Phalcon\Filter;
 
 /**
  * Class IpsecController
@@ -44,21 +44,21 @@ class IpsecController extends ApiControllerBase
      * retrieve security associations database content
      * @return mixed
      */
-    public function listSadAction()
+    public function searchSadAction()
     {
-        return $this->getData('sa');
+        return $this->getDatabaseContent('sa');
     }
 
     /**
      * retrieve security policies database content
      * @return mixed
      */
-    public function listSpdAction()
+    public function searchSpdAction()
     {
-        return $this->getData('sp');
+        return $this->getDatabaseContent('sp');
     }
 
-    private function getData($db)
+    private function getDatabaseContent($db)
     {
         if ($this->request->isPost()) {
             $filter = new Filter([

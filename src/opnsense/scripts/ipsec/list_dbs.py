@@ -26,7 +26,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    show SA and sec. policy DBs, using vici interface
+    show SAs using vici interface and sec. policies using /sbin/setkey
 """
 
 import argparse
