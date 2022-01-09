@@ -32,7 +32,7 @@
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
-         let formatters = {
+         const formatters = {
             direction: function (column, row) {
                 if (row[column.id] == 'out') {
                     return "<span class=\"fa fa-arrow-left\" title=\"{{lang._('out')}}\" data-toggle=\"tooltip\"></span>";
@@ -88,27 +88,25 @@
             }
         };
 
-        let grid_sad = $("#grid-sad").UIBootgrid(
-                {
-                    search:'/api/diagnostics/ipsec/listSad',
-                    options:{
-                        formatters: formatters,
-                    }
+        const grid_sad = $("#grid-sad").UIBootgrid(
+            {
+                search:'/api/diagnostics/ipsec/listSad',
+                options:{
+                    formatters: formatters,
                 }
-        );
-        grid_sad.on('loaded.rs.jquery.bootgrid', function() {
+            }
+        ).on('loaded.rs.jquery.bootgrid', function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        let grid_spd = $("#grid-spd").UIBootgrid(
-                {
-                    search:'/api/diagnostics/ipsec/listSpd',
-                    options:{
-                        formatters: formatters,
-                    }
+        const grid_spd = $("#grid-spd").UIBootgrid(
+            {
+                search:'/api/diagnostics/ipsec/listSpd',
+                options:{
+                    formatters: formatters,
                 }
-        );
-        grid_spd.on('loaded.rs.jquery.bootgrid', function() {
+            }
+        ).on('loaded.rs.jquery.bootgrid', function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
 
@@ -127,12 +125,16 @@
 </script>
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
+    {% if show_sad %}
     <li class="active"><a data-toggle="tab" role="tab" href="#sad">{{ lang._('Security Associations') }}</i></a></li>
-    <li><a data-toggle="tab" role="tab" href="#spd">{{ lang._('Security Policies') }}</i></a></li>
+    {% endif %}{% if show_spd %}
+    <li{% if not show_sad %} class="active"{% endif %}><a data-toggle="tab" role="tab" href="#spd">{{ lang._('Security Policies') }}</i></a></li>
+    {% endif %}
 </ul>
 
 <div class="tab-content content-box">
-    <div class="tab-pane active" id="sad" role="tabpanel">
+    {% if show_sad %}
+    <div class="tab-pane{% if show_sad %} active{% endif %}" id="sad" role="tabpanel">
         <table id="grid-sad" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
           <tr>
@@ -156,9 +158,11 @@
           </tbody>
         </table>
     </div>
+    {% endif %}
 
-    <div class="tab-pane" id="spd" role="tabpanel">
-        <table id="grid-spd" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+    {% if show_spd %}
+    <div class="tab-pane{% if not show_sad %} active{% endif %}" id="spd" role="tabpanel">
+        <table id="grid-spd" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
           <tr>
               <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false" >{{ lang._('SP ID') }}</th>
@@ -177,4 +181,5 @@
           </tbody>
         </table>
     </div>
+    {% endif %}
 </div>

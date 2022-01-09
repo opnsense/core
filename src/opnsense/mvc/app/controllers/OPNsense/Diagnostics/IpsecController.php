@@ -31,6 +31,7 @@
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
+use OPNsense\Core\ACL;
 
 /**
  * Class IpsecController
@@ -43,6 +44,9 @@ class IpsecController extends IndexController
      */
     public function dbsAction()
     {
+        $acl = new ACL();
+        $this->view->show_sad = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/listSad");
+        $this->view->show_spd = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/listSpd");
         $this->view->pick('OPNsense/Diagnostics/ipsec_dbs');
     }
 }
