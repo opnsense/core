@@ -17,6 +17,44 @@
             <pattern>api/ipsec/legacy-subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec>
+    <page-status-ipsec>
+        <name>Status: IPsec: Overview</name>
+        <patterns>
+            <pattern>ui/diagnostics/ipsec/status</pattern>
+            <pattern>api/diagnostics/ipsec/searchConnection</pattern>
+            <pattern>api/diagnostics/ipsec/searchSad</pattern>
+        </patterns>
+    </page-status-ipsec>
+    <page-status-ipsec-edit>
+        <name>Status: IPsec: Overview: Edit</name>
+        <patterns>
+            <pattern>ui/diagnostics/ipsec/status</pattern>
+            <pattern>api/diagnostics/ipsec/searchConnection</pattern>
+            <pattern>api/diagnostics/ipsec/searchSad</pattern>
+            <pattern>api/ipsec/connection/*</pattern>
+        </patterns>
+    </page-status-ipsec-edit>
+    <page-status-ipsec-sad>
+        <name>Status: IPsec: SAD</name>
+        <patterns>
+            <pattern>ui/diagnostics/ipsec/status</pattern>
+            <pattern>api/diagnostics/ipsec/searchSad</pattern>
+        </patterns>
+    </page-status-ipsec-sad>
+    <page-status-ipsec-spd>
+        <name>Status: IPsec: SPD</name>
+        <patterns>
+            <pattern>ui/diagnostics/ipsec/status</pattern>
+            <pattern>api/diagnostics/ipsec/searchSpd</pattern>
+        </patterns>
+    </page-status-ipsec-spd>
+    <page-status-systemlogs-ipsecvpn>
+        <name>Status: System logs: IPsec VPN</name>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/ipsec/*</pattern>
+            <pattern>api/diagnostics/log/core/ipsec/*</pattern>
+        </patterns>
+    </page-status-systemlogs-ipsecvpn>
 
     <!-- ACLs for legacy code -->
     <page-vpn-ipsec-editphase1>
@@ -49,37 +87,10 @@
             <pattern>vpn_ipsec_keys.php*</pattern>
         </patterns>
     </page-vpn-ipsec-listkeys>
-    <page-status-ipsec>
-        <name>Status: IPsec</name>
-        <patterns>
-            <pattern>diag_ipsec.php*</pattern>
-        </patterns>
-    </page-status-ipsec>
     <page-status-ipsec-leases>
         <name>Status: IPsec: Leasespage</name>
         <patterns>
             <pattern>diag_ipsec_leases.php*</pattern>
         </patterns>
     </page-status-ipsec-leases>
-    <page-status-ipsec-sad>
-        <name>Status: IPsec: SAD</name>
-        <patterns>
-            <pattern>ui/diagnostics/ipsec/status</pattern>
-            <pattern>api/diagnostics/ipsec/searchSad</pattern>
-        </patterns>
-    </page-status-ipsec-sad>
-    <page-status-ipsec-spd>
-        <name>Status: IPsec: SPD</name>
-        <patterns>
-            <pattern>ui/diagnostics/ipsec/status</pattern>
-            <pattern>api/diagnostics/ipsec/searchSpd</pattern>
-        </patterns>
-    </page-status-ipsec-spd>
-    <page-status-systemlogs-ipsecvpn>
-        <name>Status: System logs: IPsec VPN</name>
-        <patterns>
-            <pattern>ui/diagnostics/log/core/ipsec/*</pattern>
-            <pattern>api/diagnostics/log/core/ipsec/*</pattern>
-        </patterns>
-    </page-status-systemlogs-ipsecvpn>
 </acl>

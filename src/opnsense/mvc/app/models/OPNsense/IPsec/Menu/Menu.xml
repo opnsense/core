@@ -13,11 +13,8 @@
             </Keys>
             <KeyPairs order="40" VisibleName="RSA Key Pairs" url="/ui/ipsec/key-pairs" />
             <Settings order="50" VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
-            <Status order="60" VisibleName="Status Overview" url="/diag_ipsec.php">
-                <Act url="/diag_ipsec.php?*" visibility="hidden"/>
-            </Status>
+            <Status order="60" VisibleName="Status Overview" url="/ui/diagnostics/ipsec/status"/>
             <Leases order="70" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
-            <SecurityDatabases order="80" VisibleName="Security Databases" url="/ui/diagnostics/ipsec/status"/>
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/ipsec"/>
         </IPsec>
     </VPN>

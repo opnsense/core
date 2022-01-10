@@ -40,13 +40,19 @@ use Phalcon\Filter;
 class IpsecController extends ApiControllerBase
 {
 
+    public function searchConnectionAction()
+    {
+        return $this->getStatusData('conn');
+    }
+
     /**
      * retrieve security associations database content
      * @return mixed
      */
     public function searchSadAction()
     {
-        return $this->getDatabaseContent('sa');
+        $connection = $this->request->getPost('connection', 'string', "");
+        return $this->getStatusData('sa', $connection);
     }
 
     /**
@@ -55,10 +61,10 @@ class IpsecController extends ApiControllerBase
      */
     public function searchSpdAction()
     {
-        return $this->getDatabaseContent('sp');
+        return $this->getStatusData('sp');
     }
 
-    private function getDatabaseContent($db)
+    private function getStatusData($db, $connection_filter = -1)
     {
         if ($this->request->isPost()) {
             $filter = new Filter([
@@ -80,8 +86,8 @@ class IpsecController extends ApiControllerBase
                 $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
             }
 
-            $result = json_decode((new Backend())->configdpRun("ipsec list database $db",
-                [$searchPhrase, $itemsPerPage, ($currentPage - 1) * $itemsPerPage, $sortBy]), true);
+            $result = json_decode((new Backend())->configdpRun("ipsec list status $db",
+                [$searchPhrase, $itemsPerPage, ($currentPage - 1) * $itemsPerPage, $sortBy, $connection_filter]), true);
             if ($result != null) {
                 return [
                     'rows' => $result['rows'],
