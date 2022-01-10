@@ -73,7 +73,7 @@
             },
             inoutbytes: function (column, row) {
                 if (row[column.id+"-in"] && row[column.id+"-out"]) {
-                    return `in: ${format_bytes(row[column.id+"-in"])}<br>out:${format_bytes(row[column.id+"-out"])}`;
+                    return `in: ${format_bytes(row[column.id+"-in"])}<br>out: ${format_bytes(row[column.id+"-out"])}`;
                 } else if (row[column.id+"-in"]) {
                     return `in: ${format_bytes(row[column.id+"-in"])}`;
                 } else if (row[column.id+"-out"]) {
@@ -111,7 +111,7 @@
             },
             spi: function (column, row) {
                 if (row[column.id+"-in"] && row[column.id+"-out"]) {
-                    return `in: ${row[column.id+"-in"]}<br>out:${row[column.id+"-out"]}`;
+                    return `in: ${row[column.id+"-in"]}<br>out: ${row[column.id+"-out"]}`;
                 } else if (row[column.id+"-in"]) {
                     return `in: ${row[column.id+"-in"]}`;
                 } else if (row[column.id+"-out"]) {
@@ -257,8 +257,8 @@
         <table id="grid-overview" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
           <tr>
-              <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true">{{ lang._('Connection ID') }}</th>
-              <th data-column-id="name" data-type="string" data-sortable="false">{{ lang._('Connection Name') }}</th>
+              <th data-column-id="id" data-type="string" data-identifier="true">{{ lang._('Connection ID') }}</th>
+              <th data-column-id="name" data-type="string">{{ lang._('Connection Name') }}</th>
               <th data-column-id="version" data-type="string" data-sortable="false" data-visible="false">{{ lang._('IKE Version') }}</th>
               <th data-column-id="local-addrs" data-type="string" data-visible="false">{{ lang._('Local Host') }}</th>
               <th data-column-id="local-id" data-type="string" data-visible="false">{{ lang._('Local ID') }}</th>
