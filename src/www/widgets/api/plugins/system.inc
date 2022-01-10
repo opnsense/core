@@ -129,7 +129,7 @@ function system_api_disk()
         }
     }
 
-    $types = [ 'ufs', 'tmpfs', 'zfs', 'cd9660' ];
+    $types = [ 'cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs' ];
     $result['devices'] = [];
     exec('/bin/df -ahT', $disk_info);
     foreach ($disk_info as $line) {
