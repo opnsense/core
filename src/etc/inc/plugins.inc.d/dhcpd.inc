@@ -1611,7 +1611,6 @@ EOD;
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdv6conf .= "  option host-name {$dhhostname};\n";
-                    $dhcpdv6conf .= "  set hostname-override = config-option host-name;\n";
                 }
                 if (!empty($sm['filename'])) {
                     $dhcpdv6conf .= "  filename \"{$sm['filename']}\";\n";
