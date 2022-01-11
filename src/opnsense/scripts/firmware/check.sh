@@ -78,7 +78,7 @@ product_abi=$(opnsense-version -a)
 product_xabi=$(opnsense-version -x)
 
 if [ -n "${product_xabi}" -a "${product_abi}" != "${product_xabi}" ]; then
-	force_all="-f"
+    force_all="-f"
 fi
 
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
@@ -301,7 +301,7 @@ else
             base_to_delete="$(opnsense-version -v base)"
             base_is_size="$(opnsense-update -bfSr ${base_to_reboot})"
             if [ "${base_to_reboot}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
-	        # XXX this could be a downgrade or reinstall
+                # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
                     packages_upgraded=${packages_upgraded}","
                 fi
@@ -324,7 +324,7 @@ else
             kernel_to_delete="$(opnsense-version -v kernel)"
             kernel_is_size="$(opnsense-update -fkSr ${kernel_to_reboot})"
             if [ "${kernel_to_reboot}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
-	        # XXX this could be a downgrade or reinstall
+                # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
                     packages_upgraded=${packages_upgraded}","
                 fi
