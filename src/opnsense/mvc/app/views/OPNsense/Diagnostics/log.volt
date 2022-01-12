@@ -143,6 +143,10 @@
       // move filter into action header
       $("#severity_filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
 
+      // handle Firewall Log Plain View (lock with Informational severity)
+      if ("{{module}}_{{scope}}" == "core_filter") {
+          $("#severity_filter").val("Informational").prop("disabled", true).change();
+      }
 
       function switch_mode(value) {
           let select = $("#severity_filter");
