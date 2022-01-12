@@ -20,15 +20,15 @@
     <page-services-dnsresolver-editdomainoverride>
         <name>Services: Unbound DNS: Edit Domain Override</name>
         <patterns>
-            <pattern>services_unbound_overrides.php</pattern>
-            <pattern>services_unbound_domainoverride_edit.php*</pattern>
+            <pattern>ui/unbound/*</pattern>
+            <pattern>api/unbound/*</pattern>
         </patterns>
     </page-services-dnsresolver-editdomainoverride>
     <page-services-dnsresolver-edithost>
         <name>Services: Unbound DNS: Edit Host Override</name>
         <patterns>
-            <pattern>services_unbound_overrides.php</pattern>
-            <pattern>services_unbound_host_edit.php*</pattern>
+            <pattern>ui/unbound/*</pattern>
+            <pattern>api/unbound/*</pattern>
         </patterns>
     </page-services-dnsresolver-edithost>
     <page-diagnostics-logs-resolver>
