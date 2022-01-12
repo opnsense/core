@@ -222,7 +222,7 @@ add_new_resolv_conf() {
 		done
 	fi
 
-        rm -f /tmp/${interface}_nameserver
+	rm -f /tmp/${interface}_nameserver
 
 	if [ -n "$new_domain_name_servers" ]; then
 		for nameserver in $new_domain_name_servers; do
@@ -234,7 +234,7 @@ add_new_resolv_conf() {
 		done
 	fi
 
-        rm -f /tmp/${interface}_searchdomain
+	rm -f /tmp/${interface}_searchdomain
 
 	if [ -n "$new_domain_name" ]; then
 		echo $new_domain_name > /tmp/${interface}_searchdomain
