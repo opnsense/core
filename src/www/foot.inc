@@ -93,6 +93,14 @@
           });
         });
       });
+      Object.assign(jQuery.fn.selectpicker.Constructor.DEFAULTS,
+          {
+              'noneSelectedText': "<?=gettext('Nothing selected');?>",
+              'noneResultsText':  "<?=gettext('No results matched {0}');?>",
+              'selectAllText': "<?=gettext('Select All');?>",
+              'deselectAllText':  "<?=gettext('Deselect All');?>"
+          }
+      );
     </script>
   </body>
 </html>
