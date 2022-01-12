@@ -344,7 +344,7 @@ function legacy_interfaces_details($intf = null)
             $next_line = $ifconfig_data[$lineid + 1];
             $result[$current_interface]['laggstatistics']['active ports'] = trim(explode(":", $next_line)[1]);
             $next_line = $ifconfig_data[$lineid + 1];
-            $result[$current_interface]['laggstatistics']['flapping'] =  trim(explode(":", $next_line)[1]);
+            $result[$current_interface]['laggstatistics']['flapping'] = trim(explode(":", $next_line)[1]);
         } elseif (preg_match("/laggport: (.*)\Wflags=\d+<(.*)> state=\d+<(.*)>$/", $line, $matches)) {
             if (empty($result[$current_interface]['laggport'])) {
                 $result[$current_interface]['laggport'] = array();

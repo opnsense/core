@@ -400,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
-    $pconfig['gateway_interface'] =  isset($a_interfaces[$if]['gateway_interface']);
+    $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
@@ -2345,7 +2345,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
+                            <input name="password" type="password" autocomplete="new-password" id="password" value="<?=$pconfig['password'];?>" />
                           </td>
                         </tr>
                         <tr>
@@ -2413,7 +2413,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="pppoe_password" type="password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
+                            <input name="pppoe_password" type="password" autocomplete="new-password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
                           </td>
                         </tr>
                         <tr>
@@ -2488,7 +2488,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
                           <td>
-                            <input name="pptp_password" type="password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
+                            <input name="pptp_password" type="password" autocomplete="new-password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
                           </td>
                         </tr>
                         <tr>

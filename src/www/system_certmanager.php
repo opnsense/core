@@ -863,8 +863,8 @@ include("head.inc");
         event.preventDefault();
         var id = $(this).data('id');
 
-        let password_input = $('<input type="password" class="form-control password_field" placeholder="<?=html_safe(gettext("Password"));?>">');
-        let confirm_input = $('<input type="password" class="form-control password_field" placeholder="<?=html_safe(gettext("Confirm"));?>">');
+        let password_input = $('<input type="password" autocomplete="new-password" class="form-control password_field" placeholder="<?=html_safe(gettext("Password"));?>">');
+        let confirm_input = $('<input type="password" autocomplete="new-password" class="form-control password_field" placeholder="<?=html_safe(gettext("Confirm"));?>">');
         let dialog_items = $('<div class = "form-group">');
         dialog_items.append(
           $("<span>").text("<?=html_safe(gettext('Optionally use a password to protect your export'));?>"),

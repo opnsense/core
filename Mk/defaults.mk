@@ -37,6 +37,8 @@ GITVERSION=	${.CURDIR}/Scripts/version.sh
 _CORE_ARCH!=	uname -p
 CORE_ARCH?=	${_CORE_ARCH}
 
+CORE_MAKE=	${MAKE}
+
 OPENSSL=	${LOCALBASE}/bin/openssl
 
 .if ! defined(CORE_FLAVOUR)

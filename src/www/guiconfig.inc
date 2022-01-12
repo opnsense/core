@@ -441,10 +441,10 @@ function pconfig_to_address(&$adr, $padr, $pmask, $pnot = false, $pbeginport = 0
 
     if (is_alias($pbeginport)) {
         $adr['port'] = $pbeginport;
-    } elseif (($pbeginport != 0) && ($pbeginport != "any")) {
+    } elseif ($pbeginport !== 0) {
         if ($pbeginport != $pendport && !empty($pendport)) {
             $adr['port'] = $pbeginport . "-" . $pendport;
-        } else {
+        } elseif ($pbeginport !== "any") {
             $adr['port'] = $pbeginport;
         }
     }

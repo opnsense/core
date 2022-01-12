@@ -277,7 +277,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
-                $intfv4[] =  $intf;
+                $intfv4[] = $intf;
             }
         }
         // add VPN and local networks
@@ -617,7 +617,7 @@ function filter_generate_scrubing(&$FilterIflist)
                     $scrub_rule_out .= "any";
                 }
                 if (!empty($scrub_rule['srcport']) && is_alias($scrub_rule['srcport'])) {
-                    $scrub_rule_out .=  " port $" . $scrub_rule['srcport'];
+                    $scrub_rule_out .= " port $" . $scrub_rule['srcport'];
                 } else {
                     $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
                 }

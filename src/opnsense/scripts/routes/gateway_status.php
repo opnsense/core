@@ -64,7 +64,7 @@ foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gateways
         }
     } else {
         $gatewayItem['status'] = 'none';
-        $gatewayItem['status_translated'] =  gettext('Online');
+        $gatewayItem['status_translated'] = gettext('Online');
         $gatewayItem['loss'] = '~';
         $gatewayItem['stddev'] = '~';
         $gatewayItem['delay'] = '~';

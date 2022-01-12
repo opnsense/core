@@ -49,7 +49,7 @@ def parse_sa(in_conn):
     elif 'local-host' in in_conn:
         result['local-addrs'] = in_conn['local-host']
     if 'remote_addrs'  in in_conn:
-        result['remote-addrs'] =  b','.join(in_conn['remote_addrs'])
+        result['remote-addrs'] = b','.join(in_conn['remote_addrs'])
     elif 'remote-host' in in_conn:
         result['remote-addrs'] = in_conn['remote-host']
     if 'children' in in_conn:

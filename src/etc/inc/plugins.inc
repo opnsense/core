@@ -133,6 +133,10 @@ function plugins_cron()
     return $jobs;
 }
 
+/**
+ * list of known applications for syslog-ng to use
+ * Only to be used to register syslog-ng custom destinations (facility is program in syslog-ng's context)
+ */
 function plugins_syslog()
 {
     $syslogs = array();

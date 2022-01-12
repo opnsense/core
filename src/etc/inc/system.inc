@@ -753,34 +753,25 @@ function get_memory()
 
 function system_firmware_configure($verbose = false)
 {
-    global $config, $g;
+    global $config;
 
     if ($verbose) {
         echo 'Writing firmware setting...';
         flush();
     }
 
-    /* rewrite the config via the defaults */
-    $origin_conf = '/usr/local/etc/pkg/repos/OPNsense.conf';
-    copy("{$origin_conf}.sample", $origin_conf);
+    $args = [];
 
     if (!empty($config['system']['firmware']['mirror'])) {
-        mwexecf(
-            '/usr/local/sbin/opnsense-update %s %s',
-            array('-sm', str_replace('/', '\/', $config['system']['firmware']['mirror']))
-        );
+        $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror']));
     }
 
     if (!empty($config['system']['firmware']['flavour'])) {
-        mwexecf(
-            '/usr/local/sbin/opnsense-update -sn %s',
-            str_replace('/', '\/', sprintf(
-                "%s{$config['system']['firmware']['flavour']}",
-                /* if there is no directory slash we always treat it with default ABI prefix */
-                strpos($config['system']['firmware']['flavour'], '/') === false ? "${g['product_abi']}/" : ''
-            ))
-        );
+        $args[] = exec_safe('-n %s', str_replace('/', '\/', $config['system']['firmware']['flavour']));
     }
+
+    /* rewrite the config via the defaults and possible arguments */
+    mwexec('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
 
     if ($verbose) {
         echo "done.\n";
@@ -854,6 +845,7 @@ function system_trust_configure($verbose = false)
         copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
         @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
         copy($ca_cert_pem, '/etc/ssl/cert.pem');
+        chmod('/etc/ssl/cert.pem', 0644);
     }
 
     if ($verbose) {

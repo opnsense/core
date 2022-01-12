@@ -573,10 +573,10 @@ function is_ipaddrv4($ipaddr)
     }
 }
 
-/* returns true if $ipaddr is a valid linklocal address */
+/* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return (strtolower(substr($ipaddr, 0, 5)) == "fe80:");
+    return preg_match("/^fe[89ab][0-9a-f]:/i", $ipaddr);
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
@@ -786,22 +786,6 @@ function get_configured_ip_aliases_list()
     foreach (config_read_array('virtualip', 'vip') as $vip) {
         if ($vip['mode'] == 'ipalias') {
             $alias_list[$vip['subnet']] = $vip['interface'];
-        }
-    }
-
-    return $alias_list;
-}
-
-/* return all configured aliases list (IP, carp, proxyarp and other) */
-function get_configured_vips_list()
-{
-    $alias_list = array();
-
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
-        if ($vip['mode'] == 'carp') {
-            $alias_list[] = array('ipaddr' => $vip['subnet'], 'if' => "{$vip['interface']}_vip{$vip['vhid']}");
-        } else {
-            $alias_list[] = array('ipaddr' => $vip['subnet'], 'if' => $vip['interface']);
         }
     }
 

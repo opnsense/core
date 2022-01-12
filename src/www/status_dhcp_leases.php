@@ -428,7 +428,7 @@ legacy_html_escape_form_data($leases);
                   <td class="text-nowrap">
 <?php if (!empty($data['if'])): ?>
 <?php if ($data['type'] == 'dynamic'): ?>
-                      <a class="btn btn-default btn-xs" href="services_dhcp_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>">
+                      <a class="btn btn-default btn-xs" href="services_dhcp_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>&amp;ipaddr=<?=$data['ip'];?>">
                         <i class="fa fa-plus fa-fw" data-toggle="tooltip" title="<?=gettext("add a static mapping for this MAC address");?>"></i>
                       </a>
 <?php if ($data['online'] != 'online'):?>

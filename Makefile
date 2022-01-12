@@ -38,6 +38,7 @@ CORE_TYPE?=	business
 . if empty(CORE_${REPLACEMENT})
 .  warning Cannot build without CORE_${REPLACEMENT} set
 . endif
+CORE_MAKE+=	CORE_${REPLACEMENT}=${CORE_${REPLACEMENT}}
 .endfor
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
@@ -262,8 +263,8 @@ scripts:
 .endfor
 
 install:
-	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
+	@${CORE_MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
+	@${CORE_MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
 .if exists(${LOCALBASE}/opnsense/www/index.php)
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
@@ -278,19 +279,19 @@ collect:
 	done
 
 bootstrap:
-	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
+	@${CORE_MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please ${MAKE_REPLACE}
 
 plist:
-	@(${MAKE} -C ${.CURDIR}/contrib plist && \
-	    ${MAKE} -C ${.CURDIR}/src plist) | sort
+	@(${CORE_MAKE} -C ${.CURDIR}/contrib plist && \
+	    ${CORE_MAKE} -C ${.CURDIR}/src plist) | sort
 
 plist-fix:
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
 
 plist-check:
 	@mkdir -p ${WRKDIR}
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
 	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
 	@if ! diff -q ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
 		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new || true; \
@@ -302,9 +303,9 @@ plist-check:
 
 metadata:
 	@mkdir -p ${DESTDIR}
-	@${MAKE} DESTDIR=${DESTDIR} scripts
-	@${MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
+	@${CORE_MAKE} DESTDIR=${DESTDIR} scripts
+	@${CORE_MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
 
 package-check:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
@@ -317,10 +318,10 @@ package: plist-check package-check clean-wrksrc
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} metadata
+	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} install
+	@${CORE_MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core
