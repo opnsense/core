@@ -211,11 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if(!empty($_POST['restorearea']) && !stristr($data, "<" . $_POST['restorearea'] . ">")) {
-            /* restore a specific area of the configuration */
-            $input_errors[] = gettext("You have selected to restore an area but we could not locate the correct xml tag.");
-        }
-
         if (count($input_errors) == 0) {
             if (!empty($_POST['restorearea'])) {
                 if (!restore_config_section($_POST['restorearea'], $data)) {
