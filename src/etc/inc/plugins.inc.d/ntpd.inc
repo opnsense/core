@@ -378,7 +378,10 @@ function ntpd_configure_do($verbose = false)
     /* Access restrictions */
     $ntpcfg .= 'restrict default';
     if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
-        $ntpcfg .= ' kod limited';
+        $ntpcfg .= ' kod';
+    }
+    if (empty($config['ntpd']['limited'])) { /*note: this one works backwards */
+        $ntpcfg .= ' limited';
     }
     if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
         $ntpcfg .= ' nomodify';
@@ -397,7 +400,10 @@ function ntpd_configure_do($verbose = false)
     }
     $ntpcfg .= "\nrestrict -6 default";
     if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
-        $ntpcfg .= ' kod limited';
+        $ntpcfg .= ' kod';
+    }
+    if (empty($config['ntpd']['limited'])) { /*note: this one works backwards */
+        $ntpcfg .= ' limited';
     }
     if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
         $ntpcfg .= ' nomodify';

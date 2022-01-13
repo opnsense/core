@@ -41,6 +41,7 @@ $copy_fields = [
     'clockstats',
     'interface',
     'kod',
+    'limited',
     'leapsec',
     'logpeer',
     'logsys',
@@ -96,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // swap fields, really stupid field usage which we are not going to change now....
-    foreach (array('kod', 'nomodify', 'nopeer', 'notrap') as $fieldname) {
+    foreach (array('kod', 'limited', 'nomodify', 'nopeer', 'notrap') as $fieldname) {
         $pconfig[$fieldname] = empty($pconfig[$fieldname]);
     }
 
@@ -400,10 +401,13 @@ include("head.inc");
                       <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show access restriction options");?>
                       </div>
                       <div id="showrestrict" style="display:none">
-                      <?=gettext("These options control access to NTP from the WAN."); ?>
+                      <?=gettext("These options control access to NTP."); ?>
                       <br /><br />
                       <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable Kiss-o'-death packets"); ?>
+                      <br />
+                      <input name="limited" type="checkbox" id="limited"<?=empty($pconfig['limited']) ? " checked=\"checked\"" : ""; ?> />
+                      <?=gettext("Enable Rate limiting"); ?>
                       <br />
                       <input name="nomodify" type="checkbox" id="nomodify"<?=empty($pconfig['nomodify']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc"); ?>
