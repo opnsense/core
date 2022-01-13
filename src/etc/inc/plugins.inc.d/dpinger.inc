@@ -192,12 +192,10 @@ function dpinger_configure_do($verbose = false, $gwname = null)
              * then the ICMP6 response would not find its way back home.
              */
             if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-                /* XXX 'if' can be wrong for IPv6 */
-                $gateway['monitor'] .= "%{$gateway['if']}";
+                $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
             }
             if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-                /* XXX 'if' can be wrong for IPv6 */
-                $gateway['gateway'] .= "%{$gateway['if']}";
+                $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
             }
 
             /* flush the monitor unconditionally */
