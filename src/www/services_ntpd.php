@@ -401,7 +401,7 @@ include("head.inc");
                       <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show access restriction options");?>
                       </div>
                       <div id="showrestrict" style="display:none">
-                      <?=gettext("These options control access to NTP from all interfaces."); ?>
+                      <?=gettext("These options control access to NTP."); ?>
                       <br /><br />
                       <input name="kod" type="checkbox" id="kod"<?=empty($pconfig['kod']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable Kiss-o'-death packets"); ?>
