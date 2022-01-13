@@ -149,7 +149,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
             }
 
             if (!is_ipaddrv4($gwifip)) {
-                log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
+                log_error(sprintf('The %s IPv4 interface address is invalid, skipping.', $name));
                 continue;
             }
 
@@ -183,7 +183,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
             }
 
             if (empty($gwifip)) {
-                log_error(sprintf('The %s IPv6 gateway address could not be found, skipping.', $name));
+                log_error(sprintf('The %s IPv6 interface address could not be found, skipping.', $name));
                 continue;
             }
 
