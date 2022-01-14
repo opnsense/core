@@ -49,6 +49,8 @@ smmsp:*:25:
 mailnull:*:26:
 guest:*:31:
 video:*:44:
+realtime:*:47:
+idletime:*:48:
 bind:*:53:
 unbound:*:59:
 proxy:*:62:
@@ -63,6 +65,7 @@ www:*:80:
 ntpd:*:123:
 _ypldap:*:160:
 hast:*:845:
+tests:*:977:
 nogroup:*:65533:
 nobody:*:65534:
 
@@ -97,6 +100,7 @@ www:*:80:80::0:0:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
 ntpd:*:123:123::0:0:NTP Daemon:/var/db/ntp:/usr/sbin/nologin
 _ypldap:*:160:160::0:0:YP LDAP unprivileged user:/var/empty:/usr/sbin/nologin
 hast:*:845:845::0:0:HAST unprivileged user:/var/empty:/usr/sbin/nologin
+tests:*:977:977::0:0:Unprivileged user for tests:/nonexistent:/usr/sbin/nologin
 nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
 
 EOF;
