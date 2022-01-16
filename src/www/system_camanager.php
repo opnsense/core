@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "edit") {
         if (!isset($id)) {
-            header(url_safe('Location: /system_camanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
         $pconfig['descr'] = $a_ca[$id]['descr'];
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dn_commonname'] = "internal-ca";
     } elseif ($act == "exp") {
         if (!isset($id)) {
-            header(url_safe('Location: /system_camanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
 
@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == "expkey") {
         if (!isset($id)) {
-            header(url_safe('Location: /system_camanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
 
@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         if (!isset($id)) {
-            header(url_safe('Location: /system_camanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
         $index = count($a_cert) - 1;
@@ -250,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($a_ca[$id]);
         write_config();
         system_trust_configure();
-        header(url_safe('Location: /system_camanager.php'));
+        header(url_safe('Location: /ui/pki#authorities'));
         exit;
     } else {
         $input_errors = array();
@@ -424,7 +424,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (count($input_errors) == 0) {
                 write_config();
                 system_trust_configure();
-                header(url_safe('Location: /system_camanager.php'));
+                header(url_safe('Location: /ui/pki#authorities'));
                 exit;
             }
         }
