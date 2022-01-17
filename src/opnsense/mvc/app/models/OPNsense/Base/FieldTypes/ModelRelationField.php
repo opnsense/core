@@ -60,7 +60,7 @@ class ModelRelationField extends BaseListField
     /**
      * @var array collected options
      */
-    private static $internalCacheOptionList = array();
+    private static $internalCacheOptionList = [];
 
     /**
      * load model option list
@@ -176,41 +176,20 @@ class ModelRelationField extends BaseListField
 
     /**
      * get valid options, descriptions and selected value
-     * performs sorting on internalOptionsList
-     * Doing this here instead of in loadModelOptions()
-     * otherwise internalIsSorted would have to be set
-     * the first time loadModelOptions() runs. This allows
-     * it to change later.
+     * keeps saved item sorting when internalIsSorted is set.
      * @return array
      */
     public function getNodeData()
     {
-        if (
-            isset($this->internalOptionList) &&
-            is_array($this->internalOptionList)
-        ) {
-            // Get selected items into an array.
-            $datanodes = explode(',', $this->internalValue);
-            if ($this->internalIsSorted) {
-                // Establish an array of keys with the selected keys as the first entires.
-                $optKeys = $datanodes;
-                foreach (array_keys($this->internalOptionList) as $key) {
-                    // Append each non-selected key to the array one-by-one.
-                    if (!in_array($key, $optKeys)) {
-                        $optKeys[] = $key;
-                    }
+        if ($this->internalIsSorted) {
+            $optKeys = array_merge(explode(',', $this->internalValue), array_keys($this->internalOptionList));
+            $ordered_option_list = [];
+            foreach (array_unique($optKeys) as $key) {
+                if (in_array($key, array_keys($this->internalOptionList))) {
+                    $ordered_option_list[$key] = $this->internalOptionList[$key];
                 }
-                // Perform reordering of the option list based on the newly ordered keys array.
-                $ordered_option_list = array();
-                // Iterate through each key and inject the key:value pair from internalOptionList.
-                foreach ($optKeys as $key) {
-                    // Prevent arbitrary $key values, check that $key is in internalOptionList.
-                    if (in_array($key, array_keys($this->internalOptionList))) {
-                        $ordered_option_list[$key] = $this->internalOptionList[$key];
-                    }
-                }
-                $this->internalOptionList = $ordered_option_list;
             }
+            $this->internalOptionList = $ordered_option_list;
         }
 
         return parent::getNodeData();

@@ -46,25 +46,6 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * @param array $in
-     * @param string $key
-     * @return integer|null sequence
-     */
-    private function arraySequence($in, $key)
-    {
-        $counter = 0;
-        if (is_array($in)) {
-            foreach ($in as $arr_key => $arr_val) {
-                if ($arr_key == $key) {
-                    return $counter;
-                }
-                ++$counter;
-            }
-        }
-        return null;
-    }
-
-    /**
      * test construct
      */
     public function testCanBeCreated()
@@ -365,15 +346,15 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->eventPostLoading();
         $field->setValue("4d0e2835-7a19-4a19-8c23-e12383827594,5ea2a35c-b02b-485a-912b-d077e639bf9f");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 0);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 1);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 0);
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 1);
     }
 
     /**
@@ -392,15 +373,15 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->eventPostLoading();
         $field->setValue("");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, ''), 0);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 4);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('', $node_data), 0);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 4);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, ''), 0);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 4);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('', $node_data), 0);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 4);
     }
 
     /**
@@ -420,17 +401,17 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->eventPostLoading();
         $field->setValue("4d0e2835-7a19-4a19-8c23-e12383827594,''");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 0);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 2);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 0);
     }
 
     /**
@@ -455,23 +436,23 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
                          "60e1bc02-6817-4940-bbd3-61d0cf439a8a," .
                          "3bf8fc9c-6f36-4821-9944-ed7dfed50ad6");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 0);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 2);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 0);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 2);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
     }
 
     /**
@@ -493,23 +474,23 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
                          "4d0e2835-7a19-4a19-8c23-e12383827594," .
                          "60e1bc02-6817-4940-bbd3-61d0cf439a8a,");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 0);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 2);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 4);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 1);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 3);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 4);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 0);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 1);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 2);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
     }
 
     /**
@@ -531,23 +512,23 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
                          "48bea3c9-c563-4885-a593-dea0a6af2e1e," .
                          "4d0e2835-7a19-4a19-8c23-e12383827594,");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 0);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 2);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 3);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 4);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 2);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 0);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
     }
 
     /**
@@ -570,23 +551,23 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
                          "d3adb33f-c563-4885-a593-dea0a6af2e1e," .
                          "4d0e2835-7a19-4a19-8c23-e12383827594,");
 
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 1);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 3);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 0);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 1);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 2);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 3);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 4);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
 
         // set sorted by input and check again
         $field->setSorted('Y');
-        $node_data = $field->getNodeData();
-        $this->assertEquals($this->arraySequence($node_data, '5ea2a35c-b02b-485a-912b-d077e639bf9f'), 2);
-        $this->assertEquals($this->arraySequence($node_data, '48bea3c9-c563-4885-a593-dea0a6af2e1e'), 3);
-        $this->assertEquals($this->arraySequence($node_data, 'd1e7eda3-f940-42d9-8dfa-db7b1264b6e1'), 4);
-        $this->assertEquals($this->arraySequence($node_data, '4d0e2835-7a19-4a19-8c23-e12383827594'), 1);
-        $this->assertEquals($this->arraySequence($node_data, '60e1bc02-6817-4940-bbd3-61d0cf439a8a'), 0);
-        $this->assertEquals($this->arraySequence($node_data, '3bf8fc9c-6f36-4821-9944-ed7dfed50ad6'), 5);
+        $node_data = array_keys($field->getNodeData());
+        $this->assertEquals(array_search('5ea2a35c-b02b-485a-912b-d077e639bf9f', $node_data), 2);
+        $this->assertEquals(array_search('48bea3c9-c563-4885-a593-dea0a6af2e1e', $node_data), 3);
+        $this->assertEquals(array_search('d1e7eda3-f940-42d9-8dfa-db7b1264b6e1', $node_data), 4);
+        $this->assertEquals(array_search('4d0e2835-7a19-4a19-8c23-e12383827594', $node_data), 1);
+        $this->assertEquals(array_search('60e1bc02-6817-4940-bbd3-61d0cf439a8a', $node_data), 0);
+        $this->assertEquals(array_search('3bf8fc9c-6f36-4821-9944-ed7dfed50ad6', $node_data), 5);
     }
 
     /**
