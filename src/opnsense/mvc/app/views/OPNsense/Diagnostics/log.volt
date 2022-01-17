@@ -208,7 +208,7 @@
                         </select>
                     </div>
                 </div>
-                <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive" data-store-selection="true">
+                <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive">
                     <thead>
                     <tr>
                         <th data-column-id="timestamp" data-width="11em" data-type="string">{{ lang._('Date') }}</th>
