@@ -955,9 +955,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
     //  Prefer older IPsec SAs (advanced setting)
     if (isset($config['ipsec']['preferoldsa'])) {
-        set_single_sysctl("net.key.preferred_oldsa", "-30");
+        set_single_sysctl('net.key.preferred_oldsa', '-30');
     } else {
-        set_single_sysctl("net.key.preferred_oldsa", "0");
+        set_single_sysctl('net.key.preferred_oldsa', '0');
     }
 
     $ipseccfg = $config['ipsec'];
