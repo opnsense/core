@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -32,13 +32,21 @@
 
 require_once("IPv6.inc");
 
-function killbyname($procname, $sig = 'TERM')
+function killbyname($procname, $sig = 'TERM', $waitforit = false)
 {
     if (!is_process_running($procname)) {
         return;
     }
 
     mwexecf('/bin/pkill -%s %s', array($sig, $procname));
+
+    if (!$waitforit) {
+        return;
+    }
+
+    while (is_process_running($procname)) {
+        usleep(200 * 1000);
+    }
 }
 
 function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
