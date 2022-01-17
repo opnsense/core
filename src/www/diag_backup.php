@@ -63,8 +63,6 @@ function restore_config_section($section_name, $new_contents)
     write_config(sprintf('Restored section %s of config file', $section_name));
     convert_config();
 
-    disable_security_checks();
-
     return true;
 }
 

@@ -61,7 +61,69 @@ function set_language()
     bind_textdomain_codeset($textdomain, $lang_encoding);
 }
 
-function session_auth(&$Login_Error)
+/* DNS ReBinding attack prevention, return true when rebind detected*/
+function check_security_dns_rebind()
+{
+    global $config;
+    if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
+        /* either an IPv6 address with or without an alternate port */
+        if (strstr($_SERVER['HTTP_HOST'], "]")) {
+            $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
+            /* v6 address has more parts, drop the last part */
+            if (count($http_host_port) > 1) {
+                array_pop($hfttp_host_port);
+                $http_host = str_replace(["[", "]"], "", implode(":", $http_host_port));
+            } else {
+                $http_host = str_replace(["[", "]"], "", implode(":", $http_host_port));
+            }
+        } else {
+            $http_host = explode(":", $_SERVER['HTTP_HOST']);
+            $http_host = $http_host[0];
+        }
+        $this_host = [
+            $config['system']['hostname'] . "." . $config['system']['domain'],
+            $config['system']['hostname'],
+            "localhost"
+        ];
+        if (!empty($config['system']['webgui']['althostnames'])) {
+            $this_host = array_merge($this_host, explode(" ", $config['system']['webgui']['althostnames']));
+        }
+        if (is_ipaddr($http_host) || in_array($_SERVER['SERVER_ADDR'], ["127.0.0.1", "::1"])) {
+            return false;
+        } elseif (in_array($http_host, $this_host)) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+/* HTTP referer detection, return true when being forwarded from an unknown referer*/
+function check_security_http_referer_enforement()
+{
+    global $config;
+    if (!isset($config['system']['webgui']['nohttpreferercheck']) && isset($_SERVER['HTTP_REFERER'])) {
+        $referrer_host = str_replace(["[", "]"], "", parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST));
+        $this_host = [$config['system']['hostname'] . "." . $config['system']['domain'], $config['system']['hostname']];
+        if (!empty($config['system']['webgui']['althostnames'])) {
+            $this_host = array_merge($this_host, explode(" ", $config['system']['webgui']['althostnames']));
+        }
+        if ($referrer_host) {
+            if (in_array($referrer_host, $this_host)) {
+                return false;
+            } elseif (isAuthLocalIP($referrer_host)) {
+                return false;
+            } elseif ($referrer_host == "127.0.0.1" || $referrer_host == "localhost") {
+                // allow SSH port forwarded connections and links from localhost
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+function session_auth()
 {
     global $config;
 
@@ -89,6 +151,19 @@ function session_auth(&$Login_Error)
     if (!isset($_POST['login']) && !empty($_SESSION['Username']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol']) {
         session_write_close();
         return false;
+    }
+    // check additional security measures
+    if (empty($_SESSION['Username'])) {
+        if (check_security_dns_rebind()) {
+            display_error_form(sprintf(gettext("A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname."), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
+            exit;
+        } elseif (check_security_http_referer_enforement()) {
+            display_error_form(sprintf(
+                gettext('The HTTP_REFERER "%s" does not match the predefined settings. You can disable this check if needed under System: Settings: Administration.'),
+                html_safe($_SERVER['HTTP_REFERER'])
+            ));
+            exit;
+        }
     }
 
     /* Validate incoming login request */
@@ -134,7 +209,6 @@ function session_auth(&$Login_Error)
             exit;
         } else {
             auth_log("Web GUI authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
-            $Login_Error = true;
         }
     }
 
@@ -189,13 +263,10 @@ function session_auth(&$Login_Error)
     return true;
 }
 
-/* XXX spagehtti code :( */
-$Login_Error = false;
-
 /* Authenticate user - exit if failed */
-if (!session_auth($Login_Error)) {
+if (!session_auth()) {
     set_language();
-    display_login_form($Login_Error ? gettext('Wrong username or password.') : null);
+    display_login_form(!empty($_POST['usernamefld']) ? gettext('Wrong username or password.') : null);
     exit;
 }
 
