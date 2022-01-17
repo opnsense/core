@@ -119,6 +119,7 @@ function get_default_sysctl_value($id)
         'net.link.tap.user_open' => '1',
         'net.link.vlan.mtag_pcp' => '1',
         'net.local.dgram.maxdgram' => '8192',
+        'net.route.multipath' => '0',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
         'vfs.read_max' => '32',
@@ -148,6 +149,7 @@ function system_sysctl_required()
         'net.inet6.ip6.intr_queue_maxlen',
         'net.link.vlan.mtag_pcp',
         'net.local.dgram.maxdgram',
+        'net.route.multipath',
     ];
 }
 
