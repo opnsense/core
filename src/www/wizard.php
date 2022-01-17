@@ -247,9 +247,6 @@ function redirect_url()
             $urlhost = $config['wizardtemp']['system']['hostname'] . '.' . $config['wizardtemp']['system']['domain'];
         }
     }
-    if ($urlhost != $http_host) {
-        file_put_contents('/tmp/setupwizard_lastreferrer', $proto . '://' . $http_host . $urlport . $_SERVER['REQUEST_URI']);
-    }
 
     return $proto . '://' . $urlhost . $urlport;
 }

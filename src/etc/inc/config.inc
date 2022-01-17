@@ -173,38 +173,11 @@ function config_restore($conffile)
     $cnf->backup();
     $cnf->restoreBackup($conffile);
 
-    disable_security_checks();
-
     $config = parse_config();
 
     write_config(sprintf('Reverted to %s', array_pop(explode('/', $conffile))), false);
 
     return 0;
-}
-
-/*
- * Disable security checks for DNS rebind and HTTP referrer until next time
- * they pass (or reboot), to aid in preventing accidental lockout when
- * restoring settings like hostname, domain, IP addresses, and settings
- * related to the DNS rebind and HTTP referrer checks.
- * Intended for use when restoring a configuration or directly
- * modifying config.xml without an unconditional reboot.
- */
-function disable_security_checks()
-{
-    touch('/tmp/disable_security_checks');
-}
-
-/* Restores security checks.  Should be called after all succeed. */
-function restore_security_checks()
-{
-    @unlink('/tmp/disable_security_checks');
-}
-
-/* Returns status of security check temporary disable. */
-function security_checks_disabled()
-{
-    return file_exists('/tmp/disable_security_checks');
 }
 
 function &config_read_array()
