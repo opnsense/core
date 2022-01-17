@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -352,7 +352,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         foreach ($stanzas as $stanza) {
             $radvdconf .= "\tprefix {$stanza} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix " . ($carp_mode || !empty($dhcpv6ifconf['rastatic']) ? "off" : "on") . ";\n";
+            $radvdconf .= "\t\tDeprecatePrefix " . (!empty($dhcpv6ifconf['AdvDeprecatePrefix']) ? $dhcpv6ifconf['AdvDeprecatePrefix'] : ($carp_mode ? 'off' : 'on')) . ";\n";
             switch ($dhcpv6ifconf['ramode']) {
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
@@ -383,9 +383,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         if (!empty($dhcpv6ifconf['raroutes'])) {
             foreach (explode(',', $dhcpv6ifconf['raroutes']) as $raroute) {
                 $radvdconf .= "\troute {$raroute} {\n";
-                if ($carp_mode || !empty($dhcpv6ifconf['rastatic'])) {
-                    $radvdconf .= "\t\tRemoveRoute off;\n";
-                }
+                $radvdconf .= "\t\tRemoveRoute " . (!empty($dhcpv6ifconf['AdvRemoveRoute']) ? $dhcpv6ifconf['AdvRemoveRoute'] : ($carp_mode ? 'off' : 'on')) . ";\n";
                 if (!empty($dhcpv6ifconf['AdvRouteLifetime'])) {
                     $radvdconf .= "\t\tAdvRouteLifetime {$dhcpv6ifconf['AdvRouteLifetime']};\n";
                 }
