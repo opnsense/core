@@ -70,24 +70,6 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
         $found_host = true;
     }
 
-    if (isset($config['dyndnses']['dyndns']) && !$found_host) {
-        foreach ($config['dyndnses']['dyndns'] as $dyndns) {
-            if (strcasecmp($dyndns['host'], $http_host) == 0) {
-                $found_host = true;
-                break;
-            }
-        }
-    }
-
-    if (isset($config['dnsupdates']['dnsupdate']) && !$found_host) {
-        foreach ($config['dnsupdates']['dnsupdate'] as $rfc2136) {
-            if (strcasecmp($rfc2136['host'], $http_host) == 0) {
-                $found_host = true;
-                break;
-            }
-        }
-    }
-
     if (!empty($config['system']['webgui']['althostnames']) && !$found_host) {
         $althosts = explode(" ", $config['system']['webgui']['althostnames']);
         foreach ($althosts as $ah) {
@@ -135,24 +117,6 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
                 $althosts = explode(" ", $config['system']['webgui']['althostnames']);
                 foreach ($althosts as $ah) {
                     if (strcasecmp($referrer_host, $ah) == 0) {
-                        $found_host = true;
-                        break;
-                    }
-                }
-            }
-
-            if (isset($config['dyndnses']['dyndns']) && !$found_host) {
-                foreach ($config['dyndnses']['dyndns'] as $dyndns) {
-                    if (strcasecmp($dyndns['host'], $referrer_host) == 0) {
-                        $found_host = true;
-                        break;
-                    }
-                }
-            }
-
-            if (isset($config['dnsupdates']['dnsupdate']) && !$found_host) {
-                foreach ($config['dnsupdates']['dnsupdate'] as $rfc2136) {
-                    if (strcasecmp($rfc2136['host'], $referrer_host) == 0) {
                         $found_host = true;
                         break;
                     }
