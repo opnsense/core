@@ -121,6 +121,8 @@ function get_default_sysctl_value($id)
         'net.link.tap.user_open' => '1',
         'net.link.vlan.mtag_pcp' => '1',
         'net.local.dgram.maxdgram' => '8192',
+        'net.pf.share_forward' => !empty($config['system']['pf_share_forward']) ? '1' : '0',
+        'net.pf.share_forward6' => !empty($config['system']['pf_share_forward']) ? '1' : '0',
         'net.route.multipath' => '0',
         'security.bsd.see_other_gids' => '0',
         'security.bsd.see_other_uids' => '0',
@@ -153,6 +155,8 @@ function system_sysctl_required()
         'net.link.ether.inet.log_arp_wrong_iface',
         'net.link.vlan.mtag_pcp',
         'net.local.dgram.maxdgram',
+        'net.pf.share_forward',
+        'net.pf.share_forward6',
         'net.route.multipath',
     ];
 }

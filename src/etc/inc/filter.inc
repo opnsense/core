@@ -502,10 +502,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         return;
     }
 
-    /* set shared forwarding according to config option */
-    set_single_sysctl('net.pf.share_forward', !empty($config['system']['pf_share_forward']) ? '1' : '0');
-    set_single_sysctl('net.pf.share_forward6', !empty($config['system']['pf_share_forward']) ? '1' : '0');
-
     /*
      * If we are not using bogonsv6 then we can remove any
      * bogonsv6 table from the running pf (if the table is
