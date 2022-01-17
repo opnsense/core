@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
     if (!empty($config['system']['dnsallowoverride_exclude'])) {
-        $pconfig['dnsallowoverride_exclude'] = explode(",", $config['system']['dnsallowoverride_exclude']);
+        $pconfig['dnsallowoverride_exclude'] = explode(',', $config['system']['dnsallowoverride_exclude']);
     } else {
-        $pconfig['dnsallowoverride_exclude'] = array();
+        $pconfig['dnsallowoverride_exclude'] = [];
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
     $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'];
@@ -74,6 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* input validation */
     $reqdfields = explode(" ", "hostname domain");
     $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
+
+    if (empty($pconfig['dnsallowoverride_exclude'])) {
+        $pconfig['dnsallowoverride_exclude'] = [];
+    }
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -158,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($pconfig['dnsallowoverride'])) {
             $config['system']['dnsallowoverride'] = true;
-            $config['system']['dnsallowoverride_exclude'] = empty($pconfig['dnsallowoverride_exclude']) ? "" : implode(",", $pconfig['dnsallowoverride_exclude']);
+            $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
         } elseif (isset($config['system']['dnsallowoverride'])) {
             unset($config['system']['dnsallowoverride']);
             if (isset($config['system']['dnsallowoverride_exclude'])) {
@@ -476,13 +480,11 @@ $( document ).ready(function() {
                   <strong><?=gettext("Exclude interfaces");?></strong>
                   <br/>
                   <select name="dnsallowoverride_exclude[]" class="selectpicker" data-style="btn-default" data-live-search="true"  multiple="multiple">
-<?php
-                  foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+<?php foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg): ?>
                     <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['dnsallowoverride_exclude']) ? "selected='selected'" : "";?>>
                       <?= $ifcfg['descr'] ?>
                     </option>
-<?php
-                  endforeach;?>
+<?php endforeach ?>
                   </select>
                 </div>
               </td>
