@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
         interface_dhcpv6_configure('duidonly', null); /* XXX refactor */
-        system_arp_wrong_if();
+        system_sysctl_configure();
     }
 }
 

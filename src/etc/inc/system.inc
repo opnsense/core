@@ -116,6 +116,8 @@ function get_default_sysctl_value($id)
         'net.link.bridge.pfil_local_phys' => '0',
         'net.link.bridge.pfil_member' => '1',
         'net.link.bridge.pfil_onlyip' => '0',
+        'net.link.ether.inet.log_arp_movements' => isset($config['system']['sharednet']) ? '0' : '1',
+        'net.link.ether.inet.log_arp_wrong_iface' => isset($config['system']['sharednet']) ? '0' : '1',
         'net.link.tap.user_open' => '1',
         'net.link.vlan.mtag_pcp' => '1',
         'net.local.dgram.maxdgram' => '8192',
@@ -147,6 +149,8 @@ function system_sysctl_required()
         'net.inet.ip.intr_queue_maxlen',
         'net.inet6.ip6.forwarding',
         'net.inet6.ip6.intr_queue_maxlen',
+        'net.link.ether.inet.log_arp_movements',
+        'net.link.ether.inet.log_arp_wrong_iface',
         'net.link.vlan.mtag_pcp',
         'net.local.dgram.maxdgram',
         'net.route.multipath',
@@ -802,21 +806,10 @@ function system_sysctl_configure($verbose = false)
     }
 
     set_sysctl(system_sysctl_get());
-    system_arp_wrong_if();
 
     if ($verbose) {
         echo "done.\n";
     }
-}
-
-function system_arp_wrong_if()
-{
-    global $config;
-
-    set_sysctl(array(
-        'net.link.ether.inet.log_arp_wrong_iface' => isset($config['system']['sharednet']) ? '0' : '1',
-        'net.link.ether.inet.log_arp_movements' => isset($config['system']['sharednet']) ? '0' : '1',
-    ));
 }
 
 function system_kernel_configure($verbose = false)
