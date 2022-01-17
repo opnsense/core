@@ -637,11 +637,16 @@ function system_syslog_start($verbose = false)
     configd_run('template reload OPNsense/Syslog');
     mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs');
 
-    if (isvalidpid('/var/run/syslog-ng.pid')) {
+    $last_version = @file_get_contents('/var/run/syslog-ng.version');
+    $this_version = shell_exec('syslog-ng -V | sha256');
+
+    if (isvalidpid('/var/run/syslog-ng.pid') && $last_version == $this_version) {
         mwexecf('/usr/local/sbin/syslog-ng-ctl reload');
     } else {
         mwexecf('/usr/sbin/service syslog-ng restart');
     }
+
+    file_put_contents('/var/run/syslog-ng.version', $this_version);
 
     if ($verbose) {
         echo "done.\n";
