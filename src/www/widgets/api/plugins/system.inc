@@ -58,8 +58,9 @@ function system_api_cpu_stats()
     }
 
     // cpu model and count
-    $cpustats['model'] = get_single_sysctl("hw.model");
+    $cpustats['model'] = get_single_sysctl('hw.model');
     $cpustats['cpus'] = get_single_sysctl('kern.smp.cpus');
+    $cpustats['cores'] = get_single_sysctl('kern.smp.cores');
 
     // cpu frequency
     $tmp = get_single_sysctl('dev.cpu.0.freq_levels');

@@ -75,7 +75,7 @@ require_once("system.inc");
 
       $("#system_information_widget_firmware").html(data['firmware']);
 
-      $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ('+data['cpu']['cpus']+' cores)');
+      $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ('+data['cpu']['cores']+' cores, '+data['cpu']['cpus']+' threads)');
       var uptime_days = parseInt(moment.duration(parseInt(data['uptime']), 'seconds').asDays());
       var uptime_str = "";
       if (uptime_days > 0) {
