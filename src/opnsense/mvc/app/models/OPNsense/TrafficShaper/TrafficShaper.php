@@ -28,6 +28,7 @@
 
 namespace OPNsense\TrafficShaper;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -36,6 +37,42 @@ use OPNsense\Base\BaseModel;
  */
 class TrafficShaper extends BaseModel
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        // standard model validations
+        $max_bandwith = 4294967295; // bps
+        $messages = parent::performValidation($validateFullModel);
+        $all_nodes = $this->getFlatNodes();
+        foreach ($all_nodes as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $parentNode = $node->getParentNode();
+                if (in_array($node->getInternalXMLTagName(), ['bandwidth', 'bandwidthMetric'])) {
+                    $currentval = (int)(string)$parentNode->bandwidth;
+                    if ($parentNode->bandwidthMetric == "Kbit") {
+                        $currentval *= 1000;
+                    } elseif ($parentNode->bandwidthMetric == "Mbit") {
+                        $currentval *= 1000000;
+                    }
+                    if ($currentval > $max_bandwith) {
+                        $messages->appendMessage(new Message(
+                            gettext(sprintf(
+                              "%d bit/s exceeds the maximum bandwith of %d bit/s.", $currentval, $max_bandwith
+                            )),
+                            $key
+                        ));
+
+                    }
+                }
+            }
+        }
+        return $messages;
+    }
+
+
     /**
      * generate new Id by filling a gap or add 1 to the last
      * @param int $startAt start search at number
