@@ -39,7 +39,6 @@ use OPNsense\Base\Validators\CallbackValidator;
  */
 class NetworkAliasField extends BaseListField
 {
-
     /**
      * @var array cached collected protocols
      */

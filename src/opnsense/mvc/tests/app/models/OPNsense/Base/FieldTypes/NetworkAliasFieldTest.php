@@ -40,7 +40,6 @@ use OPNsense\Core\Config;
 
 class NetworkAliasFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

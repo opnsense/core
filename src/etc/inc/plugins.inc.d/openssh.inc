@@ -87,7 +87,8 @@ function openssh_stop()
     mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
 }
 
-function openssh_check_querylist($list, $config) {
+function openssh_check_querylist($list, $config)
+{
     $supported = json_decode(configd_run("openssh query {$list}"));
     $selected = [];
     foreach (explode(',', $config) as $elem) {

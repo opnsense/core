@@ -40,7 +40,6 @@ use OPNsense\Core\Config;
  */
 class AliasController extends ApiMutableModelControllerBase
 {
-
     protected static $internalModelName = 'alias';
     protected static $internalModelClass = 'OPNsense\Firewall\Alias';
 

@@ -228,7 +228,6 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->setValue("");
         $node_data = $field->getNodeData();
         $this->assertEquals($node_data[""], array("value" => "No selection.","selected" => true));
-
     }
 
     /**
@@ -251,7 +250,6 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->setValue("");
         $node_data = $field->getNodeData();
         $this->assertEquals($node_data[""], array("value" => "none","selected" => true));
-
     }
 
     /**

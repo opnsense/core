@@ -40,7 +40,6 @@ use Phalcon\Messages\Message;
  */
 class IntegerValidator extends AbstractValidator implements ValidatorInterface
 {
-
     /**
     * Executes Integer validation
     *

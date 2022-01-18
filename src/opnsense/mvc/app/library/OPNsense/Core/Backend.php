@@ -58,7 +58,8 @@ class Backend
     protected function getLogger($ident = 'configd.py')
     {
         $formatter = new Line('%message%');
-        $adapter = new Syslog($ident,
+        $adapter = new Syslog(
+            $ident,
             [
                 'option'   => LOG_PID,
                 'facility' => LOG_LOCAL4,

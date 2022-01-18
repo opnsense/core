@@ -36,7 +36,6 @@ use Phalcon\DI\FactoryDefault;
  */
 class Shell
 {
-
     /**
      * simulation mode, only print commands, dom not execute
      * @var bool

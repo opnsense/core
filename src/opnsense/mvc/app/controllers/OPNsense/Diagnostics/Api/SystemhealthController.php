@@ -38,7 +38,6 @@ use OPNsense\Core\Config;
  */
 class SystemhealthController extends ApiControllerBase
 {
-
     /**
      * Return full archive information
      * @param \SimpleXMLElement $xml rrd data xml

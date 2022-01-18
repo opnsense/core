@@ -38,7 +38,6 @@ use OPNsense\Base\FieldTypes\IntegerField;
 
 class IntegerFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

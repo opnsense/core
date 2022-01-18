@@ -40,7 +40,6 @@ use OPNsense\Core\Config;
 
 class AuthenticationServerFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */
