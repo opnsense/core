@@ -54,7 +54,7 @@ if (!empty($a_hasync['disconnectppps'])) {
                     if ($type == 'BACKUP') {
                         interface_bring_down($ifkey);
                     } else {
-                        interface_ppps_configure(false, $ifkey);
+                        interface_ppps_configure($ifkey);
                     }
                 }
             }
