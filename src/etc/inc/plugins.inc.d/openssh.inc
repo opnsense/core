@@ -239,7 +239,7 @@ function openssh_configure_do($verbose = false, $interface = '')
         }
 
         if ($supported === null) {
-	    /* cache return as it includes all probable values */
+            /* cache return as it includes all probable values */
             $supported = json_decode(configd_run('openssh query'), true);
         }
 

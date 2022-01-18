@@ -832,7 +832,7 @@ $(document).ready(function() {
 <?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_sshkeys">
-                      <?=gettext("Specifies the host	key algorithms that the	server offers");?>
+                      <?= gettext('Specifies the host key algorithms that the server offers') ?>
                     </div>
                 </td>
               </tr>
