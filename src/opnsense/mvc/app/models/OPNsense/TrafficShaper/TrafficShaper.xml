@@ -20,7 +20,6 @@
                 <bandwidth type="IntegerField">
                     <Required>Y</Required>
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>899795</MaximumValue>
                     <ValidationMessage>Bandwidth out of range</ValidationMessage>
                 </bandwidth>
                 <bandwidthMetric type="OptionField">
@@ -30,8 +29,9 @@
                         <bit>bit/s</bit>
                         <Kbit>kbit/s</Kbit>
                         <Mbit>Mbit/s</Mbit>
+                        <Gbit>Gbit/s</Gbit>
                     </OptionValues>
-                    <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s or Mbit/s</ValidationMessage>
+                    <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s, Mbit/s or Gbit/s</ValidationMessage>
                 </bandwidthMetric>
                 <queue type="IntegerField">
                     <Required>N</Required>

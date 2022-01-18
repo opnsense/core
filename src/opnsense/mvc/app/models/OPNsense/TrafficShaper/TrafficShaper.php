@@ -28,6 +28,7 @@
 
 namespace OPNsense\TrafficShaper;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -36,6 +37,47 @@ use OPNsense\Base\BaseModel;
  */
 class TrafficShaper extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        // standard model validations
+        $max_bandwidth = 4294967295; // bps
+        $messages = parent::performValidation($validateFullModel);
+        $all_nodes = $this->getFlatNodes();
+        foreach ($all_nodes as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $parentNode = $node->getParentNode();
+                if (in_array($node->getInternalXMLTagName(), ['bandwidth', 'bandwidthMetric'])) {
+                    $currentval = (int)(string)$parentNode->bandwidth;
+                    $maximumval = $max_bandwidth;
+                    if ($parentNode->bandwidthMetric == "Kbit") {
+                        $maximumval /= 1000;
+                    } elseif ($parentNode->bandwidthMetric == "Mbit") {
+                        $maximumval /= 1000000;
+                    } elseif ($parentNode->bandwidthMetric == "Gbit") {
+                        $maximumval /= 1000000000;
+                    }
+                    if ($currentval > $maximumval) {
+                        $messages->appendMessage(new Message(
+                            gettext(sprintf(
+                                "%d %s/s exceeds the maximum bandwith of %d %s/s.",
+                                $currentval,
+                                $parentNode->bandwidthMetric,
+                                $maximumval,
+                                $parentNode->bandwidthMetric
+                            )),
+                            $key
+                        ));
+                    }
+                }
+            }
+        }
+        return $messages;
+    }
+
+
     /**
      * generate new Id by filling a gap or add 1 to the last
      * @param int $startAt start search at number
