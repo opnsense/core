@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>
- * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,24 +85,6 @@ function openssh_stop()
 {
     /* if run from a shell session, `-af' and the full path is needed */
     mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
-}
-
-function openssh_check_querylist($list, $config)
-{
-    $supported = json_decode(configd_run("openssh query {$list}"));
-    $selected = [];
-    foreach (explode(',', $config) as $elem) {
-        if (in_array($elem, $supported)) {
-            $selected[] = $elem;
-        } else {
-            syslog(LOG_NOTICE, "OpenSSH: Configured value '{$elem}' of {$list} setting not suppored.");
-        }
-    }
-
-    if (count($selected) == 0) {
-        syslog(LOG_WARNING, "OpenSSH: No configured {$list} ({$config}) supported - using defaults.");
-    }
-    return implode(',', $selected);
 }
 
 function openssh_configure_do($verbose = false, $interface = '')
@@ -209,36 +191,6 @@ function openssh_configure_do($verbose = false, $interface = '')
         $sshconf .= "ChallengeResponseAuthentication no\n";
         $sshconf .= "PasswordAuthentication no\n";
     }
-    if (!empty($sshcfg['kex'])) {
-        $kexs = openssh_check_querylist('kex', $sshcfg['kex']);
-        if (strlen($kexs) > 0) {
-            $sshconf .= "KexAlgorithms {$kexs}\n";
-        }
-    }
-    if (!empty($sshcfg['ciphers'])) {
-        $ciphers = openssh_check_querylist('cipher', $sshcfg['ciphers']);
-        if (strlen($ciphers) > 0) {
-            $sshconf .= "Ciphers {$ciphers}\n";
-        }
-    }
-    if (!empty($sshcfg['macs'])) {
-        $macs = openssh_check_querylist('mac', $sshcfg['macs']);
-        if (strlen($macs) > 0) {
-            $sshconf .= "MACs {$macs}\n";
-        }
-    }
-    if (!empty($sshcfg['keys'])) {
-        $keys = openssh_check_querylist('key', $sshcfg['keys']);
-        if (strlen($keys) > 0) {
-            $sshconf .= "HostKeyAlgorithms {$keys}\n";
-        }
-    }
-    if (!empty($sshcfg['keysig'])) {
-        $keysigs = openssh_check_querylist('key-sig', $sshcfg['keysig']);
-        if (strlen($keysigs) > 0) {
-            $sshconf .= "PubkeyAcceptedAlgorithms {$keysigs}\n";
-        }
-    }
 
     foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
@@ -270,6 +222,42 @@ function openssh_configure_do($verbose = false, $interface = '')
 
     foreach ($listeners as $listener) {
         $sshconf .= "ListenAddress {$listener}\n";
+    }
+
+    $supported = null;
+    $advanced = [
+        [ 'config' => 'Ciphers', 'node' => 'ciphers', 'key' => 'cipher'],
+        [ 'config' => 'HostKeyAlgorithms', 'node' => 'keys', 'key' => 'key'],
+        [ 'config' => 'KexAlgorithms', 'node' => 'kex', 'key' => 'kex'],
+        [ 'config' => 'MACs', 'node' => 'macs', 'key' => 'mac'],
+        [ 'config' => 'PubkeyAcceptedAlgorithms', 'node' => 'keysig', 'key' => 'key-sig'],
+    ];
+
+    foreach ($advanced as $adv) {
+        if (empty($sshcfg[$adv['node']])) {
+            continue;
+        }
+
+        if ($supported === null) {
+	    /* cache return as it includes all probable values */
+            $supported = json_decode(configd_run('openssh query'), true);
+        }
+
+        $selected = [];
+
+        foreach (explode(',', $sshcfg[$adv['node']]) as $elem) {
+            if (in_array($elem, $supported[$adv['key']])) {
+                $selected[] = $elem;
+            } else {
+                syslog(LOG_WARNING, "OpenSSH: Configured {$adv['node']} value '{$elem}' is not supported.");
+            }
+        }
+
+        if (count($selected) == 0) {
+            syslog(LOG_WARNING, "OpenSSH: No configured {$adv['node']} value is supported - using defaults.");
+        } else {
+            $sshconf .= $adv['config'] . ' ' . implode(',', $selected) . PHP_EOL;
+        }
     }
 
     file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);
