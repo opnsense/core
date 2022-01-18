@@ -962,7 +962,7 @@ function interfaces_configure($verbose = false)
         }
     }
 
-    /* XXX temporary plugin spot for device creation, see plugins_devices() */
+    /* XXX temporary plugin spot for device configuration, see plugins_devices() */
     plugins_configure('ipsec_prepare', $verbose);
 }
 
