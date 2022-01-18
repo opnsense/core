@@ -90,7 +90,7 @@ function check_security_dns_rebind()
         }
         if (is_ipaddr($http_host) || in_array($_SERVER['SERVER_ADDR'], ["127.0.0.1", "::1"])) {
             return false;
-        } elseif (in_array($http_host, $this_host)) {
+        } elseif (in_array(strtolower($http_host), array_map('strtolower', $this_host))) {
             return false;
         }
         return true;
@@ -109,7 +109,7 @@ function check_security_http_referer_enforement()
             $this_host = array_merge($this_host, explode(" ", $config['system']['webgui']['althostnames']));
         }
         if ($referrer_host) {
-            if (in_array($referrer_host, $this_host)) {
+            if (in_array(strtolower($referrer_host), array_map('strtolower', $this_host))) {
                 return false;
             } elseif (isAuthLocalIP($referrer_host)) {
                 return false;
