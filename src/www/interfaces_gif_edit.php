@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$fieldname] = isset($a_gifs[$id][$fieldname]) ? $a_gifs[$id][$fieldname] : null;
     }
     // bool fields
-    $pconfig['link0'] = isset($a_gifs[$id]['link0']);
+    $pconfig['link2'] = isset($a_gifs[$id]['link2']);
     $pconfig['link1'] = isset($a_gifs[$id]['link1']);
 
     // construct interface
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         // bool fields
         $gif['link1'] = !empty($pconfig['link1']);
-        $gif['link0'] = !empty($pconfig['link0']);
+        $gif['link2'] = !empty($pconfig['link2']);
 
         // interface and optional bind address
         if (strpos($pconfig['if'], '|') !== false) {
@@ -237,11 +237,11 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route caching"); ?></td>
+                    <td><a id="help_for_link2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Ingress filtering"); ?></td>
                     <td>
-                      <input name="link0" type="checkbox" id="link0" <?=!empty($pconfig['link0']) ? "checked=\"checked\"" :"";?> />
-                      <div class="hidden" data-for="help_for_link0">
-                        <?=gettext("Specify if route caching can be enabled. Be careful with these settings on dynamic networks."); ?>
+                      <input name="link2" type="checkbox" id="link2" <?=!empty($pconfig['link2']) ? "checked=\"checked\"" :"";?> />
+                      <div class="hidden" data-for="help_for_link2">
+                        <?=gettext("Ingress filtering on outer tunnel source can break tunnel operation in an asymmetrically routed networks, in which case this can be disabled by marking this option."); ?>
                       </div>
                     </td>
                   </tr>
