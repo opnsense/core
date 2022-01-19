@@ -153,7 +153,6 @@ EOD;
 
         if (in_array($key, array('y', 'Y'))) {
             vlan_setup(array_merge($iflist, $iflist_lagg), $fp);
-            echo "\n";
         }
 
         if (isset($config['vlans']['vlan'][0])) {
@@ -165,6 +164,7 @@ EOD;
     }
 
     echo <<<EOD
+
 Valid interfaces are:
 
 
@@ -537,7 +537,7 @@ EOD;
             return;
         }
 
-        echo "\nEnter the member interface names for the new LAGG seperated by commas (or nothing if finished): ";
+        echo "\nEnter the LAGG members to aggregate (or nothing if finished): ";
         $members_str = chop(fgets($fp));
 
         if ($members_str) {
@@ -558,11 +558,10 @@ EOD;
             break;
         }
 
-        echo 'Enter the LAGG protocol (none,lacp,failover,fec,loadbalance,roundrobin): ';
+        echo 'Enter the LAGG protocol (default:none,lacp,failover,fec,loadbalance,roundrobin): ';
         $lagg['proto'] = strtolower(chop(fgets($fp)));
         if (!in_array($lagg['proto'], ['none', 'lacp', 'failover', 'fec', 'loadbalance', 'roundrobin'])) {
-            printf("\nInvalid LAGG protocol '%s'\n", $lagg['proto']);
-            continue;
+            $lagg['proto'] = 'none';
         }
 
         if ($lagg['proto'] == "lacp") {
