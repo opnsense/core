@@ -119,12 +119,12 @@ Valid interfaces are:
 
 EOD;
 
-    if (count($iflist)) {
+    if (empty($iflist)) {
+        echo "No interfaces found!\n";
+    } else {
         foreach ($iflist as $iface => $ifa) {
             echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
-    } else {
-        echo "No interfaces found!\n";
     }
 
     $ifnames = array_keys($iflist);
@@ -149,8 +149,10 @@ EOD;
         foreach ($config['laggs']['lagg'] as $lagg) {
             $dmesg = "LAGG, member interfaces {$lagg['members']}";
             echo sprintf("%-10s%s\n", $lagg['laggif'], $dmesg);
-            $iflist_all[$lagg['laggif']] = [ 'dmesg' => $dmesg ];
-            $iflist_lagg[$lagg['laggif']] = ['mac' => 'XX:XX:XX:XX:XX:XX'];
+            $iflist_lagg[$lagg['laggif']] = $iflist_all[$lagg['laggif']] = [
+                'mac' => 'xx:xx:xx:xx:xx:xx',
+                'dmesg' => $dmesg,
+            ];
         }
     }
 
@@ -527,11 +529,11 @@ EOD;
         $lagg = [];
 
         echo "\nLAGG-capable interfaces:\n\n";
-        if (!is_array($iflist)) {
+        if (empty($iflist)) {
             echo "No interfaces found!\n";
         } else {
             foreach ($unused_ifs as $iface => $ifa) {
-                echo sprintf("% -8s%s\n", $iface, $ifa['mac']);
+                echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
             }
         }
 
@@ -545,6 +547,7 @@ EOD;
 
         if ($members_str) {
             $members = preg_split('/[\s\t,;]+/', $members_str);
+            $members = array_unique($members);
             $unused_ifnames = array_keys($unused_ifs);
             $valid_ifs = array_intersect($unused_ifnames, $members);
             if (count($members) != count($valid_ifs)) {
@@ -613,19 +616,12 @@ EOD;
         $vlan = [];
 
         echo "\nVLAN-capable interfaces:\n\n";
-        if (!is_array($iflist)) {
+        if (empty($iflist)) {
             echo "No interfaces found!\n";
         } else {
-            $vlan_capable = 0;
             foreach ($iflist as $iface => $ifa) {
-                echo sprintf("% -8s%s\n", $iface, $ifa['mac']);
-                $vlan_capable++;
+                echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
             }
-        }
-
-        if ($vlan_capable == 0) {
-            echo "No VLAN-capable interfaces detected.\n";
-            return;
         }
 
         echo "\nEnter the parent interface name for the new VLAN (or nothing if finished): ";
