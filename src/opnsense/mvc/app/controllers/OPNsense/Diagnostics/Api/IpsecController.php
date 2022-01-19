@@ -31,7 +31,6 @@ namespace OPNsense\Diagnostics\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use Phalcon\Filter;
 
 /**
  * Class IpsecController
@@ -40,9 +39,18 @@ use Phalcon\Filter;
 class IpsecController extends ApiControllerBase
 {
 
+    /**
+     * retrieve active IPsec connections
+     * @return mixed
+     */
     public function searchConnectionAction()
     {
-        return $this->getStatusData('conn');
+        $rows = [];
+        if ($this->request->isPost()) {
+            $rows = json_decode((new Backend())->configdpRun("ipsec list status conn"), true);
+        }
+
+        return $this->applyPaginationFilter($rows);
     }
 
     /**
@@ -51,8 +59,13 @@ class IpsecController extends ApiControllerBase
      */
     public function searchSadAction()
     {
-        $connection = $this->request->getPost('connection', 'string', "");
-        return $this->getStatusData('sa', $connection);
+        $rows = [];
+        if ($this->request->isPost()) {
+            $connection = $this->request->getPost('connection', 'string', "");
+            $rows = json_decode((new Backend())->configdpRun("ipsec list status sa", [$connection]), true);
+        }
+
+        return $this->applyPaginationFilter($rows);
     }
 
     /**
@@ -61,48 +74,11 @@ class IpsecController extends ApiControllerBase
      */
     public function searchSpdAction()
     {
-        return $this->getStatusData('sp');
-    }
-
-    private function getStatusData($db, $connection_filter = -1)
-    {
+        $rows = [];
         if ($this->request->isPost()) {
-            $filter = new Filter([
-                'query' => function ($value) {
-                    return preg_replace("/[^0-9,a-z,A-Z, ,\/,*,\-,_,.,\#]/", "", $value);
-                }
-            ]);
-            $searchPhrase = '';
-            $sortBy = '';
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-
-            if ($this->request->getPost('searchPhrase', 'string', '') != '') {
-                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
-            }
-            
-            if ($this->request->has('sort') && is_array($this->request->getPost("sort"))) {
-                $tmp = array_keys($this->request->getPost("sort"));
-                $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
-            }
-
-            $result = json_decode((new Backend())->configdpRun("ipsec list status $db",
-                [$searchPhrase, $itemsPerPage, ($currentPage - 1) * $itemsPerPage, $sortBy, $connection_filter]), true);
-            if ($result != null) {
-                return [
-                    'rows' => $result['rows'],
-                    'rowCount' => $result['total'],
-                    'total' => $result['total_entries'],
-                    'current' => (int)$currentPage
-                ];
-            }
+            $rows = json_decode((new Backend())->configdpRun("ipsec list status sp"), true);
         }
 
-        return [
-            'rows' => [],
-            'rowCount' => 0,
-            'total' => 0,
-            'current' => 0
-        ];
+        return $this->applyPaginationFilter($rows);
     }
 }

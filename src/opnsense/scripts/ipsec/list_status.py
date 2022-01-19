@@ -63,15 +63,6 @@ def parse_connection(in_conn):
     return result
 
 
-def is_filtered(elements, filter_str):
-    """Check if current row is excluded by filter
-
-    :elements: list with current elements
-    :filter_str: text filter
-    """
-    return filter_str != '' and len([i for i in elements if filter_str in str(i).lower()]) == 0
-
-
 def get_conn_description(connection_id):
     """Parse config.xml for connection description
 
@@ -93,14 +84,12 @@ def get_conn_description(connection_id):
                     return ""
 
 
-def get_sa_for_connection(connection, filter_str = ''):
+def get_sa_for_connection(connection):
     """Retrieve SAs for a specific connection
 
     :connection_id: IPsec connection ID (e.g. con3)
-    :filter_str: text filter
     """
     result = []
-    filter_str = filter_str.lower()
     # attach Security Associations
     for sas in s.list_sas({'ike': connection}):
         # iterate through SAs
@@ -110,20 +99,14 @@ def get_sa_for_connection(connection, filter_str = ''):
             # iterate through each child SA
             for child_sa in sa['child-sas'].values():
                 row = child_sa
-                # Apply filter
-                if not is_filtered(row.values(), filter_str):
-                    result.append(row)
+                result.append(row)
     return result
 
 
-def dump_conns(filter_str = ''):
+def dump_conns():
     """Retrieve all connections
-
-    :filter_str: text filter
     """
     result = {}
-    parsed = []
-    filter_str = filter_str.lower()
     # parse connections
     for conns in s.list_conns():
         for connection_id in conns:
@@ -146,23 +129,14 @@ def dump_conns(filter_str = ''):
             result[connection_id]['local-class'] = b'+'.join(result[connection_id]['local-class'])
             result[connection_id]['remote-class'] = b'+'.join(result[connection_id]['remote-class'])
 
-            # Apply filter
-            if is_filtered(result[connection_id].values(), filter_str):
-                del result[connection_id]
-            parsed.append(connection_id)
-
     # attach Security Associations
     for sas in s.list_sas():
         for sa in sas:
-            if sa not in parsed:
+            if sa not in result:
                 result[connection_id] = parse_connection(sas[sa])
                 result[connection_id]['id'] = sa
                 result[connection_id]['name'] = get_conn_description(sa)
                 result[connection_id]['routed'] = False
-
-                if is_filtered(result[connection_id].values(), filter_str):
-                    del result[connection_id]
-                parsed.append(sa)
 
             if sa in result:
                 result[sa]['sas'] = len(sas[sa]['child-sas'])
@@ -170,13 +144,10 @@ def dump_conns(filter_str = ''):
     return list(result.values())
 
 
-def dump_sa(filter_str = ''):
+def dump_sa():
     """Retrieve all SAs
-
-    :filter_str: text filter
     """
     result = []
-    filter_str = filter_str.lower()
     # attach Security Associations
     for sas in s.list_sas():
         # iterate through SAs
@@ -186,7 +157,7 @@ def dump_sa(filter_str = ''):
             # iterate through each child SA
             for child_sa in sa['child-sas'].values():
                 # in direction
-                in_direction = {
+                result.append({
                     'id': sa['uniqueid'],
                     'ikeversion': sa['version'],
                     'src_addr': sa['local-host'],
@@ -203,13 +174,10 @@ def dump_sa(filter_str = ''):
                     'dh-group': child_sa['dh-group'] if 'dh-group' in child_sa else "",
                     'bytes': child_sa['bytes-in'],
                     'pkts': child_sa['packets-in']
-                }
-                # Apply filter
-                if not is_filtered(in_direction.values(), filter_str):
-                    result.append(in_direction)
+                })
 
                 # out direction
-                out_direction = {
+                result.append({
                     'id': sa['uniqueid'],
                     'ikeversion': sa['version'],
                     'src_addr': sa['remote-host'],
@@ -226,20 +194,14 @@ def dump_sa(filter_str = ''):
                     'dh-group': child_sa['dh-group'] if 'dh-group' in child_sa else "",
                     'bytes': child_sa['bytes-out'],
                     'pkts': child_sa['packets-out']
-                }
-                # Apply filter
-                if not is_filtered(out_direction.values(), filter_str):
-                    result.append(out_direction)
+                })
     return result
 
 
-def dump_sp(filter_str = ''):
+def dump_sp():
     """Retrieve all installed SPs
-
-    :filter_str: text filter
     """
     result = []
-    filter_str = filter_str.lower()
     process = subprocess.run(["/sbin/setkey", "-DP"], capture_output=True, text=True)
     if process.returncode == 0:
         # Define regexes
@@ -262,7 +224,7 @@ def dump_sp(filter_str = ''):
                 created = datetime.datetime.strptime(lifetime['created'], "%b %d %H:%M:%S %Y")
                 lastused = datetime.datetime.strptime(lifetime['lastused'], "%b %d %H:%M:%S %Y")
 
-            row = {
+            result.append({
                 'src_addr': selector['src_addr'],
                 'src_port': selector['src_port'],
                 'dst_addr': selector['dst_addr'],
@@ -275,10 +237,7 @@ def dump_sp(filter_str = ''):
                 'lastused': datetime.datetime.timestamp(lastused) if lifetime else '',
                 'id': scope['spid'],
                 'scope': scope['scope']
-            }
-            # Apply filter
-            if not is_filtered(row.values(), filter_str):
-                result.append(row)
+            })
 
     return result
 
@@ -287,10 +246,6 @@ if __name__ == '__main__':
     # parse input arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('db', choices=['sa', 'sp', 'conn'])
-    parser.add_argument('--filter', help='filter results by string', default='')
-    parser.add_argument('--limit', help='limit number of results', type=int, default=-1)
-    parser.add_argument('--offset', help='offset results', type=int, default=-1)
-    parser.add_argument('--sort_by', help='sort by (field asc|desc)', default='')
     parser.add_argument('--connection', help='filter results by connection', default='')
     inputargs = parser.parse_args()
 
@@ -304,34 +259,15 @@ if __name__ == '__main__':
     ipsec_config = None
 
     # Retrieve results
-    result = dict()
+    rows = list()
     if inputargs.db == 'sa':
         if inputargs.connection == '':
-            result['rows'] = dump_sa(inputargs.filter)
+            rows = dump_sa()
         else:
-            result['rows'] = get_sa_for_connection(inputargs.connection, inputargs.filter)
+            rows = get_sa_for_connection(inputargs.connection)
     elif inputargs.db == 'sp':
-        result['rows'] = dump_sp(inputargs.filter)
+        rows = dump_sp()
     elif inputargs.db == 'conn':
-        result['rows'] = dump_conns(inputargs.filter)
+        rows = dump_conns()
 
-    # Sort results
-    if inputargs.sort_by.strip() != '':
-        sort_key = inputargs.sort_by.split()[0]
-        sort_desc = inputargs.sort_by.split()[-1] == 'desc'
-        result['rows'] = sorted(
-            result['rows'],
-            key=lambda k: str(k[sort_key]).lower() if sort_key in k else '',
-            reverse=sort_desc
-        )
-
-    result['total_entries'] = len(result['rows'])
-    # apply offset and limit
-    if inputargs.offset != -1:
-        result['rows'] = result['rows'][int(inputargs.offset):]
-    if inputargs.limit != -1 and len(result['rows']) >= inputargs.limit:
-        result['rows'] = result['rows'][:inputargs.limit]
-
-    result['total'] = len(result['rows'])
-
-    print(ujson.dumps(result, reject_bytes=False, indent=2))
+    print(ujson.dumps(rows, reject_bytes=False))
