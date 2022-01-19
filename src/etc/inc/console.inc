@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -92,13 +92,10 @@ function set_networking_interfaces_ports($probe = false)
     $key = null;
 
     $iflist_all = get_interface_list(false, true);
-    $iflist = array();
+    $iflist_lagg = [];
+    $iflist = [];
 
     foreach ($iflist_all as $iface => $ifa) {
-        $iftype = preg_split('/\d/', $iface);
-        if (isset($iftype[1]) && $iftype[1] == '_vlan') {
-            continue;
-        }
         $iflist[$iface] = $ifa;
         interfaces_bring_up($iface);
     }
@@ -155,9 +152,8 @@ EOD;
                 "{$lagg['laggif']}",
                 "member interfaces {$lagg['members']}"
             );
-            $iflist_all[$lagg['laggif']] = array();
-            // XXX: get_interface_list() doesn't return lagg interfaces.
-            $iflist[$lagg['laggif']] = ["up" => 1, "mac" => ""];
+            $iflist_all[$lagg['laggif']] = [];
+            $iflist_lagg[$lagg['laggif']] = ['mac' => 'XX:XX:XX:XX:XX:XX'];
         }
     }
 
@@ -173,7 +169,7 @@ EOD;
     }
 
     if (in_array($key, array('y', 'Y'))) {
-        vlan_setup($iflist, $fp);
+        vlan_setup(array_merge($iflist, $iflist_lagg), $fp);
     }
 
     if (isset($config['vlans']['vlan'][0])) {
@@ -184,7 +180,7 @@ EOD;
                 "{$vlan['if']}_vlan{$vlan['tag']}",
                 "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}"
             );
-            $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
+            $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [];
         }
     }
 
@@ -266,7 +262,7 @@ EOD;
     $done = false;
     while (!$done) {
         /* optional interfaces */
-        $optif = array();
+        $optif = [];
         $i = 0;
 
         while (1) {
@@ -525,28 +521,23 @@ EOD;
         }
     }
 
-    $laggcfg = array();
+    $laggcfg = [];
     $laggif = 0;
 
-    $unused_ifs = array();
+    $unused_ifs = [];
     foreach ($iflist as $iface => $ifa) {
         $unused_ifs[$iface] = $ifa;
     }
 
     while (1) {
-        $lagg = array();
+        $lagg = [];
 
         echo "\nLAGG-capable interfaces:\n\n";
         if (!is_array($iflist)) {
             echo "No interfaces found!\n";
         } else {
             foreach ($unused_ifs as $iface => $ifa) {
-                echo sprintf(
-                    "% -8s%s%s\n",
-                    $iface,
-                    $ifa['mac'],
-                    $ifa['up'] ? "   (up)" : ""
-                );
+                echo sprintf("% -8s%s\n", $iface, $ifa['mac']);
             }
         }
 
@@ -559,7 +550,7 @@ EOD;
         $members_str = chop(fgets($fp));
 
         if ($members_str) {
-            $members = explode(",", str_replace(" ", "", $members_str));
+            $members = preg_split('/[\s\t,;]+/', $members_str);
             $unused_ifnames = array_keys($unused_ifs);
             $valid_ifs = array_intersect($unused_ifnames, $members);
             if (count($members) != count($valid_ifs)) {
@@ -567,8 +558,7 @@ EOD;
                 printf("\nInvalid interfaces: %s\n", implode(", ", $invalid_ifs));
                 continue;
             }
-            $lagg['members'] = str_replace(" ", "", $members_str);
-
+            $lagg['members'] = implode(',', $members);
             foreach ($members as $member) {
                 unset($unused_ifs[$member]);
             }
@@ -622,11 +612,11 @@ EOD;
         }
     }
 
-    $vlancfg = array();
+    $vlancfg = [];
     $vlanif = 0;
 
     while (1) {
-        $vlan = array();
+        $vlan = [];
 
         echo "\nVLAN-capable interfaces:\n\n";
         if (!is_array($iflist)) {
@@ -634,12 +624,7 @@ EOD;
         } else {
             $vlan_capable = 0;
             foreach ($iflist as $iface => $ifa) {
-                echo sprintf(
-                    "% -8s%s%s\n",
-                    $iface,
-                    $ifa['mac'],
-                    $ifa['up'] ? "   (up)" : ""
-                );
+                echo sprintf("% -8s%s\n", $iface, $ifa['mac']);
                 $vlan_capable++;
             }
         }

@@ -888,7 +888,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
     }
 
     foreach ($ifnames as $ifname) {
-        $tmp_ifnames = preg_split('/\d/', $ifname);
+        $tmp_ifnames = preg_split('/\d+/', $ifname);
         if (in_array(array_shift($tmp_ifnames), $vfaces)) {
             continue;
         }
