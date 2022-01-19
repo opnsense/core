@@ -121,7 +121,7 @@ EOD;
 
     if (count($iflist)) {
         foreach ($iflist as $iface => $ifa) {
-            echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
+            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
     } else {
         echo "No interfaces found!\n";
@@ -147,12 +147,9 @@ EOD;
     if (isset($config['laggs']['lagg'][0])) {
         echo "\nLAGG interfaces:\n\n";
         foreach ($config['laggs']['lagg'] as $lagg) {
-            echo sprintf(
-                "% -16s%s\n",
-                "{$lagg['laggif']}",
-                "member interfaces {$lagg['members']}"
-            );
-            $iflist_all[$lagg['laggif']] = [];
+            $dmesg = "LAGG, member interfaces {$lagg['members']}";
+            echo sprintf("%-10s%s\n", $lagg['laggif'], $dmesg);
+            $iflist_all[$lagg['laggif']] = [ 'dmesg' => $dmesg ];
             $iflist_lagg[$lagg['laggif']] = ['mac' => 'XX:XX:XX:XX:XX:XX'];
         }
     }
@@ -175,12 +172,9 @@ EOD;
     if (isset($config['vlans']['vlan'][0])) {
         echo "\nVLAN interfaces:\n\n";
         foreach ($config['vlans']['vlan'] as $vlan) {
-            echo sprintf(
-                "% -16s%s\n",
-                "{$vlan['if']}_vlan{$vlan['tag']}",
-                "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}"
-            );
-            $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [];
+            $dmesg = "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}";
+            echo sprintf("%-16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}", $dmesg);
+            $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [ 'dmesg' => $dmesg ];
         }
     }
 
