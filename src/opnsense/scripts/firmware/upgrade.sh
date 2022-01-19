@@ -34,6 +34,7 @@ rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 if opnsense-update -u > ${PIPEFILE} 2>&1; then
