@@ -150,6 +150,18 @@ class ApiControllerBase extends ControllerRoot
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = ($currentPage - 1) * $itemsPerPage;
+
+        // Sort entries
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+            $keys = array_keys($this->request->getPost('sort'));
+            $order = $this->request->getPost('sort')[$keys[0]];
+            $keys = array_column($records, $keys[0]);
+            if (count($keys) === count($records)) {
+                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $records);
+            }
+        }
+
+        // Filter entries
         $entry_keys = array_keys($records);
         if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
             $searchPhrase = (string)$this->request->getPost('searchPhrase');
@@ -157,27 +169,18 @@ class ApiControllerBase extends ControllerRoot
                 return $this->recursiveFilter($records[$key], $searchPhrase);
             });
         }
-        $formatted = array_map(function ($value) use (&$records) {
+        $filtered = array_map(function ($value) use (&$records) {
             foreach ($records[$value] as $ekey => $evalue) {
                 $item[$ekey] = $evalue;
             }
             return $item;
         }, array_slice($entry_keys, $offset, $itemsPerPage));
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
-            $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($formatted, $keys[0]);
-            if (count($keys) === count($formatted)) {
-                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $formatted);
-            }
-        }
-
         return [
            'total' => count($entry_keys),
            'rowCount' => $itemsPerPage,
            'current' => $currentPage,
-           'rows' => $formatted,
+           'rows' => $filtered,
         ];
     }
 
