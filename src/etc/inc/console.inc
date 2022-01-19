@@ -158,7 +158,10 @@ EOD;
         if (isset($config['vlans']['vlan'][0])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 $dmesg = "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}";
-                $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [ 'dmesg' => $dmesg ];
+                $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [
+                    'mac' => $iflist_all[$vlan['if']]['mac'],
+                    'dmesg' => $dmesg,
+                ];
             }
         }
     }
@@ -173,7 +176,7 @@ EOD;
     if (empty($iflist)) {
         echo "No interfaces found!\n";
     } else {
-        foreach ($iflist as $iface => $ifa) {
+        foreach ($iflist_all as $iface => $ifa) {
             echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
     }
