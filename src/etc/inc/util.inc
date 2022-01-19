@@ -846,6 +846,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
     /* list of virtual interface types */
     $vfaces = array(
+      '_vip'
       '_vlan',
       '_wlan',
       'bridge',
@@ -860,14 +861,14 @@ function get_interface_list($only_active = false, $include_dmesg = false)
       'lo',
       'ng',
       'pflog',
+      'pfsync',
       'plip',
       'ppp',
       'pppoe',
       'pptp',
-      'pfsync',
       'sl',
+      'tap',
       'tun',
-      'vip'
     );
 
     $ifnames_up = legacy_interface_listget('up');
@@ -889,7 +890,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
     foreach ($ifnames as $ifname) {
         $tmp_ifnames = preg_split('/\d+/', $ifname);
-        if (in_array(array_shift($tmp_ifnames), $vfaces)) {
+        if (count(array_intersect($tmp_ifnames, $vfaces)) {
             continue;
         }
 

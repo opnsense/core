@@ -133,10 +133,9 @@ EOD;
 
         if (isset($config['laggs']['lagg'][0])) {
             foreach ($config['laggs']['lagg'] as $lagg) {
-                $dmesg = "Link aggregation, member interfaces {$lagg['members']}";
                 $iflist_lagg[$lagg['laggif']] = $iflist_all[$lagg['laggif']] = [
-                    'mac' => 'xx:xx:xx:xx:xx:xx',
-                    'dmesg' => $dmesg,
+                    'dmesg' => "Link aggregation, member interfaces {$lagg['members']}",
+                    'mac' => '00:00:00:00:00:00',
                 ];
             }
         }
@@ -157,10 +156,9 @@ EOD;
 
         if (isset($config['vlans']['vlan'][0])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
-                $dmesg = "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}";
                 $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [
-                    'mac' => $iflist_all[$vlan['if']]['mac'],
-                    'dmesg' => $dmesg,
+                    'dmesg' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
+                    'mac' => '00:00:00:00:00:00',
                 ];
             }
         }
@@ -173,6 +171,10 @@ Valid interfaces are:
 
 EOD;
 
+    /*
+     * We are checking $iflist here for physical members only, but
+     * iterate over $iflist_all when that sanity check succeeded.
+     */
     if (empty($iflist)) {
         echo "No interfaces found!\n";
     } else {
