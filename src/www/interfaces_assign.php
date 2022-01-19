@@ -72,9 +72,6 @@ function list_interfaces()
         if (match_wireless_interface($key)) {
             continue;
         }
-        if (preg_match('/_stf$/', $key)) {
-            continue;
-        }
         $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
     }
     // collect interfaces from defined config sections

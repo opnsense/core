@@ -837,16 +837,17 @@ function get_configured_ip_addresses()
  */
 function get_interface_list($only_active = false, $include_dmesg = false)
 {
-    $dmesg_arr = array();
-    $iflist = array();
+    $dmesg_arr = [];
+    $iflist = [];
 
     if ($include_dmesg) {
         exec('/sbin/dmesg', $dmesg_arr);
     }
 
     /* list of virtual interface types */
-    $vfaces = array(
-      '_vip'
+    $vfaces = [
+      '_stf',
+      '_vip',
       '_vlan',
       '_wlan',
       'bridge',
@@ -869,15 +870,15 @@ function get_interface_list($only_active = false, $include_dmesg = false)
       'sl',
       'tap',
       'tun',
-    );
+    ];
 
     $ifnames_up = legacy_interface_listget('up');
     $ifnames = legacy_interface_listget();
-    $all_interfaces = legacy_config_get_interfaces(array('virtual' => false));
+    $all_interfaces = legacy_config_get_interfaces(['virtual' => false]);
     $all_interface_data = legacy_interfaces_details();
 
     if ($only_active) {
-        $_ifnames = array();
+        $_ifnames = [];
         $all_stats = legacy_interface_stats();
         foreach ($ifnames as $ifname) {
             $ifinfo = $all_stats[$ifname];
@@ -890,17 +891,17 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
     foreach ($ifnames as $ifname) {
         $tmp_ifnames = preg_split('/\d+/', $ifname);
-        if (count(array_intersect($tmp_ifnames, $vfaces)) {
+        if (count(array_intersect($tmp_ifnames, $vfaces))) {
             continue;
         }
 
-        $ifdata = !empty($all_interface_data[$ifname]) ? $all_interface_data[$ifname] : array();
-        $toput = array(
+        $ifdata = !empty($all_interface_data[$ifname]) ? $all_interface_data[$ifname] : [];
+        $toput = [
           'up' => in_array($ifname, $ifnames_up),
           'ipaddr' => !empty($ifdata['ipv4'][0]['ipaddr']) ? $ifdata['ipv4'][0]['ipaddr'] : null,
           'mac' => !empty($ifdata['macaddr']) ? $ifdata['macaddr'] : null,
           'dmesg' => '',
-        );
+        ];
 
         foreach ($all_interfaces as $name => $int) {
             if ($int['if'] == $ifname) {
@@ -910,7 +911,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         }
 
         foreach ($dmesg_arr as $dmesg_line) {
-            $dmesg = array();
+            $dmesg = [];
             if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $dmesg) == 1) {
                 $toput['dmesg'] = $dmesg[1];
                 break;

@@ -57,10 +57,7 @@ function available_interfaces($selected_id = null)
 
     $interfaces = array();
     foreach (get_interface_list() as $intf => $intf_info) {
-        if (strpos($intf, '_vlan')) {
-            // skip vlans
-            continue;
-        } elseif (in_array($intf, $lagg_member_interfaces)) {
+        if (in_array($intf, $lagg_member_interfaces)) {
             // skip members of other lagg interfaces
             continue;
         } elseif (in_array($intf, $configured_interfaces)) {
