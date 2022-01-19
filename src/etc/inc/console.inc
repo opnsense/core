@@ -117,7 +117,6 @@ function set_networking_interfaces_ports($probe = false)
 
     if (!empty($iflist)) {
         echo <<<EOD
-
 Do you want to configure LAGGs now? ${yes_no_prompt}
 EOD;
         if ($interactive) {
@@ -142,7 +141,6 @@ EOD;
         }
 
         echo <<<EOD
-
 Do you want to configure VLANs now? ${yes_no_prompt}
 EOD;
         if ($interactive) {
@@ -167,6 +165,7 @@ EOD;
     echo <<<EOD
 
 Valid interfaces are:
+
 
 EOD;
 
