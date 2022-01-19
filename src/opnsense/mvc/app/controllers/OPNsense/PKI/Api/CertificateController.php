@@ -319,6 +319,15 @@ class CertificateController extends ApiControllerBase
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = ($currentPage - 1) * $itemsPerPage;
         $entry_keys = array_keys($records);
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+            $keys = array_keys($this->request->getPost('sort'));
+            $order = $this->request->getPost('sort')[$keys[0]];
+            $keys = array_column($records, $keys[0]);
+            if (count($keys) == count($records)) {
+                // Sort column actually exists
+                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $records);
+            }
+        }
         if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
             $searchPhrase = (string)$this->request->getPost('searchPhrase');
             $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $records) {
@@ -330,22 +339,13 @@ class CertificateController extends ApiControllerBase
                 return false;
             });
         }
+        
         $formatted = array_map(function ($value) use (&$records) {
             foreach ($records[$value] as $ekey => $evalue) {
                 $item[$ekey] = $evalue;
             }
             return $item;
         }, array_slice($entry_keys, $offset, $itemsPerPage));
-
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
-            $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($formatted, $keys[0]);
-            if (count($keys) == count($formatted)) {
-                // Sort column actually exists
-                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $formatted);
-            }
-        }
 
         return [
            'total' => count($entry_keys),
