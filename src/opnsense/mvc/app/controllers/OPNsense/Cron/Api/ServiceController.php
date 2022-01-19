@@ -39,7 +39,6 @@ use OPNsense\Core\Backend;
  */
 class ServiceController extends ApiControllerBase
 {
-
     /**
      * restart cron service
      * @return array

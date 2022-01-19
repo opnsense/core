@@ -38,7 +38,6 @@ use OPNsense\Core\Config;
  */
 class TunnelController extends ApiControllerBase
 {
-
     /***
      * generic legacy search action, reads post variables for filters and page navigation.
      */

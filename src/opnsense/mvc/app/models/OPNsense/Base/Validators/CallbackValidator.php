@@ -41,7 +41,6 @@ use Phalcon\Messages\Message;
  */
 class CallbackValidator extends AbstractValidator implements ValidatorInterface
 {
-
     /**
     * Executes callback validator, which should return validation messages on failure
     *
