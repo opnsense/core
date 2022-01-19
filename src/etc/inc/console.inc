@@ -128,6 +128,7 @@ EOD;
 
         if (in_array($key, array('y', 'Y'))) {
             lagg_setup($iflist, $fp);
+            echo "\n";
         }
 
         if (isset($config['laggs']['lagg'][0])) {
@@ -152,6 +153,7 @@ EOD;
 
         if (in_array($key, array('y', 'Y'))) {
             vlan_setup(array_merge($iflist, $iflist_lagg), $fp);
+            echo "\n";
         }
 
         if (isset($config['vlans']['vlan'][0])) {
@@ -163,7 +165,6 @@ EOD;
     }
 
     echo <<<EOD
-
 Valid interfaces are:
 
 
