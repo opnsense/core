@@ -148,8 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (isset($_GET['act'])) {
         $act = $_GET['act'];
-    } else {
-        $act = null;
     }
 
     // set defaults
@@ -217,6 +215,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header("Content-Length: $exp_size");
         echo $exp_data;
         exit;
+    } else {
+        header(url_safe('Location: /ui/pki#authorities'));
+        exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($a_ca[$_POST['id']])) {
@@ -228,205 +229,179 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = null;
     }
 
-    if ($act == "del") {
-        if (!isset($id)) {
-            header(url_safe('Location: /ui/pki#authorities'));
-            exit;
-        }
-        $index = count($a_cert) - 1;
-        for (; $index >=0; $index--) {
-            if (isset($a_cert[$index]['caref']) && isset($a_ca[$id]['refid']) && $a_cert[$index]['caref'] == $a_ca[$id]['refid']) {
-                unset($a_cert[$index]);
-            }
-        }
+    $input_errors = array();
+    $pconfig = $_POST;
 
-        $index = count($a_crl) - 1;
-        for (; $index >=0; $index--) {
-            if ($a_crl[$index]['caref'] == $a_ca[$id]['refid']) {
-                unset($a_crl[$index]);
-            }
+    /* input validation */
+    if ($pconfig['camethod'] == "existing") {
+        $reqdfields = explode(" ", "descr cert");
+        $reqdfieldsn = array(
+                gettext("Descriptive name"),
+                gettext("Certificate data"));
+        if (!empty($pconfig['cert']) && (!strstr($pconfig['cert'], "BEGIN CERTIFICATE") || !strstr($pconfig['cert'], "END CERTIFICATE"))) {
+            $input_errors[] = gettext("This certificate does not appear to be valid.");
         }
-
-        unset($a_ca[$id]);
-        write_config();
-        system_trust_configure();
-        header(url_safe('Location: /ui/pki#authorities'));
-        exit;
-    } else {
-        $input_errors = array();
-        $pconfig = $_POST;
-
-        /* input validation */
-        if ($pconfig['camethod'] == "existing") {
-            $reqdfields = explode(" ", "descr cert");
-            $reqdfieldsn = array(
-                    gettext("Descriptive name"),
-                    gettext("Certificate data"));
-            if (!empty($pconfig['cert']) && (!strstr($pconfig['cert'], "BEGIN CERTIFICATE") || !strstr($pconfig['cert'], "END CERTIFICATE"))) {
-                $input_errors[] = gettext("This certificate does not appear to be valid.");
-            }
-            if (!empty($pconfig['key']) && strstr($pconfig['key'], "ENCRYPTED")) {
-                $input_errors[] = gettext("Encrypted private keys are not yet supported.");
-            }
-        } elseif ($pconfig['camethod'] == "internal") {
-            $reqdfields = explode(
-                " ",
-                "descr keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
-            );
-            $reqdfieldsn = array(
-                    gettext("Descriptive name"),
-                    gettext("Key type"),
-                    gettext("Key length"),
-                    gettext("Curve"),
-                    gettext("Digest algorithm"),
-                    gettext("Lifetime"),
-                    gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
-                    gettext("Distinguished name Common Name"));
-        } elseif ($pconfig['camethod'] == "intermediate") {
-            $reqdfields = explode(
-                " ",
-                "descr caref keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
-            );
-            $reqdfieldsn = array(
-                    gettext("Descriptive name"),
-                    gettext("Signing Certificate Authority"),
-                    gettext("Key type"),
-                    gettext("Key length"),
-                    gettext("Curve"),
-                    gettext("Digest algorithm"),
-                    gettext("Lifetime"),
-                    gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
-                    gettext("Distinguished name Common Name"));
+        if (!empty($pconfig['key']) && strstr($pconfig['key'], "ENCRYPTED")) {
+            $input_errors[] = gettext("Encrypted private keys are not yet supported.");
         }
+    } elseif ($pconfig['camethod'] == "internal") {
+        $reqdfields = explode(
+            " ",
+            "descr keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
+            "dn_organization dn_email dn_commonname"
+        );
+        $reqdfieldsn = array(
+                gettext("Descriptive name"),
+                gettext("Key type"),
+                gettext("Key length"),
+                gettext("Curve"),
+                gettext("Digest algorithm"),
+                gettext("Lifetime"),
+                gettext("Distinguished name Country Code"),
+                gettext("Distinguished name State or Province"),
+                gettext("Distinguished name City"),
+                gettext("Distinguished name Organization"),
+                gettext("Distinguished name Email Address"),
+                gettext("Distinguished name Common Name"));
+    } elseif ($pconfig['camethod'] == "intermediate") {
+        $reqdfields = explode(
+            " ",
+            "descr caref keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
+            "dn_organization dn_email dn_commonname"
+        );
+        $reqdfieldsn = array(
+                gettext("Descriptive name"),
+                gettext("Signing Certificate Authority"),
+                gettext("Key type"),
+                gettext("Key length"),
+                gettext("Curve"),
+                gettext("Digest algorithm"),
+                gettext("Lifetime"),
+                gettext("Distinguished name Country Code"),
+                gettext("Distinguished name State or Province"),
+                gettext("Distinguished name City"),
+                gettext("Distinguished name Organization"),
+                gettext("Distinguished name Email Address"),
+                gettext("Distinguished name Common Name"));
+    }
 
-        do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-        if ($pconfig['camethod'] != "existing") {
-            /* Make sure we do not have invalid characters in the fields for the certificate */
-            for ($i = 0; $i < count($reqdfields); $i++) {
-                if ($reqdfields[$i] == 'dn_email') {
-                    if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_email"])) {
-                        $input_errors[] = gettext("The field 'Distinguished name Email Address' contains invalid characters.");
-                    }
-                } elseif ($reqdfields[$i] == 'dn_commonname') {
-                    if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_commonname"])) {
-                        $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
-                    }
-                } elseif ($reqdfields[$i] == "dn_organization") {
-                    if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\"\']/", $pconfig["dn_organization"])) {
-                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
-                    }
-                } elseif ($reqdfields[$i] != "descr" && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["$reqdfields[$i]"])) {
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+    if ($pconfig['camethod'] != "existing") {
+        /* Make sure we do not have invalid characters in the fields for the certificate */
+        for ($i = 0; $i < count($reqdfields); $i++) {
+            if ($reqdfields[$i] == 'dn_email') {
+                if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_email"])) {
+                    $input_errors[] = gettext("The field 'Distinguished name Email Address' contains invalid characters.");
+                }
+            } elseif ($reqdfields[$i] == 'dn_commonname') {
+                if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_commonname"])) {
+                    $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
+                }
+            } elseif ($reqdfields[$i] == "dn_organization") {
+                if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\"\']/", $pconfig["dn_organization"])) {
                     $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
-            }
-            if (!in_array($pconfig["keytype"], array("RSA", "Elliptic Curve"))) {
-                $input_errors[] = gettext("Please select a valid Key Type.");
-            }
-            if (!in_array($pconfig['keylen'], $ca_keylens) && $pconfig["keytype"] == "RSA") {
-                $input_errors[] = gettext("Please select a valid Key Length.");
-            }
-            if (!in_array($pconfig['curve'], $ca_curves) && $pconfig["keytype"] == "Elliptic Curve") {
-                $input_errors[] = gettext("Please select a valid Curve.");
-            }
-            if (!in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
-                $input_errors[] = gettext("Please select a valid Digest Algorithm.");
+            } elseif ($reqdfields[$i] != "descr" && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["$reqdfields[$i]"])) {
+                $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
             }
         }
+        if (!in_array($pconfig["keytype"], array("RSA", "Elliptic Curve"))) {
+            $input_errors[] = gettext("Please select a valid Key Type.");
+        }
+        if (!in_array($pconfig['keylen'], $ca_keylens) && $pconfig["keytype"] == "RSA") {
+            $input_errors[] = gettext("Please select a valid Key Length.");
+        }
+        if (!in_array($pconfig['curve'], $ca_curves) && $pconfig["keytype"] == "Elliptic Curve") {
+            $input_errors[] = gettext("Please select a valid Curve.");
+        }
+        if (!in_array($pconfig["digest_alg"], $openssl_digest_algs)) {
+            $input_errors[] = gettext("Please select a valid Digest Algorithm.");
+        }
+    }
 
-        if (isset($pconfig['serial']) && $pconfig['serial'] !== '' &&
-            ((string)((int)$pconfig['serial']) != $pconfig['serial'] || $pconfig['serial'] < 1)) {
-            $input_errors[] = gettext('The serial number must be a number greater than zero or left blank.');
+    if (isset($pconfig['serial']) && $pconfig['serial'] !== '' &&
+        ((string)((int)$pconfig['serial']) != $pconfig['serial'] || $pconfig['serial'] < 1)) {
+        $input_errors[] = gettext('The serial number must be a number greater than zero or left blank.');
+    }
+
+    /* save modifications */
+    if (count($input_errors) == 0) {
+        $ca = array();
+
+        if (isset($id)) {
+            $ca = $a_ca[$id];
+        } else {
+            $ca['refid'] = uniqid();
         }
 
-        /* save modifications */
+        if (isset($pconfig['descr'])) {
+            $ca['descr'] = $pconfig['descr'];
+        } else {
+            $ca['descr'] = null;
+        }
+
+        if (!empty($pconfig['serial'])) {
+            $ca['serial'] = $pconfig['serial'] - 1;
+        }
+
+        if (isset($id)) {
+            // edit existing
+            $ca['crt'] = base64_encode($pconfig['cert']);
+            if (!empty($pconfig['key'])) {
+                $ca['prv'] = base64_encode($pconfig['key']);
+            }
+        } else {
+            $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warnings directly to a page screwing menu tab */
+            if ($pconfig['keytype'] == "Elliptic Curve") {
+                $pconfig['keylen_curve'] = $pconfig['curve'];
+            } else {
+                $pconfig['keylen_curve'] = $pconfig['keylen'];
+            }
+            if ($pconfig['camethod'] == "existing") {
+                ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);
+            } elseif ($pconfig['camethod'] == "internal") {
+                $dn = array(
+                    'countryName' => $pconfig['dn_country'],
+                    'stateOrProvinceName' => $pconfig['dn_state'],
+                    'localityName' => $pconfig['dn_city'],
+                    'organizationName' => $pconfig['dn_organization'],
+                    'emailAddress' => $pconfig['dn_email'],
+                    'commonName' => $pconfig['dn_commonname']);
+                if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
+                    $input_errors = array();
+                    while ($ssl_err = openssl_error_string()) {
+                        $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
+                    }
+                }
+            } elseif ($pconfig['camethod'] == "intermediate") {
+                $dn = array(
+                    'countryName' => $pconfig['dn_country'],
+                    'stateOrProvinceName' => $pconfig['dn_state'],
+                    'localityName' => $pconfig['dn_city'],
+                    'organizationName' => $pconfig['dn_organization'],
+                    'emailAddress' => $pconfig['dn_email'],
+                    'commonName' => $pconfig['dn_commonname']);
+                if (!ca_inter_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
+                    $input_errors = array();
+                    while ($ssl_err = openssl_error_string()) {
+                        $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
+                    }
+                }
+            }
+            error_reporting($old_err_level);
+        }
+
+        if (isset($id) && $a_ca[$id]) {
+            $a_ca[$id] = $ca;
+        } else {
+            $a_ca[] = $ca;
+        }
+
         if (count($input_errors) == 0) {
-            $ca = array();
-
-            if (isset($id)) {
-                $ca = $a_ca[$id];
-            } else {
-                $ca['refid'] = uniqid();
-            }
-
-            if (isset($pconfig['descr'])) {
-                $ca['descr'] = $pconfig['descr'];
-            } else {
-                $ca['descr'] = null;
-            }
-
-            if (!empty($pconfig['serial'])) {
-                $ca['serial'] = $pconfig['serial'] - 1;
-            }
-
-            if (isset($id)) {
-                // edit existing
-                $ca['crt'] = base64_encode($pconfig['cert']);
-                if (!empty($pconfig['key'])) {
-                    $ca['prv'] = base64_encode($pconfig['key']);
-                }
-            } else {
-                $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warnings directly to a page screwing menu tab */
-                if ($pconfig['keytype'] == "Elliptic Curve") {
-                    $pconfig['keylen_curve'] = $pconfig['curve'];
-                } else {
-                    $pconfig['keylen_curve'] = $pconfig['keylen'];
-                }
-                if ($pconfig['camethod'] == "existing") {
-                    ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);
-                } elseif ($pconfig['camethod'] == "internal") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
-                        'commonName' => $pconfig['dn_commonname']);
-                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
-                        $input_errors = array();
-                        while ($ssl_err = openssl_error_string()) {
-                            $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
-                        }
-                    }
-                } elseif ($pconfig['camethod'] == "intermediate") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
-                        'commonName' => $pconfig['dn_commonname']);
-                    if (!ca_inter_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
-                        $input_errors = array();
-                        while ($ssl_err = openssl_error_string()) {
-                            $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
-                        }
-                    }
-                }
-                error_reporting($old_err_level);
-            }
-
-            if (isset($id) && $a_ca[$id]) {
-                $a_ca[$id] = $ca;
-            } else {
-                $a_ca[] = $ca;
-            }
-
-            if (count($input_errors) == 0) {
-                write_config();
-                system_trust_configure();
-                header(url_safe('Location: /ui/pki#authorities'));
-                exit;
-            }
+            write_config();
+            system_trust_configure();
+            header(url_safe('Location: /ui/pki#authorities'));
+            exit;
         }
     }
 }
@@ -439,29 +414,6 @@ include("head.inc");
 <body>
   <script>
   $( document ).ready(function() {
-    // delete entry
-    $(".act_delete").click(function(event){
-      event.preventDefault();
-      var id = $(this).data('id');
-      BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("Authorities");?>",
-        message: "<?=gettext("Do you really want to delete this Certificate Authority and its CRLs, and unreference any associated certificates?");?>",
-        buttons: [{
-                  label: "<?=gettext("No");?>",
-                  action: function(dialogRef) {
-                      dialogRef.close();
-                  }}, {
-                  label: "<?=gettext("Yes");?>",
-                  action: function(dialogRef) {
-                    $("#id").val(id);
-                    $("#action").val("del");
-                    $("#iform").submit()
-                }
-              }]
-      });
-    });
-
     $("#camethod").change(function(){
         $("#existing").addClass("hidden");
         $("#internal").addClass("hidden");
@@ -508,10 +460,6 @@ include("head.inc");
 ?>
     <section class="col-xs-12">
       <div class="content-box tab-content table-responsive">
-
-        <?php if ($act == "new" || $act == "edit") :
-?>
-
         <form method="post" name="iform" id="iform">
           <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
@@ -752,111 +700,8 @@ include("head.inc");
             </tr>
           </table>
         </form>
-
-<?php
-        else :?>
-        <form method="post" name="iform" id="iform">
-          <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
-          <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
-        </form>
-        <table style="width:100%; border:0;" class="table table-striped">
-          <thead>
-            <tr>
-              <th><?=gettext("Name");?></th>
-              <th><?=gettext("Internal");?></th>
-              <th><?=gettext("Issuer");?></th>
-              <th><?=gettext("Certificates");?></th>
-              <th><?=gettext("Distinguished Name");?></th>
-              <th class="text-nowrap">
-                <a href="system_camanager.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
-                  <i class="fa fa-plus fa-fw"></i>
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-<?php
-          $i = 0;
-          foreach ($a_ca as $ca) :
-              $issuer = htmlspecialchars(cert_get_issuer($ca['crt']));
-              $subj = htmlspecialchars(cert_get_subject($ca['crt']));
-              list($startdate, $enddate) = cert_get_dates($ca['crt']);
-              if ($subj == $issuer) {
-                  $issuer_name = "<em>" . gettext("self-signed") . "</em>";
-              } else {
-                  $issuer_name = "<em>" . gettext("external") . "</em>";
-              }
-
-              if (isset($ca['caref'])) {
-                  $issuer_ca = lookup_ca($ca['caref']);
-                  if ($issuer_ca) {
-                      $issuer_name = $issuer_ca['descr'];
-                  }
-              }
-
-              $certcount = 0;
-
-              foreach ($a_cert as $cert) {
-                  if ($cert['caref'] == $ca['refid']) {
-                      $certcount++;
-                  }
-              }
-
-              foreach ($a_ca as $cert) {
-                  if (isset($cert['caref'])) {
-                      if ($cert['caref'] == $ca['refid']) {
-                          $certcount++;
-                      }
-                  }
-              }
-?>
-            <tr>
-              <td><?=htmlspecialchars($ca['descr']);?></td>
-              <td><?=!empty($ca['prv']) ? gettext("YES") : gettext("NO");?>&nbsp;</td>
-              <td><?=$issuer_name;?>&nbsp;</td>
-              <td><?=$certcount;?>&nbsp;</td>
-              <td><?=$subj;?><br />
-                  <table style="width:100%; font-size: 9px">
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td style="width:20%"><?=gettext("Valid From")?>:</td>
-                      <td style="width:70%"><?= $startdate ?></td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td><?=gettext("Valid Until")?>:</td>
-                      <td><?= $enddate ?></td>
-                    </tr>
-                  </table>
-                </td>
-                <td class="text-nowrap">
-                  <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
-                    <i class="fa fa-pencil fa-fw"></i>
-                  </a>
-                  <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
-                    <i class="fa fa-download fa-fw"></i>
-                  </a>
-<?php
-                  if ($ca['prv']) :?>
-                  <a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs">
-                    <i class="fa fa-download fa-fw"></i>
-                  </a>
-<?php
-                  endif; ?>
-                  <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete ca"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <i class="fa fa-trash fa-fw"></i>
-                  </a>
-                </td>
-              </tr>
-<?php
-              $i++;
-              endforeach;?>
-            </tbody>
-          </table>
-<?php
-          endif; ?>
-        </div>
-      </section>
+      </div>
+    </section>
     </div>
   </div>
 </section>

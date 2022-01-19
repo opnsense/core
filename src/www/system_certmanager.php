@@ -352,6 +352,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
       }
       exit;
+    } else {
+        header(url_safe('Location: /ui/pki#certificates'));
+        exit;
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -364,14 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $act = isset($_POST['act']) ? $_POST['act'] : null;
 
-    if ($act == "del") {
-        if (isset($id)) {
-            unset($a_cert[$id]);
-            write_config();
-        }
-        header(url_safe('Location: /ui/pki#certificates'));
-        exit;
-    } elseif ($act == 'csr_info') {
+    if ($act == 'csr_info') {
       if (!isset($pconfig['csr'])) {
         http_response_code(400);
         header("Content-Type: text/plain;charset=UTF-8");
@@ -397,31 +393,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo $result_stdout;
         echo $result_stderr;
       }
-      exit;
-    } elseif ($act == 'csr_info_json') {
-      header("Content-Type: application/json;charset=UTF-8");
-
-      if (!isset($pconfig['csr'])) {
-        http_response_code(400);
-        echo json_encode(array(
-          'error' => gettext('Invalid Request'),
-          'error_detail' => gettext('No csr parameter in query')
-        ));
-        exit;
-      }
-
-      $parsed_result = parse_csr($pconfig['csr']);
-
-      if ($parsed_result['parse_success'] !== true) {
-        http_response_code(400);
-        echo json_encode(array(
-          'error' => gettext('CSR file is invalid'),
-          'error_detail' => gettext('Could not parse CSR file.')
-        ));
-        exit;
-      }
-
-      echo json_encode($parsed_result);
       exit;
     } elseif ($act == "p12") {
         // export cert+key in p12 format
@@ -836,111 +807,6 @@ include("head.inc");
   </style>
   <script>
   $( document ).ready(function() {
-    // delete entry
-    $(".act_delete").click(function(event){
-      event.preventDefault();
-      var id = $(this).data('id');
-      BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("Certificates");?>",
-        message: "<?=gettext("Do you really want to delete this Certificate?");?>",
-        buttons: [{
-                  label: "<?=gettext("No");?>",
-                  action: function(dialogRef) {
-                      dialogRef.close();
-                  }}, {
-                  label: "<?=gettext("Yes");?>",
-                  action: function(dialogRef) {
-                    $("#id").val(id);
-                    $("#action").val("del");
-                    $("#iform").submit()
-                }
-              }]
-      });
-    });
-
-    $('.p12btn').on('click', function(event) {
-        event.preventDefault();
-        var id = $(this).data('id');
-
-        let password_input = $('<input type="password" autocomplete="new-password" class="form-control password_field" placeholder="<?=html_safe(gettext("Password"));?>">');
-        let confirm_input = $('<input type="password" autocomplete="new-password" class="form-control password_field" placeholder="<?=html_safe(gettext("Confirm"));?>">');
-        let dialog_items = $('<div class = "form-group">');
-        dialog_items.append(
-          $("<span>").text("<?=html_safe(gettext('Optionally use a password to protect your export'));?>"),
-          $('<table class="table table-condensed"/>').append(
-            $("<tbody/>").append(
-              $("<tr/>").append($("<td/>").append(password_input)),
-              $("<tr/>").append($("<td/>").append(confirm_input))
-            )
-          )
-        );
-
-        // highlight password/confirm when not equal
-        let keyup_pass = function() {
-            if (confirm_input.val() !== password_input.val()) {
-                $(".password_field").addClass("has-warning");
-                $(".password_field").closest('div').addClass('has-warning');
-            } else {
-                $(".password_field").removeClass("has-warning");
-                $(".password_field").closest('div').removeClass('has-warning');
-            }
-        };
-        confirm_input.on('keyup', keyup_pass);
-        password_input.on('keyup', keyup_pass);
-
-
-        BootstrapDialog.show({
-            type:BootstrapDialog.TYPE_INFO,
-            title: "<?= gettext("Certificates");?>",
-            message: dialog_items,
-            buttons: [
-                {
-                    label: "<?=html_safe(gettext("Close"));?>",
-                    action: function(dialogRef) {
-                        dialogRef.close();
-                    }
-                }, {
-                    label: '<i class="fa fa-download fa-fw"></i> <?=html_safe(gettext("Download"));?>',
-                    action: function(dialogRef) {
-                        if (confirm_input.val() === password_input.val()) {
-                            $.post('system_certmanager.php', {'id': id, 'act': 'p12', 'password': password_input.val()}, function (data) {
-                                var link = $('<a></a>')
-                                    .attr('href','data:application/octet-stream;base64,' + data.content)
-                                    .attr('download', data.filename)
-                                    .appendTo('body');
-                                link.ready(function() {
-                                    link.get(0).click();
-                                    link.empty();
-                                });
-                            });
-                            dialogRef.close();
-                        }
-                    }
-                }
-            ]
-        });
-    });
-
-    $(".act_info").click(function(event){
-        event.preventDefault();
-        var id = $(this).data('id');
-        $.ajax({
-                url:"system_certmanager.php",
-                type: 'get',
-                data: {'act' : 'info', 'id' :id},
-                success: function(data){
-                  BootstrapDialog.show({
-                              title: '<?=gettext("Certificate");?>',
-                              type:BootstrapDialog.TYPE_INFO,
-                              message: $("<div/>").text(data).html(),
-                              cssClass: 'monospace-dialog',
-                          });
-                }
-        });
-
-    });
-
     $(".csr_info_for_sign_csr").click(function(event){
         event.preventDefault();
         var csr_payload = $('#csr').val();
@@ -2029,147 +1895,6 @@ $( document ).ready(function() {
                       <a href="/system_certmanager.php" class="btn btn-primary"><?= gettext('Go back'); ?></a>
                     </td>
                 </tr>
-            </tbody>
-          </table>
-
-<?php
-          else :?>
-          <form method="post" name="iform" id="iform">
-            <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
-            <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
-          </form>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th><?=gettext("Name");?></th>
-                <th><?=gettext("Issuer");?></th>
-                <th><?=gettext("Distinguished Name");?></th>
-                <th class="text-nowrap">
-                  <a href="system_certmanager.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
-                    <i class="fa fa-plus fa-fw"></i>
-                  </a>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-<?php
-            $i = 0;
-            foreach ($a_cert as $cert) :
-                $name = $cert['descr'];
-                $purpose = null;
-
-                if (!empty($cert['crt'])) {
-                    $subj = cert_get_subject($cert['crt']);
-                    $issuer = cert_get_issuer($cert['crt']);
-                    $purpose = cert_get_purpose($cert['crt']);
-                    list($startdate, $enddate) = cert_get_dates($cert['crt']);
-                    if ($subj==$issuer) {
-                        $caname = "<em>" . gettext("self-signed") . "</em>";
-                    } else {
-                        $caname = "<em>" . gettext("external"). "</em>";
-                    }
-                    $subj = htmlspecialchars($subj);
-                }
-                if (isset($cert['csr'])) {
-                    $subj = htmlspecialchars(csr_get_subject($cert['csr']));
-                    $caname = "<em>" . gettext("external - signature pending") . "</em>";
-                }
-                if (isset($cert['caref'])) {
-                    $ca = lookup_ca($cert['caref']);
-                    if ($ca) {
-                        $caname = $ca['descr'];
-                    }
-                }?>
-              <tr>
-                <td>
-                  <i class="fa fa-certificate"></i>
-                  <?=$name;?>
-<?php
-                  if (is_array($purpose)) :?>
-                  <br/><br/>
-                  <?=gettext('CA:') ?> <?=$purpose['ca']; ?>,
-                  <?=gettext('Server:') ?> <?=$purpose['server']; ?>
-<?php
-                  endif; ?>
-                </td>
-                <td><?=$caname;?>&nbsp;</td>
-                <td><?=$subj;?>&nbsp;<br />
-                  <table>
-                      <tr>
-                          <td style="width:10%">&nbsp;</td>
-                          <td style="width:20%"><?=gettext("Valid From")?>:</td>
-                          <td style="width:70%"><?= $startdate ?></td>
-                      </tr>
-                      <tr>
-                          <td>&nbsp;</td>
-                          <td><?=gettext("Valid Until")?>:</td>
-                          <td><?= $enddate ?></td>
-                      </tr>
-                  </table>
-                </td>
-                <td class="text-nowrap">
-<?php
-                if (is_cert_revoked($cert)) :?>
-                  <b><?=gettext('Revoked') ?></b><br />
-<?php
-                endif;
-                if (!isset($cert['prv'])) :?>
-                  <b><?=gettext('No private key here') ?></b><br />
-<?php
-                endif;
-                if (is_webgui_cert($cert['refid'])) :?>
-                  <?=gettext('Web GUI') ?><br />
-<?php
-                endif;
-                if (is_user_cert($cert['refid'])) :?>
-                  <?=gettext('User Cert') ?><br />
-<?php
-                endif;
-                if (is_openvpn_server_cert($cert['refid'])) :?>
-                  <?=gettext('OpenVPN Server') ?><br />
-<?php
-                endif;
-                if (is_openvpn_client_cert($cert['refid'])) :?>
-                  <?=gettext('OpenVPN Client') ?><br />
-<?php
-                endif;
-                if (is_ipsec_cert($cert['refid'])) :?>
-                  <?=gettext('IPsec Tunnel') ?><br />
-<?php
-                endif; ?>
-
-<?php if (isset($cert['crt'])): ?>
-                  <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
-                    <i class="fa fa-info-circle fa-fw"></i>
-                  </a>
-<?php endif ?>
-                  <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">
-                      <i class="fa fa-download fa-fw"></i>
-                  </a>
-<?php if (isset($cert['prv'])): ?>
-                  <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user key");?>">
-                    <i class="fa fa-download fa-fw"></i>
-                  </a>
-                  <a data-id="<?=$i;?>"  class="btn btn-default btn-xs p12btn" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
-                      <i class="fa fa-download fa-fw"></i>
-                  </a>
-<?php endif ?>
-<?php if (!cert_in_use($cert['refid'])): ?>
-                  <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete cert"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <i class="fa fa-trash fa-fw"></i>
-                  </a>
-<?php endif ?>
-<?php if (isset($cert['csr'])): ?>
-                  <a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("update csr");?>">
-                    <i class="fa fa-pencil fa-fw"></i>
-                  </a>
-<?php endif ?>
-                </td>
-              </tr>
-<?php
-              $i++;
-              endforeach; ?>
-
             </tbody>
           </table>
 <?php

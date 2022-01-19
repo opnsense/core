@@ -93,6 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['caref'] = !empty($_GET['caref']) ? $_GET['caref'] : null;
         $pconfig['lifetime'] = "9999";
         $pconfig['serial'] = "0";
+    } else {
+        header(url_safe('Location: /ui/pki#authorities'));
+        exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -107,21 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = $_POST['act'];
     }
 
-    if ($act == "del" && isset($id)) {
-        $name = $thiscrl['descr'];
-        if (is_openvpn_server_crl($id)) {
-            $savemsg = sprintf(gettext("Certificate Revocation List %s is in use and cannot be deleted"), $name) . "<br />";
-        } else {
-            foreach ($a_crl as $cid => $acrl) {
-                if ($acrl['refid'] == $thiscrl['refid']) {
-                    unset($a_crl[$cid]);
-                }
-            }
-            write_config(sprintf('Deleted CRL %s', $name));
-            header(url_safe('Location: /ui/pki#authorities'));
-            exit;
-        }
-    } elseif ($act == "delcert" && isset($id)) {
+    if ($act == "delcert" && isset($id)) {
         if (!isset($thiscrl['cert']) || !is_array($thiscrl['cert'])) {
             header(url_safe('Location: /ui/pki#authorities'));
             exit;
@@ -246,30 +235,6 @@ include("head.inc");
   <script>
 
   $( document ).ready(function() {
-    // delete cert revocation list
-    $(".act_delete").click(function(event){
-      event.preventDefault();
-      var id = $(this).data('id');
-      var descr = $(this).data('descr');
-      BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_DANGER,
-        title: "<?=gettext("Certificates");?>",
-        message: "<?=gettext("Do you really want to delete this Certificate Revocation List?");?> (" + descr + ")" ,
-        buttons: [{
-                  label: "<?=gettext("No");?>",
-                  action: function(dialogRef) {
-                    dialogRef.close();
-                  }}, {
-                  label: "<?=gettext("Yes");?>",
-                  action: function(dialogRef) {
-                    $("#id").val(id);
-                    $("#action").val("del");
-                    $("#iform").submit();
-                }
-              }]
-      });
-    });
-
     // Delete certificate from CRL
     $(".act_delete_cert").click(function(event){
       event.preventDefault();
@@ -561,91 +526,6 @@ include("head.inc");
                 </tr>
 <?php
                 endif; ?>
-              </tbody>
-            </table>
-          </form>
-<?php
-          else :?>
-          <form method="post" id="iform" class="table table-striped">
-            <input type="hidden" name="id" id="id" value=""/>
-            <input type="hidden" name="act" id="action" value=""/>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <td><?=gettext("Name");?></td>
-                  <td><?=gettext("Internal");?></td>
-                  <td><?=gettext("Certificates");?></td>
-                  <td><?=gettext("In Use");?></td>
-                  <td class="text-nowrap"></td>
-                </tr>
-              </thead>
-              <tbody>
-<?php
-                // Map CRLs to CAs
-                $ca_crl_map = array();
-                foreach ($a_crl as $crl) {
-                    $ca_crl_map[$crl['caref']][] = $crl['refid'];
-                }
-
-                foreach ($a_ca as $ca) :?>
-                <tr>
-                  <td colspan="4"> <?=htmlspecialchars($ca['descr']);?></td>
-                  <td class="text-nowrap">
-<?php
-                  if (!empty($ca['prv'])) :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Add or Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
-                      <i class="fa fa-plus fa-fw"></i>
-                    </a>
-<?php
-                  else :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
-                      <i class="fa fa-plus fa-fw"></i>
-                    </a>
-<?php
-                  endif;?>
-                  </td>
-                </tr>
-<?php
-                  if (isset($ca_crl_map[$ca['refid']]) && is_array($ca_crl_map[$ca['refid']])):
-                    foreach ($ca_crl_map[$ca['refid']] as $crl):
-                        $tmpcrl = lookup_crl($crl);
-                        $internal = is_crl_internal($tmpcrl);
-                        $inuse = is_openvpn_server_crl($tmpcrl['refid']);?>
-                <tr>
-                  <td><?=htmlspecialchars($tmpcrl['descr']); ?></td>
-                  <td><?=$internal ? gettext("YES") : gettext("NO"); ?></td>
-                  <td><?=$internal ? (isset($tmpcrl['cert']) ? count($tmpcrl['cert']) : 0) : gettext("Unknown (imported)"); ?></td>
-                  <td><?=$inuse ? gettext("YES") : gettext("NO"); ?></td>
-                  <td class="text-nowrap">
-                    <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                        <i class="fa fa-download fa-fw" data-toggle="tooltip" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
-                    </a>
-<?php
-                  if ($internal) :?>
-                    <a href="system_crlmanager.php?act=edit&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <i class="fa fa-pencil fa-fw" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
-                    </a>
-<?php
-                  else :?>
-                    <a href="system_crlmanager.php?act=editimported&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <i class="fa fa-pencil fa-fw" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></i>
-                    </a>
-<?php
-                  endif; ?>
-<?php
-                  if (!$inuse) :?>
-                    <a id="del_<?=$tmpcrl['refid'];?>" data-descr="<?=htmlspecialchars($tmpcrl['descr']);?>" data-id="<?=$tmpcrl['refid'];?>" title="<?=gettext("Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <i class="fa fa-trash fa-fw"></i>
-                    </a>
-<?php
-                  endif; ?>
-                  </td>
-                </tr>
-<?php
-                    endforeach;
-                  endif; ?>
-<?php
-                endforeach; ?>
               </tbody>
             </table>
           </form>
