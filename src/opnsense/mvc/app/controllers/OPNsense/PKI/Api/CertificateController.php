@@ -51,10 +51,9 @@ class CertificateController extends ApiControllerBase
         if (isset($config->ca)) {
             $idx = 0;
             foreach ($config->ca as $ca) {
-                $cert_issuer = Util::cert_get_issuer((string)$ca->crt);
-                $cert_subject = Util::cert_get_subject((string)$ca->crt);
+                $cert_issuer = Util::cert_get_issuer($ca->crt);
+                $cert_subject = Util::cert_get_subject($ca->crt);
                 list($startdate, $enddate) = Util::cert_get_dates($ca->crt);
-                $certificate_count = Util::count_certs_of_ca($ca->refid);
 
                 if ($cert_issuer == $cert_subject) {
                     $issuer = gettext("self-signed");
@@ -71,12 +70,12 @@ class CertificateController extends ApiControllerBase
                     "refid" => (string)$ca->refid,
                     "id" => $idx,
                     "internal" => isset($ca->prv) ? 1 : 0,
-                    "certificateCount" => $certificate_count,
+                    "certificate_count" => Util::count_certs_of_ca($ca->refid),
                     "issuer" => $issuer,
                     "subject" => $cert_subject,
                     "name" => (string)$ca->descr,
-                    "validFrom" => $startdate,
-                    "validUntil" => $enddate
+                    "valid_from" => $startdate,
+                    "valid_until" => $enddate
                 ];
                 $items[] = $item;
                 $idx++;
@@ -111,34 +110,95 @@ class CertificateController extends ApiControllerBase
     public function delAuthorityAction($refid)
     {
         if ($this->request->isPost()) {
-            $phase_ids = [];
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            $ids = [];
+            // XXX system_camanager.php also deletes certs assigned to this ca - to be considered
+            foreach (['refid' => $config->ca, 'caref' => $config->crl] as $typeref => $elem) {
+                $ids[$typeref] = [];
+                if (!empty($elem)) {
+                    $idx = 0;
+                    foreach ($elem as $e) {
+                        if ((string)$e->{$typeref} == $refid) {
+                            $ids[$typeref][] = $idx;
+                        }
+                        $idx++;
+                    }
+                    foreach (array_reverse($ids[$typeref]) as $idx) {
+                        unset($elem[$idx]);
+                    }
+                }
+            }
+            Config::getInstance()->save();
+            return [
+              'status' => (count($ids['refid']) > 0) ? 'ok' : 'failed',
+              'ca_count' => count($ids['refid']), // should be 1 as refid of ca is unique
+              'crl_count' => count($ids['caref']),
+            ];
+        }
+        return ['status' => 'failed'];
+    }
+
+    public function searchRevocationAction()
+    {
+        $caref = intval($this->request->getPost('caref', 'string', ""));
+        $items = [];
+        $this->sessionClose();
+        $config = Config::getInstance()->object();
+        if (isset($config->crl)) {
+            $idx = 0;
+            foreach ($config->crl as $crl) {
+                if (isset($crl->caref) && $crl->caref != $caref) {
+                    continue;
+                }
+
+                $item = [
+                    "refid" => (string)$crl->refid,
+                    "id" => $idx,
+                    "internal" => (Util::is_crl_internal($crl)) ? 1 : 0,
+                    "used" => (Util::is_openvpn_server_crl((string)$crl->refid)) ? 1 : 0,
+                    "certificate_count" => (Util::is_crl_internal($crl)) ? Util::count_certs_of_crl($crl->refid) : gettext('unknown'),
+                    "name" => (string)$crl->descr
+                ];
+                $items[] = $item;
+                $idx++;
+            }
+        }
+        return $this->search($items);
+    }
+
+    public function delRevocationAction($refid)
+    {
+        if ($this->request->isPost()) {
             $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             $deleted = 0;
-            if (isset($config->ca)) {
-                $ids = [];
-                $idx = 0;
-                foreach ($config->ca as $ca) {
-                    if ((string)$ca->refid === $refid) {
-                        $ids[] = $idx;
+            $idx = 0;
+            foreach ($config->crl as $crl) {
+                if ((string)$crl->refid === $refid) {
+                    if (!Util::is_openvpn_server_crl($crl)) {
+                        unset($config->crl[$idx]);
+                        $deleted++;
+                        break;
                     }
-                    $idx++;
                 }
-                foreach (array_reverse($ids) as $idx) {
-                    unset($config->ca[$idx]);
-                    $deleted++;
-                }
-                // XXX system_camanager.php also deletes certs assigned to this ca - to be considered
+                $idx++;
             }
-            // TODO delete CRLs
             Config::getInstance()->save();
             return [
-              'status' => 'ok',
+              'status' => ($deleted) ? 'ok' : 'failed',
               'count' => $deleted,
             ];
         }
         return ['status' => 'failed'];
+    }
+
+    private function delRevocation($refid)
+    {
+        $config = Config::getInstance()->object();
+        return $deleted;
     }
 
     public function searchCertificateAction()
@@ -182,8 +242,8 @@ class CertificateController extends ApiControllerBase
                     "subject" => $cert_subject,
                     "name" => (string)$cert->descr,
                     "csr" => isset($cert->csr) ? 1 : 0,
-                    "validFrom" => $startdate,
-                    "validUntil" => $enddate,
+                    "valid_from" => $startdate,
+                    "valid_until" => $enddate,
                     "purpose" => (isset($cert->crt)) ? Util::cert_get_purpose((string)$cert->crt, true, true) : "",
                     "usage" => $this->getCertificateUsage((string)$cert->refid),
                     "used" => (Util::cert_in_use((string)$cert->refid)) ? 1 : 0,
@@ -223,7 +283,6 @@ class CertificateController extends ApiControllerBase
     public function delCertificateAction($refid)
     {
         if ($this->request->isPost()) {
-            $phase_ids = [];
             $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();

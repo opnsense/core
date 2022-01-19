@@ -37,7 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     <!-- tab page "authorities" -->
     <div id="authorities" class="tab-pane fade in active">
-        <table id="grid-authorities" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="dlg_target">
+        <table id="grid-authorities" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
                     <th data-column-id="refid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
@@ -45,11 +45,36 @@ POSSIBILITY OF SUCH DAMAGE.
                     <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                     <th data-column-id="internal" data-type="string" data-formatter="boolean" data-width="6em">{{ lang._('Internal') }}</th>
                     <th data-column-id="issuer" data-type="string" data-formatter="issuer">{{ lang._('Issuer') }}</th>
-                    <th data-column-id="certificateCount" data-type="string" data-width="7em">{{ lang._('Certificates') }}</th>
+                    <th data-column-id="certificate_count" data-type="string" data-width="7em">{{ lang._('Certificates') }}</th>
                     <th data-column-id="subject" data-type="string" data-formatter="dn">{{ lang._('Distinguished Name') }}</th>
-                    <th data-column-id="validFrom" data-type="string" data-formatter="datetime">{{ lang._('Valid From') }}</th>
-                    <th data-column-id="validUntil" data-type="string" data-formatter="datetime">{{ lang._('Valid Until') }}</th>
+                    <th data-column-id="valid_from" data-type="string" data-formatter="datetime">{{ lang._('Valid From') }}</th>
+                    <th data-column-id="valid_until" data-type="string" data-formatter="datetime">{{ lang._('Valid Until') }}</th>
                     <th data-column-id="commands" data-width="11em" data-formatter="authorityCommands" data-sortable="false">{{ lang._('Commands') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary legacy_action command-add"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <table id="grid-revocations" class="table table-condensed table-hover table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th data-column-id="refid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
+                    <th data-column-id="id" data-type="string" data-visible="false">{{ lang._('ID') }}</th>
+                    <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+                    <th data-column-id="internal" data-type="string" data-formatter="boolean" data-width="6em">{{ lang._('Internal') }}</th>
+                    <th data-column-id="certificate_count" data-type="string" data-width="7em">{{ lang._('Certificates') }}</th>
+                    <th data-column-id="used" data-type="string" data-formatter="boolean" data-width="6em">{{ lang._('Used') }}</th>
+                    <th data-column-id="commands" data-width="11em" data-formatter="revocationCommands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +93,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     <!-- tab page "certificates" -->
     <div id="certificates" class="tab-pane">
-        <table id="grid-certificates" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="dlg_target">
+        <table id="grid-certificates" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -79,8 +104,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     <th data-column-id="purpose" data-type="string" data-formatter="purpose" data-sortable="false">{{ lang._('Purpose') }}</th>
                     <th data-column-id="usage" data-type="string" data-formatter="list">{{ lang._('Usage') }}</th>
                     <th data-column-id="validity" data-type="string" data-formatter="validity">{{ lang._('Valid') }}</th>
-                    <th data-column-id="validFrom" data-type="string" data-formatter="datetime" data-visible="false">{{ lang._('Valid From') }}</th>
-                    <th data-column-id="validUntil" data-type="string" data-formatter="datetime">{{ lang._('Valid Until') }}</th>
+                    <th data-column-id="valid_from" data-type="string" data-formatter="datetime" data-visible="false">{{ lang._('Valid From') }}</th>
+                    <th data-column-id="valid_until" data-type="string" data-formatter="datetime">{{ lang._('Valid Until') }}</th>
                     <th data-column-id="commands" data-width="12em" data-formatter="certificateCommands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>
@@ -100,22 +125,34 @@ POSSIBILITY OF SUCH DAMAGE.
 
 </div>
 
+<style>
+  .theading-text {
+      font-weight: 800;
+      font-style: italic;
+  }
+</style>
+
 <script>
 $( document ).ready(function() {
     const formatters = {
         authorityCommands: function(column, row) {
-            return `<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-info-circle"></span></button> ` +
-                `<button type="button" class="btn btn-xs btn-default legacy_action command-edit bootgrid-tooltip" data-row-id="${row.id}"><span class="fa fa-fw fa-pencil"></span></button>` +
+            return `<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-info-circle"></span></button>` +
+                `<button type="button" class="btn btn-xs btn-default legacy_action command-edit bootgrid-tooltip" data-row-id="${row.id}"><span class="fa fa-fw fa-pencil"></span></button> ` +
                 `<button type="button" class="btn btn-xs btn-default legacy_action command-export bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export Certificate') }}"><span class="fa fa-fw fa-download"></span></button>` +
-                `<button type="button" class="btn btn-xs btn-default${row["internal"] ? "" : " disabled"} legacy_action command-export-keys bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export Private Key') }}"><span class="fa fa-fw fa-download"></span></button>` +
+                `<button type="button" class="btn btn-xs btn-default${row["internal"] ? "" : " disabled"} legacy_action command-export-keys bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export Private Key') }}"><span class="fa fa-fw fa-download"></span></button> ` +
+                `<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-trash-o"></span></button>`;
+        },
+        revocationCommands: function(column, row) {
+            return `<button type="button" class="btn btn-xs btn-default legacy_action command-edit bootgrid-tooltip" data-row-refid="${row.refid}"><span class="fa fa-fw fa-pencil"></span></button> ` +
+                `<button type="button" class="btn btn-xs btn-default legacy_action command-export bootgrid-tooltip" data-row-refid="${row.refid}" title="{{ lang._('Export Certificate') }}"><span class="fa fa-fw fa-download"></span></button>` +
                 `<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-trash-o"></span></button>`;
         },
         certificateCommands: function(column, row) {
             let commands = `<button type="button" class="btn btn-xs btn-default${!row["csr"] ? "" : " disabled"} command-info bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-info-circle"></span></button> ` +
                 `<button type="button" class="btn btn-xs btn-default${!row["csr"] ? "" : " disabled"} legacy_action command-export bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export Certificate') }}"><span class="fa fa-fw fa-download"></span></button>` +
                 `<button type="button" class="btn btn-xs btn-default${row["internal"] ? "" : " disabled"} legacy_action command-export-keys bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export Private Key') }}"><span class="fa fa-fw fa-download"></span></button>` +
-                `<button type="button" class="btn btn-xs btn-default${row["internal"] ? "" : " disabled"} legacy_action command-export-pkcs12 bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export PKCS#12') }}"><span class="fa fa-fw fa-download"></span></button>`;
-            commands += `<button type="button" class="btn btn-xs btn-default${!row["used"] ? "" : " disabled"} command-delete bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-trash-o"></span></button>`;
+                `<button type="button" class="btn btn-xs btn-default${row["internal"] ? "" : " disabled"} legacy_action command-export-pkcs12 bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Export PKCS#12') }}"><span class="fa fa-fw fa-download"></span></button> ` +
+                `<button type="button" class="btn btn-xs btn-default${!row["used"] ? "" : " disabled"} command-delete bootgrid-tooltip" data-row-id="${row.refid}"><span class="fa fa-fw fa-trash-o"></span></button>`;
             if (row["csr"]) {
                 commands += `<button type="button" class="btn btn-xs btn-default legacy_action command-update-csr bootgrid-tooltip" data-row-id="${row.id}" title="{{ lang._('Update CSR') }}"><span class="fa fa-fw fa-pencil-square-o"></span></button>`;
             }
@@ -177,8 +214,8 @@ $( document ).ready(function() {
             return result.join(", ");
         },
         validity: function (column, row) {
-            const future = moment().isBefore(row["validFrom"] * 1000);
-            const expired = moment().isAfter(row["validUntil"] * 1000);
+            const future = moment().isBefore(row["valid_from"] * 1000);
+            const expired = moment().isAfter(row["valid_until"] * 1000);
             const revoked = parseInt(row["revoked"], 2) !== 0;
             const is_csr = parseInt(row["csr"], 2) !== 0;
             if (is_csr) {
@@ -202,9 +239,21 @@ $( document ).ready(function() {
         info: '/api/pki/certificate/infoAuthority/',
         get: '/api/pki/certificate/infoAuthority/',
         options: {
-            formatters: formatters
+            formatters: formatters,
+            multiSelect: false,
+            rowSelect: true,
+            selection: true
         }
+    }).on("selected.rs.jquery.bootgrid", function(e, rows) {
+        $("#grid-revocations").bootgrid('reload');
+    }).on("deselected.rs.jquery.bootgrid", function(e, rows) {
+        $("#grid-revocations").bootgrid('reload');
     }).on('loaded.rs.jquery.bootgrid', function() {
+        let ids = $("#grid-authorities").bootgrid("getCurrentRows");
+        if (ids.length > 0) {
+            $("#grid-authorities").bootgrid('select', [ids[0].id]);
+        }
+
         $("#grid-authorities").find(".legacy_action").unbind('click').click(function(e){
             e.stopPropagation();
             if ($(this).hasClass('command-add')) {
@@ -217,6 +266,50 @@ $( document ).ready(function() {
                 window.location = '/system_camanager.php?act=expkey&id=' + $(this).data('row-id');
             }
         });
+    });
+
+    // Revocations grid
+    const revocations_grid = $("#grid-revocations").UIBootgrid({
+        search:'/api/pki/certificate/searchRevocation/',
+        del:'/api/pki/certificate/delRevocation/',
+        options: {
+            formatters: formatters,
+            useRequestHandlerOnGet: true,
+            requestHandler: function(request) {
+                let ids = $("#grid-authorities").bootgrid("getSelectedRows");
+                request['caref'] = ids.length > 0 ? ids[0] : "__not_found__";
+                return request;
+            }
+        }
+    }).on('loaded.rs.jquery.bootgrid', function() {
+        let ids = $("#grid-authorities").bootgrid("getSelectedRows");
+        $("#grid-revocations button[data-action=\"add\"]").prop("disabled", ids.length == 0);
+        $("#grid-revocations button[data-action=\"deleteSelected\"]").prop("disabled", ids.length == 0);
+
+        $("#grid-revocations").find(".legacy_action").unbind('click').click(function(e){
+            e.stopPropagation();
+            if ($(this).hasClass('command-add')) {
+                let ids = $("#grid-authorities").bootgrid("getSelectedRows");
+                window.location = '/system_crlmanager.php?act=new&caref=' + (ids.length > 0 ? ids[0] : "");
+            } else if ($(this).hasClass('command-edit')) {
+                window.location = '/system_crlmanager.php?act=edit&id=' + $(this).data('row-refid');
+            } else if ($(this).hasClass('command-export')) {
+                window.location = '/system_crlmanager.php?act=exp&id=' + $(this).data('row-refid');
+            }
+        });
+    });
+
+    // reformat bootgrid headers to show type of content (phase 1 or 2)
+    $("div.actionBar").each(function(){
+        let heading_text = "";
+        if ($(this).closest(".bootgrid-header").attr("id").includes("authorities")) {
+            heading_text = "{{ lang._('Authorities') }}";
+        } else {
+            heading_text = "{{ lang._('Revocations') }}";
+        }
+        $(this).parent().prepend($('<td class="col-sm-2 theading-text">'+heading_text+'</div>'));
+        $(this).removeClass("col-sm-12");
+        $(this).addClass("col-sm-10");
     });
 
     // certificates grid

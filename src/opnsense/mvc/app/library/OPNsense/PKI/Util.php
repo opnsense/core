@@ -80,8 +80,8 @@ class Util
             $str_crt = base64_decode($str_crt);
         }
         $crt_details = openssl_x509_parse($str_crt);
-        $start = (isset($crt_details['validFrom_time_t']) && $crt_details['validFrom_time_t'] > 0) ? $crt_details['validFrom_time_t'] : 0;
-        $end = (isset($crt_details['validTo_time_t']) && $crt_details['validTo_time_t'] > 0) ? $crt_details['validTo_time_t'] : 0;
+        $start = (!empty($crt_details['validFrom_time_t'])) ? $crt_details['validFrom_time_t'] : 0;
+        $end = (!empty($crt_details['validTo_time_t'])) ? $crt_details['validTo_time_t'] : 0;
         return [$start, $end];
     }
 
@@ -118,6 +118,26 @@ class Util
                 if (isset($ca->caref)) {
                     if ((string)$ca->caref == $refid) {
                         $certcount++;
+                    }
+                }
+            }
+        }
+
+        return $certcount;
+    }
+
+    public static function count_certs_of_crl($refid)
+    {
+        $config = Config::getInstance()->object();
+        $certcount = 0;
+
+        if (isset($config->crl)) {
+            foreach ($config->crl as $crl) {
+                if ((string)$crl->refid == $refid && isset($crl->cert)) {
+                    foreach ($crl->cert as $cert) {
+                        if (!empty($cert)) {
+                            $certcount++;
+                        }
                     }
                 }
             }
@@ -209,6 +229,25 @@ class Util
             }
         }
 
+        return false;
+    }
+
+    public static function is_crl_internal($crl)
+    {
+        return (!(!empty($crl->text) && empty($crl->cert)) || ($crl->method == "internal"));
+    }
+
+    public static function is_openvpn_server_crl($crlref)
+    {
+        $config = Config::getInstance()->object();
+        if (!isset($config->openvpn) || !isset($config->openvpn->{'openvpn-server'})) {
+            return;
+        }
+        foreach ($config->openvpn->{'openvpn-server'} as $ovpns) {
+            if (!empty($ovpns->crlref) && ((string)$ovpns->crlref == $crlref)) {
+                return true;
+            }
+        }
         return false;
     }
 

@@ -118,12 +118,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
             write_config(sprintf('Deleted CRL %s', $name));
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
     } elseif ($act == "delcert" && isset($id)) {
         if (!isset($thiscrl['cert']) || !is_array($thiscrl['cert'])) {
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
         $found = false;
@@ -134,14 +134,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         if (!$found) {
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
         $name = $thiscert['descr'];
         if (cert_unrevoke($thiscert, $thiscrl)) {
             plugins_configure('crl');
             write_config(sprintf('Deleted certificate %s from CRL %s', $name, $thiscrl['descr']));
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         } else {
             $savemsg = sprintf(gettext("Failed to delete certificate %s from CRL %s"), $name, $thiscrl['descr']) . "<br />";
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($act == "addcert") {
         $input_errors = array();
         if (!isset($id)) {
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
 
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             cert_revoke($cert, $crl, $reason);
             plugins_configure('crl');
             write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
     } else {
@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config(sprintf('Saved CRL %s', $crl['descr']));
             plugins_configure('crl');
-            header(url_safe('Location: /system_crlmanager.php'));
+            header(url_safe('Location: /ui/pki#authorities'));
             exit;
         }
     }
