@@ -142,14 +142,14 @@ class CertificateController extends ApiControllerBase
 
     public function searchRevocationAction()
     {
-        $caref = intval($this->request->getPost('caref', 'string', ""));
+        $caref = $this->request->getPost('caref', 'string', "");
         $items = [];
         $this->sessionClose();
         $config = Config::getInstance()->object();
         if (isset($config->crl)) {
             $idx = 0;
             foreach ($config->crl as $crl) {
-                if (isset($crl->caref) && $crl->caref != $caref) {
+                if (!empty($caref) && isset($crl->caref) && (string)$crl->caref != $caref) {
                     continue;
                 }
 
@@ -292,7 +292,9 @@ class CertificateController extends ApiControllerBase
                 $idx = 0;
                 foreach ($config->cert as $cert) {
                     if ((string)$cert->refid === $refid) {
-                        $ids[] = $idx;
+                        if (!Util::cert_in_use((string)$cert->refid)) {
+                            $ids[] = $idx;
+                        }
                     }
                     $idx++;
                 }

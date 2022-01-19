@@ -59,7 +59,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     <td></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-primary legacy_action command-add"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -96,7 +95,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-certificates" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
-                    <th data-column-id="id" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                    <th data-column-id="refid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
+                    <th data-column-id="id" data-type="string" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                     <th data-column-id="internal" data-type="string" data-formatter="boolean" data-visible="false" data-width="6em">{{ lang._('Private Key') }}</th>
                     <th data-column-id="issuer" data-type="string" data-formatter="issuer">{{ lang._('Issuer') }}</th>
@@ -253,6 +253,7 @@ $( document ).ready(function() {
         if (ids.length > 0) {
             $("#grid-authorities").bootgrid('select', [ids[0].id]);
         }
+        $("#grid-revocations").bootgrid('reload');
 
         $("#grid-authorities").find(".legacy_action").unbind('click').click(function(e){
             e.stopPropagation();
@@ -322,7 +323,7 @@ $( document ).ready(function() {
             formatters: formatters
         }
     }).on('loaded.rs.jquery.bootgrid', function() {
-        $("#grid-certificates").find(".legacy_action").unbind('click').click(function(e){
+        $("#grid-certificates").find(".legacy_action").unbind('click').click(function (e){
             e.stopPropagation();
             if ($(this).hasClass('command-add')) {
                 window.location = '/system_certmanager.php?act=new';
