@@ -709,27 +709,6 @@ function interface_gre_configure(&$gre, $grekey = "")
         mwexec("/sbin/ifconfig {$greif} " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gre['tunnel-remote-net']));
     }
 
-    if (isset($gre['link0'])) {
-        legacy_interface_flags($greif, 'link0');
-    }
-    if (isset($gre['link1'])) {
-        legacy_interface_flags($greif, 'link1');
-    }
-    if (isset($gre['link2'])) {
-        legacy_interface_flags($greif, 'link2');
-    }
-
-    if (isset($gre['link1']) && $gre['link1']) {
-        mwexecf(
-            '/sbin/route add %s/%s %s',
-            array(
-                $gre['tunnel-remote-addr'],
-                $gre['tunnel-remote-net'],
-                $gre['tunnel-local-addr']
-            )
-        );
-    }
-
     interfaces_bring_up($greif);
 
     if (is_ipaddrv4($gre['tunnel-remote-addr'])) {

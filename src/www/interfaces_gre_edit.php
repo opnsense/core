@@ -45,10 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     foreach ($copy_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_gres[$id][$fieldname]) ? $a_gres[$id][$fieldname] : null;
     }
-    // bool fields
-    $pconfig['link1'] = isset($a_gres[$id]['link1']);
-    $pconfig['link2'] = isset($a_gres[$id]['link2']);
-    $pconfig['link0'] = isset($a_gres[$id]['link0']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate / save form data
     if (!empty($a_gres[$_POST['id']])) {
@@ -84,10 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($copy_fields as $fieldname) {
             $gre[$fieldname] = isset($pconfig[$fieldname]) ? $pconfig[$fieldname] : null;
         }
-        $gre['link1'] = isset($pconfig['link1']);
-        $gre['link2'] = isset($pconfig['link2']);
-        $gre['link0'] = isset($pconfig['link0']);
-
 
         $gre['greif'] = interface_gre_configure($gre);
         ifgroup_setup();
@@ -211,36 +203,6 @@ include("head.inc");
                       </table>
                       <div class="hidden" data-for="help_for_tunnel-remote-addr">
                         <?=gettext("Remote GRE address endpoint. The subnet part is used for the determining the network that is tunneled.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mobile tunnel");?></td>
-                    <td>
-                      <input name="link0" type="checkbox" id="link0" <?= !empty($pconfig['link0']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_link0">
-                        <?=gettext("Specify which encapsulation method the tunnel should use.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route search type");?></td>
-                    <td>
-                      <input name="link1" type="checkbox" id="link1" <?= !empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_link1">
-                        <?=gettext("For correct operation, the GRE device needs a route to the destination ".
-                       "that is less specific than the one over the tunnel. (Basically, there ".
-                       "needs to be a route to the decapsulating host that does not run over the ".
-                       "tunnel, as this would be a loop.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_link2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WCCP version");?></td>
-                    <td>
-                      <input name="link2" type="checkbox" id="link2" <?= !empty($pconfig['link2']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_link2">
-                        <?=gettext("Check this box for WCCP encapsulation version 2, or leave unchecked for version 1.");?>
                       </div>
                     </td>
                   </tr>
