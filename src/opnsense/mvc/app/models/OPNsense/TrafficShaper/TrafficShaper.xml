@@ -30,6 +30,7 @@
                         <bit>bit/s</bit>
                         <Kbit>kbit/s</Kbit>
                         <Mbit>Mbit/s</Mbit>
+                        <Gbit>Gbit/s</Mbit>
                     </OptionValues>
                     <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s or Mbit/s</ValidationMessage>
                 </bandwidthMetric>

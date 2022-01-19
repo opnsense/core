@@ -56,6 +56,8 @@ class TrafficShaper extends BaseModel
                         $currentval *= 1000;
                     } elseif ($parentNode->bandwidthMetric == "Mbit") {
                         $currentval *= 1000000;
+                    } elseif ($parentNode->bandwidthMetric == "Gbit") {
+                        $currentval *= 1000000000;
                     }
                     if ($currentval > $max_bandwith) {
                         $messages->appendMessage(new Message(
