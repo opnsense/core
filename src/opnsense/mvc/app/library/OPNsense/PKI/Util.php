@@ -39,68 +39,13 @@ use OPNsense\Core\Config;
  */
 class Util
 {
-    public static function cert_get_issuer($str_crt, $decode = true)
-    {
-        if ($decode) {
-            $str_crt = base64_decode($str_crt);
-        }
 
-        $inf_crt = openssl_x509_parse($str_crt);
-        $components = (isset($inf_crt['issuer'])) ? $inf_crt['issuer'] : "";
-
-        return self::certs_build_name($components);
-    }
-
-    public static function cert_get_subject($str_crt, $decode = true)
-    {
-        if ($decode) {
-            $str_crt = base64_decode($str_crt);
-        }
-
-        $inf_crt = openssl_x509_parse($str_crt);
-        $components = (isset($inf_crt['subject'])) ? $inf_crt['subject'] : "";
-
-        return self::certs_build_name($components);
-    }
-
-    public static function csr_get_subject($str_crt, $decode = true)
-    {
-        if ($decode) {
-            $str_crt = base64_decode($str_crt);
-        }
-
-        $components = openssl_csr_get_subject($str_crt);
-
-        return self::certs_build_name($components);
-    }
-
-    public static function cert_get_dates($str_crt, $decode = true)
-    {
-        if ($decode) {
-            $str_crt = base64_decode($str_crt);
-        }
-        $crt_details = openssl_x509_parse($str_crt);
-        $start = (!empty($crt_details['validFrom_time_t'])) ? $crt_details['validFrom_time_t'] : 0;
-        $end = (!empty($crt_details['validTo_time_t'])) ? $crt_details['validTo_time_t'] : 0;
-        return [$start, $end];
-    }
-
-    public static function lookup_ca($refid)
-    {
-        $config = Config::getInstance()->object();
-
-        if (isset($config->ca)) {
-            foreach ($config->ca as $ca) {
-                if ((string)$ca->refid == $refid) {
-                    return $ca;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public static function count_certs_of_ca($refid)
+    /**
+     * Return number of certificates in config signed by a specific CA.
+     * @param string $refid the refid of the CA
+     * @return int
+     */
+    public static function countCertsOfCa($refid)
     {
         $config = Config::getInstance()->object();
         $certcount = 0;
@@ -126,7 +71,12 @@ class Util
         return $certcount;
     }
 
-    public static function count_certs_of_crl($refid)
+    /**
+     * Return number of certificates listed in specific CRL.
+     * @param string $refid the refid of the CRL
+     * @return int
+     */
+    public static function countCertsOfCrl($refid)
     {
         $config = Config::getInstance()->object();
         $certcount = 0;
@@ -146,38 +96,67 @@ class Util
         return $certcount;
     }
 
-    private static function certs_build_name($dn)
+    /**
+     * Search CA in config and return CA config object.
+     * Implementation of legacy function lookup_ca.
+     * @param string $refid the refid of the CA
+     * @return object CA config object
+     */
+    public static function getCaByRefid($refid)
     {
-        if (empty($dn) || !is_array($dn)) {
-            return 'unknown';
-        }
+        $config = Config::getInstance()->object();
 
-        $subject = '';
-        ksort($dn);
-
-        foreach ($dn as $a => $v) {
-            if (is_array($v)) {
-                ksort($v);
-                foreach ($v as $w) {
-                    $subject = strlen($subject) ? "{$a}={$w}, {$subject}" : "{$a}={$w}";
+        if (isset($config->ca)) {
+            foreach ($config->ca as $ca) {
+                if ((string)$ca->refid == $refid) {
+                    return $ca;
                 }
-            } else {
-                $subject = strlen($subject) ? "{$a}={$v}, {$subject}" : "{$a}={$v}";
             }
         }
 
-        return $subject;
+        return false;
+    }
+
+    public static function getCertDates($str_crt, $decode = true)
+    {
+        if ($decode) {
+            $str_crt = base64_decode($str_crt);
+        }
+        $crt_details = openssl_x509_parse($str_crt);
+        $start = (!empty($crt_details['validFrom_time_t'])) ? $crt_details['validFrom_time_t'] : 0;
+        $end = (!empty($crt_details['validTo_time_t'])) ? $crt_details['validTo_time_t'] : 0;
+        return [$start, $end];
     }
 
     /**
-     * Get purposes of a X.509 certificate
-     * @param $str_crt mixed the certificate in binary or PEM format
-     * @param $decode boolean wheter the $str_crt shall be Base64 decoded
-     * @param $bool boolean wheter the result should contain boolean values or "Yes"/"No"
+     * Get issuer name of X.509 certificate.
+     * Implementation of legacy function cert_get_issuer.
+     * @param string $str_crt X.509 certificate in PEM format
+     * @param bool $decode true if $str_crt is base64 encoded
+     * @return string issuer of certificate
+     */
+    public static function getCertIssuer($str_crt, $decode = true)
+    {
+        if ($decode) {
+            $str_crt = base64_decode($str_crt);
+        }
+
+        $inf_crt = openssl_x509_parse($str_crt);
+        $components = (isset($inf_crt['issuer'])) ? $inf_crt['issuer'] : "";
+
+        return self::buildDistinguishedName($components);
+    }
+
+    /**
+     * Get purposes of a X.509 certificate.
+     * Implementation of legacy function cert_get_purpose.
+     * @param string $str_crt the certificate in binary or PEM format
+     * @param bool $decode wether the $str_crt shall be Base64 decoded
+     * @param bool $bool wether the result should contain bool values or "Yes"/"No"
      *   for backwards compatibility
      * @return array associative array purposes with values true/false or "Yes"/"No"
      */
-    public static function cert_get_purpose($str_crt, $decode = true, $bool = false)
+    public static function getCertPurpose($str_crt, $decode = true, $bool = false)
     {
         $yes = ($bool) ? true : "Yes";
         $no = ($bool) ? false : "No";
@@ -217,31 +196,180 @@ class Util
         return $purpose;
     }
 
-    private static function lookup_crl($refid)
+    /**
+     * Get subject of X.509 certificate.
+     * Implementation of legacy function cert_get_subject.
+     * @param string $str_crt X.509 certificate in PEM format
+     * @param bool $decode true if $str_crt is base64 encoded
+     * @return string subject of certificate
+     */
+    public static function getCertSubject($str_crt, $decode = true)
+    {
+        if ($decode) {
+            $str_crt = base64_decode($str_crt);
+        }
+
+        $inf_crt = openssl_x509_parse($str_crt);
+        $components = (isset($inf_crt['subject'])) ? $inf_crt['subject'] : "";
+
+        return self::buildDistinguishedName($components);
+    }
+
+    public static function getCsrSubject($str_crt, $decode = true)
+    {
+        if ($decode) {
+            $str_crt = base64_decode($str_crt);
+        }
+
+        $components = openssl_csr_get_subject($str_crt);
+
+        return self::buildDistinguishedName($components);
+    }
+
+    /**
+     * Check if certificate is used for WebGUI, user, OpenVPN or IPsec.
+     * Implementation of legacy function cert_in_use.
+     * @param string $certref the refid of the certificate
+     * @return bool
+     */
+    public static function isCertInUse($certref)
+    {
+        return (
+            self::isWebguiCert($certref)
+            || self::isUserCert($certref)
+            || self::isOpenVPNServerCert($certref)
+            || self::isOpenVPNClientCert($certref)
+            || self::isIPsecCert($certref)
+        );
+    }
+
+    /**
+     * Implementation of legacy function is_cert_revoked.
+     * @param object $cert Config object of certificate
+     * @param string $crlref refid of CRL to limit search to CRL
+     * @return bool
+     */
+    public static function isCertRevoked($cert, $crlref = "")
+    {
+        $config = Config::getInstance()->object();
+        if (!isset($config->crl)) {
+            return false;
+        }
+
+        if (!empty($crlref)) {
+            $crl = self::getCrlByRefid($crlref);
+            if (!isset($crl->cert)) {
+                return false;
+            }
+            foreach ($crl->cert as $rcert) {
+                if (self::certCompare($rcert, $cert)) {
+                    return true;
+                }
+            }
+        } else {
+            foreach ($config->crl as $crl) {
+                if (!isset($crl->cert)) {
+                    continue;
+                }
+                foreach ($crl->cert as $rcert) {
+                    if (self::certCompare($rcert, $cert)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Implementation of legacy function is_crl_internal.
+     * @param object $crl config object of CRL
+     * @return bool
+     */
+    public static function isInternalCrl($crl)
+    {
+        return (!(!empty($crl->text) && empty($crl->cert)) || ($crl->method == "internal"));
+    }
+
+    /**
+     * Check if certificate is used for IPsec.
+     * Implementation of legacy function is_ipsec_cert.
+     * @param string $certref the refid of the certificate
+     * @return bool
+     */
+    public static function isIPsecCert($certref)
     {
         $config = Config::getInstance()->object();
 
-        if (isset($config->crl)) {
-            foreach ($config->crl as & $crl) {
-                if ((string)$crl->refid == $refid) {
-                    return $crl;
-                }
+        if (!isset($config->ipsec) || !isset($config->ipsec->phase1)) {
+            return false;
+        }
+
+        foreach ($config->ipsec->phase1 as $ipsec) {
+            if ((string)$ipsec->certref == $certref) {
+                return true;
             }
         }
 
         return false;
     }
 
-    public static function is_crl_internal($crl)
+    /**
+     * Check if certificate is used for an OpenVPN client.
+     * Implementation of legacy function is_openvpn_client_cert.
+     * @param string $certref the refid of the certificate
+     * @return bool
+     */
+    public static function isOpenVPNClientCert($certref)
     {
-        return (!(!empty($crl->text) && empty($crl->cert)) || ($crl->method == "internal"));
+        $config = Config::getInstance()->object();
+
+        if (!isset($config->openvpn) || !isset($config->openvpn->{'openvpn-client'})) {
+            return false;
+        }
+
+        foreach ($config->openvpn->{'openvpn-client'} as $ovpnc) {
+            if (isset($ovpnc->certref) && (string)$ovpnc->certref == $certref) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public static function is_openvpn_server_crl($crlref)
+    /**
+     * Check if certificate is used for an OpenVPN server.
+     * Implementation of legacy function is_openvpn_server_cert.
+     * @param string $certref the refid of the certificate
+     * @return bool
+     */
+    public static function isOpenVPNServerCert($certref)
+    {
+        $config = Config::getInstance()->object();
+
+        if (!isset($config->openvpn) || !isset($config->openvpn->{'openvpn-server'})) {
+            return false;
+        }
+
+        foreach ($config->openvpn->{'openvpn-server'} as $ovpns) {
+            if (isset($ovpns->certref) && (string)$ovpns->certref == $certref) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Implementation of legacy function is_openvpn_server_crl.
+     * @param string $crlref refid of CRL to limit search to CRL
+     * @return bool
+     */
+    public static function isOpenVPNServerCrl($crlref)
     {
         $config = Config::getInstance()->object();
         if (!isset($config->openvpn) || !isset($config->openvpn->{'openvpn-server'})) {
-            return;
+            return false;
         }
         foreach ($config->openvpn->{'openvpn-server'} as $ovpns) {
             if (!empty($ovpns->crlref) && ((string)$ovpns->crlref == $crlref)) {
@@ -251,23 +379,116 @@ class Util
         return false;
     }
 
-    private static function cert_get_serial($str_crt, $decode = true)
+    /**
+     * Check if certificate is used as an user certificate.
+     * Implementation of legacy function is_user_cert.
+     * @param string $certref the refid of the certificate
+     * @return bool
+     */
+    public static function isUserCert($certref)
     {
-        if ($decode) {
-            $str_crt = base64_decode($str_crt);
+        $config = Config::getInstance()->object();
+        if (!isset($config->system) || !isset($config->system->user)) {
+            return false;
         }
-        $crt_details = openssl_x509_parse($str_crt);
-        if (isset($crt_details['serialNumber']) && !empty($crt_details['serialNumber'])) {
-            return $crt_details['serialNumber'];
+
+        foreach ($config->system->user as $user) {
+            if (!isset($user->cert)) {
+                continue;
+            }
+            foreach ($user->cert as $cert) {
+                if ((string)$certref == $cert) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if certificate is used as a WebGUI certificate.
+     * Implementation of legacy function is_webgui_cert.
+     * @param string $certref the refid of the certificate
+     * @return bool
+     */
+    public static function isWebguiCert($certref)
+    {
+        $config = Config::getInstance()->object();
+        if (
+            !isset($config->system)
+            || !isset($config->system->webgui)
+            || !isset($config->system->webgui->{'ssl-certref'})
+            || !isset($config->system->webgui->protocol)
+        ) {
+            return false;
+        }
+        return (string)$config->system->webgui->{'ssl-certref'} == $certref && $config->system->webgui->protocol == "https";
+    }
+
+    /**
+     * Construct DN string from array returned by openssl functions.
+     * Implementation of legacy function certs_build_name.
+     */
+    private static function buildDistinguishedName($dn)
+    {
+        if (empty($dn) || !is_array($dn)) {
+            return 'unknown';
+        }
+
+        $subject = '';
+        ksort($dn);
+
+        foreach ($dn as $a => $v) {
+            if (is_array($v)) {
+                ksort($v);
+                foreach ($v as $w) {
+                    $subject = strlen($subject) ? "{$a}={$w}, {$subject}" : "{$a}={$w}";
+                }
+            } else {
+                $subject = strlen($subject) ? "{$a}={$v}, {$subject}" : "{$a}={$v}";
+            }
+        }
+
+        return $subject;
+    }
+
+    /**
+     * Compare two certificates to see if they match.
+     * Implementation of legacy function cert_compare.
+     * @param object $cert1 config object of first certificate
+     * @param object $cert2 config object of second certificate
+     * @return bool true if $cert1 equals $cert2
+     */
+    private static function certCompare($cert1, $cert2)
+    {
+        /* Ensure two certs are identical by first checking that their issuers match, then
+          subjects, then serial numbers, and finally the moduli. Anything less strict
+          could accidentally count two similar, but different, certificates as
+          being identical. */
+        $c1 = base64_decode((string)$cert1->crt);
+        $c2 = base64_decode((string)$cert2->crt);
+        if (
+            self::getCertIssuer($c1, false) == self::getCertIssuer($c2, false)
+            && self::getCertSubject($c1, false) == self::getCertSubject($c2, false)
+            && self::getCertSerial($c1, false) == self::getCertSerial($c2, false)
+            && self::getCertModulus($c1, false) == self::getCertModulus($c2, false)
+        ) {
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
     /**
-     * this function works on x509 (crt), rsa key (prv), and req(csr)
+     * This function works on x509 (crt), rsa key (prv), and req (csr).
+     * Implementation of legacy function cert_get_modulus.
+     * @param string $str_crt the certificate in binary or PEM format
+     * @param bool $decode wether the $str_crt shall be Base64 decoded
+     * @param string $type "crt", "prv" or "csr" for certificate, private key or CSR
+     * @return string
      */
-    private static function cert_get_modulus($str_crt, $decode = true, $type = 'crt')
+    private static function getCertModulus($str_crt, $decode = true, $type = 'crt')
     {
         $type_list = ['crt', 'prv', 'csr'];
         $type_cmd = ['x509', 'rsa', 'req'];
@@ -290,154 +511,42 @@ class Util
     }
 
     /**
-     *  Compare two certificates to see if they match.
+     * Implementation of legacy function cert_get_serial.
+     * @param string $str_crt the certificate in binary or PEM format
+     * @param bool $decode wether the $str_crt shall be Base64 decoded
+     * @return string|null
      */
-    private static function cert_compare($cert1, $cert2)
+    private static function getCertSerial($str_crt, $decode = true)
     {
-        /* Ensure two certs are identical by first checking that their issuers match, then
-          subjects, then serial numbers, and finally the moduli. Anything less strict
-          could accidentally count two similar, but different, certificates as
-          being identical. */
-        $c1 = base64_decode((string)$cert1->crt);
-        $c2 = base64_decode((string)$cert2->crt);
-        if (
-            self::cert_get_issuer($c1, false) == self::cert_get_issuer($c2, false)
-            && self::cert_get_subject($c1, false) == self::cert_get_subject($c2, false)
-            && self::cert_get_serial($c1, false) == self::cert_get_serial($c2, false)
-            && self::cert_get_modulus($c1, false) == self::cert_get_modulus($c2, false)
-        ) {
-            return true;
+        if ($decode) {
+            $str_crt = base64_decode($str_crt);
+        }
+        $crt_details = openssl_x509_parse($str_crt);
+        if (isset($crt_details['serialNumber']) && !empty($crt_details['serialNumber'])) {
+            return $crt_details['serialNumber'];
         } else {
-            return false;
+            return null;
         }
     }
 
-    public static function is_webgui_cert($certref)
+    /**
+     * Search CRL in config and return CRL config object.
+     * Implementation of legacy function lookup_crl.
+     * @param string $refid the refid of the CRL
+     * @return object CRL config object
+     */
+    private static function getCrlByRefid($refid)
     {
         $config = Config::getInstance()->object();
-        if (
-            !isset($config->system)
-            || !isset($config->system->webgui)
-            || !isset($config->system->webgui->{'ssl-certref'})
-            || !isset($config->system->webgui->protocol)
-        ) {
-            return false;
-        }
-        return $config->system->webgui->{'ssl-certref'} == $certref && $config->system->webgui->protocol == "https";
-    }
 
-    public static function is_cert_revoked($cert, $crlref = "")
-    {
-        $config = Config::getInstance()->object();
-        if (!isset($config->crl)) {
-            return false;
-        }
-
-        if (!empty($crlref)) {
-            $crl = self::lookup_crl($crlref);
-            if (!isset($crl->cert)) {
-                return false;
-            }
-            foreach ($crl->cert as $rcert) {
-                if (self::cert_compare($rcert, $cert)) {
-                    return true;
-                }
-            }
-        } else {
-            foreach ($config->crl as $crl) {
-                if (!isset($crl->cert)) {
-                    continue;
-                }
-                foreach ($crl->cert as $rcert) {
-                    if (self::cert_compare($rcert, $cert)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public static function is_user_cert($certref)
-    {
-        $config = Config::getInstance()->object();
-        if (!isset($config->system) || !isset($config->system->user)) {
-            return false;
-        }
-
-        foreach ($config->system->user as $user) {
-            if (!isset($user->cert)) {
-                continue;
-            }
-            foreach ($user->cert as $cert) {
-                if ($certref == $cert) {
-                    return true;
+        if (isset($config->crl)) {
+            foreach ($config->crl as & $crl) {
+                if ((string)$crl->refid == $refid) {
+                    return $crl;
                 }
             }
         }
 
         return false;
-    }
-
-    public static function is_openvpn_server_cert($certref)
-    {
-        $config = Config::getInstance()->object();
-
-        if (!isset($config->openvpn) || !isset($config->openvpn->{'openvpn-server'})) {
-            return false;
-        }
-
-        foreach ($config->openvpn->{'openvpn-server'} as $ovpns) {
-            if (isset($ovpns->certref) && $ovpns->certref == $certref) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static function is_openvpn_client_cert($certref)
-    {
-        $config = Config::getInstance()->object();
-
-        if (!isset($config->openvpn) || !isset($config->openvpn->{'openvpn-client'})) {
-            return false;
-        }
-
-        foreach ($config->openvpn->{'openvpn-client'} as $ovpnc) {
-            if (isset($ovpnc->certref) && $ovpnc->certref == $certref) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static function is_ipsec_cert($certref)
-    {
-        $config = Config::getInstance()->object();
-
-        if (!isset($config->ipsec) || !isset($config->ipsec->phase1)) {
-            return false;
-        }
-
-        foreach ($config->ipsec->phase1 as $ipsec) {
-            if ($ipsec->certref == $certref) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static function cert_in_use($certref)
-    {
-        return (
-            self::is_webgui_cert($certref)
-            || self::is_user_cert($certref)
-            || self::is_openvpn_server_cert($certref)
-            || self::is_openvpn_client_cert($certref)
-            || self::is_ipsec_cert($certref)
-        );
     }
 }

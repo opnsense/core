@@ -51,9 +51,9 @@ class CertificateController extends ApiControllerBase
         if (isset($config->ca)) {
             $idx = 0;
             foreach ($config->ca as $ca) {
-                $cert_issuer = Util::cert_get_issuer($ca->crt);
-                $cert_subject = Util::cert_get_subject($ca->crt);
-                list($startdate, $enddate) = Util::cert_get_dates($ca->crt);
+                $cert_issuer = Util::getCertIssuer($ca->crt);
+                $cert_subject = Util::getCertSubject($ca->crt);
+                list($startdate, $enddate) = Util::getCertDates($ca->crt);
 
                 if ($cert_issuer == $cert_subject) {
                     $issuer = gettext("self-signed");
@@ -61,7 +61,7 @@ class CertificateController extends ApiControllerBase
                     $issuer = gettext("external");
                 }
                 if (isset($ca->caref)) {
-                    $issuer_ca = Util::lookup_ca($ca->caref);
+                    $issuer_ca = Util::getCaByRefid($ca->caref);
                     if ($issuer_ca !== false) {
                         $issuer = (string)$issuer_ca->descr;
                     }
@@ -70,7 +70,7 @@ class CertificateController extends ApiControllerBase
                     "refid" => (string)$ca->refid,
                     "id" => $idx,
                     "internal" => isset($ca->prv) ? 1 : 0,
-                    "certificate_count" => Util::count_certs_of_ca($ca->refid),
+                    "certificate_count" => Util::countCertsOfCa($ca->refid),
                     "issuer" => $issuer,
                     "subject" => $cert_subject,
                     "name" => (string)$ca->descr,
@@ -156,9 +156,9 @@ class CertificateController extends ApiControllerBase
                 $item = [
                     "refid" => (string)$crl->refid,
                     "id" => $idx,
-                    "internal" => (Util::is_crl_internal($crl)) ? 1 : 0,
-                    "used" => (Util::is_openvpn_server_crl((string)$crl->refid)) ? 1 : 0,
-                    "certificate_count" => (Util::is_crl_internal($crl)) ? Util::count_certs_of_crl($crl->refid) : gettext('unknown'),
+                    "internal" => (Util::isInternalCrl($crl)) ? 1 : 0,
+                    "used" => (Util::isOpenVPNServerCrl((string)$crl->refid)) ? 1 : 0,
+                    "certificate_count" => (Util::isInternalCrl($crl)) ? Util::countCertsOfCrl($crl->refid) : gettext('unknown'),
                     "name" => (string)$crl->descr
                 ];
                 $items[] = $item;
@@ -178,7 +178,7 @@ class CertificateController extends ApiControllerBase
             $idx = 0;
             foreach ($config->crl as $crl) {
                 if ((string)$crl->refid === $refid) {
-                    if (!Util::is_openvpn_server_crl($crl)) {
+                    if (!Util::isOpenVPNServerCrl($crl)) {
                         unset($config->crl[$idx]);
                         $deleted++;
                         break;
@@ -214,9 +214,9 @@ class CertificateController extends ApiControllerBase
                 list($startdate, $enddate) = [0, 0];
 
                 if (isset($cert->crt)) {
-                    $cert_issuer = Util::cert_get_issuer((string)$cert->crt);
-                    $cert_subject = Util::cert_get_subject((string)$cert->crt);
-                    list($startdate, $enddate) = Util::cert_get_dates($cert->crt);
+                    $cert_issuer = Util::getCertIssuer((string)$cert->crt);
+                    $cert_subject = Util::getCertSubject((string)$cert->crt);
+                    list($startdate, $enddate) = Util::getCertDates($cert->crt);
                 }
                 if ($cert_issuer == $cert_subject) {
                     $issuer = "self-signed"; // translation in view
@@ -224,11 +224,11 @@ class CertificateController extends ApiControllerBase
                     $issuer = "external"; // translation in view
                 }
                 if (isset($cert->csr)) {
-                    $cert_subject = Util::csr_get_subject((string)$cert->csr);
+                    $cert_subject = Util::getCsrSubject((string)$cert->csr);
                     $issuer = "pending"; // translation in view
                 }
                 if (isset($cert->caref)) {
-                    $issuer_ca = Util::lookup_ca($cert->caref);
+                    $issuer_ca = Util::getCaByRefid($cert->caref);
                     if ($issuer_ca !== false) {
                         $issuer = (string)$issuer_ca->descr;
                     }
@@ -244,11 +244,11 @@ class CertificateController extends ApiControllerBase
                     "csr" => isset($cert->csr) ? 1 : 0,
                     "valid_from" => $startdate,
                     "valid_until" => $enddate,
-                    "purpose" => (isset($cert->crt)) ? Util::cert_get_purpose((string)$cert->crt, true, true) : "",
+                    "purpose" => (isset($cert->crt)) ? Util::getCertPurpose((string)$cert->crt, true, true) : "",
                     "usage" => $this->getCertificateUsage((string)$cert->refid),
-                    "used" => (Util::cert_in_use((string)$cert->refid)) ? 1 : 0,
-                    "validity" => (isset($cert->csr)) ? time() : ((Util::is_cert_revoked($cert)) ? -1 : $enddate), // for sorting only
-                    "revoked" => (Util::is_cert_revoked($cert)) ? 1 : 0
+                    "used" => (Util::isCertInUse((string)$cert->refid)) ? 1 : 0,
+                    "validity" => (isset($cert->csr)) ? time() : ((Util::isCertRevoked($cert)) ? -1 : $enddate), // for sorting only
+                    "revoked" => (Util::isCertRevoked($cert)) ? 1 : 0
                 ];
                 $items[] = $item;
                 $idx++;
@@ -292,7 +292,7 @@ class CertificateController extends ApiControllerBase
                 $idx = 0;
                 foreach ($config->cert as $cert) {
                     if ((string)$cert->refid === $refid) {
-                        if (!Util::cert_in_use((string)$cert->refid)) {
+                        if (!Util::isCertInUse((string)$cert->refid)) {
                             $ids[] = $idx;
                         }
                     }
@@ -361,19 +361,19 @@ class CertificateController extends ApiControllerBase
     {
         // TODO: Consider plugin usage
         $purpose = [];
-        if (Util::is_webgui_cert($certref)) {
+        if (Util::isWebguiCert($certref)) {
             $purpose[] = gettext('Web GUI');
         }
-        if (Util::is_user_cert($certref)) {
+        if (Util::isUserCert($certref)) {
             $purpose[] = gettext('User Cert');
         }
-        if (Util::is_openvpn_server_cert($certref)) {
+        if (Util::isOpenVPNServerCert($certref)) {
             $purpose[] = gettext('OpenVPN Server');
         }
-        if (Util::is_openvpn_client_cert($certref)) {
+        if (Util::isOpenVPNClientCert($certref)) {
             $purpose[] = gettext('OpenVPN Client');
         }
-        if (Util::is_ipsec_cert($certref)) {
+        if (Util::isIPsecCert($certref)) {
             $purpose[] = gettext('IPsec Tunnel');
         }
         return $purpose;
