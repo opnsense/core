@@ -826,12 +826,8 @@ function interface_gif_configure(&$gif, $gifkey = "")
         mwexec("/sbin/ifconfig {$gifif} " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gif['tunnel-remote-net']));
     }
 
-    if (isset($gif['link0'])) {
-        legacy_interface_flags($gifif, 'link0');
-    }
-    if (isset($gif['link1'])) {
-        legacy_interface_flags($gifif, 'link1');
-    }
+    $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
+    legacy_interface_flags($gifif, $flags);
 
     system_host_route($gif['remote-addr'], $realifgw);
 
