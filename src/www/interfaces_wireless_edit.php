@@ -153,18 +153,13 @@ include("head.inc");
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Parent interface");?></td>
                   <td>
                     <select name="if" class="selectpicker">
-<?php
-                    foreach (get_interface_list() as $ifn => $ifinfo):
-                        if (match_wireless_interface($ifn)):
-                          if (strstr($ifn, '_wlan')) {
-                              continue;
-                          }?>
+<?php foreach (get_interface_list() as $ifn => $ifinfo): ?>
+<?php if (match_wireless_interface($ifn)): ?>
                       <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? "selected=\"selected\"" : "";?>>
                           <?=htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");?>
                       </option>
-<?php
-                      endif;
-                    endforeach;?>
+<?php endif ?>
+<?php endforeach ?>
                     </select>
                   </td>
                 </tr>
