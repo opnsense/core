@@ -148,8 +148,7 @@
             $("#grid-overview-sas").bootgrid('reload');
         }).on("deselected.rs.jquery.bootgrid", function(e, rows) {
             $("#grid-overview-sas").bootgrid('reload');
-        });
-        grid_overview.on("loaded.rs.jquery.bootgrid", function (e) {
+        }).on("loaded.rs.jquery.bootgrid", function (e) {
             let ids = $("#grid-overview").bootgrid("getCurrentRows");
             if (ids.length > 0) {
                 $("#grid-overview").bootgrid('select', [ids[0].id]);
@@ -176,7 +175,7 @@
             });
         });
 
-        const grid_overview_sas = $("#grid-overview-sas").UIBootgrid(
+        $("#grid-overview-sas").UIBootgrid(
                 {
                     search:'/api/diagnostics/ipsec/searchSad',
                     options:{
@@ -190,10 +189,11 @@
                     }
                 }
         ).on('loaded.rs.jquery.bootgrid', function() {
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
         // SAD grid
-        const grid_sad = $("#grid-sad").UIBootgrid(
+        $("#grid-sad").UIBootgrid(
             {
                 search:'/api/diagnostics/ipsec/searchSad',
                 options:{
@@ -205,7 +205,7 @@
         });
 
         // SPD grid
-        const grid_spd = $("#grid-spd").UIBootgrid(
+        $("#grid-spd").UIBootgrid(
             {
                 search:'/api/diagnostics/ipsec/searchSpd',
                 options:{
@@ -216,14 +216,23 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        // Refresh grid on tab change
+        // Refresh grid upon click on active tab
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            let tab = e.target.href.split('#')[1];
-            $("#grid-" + tab).bootgrid("reload");
+            $('.tab-icon').removeClass("fa-refresh");
+
+            if ($("#"+e.target.id).data('grid') !== undefined) {
+                $("#"+e.target.id).find(".tab-icon").addClass("fa-refresh");
+                $("#"+e.target.id).unbind('click').click(function () {
+                    if ($("#"+e.target.id + " .tab-icon").hasClass("fa-refresh")) {
+                        var grid_id = $("#"+e.target.id).data('grid');
+                        $("#" + grid_id).bootgrid("reload");
+                    }
+                });
+            }
         });
 
         // update history on tab state and implement navigation
-        if(window.location.hash != "") {
+        if (window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click()
         } else {
             $('#maintabs > li:first-child > a').click();
@@ -243,11 +252,25 @@
 
 <ul class="nav nav-tabs" id="maintabs" data-tabs="tabs">
     {% if allow_connection %}
-    <li><a data-toggle="tab" href="#overview" id="overview-tab">{{ lang._('Status Overview') }}</i></a></li>
-    {%- endif %}{% if allow_sad %}
-    <li><a data-toggle="tab" href="#sad" id="sad-tab">{{ lang._('Security Associations') }}</i></a></li>
-    {%- endif %}{% if allow_spd %}
-    <li><a data-toggle="tab" href="#spd" id="spd-tab">{{ lang._('Security Policies') }}</i></a></li>
+    <li>
+        <a data-toggle="tab" data-grid="grid-overview" href="#overview" id="overview-tab">
+            {{ lang._('Status Overview') }} <i class="fa tab-icon "></i>
+        </a>
+    </li>
+    {%- endif %}
+    {% if allow_sad %}
+    <li>
+        <a data-toggle="tab" data-grid="grid-sad" href="#sad" id="sad-tab">
+            {{ lang._('Security Associations') }} <i class="fa tab-icon "></i>
+        </a>
+    </li>
+    {%- endif %}
+    {% if allow_spd %}
+    <li>
+        <a data-toggle="tab" data-grid="grid-spd" href="#spd" id="spd-tab">
+            {{ lang._('Security Policies') }} <i class="fa tab-icon "></i>
+        </a>
+    </li>
     {%- endif %}
 </ul>
 
