@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -298,7 +298,7 @@ else
         fi
 
         if [ -n "${base_to_reboot}" ]; then
-            base_to_delete="$(opnsense-version -v base)"
+            base_to_delete="$(opnsense-update -vk base)"
             base_is_size="$(opnsense-update -bfSr ${base_to_reboot})"
             if [ "${base_to_reboot}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall
@@ -309,7 +309,6 @@ else
                 packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
                 packages_upgraded=${packages_upgraded}"\"current_version\":\"${base_to_delete}\","
                 packages_upgraded=${packages_upgraded}"\"new_version\":\"${base_to_reboot}\"}"
-                upgrade_needs_reboot="1" # XXX remove faulty value in 22.1.x
                 needs_reboot="1"
             fi
         fi
@@ -321,7 +320,7 @@ else
         fi
 
         if [ -n "${kernel_to_reboot}" ]; then
-            kernel_to_delete="$(opnsense-version -v kernel)"
+            kernel_to_delete="$(opnsense-update -vk)"
             kernel_is_size="$(opnsense-update -fkSr ${kernel_to_reboot})"
             if [ "${kernel_to_reboot}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall
@@ -332,7 +331,6 @@ else
                 packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
                 packages_upgraded=${packages_upgraded}"\"current_version\":\"${kernel_to_delete}\","
                 packages_upgraded=${packages_upgraded}"\"new_version\":\"${kernel_to_reboot}\"}"
-                upgrade_needs_reboot="1" # XXX remove faulty value in 22.1.x
                 needs_reboot="1"
             fi
         fi
@@ -342,24 +340,30 @@ fi
 packages_is_size="$(opnsense-update -SRp)"
 if [ -n "${packages_is_size}" ]; then
     upgrade_major_version=$(opnsense-update -vR)
+
     upgrade_major_message=$(sed -e 's/"/\\&/g' -e "s/%%UPGRADE_RELEASE%%/${upgrade_major_version}/g" /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | tr '\n' ' ')
-    upgrade_needs_reboot="1" # provided for API convenience only
 
-    sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+    packages_to_delete="$(opnsense-update -vp)"
+    if [ "${packages_to_delete}" != "${upgrade_major_version}" ]; then
+        sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${packages_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+        upgrade_needs_reboot="1"
+    fi
 
-    kernel_to_delete="$(opnsense-version -v kernel)"
+    kernel_to_delete="$(opnsense-update -vk)"
     if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
         kernel_is_size="$(opnsense-update -SRk)"
         if [ -n "${kernel_is_size}" ]; then
             sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+            upgrade_needs_reboot="1"
         fi
     fi
 
-    base_to_delete="$(opnsense-version -v base)"
+    base_to_delete="$(opnsense-update -vb)"
     if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
         base_is_size="$(opnsense-update -SRb)"
         if [ -n "${base_is_size}" ]; then
             sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+            upgrade_needs_reboot="1"
         fi
     fi
 fi
