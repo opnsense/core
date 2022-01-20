@@ -155,7 +155,7 @@ function session_auth()
     // check additional security measures
     if (empty($_SESSION['Username'])) {
         if (check_security_dns_rebind()) {
-            display_error_form(sprintf(gettext("A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname.You can disable this check if needed under System: Settings: Administration."), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
+            display_error_form(sprintf(gettext('A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname. You can disable this check if needed under System: Settings: Administration.'), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
             exit;
         } elseif (check_security_http_referer_enforement()) {
             display_error_form(sprintf(
