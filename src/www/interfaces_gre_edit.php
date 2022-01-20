@@ -45,10 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     foreach ($copy_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_gres[$id][$fieldname]) ? $a_gres[$id][$fieldname] : null;
     }
-    // bool fields
-    $pconfig['link1'] = isset($a_gres[$id]['link1']);
-    $pconfig['link2'] = isset($a_gres[$id]['link2']);
-    $pconfig['link0'] = isset($a_gres[$id]['link0']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate / save form data
     if (!empty($a_gres[$_POST['id']])) {
@@ -84,10 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($copy_fields as $fieldname) {
             $gre[$fieldname] = isset($pconfig[$fieldname]) ? $pconfig[$fieldname] : null;
         }
-        $gre['link1'] = isset($pconfig['link1']);
-        $gre['link2'] = isset($pconfig['link2']);
-        $gre['link0'] = isset($pconfig['link0']);
-
 
         $gre['greif'] = interface_gre_configure($gre);
         ifgroup_setup();
