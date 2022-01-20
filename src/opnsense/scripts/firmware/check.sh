@@ -342,16 +342,21 @@ fi
 packages_is_size="$(opnsense-update -SRp)"
 if [ -n "${packages_is_size}" ]; then
     upgrade_major_version=$(opnsense-update -vR)
-    upgrade_major_message=$(sed -e 's/"/\\&/g' -e "s/%%UPGRADE_RELEASE%%/${upgrade_major_version}/g" /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | tr '\n' ' ')
-    upgrade_needs_reboot="1" # provided for API convenience only
 
-    sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${product_version}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+    upgrade_major_message=$(sed -e 's/"/\\&/g' -e "s/%%UPGRADE_RELEASE%%/${upgrade_major_version}/g" /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | tr '\n' ' ')
+
+    packages_to_delete="$(opnsense-version -v pkgs)"
+    if [ "${packages_to_delete}" != "${upgrade_major_version}" ]; then
+        sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${packages_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+        upgrade_needs_reboot="1" # provided for API convenience only
+    fi
 
     kernel_to_delete="$(opnsense-version -v kernel)"
     if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
         kernel_is_size="$(opnsense-update -SRk)"
         if [ -n "${kernel_is_size}" ]; then
             sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+            upgrade_needs_reboot="1" # provided for API convenience only
         fi
     fi
 
@@ -360,6 +365,7 @@ if [ -n "${packages_is_size}" ]; then
         base_is_size="$(opnsense-update -SRb)"
         if [ -n "${base_is_size}" ]; then
             sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+            upgrade_needs_reboot="1" # provided for API convenience only
         fi
     fi
 fi
