@@ -215,9 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header("Content-Length: $exp_size");
         echo $exp_data;
         exit;
-    } else {
-        header(url_safe('Location: /ui/pki#authorities'));
-        exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($a_ca[$_POST['id']])) {

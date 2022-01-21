@@ -195,12 +195,6 @@ class CertificateController extends ApiControllerBase
         return ['status' => 'failed'];
     }
 
-    private function delRevocation($refid)
-    {
-        $config = Config::getInstance()->object();
-        return $deleted;
-    }
-
     public function searchCertificateAction()
     {
         $items = [];
