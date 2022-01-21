@@ -10,7 +10,7 @@
         <label>Domain</label>
         <type>text</type>
         <help>
-            Domain to override (NOTE: this not have to be a valid TLD!),
+            Domain to override (NOTE: this does not have to be a valid TLD!),
             e.g. 'test' or 'mycompany.localdomain' or '1.168.192.in-addr.arpa'
         </help>
     </field>

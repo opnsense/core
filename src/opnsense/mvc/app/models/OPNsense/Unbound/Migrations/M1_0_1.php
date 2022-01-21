@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Deciso B.V.
+ * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,12 @@ class M1_0_1 extends BaseModelMigration
         if (!empty($config->unbound->hosts)) {
             foreach($config->unbound->hosts as $old_host) {
                 $new_host = $model->hosts->host->add();
+
+                /* Backwards compatibility for records created before introducing RR types. */
+                if (!isset($old_host->rr)) {
+                    $old_host->rr = (is_ipaddrv6($old_host->ip)) ? 'AAAA' : 'A';
+                }
+
                 $host_data = [
                     'enabled' => 1,
                     'hostname' => !empty($old_host->host) ? $old_host->host : null,
@@ -77,7 +83,7 @@ class M1_0_1 extends BaseModelMigration
                         $new_alias->setNodes($alias_data);
                     }
                 }
-            }            
+            }
         }
 
         if (!empty($config->unbound->domainoverrides)) {

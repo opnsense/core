@@ -184,35 +184,3 @@ class Helpers(object):
                 result.append(sfilename[len(template_path):].lstrip('/'))
 
         return result
-
-    @staticmethod
-    def getIPAddress(interface):
-        """ retrieve current configured ip address, useful in case of 
-            non-static assignments. Note: does not return loopback IP's.
-            Also, sets a flag if address is link-local.
-            :param interface: interface name (e.g. em1)
-            :return: dict ( {'ipv4': string, 'ipv6': string, 'llv4': bool 'llv6': bool} ) 
-        """
-        result = {}
-        sp = subprocess.run(['/sbin/ifconfig', interface], capture_output=True, text=True)
-        output = sp.stdout.split('\n')
-
-        idx = 1
-        while output[idx].startswith('\t'):
-            found = output[idx].find('\tinet')
-            if found > -1:
-                try:
-                    ip = netaddr.IPAddress(output[idx].split()[1].split('%')[0])
-                except netaddr.AddrFormatError:
-                    ip = None
-
-                if ip and not ip.is_loopback():
-                    if ip.version == 4:
-                        result['ipv4'] = str(ip)
-                        result['llv4'] = ip.is_link_local()
-                    elif ip.version == 6:
-                        result['ipv6'] = str(ip)
-                        result['llv6'] = ip.is_link_local()
-            idx += 1
-
-        return result

@@ -219,7 +219,7 @@ EOF;
         }
     }
 
-    unbound_add_host_entries_dhcp($ifconfig_details);
+    unbound_add_host_entries($ifconfig_details);
     unbound_acls_config();
 
     $port = is_port($config['unbound']['port']) ? $config['unbound']['port'] : "53";
@@ -361,7 +361,6 @@ include: /var/unbound/access_lists.conf
 
 # Static host entries
 include: /var/unbound/host_entries.conf
-include: /var/unbound/host_entries_dhcp.conf
 
 # DHCP leases (if configured)
 {$include_dhcpleases}
@@ -432,11 +431,149 @@ function unbound_configure_do($verbose = false, $interface = '')
     }
 }
 
-function unbound_add_host_entries_dhcp($ifconfig_details = null)
+function unbound_add_host_entries($ifconfig_details = null)
 {
     global $config;
 
-    $unbound_entries = "";
+    $local_zone_type = 'transparent';
+
+    if (!empty($config['unbound']['local_zone_type'])) {
+        $local_zone_type = $config['unbound']['local_zone_type'];
+    }
+
+    $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
+
+    $unbound_entries .= "local-data-ptr: \"127.0.0.1 localhost\"\n";
+    $unbound_entries .= "local-data: \"localhost A 127.0.0.1\"\n";
+    $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} A 127.0.0.1\"\n";
+
+    $unbound_entries .= "local-data-ptr: \"::1 localhost\"\n";
+    $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
+    $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
+
+    if (!empty($config['unbound']['active_interface'])) {
+        $interfaces = explode(",", $config['unbound']['active_interface']);
+    } else {
+        $interfaces = array_keys(get_configured_interface_with_descr());
+    }
+    foreach ($interfaces as $interface) {
+        if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
+            continue;
+        }
+
+        list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
+        if (!empty($laddr)) {
+            $domain = $config['system']['domain'];
+            if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
+                $domain = $config['dhcpd'][$interface]['domain'];
+            }
+            $unbound_entries .= "local-data-ptr: \"{$laddr} {$config['system']['hostname']}.{$domain}\"\n";
+            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
+            $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
+        }
+        list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
+        if (!empty($laddr6)) {
+            $domain = $config['system']['domain'];
+            if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
+                $domain = $config['dhcpdv6'][$interface]['domain'];
+            }
+            $unbound_entries .= "local-data-ptr: \"{$laddr6} {$config['system']['hostname']}.{$domain}\"\n";
+            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$laddr6}\"\n";
+            $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
+        }
+        if (empty($config['unbound']['noreglladdr6'])) {
+            list ($lladdr6) = interfaces_scoped_address6($interface, $ifconfig_details);
+            if (!empty($lladdr6)) {
+                /* cannot embed scope */
+                $lladdr6 = explode('%', $lladdr6)[0];
+                $domain = $config['system']['domain'];
+                if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
+                    $domain = $config['dhcpdv6'][$interface]['domain'];
+                }
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$lladdr6}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
+            }
+        }
+    }
+
+    if (isset($config['unbound']['enable_wpad'])) {
+        $webui_protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
+        $webui_port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
+        // default domain
+        $system_host_fqdn = $config['system']['hostname'];
+        if (isset($config['system']['domain'])) {
+            $system_host_fqdn .= '.' . $config['system']['domain'];
+        }
+        $unbound_entries .= "local-data: \"wpad.{$domain} IN CNAME {$system_host_fqdn}\"\n";
+        $unbound_entries .= "local-data: \"wpad IN CNAME {$system_host_fqdn}\"\n";
+        $unbound_entries .= "local-data: '{$domain} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
+        // DHCP domains
+        $tmp_known_domains = array($domain);
+        foreach ($config['dhcpd'] as $dhcp_interface) {
+            if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($dhcp_interface['domain'], $tmp_known_domains)) {
+                $unbound_entries .= "local-data: \"wpad.{$dhcp_interface['domain']} IN CNAME {$system_host_fqdn}\"\n";
+                $unbound_entries .= "local-data: '{$dhcp_interface['domain']} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
+                $tmp_known_domains[] = $dhcp_interface['domain'];
+            }
+        }
+        unset($tmp_known_domains); // remove temporary variable
+    }
+
+    $unbound_mdl = new \OPNsense\Unbound\Unbound();
+    $hosts = iterator_to_array($unbound_mdl->hosts->host->iterateItems());
+    $aliases = iterator_to_array($unbound_mdl->aliases->alias->iterateItems());
+
+    if (!empty($hosts)) {
+        foreach ($hosts as $host) {
+            if ($host->enabled == '1') {
+                $tmp_aliases = array(array(
+                    'domain' => (string)$host->domain,
+                    'description' => (string)$host->description,
+                    'hostname' => (string)$host->hostname
+                ));
+
+                if (!empty($aliases)) {
+                    foreach ($aliases as $alias) {
+                        if ($alias->enabled == '1' && $alias->host == $host->getAttribute('uuid')) {
+                            $tmp_aliases[] = array(
+                                'domain' => !empty((string)$alias->domain) ? $alias->domain : $tmp_aliases[0]['domain'],
+                                'description' => !empty((string)$alias->description) ? $alias->description : $tmp_aliases[0]['description'],
+                                'hostname' => !empty((string)$alias->hostname) ? $alias->hostname : $tmp_aliases[0]['hostname']
+                            );
+                        }
+                    }
+                }
+
+                foreach ($tmp_aliases as $alias) {
+                    if ($alias['hostname'] != '') {
+                        $alias['hostname'] .= '.';
+                    }
+
+                    switch ($host->rr) {
+                        case 'A':
+                        case 'AAAA':
+                            /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
+                            if ($alias['hostname'] == '*.') {
+                                $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
+                                $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                            } else {
+                                $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                            }
+                            break;
+                        case 'MX':
+                            $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN MX {$host->mxprio} {$host->mx}\"\n";
+                            break;
+                    }
+
+                    if (!empty($alias['description']) && isset($config['unbound']['txtsupport'])) {
+                        $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} TXT \"" . addslashes($alias['description']) . "\"'\n";
+                    }
+                }
+            }
+
+        }
+    }
 
     if (isset($config['unbound']['regdhcpstatic'])) {
         require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
@@ -459,7 +596,7 @@ function unbound_add_host_entries_dhcp($ifconfig_details = null)
         }
     }
 
-    file_put_contents('/var/unbound/host_entries_dhcp.conf', $unbound_entries);
+    file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 }
 
 function unbound_acls_subnets()
@@ -549,7 +686,7 @@ function unbound_hosts_generate()
     }
 
     $ifconfig_details = legacy_interfaces_details();
-    unbound_add_host_entries_dhcp($ifconfig_details);
+    unbound_add_host_entries($ifconfig_details);
 
     killbypid('/var/run/unbound.pid', 'HUP');
 }
