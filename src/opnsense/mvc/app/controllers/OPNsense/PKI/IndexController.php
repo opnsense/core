@@ -36,6 +36,10 @@ class IndexController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
+        $acl = new \OPNsense\Core\ACL();
+        $user = $this->session->get("Username");
+        $this->view->allow_ca = $acl->isPageAccessible($user, "/api/pki/certificate/searchAuthority");
+        $this->view->allow_crt = $acl->isPageAccessible($user, "/api/pki/certificate/searchCertificate");
         $this->view->pick('OPNsense/PKI/index');
     }
 }

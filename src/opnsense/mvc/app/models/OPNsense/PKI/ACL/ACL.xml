@@ -1,0 +1,25 @@
+<acl>
+    <page-system-camanager>
+        <name>System: Trust: Authorities</name>
+        <patterns>
+            <pattern>ui/pki</pattern>
+            <pattern>api/pki/certificate/searchAuthority/*</pattern>
+            <pattern>api/pki/certificate/infoAuthority/*</pattern>
+            <pattern>api/pki/certificate/delAuthority/*</pattern>
+            <pattern>api/pki/certificate/searchRevocation/*</pattern>
+            <pattern>api/pki/certificate/delRevocation/*</pattern>
+            <pattern>system_camanager.php*</pattern>
+            <pattern>system_crlmanager.php*</pattern>
+        </patterns>
+    </page-system-camanager>
+    <page-system-certmanager>
+        <name>System: Trust: Certificates</name>
+        <patterns>
+            <pattern>ui/pki</pattern>
+            <pattern>api/pki/certificate/searchCertificate/*</pattern>
+            <pattern>api/pki/certificate/infoCertificate/*</pattern>
+            <pattern>api/pki/certificate/delCertificate/*</pattern>
+            <pattern>system_certmanager.php*</pattern>
+        </patterns>
+    </page-system-certmanager>
+</acl>

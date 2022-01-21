@@ -29,12 +29,17 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="alert alert-info hidden" role="alert" id="responseMsg"></div>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    {% if allow_ca %}
     <li class="active"><a data-toggle="tab" href="#authorities">{{ lang._('Authorities') }}</a></li>
+    {% endif %}
+    {% if allow_crt %}
     <li><a data-toggle="tab" href="#certificates">{{ lang._('Certificates') }}</a></li>
+    {% endif %}
 </ul>
 
 <div class="tab-content content-box">
 
+    {% if allow_ca %}
     <!-- tab page "authorities" -->
     <div id="authorities" class="tab-pane fade in active">
         <table id="grid-authorities" class="table table-condensed table-hover table-striped table-responsive">
@@ -89,7 +94,9 @@ POSSIBILITY OF SUCH DAMAGE.
             </tfoot>
         </table>
     </div>
+    {% endif %}
 
+    {% if allow_crt %}
     <!-- tab page "certificates" -->
     <div id="certificates" class="tab-pane">
         <table id="grid-certificates" class="table table-condensed table-hover table-striped table-responsive">
@@ -122,6 +129,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </tfoot>
         </table>
     </div>
+    {% endif %}
 
 </div>
 
@@ -234,10 +242,9 @@ $( document ).ready(function() {
 
     // authorities grid
     const authorities_grid = $("#grid-authorities").UIBootgrid({
-        search:'/api/pki/certificate/searchAuthority/',
+        search:'/api/pki/certificate/searchAuthority',
         del:'/api/pki/certificate/delAuthority/',
         info: '/api/pki/certificate/infoAuthority/',
-        get: '/api/pki/certificate/infoAuthority/',
         options: {
             formatters: formatters,
             multiSelect: false,
@@ -271,7 +278,7 @@ $( document ).ready(function() {
 
     // Revocations grid
     const revocations_grid = $("#grid-revocations").UIBootgrid({
-        search:'/api/pki/certificate/searchRevocation/',
+        search:'/api/pki/certificate/searchRevocation',
         del:'/api/pki/certificate/delRevocation/',
         options: {
             formatters: formatters,
@@ -315,10 +322,9 @@ $( document ).ready(function() {
 
     // certificates grid
     const certificates_grid = $("#grid-certificates").UIBootgrid({
-        search:'/api/pki/certificate/searchCertificate/',
+        search:'/api/pki/certificate/searchCertificate',
         del:'/api/pki/certificate/delCertificate/',
         info: '/api/pki/certificate/infoCertificate/',
-        get: '/api/pki/certificate/infoCertificate/',
         options: {
             formatters: formatters
         }
