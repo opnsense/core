@@ -319,28 +319,26 @@ include("head.inc");
                     </td>
                   </tr>
 <?php
-                    $carplist = get_configured_carp_interface_list();
-                    $aliaslist = get_configured_ip_aliases_list();
-                    $carplistif = [];
-                    $ailiaslistif = [];
-                    foreach ($carplist as $ifname => $vip) {
+                    $carplist = [];
+                    $aliaslist = [];
+                    foreach (get_configured_carp_interface_list() as $ifname => $vip) {
                       if ((preg_match("/^{$if}_/", $ifname)) && (is_linklocal($vip))) {
-                        $carplistif[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
+                        $carplist[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
                       }
                     }
-                    foreach ($aliaslist as $vip => $ifname) {
+                    foreach (get_configured_ip_aliases_list() as $vip => $ifname) {
                       if ($ifname == $if && (is_linklocal($vip)))
-                        $aliaslistif[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
+                        $aliaslist[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
                     } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Source Address') ?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
                         <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= gettext('Automatic') ?></option>
-<?php foreach ($carplistif as $ifname => $descr): ?>
+<?php foreach ($carplist as $ifname => $descr): ?>
                         <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= $descr ?></option>
 <?php endforeach ?>
-<?php foreach ($aliaslistif as $vip => $descr): ?>
+<?php foreach ($aliaslist as $vip => $descr): ?>
                         <option value="<?= html_safe($vip) ?>" <?= $pconfig['rainterface'] == $vip ? 'selected="selected"' : '' ?>><?= $descr ?></option>
 <?php endforeach ?>
                       </select>
