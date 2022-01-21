@@ -54,6 +54,7 @@ class M1_0_1 extends BaseModelMigration
 
                 /* Backwards compatibility for records created before introducing RR types. */
                 if (!isset($old_host->rr)) {
+                    require_once 'util.inc';
                     $old_host->rr = (is_ipaddrv6($old_host->ip)) ? 'AAAA' : 'A';
                 }
 
