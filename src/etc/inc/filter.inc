@@ -550,7 +550,8 @@ function filter_generate_scrubing(&$FilterIflist)
     if (!empty($config['filter']['scrub']['rule'])) {
         foreach ($config['filter']['scrub']['rule'] as $scrub_rule) {
             if (!isset($scrub_rule['disabled'])) {
-                $scrub_rule_out = "scrub";
+                $scrub_rule_out = !empty($scrub_rule['noscrub']) ? "no " : "";
+                $scrub_rule_out .= "scrub";
                 $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
                 $scrub_rule_out .= " on ";
                 $interfaces = array();
@@ -600,11 +601,13 @@ function filter_generate_scrubing(&$FilterIflist)
                 } else {
                     $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
                 }
-                $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
-                $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
-                $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
-                $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
-                $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
+                if (empty($scrub_rule['noscrub'])) {
+                    $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
+                }
                 $scrub_rule_out .= "\n";
                 if (count($interfaces) == 0) {
                     # unknown interface, skip rule
