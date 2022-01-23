@@ -928,7 +928,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
 /****f* util/log_error
 * NAME
-*   log_error  - Sends a string to syslog.
+*   log_error  - Sends a string to syslog with LOG_ERR severity.
 * INPUTS
 *   $error     - string containing the syslog message.
 * RESULT
@@ -936,13 +936,27 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 ******/
 function log_error($error)
 {
+    log_msg($error, LOG_ERR);
+}
+
+/****f* util/log_msg
+* NAME
+*   log_msg  - Sends a string to syslog with the required severity level.
+* INPUTS
+*   $msg     - string containing the syslog message.
+*   $prio    - syslog severity level.
+* RESULT
+*   null
+******/
+function log_msg($msg, $prio = LOG_WARNING)
+{
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
         $files = get_included_files();
         $page = basename($files[0]);
     }
 
-    syslog(LOG_ERR, "$page: $error");
+    syslog($prio, "$page: $msg");
 }
 
 function url_safe($format, $args = array())
