@@ -127,10 +127,10 @@ function session_auth()
 {
     global $config;
 
-    function auth_log($message)
+    function auth_log($message, $prio = LOG_ERR)
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
-        log_error($message);
+        log_error($message, $prio);
         closelog();
     }
 
@@ -182,7 +182,7 @@ function session_auth()
                 $_SESSION['user_shouldChangePassword'] = true;
             }
             if (!isset($config['system']['webgui']['quietlogin'])) {
-                auth_log(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+                auth_log(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']), LOG_NOTICE);
             }
             if (!empty($_GET['url'])) {
                 $tmp_url_parts = parse_url($_GET['url']);
@@ -239,9 +239,9 @@ function session_auth()
     /* user hit the logout button */
     if (isset($_GET['logout'])) {
         if (isset($_SESSION['Logout'])) {
-            auth_log(sprintf("Session timed out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+            auth_log(sprintf("Session timed out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']), LOG_NOTICE);
         } else {
-            auth_log(sprintf("User logged out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+            auth_log(sprintf("User logged out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']), LOG_NOTICE);
         }
 
         /* wipe out $_SESSION */
