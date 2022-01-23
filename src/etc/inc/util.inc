@@ -928,12 +928,31 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 * NAME
 *   log_error  - Sends a string to syslog.
 * INPUTS
-*   $msg     - string containing the syslog message.
-*   $prio    - syslog severity level
+*   $error     - string containing the syslog message.
 * RESULT
 *   null
 ******/
-function log_error($msg, $prio = LOG_ERR)
+function log_error($error)
+{
+    $page = $_SERVER['SCRIPT_NAME'];
+    if (empty($page)) {
+        $files = get_included_files();
+        $page = basename($files[0]);
+    }
+
+    syslog(LOG_ERR, "$page: $error");
+}
+
+/****f* util/log_msg
+* NAME
+*   log_msg  - Sends a string to syslog with the required severity level.
+* INPUTS
+*   $msg     - string containing the syslog message.
+*   $prio    - syslog severity level.
+* RESULT
+*   null
+******/
+function log_msg($msg, $prio = LOG_ERR)
 {
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
