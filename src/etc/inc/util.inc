@@ -926,7 +926,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
 /****f* util/log_error
 * NAME
-*   log_error  - Sends a string to syslog.
+*   log_error  - Sends a string to syslog with LOG_ERR severity.
 * INPUTS
 *   $error     - string containing the syslog message.
 * RESULT
@@ -934,13 +934,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 ******/
 function log_error($error)
 {
-    $page = $_SERVER['SCRIPT_NAME'];
-    if (empty($page)) {
-        $files = get_included_files();
-        $page = basename($files[0]);
-    }
-
-    syslog(LOG_ERR, "$page: $error");
+    log_msg($error, LOG_ERR);
 }
 
 /****f* util/log_msg
