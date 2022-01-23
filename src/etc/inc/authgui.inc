@@ -130,7 +130,7 @@ function session_auth()
     function auth_log($message, $prio = LOG_ERR)
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
-        log_error($message, $prio);
+        log_msg($message, $prio);
         closelog();
     }
 
