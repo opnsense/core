@@ -36,7 +36,6 @@ namespace OPNsense\Backup;
 */
 class BackupFactory
 {
-
     /**
      * list installed backup providers
      * @return array

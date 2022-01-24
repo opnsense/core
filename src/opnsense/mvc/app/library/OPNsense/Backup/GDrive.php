@@ -38,7 +38,6 @@ use OPNsense\Core\Config;
  */
 class Gdrive extends Base implements IBackupProvider
 {
-
     /**
      * get required (user interface) fields for backup connector
      * @return array configuration fields, types and description

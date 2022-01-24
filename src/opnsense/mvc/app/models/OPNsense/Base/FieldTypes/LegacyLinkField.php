@@ -36,7 +36,6 @@ use OPNsense\Core\Config;
  */
 class LegacyLinkField extends BaseField
 {
-
     /**
      * @var null source referral (e.g. root.node.item)
      */

@@ -38,7 +38,6 @@ use OPNsense\Base\FieldTypes\BooleanField;
 
 class BooleanFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

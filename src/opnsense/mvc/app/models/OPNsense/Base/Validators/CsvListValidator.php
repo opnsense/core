@@ -40,7 +40,6 @@ use Phalcon\Messages\Message;
  */
 class CsvListValidator extends AbstractValidator implements ValidatorInterface
 {
-
     /**
      * Executes validation
      *

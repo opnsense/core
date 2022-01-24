@@ -38,7 +38,6 @@ use Phalcon\Logger\Adapter\Syslog;
  */
 class Config extends Singleton
 {
-
     /**
      * config file location ( path + name )
      * @var string

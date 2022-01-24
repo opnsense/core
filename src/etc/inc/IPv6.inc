@@ -120,7 +120,6 @@ define("NET_IPV6_UNKNOWN_TYPE", 1001);
  */
 class Net_IPv6
 {
-
     // {{{ separate()
     /**
      * Separates an IPv6 address into the address and a prefix length part

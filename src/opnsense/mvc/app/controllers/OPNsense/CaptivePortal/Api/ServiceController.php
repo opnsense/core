@@ -43,7 +43,6 @@ use Phalcon\Filter\FilterFactory;
  */
 class ServiceController extends ApiControllerBase
 {
-
     /**
      * reconfigure captive portal
      */

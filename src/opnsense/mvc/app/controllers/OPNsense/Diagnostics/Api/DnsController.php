@@ -38,7 +38,6 @@ use OPNsense\Core\Backend;
  */
 class DnsController extends ApiControllerBase
 {
-
     /**
      * perform a reverse dns lookup
      * @return array

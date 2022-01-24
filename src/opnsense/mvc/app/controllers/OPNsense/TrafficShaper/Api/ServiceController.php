@@ -40,7 +40,6 @@ use OPNsense\TrafficShaper\TrafficShaper;
  */
 class ServiceController extends ApiControllerBase
 {
-
     /**
      * reconfigure ipfw, generate config and reload
      */

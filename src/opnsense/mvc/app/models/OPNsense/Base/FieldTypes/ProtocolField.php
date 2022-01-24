@@ -34,7 +34,6 @@ namespace OPNsense\Base\FieldTypes;
  */
 class ProtocolField extends BaseListField
 {
-
     /**
      * @var array cached collected protocols
      */
