@@ -44,18 +44,13 @@ class M1_0_1 extends BaseModelMigration
     {
         $config = Config::getInstance()->object();
 
-        if (empty($config->OPNsense->unboundplus)) {
-            return;
-        }
-
         if (!empty($config->unbound->hosts)) {
             foreach($config->unbound->hosts as $old_host) {
                 $new_host = $model->hosts->host->add();
 
                 /* Backwards compatibility for records created before introducing RR types. */
                 if (!isset($old_host->rr)) {
-                    require_once 'util.inc';
-                    $old_host->rr = (is_ipaddrv6($old_host->ip)) ? 'AAAA' : 'A';
+                    $old_host->rr = (strpos($old_host->ip, ':') !== false) ? 'AAAA' : 'A';
                 }
 
                 $host_data = [

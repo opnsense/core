@@ -31,7 +31,6 @@
 import os
 import glob
 import collections
-import subprocess
 import netaddr
 
 class SortKeyHelper:

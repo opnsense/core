@@ -2,7 +2,7 @@
     <Services>
         <Unbound VisibleName="Unbound DNS" cssClass="fa fa-tags fa-fw">
             <General order="10" url="/services_unbound.php"/>
-            <Overrides order="20" url="/ui/unbound/overrides/index"/>
+            <Overrides order="20" url="/ui/unbound/overrides/"/>
             <Advanced order="30" url="/services_unbound_advanced.php"/>
             <ACL VisibleName="Access Lists" order="40" url="/services_unbound_acls.php">
                 <All url="/services_unbound_acls.php*" visibility="hidden"/>
