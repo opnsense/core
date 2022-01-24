@@ -29,9 +29,9 @@ all:
 .include "Mk/defaults.mk"
 
 CORE_ABI?=	22.1
-CORE_MESSAGE?=	Carry on my wayward son
+CORE_MESSAGE?=	Owl be watching you
 CORE_NAME?=	opnsense
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Observant Owl
 CORE_TYPE?=	community
 
 .for REPLACEMENT in ABI PHP PYTHON
