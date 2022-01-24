@@ -57,9 +57,14 @@ class HostnameField extends BaseField
     private $internalAsList = false;
 
     /**
-     * @var bool wildcard (any) enabled
+     * @var bool IP address allowed
      */
     protected $internalIpAllowed = true;
+
+    /**
+     * @var bool wildcard (*) enabled
+     */
+    protected $internalWildcardAllowed = false;
 
     /**
      * ip addresses allowed
@@ -71,6 +76,15 @@ class HostnameField extends BaseField
             $this->internalIpAllowed = true;
         } else {
             $this->internalIpAllowed = false;
+        }
+    }
+
+    public function setWildcardAllowed($value)
+    {
+        if (trim($value) == "Y") {
+            $this->internalWildcardAllowed = true;
+        } else {
+            $this->internalWildcardAllowed = false;
         }
     }
 
@@ -132,11 +146,13 @@ class HostnameField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new HostValidator(array(
-                'message' => $this->internalValidationMessage,
-                'split' => $this->internalFieldSeparator,
-                'allowip' => $this->internalIpAllowed
-            ));
+            if ($this->internalValue != "*" || $this->internalWildcardAllowed == false) {
+                $validators[] = new HostValidator(array(
+                    'message' => $this->internalValidationMessage,
+                    'split' => $this->internalFieldSeparator,
+                    'allowip' => $this->internalIpAllowed
+                ));
+            }
         }
         return $validators;
     }

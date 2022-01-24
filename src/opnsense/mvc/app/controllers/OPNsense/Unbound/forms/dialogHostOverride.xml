@@ -1,0 +1,50 @@
+<form>
+    <field>
+        <id>host.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable the override for this host</help>
+    </field>
+    <field>
+        <id>host.hostname</id>
+        <label>Host</label>
+        <type>text</type>
+        <help>Name of the host, without the domain part. Use "*" to create a wildcard entry.</help>
+    </field>
+    <field>
+        <id>host.domain</id>
+        <label>Domain</label>
+        <type>text</type>
+        <help>Domain of the host, e.g. example.com</help>
+    </field>
+    <field>
+        <id>host.rr</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <help>Type of resource record, e.g. A or AAAA for IPv4 or IPv6 addresses</help>
+    </field>
+    <field>
+        <id>host.mxprio</id>
+        <label>MX Priority</label>
+        <type>text</type>
+        <help>Priority of MX record, e.g. 10</help>
+    </field>
+    <field>
+        <id>host.mx</id>
+        <label>MX Host</label>
+        <type>text</type>
+        <help>Host name of MX host, e.g. mail.example.com</help>
+    </field>
+    <field>
+        <id>host.server</id>
+        <label>IP address</label>
+        <type>text</type>
+        <help>IP address of the host, e.g. 192.168.100.100 or fd00:abcd::1</help>
+    </field>
+    <field>
+        <id>host.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed)</help>
+    </field>
+</form>
