@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -345,12 +345,14 @@ if [ -n "${packages_is_size}" ]; then
 
     upgrade_major_message=$(sed -e 's/"/\\&/g' -e "s/%%UPGRADE_RELEASE%%/${upgrade_major_version}/g" /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | tr '\n' ' ')
 
+    # XXX replace with opnsense-update -vp
     packages_to_delete="$(opnsense-version -v pkgs)"
     if [ "${packages_to_delete}" != "${upgrade_major_version}" ]; then
         sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${packages_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
         upgrade_needs_reboot="1" # provided for API convenience only
     fi
 
+    # XXX replace with opnsense-update -vk
     kernel_to_delete="$(opnsense-version -v kernel)"
     if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
         kernel_is_size="$(opnsense-update -SRk)"
@@ -360,6 +362,7 @@ if [ -n "${packages_is_size}" ]; then
         fi
     fi
 
+    # XXX replace with opnsense-update -vb
     base_to_delete="$(opnsense-version -v base)"
     if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
         base_is_size="$(opnsense-update -SRb)"
