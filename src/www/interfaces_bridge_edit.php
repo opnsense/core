@@ -34,7 +34,6 @@ require_once("filter.inc");
 
 $a_bridges = &config_read_array('bridges', 'bridged');
 
-
 // interface list
 $ifacelist = array();
 foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
