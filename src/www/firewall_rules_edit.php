@@ -416,23 +416,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Both maximum new connections per host and the interval (per second(s)) must be specified");
     }
 
-    if ($pconfig['adaptivestart'] === "0" xor $pconfig['adaptiveend'] === "0")
+    if (empty($pconfig['max']) && ($pconfig['adaptivestart'] === "0" || $pconfig['adaptiveend'] === "0")) {
+        $input_errors[] = gettext("Disabling adaptive timeouts is only supported in combination with a configured maximum number of states for the same rule.");
+    } elseif ($pconfig['adaptivestart'] === "0" xor $pconfig['adaptiveend'] === "0") {
         $input_errors[] = gettext("Adaptive timeouts must be disabled together.");
-
-    if (empty($pconfig['max']) && ($pconfig['adaptivestart'] === "0" || $pconfig['adaptiveend'] === "0"))
-        $input_errors[] = gettext("Disabling adaptive timeouts makes sense only if the Max states is set.");
-
-    if (strlen($pconfig['adaptivestart']) > 0 xor strlen($pconfig['adaptiveend']) > 0)
+    } elseif (strlen($pconfig['adaptivestart']) > 0 xor strlen($pconfig['adaptiveend']) > 0) {
         $input_errors[] = gettext("The adaptive timouts values must be set together.");
-
-    if (is_posnumericint($pconfig['max']) && is_numericint($pconfig['adaptiveend']) && $pconfig['max'] > $pconfig['adaptiveend'])
+    } elseif ((!empty($pconfig['adaptivestart']) && !is_numericint($pconfig['adaptivestart'])) || (!empty($pconfig['adaptiveend']) && !is_numericint($pconfig['adaptiveend']))) {
+        $input_errors[] = gettext("The adaptive.start and adaptive.end values (advanced option) must be configured as positive integer values.");
+    } elseif (is_posnumericint($pconfig['max']) && is_numericint($pconfig['adaptiveend']) && $pconfig['max'] > $pconfig['adaptiveend']) {
         $input_errors[] = gettext("The value of adaptive.end must be greater than the Max states value.");
-
-    if (is_numericint($pconfig['adaptivestart']) && is_numericint($pconfig['adaptiveend']) && $pconfig['adaptivestart'] > $pconfig['adaptiveend'])
+    } elseif (is_numericint($pconfig['adaptivestart']) && is_numericint($pconfig['adaptiveend']) && $pconfig['adaptivestart'] > $pconfig['adaptiveend']) {
         $input_errors[] = gettext("The value of adaptive.end must be greater than adaptive.start value.");
-
-    if ((!empty($pconfig['adaptivestart']) && !is_numericint($pconfig['adaptivestart'])) || (!empty($pconfig['adaptiveend']) && !is_numericint($pconfig['adaptiveend'])))
-        $input_errors[] = gettext("The adaptive.start and adpative.end values (advanced option) must be a non-negative integer.");
+    }
 
     if (empty($pconfig['tcpflags2']) && !empty($pconfig['tcpflags1']))
         $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
@@ -1593,9 +1589,9 @@ endforeach;?>
                       </table>
                       <div class="hidden" data-for="help_for_adaptive">
                         <?=gettext("Timeouts for states can be scaled adaptively as the number of state table entries grows.");?><br/><br/>
-                        <?=gettext("start");?><br/><br/>
+                        <strong><?=gettext("start");?></strong><br/>
                         <?=gettext("When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).");?><br/><br/>
-                        <?=gettext("end");?><br/><br/>
+                        <strong><?=gettext("end");?></strong><br/>
                         <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit).");?><br/><br/>
                         <?=gettext("Note: Leave fields blank to use default pf algorithm. Set to 0 to disable.");?>
                       </div>
