@@ -33,7 +33,6 @@ import glob
 import collections
 import netaddr
 
-
 class SortKeyHelper:
     """ generate item key for sort function
     """

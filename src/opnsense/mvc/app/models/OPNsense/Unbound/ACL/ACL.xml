@@ -17,20 +17,13 @@
             <pattern>services_unbound_advanced.php*</pattern>
         </patterns>
     </page-services-dnsresolver-advanced>
-    <page-services-dnsresolver-editdomainoverride>
-        <name>Services: Unbound DNS: Edit Domain Override</name>
+    <page-services-dnsresolver-overrides>
+        <name>Services: Unbound DNS: Edit Host and Domain Override</name>
         <patterns>
-            <pattern>services_unbound_overrides.php</pattern>
-            <pattern>services_unbound_domainoverride_edit.php*</pattern>
+            <pattern>ui/unbound/overrides/*</pattern>
+            <pattern>api/unbound/overrides/*</pattern>
         </patterns>
-    </page-services-dnsresolver-editdomainoverride>
-    <page-services-dnsresolver-edithost>
-        <name>Services: Unbound DNS: Edit Host Override</name>
-        <patterns>
-            <pattern>services_unbound_overrides.php</pattern>
-            <pattern>services_unbound_host_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-edithost>
+    </page-services-dnsresolver-overrides>
     <page-diagnostics-logs-resolver>
         <name>Services: Unbound DNS: Log File</name>
         <patterns>

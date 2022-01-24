@@ -219,14 +219,7 @@ EOF;
         }
     }
 
-    /* allow DNS Rebind for forwarded domains */
-    if (!empty($config['unbound']['domainoverrides'])) {
-        $private_domains = "# Set private domains in case authoritative name server returns a Private IP address\n";
-        $private_domains .= unbound_add_domain_overrides(true);
-    }
-
     unbound_add_host_entries($ifconfig_details);
-    unbound_add_domain_overrides();
     unbound_acls_config();
 
     $port = is_port($config['unbound']['port']) ? $config['unbound']['port'] : "53";
@@ -359,7 +352,9 @@ prefetch-key: {$prefetch_key}
 
 # DNS Rebinding
 {$private_addr}
-{$private_domains}
+
+# Private domains (DNS Rebinding)
+include: /var/unbound/private_domains.conf
 
 # Access lists
 include: /var/unbound/access_lists.conf
@@ -369,9 +364,6 @@ include: /var/unbound/host_entries.conf
 
 # DHCP leases (if configured)
 {$include_dhcpleases}
-
-# Domain overrides
-include: /var/unbound/domainoverrides.conf
 
 # Custom includes
 include: /var/unbound/etc/*.conf
@@ -436,56 +428,6 @@ function unbound_configure_do($verbose = false, $interface = '')
 
     if ($verbose) {
         echo "done.\n";
-    }
-}
-
-function unbound_add_domain_overrides($pvt = false)
-{
-    global $config;
-
-    $domains = config_read_array('unbound', 'domainoverrides');
-
-    usort($domains, function ($a, $b) {
-        return strcasecmp($a['domain'], $b['domain']);
-    });
-
-    $result = array();
-    $forward_local = '';
-
-    foreach ($domains as $domain) {
-        $domain_key = current($domain);
-        if (!isset($result[$domain_key])) {
-            $result[$domain_key] = array();
-        }
-        $result[$domain_key][] = $domain['ip'];
-    }
-
-    $domain_entries = '';
-    foreach ($result as $domain => $ips) {
-        if ($pvt == true) {
-            $domain_entries .= "domain-insecure: \"$domain\"\n";
-            if (preg_match('/.+\.(in-addr|ip6)\.arpa\.?$/', $domain)) {
-                $domain_entries .= "local-zone: \"$domain\" typetransparent\n";
-            } elseif (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-                $domain_entries .= "private-domain: \"$domain\"\n";
-            }
-        } else {
-            $domain_entries .= "forward-zone:\n";
-            $domain_entries .= "\tname: \"$domain\"\n";
-            foreach ($ips as $ip) {
-                if (strpos($ip, '127.') === 0 || $ip == '::1') {
-                    $forward_local = "server:\n\tdo-not-query-localhost: no\n";
-                }
-                $domain_entries .= "\tforward-addr: $ip\n";
-            }
-        }
-    }
-
-    if ($pvt == true) {
-        return $domain_entries;
-    } else {
-        $domain_entries .= $forward_local;
-        file_put_contents('/var/unbound/domainoverrides.conf', $domain_entries);
     }
 }
 
@@ -577,55 +519,59 @@ function unbound_add_host_entries($ifconfig_details = null)
         unset($tmp_known_domains); // remove temporary variable
     }
 
-    if (isset($config['unbound']['hosts'])) {
-        foreach ($config['unbound']['hosts'] as $host) {
-            $aliases = array(array(
-                'domain' => $host['domain'],
-                'descr' => $host['descr'],
-                'host' => $host['host'],
-            ));
+    $unbound_mdl = new \OPNsense\Unbound\Unbound();
+    $hosts = iterator_to_array($unbound_mdl->hosts->host->iterateItems());
+    $aliases = iterator_to_array($unbound_mdl->aliases->alias->iterateItems());
 
-            if (!empty($host['aliases']['item'])) {
-                foreach ($host['aliases']['item'] as $alias) {
-                    $aliases[] = array(
-                        'domain' => !empty($alias['domain']) ? $alias['domain'] : $aliases[0]['domain'],
-                        'descr' => !empty($alias['descr']) ? $alias['descr'] : $aliases[0]['descr'],
-                        'host' => !empty($alias['host']) ? $alias['host'] : $aliases[0]['host'],
-                    );
-                }
-            }
+    if (!empty($hosts)) {
+        foreach ($hosts as $host) {
+            if ($host->enabled == '1') {
+                $tmp_aliases = array(array(
+                    'domain' => (string)$host->domain,
+                    'description' => (string)$host->description,
+                    'hostname' => (string)$host->hostname
+                ));
 
-            /* Backwards compatibility for records created before introducing RR types. */
-            if (!isset($host['rr'])) {
-                $host['rr'] = (is_ipaddrv6($host['ip'])) ? 'AAAA' : 'A';
-            }
-
-            foreach ($aliases as $alias) {
-                if ($alias['host'] != '') {
-                    $alias['host'] .= '.';
-                }
-
-                switch ($host['rr']) {
-                    case 'A':
-                    case 'AAAA':
-                        /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
-                        if ($alias['host'] == '*.') {
-                            $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
-                            $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
-                        } else {
-                            $unbound_entries .= "local-data-ptr: \"{$host['ip']} {$alias['host']}{$alias['domain']}\"\n";
-                            $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                if (!empty($aliases)) {
+                    foreach ($aliases as $alias) {
+                        if ($alias->enabled == '1' && $alias->host == $host->getAttribute('uuid')) {
+                            $tmp_aliases[] = array(
+                                'domain' => !empty((string)$alias->domain) ? $alias->domain : $tmp_aliases[0]['domain'],
+                                'description' => !empty((string)$alias->description) ? $alias->description : $tmp_aliases[0]['description'],
+                                'hostname' => !empty((string)$alias->hostname) ? $alias->hostname : $tmp_aliases[0]['hostname']
+                            );
                         }
-                        break;
-                    case 'MX':
-                        $unbound_entries .= "local-data: \"{$alias['host']}{$alias['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
-                        break;
+                    }
                 }
 
-                if (!empty($alias['descr']) && isset($config['unbound']['txtsupport'])) {
-                    $unbound_entries .= "local-data: '{$alias['host']}{$alias['domain']} TXT \"" . addslashes($alias['descr']) . "\"'\n";
+                foreach ($tmp_aliases as $alias) {
+                    if ($alias['hostname'] != '') {
+                        $alias['hostname'] .= '.';
+                    }
+
+                    switch ($host->rr) {
+                        case 'A':
+                        case 'AAAA':
+                            /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
+                            if ($alias['hostname'] == '*.') {
+                                $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
+                                $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                            } else {
+                                $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                            }
+                            break;
+                        case 'MX':
+                            $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN MX {$host->mxprio} {$host->mx}\"\n";
+                            break;
+                    }
+
+                    if (!empty($alias['description']) && isset($config['unbound']['txtsupport'])) {
+                        $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} TXT \"" . addslashes($alias['description']) . "\"'\n";
+                    }
                 }
             }
+
         }
     }
 
