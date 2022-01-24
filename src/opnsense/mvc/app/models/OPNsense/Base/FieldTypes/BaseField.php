@@ -299,6 +299,17 @@ abstract class BaseField
     }
 
     /**
+     * Triggered by calling isset() or empty() on an internal child node.
+     * Prevents the need for statically casting to a type on __get().
+     * @param $name property name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->internalChildnodes[$name]);
+    }
+
+    /**
      * iterate (non virtual) child nodes
      * @return Generator
      */
