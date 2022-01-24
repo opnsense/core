@@ -423,7 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (strlen($pconfig['adaptivestart']) > 0 xor strlen($pconfig['adaptiveend']) > 0) {
         $input_errors[] = gettext("The adaptive timouts values must be set together.");
     } elseif ((!empty($pconfig['adaptivestart']) && !is_numericint($pconfig['adaptivestart'])) || (!empty($pconfig['adaptiveend']) && !is_numericint($pconfig['adaptiveend']))) {
-        $input_errors[] = gettext("The adaptive.start and adaptive.end values (advanced option) must be configured as positive integer values.");
+        $input_errors[] = gettext("The adaptive.start and adaptive.end values (advanced option) must be configured as non-negative integer values.");
     } elseif (is_posnumericint($pconfig['max']) && is_numericint($pconfig['adaptiveend']) && $pconfig['max'] > $pconfig['adaptiveend']) {
         $input_errors[] = gettext("The value of adaptive.end must be greater than the Max states value.");
     } elseif (is_numericint($pconfig['adaptivestart']) && is_numericint($pconfig['adaptiveend']) && $pconfig['adaptivestart'] > $pconfig['adaptiveend']) {
