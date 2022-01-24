@@ -135,7 +135,7 @@ function write_config($desc = '', $backup = true)
             $user = getUserEntry($_SESSION['Username']);
             if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
                 // okay, it's not very nice to check permissions here, but let's make it explicit while we do...
-                log_error("WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
+                syslog(LOG_ERR, "WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
                 return false;
             }
         }
