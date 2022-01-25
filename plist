@@ -379,11 +379,11 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DotController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverridesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -996,10 +996,9 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/host_entries.conf
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/miscellaneous.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/unbound_dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
