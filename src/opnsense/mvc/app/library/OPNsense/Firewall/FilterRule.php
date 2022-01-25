@@ -232,6 +232,9 @@ class FilterRule extends Rule
                             $rule['state']['options'][] = $state_tag . " " . $rule[$state_tag];
                         }
                     }
+                    if (is_numeric($rule['adaptivestart']) && is_numeric($rule['adaptiveend'])) {
+                        $rule['state']['options'][] = "adaptive.start " . $rule['adaptivestart'] . ", adaptive.end " . $rule['adaptiveend'];
+                    }
                     if (!empty($rule['statetimeout'])) {
                         $rule['state']['options'][] = "tcp.established " . $rule['statetimeout'];
                     }
