@@ -126,7 +126,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             'hosts.host',
             ['enabled', 'hostname', 'domain', 'rr', 'mxprio', 'mx', 'server', 'description'],
-            "sequence"
+            'hostname',
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
@@ -177,8 +179,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             'aliases.alias',
             ['enabled', 'host', 'hostname', 'domain', 'description'],
-            "sequence",
-            $filter_func
+            "hostname",
+            $filter_func,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
@@ -225,7 +228,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             'domains.domain',
             ['enabled', 'domain', 'server', 'description'],
-            "sequence"
+            "domain",
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
