@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -225,7 +225,10 @@ fi
 
 DEVS=$(
 	camcontrol devlist
-	echo -n "${POOLS}" | while read ZPOOL ZGUID ZSIZE ZMORE; do
+	echo "${POOLS}" | while read ZPOOL ZGUID ZSIZE ZMORE; do
+		if [ -z "${ZPOOL}" ]; then
+			continue
+		fi
 		printf "%-35s%s\n" "<${ZGUID} ${ZSIZE}>" \
 		    "ZFS pool (${ZPOOL})"
 	done
