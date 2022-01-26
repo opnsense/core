@@ -26,12 +26,15 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
+PACKAGE=${1}
 
 : > ${LOCKFILE}
 
 echo "***GOT REQUEST TO REMOVE***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
 pkg remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 /usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${LOCKFILE} 2>&1
 pkg autoremove -y >> ${LOCKFILE} 2>&1
+
 echo '***DONE***' >> ${LOCKFILE}
