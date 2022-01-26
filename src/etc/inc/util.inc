@@ -1261,7 +1261,7 @@ function is_URL($url)
     return false;
 }
 
-function get_staticroutes($returnsubnetsonly=false)
+function get_staticroutes($returnsubnetsonly = false)
 {
     global $aliastable;
 
