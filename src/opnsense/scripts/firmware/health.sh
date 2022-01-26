@@ -212,7 +212,6 @@ EOF
 }
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${LOCKFILE}
-
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 set_check kernel

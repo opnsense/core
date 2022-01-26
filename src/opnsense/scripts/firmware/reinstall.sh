@@ -32,6 +32,7 @@ REBOOT=
 : > ${LOCKFILE}
 
 echo "***GOT REQUEST TO REINSTALL***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then

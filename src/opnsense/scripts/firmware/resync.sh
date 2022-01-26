@@ -29,5 +29,8 @@ LOCKFILE=/tmp/pkg_upgrade.progress
 : > ${LOCKFILE}
 
 echo "***GOT REQUEST TO RESYNC***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
 /usr/local/opnsense/scripts/firmware/register.php resync >> ${LOCKFILE} 2>&1
+
 echo '***DONE***' >> ${LOCKFILE}
