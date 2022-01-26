@@ -332,9 +332,13 @@ upgrade-check:
 		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
 		exit 1; \
 	fi
-	@if [ "$$(${VERSIONBIN} -v)" = "${CORE_PKGVERSION}" ]; then \
+	@if [ "$$(${VERSIONBIN} -v)" = "${CORE_PKGVERSION}" ] && [ ! $(force)  ]; then \
 		echo "Installed version already matches ${CORE_PKGVERSION}" >&2; \
 		exit 1; \
+	fi
+	@if [ "$$(${VERSIONBIN} -v)" = "${CORE_PKGVERSION}" ] && [ $(force)  ]; then \
+		echo "Installed version already matches ${CORE_PKGVERSION}" >&2; \
+		echo "Continuing with forced upgrade anyway..." >&2; \
 	fi
 
 upgrade: upgrade-check clean-pkgdir package
