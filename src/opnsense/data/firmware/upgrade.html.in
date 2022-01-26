@@ -1,6 +1,6 @@
 <p>OPNsense %%CORE_SERIES%% "<em>%%CORE_NICKNAME%%</em>" has reached its end
 of life. As such it will not receive any more updates, but the upgrade to the
-new %%CORE_NEXT%% series is seamless and can be performed right here from the
+new 22.4 series is seamless and can be performed right here from the
 web GUI.</p>
 <p> Another method is to import and reinstall using a new installation image,
 which will retain your settings using "Import Configuration", then reformat
@@ -19,7 +19,18 @@ cryptographic options have been removed upstream. If you are using MD5, Blowfish
 or CAST128 in your phase 2 please move to more secure settings prior to the upgrade.</li>
 <li>The Realtek vendor driver is no longer bundled with the updated FreeBSD kernel. If unsure
 whether FreeBSD 13 supports your Realtek NIC please install the os-realtek-re plugin prior to
-upgrading to retain operability of your NICs.</li></ul>
+upgrading to retain operability of your NICs.</li>
+<li>VLAN media and hardware offload settings are no longer shown for non-parent interfaces and
+need to be set individually on the parent interface to take effect. If your parent interfaces
+are currently not assigned please assign and enable them to apply the required options prior to
+upgrading.</li>
+<li>MAC spoofing now only pertains to the configured interface and not the VLAN siblings or
+parent interface. Make sure to assign and set the spoofed MAC for all interfaces that require
+a spoofed MAC or simply spoof the MAC on the parent and leave the VLAN sibling settings empty
+to let them follow the parent MAC automatically.</li>
+<li>Circular logging support is being removed. Check resulting log file size periodically to
+avoid filling up the disk or main memory when /var MFS is used and adjust log level settings
+accordingly.</li></ul>
 <p>Please backup your configuration, preview the new version via live image or
 in a virtual machine. Create snapshots. If all else fails, report back
 <a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for
