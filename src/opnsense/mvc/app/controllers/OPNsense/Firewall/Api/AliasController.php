@@ -153,7 +153,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (!empty($uses)) {
                 $message = "";
                 foreach ($uses as $key => $value) {
-                    $message .= sprintf("\n[%s] %s", $key, $value);
+                    $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
                 }
                 $message = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $message);
                 throw new \OPNsense\Base\UserException($message, gettext("Alias in use"));
