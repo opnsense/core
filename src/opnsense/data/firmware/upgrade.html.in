@@ -17,7 +17,7 @@ cryptographic options have been removed upstream. If you are using MD5, Blowfish
 or CAST128 in your phase 2 please move to more secure settings prior to the upgrade.</li>
 <li>The Realtek vendor driver is no longer bundled with the updated FreeBSD kernel. If unsure
 whether FreeBSD 13 supports your Realtek NIC please install the os-realtek-re plugin prior to
-upgrading to retain operability of your NICs.<li><ul>
+upgrading to retain operability of your NICs.</li><ul>
 <p>Please backup your configuration, preview the new version via live image or
 in a virtual machine. Create snapshots. If all else fails, report back
 <a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for
