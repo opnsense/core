@@ -71,7 +71,7 @@ function check_security_dns_rebind()
             $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
             /* v6 address has more parts, drop the last part */
             if (count($http_host_port) > 1) {
-                array_pop($hfttp_host_port);
+                array_pop($http_host_port);
                 $http_host = str_replace(["[", "]"], "", implode(":", $http_host_port));
             } else {
                 $http_host = str_replace(["[", "]"], "", implode(":", $http_host_port));
