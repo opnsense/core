@@ -24,6 +24,14 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<?php
+    // Time display format: Use or override log raw time format
+    $locale  = !empty(OPNsense\Core\Config::getInstance()->object()->system->language) ? OPNsense\Core\Config::getInstance()->object()->system->language : 'OS_Locale';
+    $timefmt = !empty(OPNsense\Core\Config::getInstance()->object()->syslog->timefmt) ? OPNsense\Core\Config::getInstance()->object()->syslog->timefmt : 'Log_Raw';
+    $timefmt = $timefmt == 'Web_GUI_Language' ? $locale : $timefmt;
+    $timefmt = $timefmt == 'OS_Locale' ? 'default' : $timefmt;
+?>
+
 <script>
     'use strict';
 
@@ -225,6 +233,7 @@
 
 
         function fetch_log() {
+            var timefmt = "<?= $timefmt ?>".replaceAll('_','-');
             let record_spec = [];
             // Overfetch for limited display scope to increase the chance of being able to find matches.
             // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
@@ -257,6 +266,17 @@
                                 record['interface_name'] = interface_descriptions[record.interface];
                             } else {
                                 record['interface_name'] = record.interface;
+                            }
+                            if (timefmt == 'Log-Raw') {
+                                record['__timestamp__'] = record['__timestamp__'];
+                            } else if (timefmt == 'Log-Long') {
+                                record['__timestamp__'] = record['__timestamp__'].substring(0,22).replace('T', ' ');
+                            } else if (timefmt == 'Log-Long-No-TZ') {
+                                record['__timestamp__'] = record['__timestamp__'].substring(0,19).replace('T', ' ');
+                            } else if (timefmt == 'Log-Short') {
+                                record['__timestamp__'] = record['__timestamp__'].substring(5,19).replace('T', ' ');
+                            } else {
+                                record['__timestamp__'] = new Date(record['__timestamp__']).toLocaleString(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric', second: 'numeric'}).replace(/[.,]/g, '');
                             }
                             log_tr.data('details', record);
                             log_tr.hide();
