@@ -71,6 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
+
+    // Time display format: Use or override log raw time format
+    $pconfig['timefmt'] = !empty($config['syslog']['timefmt']) ? $config['syslog']['timefmt'] : 'Log_Raw';
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -261,6 +265,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
         $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
         $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
+
+        // Time display format: Use or override log raw time format
+        if (!empty($pconfig['timefmt']) && $pconfig['timefmt'] != 'Log_Raw') {
+            $config['syslog']['timefmt'] = $pconfig['timefmt'];
+        } else {
+            unset($config['syslog']['timefmt']);
+        }
 
         write_config();
 
@@ -538,6 +549,33 @@ include("head.inc");
                   <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
                 </td>
               </tr>
+<?php
+    // Time formats (language locales)
+    $locales = array(
+        'Web_GUI_Language' => gettext('Web GUI Language (MMM DD hh:mm:ss)'),
+        'Client_Locale' => gettext('Client Locale (MMM DD hh:mm:ss)'),
+        'Log_Raw' => gettext('Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)'),
+        'Log_Long' => gettext('Log Long (YYYY-MM-DD hh:mm:ss+/-hh)'),
+        'Log_Long_No_TZ' => gettext('Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)'),
+        'Log_Short' => gettext('Log Short (MM-DD hh:mm:ss)'),
+    );
+?>
+                  <tr>
+                    <td><a id="help_for_timefmt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Time display format') ?></td>
+                    <td>
+                      <label for="timefmt">
+                        <select id="timefmt" name="timefmt" class="selectpicker" data-style="btn-default">
+<?php foreach ($locales as $lcode => $ldesc): ?>
+            <option value="<?= html_safe($lcode) ?>" <?= $lcode == $pconfig['timefmt'] ? 'selected="selected"' : '' ?>><?= html_safe($ldesc) ?></option>
+<?php endforeach ?>
+                        </select>
+                      </label>
+                      <div class="hidden" data-for="help_for_timefmt">
+                        <?=gettext('Time format to display on firewall log pages and aliases last updated.');?><br>
+                        <?=gettext('(aliases last updated does not include timezone)');?>
+                      </div>
+                    </td>
+                  </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">

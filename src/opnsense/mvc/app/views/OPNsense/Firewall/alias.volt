@@ -64,6 +64,17 @@
 
 </style>
 <script>
+    // Time display format: Use or override log raw time format
+    var timefmt = 
+        "{{ timefmt }}" == 'Web_GUI_Language' ? "{{ langcode }}"
+      : "{{ timefmt }}" == 'Client_Locale' ? 'default'
+      : "{{ timefmt }}";
+
+    // Implement as Intl.DateTimeFormat object for efficiency (toLocaleString).
+    if (timefmt == "{{ langcode }}" || timefmt == 'default') {
+        var IDTF_obj = new Intl.DateTimeFormat(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric', second: 'numeric'});
+    }
+
     $( document ).ready(function() {
         $("#grid-aliases").UIBootgrid({
             search:'/api/firewall/alias/searchItem',
@@ -116,8 +127,21 @@
                         }
                     },
                     timestamp: function (column, row) {
-                        if (row[column.id] && row[column.id].includes('.')) {
-                            return row[column.id].split('.')[0].replace('T', ' ');
+                        if (row[column.id]) {
+                            switch (timefmt) {
+                                case 'Log_Raw':
+                                    return row[column.id];
+                                    break;
+                                case 'Log_Long':
+                                case 'Log_Long_No_TZ':
+                                    return row[column.id].substring(0,19).replace('T', ' ');
+                                    break;
+                                case 'Log_Short':
+                                    return row[column.id].substring(5,19).replace('T', ' ');
+                                    break;
+                                default:
+                                    return IDTF_obj.format(new Date(row[column.id])).replace(/[.,]/g, '');
+                            }
                         }
                         return row[column.id];
                     }

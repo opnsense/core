@@ -29,6 +29,7 @@
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
+use OPNsense\Core\Config;
 
 /**
  * @inherit
@@ -42,6 +43,7 @@ class LogController extends IndexController
         $this->view->scope = htmlspecialchars($scope, ENT_QUOTES | ENT_HTML401);
         $this->view->service = '';
         $this->view->default_log_severity = 'Warning';
+        $this->view->timefmt = !empty(Config::getInstance()->object()->OPNsense->Syslog->general->timefmt) ? Config::getInstance()->object()->OPNsense->Syslog->general->timefmt : 'Log_Raw';
 
         $service = $module == 'core' ? $scope : $module;
 

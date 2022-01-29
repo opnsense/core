@@ -63,6 +63,13 @@ if (is_numeric($pconfig['filterlogentries'] ?? null)) {
         unset($config['widgets']['filterlogentriesinterfaces']);
     }
 
+    // Time display format: Use or override log raw time format
+    if (!empty($pconfig['timefmt']) && $pconfig['timefmt'] != 'Log_Raw') {
+        $config['widgets']['filterlogentriestimefmt'] = $pconfig['timefmt'];
+    } else {
+        unset($config['widgets']['filterlogentriestimefmt']);
+    }
+
     write_config('Saved Filter Log Entries via Dashboard');
     header(url_safe('Location: /index.php'));
     exit;
@@ -73,8 +80,23 @@ $updateinterval = isset($config['widgets']['filterlogentriesupdateinterval']) ? 
 $nentriesacts = isset($config['widgets']['filterlogentriesacts']) ?  explode(" ", $config['widgets']['filterlogentriesacts']) : array('Pass', 'Block', 'Reject');
 $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? $config['widgets']['filterlogentriesinterfaces'] : '';
 
+// Time display format: Use or override log raw time format
+$langcode = !empty($config['system']['language']) ? $config['system']['language'] : 'en_US';
+$timefmt = !empty($config['widgets']['filterlogentriestimefmt']) ? $config['widgets']['filterlogentriestimefmt'] : 'Log_Raw';
+
 ?>
 <script>
+    // Time display format: Use or override log raw time format
+    var timefmt = 
+        "<?= $timefmt ?>" == 'Web_GUI_Language' ? "<?= $langcode ?>".replaceAll('_', '-')
+      : "<?= $timefmt ?>" == 'Client_Locale' ? 'default'
+      : "<?= $timefmt ?>";
+
+    // Implement as Intl.DateTimeFormat object for efficiency (toLocaleString).
+    if (timefmt == "<?= $langcode ?>".replaceAll('_', '-') || timefmt == 'default') {
+        var IDTF_obj = new Intl.DateTimeFormat(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric'});
+    }
+
     $("#dashboard_container").on("WidgetsReady", function() {
         // needed to display the widget settings menu
         $("#log-configure").removeClass("disabled");
@@ -142,7 +164,22 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                         }
                                         break;
                                     case 'time':
-                                        log_td.text(record[column_name].replace(/:[0-9]{2}$/, ''));
+                                        switch (timefmt) {
+                                            case 'Log_Raw':
+                                                log_td.text(record[column_name]);
+                                                break;
+                                            case 'Log_Long':
+                                                log_td.text(record[column_name].substring(0,22).replace('T', ' '));
+                                                break;
+                                            case 'Log_Long_No_TZ':
+                                                log_td.text(record[column_name].substring(0,19).replace('T', ' '));
+                                                break;
+                                            case 'Log_Short':
+                                                log_td.text(record[column_name].substring(5,16).replace('T', ' '));
+                                                break;
+                                            default:
+                                                log_td.text(IDTF_obj.format(new Date(record[column_name])).replace(/[.,]/g, ''));
+                                        }
                                         break;
                                     case 'interface':
                                         if (interface_descriptions[record[column_name]] != undefined) {
@@ -214,6 +251,23 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           <label for="filterlogentriesinterfaces"><?= gettext('Interfaces to display:'); ?></label><br/>
           <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces[]" class="selectpicker_widget" multiple="multiple" title=<?= gettext('All'); ?>>
           </select><br/><br/>
+<?php
+    // Time formats (language locales)
+    $locales = array(
+        'Web_GUI_Language' => gettext('Web GUI Language (MMM DD hh:mm)'),
+        'Client_Locale' => gettext('Client Locale (MMM DD hh:mm)'),
+        'Log_Raw' => gettext('Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)'),
+        'Log_Long' => gettext('Log Long (YYYY-MM-DD hh:mm:ss+/-hh)'),
+        'Log_Long_No_TZ' => gettext('Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)'),
+        'Log_Short' => gettext('Log Short (MM-DD hh:mm)'),
+    );
+?>
+          <label for="timefmt"><?= gettext('Time display format:') ?></label><br/>
+          <select id="timefmt" name="timefmt" class="selectpicker_widget">
+<?php foreach ($locales as $lcode => $ldesc): ?>
+            <option value="<?= html_safe($lcode) ?>" <?= $lcode == $timefmt ? 'selected="selected"' : '' ?>><?= html_safe($ldesc) ?></option>
+<?php endforeach ?>
+          </select><br/>
           <table style="width:348px">
             <tr>
               <td><label for="actblock"><input id="actblock" name="actblock" type="checkbox" value="Block" <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?> /><?= gettext('Block') ?></label></td>

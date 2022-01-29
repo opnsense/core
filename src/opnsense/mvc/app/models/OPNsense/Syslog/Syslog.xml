@@ -16,6 +16,18 @@
                 <Required>Y</Required>
             </maxpreserve>
             <maxfilesize type="IntegerField"/>
+            <timefmt type="OptionField">
+                <Default>Log_Raw</Default>
+                <Required>Y</Required>
+                  <OptionValues>
+                      <Web_GUI_Language>Web GUI Language (MMM DD hh:mm:ss)</Web_GUI_Language>
+                      <Client_Locale>Client Locale (MMM DD hh:mm:ss)</Client_Locale>
+                      <Log_Raw>Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)</Log_Raw>
+                      <Log_Long>Log Long (YYYY-MM-DD hh:mm:ss+/-hh)</Log_Long>
+                      <Log_Long_No_TZ>Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)</Log_Long_No_TZ>
+                      <Log_Short>Log Short (MM-DD hh:mm:ss)</Log_Short>
+                  </OptionValues>
+            </timefmt>
         </general>
         <destinations>
             <destination type="ArrayField">

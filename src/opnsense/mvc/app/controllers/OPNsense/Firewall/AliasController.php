@@ -29,6 +29,7 @@
 namespace OPNsense\Firewall;
 
 use OPNsense\Base\IndexController;
+use OPNsense\Core\Config;
 
 /**
  * @package OPNsense\Firewall
@@ -41,5 +42,6 @@ class AliasController extends IndexController
         $this->view->selected_alias = $selected;
         $this->view->formGeoIPSettings = $this->getForm("geoIPSettings");
         $this->view->pick('OPNsense/Firewall/alias');
+        $this->view->timefmt = !empty(Config::getInstance()->object()->syslog->timefmt) ? Config::getInstance()->object()->syslog->timefmt : 'Log_Raw';
     }
 }

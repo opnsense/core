@@ -48,6 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['widgets']['systemlogseverity'] = $_POST['systemlogseverity'];
     }
 
+    // Time display format: Use or override log raw time format
+    if (!empty($_POST['timefmt']) && $_POST['timefmt'] != 'Log_Raw') {
+        $config['widgets']['systemlogentriestimefmt'] = $_POST['timefmt'];
+    } else {
+        unset($config['widgets']['systemlogentriestimefmt']);
+    }
+
     if (count($input_errors) == 0) {
       $config['widgets']['systemlogentriesfilter'] = $_POST['systemlogentriesfilter'];
       write_config("System Log Widget settings saved");
@@ -67,6 +74,11 @@ $systemlogEntriesToFetch = isset($config['widgets']['systemlogfiltercount']) ? $
 $systemlogupdateinterval = isset($config['widgets']['systemlogupdateinterval']) ? $config['widgets']['systemlogupdateinterval'] : 10;
 $systemlogseverity = isset($config['widgets']['systemlogseverity']) ? $config['widgets']['systemlogseverity'] : "Debug";
 $systemlogentriesfilter = isset($config['widgets']['systemlogentriesfilter']) ? $config['widgets']['systemlogentriesfilter'] : "";
+
+// Time display format: Use or override log raw time format
+$langcode = !empty($config['system']['language']) ? $config['system']['language'] : 'en_US';
+$timefmt = !empty($config['widgets']['systemlogentriestimefmt']) ? $config['widgets']['systemlogentriestimefmt'] : 'Log_Raw';
+
 if (isset($_COOKIE['inputerrors'])) {
     foreach ($_COOKIE['inputerrors'] as $i => $value) {
         $input_errors[] = $value;
@@ -110,6 +122,28 @@ $prios = array('Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', '
           </select>
         </td>
       </tr>
+<?php
+    // Time formats (language locales)
+    $locales = array(
+        'Web_GUI_Language' => gettext('Web GUI Language (MMM DD hh:mm)'),
+        'Client_Locale' => gettext('Client Locale (MMM DD hh:mm)'),
+        'Log_Raw' => gettext('Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)'),
+        'Log_Long' => gettext('Log Long (YYYY-MM-DD hh:mm:ss+/-hh)'),
+        'Log_Long_No_TZ' => gettext('Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)'),
+        'Log_Short' => gettext('Log Short (MM-DD hh:mm)'),
+    );
+?>
+      <tr>
+        <td><?= gettext('Time display format:') ?></td>
+        <td colspan="2">
+          <select id="timefmt" name="timefmt">
+<?php foreach ($locales as $lcode => $ldesc): ?>
+            <option value="<?= html_safe($lcode) ?>" <?= $lcode == $timefmt ? 'selected="selected"' : '' ?>><?= html_safe($ldesc) ?></option>
+<?php endforeach ?>
+          </select>
+        </td>
+        <td></td>
+      </tr>
       <tr>
         <td><?= gettext('Log query filter:') ?></td>
         <td>
@@ -139,6 +173,16 @@ $prios = array('Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', '
 </div>
 
 <script>
+    // Time display format: Use or override log raw time format
+    var timefmt = 
+        "<?= $timefmt ?>" == 'Web_GUI_Language' ? "<?= $langcode ?>".replaceAll('_', '-')
+      : "<?= $timefmt ?>" == 'Client_Locale' ? 'default'
+      : "<?= $timefmt ?>";
+
+    // Implement as Intl.DateTimeFormat object for efficiency (toLocaleString).
+    if (timefmt == "<?= $langcode ?>".replaceAll('_', '-') || timefmt == 'default') {
+        var IDTF_obj = new Intl.DateTimeFormat(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric'});
+    }
 
             function fetch_system_log(rowCount, refresh_interval_ms, requestSeverity) {
                 //it is more correct to pass the filter value to the function (without searching the value every time). but this method allows to "live" test the filter value before saving
@@ -160,6 +204,22 @@ $prios = array('Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', '
                                 system_log_tr += '<tr class="system_log_entry"><td style="text-align: center;"><?=html_safe(gettext("No results found!")); ?></td></tr>';
                             } else {
                                 while ((entry = data.rows.shift())) {
+                                    switch (timefmt) {
+                                        case 'Log_Raw':
+                                            entry['timestamp'] = entry['timestamp'];
+                                            break;
+                                        case 'Log_Long':
+                                            entry['timestamp'] = entry['timestamp'].substring(0,22).replace('T', ' ');
+                                            break;
+                                        case 'Log_Long_No_TZ':
+                                            entry['timestamp'] = entry['timestamp'].substring(5,16).replace('T', ' ');
+                                            break;
+                                        case 'Log_Short':
+                                            entry['timestamp'] = entry['timestamp'].substring(5,16).replace('T', ' ');
+                                            break;
+                                        default:
+                                            entry['timestamp'] = IDTF_obj.format(new Date(entry['timestamp'])).replace(/[.,]/g, '');
+                                    }
                                 system_log_tr += '<tr class="system_log_entry"><td style="white-space: nowrap;">' + entry['timestamp'] + '<br>[' + entry['severity'] + ']<br>' + entry['process_name'].split('[')[0] + '</td><td>' + entry['line'] + '</td></tr>';
                                 }
                             }

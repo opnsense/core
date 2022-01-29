@@ -17,4 +17,12 @@
         <type>text</type>
         <help>Maximum file size per log file. When set and a log file exceeds the amount specified, it will be rotated.</help>
     </field>
+    <field>
+      <id>syslog.general.timefmt</id>
+      <label>Time Display Format</label>
+      <type>dropdown</type>
+      <help><![CDATA[Time format to display on system log pages.<br>
+        (boot log does not include timezone)]]>
+      </help>
+    </field>
 </form>

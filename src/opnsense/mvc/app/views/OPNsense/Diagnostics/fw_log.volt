@@ -27,6 +27,17 @@
 <script>
     'use strict';
 
+    // Time display format: Use or override log raw time format
+    var timefmt = 
+        "{{ timefmt }}" == 'Web_GUI_Language' ? "{{ langcode }}"
+      : "{{ timefmt }}" == 'Client_Locale' ? 'default'
+      : "{{ timefmt }}";
+
+    // Implement as Intl.DateTimeFormat object for efficiency (toLocaleString).
+    if (timefmt == "{{ langcode }}" || timefmt == 'default') {
+        var IDTF_obj = new Intl.DateTimeFormat(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric', second: 'numeric'});
+    }
+
     $( document ).ready(function() {
         var field_type_icons = {
           'binat': 'fa-exchange',
@@ -257,6 +268,22 @@
                                 record['interface_name'] = interface_descriptions[record.interface];
                             } else {
                                 record['interface_name'] = record.interface;
+                            }
+                            switch (timefmt) {
+                                case 'Log_Raw':
+                                    record['__timestamp__'] = record['__timestamp__'];
+                                    break;
+                                case 'Log_Long':
+                                    record['__timestamp__'] = record['__timestamp__'].substring(0,22).replace('T', ' ');
+                                    break;
+                                case 'Log_Long_No_TZ':
+                                    record['__timestamp__'] = record['__timestamp__'].substring(0,19).replace('T', ' ');
+                                    break;
+                                case 'Log_Short':
+                                    record['__timestamp__'] = record['__timestamp__'].substring(5,19).replace('T', ' ');
+                                    break;
+                                default:
+                                    record['__timestamp__'] = IDTF_obj.format(new Date(record['__timestamp__'])).replace(/[.,]/g, '');
                             }
                             log_tr.data('details', record);
                             log_tr.hide();

@@ -29,6 +29,7 @@
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
+use OPNsense\Core\Config;
 
 /**
  * Class FirewallController
@@ -61,6 +62,7 @@ class FirewallController extends IndexController
     public function logAction()
     {
         $this->view->pick('OPNsense/Diagnostics/fw_log');
+        $this->view->timefmt = !empty(Config::getInstance()->object()->syslog->timefmt) ? Config::getInstance()->object()->syslog->timefmt : 'Log_Raw';
     }
     /**
      * firewall statistical view
