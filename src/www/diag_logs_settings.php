@@ -67,6 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
+
+    // Time display format: Use or override log raw time format
+    $pconfig['timefmt'] = !empty($config['syslog']['timefmt']) ? $config['syslog']['timefmt'] : 'Log_Raw';
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
         clear_all_log_files();
@@ -106,6 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
             $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
             $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
+
+            // Time display format: Use or override log raw time format
+            if (!empty($pconfig['timefmt']) && $pconfig['timefmt'] != 'Log_Raw') {
+                $config['syslog']['timefmt'] = $pconfig['timefmt'];
+            } else {
+                unset($config['syslog']['timefmt']);
+            }
 
             write_config();
 
@@ -251,6 +262,32 @@ $(document).ready(function() {
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Local Logging') ?></td>
                     <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?>  />
                       <?=gettext("Disable writing log files to the local disk");?></td>
+                  </tr>
+<?php
+    // Time formats (language locales)
+    $locale = !empty($config['system']['language']) ? $config['system']['language'] : 'default';
+    $locales = array(
+        $locale => gettext('OPNsense Web GUI Language'),
+        'default' => gettext('OS Locale'),
+        'Log_Raw' => gettext('Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)'),
+        'Log_Long' => gettext('Log Long (YYYY-MM-DD hh:mm:ss+/-hh)'),
+        'Log_Long_No_TZ' => gettext('Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)'),
+        'Log_Short' => gettext('Log Short (MM-DD hh:mm:ss)'),
+    );
+?>
+                  <tr>
+                    <td><a id="help_for_timefmt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Time display format') ?></td>
+                    <td>
+                      <select id="timefmt" name="timefmt" class="selectpicker" data-style="btn-default">
+<?php foreach ($locales as $lcode => $ldesc): ?>
+            <option value="<?= html_safe($lcode) ?>" <?= $lcode == $pconfig['timefmt'] ? 'selected="selected"' : '' ?>><?= html_safe($ldesc) ?></option>
+<?php endforeach ?>
+                      </select>
+                      <div class="hidden" data-for="help_for_timefmt">
+                        <?=gettext('Time format to display on log pages and aliases last updated.');?><br>
+                        <?=gettext('(boot log and aliases last updated do not include timezone)');?>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>

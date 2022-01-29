@@ -48,6 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['widgets']['systemlogseverity'] = $_POST['systemlogseverity'];
     }
 
+    // Time display format: Use or override log raw time format
+    if (!empty($_POST['timefmt']) && $_POST['timefmt'] != 'Log_Raw') {
+        $config['widgets']['systemlogentriestimefmt'] = $_POST['timefmt'];
+    } else {
+        unset($config['widgets']['systemlogentriestimefmt']);
+    }
+
     if (count($input_errors) == 0) {
       $config['widgets']['systemlogentriesfilter'] = $_POST['systemlogentriesfilter'];
       write_config("System Log Widget settings saved");
@@ -67,6 +74,10 @@ $systemlogEntriesToFetch = isset($config['widgets']['systemlogfiltercount']) ? $
 $systemlogupdateinterval = isset($config['widgets']['systemlogupdateinterval']) ? $config['widgets']['systemlogupdateinterval'] : 10;
 $systemlogseverity = isset($config['widgets']['systemlogseverity']) ? $config['widgets']['systemlogseverity'] : "Debug";
 $systemlogentriesfilter = isset($config['widgets']['systemlogentriesfilter']) ? $config['widgets']['systemlogentriesfilter'] : "";
+
+// Time display format: Use or override log raw time format
+$timefmt = !empty($config['widgets']['systemlogentriestimefmt']) ? $config['widgets']['systemlogentriestimefmt'] : 'Log_Raw';
+
 if (isset($_COOKIE['inputerrors'])) {
     foreach ($_COOKIE['inputerrors'] as $i => $value) {
         $input_errors[] = $value;
@@ -110,6 +121,29 @@ $prios = array('Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', '
           </select>
         </td>
       </tr>
+<?php
+    // Time formats (language locales)
+    $locale = !empty($config['system']['language']) ? $config['system']['language'] : 'default';
+    $locales = array(
+        $locale          => gettext('OPNsense Web GUI Language'), 
+        'default'        => gettext('OS Locale'), 
+        'Log_Raw'        => gettext('Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)'),
+        'Log_Long'       => gettext('Log Long (YYYY-MM-DD hh:mm:ss+/-hh)'),
+        'Log_Long_No_TZ' => gettext('Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)'),
+        'Log_Short'      => gettext('Log Short (MM-DD hh:mm)'), 
+    );
+?>
+      <tr>
+        <td><?= gettext('Time display format:') ?></td>
+        <td colspan="2">
+          <select id="timefmt" name="timefmt">
+<?php foreach ($locales as $lcode => $ldesc): ?>
+            <option value="<?= html_safe($lcode) ?>" <?= $lcode == $timefmt ? 'selected="selected"' : '' ?>><?= html_safe($ldesc) ?></option>
+<?php endforeach ?>
+          </select>
+        </td>
+        <td></td>
+      </tr>
       <tr>
         <td><?= gettext('Log query filter:') ?></td>
         <td>
@@ -141,6 +175,7 @@ $prios = array('Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', '
 <script>
 
             function fetch_system_log(rowCount, refresh_interval_ms, requestSeverity) {
+                var timefmt = "<?= $timefmt ?>".replaceAll('_', '-');
                 //it is more correct to pass the filter value to the function (without searching the value every time). but this method allows to "live" test the filter value before saving
                 let filterstring = "";
                 if ($("#systemlogentriesfilter").val()) {
@@ -160,6 +195,17 @@ $prios = array('Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', '
                                 system_log_tr += '<tr class="system_log_entry"><td style="text-align: center;"><?=html_safe(gettext("No results found!")); ?></td></tr>';
                             } else {
                                 while ((entry = data.rows.shift())) {
+                                    if (timefmt == 'Log-Raw') {
+                                        entry['timestamp'] = entry['timestamp'];
+                                    } else if (timefmt == 'Log-Long') {
+                                        entry['timestamp'] = entry['timestamp'].substring(0,22).replace('T', ' ');
+                                    } else if (timefmt == 'Log-Long-No-TZ') {
+                                        entry['timestamp'] = entry['timestamp'].substring(0,19).replace('T', ' ');
+                                    } else if (timefmt == 'Log-Short') {
+                                        entry['timestamp'] = entry['timestamp'].substring(5,16).replace('T', ' ');
+                                    } else {
+                                       entry['timestamp'] = new Date(entry['timestamp']).toLocaleString(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric'}).replace(/[.,]/g, '');
+                                    }
                                 system_log_tr += '<tr class="system_log_entry"><td style="white-space: nowrap;">' + entry['timestamp'] + '<br>[' + entry['severity'] + ']<br>' + entry['process_name'].split('[')[0] + '</td><td>' + entry['line'] + '</td></tr>';
                                 }
                             }

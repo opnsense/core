@@ -63,6 +63,13 @@ if (is_numeric($pconfig['filterlogentries'] ?? null)) {
         unset($config['widgets']['filterlogentriesinterfaces']);
     }
 
+    // Time display format: Use or override log raw time format
+    if (!empty($pconfig['timefmt']) && $pconfig['timefmt'] != 'Log_Raw') {
+        $config['widgets']['filterlogentriestimefmt'] = $pconfig['timefmt'];
+    } else {
+        unset($config['widgets']['filterlogentriestimefmt']);
+    }
+
     write_config('Saved Filter Log Entries via Dashboard');
     header(url_safe('Location: /index.php'));
     exit;
@@ -72,6 +79,9 @@ $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['
 $updateinterval = isset($config['widgets']['filterlogentriesupdateinterval']) ? $config['widgets']['filterlogentriesupdateinterval'] : 2;
 $nentriesacts = isset($config['widgets']['filterlogentriesacts']) ?  explode(" ", $config['widgets']['filterlogentriesacts']) : array('Pass', 'Block', 'Reject');
 $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? $config['widgets']['filterlogentriesinterfaces'] : '';
+
+// Time display format: Use or override log raw time format
+$timefmt = !empty($config['widgets']['filterlogentriestimefmt']) ? $config['widgets']['filterlogentriestimefmt'] : 'Log_Raw';
 
 ?>
 <script>
@@ -83,6 +93,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
 
         var interface_descriptions = {};
         var nentriesinterfaces =  "<?= $nentriesinterfaces ?>".split(",");
+        var timefmt = "<?= $timefmt ?>".replaceAll('_', '-');
         ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
             interface_descriptions = data;
             $.each(interface_descriptions, function(i_d, i_name){
@@ -142,7 +153,17 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                                         }
                                         break;
                                     case 'time':
-                                        log_td.text(record[column_name].replace(/:[0-9]{2}$/, ''));
+                                        if (timefmt == 'Log-Raw') {
+                                            log_td.text(record[column_name]);
+                                        } else if (timefmt == 'Log-Long') {
+                                            log_td.text(record[column_name].substring(0,22).replace('T', ' '));
+                                        } else if (timefmt == 'Log-Long-No-TZ') {
+                                            log_td.text(record[column_name].substring(0,19).replace('T', ' '));
+                                        } else if (timefmt == 'Log-Short') {
+                                            log_td.text(record[column_name].substring(5,16).replace('T', ' '));
+                                        } else {
+                                           log_td.text(new Date(record[column_name]).toLocaleString(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric'}).replace(/[.,]/g, ''));
+                                        }
                                         break;
                                     case 'interface':
                                         if (interface_descriptions[record[column_name]] != undefined) {
@@ -214,6 +235,24 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
           <label for="filterlogentriesinterfaces"><?= gettext('Interfaces to display:'); ?></label><br/>
           <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces[]" class="selectpicker_widget" multiple="multiple" title=<?= gettext('All'); ?>>
           </select><br/><br/>
+<?php
+    // Time formats (language locales)
+    $locale = !empty($config['system']['language']) ? $config['system']['language'] : 'default';
+    $locales = array(
+        $locale => gettext('OPNsense Web GUI Language'), 
+        'default' => gettext('OS Locale'), 
+        'Log_Raw' => gettext('Log Raw (YYYY-MM-DDThh:mm:ss+/-hh:mm)'),
+        'Log_Long' => gettext('Log Long (YYYY-MM-DD hh:mm:ss+/-hh)'),
+        'Log_Long_No_TZ' => gettext('Log Long w/o TZ (YYYY-MM-DD hh:mm:ss)'),
+        'Log_Short' => gettext('Log Short (MM-DD hh:mm)'), 
+    );
+?>
+          <label for="timefmt"><?= gettext('Time display format:') ?></label><br/>
+          <select id="timefmt" name="timefmt" class="selectpicker_widget">
+<?php foreach ($locales as $lcode => $ldesc): ?>
+            <option value="<?= html_safe($lcode) ?>" <?= $lcode == $timefmt ? 'selected="selected"' : '' ?>><?= html_safe($ldesc) ?></option>
+<?php endforeach ?>
+          </select><br/>
           <table style="width:348px">
             <tr>
               <td><label for="actblock"><input id="actblock" name="actblock" type="checkbox" value="Block" <?=in_array('Block', $nentriesacts) ? "checked=\"checked\"" : "";?> /><?= gettext('Block') ?></label></td>

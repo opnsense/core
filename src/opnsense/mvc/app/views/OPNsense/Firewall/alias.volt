@@ -33,8 +33,16 @@
     }
 
 </style>
+
+<?php
+    // Time display format: Use or override log raw time format
+    $timefmt = !empty(OPNsense\Core\Config::getInstance()->object()->syslog->timefmt) ? OPNsense\Core\Config::getInstance()->object()->syslog->timefmt : 'Log_Raw';
+?>
+
 <script>
     $( document ).ready(function() {
+        var timefmt = "<?= $timefmt ?>".replaceAll('_','-');
+
         $("#grid-aliases").UIBootgrid({
             search:'/api/firewall/alias/searchItem',
             get:'/api/firewall/alias/getItem/',
@@ -86,8 +94,16 @@
                         }
                     },
                     timestamp: function (column, row) {
-                        if (row[column.id] && row[column.id].includes('.')) {
-                            return row[column.id].split('.')[0].replace('T', ' ');
+                        if (row[column.id]) {
+                            if (timefmt == 'Log-Raw') {
+                                return row[column.id];
+                            } else if (timefmt == 'Log-Long' || timefmt == 'Log-Long-No-TZ') {
+                                return row[column.id].substring(0,19).replace('T', ' ');
+                            } else if (timefmt == 'Log-Short') {
+                                return row[column.id].substring(5,19).replace('T', ' ');
+                            } else {
+                                return new Date(row[column.id]).toLocaleString(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric', second: 'numeric'}).replace(/[.,]/g, '');
+                            }
                         }
                         return row[column.id];
                     }
