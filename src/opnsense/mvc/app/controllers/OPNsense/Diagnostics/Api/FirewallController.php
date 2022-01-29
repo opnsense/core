@@ -52,6 +52,9 @@ class FirewallController extends ApiControllerBase
             $backend = new Backend();
             $response = $backend->configdpRun("filter read log", array($limit, $digest));
             $logoutput = json_decode($response, true);
+            foreach ($logoutput as &$record) {
+                $record['__timestamp__'] = date_format(date_create($record['__timestamp__']), 'M d H:i:s');
+            }
             return $logoutput;
         } else {
             return null;

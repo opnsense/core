@@ -81,6 +81,9 @@ class LogController extends ApiControllerBase
                     $severities
                 ]);
                 $result = json_decode($response, true);
+                foreach ($result['rows'] as &$record) {
+                    $record['timestamp'] = date_format(date_create($record['timestamp']), 'M d H:i:s');
+                }
                 if ($result != null) {
                     $result['rowCount'] = count($result['rows']);
                     $result['total'] = $result['total_rows'];

@@ -75,7 +75,7 @@ class AliasField extends ArrayField
         $last_updated->setInternalIsVirtual();
         if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
             $current_items->setValue(self::$current_stats[(string)$node->name]['count']);
-            $last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
+            $last_updated->setValue(strstr(self::$current_stats[(string)$node->name]['updated'], '.', true) ?: self::$current_stats[(string)$node->name]['updated']);
         }
         $node->addChildNode('current_items', $current_items);
         $node->addChildNode('last_updated', $last_updated);
