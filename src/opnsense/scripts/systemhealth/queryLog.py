@@ -102,7 +102,7 @@ if __name__ == '__main__':
                             'timestamp': None,
                             'parser': None,
                             'facility': 1,
-                            'severity': 3,
+                            'severity': None,
                             'process_name': '',
                             'pid': None,
                             'rnum': row_number
@@ -124,9 +124,7 @@ if __name__ == '__main__':
                                 record['parser'] = frmt.name
                         else:
                             record['line'] = rec['line']
-                            # there is no suitable parser. return string as with Error severity
-                            record['severity'] = "Error"
-                        if len(severity) == 0 or record['severity'] in severity:
+                        if len(severity) == 0 or record['severity'] is None or record['severity'] in severity:
                             result['total_rows'] += 1
                             if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
                                 result['rows'].append(record)
