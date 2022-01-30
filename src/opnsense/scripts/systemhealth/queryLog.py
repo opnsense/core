@@ -124,6 +124,8 @@ if __name__ == '__main__':
                                 record['parser'] = frmt.name
                         else:
                             record['line'] = rec['line']
+                            # there is no suitable parser. return string as with Error severity
+                            record['severity'] = "Error"
                         if len(severity) == 0 or record['severity'] in severity:
                             result['total_rows'] += 1
                             if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
