@@ -341,7 +341,7 @@ include("head.inc");
               </tr>
               <tr>
                 <td colspan="2">
-                  <?= gettext('Please note general interface offloading settings only apply to configured interfaces, when using vlans for example make sure to assign the parent as well.') ?>
+                  <?= gettext('Please note general interface offloading settings only apply to configured and interfaces, when using vlans for example make sure to assign and enable the parent as well.') ?>
                 </td>
               </tr>
             </table>
