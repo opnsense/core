@@ -339,6 +339,11 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td colspan="2">
+                  <?= gettext('Please note that offloading settings only apply to configured interfaces, so when using e.g. VLAN interfaces make sure to assign and enable the parent as well.') ?>
+                </td>
+              </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
