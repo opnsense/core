@@ -66,9 +66,13 @@ class M1_0_1 extends BaseModelMigration
 
                 $new_host->setNodes($host_data);
 
+                if (empty($old_host->aliases->item)) {
+                    continue;
+                }
+
                 $uuid = $new_host->getAttribute('uuid');
                 foreach ($old_host->aliases->item as $old_alias) {
-                    if (!empty($old_alias)) {
+                    if (!empty($old_alias->domain)) {
                         $new_alias = $model->aliases->alias->add();
                         $alias_data = [
                             'enabled' => 1,

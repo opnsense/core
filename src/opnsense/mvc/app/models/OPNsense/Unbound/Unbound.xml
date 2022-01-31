@@ -92,7 +92,8 @@
                     <Required>Y</Required>
                     <default>A</default>
                     <OptionValues>
-                        <A>A or AAAA (IPv4 or IPv6 address)</A>
+                        <A>A (IPv4 address)</A>
+                        <AAAA>AAAA (IPv6 address)</AAAA>
                         <MX>MX (Mail server)</MX>
                     </OptionValues>
                 </rr>
