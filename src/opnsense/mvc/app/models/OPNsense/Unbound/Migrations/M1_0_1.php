@@ -45,7 +45,7 @@ class M1_0_1 extends BaseModelMigration
         $config = Config::getInstance()->object();
 
         if (!empty($config->unbound->hosts)) {
-            foreach($config->unbound->hosts as $old_host) {
+            foreach ($config->unbound->hosts as $old_host) {
                 $new_host = $model->hosts->host->add();
 
                 /* Backwards compatibility for records created before introducing RR types. */
@@ -83,7 +83,7 @@ class M1_0_1 extends BaseModelMigration
         }
 
         if (!empty($config->unbound->domainoverrides)) {
-            foreach($config->unbound->domainoverrides as $old_domain) {
+            foreach ($config->unbound->domainoverrides as $old_domain) {
                 $new_domain = $model->domains->domain->add();
                 $domain_data = [
                     'enabled' => 1,

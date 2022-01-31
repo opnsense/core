@@ -134,7 +134,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $host_uuid = $this->request->get('host');
         $result = $this->getBase('alias', 'aliases.alias', $uuid);
         if (empty($uuid) && !empty($host_uuid)) {
-            foreach($result['alias']['host'] as $key => &$value) {
+            foreach ($result['alias']['host'] as $key => &$value) {
                 if ($key == $host_uuid) {
                     $value['selected'] = 1;
                 } else {

@@ -571,7 +571,6 @@ function unbound_add_host_entries($ifconfig_details = null)
                     }
                 }
             }
-
         }
     }
 
