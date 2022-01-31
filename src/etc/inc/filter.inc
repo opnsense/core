@@ -387,12 +387,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['system']['rulesetoptimization'])) {
-        $limitrules .= "set ruleset-optimization {$config['system']['rulesetoptimization']}\n";
-    } else {
-        $limitrules .= "set ruleset-optimization basic\n";
-    }
-
     if ($config['system']['optimization'] != '') {
         $limitrules .= "set optimization {$config['system']['optimization']}\n";
         if ($config['system']['optimization'] == "conservative") {
@@ -459,7 +453,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
-    exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
+    exec('/sbin/pfctl -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
 
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
@@ -488,7 +482,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             log_error('PF was wedged/busy and has been reset.');
             file_notice(gettext('PF was wedged/busy and has been reset.'));
         } else {
-            exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
+            exec('/sbin/pfctl -f /tmp/rules.debug.old 2>&1');
         }
 
         log_error(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line));
