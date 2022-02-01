@@ -70,103 +70,77 @@ function system_powerd_configure($verbose = false)
     }
 }
 
-function get_default_sysctl_value($id)
+function system_sysctl_defaults()
 {
     global $config;
 
-    $sysctls = array(
-        'hw.ibrs_disable' => '0',
-        'hw.ixl.enable_head_writeback' => '0',
-        'hw.syscons.kbd_reboot' => '0',
-        'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(), /* XXX support comconsole_port if needed */
-        'kern.ipc.maxsockbuf' => '4262144',
-        'kern.randompid' => '1',
-        'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
-        'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
-        'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
-        'net.enc.out.ipsec_filter_mask' => '1', /* before processing */
-        'net.inet.icmp.drop_redirect' => '0',
-        'net.inet.icmp.icmplim' => '0',
-        'net.inet.icmp.log_redirect' => '0',
-        'net.inet.icmp.reply_from_interface' => '1',
-        'net.inet.ip.accept_sourceroute' => '0',
-        'net.inet.ip.forwarding' => '1',
-        'net.inet.ip.intr_queue_maxlen' => '1000',
-        'net.inet.ip.portrange.first' => '1024',
-        'net.inet.ip.random_id' => '1',
-        'net.inet.ip.redirect' => '0',
-        'net.inet.ip.sourceroute' => '0',
-        'net.inet.tcp.blackhole' => '2',
-        'net.inet.tcp.delayed_ack' => '0',
-        'net.inet.tcp.drop_synfin' => '1',
-        'net.inet.tcp.log_debug' => '0',
-        'net.inet.tcp.recvspace' => '65228',
-        'net.inet.tcp.sendspace' => '65228',
-        'net.inet.tcp.syncookies' => '1',
-        'net.inet.tcp.tso' => '1',
-        'net.inet.udp.blackhole' => '1',
-        'net.inet.udp.checksum' => 1,
-        'net.inet.udp.maxdgram' => '57344',
-        'net.inet6.ip6.forwarding' => '1',
-        'net.inet6.ip6.intr_queue_maxlen' => '1000',
-        'net.inet6.ip6.prefer_tempaddr' => '0',
-        'net.inet6.ip6.redirect' => '0',
-        'net.inet6.ip6.use_tempaddr' => '0',
-        'net.link.bridge.pfil_bridge' => '0',
-        'net.link.bridge.pfil_local_phys' => '0',
-        'net.link.bridge.pfil_member' => '1',
-        'net.link.bridge.pfil_onlyip' => '0',
-        'net.link.ether.inet.log_arp_movements' => isset($config['system']['sharednet']) ? '0' : '1',
-        'net.link.ether.inet.log_arp_wrong_iface' => isset($config['system']['sharednet']) ? '0' : '1',
-        'net.link.tap.user_open' => '1',
-        'net.link.vlan.mtag_pcp' => '1',
-        'net.local.dgram.maxdgram' => '8192',
-        'net.pf.share_forward' => !empty($config['system']['pf_share_forward']) ? '1' : '0',
-        'net.pf.share_forward6' => !empty($config['system']['pf_share_forward']) ? '1' : '0',
-        'net.route.multipath' => '0',
-        'security.bsd.see_other_gids' => '0',
-        'security.bsd.see_other_uids' => '0',
-        'vfs.read_max' => '32',
-        'vm.pmap.pti' => '1',
-    );
-
-    if (isset($sysctls[$id])) {
-        return $sysctls[$id];
-    }
-
-    return null;
-}
-
-function system_sysctl_required()
-{
     return [
-        /* list of required sysctls not necessarily present in config */
-        'hw.ixl.enable_head_writeback',
-        'net.enc.in.ipsec_bpf_mask',
-        'net.enc.in.ipsec_filter_mask',
-        'net.enc.out.ipsec_bpf_mask',
-        'net.enc.out.ipsec_filter_mask',
-        'net.inet.icmp.reply_from_interface',
-        'net.inet.ip.forwarding',
-        'net.inet.ip.intr_queue_maxlen',
-        'net.inet6.ip6.forwarding',
-        'net.inet6.ip6.intr_queue_maxlen',
-        'net.link.ether.inet.log_arp_movements',
-        'net.link.ether.inet.log_arp_wrong_iface',
-        'net.link.vlan.mtag_pcp',
-        'net.local.dgram.maxdgram',
-        'net.pf.share_forward',
-        'net.pf.share_forward6',
-        'net.route.multipath',
+        'hw.ibrs_disable' => [ 'default' => '0' ],
+        'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
+        'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
+        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
+        'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
+        'kern.randompid' => [ 'default' => '1' ],
+        'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
+        'net.enc.in.ipsec_filter_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
+        'net.enc.out.ipsec_bpf_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
+        'net.enc.out.ipsec_filter_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
+        'net.inet.icmp.drop_redirect' => [ 'default' => '0' ],
+        'net.inet.icmp.icmplim' => [ 'default' => '0' ],
+        'net.inet.icmp.log_redirect' => [ 'default' => '0' ],
+        'net.inet.icmp.reply_from_interface' => [ 'default' => '1', 'required' => true ],
+        'net.inet.ip.accept_sourceroute' => [ 'default' => '0' ],
+        'net.inet.ip.forwarding' => [ 'default' => '1', 'required' => true ],
+        'net.inet.ip.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet.ip.portrange.first' => [ 'default' => '1024' ],
+        'net.inet.ip.random_id' => [ 'default' => '1' ],
+        'net.inet.ip.redirect' => [ 'default' => '0' ],
+        'net.inet.ip.sourceroute' => [ 'default' => '0' ],
+        'net.inet.tcp.blackhole' => [ 'default' => '2' ],
+        'net.inet.tcp.delayed_ack' => [ 'default' => '0' ],
+        'net.inet.tcp.drop_synfin' => [ 'default' => '1' ],
+        'net.inet.tcp.log_debug' => [ 'default' => '0' ],
+        'net.inet.tcp.recvspace' => [ 'default' => '65228' ],
+        'net.inet.tcp.sendspace' => [ 'default' => '65228' ],
+        'net.inet.tcp.syncookies' => [ 'default' => '1' ],
+        'net.inet.tcp.tso' => [ 'default' => '1' ],
+        'net.inet.udp.blackhole' => [ 'default' => '1' ],
+        'net.inet.udp.checksum' => [ 'default' => 1 ],
+        'net.inet.udp.maxdgram' => [ 'default' => '57344' ],
+        'net.inet6.ip6.forwarding' => [ 'default' => '1', 'required' => true ],
+        'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet6.ip6.prefer_tempaddr' => [ 'default' => '0' ],
+        'net.inet6.ip6.redirect' => [ 'default' => '0' ],
+        'net.inet6.ip6.use_tempaddr' => [ 'default' => '0' ],
+        'net.link.bridge.pfil_bridge' => [ 'default' => '0' ],
+        'net.link.bridge.pfil_local_phys' => [ 'default' => '0' ],
+        'net.link.bridge.pfil_member' => [ 'default' => '1' ],
+        'net.link.bridge.pfil_onlyip' => [ 'default' => '0' ],
+        'net.link.ether.inet.log_arp_movements' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
+        'net.link.ether.inet.log_arp_wrong_iface' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
+        'net.link.tap.user_open' => [ 'default' => '1' ],
+        'net.link.vlan.mtag_pcp' => [ 'default' => '1', 'required' => true ],
+        'net.local.dgram.maxdgram' => [ 'default' => '8192', 'required' => true ],
+        'net.pf.share_forward' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0', 'required' => true ],
+        'net.pf.share_forward6' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0', 'required' => true ],
+        'net.route.multipath' => [ 'default' => '0', 'required' => true ],
+        'security.bsd.see_other_gids' => [ 'default' => '0' ],
+        'security.bsd.see_other_uids' => [ 'default' => '0' ],
+        'vfs.read_max' => [ 'default' => '32' ],
+        'vm.pmap.pti' => [ 'default' => '1' ],
     ];
 }
 
 function system_sysctl_get()
 {
+    $defaults = system_sysctl_defaults();
     $sysctls = [];
 
-    foreach (system_sysctl_required() as $tunable) {
-        $sysctls[$tunable] = 'default';
+    foreach ($defaults as $name => $info) {
+        /* compile list of required sysctls not necessarily present in config */
+        if (!empty($info['required'])) {
+            $sysctls[$name] = 'default';
+        }
     }
 
     foreach (config_read_array('sysctl', 'item') as $tunable) {
@@ -178,9 +152,9 @@ function system_sysctl_get()
             continue;
         }
 
-        $value = get_default_sysctl_value($key);
-
-        if ($value === null) {
+        if (!empty($defaults[$key])) {
+            $value = $defaults[$key]['default'];
+        } else {
             log_error('warning: ignoring missing default tunable request: ' . $key);
             unset($sysctls[$key]);
         }
