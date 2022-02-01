@@ -1,5 +1,3 @@
-/boot/brand-opnsense.4th
-/boot/logo-hourglass.4th
 /boot/lua/brand-opnsense.lua
 /boot/lua/logo-hourglass.lua
 /usr/local/bin/python3
