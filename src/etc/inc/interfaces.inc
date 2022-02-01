@@ -4532,7 +4532,11 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
 
     foreach ($result as &$info) {
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if (empty($info['interface']) || $info['interface'] != $vip['interface'] || $vip['mode'] != 'ipalias') {
+            if (empty($info['interface']) || $info['interface'] != $vip['interface']) {
+                continue;
+            }
+
+            if ($vip['mode'] != 'ipalias' && $vip['mode'] != 'carp') {
                 continue;
             }
 
