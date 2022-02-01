@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     foreach ($form_fields as $fieldname) {
         $pconfig[$fieldname] = null;
     }
-    $pconfig['bind'] = null;
+    $pconfig['bind'] = 'yes';
 
     if (isset($configId)) {
         // 1-on-1 copy of config data
@@ -88,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig[$fieldname] = $a_vip[$configId][$fieldname];
             }
         }
-        if (empty($a_vip[$configId]['nobind'])) {
-            $pconfig['bind'] = 'yes';
+        if (!empty($a_vip[$configId]['nobind'])) {
+            $pconfig['bind'] = null;
         }
     }
 }  elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -193,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $vipent['noexpand'] = true;
         }
         if (empty($pconfig['bind'])) {
-            // noexpand, only used for proxyarp
+            // nobind, only used for alias or carp
             $vipent['nobind'] = true;
         }
 
@@ -277,6 +277,8 @@ $( document ).ready(function() {
             case "carp":
               $("#type").prop("selectedIndex",0);
               $("#subnet_bits").attr('disabled', false);
+              $("#bind").attr('disabled', false);
+              $("#bindrow").removeClass("hidden");
               $("#password").attr('disabled', false);
               $("#vhid").attr('disabled', false);
               $("#advskew").attr('disabled', false);
