@@ -111,9 +111,9 @@
                     <Required>Y</Required>
                     <default>A</default>
                     <OptionValues>
-                        <A>A (IPv4 address)</A>
-                        <AAAA>AAAA (IPv6 address)</AAAA>
-                        <MX>MX (Mail server)</MX>
+                        <A>A</A>
+                        <AAAA>AAAA</AAAA>
+                        <MX>MX</MX>
                     </OptionValues>
                     <Constraints>
                         <check001>

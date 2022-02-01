@@ -183,7 +183,7 @@ $( document ).ready(function() {
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="hostname" data-type="string">{{ lang._('Host') }}</th>
                 <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
-                <th data-column-id="rr" data-type="string">{{ lang._('Type') }}</th>
+                <th data-column-id="rr" data-width="4.5em" data-type="string">{{ lang._('Type') }}</th>
                 <th data-column-id="server" data-type="string" data-formatter="mxformatter">{{ lang._('Value') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
