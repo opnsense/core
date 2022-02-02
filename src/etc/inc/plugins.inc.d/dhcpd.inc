@@ -1641,7 +1641,7 @@ EOD;
         } else {
             $realif = get_real_interface($dhcpv6if, "inet6");
             if (stristr("$realif", "bridge")) {
-                $mac = get_interface_mac($realif);
+                $mac = get_interface_mac($realif, $ifconfig_details);
                 $v6address = dhcpd_generate_ipv6_from_mac($mac);
                 /* create link local address for bridges */
                 mwexec("/sbin/ifconfig {$realif} inet6 {$v6address}");
