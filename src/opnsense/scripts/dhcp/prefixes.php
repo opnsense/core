@@ -8,7 +8,7 @@ if (!file_exists($leases_file)) {
     exit(1);
 }
 
-$duid_arr = array();
+$duid_arr = [];
 foreach (file($leases_file) as $line) {
     if (preg_match("/^(ia-[np][ad])[ ]+\"(.*?)\"/i ", $line, $duidmatch)) {
         $type = $duidmatch[1];
@@ -51,7 +51,7 @@ foreach (file($leases_file) as $line) {
     }
 }
 
-$routes = array();
+$routes = [];
 foreach ($duid_arr as $entry) {
     if ($entry['ia-pd'] != '') {
         $routes[$entry['ia-na']] = $entry['ia-pd'];
@@ -61,37 +61,32 @@ foreach ($duid_arr as $entry) {
 
 if (count($routes) > 0) {
     foreach ($routes as $address => $prefix) {
-        mwexecf('/sbin/route delete -inet6 %s %s', array($prefix, $address), true);
-        mwexecf('/sbin/route add -inet6 %s %s', array($prefix, $address));
+        mwexecf('/sbin/route delete -inet6 %s %s', [$prefix, $address], true);
+        mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
     }
 }
 
-/* get clog from dhcpd */
-$dhcpdlogfile = "/var/log/dhcpd.log";
-$clog = array();
-if (file_exists($dhcpdlogfile)) {
-    exec("clog $dhcpdlogfile", $clog, $ret);
-}
+exec('opnsense-log dhcpd 2> /dev/null', $log, $ret);
 
 if ($ret > 0) {
-    $clog = array();
+    $log = [];
 }
 
-$expires = array();
-foreach ($clog as $line) {
+$expires = [];
+
+foreach ($log as $line) {
     if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
         if (in_array($expire[1], $routes)) {
             continue;
         }
         $expires[$expire[1]] = $expire[1];
     }
-    array_shift($clog);
 }
 
 if (count($expires) > 0) {
     foreach ($expires as $prefix) {
         if (isset($prefix['prefix'])) {
-            mwexecf('/sbin/route delete -inet6 %s', array($prefix['prefix']), true);
+            mwexecf('/sbin/route delete -inet6 %s', [$prefix['prefix']], true);
         }
     }
 }
