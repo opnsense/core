@@ -1018,7 +1018,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             killbypid('/var/run/dhcp6c.pid', 'HUP');
             break;
         case 'track6':
-            interface_track6_configure($interface, $ifcfg, false, true);
+            interface_track6_configure($interface, $ifcfg);
             break;
         default:
             break;
@@ -2535,7 +2535,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_staticarp_configure($interface);
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false, $linkdownevent = false)
+function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false)
 {
     global $config;
 
@@ -2549,7 +2549,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
-    if ($linkdownevent || !isset($lancfg['enable'])) {
+    if (!isset($lancfg['enable'])) {
         switch ($trackcfg['ipaddrv6']) {
             /* deconfiguring 6to4 and 6rd is done elsewhere as it simply removes addresses */
             case 'slaac':
