@@ -1139,11 +1139,11 @@ function interface_ppps_configure($interface)
 
     /* Return for unassigned interfaces. This is a minimum requirement. */
     if (empty($config['interfaces'][$interface])) {
-        return 0;
+        return;
     }
     $ifcfg = $config['interfaces'][$interface];
     if (!isset($ifcfg['enable'])) {
-        return 0;
+        return;
     }
 
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
@@ -1158,12 +1158,12 @@ function interface_ppps_configure($interface)
     }
     if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
         log_error("Can't find PPP config for {$ifcfg['if']} in interface_ppps_configure().");
-        return 0;
+        return;
     }
 
     /* do not re-configure the interface if we are booting and it's already been started */
     if (file_exists('/var/run/booting') && isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
-        return 0;
+        return;
     }
 
     $ports = explode(',', $ppp['ports']);
@@ -1171,7 +1171,7 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                return 0;
+                return;
             }
         }
     }
@@ -1208,13 +1208,13 @@ function interface_ppps_configure($interface)
                 }
                 if (!is_ipaddr($gateways[$pid])) {
                     log_error("Could not get a Remote IP address for PPTP/L2TP link on {$port}.");
-                    return 0;
+                    return;
                 }
                 break;
             case "ppp":
                 if (!file_exists("{$port}")) {
                     log_error("Device {$port} does not exist. PPP link cannot start without the modem device.");
-                    return 0;
+                    return;
                 }
                 break;
             default:
@@ -1419,7 +1419,7 @@ EOD;
     $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
     if (!$fd) {
         log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
-        return 0;
+        return;
     }
 
     // Write out mpd_ppp.conf
@@ -1444,7 +1444,7 @@ EOD;
 
     /* fire up mpd */
     mwexecf(
-        '/usr/local/sbin/mpd5 -b -k -d /var/etc -f %s -p %s -s ppp %s',
+        '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
         array("mpd_{$interface}.conf", "/var/run/{$ppp['type']}_{$interface}.pid", "{$ppp['type']}client")
     );
 
@@ -1458,8 +1458,6 @@ EOD;
         sleep(1);
         $i++;
     }
-
-    return 1;
 }
 
 function interfaces_carp_setup($verbose = false)
