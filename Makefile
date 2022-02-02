@@ -64,9 +64,14 @@ _NEXTBETA!=	${GIT} tag -l ${CORE_NEXT}.b
 .  if !empty(_NEXTBETA)
 _NEXTMATCH=	--match=${CORE_NEXT}.b
 .  else
+_NEXTALPHA!=	${GIT} tag -l ${CORE_NEXT}.a
+.   if !empty(_NEXTALPHA)
+_NEXTMATCH=	--match=${CORE_NEXT}.a
+.   else
 _NEXTDEVEL!=	${GIT} tag -l ${CORE_ABI}\*
-.   if !empty(_NEXTDEVEL)
+.    if !empty(_NEXTDEVEL)
 _NEXTMATCH=	--match=${CORE_ABI}\*
+.    endif
 .   endif
 .  endif
 . elif ${CORE_TYPE:M[Bb][Uu][Ss]*}
