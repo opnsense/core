@@ -58,7 +58,7 @@ class M1_0_1 extends BaseModelMigration
                     'hostname' => !empty($old_host->host) ? $old_host->host : null,
                     'domain' => $old_host->domain,
                     'rr' => $old_host->rr,
-                    'server' => $old_host->rr == 'A' ? $old_host->ip : null,
+                    'server' => $old_host->rr == 'A' || $old_host->rr == 'AAAA' ? $old_host->ip : null,
                     'mxprio' => $old_host->rr == 'MX' ? $old_host->mxprio : null,
                     'mx' => $old_host->rr == 'MX' ? $old_host->mx : null,
                     'description' => !empty($old_host->descr) ? $old_host->descr : null
