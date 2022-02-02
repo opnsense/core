@@ -449,7 +449,7 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
     }
 }
 
-function system_default_route($gateway, $family, $interface)
+function system_default_route($gateway, $family, $interface, $far = false)
 {
     $realif = get_real_interface($interface, $family == 'inet' ? 'all' : 'inet6');
 
@@ -483,7 +483,7 @@ function system_default_route($gateway, $family, $interface)
         @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
 
         list ($unused, $network) = interfaces_primary_address($interface);
-        if (ip_in_subnet($gateway, $network)) {
+        if (!$far && ip_in_subnet($gateway, $network)) {
             $realif = null;
         } else {
             log_error("ROUTING: treating gateway '{$gateway}' as far gateway");
@@ -532,7 +532,7 @@ function system_routing_configure($verbose = false, $interface = '')
             log_error("ROUTING: {$logproto} default gateway set to {$gateway['interface']}");
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
                 log_error("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $ipproto, $gateway['interface']);
+                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
             } else {
                 log_error("ROUTING: skipping {$logproto} default route");
             }
