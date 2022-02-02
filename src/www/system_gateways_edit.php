@@ -71,8 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($pconfig['gateway']) && is_ipaddr($pconfig['gateway'])) {
         if (is_ipaddrv4($pconfig['gateway'])) {
-            list ($parent_ip, $parent_net) = interfaces_primary_address($pconfig['interface']);
-            list ($unused, $parent_sn) = explode('/', $parent_net);
+            list ($parent_ip, $parent_net, $parent_sn) = interfaces_primary_address($pconfig['interface']);
             $parent_ip = empty($pconfig['ajaxip']) ? $parent_ip : $pconfig['ajaxip'];
             $parent_sn = empty($pconfig['ajaxnet']) ? $parent_sn : $pconfig['ajaxnet'];
             if (empty($parent_ip) || empty($parent_sn)) {
@@ -102,8 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (is_ipaddrv6($pconfig['gateway'])) {
             /* do not do a subnet match on a link local address, it's valid */
             if (!is_linklocal($pconfig['gateway'])) {
-                list ($parent_ip, $parent_net) = interfaces_primary_address6($pconfig['interface']);
-                list ($unused, $parent_sn) = explode('/', $parent_net);
+                list ($parent_ip, $parent_net, $parent_sn) = interfaces_primary_address6($pconfig['interface']);
                 $parent_ip = empty($pconfig['ajaxip']) ? $parent_ip : $pconfig['ajaxip'];
                 $parent_sn = empty($pconfig['ajaxnet']) ? $parent_sn : $pconfig['ajaxnet'];
                 if (empty($parent_ip) || empty($parent_sn)) {
