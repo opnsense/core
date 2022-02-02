@@ -309,7 +309,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $stanzas = [];
 
-        list ($unused, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+        list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -730,15 +730,15 @@ EOPP;
             continue;
         }
 
-        list ($ifcfgip, $ifcfgsn) = explode('/', find_interface_network(get_real_interface($dhcpif), false, $ifconfig_details));
+        list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
 
-        $subnet = gen_subnet($ifcfgip, $ifcfgsn);
-        $subnetmask = gen_subnet_mask($ifcfgsn);
-
-        if (!is_ipaddrv4($ifcfgip) || !is_subnetv4("{$subnet}/{$ifcfgsn}")) {
+        if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
             log_error("Warning! dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}");
             continue;
         }
+
+        $subnetmask = gen_subnet_mask($ifcfgsn);
+        $subnet = explode('/', $ifcfgnet)[0];
 
         $all_pools = array();
         $all_pools[] = $dhcpifconf;
@@ -1731,16 +1731,16 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
-            $realif = get_real_interface($ifname, $ifconfig_details);
-            $subnet = find_interface_network($realif, true, $ifconfig_details);
+            list (, $subnet) = interfaces_primary_address($ifname, $ifconfig_details);
             if (!is_subnetv4($subnet)) {
                 continue;
             }
             if (ip_in_subnet($srvip, $subnet)) {
-                $destif = $realif;
+                $destif = get_real_interface($ifname, $ifconfig_details);
                 break;
             }
         }
+
         if (!isset($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
@@ -1854,13 +1854,12 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
-            $realif = get_real_interface($ifname, 'inet6');
-            $subnet = find_interface_networkv6($realif, true, $ifconfig_details);
+            list (, $subnet) = interfaces_primary_address6($ifname, $ifconfig_details);
             if (!is_subnetv6($subnet)) {
                 continue;
             }
             if (ip_in_subnet($srvip, $subnet)) {
-                $destif = $realif;
+                $destif = get_real_interface($ifname, 'inet6');
                 break;
             }
         }
