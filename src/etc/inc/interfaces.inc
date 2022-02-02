@@ -3874,42 +3874,6 @@ function link_interface_to_gif($interface)
     return $result;
 }
 
-function find_interface_network($realif, $subnet = true, $ifconfig_details = null)
-{
-    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
-
-    if (!isset($ifinfo['ipaddr']) || !isset($ifinfo['subnetbits'])) {
-        return null;
-    }
-
-    $net = $ifinfo['subnetbits'];
-    $addr = $ifinfo['ipaddr'];
-
-    if ($subnet) {
-        $addr = gen_subnet($addr, $net);
-    }
-
-    return "{$addr}/${net}";
-}
-
-function find_interface_networkv6($realif, $subnet = true, $ifconfig_details = null)
-{
-    $ifinfo = legacy_get_interface_addresses($realif, $ifconfig_details);
-
-    if (!isset($ifinfo['ipaddr6']) || !isset($ifinfo['subnetbits6'])) {
-        return null;
-    }
-
-    $net = $ifinfo['subnetbits6'];
-    $addr = $ifinfo['ipaddr6'];
-
-    if ($subnet) {
-        $addr = gen_subnetv6($addr, $net);
-    }
-
-    return "{$addr}/${net}";
-}
-
 function ip_in_interface_alias_subnet($interface, $ipalias)
 {
     global $config;

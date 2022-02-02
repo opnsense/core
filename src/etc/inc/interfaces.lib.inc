@@ -499,31 +499,3 @@ function configure_interface_hardware($ifs, $intf_details = null)
         }
     }
 }
-
-function legacy_get_interface_addresses($ifs, $ifconfig_details = null)
-{
-    $intf_details = [];
-    if (empty($ifconfig_details)) {
-        $intf_details = legacy_interface_details($ifs);
-    } elseif (!empty($ifconfig_details[$ifs])) {
-        $intf_details = $ifconfig_details[$ifs];
-    }
-
-    $addrs = array("macaddr" => $intf_details['macaddr']);
-    if (!empty($intf_details['ipv4'][0])) {
-        $addrs['ipaddr'] = $intf_details['ipv4'][0]['ipaddr'];
-        $addrs['subnetbits'] = $intf_details['ipv4'][0]['subnetbits'];
-    }
-    if (isset($intf_details['ipv6'])) {
-        foreach ($intf_details['ipv6'] as $ipv6) {
-            if (empty($addrs['ipaddr6']) && empty($ipv6['link-local'])) {
-                $addrs['ipaddr6'] = $ipv6['ipaddr'];
-                $addrs['subnetbits6'] = $ipv6['subnetbits'];
-            } elseif (empty($addrs['ipaddr6_ll']) && !empty($ipv6['link-local'])) {
-                $addrs['ipaddr6_ll'] = $ipv6['ipaddr'];
-                $addrs['subnetbits6_ll'] = $ipv6['subnetbits'];
-            }
-        }
-    }
-    return $addrs;
-}
