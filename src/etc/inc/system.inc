@@ -526,7 +526,12 @@ function system_default_route($gateway, $family, $interface, $far = false)
         @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
 
         if (!$far) {
-            $realif = null;
+            list (, $network) = interfaces_primary_address($interface);
+            if (ip_in_subnet($gateway, $network)) {
+                $realif = null;
+            } else {
+                log_error("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+            }
         }
     } else {
         foreach (glob('/tmp/*_defaultgwv6') as $to_delete) {
