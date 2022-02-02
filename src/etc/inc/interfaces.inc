@@ -1033,11 +1033,10 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
                         if (isset($ppp['ondemand']) && $ifacecfg === false) {
-                            configdp_run('interface reconfigure', array($interface));
+                            configdp_run('interface reconfigure', [$interface], true);
                             break;
                         }
                         killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
-                        @unlink("/var/etc/mpd_{$interface}.conf");
                         break;
                     }
                 }
@@ -1140,11 +1139,11 @@ function interface_ppps_configure($interface)
 
     /* Return for unassigned interfaces. This is a minimum requirement. */
     if (empty($config['interfaces'][$interface])) {
-        return 0;
+        return;
     }
     $ifcfg = $config['interfaces'][$interface];
     if (!isset($ifcfg['enable'])) {
-        return 0;
+        return;
     }
 
     // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
@@ -1159,14 +1158,12 @@ function interface_ppps_configure($interface)
     }
     if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
         log_error("Can't find PPP config for {$ifcfg['if']} in interface_ppps_configure().");
-        return 0;
+        return;
     }
 
-    if (file_exists("/var/run/booting")) {
-        // Do not re-configure the interface if we are booting and it's already been started
-        if (isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
-            return 0;
-        }
+    /* do not re-configure the interface if we are booting and it's already been started */
+    if (file_exists('/var/run/booting') && isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
+        return;
     }
 
     $ports = explode(',', $ppp['ports']);
@@ -1174,7 +1171,7 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                return 0;
+                return;
             }
         }
     }
@@ -1211,13 +1208,13 @@ function interface_ppps_configure($interface)
                 }
                 if (!is_ipaddr($gateways[$pid])) {
                     log_error("Could not get a Remote IP address for PPTP/L2TP link on {$port}.");
-                    return 0;
+                    return;
                 }
                 break;
             case "ppp":
                 if (!file_exists("{$port}")) {
                     log_error("Device {$port} does not exist. PPP link cannot start without the modem device.");
-                    return 0;
+                    return;
                 }
                 break;
             default:
@@ -1422,13 +1419,16 @@ EOD;
     $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
     if (!$fd) {
         log_error("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().");
-        return 0;
+        return;
     }
 
     // Write out mpd_ppp.conf
     fwrite($fd, $mpdconf);
     fclose($fd);
     unset($mpdconf);
+
+    /* stop the service as a precaution */
+    killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
@@ -1444,7 +1444,7 @@ EOD;
 
     /* fire up mpd */
     mwexecf(
-        '/usr/local/sbin/mpd5 -b -k -d /var/etc -f %s -p %s -s ppp %s',
+        '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
         array("mpd_{$interface}.conf", "/var/run/{$ppp['type']}_{$interface}.pid", "{$ppp['type']}client")
     );
 
@@ -1458,8 +1458,6 @@ EOD;
         sleep(1);
         $i++;
     }
-
-    return 1;
 }
 
 function interfaces_carp_setup($verbose = false)
