@@ -4116,8 +4116,14 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (!empty($ifinfo['ipv4'])) {
-            $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
-            $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+            list ($primary4,, $bits4) = interfaces_primary_address($ifdescr, $all_intf_details);
+            if (!empty($primary4)) {
+                $ifinfo['ipaddr'] = $primary4;
+                $ifinfo['subnet'] = $bits4;
+            } else {
+                $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
+                $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+            }
         }
 
         if (!empty($all_intf_details[$ifinfo['ifv6']]['ipv6'])) {
