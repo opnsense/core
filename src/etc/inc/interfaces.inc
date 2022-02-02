@@ -2535,7 +2535,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_staticarp_configure($interface);
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg, $restart = false)
+function interface_track6_configure($interface = 'lan', $lancfg, $reload = false)
 {
     global $config;
 
@@ -2563,7 +2563,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $restart = fals
             ]);
             /* FALLTHROUGH */
         case 'dhcp6':
-            if ($restart || !isset($lancfg['enable'])) {
+            if ($reload || !isset($lancfg['enable'])) {
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 killbypid('/var/run/dhcp6c.pid', 'HUP');
             }
