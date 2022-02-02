@@ -263,7 +263,7 @@ $( document ).ready(function() {
 
   // select All
   $("#selectAll").click(function(){
-      $(".rule_select").prop("checked", $(this).prop("checked"));
+      $(".rule_select:not(:disabled)").prop("checked", $(this).prop("checked"));
   });
 
   // move category block
