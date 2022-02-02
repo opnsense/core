@@ -547,9 +547,11 @@ function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
                 $mode = $idinfo['mode'];
             }
             if ($mode == 'tunnel6') {
-                return find_interface_networkv6(get_real_interface($idinfo['type']), 'inet6');
+                list (, $network) = interfaces_primary_address6($idinfo['type']);
+                return $network;
             } else {
-                return find_interface_network(get_real_interface($idinfo['type']));
+                list (, $network) = interfaces_primary_address($idinfo['type']);
+                return $network;
             }
             break; /* NOTREACHED */
     }
