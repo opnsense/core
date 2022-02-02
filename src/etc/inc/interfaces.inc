@@ -2371,7 +2371,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * which triggers the interface config again, which attempts to
      * spoof the MAC again which cycles the link again...
      */
-    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif))) {
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif, $ifconfig_details))) {
         mwexecf('/sbin/ifconfig %s link %s', [$realhwif, $wancfg['spoofmac']]);
     }
 
@@ -3423,7 +3423,6 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
 
 function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
 {
-
     /* Apply Interface Substitutions */
     $dhclientconf = str_replace("{interface}", "{$wanif}", $dhclientconf);
 
@@ -3942,9 +3941,15 @@ function is_interface_wireless($interface)
 
 function get_interface_mac($interface, $ifconfig_details = null)
 {
-    $macinfo = legacy_get_interface_addresses($interface, $ifconfig_details);
+    $intf_details = [];
 
-    return $macinfo["macaddr"];
+    if (empty($ifconfig_details)) {
+        $intf_details = legacy_interface_details($interface);
+    } elseif (!empty($ifconfig_details[$ifs])) {
+        $intf_details = $ifconfig_details[$ifs];
+    }
+
+    return $intf_details['macaddr'];
 }
 
 function get_vip_descr($ipaddress)
