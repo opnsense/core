@@ -914,7 +914,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             killbypid('/var/run/dhcp6c.pid', 'HUP');
             break;
         case 'track6':
-            interface_track6_configure($interface, $ifcfg, false, true);
+            interface_track6_configure($interface, $ifcfg);
             break;
         default:
             break;
@@ -2386,7 +2386,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     return $loaded;
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = false, $linkdownevent = false)
+function interface_track6_configure($interface = 'lan', $lancfg, $reload = false)
 {
     global $config;
 
@@ -2400,22 +2400,6 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
         return;
     }
 
-    if ($linkdownevent || !isset($lancfg['enable'])) {
-        switch ($trackcfg['ipaddrv6']) {
-            /* deconfiguring 6to4 and 6rd is done elsewhere as it simply removes addresses */
-            case 'slaac':
-            case 'dhcp6':
-                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
-                killbypid('/var/run/dhcp6c.pid', 'HUP');
-                break;
-            default:
-                break;
-        }
-
-        /* exit now as there are only linkup-related bits following */
-        return;
-    }
-
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
@@ -2424,10 +2408,13 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
             interface_track6_6rd_configure($interface, $lancfg);
             break;
         case 'slaac':
-            interface_track6_slaac_configure($interface, $lancfg);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv %sifdisabled', [
+                get_real_interface($interface, 'inet6'),
+                isset($lancfg['enable']) ? '-' : '',
+            ]);
             /* FALLTHROUGH */
         case 'dhcp6':
-            if ($linkupevent) {
+            if ($reload || !isset($lancfg['enable'])) {
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
                 killbypid('/var/run/dhcp6c.pid', 'HUP');
             }
@@ -2435,16 +2422,14 @@ function interface_track6_configure($interface = 'lan', $lancfg, $linkupevent = 
     }
 }
 
-function interface_track6_slaac_configure($interface = 'lan', $lancfg)
-{
-    $realifv6 = get_real_interface($interface, 'inet6');
-    log_error("Accept router advertisements on interface {$realifv6}");
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
-}
-
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 {
     global $config;
+
+    if (!isset($lancfg['enable'])) {
+        /* deconfiguring is done elsewhere as it simply removes addresses */
+        return;
+    }
 
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
 
@@ -2498,6 +2483,11 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
+    if (!isset($lancfg['enable'])) {
+        /* deconfiguring is done elsewhere as it simply removes addresses */
+        return;
+    }
+
     $ip4address = get_interface_ip($lancfg['track6-interface']);
 
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
@@ -2767,7 +2757,7 @@ function interface_dhcpv6_id($interface)
     return $id;
 }
 
-function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = false)
+function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $cleanup = false)
 {
     if (!is_array($wancfg)) {
         return;
@@ -2795,7 +2785,7 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $linkdownevent = 
         }
     }
 
-    if (!$linkdownevent) {
+    if (!$cleanup) {
         @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
     } else {
         @unlink("/var/etc/dhcp6c_{$interface}.conf");
