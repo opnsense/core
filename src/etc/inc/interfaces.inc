@@ -4053,8 +4053,14 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (!empty($ifinfo['ipv4'])) {
-            $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
-            $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+            list ($primary4, $unused, $bits4) = interfaces_primary_address($ifdescr, $all_intf_details);
+            if (!empty($primary4)) {
+                $ifinfo['ipaddr'] = $primary4;
+                $ifinfo['subnet'] = $bits4;
+            } else {
+                $ifinfo['ipaddr'] = $ifinfo['ipv4'][0]['ipaddr'];
+                $ifinfo['subnet'] = $ifinfo['ipv4'][0]['subnetbits'];
+            }
         }
 
         if (!empty($all_intf_details[$ifinfo['ifv6']]['ipv6'])) {
@@ -4066,10 +4072,10 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (!empty($ifinfo['ipv6'])) {
-            list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $all_intf_details);
+            list ($primary6, $unused, $bits6) = interfaces_primary_address6($ifdescr, $all_intf_details);
             if (!empty($primary6)) {
                 $ifinfo['ipaddrv6'] = $primary6;
-                $ifinfo['subnetv6'] = $subnet6;
+                $ifinfo['subnetv6'] = $bits6;
             }
             foreach ($ifinfo['ipv6'] as $ipv6addr) {
                 if (!empty($ipv6addr['link-local'])) {
