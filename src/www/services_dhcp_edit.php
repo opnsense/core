@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    $parent_net = find_interface_network(get_real_interface($if));
+    list ($unused, $parent_net) = interfaces_primary_address($if);
 
     if (!empty($pconfig['ipaddr'])) {
       if (!ip_in_subnet($pconfig['ipaddr'], $parent_net)) {
