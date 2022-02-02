@@ -4053,7 +4053,7 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (!empty($ifinfo['ipv4'])) {
-            list ($primary4, $unused, $bits4) = interfaces_primary_address($ifdescr, $all_intf_details);
+            list ($primary4,, $bits4) = interfaces_primary_address($ifdescr, $all_intf_details);
             if (!empty($primary4)) {
                 $ifinfo['ipaddr'] = $primary4;
                 $ifinfo['subnet'] = $bits4;
@@ -4072,7 +4072,7 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (!empty($ifinfo['ipv6'])) {
-            list ($primary6, $unused, $bits6) = interfaces_primary_address6($ifdescr, $all_intf_details);
+            list ($primary6,, $bits6) = interfaces_primary_address6($ifdescr, $all_intf_details);
             if (!empty($primary6)) {
                 $ifinfo['ipaddrv6'] = $primary6;
                 $ifinfo['subnetv6'] = $bits6;

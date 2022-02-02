@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['wins1']) && !is_ipaddrv4($pconfig['wins1'])) || (!empty($pconfig['wins2']) && !is_ipaddrv4($pconfig['wins2']))) {
             $input_errors[] = gettext("A valid IP address must be specified for the primary/secondary WINS servers.");
         }
-        list ($unused, $parent_net) = interfaces_primary_address($pconfig['if']);
+        list (, $parent_net) = interfaces_primary_address($pconfig['if']);
         if (is_subnetv4($parent_net) && $pconfig['gateway'] && $pconfig['gateway'] != "none") {
             if (!ip_in_subnet($pconfig['gateway'], $parent_net) && !ip_in_interface_alias_subnet($pconfig['if'], $pconfig['gateway'])) {
                 $input_errors[] = sprintf(gettext("The gateway address %s does not lie within the chosen interface's subnet."), $pconfig['gateway']);

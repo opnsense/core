@@ -309,7 +309,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $stanzas = [];
 
-        list ($unused, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+        list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
             $stanzas[] = $networkv6;
         }
@@ -1732,7 +1732,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
-            list ($unused, $subnet) = interfaces_primary_address($ifname, $ifconfig_details);
+            list (, $subnet) = interfaces_primary_address($ifname, $ifconfig_details);
             if (!is_subnetv4($subnet)) {
                 continue;
             }
@@ -1855,7 +1855,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
-            list ($unused, $subnet) = interfaces_primary_address6($ifname, $ifconfig_details);
+            list (, $subnet) = interfaces_primary_address6($ifname, $ifconfig_details);
             if (!is_subnetv6($subnet)) {
                 continue;
             }

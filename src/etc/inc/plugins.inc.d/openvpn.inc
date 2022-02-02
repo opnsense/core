@@ -601,7 +601,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                             strcmp($settings['serverbridge_interface'], "none")
                         ) {
                             /* XXX emulates older code, but does VIP support make sense here anyway? */
-                            list ($biface_ip, $unused, $biface_sn) = interfaces_primary_address(explode('_vip', $settings['serverbridge_interface'])[0]);
+                            list ($biface_ip,, $biface_sn) = interfaces_primary_address(explode('_vip', $settings['serverbridge_interface'])[0]);
                             if (
                                 is_ipaddrv4($biface_ip) && is_ipaddrv4($settings['serverbridge_dhcp_start']) &&
                                 is_ipaddrv4($settings['serverbridge_dhcp_end'])

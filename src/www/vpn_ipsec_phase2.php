@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             default:
                 if ($pconfig['mode'] == 'tunnel') {
-                    list ($unused, $subnet) = interfaces_primary_address($pconfig['localid_type']);
+                    list (, $subnet) = interfaces_primary_address($pconfig['localid_type']);
                     if (!is_subnetv4($subnet)) {
                         $input_errors[] = sprintf(
                             gettext('Invalid local network: %s has no valid IPv4 network.'),
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         );
                     }
                 } elseif ($pconfig['mode'] == 'tunnel6') {
-                    list ($unused, $subnet) = interfaces_primary_address6($pconfig['localid_type']);
+                    list (, $subnet) = interfaces_primary_address6($pconfig['localid_type']);
                     if (!is_subnetv6($subnet)) {
                         $input_errors[] = sprintf(
                             gettext('Invalid local network: %s has no valid IPv6 network.'),

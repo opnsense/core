@@ -53,11 +53,11 @@ function deleteVIPEntry($id) {
     }
 
     if (is_ipaddrv6($a_vip[$id]['subnet'])) {
-        list ($unused, $if_subnet) = interfaces_primary_address6($a_vip[$id]['interface']);
+        list (, $if_subnet) = interfaces_primary_address6($a_vip[$id]['interface']);
         $subnet = gen_subnetv6($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']);
         $is_ipv6 = true;
     } else {
-        list ($unused, $if_subnet) = interfaces_primary_address($a_vip[$id]['interface']);
+        list (, $if_subnet) = interfaces_primary_address($a_vip[$id]['interface']);
         $subnet = gen_subnet($a_vip[$id]['subnet'], $a_vip[$id]['subnet_bits']);
         $is_ipv6 = false;
     }
