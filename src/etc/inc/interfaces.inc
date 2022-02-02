@@ -1032,6 +1032,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             if (!empty($ppps)) {
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
+                        /* XXX $ifacecfg is very likely never false */
                         if (isset($ppp['ondemand']) && $ifacecfg === false) {
                             configdp_run('interface reconfigure', array($interface));
                             break;
@@ -1162,11 +1163,9 @@ function interface_ppps_configure($interface)
         return 0;
     }
 
-    if (file_exists("/var/run/booting")) {
-        // Do not re-configure the interface if we are booting and it's already been started
-        if (isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
-            return 0;
-        }
+    /* do not re-configure the interface if we are booting and it's already been started */
+    if (file_exists('/var/run/booting') && isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
+        return 0;
     }
 
     $ports = explode(',', $ppp['ports']);
@@ -1429,6 +1428,9 @@ EOD;
     fwrite($fd, $mpdconf);
     fclose($fd);
     unset($mpdconf);
+
+    /* stop the service as a precaution */
+    killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
