@@ -1032,13 +1032,11 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             if (!empty($ppps)) {
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
-                        /* XXX $ifacecfg is very likely never false */
                         if (isset($ppp['ondemand']) && $ifacecfg === false) {
-                            configdp_run('interface reconfigure', array($interface));
+                            configdp_run('interface reconfigure', [$interface], true);
                             break;
                         }
                         killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
-                        @unlink("/var/etc/mpd_{$interface}.conf");
                         break;
                     }
                 }
