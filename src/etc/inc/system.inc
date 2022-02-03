@@ -155,7 +155,7 @@ function system_sysctl_get()
         if (!empty($defaults[$key])) {
             $value = $defaults[$key]['default'];
         } else {
-            log_error('warning: ignoring missing default tunable request: ' . $key);
+            log_msg("Ignoring missing default tunable request: {$key}", LOG_NOTICE);
             unset($sysctls[$key]);
         }
     }
@@ -469,17 +469,17 @@ function system_default_route($gateway, $family, $interface, $far = false)
     $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
     $current = trim(exec($tmpcmd), " \n");
     if ($current == $gateway) {
-        log_error("ROUTING: keeping current default gateway '{$gateway}'");
+        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_NOTICE);
         return;
     }
 
     if ($family == 'inet') {
         foreach (glob('/tmp/*_defaultgw') as $to_delete) {
-            log_error("ROUTING: removing {$to_delete}");
+            log_msg("ROUTING: removing {$to_delete}", LOG_NOTICE);
             @unlink($to_delete);
         }
 
-        log_error("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'");
+        log_msg("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'", LOG_NOTICE);
         @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
 
         if (!$far) {
@@ -487,16 +487,16 @@ function system_default_route($gateway, $family, $interface, $far = false)
             if (ip_in_subnet($gateway, $network)) {
                 $realif = null;
             } else {
-                log_error("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'", LOG_NOTICE);
             }
         }
     } else {
         foreach (glob('/tmp/*_defaultgwv6') as $to_delete) {
-            log_error("ROUTING: removing {$to_delete}");
+            log_msg("ROUTING: removing {$to_delete}", LOG_NOTICE);
             @unlink($to_delete);
         }
 
-        log_error("ROUTING: creating /tmp/{$realif}_defaultgwv6 using '{$gateway}'");
+        log_msg("ROUTING: creating /tmp/{$realif}_defaultgwv6 using '{$gateway}'", LOG_NOTICE);
         @file_put_contents("/tmp/{$realif}_defaultgwv6", $gateway);
 
         /* IPv6 does not support far gateway notion */
@@ -519,9 +519,9 @@ function system_routing_configure($verbose = false, $interface = '')
     }
 
     if (!empty($interface)) {
-        log_error("ROUTING: entering configure using '${interface}'");
+        log_msg("ROUTING: entering configure using '{$interface}'", LOG_NOTICE);
     } else {
-        log_error("ROUTING: entering configure using defaults");
+        log_msg("ROUTING: entering configure using defaults", LOG_NOTICE);
     }
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
@@ -531,12 +531,12 @@ function system_routing_configure($verbose = false, $interface = '')
         $gateway = $gateways->getDefaultGW(array(), $ipproto);
         $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
         if ($gateway != null) {
-            log_error("ROUTING: {$logproto} default gateway set to {$gateway['interface']}");
+            log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_NOTICE);
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
-                log_error("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
+                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}", LOG_NOTICE);
                 system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
             } else {
-                log_error("ROUTING: skipping {$logproto} default route");
+                log_msg("ROUTING: skipping {$logproto} default route", LOG_NOTICE);
             }
         }
     }
@@ -836,12 +836,12 @@ function system_kernel_configure($verbose = false)
     );
 
     if (!empty($config['system']['crypto_hardware'])) {
-        log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
+        log_msg(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']), LOG_NOTICE);
         $mods[] = $config['system']['crypto_hardware'];
     }
 
     if (!empty($config['system']['thermal_hardware'])) {
-        log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
+        log_msg(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']), LOG_NOTICE);
         $mods[] = $config['system']['thermal_hardware'];
     }
 

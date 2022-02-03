@@ -258,7 +258,7 @@ if (!empty($config['hasync'])) {
     }
 
     if (empty($hasync['synchronizetoip'])) {
-        log_error("Config sync not being done because of missing sync IP (this is normal on secondary systems).");
+        log_msg("Config sync not being done because of missing sync IP (this is normal on secondary systems).");
         exit;
     }
     if (is_ipaddrv6($hasync['synchronizetoip'])) {
@@ -299,7 +299,7 @@ if (!empty($config['hasync'])) {
     }
 
     if (count($sections) <= 0) {
-        log_error("Nothing has been configured to be synched. Skipping....");
+        log_msg("Nothing has been configured to be synched. Skipping....", LOG_NOTICE);
         exit;
     }
 
@@ -343,5 +343,5 @@ if (!empty($config['hasync'])) {
         }
     }
 
-    log_error("Filter sync successfully completed with {$synchronizeto}.");
+    log_msg("Filter sync successfully completed with {$synchronizeto}.", LOG_NOTICE);
 }

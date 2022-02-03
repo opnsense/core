@@ -163,7 +163,7 @@ function webgui_create_selfsigned($verbose = false)
         flush();
     }
 
-    log_error('Creating TLS certificate for this host');
+    log_msg('Creating TLS certificate for this host', LOG_NOTICE);
 
     $cert = array();
     $cert['refid'] = uniqid();

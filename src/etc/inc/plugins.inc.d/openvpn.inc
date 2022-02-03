@@ -915,7 +915,7 @@ function openvpn_restart($mode, $settings, $carp_event = false)
     if (!mwexecf('/usr/local/sbin/openvpn --config %s', "/var/etc/openvpn/{$mode_id}.conf")) {
         $pid = waitforpid("/var/run/openvpn_{$mode_id}.pid", 10);
         if ($pid) {
-            log_error(sprintf('OpenVPN %s %s instance started on PID %s.', $mode, $vpnid, $pid));
+            log_msg(sprintf('OpenVPN %s %s instance started on PID %s.', $mode, $vpnid, $pid), LOG_NOTICE);
         } else {
             log_error(sprintf('OpenVPN %s %s instance start timed out.', $mode, $vpnid));
         }
@@ -1119,12 +1119,12 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
     }
 
     if (!empty($interface)) {
-        log_error(sprintf(
+        log_msg(sprintf(
             'Resyncing OpenVPN instances for interface %s.',
             convert_friendly_interface_to_friendly_descr($interface)
-        ));
+        ), LOG_NOTICE);
     } else {
-        log_error('Resyncing OpenVPN instances.');
+        log_msg('Resyncing OpenVPN instances.', LOG_NOTICE);
     }
 
     if ($verbose) {

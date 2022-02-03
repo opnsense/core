@@ -51,6 +51,6 @@ $friendly = convert_real_interface_to_friendly_interface_name($iface);
 $carp_iface = "{$friendly}_vip{$vhid}";
 $descr = convert_friendly_interface_to_friendly_descr($carp_iface);
 
-log_error(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid));
+log_msg(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid), LOG_NOTICE);
 
 openvpn_configure_do(false, $carp_iface, true);

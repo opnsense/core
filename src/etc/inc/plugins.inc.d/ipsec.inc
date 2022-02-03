@@ -881,18 +881,18 @@ function ipsec_configure_spd()
                     }
                     $myid_data = ipsec_find_id($ph1ent, "local");
                     if ($myid_data != $tunnel_src) {
-                        log_error(sprintf(
+                        log_msg(sprintf(
                             "spdadd: using %s in source policy, local id set to %s",
                             $tunnel_src,
                             $myid_data
-                        ));
+                        ), LOG_NOTICE);
                     }
                     if ($peerid_spec != $tunnel_dst) {
-                        log_error(sprintf(
+                        log_msg(sprintf(
                             "spdadd: using %s in destination policy, peer id set to %s",
                             $tunnel_dst,
                             $peerid_spec
-                        ));
+                        ), LOG_NOTICE);
                     }
                     if (empty($reqid_mapping[$ph2ent['uniqid']])) {
                         log_error(sprintf("spdadd: unable to find reqid for %s", $ph2ent['uniqid']));
@@ -1895,7 +1895,7 @@ function ipsec_configure_vti($verbose = false)
             || $local_configured != $intf_details['tunnel']['src_addr']
             || $remote_configured != $intf_details['tunnel']['dest_addr']
         ) {
-            log_error(sprintf("destroy interface %s", $intf));
+            log_msg(sprintf("destroy interface %s", $intf), LOG_NOTICE);
             legacy_interface_destroy($intf);
             unset($current_interfaces[$intf]);
         } else {
@@ -1913,12 +1913,12 @@ function ipsec_configure_vti($verbose = false)
                             }
                         }
                         if (!$isfound) {
-                            log_error(sprintf(
+                            log_msg(sprintf(
                                 "remove tunnel %s %s from interface %s",
                                 $addr['ipaddr'],
                                 $addr['endpoint'],
                                 $intf
-                            ));
+                            ), LOG_NOTICE);
                             mwexecf('/sbin/ifconfig %s %s %s delete', array(
                             $intf, $proto == 'ipv6' ? 'inet6' : 'inet',  $addr['ipaddr'], $addr['endpoint']
                             ));

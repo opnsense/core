@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg = get_std_save_message();
 
             if ($oldnologlighttpd !== isset($config['syslog']['nologlighttpd'])) {
-                log_error('Web GUI configuration has changed. Restarting now.');
+                log_msg('Web GUI configuration has changed. Restarting now.', LOG_NOTICE);
                 configd_run('webgui restart 2', true);
                 $savemsg .= "<br />" . gettext("WebGUI process is restarting.");
             }

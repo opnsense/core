@@ -151,7 +151,7 @@ function openssh_configure_do($verbose = false, $interface = '')
         if (is_subsystem_dirty('sshdkeys')) {
             return;
         }
-        log_error('Started creating your SSH keys. SSH startup is being delayed a wee bit.');
+        log_msg('Started creating your SSH keys. SSH startup is being delayed a wee bit.', LOG_NOTICE);
         mark_subsystem_dirty('sshdkeys');
         foreach ($keys as $type => $name) {
             $file = "/conf/sshd/{$name}";
@@ -160,7 +160,7 @@ function openssh_configure_do($verbose = false, $interface = '')
             mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
         }
         clear_subsystem_dirty('sshdkeys');
-        log_error('Completed creating your SSH keys. SSH will now be started.');
+        log_msg('Completed creating your SSH keys. SSH will now be started.', LOG_NOTICE);
     }
 
     $sshport = isset($sshcfg['port']) ? $sshcfg['port'] : 22;

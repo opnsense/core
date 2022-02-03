@@ -67,12 +67,12 @@ function handle_argument_group($action, $realif)
 
     switch ($action) {
         case 'stop':
-            log_error(sprintf(
+            log_msg(sprintf(
                 "DEVD: Ethernet detached event for %s %s(%s)",
                 $is_static ? 'static' : 'dynamic',
                 $interface,
                 $realif
-            ));
+            ), LOG_NOTICE);
             if ($is_static) {
                 interfaces_staticarp_configure($interface);
             } else {
@@ -81,12 +81,12 @@ function handle_argument_group($action, $realif)
             }
             break;
         case 'start':
-            log_error(sprintf(
+            log_msg(sprintf(
                 "DEVD: Ethernet attached event for %s %s(%s)",
                 $is_static ? 'static' : 'dynamic',
                 $interface,
                 $realif
-            ));
+            ), LOG_NOTICE);
             if ($is_static) {
                 interfaces_staticarp_configure($interface);
                 configdp_run('interface newip', array($realif));

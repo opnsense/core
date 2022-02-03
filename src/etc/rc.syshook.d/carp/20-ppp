@@ -50,7 +50,7 @@ if (!empty($a_hasync['disconnectppps'])) {
         if ($ppp['ports'] == $iface) {
             foreach($config['interfaces'] as $ifkey => $interface) {
                 if ($ppp['if'] == $interface['if']) {
-                    log_error("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
+                    log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}", LOG_NOTICE);
                     if ($type == 'BACKUP') {
                         interface_bring_down($ifkey);
                     } else {

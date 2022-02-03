@@ -659,7 +659,7 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
             if ($realif != $gre['greif']) {
                 continue;
             }
-            log_error(sprintf('Executing inline configuration of GRE tunnel %s', $realif));
+            log_msg(sprintf('Executing inline configuration of GRE tunnel %s', $realif), LOG_NOTICE);
         }
 
         if ($checkparent == 1 && strstr($gre['if'], '_vip')) {
@@ -758,7 +758,7 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
             if ($realif != $gif['gifif']) {
                 continue;
             }
-            log_error(sprintf('Executing inline configuration of GIF tunnel %s', $realif));
+            log_msg(sprintf('Executing inline configuration of GIF tunnel %s', $realif), LOG_NOTICE);
         }
 
         if ($checkparent == 1 && strstr($gif['if'], '_vip')) {
@@ -1089,7 +1089,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     foreach (array_keys($pfctlflush) as $dev) {
-        log_error("Clearing states for stale {$interface} route on {$dev}");
+        log_msg("Clearing states for stale {$interface} route on {$dev}", LOG_NOTICE);
         mwexecf('/sbin/pfctl -i %s -Fs', $dev);
     }
 
@@ -1670,15 +1670,15 @@ function interface_wireless_clone($realif, $wlcfg)
         exec("/sbin/ifconfig " . escapeshellarg($realif), $output, $ret);
         $ifconfig_str = implode($output);
         if (($wlcfg_mode == "hostap") && (! preg_match("/hostap/si", $ifconfig_str))) {
-            log_error("Interface {$realif} changed to hostap mode");
+            log_msg("Interface {$realif} changed to hostap mode", LOG_NOTICE);
             $needs_clone = true;
         }
         if (($wlcfg_mode == "adhoc") && (! preg_match("/adhoc/si", $ifconfig_str))) {
-            log_error("Interface {$realif} changed to adhoc mode");
+            log_msg("Interface {$realif} changed to adhoc mode", LOG_NOTICE);
             $needs_clone = true;
         }
         if (($wlcfg_mode == "bss") && (preg_match("/hostap|adhoc/si", $ifconfig_str))) {
-            log_error("Interface {$realif} changed to infrastructure mode");
+            log_msg("Interface {$realif} changed to infrastructure mode", LOG_NOTICE);
             $needs_clone = true;
         }
     } else {
@@ -1691,7 +1691,7 @@ function interface_wireless_clone($realif, $wlcfg)
             legacy_interface_destroy($realif);
         }
 
-        log_error("Cloning new wireless interface {$realif}");
+        log_msg("Cloning new wireless interface {$realif}", LOG_NOTICE);
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
         if ($ret != 0) {
             log_error("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}");
@@ -2331,7 +2331,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     /* XXX ideally we should give up inlining "virtual" device configuration */
     if (interface_virtual_create($interface, $realhwif)) {
-        log_error(sprintf('Executed inline creation of non-existent interface %s (%s)', $interface, $realhwif));
+        log_msg(sprintf('Executed inline creation of non-existent interface %s (%s)', $interface, $realhwif), LOG_NOTICE);
     }
 
     $ifconfig_details = legacy_interfaces_details();
@@ -2441,7 +2441,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             case 'dhcp6':
                 /* accept router advertisements for this interface */
                 set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-                log_error("Accept router advertisements on interface {$realifv6}");
+                log_msg("Accept router advertisements on interface {$realifv6}", LOG_NOTICE);
                 mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 
                 /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
@@ -2626,7 +2626,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
     }
 
-    log_error("rd6 {$interface} with ipv6 address {$rd6lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
+    log_msg("rd6 {$interface} with ipv6 address {$rd6lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}", LOG_NOTICE);
     mwexec("/sbin/ifconfig {$lanif} inet6 {$rd6lan} prefixlen 64");
 }
 
@@ -2672,7 +2672,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
     }
 
-    log_error("sixto4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
+    log_msg("sixto4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}", LOG_NOTICE);
     mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
 }
 
