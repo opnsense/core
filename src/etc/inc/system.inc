@@ -487,7 +487,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
             if (ip_in_subnet($gateway, $network)) {
                 $realif = null;
             } else {
-                log_error("ROUTING: treating gateway '{$gateway}' as far gateway");
+                log_error("ROUTING: treating '{$gateway}' as far gateway from '{$network}'");
             }
         }
     } else {
