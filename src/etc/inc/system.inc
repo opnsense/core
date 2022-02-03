@@ -482,11 +482,13 @@ function system_default_route($gateway, $family, $interface, $far = false)
         log_error("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'");
         @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
 
-        list (, $network) = interfaces_primary_address($interface);
-        if (!$far && ip_in_subnet($gateway, $network)) {
-            $realif = null;
-        } else {
-            log_error("ROUTING: treating gateway '{$gateway}' as far gateway");
+        if (!$far) {
+            list (, $network) = interfaces_primary_address($interface);
+            if (ip_in_subnet($gateway, $network)) {
+                $realif = null;
+            } else {
+                log_error("ROUTING: treating gateway '{$gateway}' as far gateway");
+            }
         }
     } else {
         foreach (glob('/tmp/*_defaultgwv6') as $to_delete) {
