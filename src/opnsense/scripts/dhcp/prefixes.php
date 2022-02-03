@@ -66,7 +66,7 @@ if (count($routes) > 0) {
     }
 }
 
-exec('opnsense-log dhcpd 2> /null', $log, $ret);
+exec('opnsense-log dhcpd 2> /dev/null', $log, $ret);
 
 if ($ret > 0) {
     $log = [];
