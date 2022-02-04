@@ -39,6 +39,7 @@
         <id>job.command</id>
         <label>Command</label>
         <type>dropdown</type>
+        <size>10</size>
         <help>Select the command that needs to be executed at given time frame.</help>
     </field>
     <field>
