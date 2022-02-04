@@ -760,9 +760,11 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
             log_error(sprintf('Executing inline configuration of GIF tunnel %s', $realif));
         }
 
-        if ($checkparent == 1 && strstr($gif['if'], '_vip')) {
+        $is_vip = strpos($gif['if'], '_vip') !== false || !empty($gif['ipaddr']);
+
+        if ($checkparent == 1 && $is_vip) {
             continue;
-        } elseif ($checkparent == 2 && !strstr($gif['if'], '_vip')) {
+        } elseif ($checkparent == 2 && !$is_vip) {
             continue;
         }
 
@@ -3838,7 +3840,7 @@ function link_interface_to_gif($interface)
 
     if (isset($config['gifs']['gif'])) {
         foreach ($config['gifs']['gif'] as $gif) {
-            if ($gif['if'] == $interface) {
+            if (explode('_vip', $gif['if'])[0] == $interface) {
                 $result[] = $gif;
             }
         }
