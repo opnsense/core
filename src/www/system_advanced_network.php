@@ -36,7 +36,7 @@ require_once("system.inc");
 
 function get_mac_address($ip)
 {
-    $macs = array();
+    $macs = [];
 
     exec(exec_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', $ip), $macs);
 
@@ -108,9 +108,9 @@ function format_duid($duid)
 {
     $values = explode(':', strtoupper(str_replace('-', ':', $duid)));
 
-    array_walk($values, function(&$value) {
+    foreach ($values as &$value) {
         $value = str_pad($value, 2, '0', STR_PAD_LEFT);
-    });
+    };
 
     return implode(':', $values);
 }
@@ -170,7 +170,7 @@ function read_duid()
 $duid = read_duid();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
     $pconfig['ipv6_duid_en_value'] = generate_new_duid('4');
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     if (!empty($pconfig['ipv6duid']) && !is_duid($pconfig['ipv6duid'])) {
@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($pconfig['ipv6duid'])) {
-            $config['system']['ipv6duid'] = format_duid($pconfig['ipv6duid']);
+            $config['system']['ipv6duid'] = $pconfig['ipv6duid'] = format_duid($pconfig['ipv6duid']);
         } elseif (isset($config['system']['ipv6duid'])) {
             unset($config['system']['ipv6duid']);
             /* clear the file as this means auto-generate */
