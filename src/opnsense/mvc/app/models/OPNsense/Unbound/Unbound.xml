@@ -125,6 +125,12 @@
                             <field>rr</field>
                             <check>A</check>
                         </check001>
+                        <check002>
+                            <ValidationMessage>The field IP address is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>AAAA</check>
+                        </check002>
                     </Constraints>
                 </server>
                 <description type="TextField">
