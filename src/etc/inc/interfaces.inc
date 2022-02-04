@@ -676,8 +676,7 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
     }
 }
 
-/* NOTE: $grekey is not used but useful for passing this function to array_walk. */
-function interface_gre_configure(&$gre, $grekey = "")
+function interface_gre_configure(&$gre)
 {
     if (!is_array($gre)) {
         return -1;
@@ -775,8 +774,7 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
     }
 }
 
-/* NOTE: $gifkey is not used but useful for passing this function to array_walk. */
-function interface_gif_configure(&$gif, $gifkey = "")
+function interface_gif_configure(&$gif)
 {
     global $config;
 
@@ -2500,19 +2498,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_vips_configure(false, $interface);
 
     if (!file_exists("/var/run/booting")) {
-        $gre = link_interface_to_gre($interface);
-        if (!empty($gre)) {
-            array_walk($gre, 'interface_gre_configure');
+        $gres = link_interface_to_gre($interface);
+        foreach ($gres as $gre) {
+            interface_gre_configure($gre);
         }
 
-        $gif = link_interface_to_gif($interface);
-        if (!empty($gif)) {
-            array_walk($gif, 'interface_gif_configure');
+        $gifs = link_interface_to_gif($interface);
+        foreach ($gifs as $gif) {
+            interface_gif_configure($gif);
         }
 
-        $bridgetmp = link_interface_to_bridge($interface);
-        if (!empty($bridgetmp)) {
-            interface_bridge_add_member($bridgetmp, $realif);
+        $bridge = link_interface_to_bridge($interface);
+        if (!empty($bridge)) {
+            interface_bridge_add_member($bridge, $realif);
         }
     }
 
