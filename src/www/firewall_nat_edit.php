@@ -316,6 +316,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($filterent['log']);
             }
 
+            if (!empty($pconfig['disabled'])) {
+                $filterent['disabled'] = true;
+            } else {
+                unset($filterent['disabled']);
+            }
+
             if (is_numericint($pconfig['local-port']) && is_numericint($pconfig['dstendport']) && is_numericint($pconfig['dstbeginport'])) {
                 $dstpfrom = $pconfig['local-port'];
                 $dstpto = $dstpfrom + max($pconfig['dstendport'], $pconfig['dstbeginport']) - min($pconfig['dstbeginport'],$pconfig['dstendport']) ;
