@@ -784,26 +784,17 @@ function interface_gif_configure(&$gif)
         return -1;
     }
 
-    $realif = get_real_interface($gif['if']);
-    $ipaddr = $gif['ipaddr'];
-
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+
     if (is_ipaddrv4($gif['remote-addr'])) {
-        if (is_ipaddrv4($ipaddr)) {
-            $realifip = $ipaddr;
-        } else {
-            $realifip = get_interface_ip($gif['if']);
-        }
+        $realifip = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
         $realifgw = $gateways->getInterfaceGateway($gif['if'], "inet");
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
-        if (is_ipaddrv6($ipaddr)) {
-            $realifip = $ipaddr;
-        } else {
-            $realifip = get_interface_ipv6($gif['if']);
-        }
+        $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
         $realifgw = $gateways->getInterfaceGateway($gif['if'], "inet6");
     }
 
+    $realif = get_real_interface($gif['if']);
     interfaces_bring_up($realif);
 
     if (file_exists("/var/run/booting") || !empty($gif['gifif'])) {
