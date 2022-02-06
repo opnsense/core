@@ -47,9 +47,12 @@ $( document ).ready(function() {
                     rowSelect: true,
                     formatters: {
                         "mxformatter": function (column, row) {
-                            /* Format the "Value" column so it shows either an MX host ("MX" type) or a raw IP address ("A" type) */
+                            /* Format the "Value" column so it shows either an MX host ("MX" type), IPv6 suffix or a raw IP address ("A" & "AAAA" type) */
                             if (row.mx.length > 0) {
                                 row.server = row.mx + ' (prio ' + row.mxprio + ')';
+                            }
+                            if (row.interface != "none") {
+                                row.server += ' (' + row.interface + ' interface)';
                             }
                             return row.server;
                         },
@@ -80,12 +83,19 @@ $( document ).ready(function() {
 
                 /* Hide/unhide input fields based on selected RR (Type) value */
                 $('select[id="host.rr"]').on('change', function(e) {
-                    if (this.value == "A" || this.value == "AAAA") {
+                    if (this.value == "A") {
                         $('tr[id="row_host.mx"]').addClass('hidden');
                         $('tr[id="row_host.mxprio"]').addClass('hidden');
                         $('tr[id="row_host.server"]').removeClass('hidden');
+                        $('tr[id="row_host.interface"]').addClass('hidden');
+                    } else if (this.value == "AAAA") {
+                        $('tr[id="row_host.mx"]').addClass('hidden');
+                        $('tr[id="row_host.mxprio"]').addClass('hidden');
+                        $('tr[id="row_host.server"]').removeClass('hidden');
+                        $('tr[id="row_host.interface"]').removeClass('hidden');
                     } else if (this.value == "MX") {
                         $('tr[id="row_host.server"]').addClass('hidden');
+                        $('tr[id="row_host.interface"]').addClass('hidden');
                         $('tr[id="row_host.mx"]').removeClass('hidden');
                         $('tr[id="row_host.mxprio"]').removeClass('hidden');
                     }

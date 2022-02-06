@@ -36,10 +36,16 @@
         <help>Host name of MX host, e.g. mail.example.com</help>
     </field>
     <field>
+        <id>host.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Interface to take the prefix for a dynamic IP address from, e.g. LAN</help>
+    </field>
+    <field>
         <id>host.server</id>
         <label>IP address</label>
         <type>text</type>
-        <help>IP address of the host, e.g. 192.168.100.100 or fd00:abcd::1</help>
+        <help>IP address of the host, e.g. 192.168.100.100, fd00:abcd::1 or ::abcd:1</help>
     </field>
     <field>
         <id>host.description</id>

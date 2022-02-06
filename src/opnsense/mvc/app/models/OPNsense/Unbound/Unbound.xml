@@ -131,6 +131,9 @@
                         </check001>
                     </Constraints>
                 </mx>
+                <interface type="InterfaceField">
+                    <Required>N</Required>
+                </interface>
                 <server type="NetworkField">
                     <Constraints>
                         <check001>

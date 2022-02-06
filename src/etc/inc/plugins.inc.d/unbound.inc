@@ -552,13 +552,21 @@ function unbound_add_host_entries($ifconfig_details = null)
                     switch ($host->rr) {
                         case 'A':
                         case 'AAAA':
+                            if (!empty((string) $host->interface) && strpos($host->server, "::") === 0) {
+                                list ($address) = interfaces_primary_address6((string) $host->interface, $ifconfig_details);
+                                $server = make_ipv6_64_address($address, $host->server);
+                                $server = Net_IPv6::compress(Net_IPv6::uncompress($server));
+                            } else {
+                                $server = $host->server;
+                            }
+
                             /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
                             if ($alias['hostname'] == '*.') {
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
-                                $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                                $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$server}\"\n";
                             } else {
-                                $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
-                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                                $unbound_entries .= "local-data-ptr: \"{$server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$server}\"\n";
                             }
                             break;
                         case 'MX':
