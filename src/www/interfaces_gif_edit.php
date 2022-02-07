@@ -111,9 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $gif['ipaddr'] = null;
         }
 
-        $gif['gifif'] = interface_gif_configure($gif);
-        ifgroup_setup();
-        if ($gif['gifif'] == "" || !stristr($gif['gifif'], "gif")) {
+        if (empty($gif['gifif'])) {
+            $gif['gifif'] = legacy_interface_create('gif'); /* XXX configd call */
+        }
+
+        if (empty($gif['gifif']) || strpos($gif['gifif'], 'gif') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -122,6 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gifs[] = $gif;
             }
             write_config();
+            interface_gif_configure($gif);
+            ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
             if ($confif != '') {
                 interface_configure(false, $confif);

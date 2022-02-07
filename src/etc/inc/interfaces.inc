@@ -749,10 +749,6 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
     }
 
     foreach ($config['gifs']['gif'] as $i => $gif) {
-        if (empty($gif['gifif'])) {
-            $gif['gifif'] = "gif{$i}";
-        }
-
         if (!empty($realif)) {
             if ($realif != $gif['gifif']) {
                 continue;
@@ -776,13 +772,9 @@ function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = 
     }
 }
 
-function interface_gif_configure(&$gif)
+function interface_gif_configure($gif)
 {
     global $config;
-
-    if (!is_array($gif)) {
-        return -1;
-    }
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
@@ -796,50 +788,44 @@ function interface_gif_configure(&$gif)
 
     interfaces_bring_up(get_real_interface($gif['if'])); /* XXX overreach? */
 
-    if (file_exists("/var/run/booting") || !empty($gif['gifif'])) {
-        legacy_interface_destroy($gif['gifif']);
-        legacy_interface_create($gif['gifif']);
-        $gifif = $gif['gifif'];
-    } else {
-        $gifif = legacy_interface_create('gif');
-    }
+    /* XXX avoid destroy/create to make routes sticky  */
+    legacy_interface_destroy($gif['gifif']);
+    legacy_interface_create($gif['gifif']);
 
     /* Do not change the order here for more see gif(4) NOTES section. */
     if (is_ipaddrv6($gif['remote-addr'])) {
-        mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', array($gifif, $realifip, $gif['remote-addr']));
+        mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', array($gif['gifif'], $realifip, $gif['remote-addr']));
     } else {
-        mwexecf('/sbin/ifconfig %s tunnel %s %s', array($gifif, $realifip, $gif['remote-addr']));
+        mwexecf('/sbin/ifconfig %s tunnel %s %s', array($gif['gifif'], $realifip, $gif['remote-addr']));
     }
     if ((is_ipaddrv6($gif['tunnel-local-addr'])) || (is_ipaddrv6($gif['tunnel-remote-addr']))) {
-        mwexec("/sbin/ifconfig {$gifif} inet6 " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " prefixlen 128");
+        mwexec("/sbin/ifconfig {$gif['gifif']} inet6 " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " prefixlen 128");
     } else {
-        mwexec("/sbin/ifconfig {$gifif} " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gif['tunnel-remote-net']));
+        mwexec("/sbin/ifconfig {$gif['gifif']} " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gif['tunnel-remote-net']));
     }
 
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
-    legacy_interface_flags($gifif, $flags);
+    legacy_interface_flags($gif['gifif'], $flags);
 
     system_host_route($gif['remote-addr'], $realifgw);
 
-    interfaces_bring_up($gifif);
+    interfaces_bring_up($gif['gifif']);
 
     if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gifif}_router", "{$gif['tunnel-remote-addr']}\n");
+        file_put_contents("/tmp/{$gif['gifif']}_router", "{$gif['tunnel-remote-addr']}\n");
     }
     if (is_ipaddrv6($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gifif}_routerv6", "{$gif['tunnel-remote-addr']}\n");
+        file_put_contents("/tmp/{$gif['gifif']}_routerv6", "{$gif['tunnel-remote-addr']}\n");
     }
 
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
-        if ($config['interfaces'][$ifname]['if'] == $gifif) {
+        if ($config['interfaces'][$ifname]['if'] == $gif['gifif']) {
             if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
                 system_routing_configure(false, $ifname);
                 break;
             }
         }
     }
-
-    return $gifif;
 }
 
 function interfaces_configure($verbose = false)
