@@ -2313,25 +2313,24 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     if (!empty($wancfg['mtu'])) {
-        $intf_stats = legacy_interface_stats($realhwif);
-        if (strstr($realif, '_vlan')) {
-            // max mtu to parent
-            $mtu = $wancfg['mtu'] < $intf_stats['mtu'] ? $wancfg['mtu'] : $intf_stats['mtu'];
-            if ($mtu != $intf_stats['mtu']) {
-                legacy_interface_mtu($realif, $mtu);
-            }
-        } elseif ($wancfg['mtu'] != $intf_stats['mtu']) {
-            legacy_interface_mtu($realhwif, $wancfg['mtu']);
-        }
-    }
+        $intf_details = $ifconfig_details[$realhwif];
+        $mtu = $wancfg['mtu'];
 
-    // in case this interface has vlan's configured, make sure none of them has an mtu set higher than its parent
-    if (!empty($config['vlans']['vlan'])) {
-        $intf_stats = legacy_interface_stats();
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if ($realhwif == $vlan['if'] && $intf_stats[$realhwif]['mtu'] < $intf_stats[$vlan['vlanif']]['mtu']) {
-                legacy_interface_mtu($vlan['vlanif'], $intf_stats[$realhwif]['mtu']);
+        if (strstr($realif, '_vlan')) {
+            $parent_realif = interface_parent_devices($interface)[0];
+            $parent_details = $ifconfig_details[$parent_realif];
+
+            /* configure parent MTU now to avoid silent fail for current interface MTU change */
+            $parentcfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)];
+            if (isset($parentcfg['enable']) && !empty($parentcfg['mtu'])) {
+                if ($parentcfg['mtu'] != $parent_details['mtu']) {
+                    legacy_interface_mtu($parent_realif, $parentcfg['mtu']);
+                }
             }
+        }
+
+        if ($mtu != $intf_details['mtu']) {
+            legacy_interface_mtu($realif, $mtu);
         }
     }
 
