@@ -794,8 +794,7 @@ function interface_gif_configure(&$gif)
         $realifgw = $gateways->getInterfaceGateway($gif['if'], "inet6");
     }
 
-    $realif = get_real_interface($gif['if']);
-    interfaces_bring_up($realif);
+    interfaces_bring_up(get_real_interface($gif['if'])); /* XXX overreach? */
 
     if (file_exists("/var/run/booting") || !empty($gif['gifif'])) {
         legacy_interface_destroy($gif['gifif']);
