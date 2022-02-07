@@ -2472,11 +2472,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             /* configure parent MTU now to avoid silent fail for current interface MTU change */
             $parentcfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)];
             if (isset($parentcfg['enable']) && !empty($parentcfg['mtu'])) {
-                 if ($parentcfg['mtu'] != $parent_details['mtu']) {
-                     legacy_interface_mtu($parent_realif, $parentcfg['mtu']);
-                 }
+                if ($parentcfg['mtu'] != $parent_details['mtu']) {
+                    legacy_interface_mtu($parent_realif, $parentcfg['mtu']);
+                }
             }
-
         }
 
         if ($mtu != $intf_details['mtu']) {
