@@ -651,10 +651,6 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
     }
 
     foreach ($config['gres']['gre'] as $i => $gre) {
-        if (empty($gre['greif'])) {
-            $gre['greif'] = "gre{$i}";
-        }
-
         if (!empty($realif)) {
             if ($realif != $gre['greif']) {
                 continue;
@@ -662,9 +658,11 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
             log_error(sprintf('Executing inline configuration of GRE tunnel %s', $realif));
         }
 
-        if ($checkparent == 1 && strstr($gre['if'], '_vip')) {
+        $is_vip = strpos($gre['if'], '_vip') !== false || is_ipaddr($gre['if']);
+
+        if ($checkparent == 1 && $is_vip) {
             continue;
-        } elseif ($checkparent == 2 && !strstr($gre['if'], '_vip')) {
+        } elseif ($checkparent == 2 && !$is_vip) {
             continue;
         }
 
@@ -676,59 +674,45 @@ function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = 
     }
 }
 
-function interface_gre_configure(&$gre)
+function interface_gre_configure($gre)
 {
-    if (!is_array($gre)) {
-        return -1;
-    }
+    /* XXX we miss a reference here for IP alias since 'if' is the alias address only, look up in VIPs? */
+    interfaces_bring_up(get_real_interface(explode('_vip', $gre['if'])[0])); /* XXX overreach? */
 
-    $realif = get_real_interface($gre['if']);
-
-    interfaces_bring_up($realif);
-
-    if (file_exists("/var/run/booting") || !empty($gre['greif'])) {
-        legacy_interface_destroy($gre['greif']);
-        legacy_interface_create($gre['greif']);
-        $greif = $gre['greif'];
-    } else {
-        $greif = legacy_interface_create('gre');
-    }
+    /* XXX avoid destroy/create to make routes sticky  */
+    legacy_interface_destroy($gre['greif']);
+    legacy_interface_create($gre['greif']);
 
     /* Do not change the order here for more see gre(4) NOTES section. */
     if (is_ipaddrv6($gre['remote-addr'])) {
-        $realifip = is_ipaddr($gre['if']) ? $gre['if'] : get_interface_ipv6($gre['if']);
-        mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', array($greif, $realifip, $gre['remote-addr']));
+        mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', [ $gre['greif'], get_interface_ipv6($gre['if']), $gre['remote-addr']]);
     } else {
-        $realifip = is_ipaddr($gre['if']) ? $gre['if'] : get_interface_ip($gre['if']);
-        mwexecf('/sbin/ifconfig %s tunnel %s %s', array($greif, $realifip, $gre['remote-addr']));
+        mwexecf('/sbin/ifconfig %s tunnel %s %s', [$gre['greif'], get_interface_ip($gre['if']), $gre['remote-addr']]);
     }
     if ((is_ipaddrv6($gre['tunnel-local-addr'])) || (is_ipaddrv6($gre['tunnel-remote-addr']))) {
-        mwexec("/sbin/ifconfig {$greif} inet6 " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " prefixlen 128");
+        mwexec("/sbin/ifconfig {$gre['greif']} inet6 " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " prefixlen 128");
     } else {
-        mwexec("/sbin/ifconfig {$greif} " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gre['tunnel-remote-net']));
+        mwexec("/sbin/ifconfig {$gre['greif']} " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gre['tunnel-remote-net']));
     }
 
-    interfaces_bring_up($greif);
+    interfaces_bring_up($gre['greif']);
 
     if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$greif}_router", "${gre['tunnel-remote-addr']}\n");
-    }
-    if (is_ipaddrv6($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$greif}_routerv6", "{$gre['tunnel-remote-addr']}\n");
+        file_put_contents("/tmp/{$gre['greif']}_router", "${gre['tunnel-remote-addr']}\n");
+    } elseif (is_ipaddrv6($gre['tunnel-remote-addr'])) {
+        file_put_contents("/tmp/{$gre['greif']}_routerv6", "{$gre['tunnel-remote-addr']}\n");
     }
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
-        if ($config['interfaces'][$ifname]['if'] == $greif) {
+        if ($config['interfaces'][$ifname]['if'] == $gre['greif']) {
             if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
                 system_routing_configure(false, $ifname);
                 break;
             }
         }
     }
-
-    return $greif;
 }
 
 function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = '')
@@ -3797,7 +3781,12 @@ function link_interface_to_gre($interface)
 
     if (isset($config['gres']['gre'])) {
         foreach ($config['gres']['gre'] as $gre) {
-            if ($gre['if'] == $interface) {
+            $parent = explode('_vip', $gre['if'])[0];
+            if (is_ipaddr($parent)) {
+                /* XXX requires a proper runtime setup or VIP lookup */
+                $parent = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($parent));
+            }
+            if ($parent == $interface) {
                 $result[] = $gre;
             }
         }
