@@ -780,13 +780,13 @@ function interface_gif_configure($gif)
 
     if (is_ipaddrv4($gif['remote-addr'])) {
         $realifip = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
-        $realifgw = $gateways->getInterfaceGateway($gif['if'], "inet");
+        $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet');
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
         $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
-        $realifgw = $gateways->getInterfaceGateway($gif['if'], "inet6");
+        $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
     }
 
-    interfaces_bring_up(get_real_interface($gif['if'])); /* XXX overreach? */
+    interfaces_bring_up(get_real_interface(explode('_vip', $gif['if'])[0]); /* XXX overreach? */
 
     /* XXX avoid destroy/create to make routes sticky  */
     legacy_interface_destroy($gif['gifif']);
@@ -813,8 +813,7 @@ function interface_gif_configure($gif)
 
     if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
         file_put_contents("/tmp/{$gif['gifif']}_router", "{$gif['tunnel-remote-addr']}\n");
-    }
-    if (is_ipaddrv6($gif['tunnel-remote-addr'])) {
+    } elseif (is_ipaddrv6($gif['tunnel-remote-addr'])) {
         file_put_contents("/tmp/{$gif['gifif']}_routerv6", "{$gif['tunnel-remote-addr']}\n");
     }
 

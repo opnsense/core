@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // interface and optional bind address
         if (strpos($pconfig['if'], '|') !== false) {
-            list($gif['if'], $gif['ipaddr']) = explode("|",$pconfig['if']);
+            list($gif['if'], $gif['ipaddr']) = explode('|', $pconfig['if']);
         } else {
             $gif['if'] = $pconfig['if'];
             $gif['ipaddr'] = null;
