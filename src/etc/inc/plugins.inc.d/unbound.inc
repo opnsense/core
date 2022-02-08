@@ -416,7 +416,7 @@ function unbound_configure_do($verbose = false, $interface = '')
         flush();
     }
 
-    configd_run('unbound start', true);
+    mwexecf('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh');
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];

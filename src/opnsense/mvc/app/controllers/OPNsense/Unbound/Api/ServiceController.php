@@ -47,4 +47,12 @@ class ServiceController extends ApiMutableServiceControllerBase
         $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
         return array('status' => $response);
     }
+
+    public function overridesAction()
+    {
+        $this->sessionClose();
+        $backend = new Backend();
+        $response = $backend->configdRun(static::$internalServiceName . ' reconfigure');
+        return array('status' => $response);
+    }
 }
