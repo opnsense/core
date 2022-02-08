@@ -831,15 +831,14 @@ function interfaces_configure($verbose = false)
      * See individual notes in the queued handling below.
      */
 
-    $special = [];
-    $track6 = [];
-    $bridge = [];
-    $dhcp6c = [];
+    $virtual = []; /* software devices */
+    $track6 = []; /* trackers without bridges */
+    $bridge = []; /* bridges that may be trackers, but not dhcp6c interfaces */
+    $dhcp6c = []; /* dhcp6c interfaces load last */
 
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
         if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
-            /* special interfaces on top of newly generated devices */
-            $special[] = $if;
+            $virtual[] = $if;
             continue;
         } elseif (strstr($ifcfg['if'], 'vxlan')) {
             // XXX device configuration is responsible for interface setup too when trying to init all.
@@ -848,18 +847,15 @@ function interfaces_configure($verbose = false)
 
         $is_track6 = !empty($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == 'track6';
         if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
-            /* trackers without bridges are next */
             $track6[] = $if;
             continue;
         }
 
         $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
         if (strstr($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
-            /* bridges that may be trackers, but not dhcp6c interfaces */
             $bridge[] = $if;
             continue;
         } elseif ($is_dhcp6c) {
-            /* dhcp6c interfaces load last */
             $dhcp6c[] = $if;
             continue;
         }
@@ -890,7 +886,7 @@ function interfaces_configure($verbose = false)
     interfaces_gif_configure($verbose, 2);
     interfaces_bridge_configure($verbose, 2);
 
-    foreach ([$special, $track6, $bridge, $dhcp6c] as $list) {
+    foreach ([$virtual, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $if) {
             interface_configure($verbose, $if);
         }
