@@ -286,33 +286,21 @@ function interfaces_create_wireless_clones($verbose = false)
     }
 }
 
-function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif = '')
+function interfaces_bridge_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && substr($realif, 0, 6) != 'bridge') {
-        return;
-    }
 
     if (!isset($config['bridges']['bridged'])) {
         return;
     }
 
     if ($verbose) {
-        echo "Configuring bridge interfaces ($checkmember)...";
+        echo "Configuring bridge interfaces...";
         flush();
     }
 
-    foreach ($config['bridges']['bridged'] as $i => $bridge) {
-        if (empty($bridge['bridgeif'])) {
-            $bridge['bridgeif'] = "bridge{$i}";
-        }
-
-        if (!empty($realif) && $realif != $bridge['bridgeif']) {
-            continue;
-        }
-
-        interface_bridge_configure($bridge, $checkmember);
+    foreach ($config['bridges']['bridged'] as $bridge) {
+        interface_bridge_configure($bridge);
     }
 
     if ($verbose) {
@@ -320,7 +308,7 @@ function interfaces_bridge_configure($verbose = false, $checkmember = 0, $realif
     }
 }
 
-function interface_bridge_configure(&$bridge, $checkmember = 0)
+function interface_bridge_configure(&$bridge)
 {
     if (!is_array($bridge)) {
         return;
@@ -338,15 +326,10 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
 
     /* Calculate smaller mtu and enforce it */
     $mtu = null;
-    $foundgif = false;
     foreach ($members as $member) {
         $realif = get_real_interface($member);
         $opts = legacy_interface_stats($realif);
         if (substr($realif, 0, 3) == "gif") {
-            $foundgif = true;
-            if ($checkmember == 1) {
-                return;
-            }
             if ($opts['mtu'] <= 1500) {
                 continue;
             }
@@ -354,10 +337,6 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
             $mtu = $opts['mtu'];
         }
-    }
-
-    if (!$foundgif && $checkmember == 2) {
-        return;
     }
 
     if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
@@ -526,13 +505,9 @@ function interface_bridge_add_member($bridgeif, $interface)
     legacy_bridge_member($bridgeif, $interface);
 }
 
-function interfaces_lagg_configure($verbose = false, $realif = '')
+function interfaces_lagg_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && substr($realif, 0, 4) != 'lagg') {
-        return;
-    }
 
     if (!isset($config['laggs']['lagg'])) {
         return;
@@ -543,15 +518,7 @@ function interfaces_lagg_configure($verbose = false, $realif = '')
         flush();
     }
 
-    foreach ($config['laggs']['lagg'] as $i => $lagg) {
-        if (empty($lagg['laggif'])) {
-            $lagg['laggif'] = "lagg{$i}";
-        }
-
-        if (!empty($realif) && $realif != $lagg['laggif']) {
-            continue;
-        }
-
+    foreach ($config['laggs']['lagg'] as $lagg) {
         interface_lagg_configure($lagg);
     }
 
@@ -621,39 +588,20 @@ function interface_lagg_configure($lagg)
     interfaces_bring_up($lagg['laggif']);
 }
 
-function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = '')
+function interfaces_gre_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && substr($realif, 0, 3) != 'gre') {
-        return;
-    }
 
     if (!isset($config['gres']['gre'])) {
         return;
     }
 
     if ($verbose) {
-        echo "Configuring GRE interfaces ($checkparent)...";
+        echo "Configuring GRE interfaces...";
         flush();
     }
 
-    foreach ($config['gres']['gre'] as $i => $gre) {
-        if (!empty($realif)) {
-            if ($realif != $gre['greif']) {
-                continue;
-            }
-            log_error(sprintf('Executing inline configuration of GRE tunnel %s', $realif));
-        }
-
-        $is_vip = strpos($gre['if'], '_vip') !== false || is_ipaddr($gre['if']);
-
-        if ($checkparent == 1 && $is_vip) {
-            continue;
-        } elseif ($checkparent == 2 && !$is_vip) {
-            continue;
-        }
-
+    foreach ($config['gres']['gre'] as $gre) {
         interface_gre_configure($gre);
     }
 
@@ -703,39 +651,20 @@ function interface_gre_configure($gre)
     }
 }
 
-function interfaces_gif_configure($verbose = false, $checkparent = 0, $realif = '')
+function interfaces_gif_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && substr($realif, 0, 3) != 'gif') {
-        return;
-    }
 
     if (!isset($config['gifs']['gif'])) {
         return;
     }
 
     if ($verbose) {
-        echo "Configuring GIF interfaces ($checkparent)...";
+        echo "Configuring GIF interfaces...";
         flush();
     }
 
-    foreach ($config['gifs']['gif'] as $i => $gif) {
-        if (!empty($realif)) {
-            if ($realif != $gif['gifif']) {
-                continue;
-            }
-            log_error(sprintf('Executing inline configuration of GIF tunnel %s', $realif));
-        }
-
-        $is_vip = strpos($gif['if'], '_vip') !== false || !empty($gif['ipaddr']);
-
-        if ($checkparent == 1 && $is_vip) {
-            continue;
-        } elseif ($checkparent == 2 && !$is_vip) {
-            continue;
-        }
-
+    foreach ($config['gifs']['gif'] as $gif) {
         interface_gif_configure($gif);
     }
 
@@ -852,27 +781,11 @@ function interfaces_configure($verbose = false)
         interface_configure($verbose, $if);
     }
 
-    /*
-     * NOTE: The following function parameter consists of
-     *  1 - Do not load gre/gif with parent as vip
-     *  2 - Do load gre/gif with parent as vip
-     *  (bridge can't vip, but needs special gif handling)
-     */
-
-    interfaces_gre_configure($verbose, 1);
-    interfaces_gif_configure($verbose, 1);
-    interfaces_bridge_configure($verbose, 1);
-
-    /*
-     * XXX Only unspecified VIP init call can probably be removed now
-     * which would also avoid having to use the 0, 1, 2 options in GRE,
-     * GIF and bride device setup.
-     */
+    /* XXX if we adhere to ordering we don't need this as monolithic block */
     interfaces_vips_configure($verbose);
-
-    interfaces_gre_configure($verbose, 2);
-    interfaces_gif_configure($verbose, 2);
-    interfaces_bridge_configure($verbose, 2);
+    interfaces_gif_configure($verbose);
+    interfaces_gre_configure($verbose);
+    interfaces_bridge_configure($verbose);
 
     foreach ([$virtual, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $if) {
@@ -2211,36 +2124,6 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
-function interface_virtual_create($interface, $realif)
-{
-    $created = false;
-
-    if (empty($realif)) {
-        return $created;
-    }
-
-    /*
-     * Interface code must figure out if the call is for them so
-     * we start all but when we pass an interface the name will
-     * be matched so most will be a NOP.
-     *
-     * Verbose printing ($verbose) is off in the block because
-     * we are reconfiguring a specific interface and the verbose
-     * print was already started above.
-     */
-
-    /* need to check that the interface exists #3270 */
-    if (!does_interface_exist($realif)) {
-        interfaces_lagg_configure(false, $realif);
-        interfaces_bridge_configure(false, 0, $realif);
-        plugins_configure('openvpn_prepare', false, array($realif));
-
-        $created = true;
-    }
-
-    return $created;
-}
-
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
 {
     global $config;
@@ -2268,11 +2151,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             /* hardware device remains a hardware device */
             $realhwif = $realif;
             break;
-    }
-
-    /* XXX ideally we should give up inlining "virtual" device configuration */
-    if (interface_virtual_create($interface, $realhwif)) {
-        log_error(sprintf('Executed inline creation of non-existent interface %s (%s)', $interface, $realhwif));
     }
 
     $ifconfig_details = legacy_interfaces_details();
@@ -2342,15 +2220,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     /* apply interface hardware settings (tso, lro, ..) */
     /* XXX maybe spoofmac, media and promisc can live here too? */
-    /* XXX a lagg or vlan or bridge could be resolved inside this function */
     configure_interface_hardware($realhwif, $ifconfig_details);
-
-    /*
-     * Make sure tunnel address is set when interface is configured as
-     * these lie outside the normal ipaddr/ipaddrv6 configuration schema.
-     */
-    interfaces_gre_configure(false, 0, $realhwif);
-    interfaces_gif_configure(false, 0, $realhwif);
 
     switch ($wancfg['ipaddr']) {
         case 'dhcp':
