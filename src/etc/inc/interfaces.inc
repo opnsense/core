@@ -786,7 +786,7 @@ function interface_gif_configure($gif)
         $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
     }
 
-    interfaces_bring_up(get_real_interface(explode('_vip', $gif['if'])[0]); /* XXX overreach? */
+    interfaces_bring_up(get_real_interface(explode('_vip', $gif['if'])[0])); /* XXX overreach? */
 
     /* XXX avoid destroy/create to make routes sticky  */
     legacy_interface_destroy($gif['gifif']);
