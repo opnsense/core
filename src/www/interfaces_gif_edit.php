@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (empty($gif['gifif'])) {
-            $gif['gifif'] = trim(configdp_run('interface create', ['gif']));
+            $gif['gifif'] = legacy_interface_create('gif'); /* XXX find another strategy */
         }
 
         if (empty($gif['gifif']) || strpos($gif['gifif'], 'gif') !== 0) {
