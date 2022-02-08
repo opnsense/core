@@ -272,7 +272,7 @@ $( document ).ready(function() {
         <tr>
             <td>
                 <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/unbound/service/overrides'
+                        data-endpoint='/api/unbound/service/reconfigure'
                         data-label="{{ lang._('Apply') }}"
                         data-service-widget="unbound"
                         data-error-title="{{ lang._('Error reconfiguring unbound') }}"
