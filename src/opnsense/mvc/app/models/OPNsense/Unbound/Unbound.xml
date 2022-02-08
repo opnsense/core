@@ -96,6 +96,20 @@
                         <AAAA>AAAA (IPv6 address)</AAAA>
                         <MX>MX (Mail server)</MX>
                     </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <reference>mxprio.check001</reference>
+                        </check001>
+                        <check002>
+                            <reference>mx.check001</reference>
+                        </check002>
+                        <check003>
+                            <reference>server.check001</reference>
+                        </check003>
+                        <check004>
+                            <reference>server.check002</reference>
+                        </check004>
+                    </Constraints>
                 </rr>
                 <mxprio type="IntegerField">
                     <Constraints>
@@ -125,6 +139,12 @@
                             <field>rr</field>
                             <check>A</check>
                         </check001>
+                        <check002>
+                            <ValidationMessage>The field IP address is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>AAAA</check>
+                        </check002>
                     </Constraints>
                 </server>
                 <description type="TextField">

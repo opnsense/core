@@ -80,7 +80,7 @@ $( document ).ready(function() {
 
                 /* Hide/unhide input fields based on selected RR (Type) value */
                 $('select[id="host.rr"]').on('change', function(e) {
-                    if (this.value == "A") {
+                    if (this.value == "A" || this.value == "AAAA") {
                         $('tr[id="row_host.mx"]').addClass('hidden');
                         $('tr[id="row_host.mxprio"]').addClass('hidden');
                         $('tr[id="row_host.server"]').removeClass('hidden');
