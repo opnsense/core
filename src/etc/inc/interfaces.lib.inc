@@ -108,7 +108,8 @@ function legacy_interface_destroy($ifs)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        /* disable error reporting to avoid spurious errors on first configuration */
+        //log_error('The command `' . $cmd . '\' failed to execute');
     }
 }
 
