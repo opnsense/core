@@ -186,7 +186,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
         echo 'Configuring VLAN interfaces...';
         flush();
     }
-    $ints = legacy_interface_listget();
+
     foreach ($config['vlans']['vlan'] as $vlan) {
         if (empty($vlan['vlanif'])) {
             $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
@@ -196,7 +196,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
             continue;
         }
 
-        interface_vlan_configure($vlan, $ints);
+        interface_vlan_configure($vlan);
     }
 
     if ($verbose) {
@@ -204,7 +204,7 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
     }
 }
 
-function interface_vlan_configure(&$vlan, $intfs = null)
+function interface_vlan_configure(&$vlan)
 {
     if (!is_array($vlan)) {
         log_error('VLAN: called with wrong options. Problems with config!');
@@ -220,11 +220,8 @@ function interface_vlan_configure(&$vlan, $intfs = null)
 
     interfaces_bring_up($if);
 
-    $ints = empty($intfs) ? legacy_interface_listget() : $intfs;
-    if (!empty($vlanif) && in_array($vlanif, $ints)) {
-        legacy_interface_destroy($vlanif);
-    }
-
+    /* XXX avoid destroy/create */
+    legacy_interface_destroy($vlanif);
     legacy_interface_create('vlan', $vlanif);
     $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
     legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
@@ -340,6 +337,7 @@ function interface_bridge_configure(&$bridge)
     }
 
     if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
+        /* XXX avoid destroy/create */
         legacy_interface_destroy($bridge['bridgeif']);
         legacy_interface_create($bridge['bridgeif']);
         $bridgeif = $bridge['bridgeif'];
@@ -615,7 +613,7 @@ function interface_gre_configure($gre)
     /* XXX we miss a reference here for IP alias since 'if' is the alias address only, look up in VIPs? */
     interfaces_bring_up(get_real_interface(explode('_vip', $gre['if'])[0])); /* XXX overreach? */
 
-    /* XXX avoid destroy/create to make routes sticky  */
+    /* XXX avoid destroy/create */
     legacy_interface_destroy($gre['greif']);
     legacy_interface_create($gre['greif']);
 
@@ -689,7 +687,7 @@ function interface_gif_configure($gif)
 
     interfaces_bring_up(get_real_interface(explode('_vip', $gif['if'])[0])); /* XXX overreach? */
 
-    /* XXX avoid destroy/create to make routes sticky  */
+    /* XXX avoid destroy/create */
     legacy_interface_destroy($gif['gifif']);
     legacy_interface_create($gif['gifif']);
 
@@ -1540,10 +1538,7 @@ function interface_wireless_clone($realif, $wlcfg)
     }
 
     if ($needs_clone) {
-        /* remove previous instance if it exists */
-        if (does_interface_exist($realif)) {
-            legacy_interface_destroy($realif);
-        }
+        legacy_interface_destroy($realif);
 
         log_error("Cloning new wireless interface {$realif}");
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
@@ -2529,9 +2524,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     $rd6brgw = "{$rd6prefix_isp}{$wancfg['gateway-6rd']}";
 
     $stfiface = "{$interface}_stf";
-    if (does_interface_exist($stfiface)) {
-        legacy_interface_destroy($stfiface);
-    }
+    legacy_interface_destroy($stfiface);
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
 
@@ -2627,9 +2620,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
     $stfiface = "{$interface}_stf";
-    if (does_interface_exist($stfiface)) {
-        legacy_interface_destroy($stfiface);
-    }
+    legacy_interface_destroy($stfiface);
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
 
