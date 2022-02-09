@@ -560,34 +560,27 @@ function interfaces_lagg_configure($verbose = false, $realif = '')
     }
 }
 
-function interface_lagg_configure(&$lagg)
+function interface_lagg_configure($lagg)
 {
-    if (!is_array($lagg)) {
-        return -1;
-    }
-
     $members = explode(',', $lagg['members']);
     if (!count($members)) {
-        return -1;
+        /* XXX really necessary? we would like our LAGG anyway */
+        return;
     }
 
     $interface_stats = legacy_interfaces_details();
 
-    if (!empty($lagg['laggif'])) {
-        $laggif = $lagg['laggif'];
-        if (empty($interface_stats[$laggif])) {
-            legacy_interface_create($lagg['laggif']);
-        } else {
-            // Already configured, detach child interfaces before attempting to configure.
-            // Prevents vlans to loose parent.
-            if (!empty($interface_stats[$laggif]['laggport'])) {
-                foreach (array_keys($interface_stats[$laggif]['laggport']) as $laggport) {
-                    mwexec("/sbin/ifconfig {$laggif} -laggport {$laggport}");
-                }
+    $lagg['laggif'] = $lagg['laggif'];
+    if (empty($interface_stats[$lagg['laggif']])) {
+        legacy_interface_create($lagg['laggif']);
+    } else {
+        // Already configured, detach child interfaces before attempting to configure.
+        // Prevents vlans to loose parent.
+        if (!empty($interface_stats[$lagg['laggif']]['laggport'])) {
+            foreach (array_keys($interface_stats[$lagg['laggif']]['laggport']) as $laggport) {
+                mwexecf('/sbin/ifconfig %s -laggport %s', [$lagg['laggif'], $laggport]);
             }
         }
-    } else {
-        $laggif = legacy_interface_create('lagg');
     }
 
     // determine mtu value to use, either the provided one for the lagg or smallest of its children
@@ -609,28 +602,23 @@ function interface_lagg_configure(&$lagg)
             legacy_interface_mtu($member, $mtu);
             configure_interface_hardware($member);
             interfaces_bring_up($member);
-            mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
+            mwexecf('/sbin/ifconfig %s laggport %s', [$lagg['laggif'], $member]);
         }
     }
 
-    mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
+    mwexecf('/sbin/ifconfig %s laggproto %s', [$lagg['laggif'], $lagg['proto']]);
     if (in_array($lagg['proto'], ['lacp', 'loadbalance'])) {
         foreach (['lacp_fast_timeout', 'use_flowid', 'lacp_strict'] as $attr) {
             $attr_proto = strpos($attr, 'lacp_') !== false ? 'lacp' : $lagg['proto'];
             if (isset($lagg[$attr]) && $attr_proto == $lagg['proto']) {
-                if (!empty($lagg[$attr])) {
-                    mwexec("/sbin/ifconfig {$laggif} {$attr}");
-                } else {
-                    mwexec("/sbin/ifconfig {$laggif} -{$attr}");
-                }
+                mwexecf('/sbin/ifconfig %s %s%s', [$lagg['laggif'], empty($lagg[$attr]) ? '-' : '', $attr]);
             }
         }
-        $configured_hash = !empty($lagg['lagghash']) ? $lagg['lagghash'] : "l2,l3,l4";
-        mwexec("/sbin/ifconfig {$laggif} lagghash " . escapeshellarg($configured_hash));
+        $configured_hash = !empty($lagg['lagghash']) ? $lagg['lagghash'] : 'l2,l3,l4';
+        mwexecf('/sbin/ifconfig %s lagghash %s', [$lagg['laggif'], $configured_hash]);
     }
-    interfaces_bring_up($laggif);
 
-    return $laggif;
+    interfaces_bring_up($lagg['laggif']);
 }
 
 function interfaces_gre_configure($verbose = false, $checkparent = 0, $realif = '')
