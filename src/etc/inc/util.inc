@@ -861,6 +861,8 @@ function get_interface_list($only_active = false, $include_dmesg = false)
       'lagg',
       'lo',
       'ng',
+      'ovpnc',
+      'ovpns',
       'pflog',
       'pfsync',
       'plip',
