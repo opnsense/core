@@ -170,13 +170,9 @@ function interfaces_vlan_priorities()
     return $priorities;
 }
 
-function interfaces_vlan_configure($verbose = false, $realif = '')
+function interfaces_vlan_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && !strstr($realif, '_vlan')) {
-        return;
-    }
 
     if (!isset($config['vlans']['vlan'])) {
         return;
@@ -190,10 +186,6 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
     foreach ($config['vlans']['vlan'] as $vlan) {
         if (empty($vlan['vlanif'])) {
             $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
-        }
-
-        if (!empty($realif) && $realif != $vlan['vlanif']) {
-            continue;
         }
 
         interface_vlan_configure($vlan);
