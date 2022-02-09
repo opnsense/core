@@ -37,6 +37,7 @@ rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ "${CMD}" = "force" ]; then
 	DO_FORCE="-f"

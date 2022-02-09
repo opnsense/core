@@ -38,7 +38,6 @@ use OPNsense\Core\Backend;
  */
 class TrafficController extends ApiControllerBase
 {
-
     /**
      * retrieve interface traffic stats
      * @return array

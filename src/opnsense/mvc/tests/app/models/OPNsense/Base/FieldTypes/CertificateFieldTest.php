@@ -40,7 +40,6 @@ use OPNsense\Core\Config;
 
 class CertificateFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

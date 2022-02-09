@@ -39,7 +39,6 @@ use OPNsense\Core\Config;
  */
 class FirewallController extends ApiControllerBase
 {
-
     /**
      * retrieve firewall log
      * @return array

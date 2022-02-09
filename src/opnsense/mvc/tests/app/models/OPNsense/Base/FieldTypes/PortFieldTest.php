@@ -38,7 +38,6 @@ use OPNsense\Base\FieldTypes\PortField;
 
 class PortFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

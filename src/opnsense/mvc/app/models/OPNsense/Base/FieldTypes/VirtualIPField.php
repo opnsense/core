@@ -36,7 +36,6 @@ use OPNsense\Core\Config;
  */
 class VirtualIPField extends BaseListField
 {
-
     /**
      * @var string virtual ip type
      */

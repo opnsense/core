@@ -34,7 +34,6 @@ namespace OPNsense\OpenVPN;
 */
 class ExportFactory
 {
-
     /**
      * list installed backup providers
      * @return array

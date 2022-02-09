@@ -520,7 +520,7 @@ function system_routing_configure($verbose = false, $interface = '')
 
 function system_staticroutes_configure($interface = '')
 {
-    $static_routes = get_staticroutes(false, true);
+    $static_routes = get_staticroutes(false);
     if (count($static_routes)) {
         $ifdetails = legacy_interfaces_details();
         $gateways_arr = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
@@ -659,17 +659,21 @@ EOD;
 
     // deploy certificates (separate caller in case we ever remove clog, in which case we can move all to configd)
     mwexecf("/usr/local/opnsense/scripts/syslog/generate_certs");
+
+    $last_version = @file_get_contents('/var/run/syslog-ng.version');
+    $this_version = shell_exec('syslog-ng -V | sha256');
+
     if (!empty($config['syslog']['disable_clog'])) {
         // non legacy mode
         killbypid('/var/run/syslog.pid', 'TERM', true);
-        if (!$restart && isvalidpid('/var/run/syslog-ng.pid')) {
+        if (!$restart && isvalidpid('/var/run/syslog-ng.pid') && $last_version == $this_version) {
             mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
         } else {
             mwexecf("/usr/sbin/service syslog-ng restart");
         }
     } elseif (!$restart && isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
-        if (isvalidpid('/var/run/syslog-ng.pid')) {
+        if (isvalidpid('/var/run/syslog-ng.pid') && $last_version == $this_version) {
             mwexecf("/usr/local/sbin/syslog-ng-ctl reload");
         } else {
             mwexecf("/usr/sbin/service syslog-ng restart");
@@ -681,6 +685,8 @@ EOD;
         mwexecf("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
         mwexecf("/usr/sbin/service syslog-ng start");
     }
+
+    file_put_contents('/var/run/syslog-ng.version', $this_version);
 
     if ($verbose) {
         echo "done.\n";

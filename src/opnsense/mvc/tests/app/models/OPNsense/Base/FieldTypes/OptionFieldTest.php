@@ -38,7 +38,6 @@ use OPNsense\Base\FieldTypes\OptionField;
 
 class OptionFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

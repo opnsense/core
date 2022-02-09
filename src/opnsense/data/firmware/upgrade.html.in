@@ -1,13 +1,25 @@
-<p>OPNsense %%CORE_SERIES%% "<em>%%CORE_NICKNAME%%</em>" has reached its end of life. As such
-it will not receive any more updates, but the upgrade to the new %%CORE_NEXT%% series is
-seamless and can be performed right here from the web GUI.</p>
+<p>OPNsense %%CORE_SERIES%% "<em>%%CORE_NICKNAME%%</em>" has reached its end
+of life. As such it will not receive any more updates, but the upgrade to the
+new %%CORE_NEXT%% series is seamless and can be performed right here from the
+web GUI.</p>
 <p> Another method is to import and reinstall using a new installation image,
-which will retain your settings (selecting "Import Configuration"), then
-reformat the disk and apply a clean system (selecting "Guided Installation").</p>
+which will retain your settings using "Import Configuration", then reformat
+the disk and apply a clean system using either "Install (UFS)" or "Install
+(ZFS)".</p>
 <p>You can also upgrade via console / SSH by using option 12 from the menu by
 typing "%%UPGRADE_RELEASE%%" when prompted.</p>
-<p>Make sure to read the migration notes and adjust for possible minor breaking
-changes.</p>
+<p>Make sure to read the migration notes and adjust for possible breaking changes:</p>
+<ul><li>This release contains a new major operating system version and should be carried
+out with the necessary care. Despite extended test coverage changes made by FreeBSD may
+still affect operation without our knowledge.  Except for ZFS boot environments rollbacks
+between major operating system versions are extremely fragile and a reinstall of an older
+version should be attempted in the worst case.</li>
+<li>IPsec hash and cipher removals in FreeBSD 13 can affect existing setups as insecure
+cryptographic options have been removed upstream. If you are using MD5, Blowfish, DES, 3DES
+or CAST128 in your phase 2 please move to more secure settings prior to the upgrade.</li>
+<li>The Realtek vendor driver is no longer bundled with the updated FreeBSD kernel. If unsure
+whether FreeBSD 13 supports your Realtek NIC please install the os-realtek-re plugin prior to
+upgrading to retain operability of your NICs.</li></ul>
 <p>Please backup your configuration, preview the new version via live image or
 in a virtual machine. Create snapshots. If all else fails, report back
 <a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for

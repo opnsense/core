@@ -40,7 +40,6 @@ use OPNsense\Core\Config;
  */
 class CategoryController extends ApiMutableModelControllerBase
 {
-
     protected static $internalModelName = 'category';
     protected static $internalModelClass = 'OPNsense\Firewall\Category';
 

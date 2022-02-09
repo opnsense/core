@@ -63,22 +63,10 @@ function load_config_from_file($filename)
  ******/
 function parse_config()
 {
-    global $aliastable;
-
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
     $config = $cnf->toArray(listtags());
-
-    $aliastable = array();
-
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-        if (strncmp($alias['type'], 'url', 3) !== 0) {
-            $aliastable[$alias['name']] = implode(" ", explode("\n", $alias['content']));
-        } else {
-            $aliastable[$alias['name']] = "";
-        }
-    }
 
     return $config;
 }
@@ -147,7 +135,7 @@ function write_config($desc = '', $backup = true)
             $user = getUserEntry($_SESSION['Username']);
             if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
                 // okay, it's not very nice to check permissions here, but let's make it explicit while we do...
-                log_error("WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
+                syslog(LOG_ERR, "WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
                 return false;
             }
         }

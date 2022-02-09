@@ -39,7 +39,6 @@ use OPNsense\Routes\Route;
  */
 class RoutesController extends ApiMutableModelControllerBase
 {
-
     protected static $internalModelName = 'route';
     protected static $internalModelClass = '\OPNsense\Routes\Route';
 

@@ -79,7 +79,7 @@ $a_scrub = &config_read_array('filter', 'scrub', 'rule');
 // define form fields
 $config_fields = array('interface', 'proto', 'srcnot', 'src', 'srcmask', 'dstnot', 'dst', 'dstmask', 'dstport',
                        'no-df', 'random-id', 'max-mss', 'min-ttl', 'set-tos', 'descr', 'disabled', 'direction',
-                       'srcport');
+                       'srcport', 'noscrub');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // input record id, if valid
@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-
+        $scrubent['noscrub'] = !empty($pconfig['noscrub']);
         $scrubent['updated'] = make_config_revision_entry();
 
         // update or insert item
@@ -269,6 +269,19 @@ include("head.inc");
           $("#show_srcport").show();
           $("#show_srcport_adv").parent().hide();
       });
+
+      $("#noscrub").change(function(){
+          if ($("#noscrub").prop('checked')) {
+            $(".act_noscrub").addClass("hidden");
+            $(".act_noscrub :input").prop( "disabled", true );
+          } else {
+            $(".act_noscrub").removeClass("hidden");
+            $(".act_noscrub :input").prop( "disabled", false );
+          }
+          $(".act_noscrub .selectpicker").selectpicker('refresh');
+      });
+      $("#noscrub").change();
+
 
       // IPv4/IPv6 select
       hook_ipv4v6('ipv4v6net', 'network-id');
@@ -575,6 +588,15 @@ include("head.inc");
                     <td colspan="2"><strong><?=gettext("Normalizations");?></strong></td>
                   </tr>
                   <tr>
+                    <td style="width:22%"><a id="help_for_noscrub" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("No scrub (NOT)"); ?></td>
+                    <td style="width:78%">
+                      <input type="checkbox" name="noscrub" id="noscrub" <?= !empty($pconfig['noscrub']) ? "checked=\"checked\"" : ""; ?> />
+                      <div class="hidden" data-for="help_for_noscrub">
+                        <?=gettext("Enabling this option will disable scub (normalisation) for traffic matching this rule."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr  class="act_noscrub">
                       <td style="width:22%"><a id="help_for_maxmss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max mss"); ?></td>
                       <td style="width:78%">
                           <input name="max-mss" type="text" value="<?=$pconfig['max-mss'];?>" />
@@ -583,7 +605,7 @@ include("head.inc");
                           </div>
                       </td>
                   </tr>
-                  <tr>
+                  <tr  class="act_noscrub">
                       <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('TOS / DSCP'); ?></td>
                       <td style="width:78%">
                           <select name="set-tos" class="selectpicker" data-size="5" data-width="auto"  data-live-search="true">
@@ -597,7 +619,7 @@ include("head.inc");
                           </select>
                       </td>
                   </tr>
-                  <tr>
+                  <tr  class="act_noscrub">
                       <td style="width:22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum TTL') ?></td>
                       <td style="width:78%">
                           <input name="min-ttl" type="text" value="<?=$pconfig['min-ttl'];?>" />
@@ -606,7 +628,7 @@ include("head.inc");
                           </div>
                       </td>
                   </tr>
-                  <tr>
+                  <tr  class="act_noscrub">
                       <td style="width:22%"><a id="help_for_nodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not fragment"); ?></td>
                       <td style="width:78%">
                           <input name="no-df" type="checkbox" value="1" <?= !empty($pconfig['no-df']) ? "checked=\"checked\"" : ""; ?> />
@@ -615,7 +637,7 @@ include("head.inc");
                           </div>
                       </td>
                   </tr>
-                  <tr>
+                  <tr  class="act_noscrub">
                       <td style="width:22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Random ID') ?></td>
                       <td style="width:78%">
                           <input name="random-id" type="checkbox" value="1" <?= !empty($pconfig['random-id']) ? "checked=\"checked\"" : ""; ?> />

@@ -168,6 +168,9 @@ if __name__ == '__main__':
                     # obsolete md5 in log record
                     else:
                         rule['label'] = ''
+                elif rule['action'] not in ['pass', 'block']:
+                    # no id for translation rules
+                    rule['label'] = "%s rule" % rule['action']
                 elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
                     # rule id apended in record format, don't use rule sequence number in that case either
                     rule['rid'] = rulep[-1]
@@ -177,11 +180,8 @@ if __name__ == '__main__':
                     else:
                         rule['label'] = ''
                 elif 'rulenr' in rule and rule['rulenr'] in running_conf_descr['line_ids']:
-                    if rule['action'] in ['pass', 'block']:
-                        rule['label'] = running_conf_descr['line_ids'][rule['rulenr']]['label']
-                        rule['rid'] = running_conf_descr['line_ids'][rule['rulenr']]['rid']
-                elif rule['action'] not in ['pass', 'block']:
-                    rule['label'] = "%s rule" % rule['action']
+                    rule['label'] = running_conf_descr['line_ids'][rule['rulenr']]['label']
+                    rule['rid'] = running_conf_descr['line_ids'][rule['rulenr']]['rid']
 
                 result.append(rule)
 

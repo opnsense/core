@@ -37,7 +37,6 @@ use OPNsense\Core\Config;
  */
 class CertificateField extends BaseListField
 {
-
     /**
      * @var string certificate type cert/ca, reflects config section to use as source
      */

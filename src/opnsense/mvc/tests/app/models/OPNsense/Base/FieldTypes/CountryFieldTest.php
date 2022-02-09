@@ -38,7 +38,6 @@ use OPNsense\Base\FieldTypes\CountryField;
 
 class CountryFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

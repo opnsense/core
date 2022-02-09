@@ -38,7 +38,6 @@ use OPNsense\Base\FieldTypes\ProtocolField;
 
 class ProtocolFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */
