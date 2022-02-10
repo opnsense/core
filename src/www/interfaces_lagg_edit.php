@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $lagg['laggif'] = legacy_interface_create('lagg'); /* XXX find another strategy */
         }
 
-        if (empty($lagg['laggif'] || strpos($lagg['laggif'], 'lagg') !== 0)) {
+        if (empty($lagg['laggif']) || strpos($lagg['laggif'], 'lagg') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
