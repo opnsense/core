@@ -421,6 +421,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
     }
 
+    if (!empty($config['system']['syncookies'])) {
+        $arange = "";
+        if ($config['system']['syncookies'] == "adaptive") {
+            $arange = "(start {$config['system']['syncookies_adaptstart']}%, end {$config['system']['syncookies_adaptend']}%)";
+        }
+        $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
+}
+
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
