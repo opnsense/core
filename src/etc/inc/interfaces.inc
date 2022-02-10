@@ -502,15 +502,15 @@ function interfaces_lagg_configure($verbose = false)
 
 function interface_lagg_configure($lagg)
 {
-    $members = explode(',', $lagg['members']);
-    if (!count($members)) {
+    if (empty($lagg['members'])) {
         /* XXX really necessary? we would like our LAGG anyway */
+        log_error("No members found on {$lagg['laggif']}");
         return;
     }
 
     $interface_stats = legacy_interfaces_details();
+    $members = explode(',', $lagg['members']);
 
-    $lagg['laggif'] = $lagg['laggif'];
     if (empty($interface_stats[$lagg['laggif']])) {
         legacy_interface_create($lagg['laggif']);
     } else {
