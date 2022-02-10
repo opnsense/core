@@ -184,10 +184,6 @@ function interfaces_vlan_configure($verbose = false)
     }
 
     foreach ($config['vlans']['vlan'] as $vlan) {
-        if (empty($vlan['vlanif'])) {
-            $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
-        }
-
         interface_vlan_configure($vlan);
     }
 
@@ -196,31 +192,18 @@ function interfaces_vlan_configure($verbose = false)
     }
 }
 
-function interface_vlan_configure(&$vlan)
+function interface_vlan_configure($vlan)
 {
-    if (!is_array($vlan)) {
-        log_error('VLAN: called with wrong options. Problems with config!');
-        return;
-    }
-    $if = $vlan['if'];
-    $vlanif = empty($vlan['vlanif']) ? "{$if}_vlan{$vlan['tag']}" : $vlan['vlanif'];
-
-    if (empty($if)) {
-        log_error('interface_vlan_configure called with if undefined.');
-        return;
-    }
-
-    interfaces_bring_up($if);
+    interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
     /* XXX avoid destroy/create */
-    legacy_interface_destroy($vlanif);
-    legacy_interface_create('vlan', $vlanif);
+    legacy_interface_destroy($vlan['vlanif']);
+    legacy_interface_create('vlan', $vlan['vlanif']);
+
     $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
-    legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
+    legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $pcp);
 
-    interfaces_bring_up($vlanif);
-
-    return $vlanif;
+    interfaces_bring_up($vlan['vlanif']);
 }
 
 function interfaces_test_wireless_capability($if, $cap)

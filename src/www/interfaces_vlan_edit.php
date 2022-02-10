@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['id'];
     }
 
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "if tag");
-    $reqdfieldsn = array(gettext("Parent interface"),gettext("VLAN tag"));
+    $reqdfieldsn = [gettext('Parent interface'), gettext('VLAN tag')];
 
-    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
     if ($pconfig['tag'] && (!is_numericint($pconfig['tag']) || ($pconfig['tag'] < '1') || ($pconfig['tag'] > '4094'))) {
         $input_errors[] = gettext("The VLAN tag must be an integer between 1 and 4094.");
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id)  && $a_vlans[$id] === $vlan) {
             continue;
         }
-        if (($vlan['if'] == $pconfig['if']) && ($vlan['tag'] == $_POST['tag'])) {
+        if (($vlan['if'] == $pconfig['if']) && ($vlan['tag'] == $pconfig['tag'])) {
             $input_errors[] = sprintf(gettext("A VLAN with the tag %s is already defined on this interface."), $vlan['tag']);
             break;
         }
@@ -89,12 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $confif = "";
-        $vlan = array();
-        $vlan['if'] = $_POST['if'];
-        $vlan['tag'] = $_POST['tag'];
+        $vlan = [];
+        $vlan['if'] = $pconfig['if'];
+        $vlan['tag'] = $pconfig['tag'];
         $vlan['pcp'] = $pconfig['pcp'];
-        $vlan['descr'] = $_POST['descr'];
-        $vlan['vlanif'] = "{$_POST['if']}_vlan{$_POST['tag']}";
+        $vlan['descr'] = $pconfig['descr'];
+        $vlan['vlanif'] = "{$pconfig['if']}_vlan{$pconfig['tag']}";
         if (isset($id)) {
             if (($a_vlans[$id]['if'] != $pconfig['if']) || ($a_vlans[$id]['tag'] != $pconfig['tag']) || ($a_vlans[$id]['pcp'] != $pconfig['pcp'])) {
                 if (!empty($a_vlans[$id]['vlanif'])) {
@@ -105,15 +105,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
                 }
                 if ($confif != '') {
-                    $config['interfaces'][$confif]['if'] = "{$_POST['if']}_vlan{$_POST['tag']}";
+                    $config['interfaces'][$confif]['if'] = $vlan['vlanif'];
                 }
-                $vlan['vlanif'] = interface_vlan_configure($vlan);
             }
         } else {
-            $vlan['vlanif'] = interface_vlan_configure($vlan);
+             /*
+              * Since VLAN name is calculated we do not need to fetch one from the
+              * system.  However, we would still like to know if the system can create
+              * another VLAN if it is being added like is done for other devices.
+              * Eventually we want to change VLAN device names in the newer FreeBSD
+              * parentX.ID style.
+              */
+             $vlan['vlanif'] = legacy_interface_create('vlan', $vlan['vlanif']); /* XXX find another strategy */
         }
-        ifgroup_setup();
-        if ($vlan['vlanif'] == "" || !stristr($vlan['vlanif'], "vlan")) {
+
+        if (empty($vlan['vlanif']) || strpos($vlan['vlanif'], '_vlan') === false) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -122,7 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_vlans[] = $vlan;
             }
             write_config();
-
+            interface_vlan_configure($vlan);
+            ifgroup_setup();
             if ($confif != '') {
                 interface_configure(false, $confif);
             }
@@ -164,7 +171,7 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                       <select name="if" class="selectpicker">
 <?php
-                      $all_interfaces = legacy_config_get_interfaces(array('virtual' => false));
+                      $all_interfaces = legacy_config_get_interfaces(['virtual' => false]);
                       $all_interface_data = legacy_interfaces_details();
                       foreach ($all_interfaces as $intf) {
                           if (!empty($intf['if']) && !empty($all_interface_data[$intf['if']])) {
