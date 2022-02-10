@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
     $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
     $pconfig['ssl-hsts'] = isset($config['system']['webgui']['ssl-hsts']);
+    $pconfig['ocsp-staple'] = isset($config['system']['webgui']['ocsp-staple']);
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
@@ -145,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
+            (empty($pconfig['ocsp-staple'])) != empty($config['system']['webgui']['ocsp-staple']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
@@ -158,6 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['ssl-hsts'] = true;
         } elseif (isset($config['system']['webgui']['ssl-hsts'])) {
             unset($config['system']['webgui']['ssl-hsts']);
+        }
+
+        if (!empty($pconfig['ocsp-staple'])) {
+            $config['system']['webgui']['ocsp-staple'] = true;
+        } elseif (isset($config['system']['webgui']['ocsp-staple'])) {
+            unset($config['system']['webgui']['ocsp-staple']);
         }
 
         if (!empty($pconfig['session_timeout'])) {
@@ -565,6 +573,16 @@ $(document).ready(function() {
                   <?= gettext('Enable HTTP Strict Transport Security') ?>
                   <div class="hidden" data-for="help_for_sslhsts">
                     <?=gettext("HTTP Strict Transport Security (HSTS) is a web security policy mechanism that helps to protect websites against protocol downgrade attacks and cookie hijacking.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ocspstaple" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('OCSP Staple') ?></td>
+                <td>
+                  <input name="ocsp-staple" type="checkbox" value="yes" <?= empty($pconfig['ocsp-staple']) ? '' : 'checked="checked"' ?>/>
+                  <?= gettext('Staple OCSP response') ?>
+                  <div class="hidden" data-for="help_for_ocspstaple">
+                    <?=gettext("Retrieve OCSP data everytime webGUI (re)start and staple it along with the certificate as part of the TLS handshake. Automatic update is only working during start/restart, you need to setup a cron job to periodically update this data too.");?>
                   </div>
                 </td>
               </tr>

@@ -204,7 +204,10 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
     global $config;
 
     $cert_location = '/var/etc/cert.pem';
+    $chain_location = '/var/etc/chain.pem';
     $key_location = '/var/etc/key.pem';
+    $issuer_location  = '/var/etc/issuer.pem';
+    $ocsp_location = '/var/etc/staple.der';
 
     @mkdir('/tmp/lighttpdcompress');
 
@@ -382,16 +385,23 @@ EOD;
         $chain = $cert;
         if (!empty($ca) && strlen(trim($ca))) {
             $chain .= "\n" . $ca;
+            file_put_contents($issuer_location, $ca);
         }
 
-        file_put_contents($cert_location, $chain);
+        file_put_contents($cert_location, $cert);
+        file_put_contents($chain_location, $chain);
         file_put_contents($key_location, $key);
         chmod($key_location, 0600);
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
         $lighty_config .= "ssl.privkey = \"{$key_location}\"\n";
-        $lighty_config .= "ssl.pemfile = \"{$cert_location}\"\n";
+        $lighty_config .= "ssl.pemfile = \"{$chain_location}\"\n";
+
+        if (isset($config['system']['webgui']['ocsp-staple']) && $config['system']['webgui']['ocsp-staple'] == '1') {
+            configd_run('webgui ocsp');
+            $lighty_config .= "ssl.stapling-file = \"{$ocsp_location}\"\n";
+        }
 
         if (empty($config['system']['webgui']['ssl-ciphers'])) {
             /* harden TLS for PCI conformance */
