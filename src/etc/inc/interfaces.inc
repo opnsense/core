@@ -1510,7 +1510,7 @@ function interface_wireless_clone($realif, $wlcfg)
     return true;
 }
 
-function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
+function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false) /* XXX kill side effect */
 {
     global $config;
 
@@ -1594,25 +1594,31 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
     }
 }
 
-function interface_wireless_configure($if, &$wl, &$wlcfg)
+function interface_wireless_configure($if, &$wancfg)
 {
     global $config;
 
-   /*    open up a shell script that will be used to output the commands.
-    *    since wireless is changing a lot, these series of commands are fragile
-    *    and will sometimes need to be verified by a operator by executing the command
-    *    and returning the output of the command to the developers for inspection.  please
-    *    do not change this routine from a shell script to individual exec commands.  -sullrich
-    */
+    if (empty($wancfg['wireless'])) {
+        return;
+    }
 
-    // Remove script file
-    @unlink("/tmp/{$if}_setup.sh");
+    /* XXX interface_wireless_clone() and interface_sync_wireless_clones() need work */
 
     // Clone wireless nic if needed.
-    interface_wireless_clone($if, $wl);
+    interface_wireless_clone($if, $wancfg);
 
     // Reject inadvertent changes to shared settings in case the interface hasn't been configured.
-    interface_sync_wireless_clones($wl, false);
+    interface_sync_wireless_clones($wancfg, false);
+
+    $wlcfg = &$wancfg['wireless'];
+
+   /*
+    * Open up a shell script that will be used to output the commands.
+    * since wireless is changing a lot, these series of commands are fragile
+    * and will sometimes need to be verified by a operator by executing the command
+    * and returning the output of the command to the developers for inspection.  Please
+    * do not change this routine from a shell script to individual exec commands.  -sullrich
+    */
 
     $fd_set = fopen("/tmp/{$if}_setup.sh", "w");
     fwrite($fd_set, "#!/bin/sh\n");
@@ -1896,8 +1902,8 @@ EOD;
 
             /* add line to script to restore spoofed mac after running hostapd */
             if (file_exists("/tmp/{$if}_oldmac")) {
-                if ($wl['spoofmac']) {
-                    $if_curmac = $wl['spoofmac'];
+                if ($wancfg['spoofmac']) {
+                    $if_curmac = $wancfg['spoofmac'];
                 } else {
                     $if_curmac = get_interface_mac($if);
                 }
@@ -2133,9 +2139,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
-    /* XXX wireless configuration */
-    if (isset($wancfg['wireless']) && is_array($wancfg['wireless']) && !$linkupevent) {
-        interface_wireless_configure($realif, $wancfg, $wancfg['wireless']);
+    if (!$linkupevent) {
+        /* XXX wireless configuration: shouldn't live in interface config */
+        interface_wireless_configure($realif, $wancfg);
     }
 
     /*
