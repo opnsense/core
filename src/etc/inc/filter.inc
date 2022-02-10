@@ -427,7 +427,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             $arange = "(start {$config['system']['syncookies_adaptstart']}%, end {$config['system']['syncookies_adaptend']}%)";
         }
         $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
-}
+    }
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
