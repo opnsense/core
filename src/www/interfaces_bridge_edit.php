@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_bridges[] = $bridge;
             }
             write_config();
-            interface_bridge_configure($bridge);
+            interfaces_bridge_configure($bridge['bridgeif']);
             ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
             if ($confif != '') {

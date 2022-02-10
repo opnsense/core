@@ -79,17 +79,17 @@ interfaces_vips_configure(false, $interface);
 
 $gres = link_interface_to_gre($interface);
 foreach ($gres as $gre) {
-    interface_gre_configure($gre);
+    _interfaces_gre_configure($gre);
 }
 
 $gifs = link_interface_to_gif($interface);
 foreach ($gifs as $gif) {
-    interface_gif_configure($gif);
+    _interfaces_gif_configure($gif);
 }
 
 $bridge = link_interface_to_bridge($interface);
 if (!empty($bridge)) {
-    /* XXX interface_bridge_configure() is probably cleaner */
+    /* XXX _interfaces_bridge_configure() is probably cleaner */
     interface_bridge_add_member($bridge, $interface_real);
 }
 

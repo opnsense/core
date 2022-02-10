@@ -258,7 +258,7 @@ function interfaces_create_wireless_clones($verbose = false)
     }
 }
 
-function interfaces_bridge_configure($verbose = false)
+function interfaces_bridge_configure($device)
 {
     global $config;
 
@@ -266,21 +266,15 @@ function interfaces_bridge_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo "Configuring bridge interfaces...";
-        flush();
-    }
-
     foreach ($config['bridges']['bridged'] as $bridge) {
-        interface_bridge_configure($bridge);
-    }
-
-    if ($verbose) {
-        echo "done.\n";
+        if ($bridge['bridgeif'] == $device) {
+            _interfaces_bridge_configure($bridge);
+            return;
+        }
     }
 }
 
-function interface_bridge_configure($bridge)
+function _interfaces_bridge_configure($bridge)
 {
     if (empty($bridge['members'])) {
         /* XXX really necessary? we would like our bridge anyway */
@@ -553,7 +547,7 @@ function interface_lagg_configure($lagg)
     interfaces_bring_up($lagg['laggif']);
 }
 
-function interfaces_gre_configure($verbose = false)
+function interfaces_gre_configure($device)
 {
     global $config;
 
@@ -561,21 +555,15 @@ function interfaces_gre_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo "Configuring GRE interfaces...";
-        flush();
-    }
-
     foreach ($config['gres']['gre'] as $gre) {
-        interface_gre_configure($gre);
-    }
-
-    if ($verbose) {
-        echo "done.\n";
+        if ($gre['greif'] == $device) {
+            _interfaces_gre_configure($gre);
+            return;
+        }
     }
 }
 
-function interface_gre_configure($gre)
+function _interfaces_gre_configure($gre)
 {
     /* XXX we miss a reference here for IP alias since 'if' is the alias address only, look up in VIPs? */
     interfaces_bring_up(get_real_interface(explode('_vip', $gre['if'])[0])); /* XXX overreach? */
@@ -616,7 +604,7 @@ function interface_gre_configure($gre)
     }
 }
 
-function interfaces_gif_configure($verbose = false)
+function interfaces_gif_configure($device)
 {
     global $config;
 
@@ -624,21 +612,15 @@ function interfaces_gif_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo "Configuring GIF interfaces...";
-        flush();
-    }
-
     foreach ($config['gifs']['gif'] as $gif) {
-        interface_gif_configure($gif);
-    }
-
-    if ($verbose) {
-        echo "done.\n";
+        if ($gif['gifif'] == $device) {
+            _interfaces_gif_configure($gif);
+            return;
+        }
     }
 }
 
-function interface_gif_configure($gif)
+function _interfaces_gif_configure($gif)
 {
     global $config;
 
@@ -695,6 +677,64 @@ function interface_gif_configure($gif)
 
 function interfaces_configure($verbose = false)
 {
+    $interfaces = [];
+    $devices = [];
+
+    foreach (plugins_devices() as $device) {
+        if (empty($device['function']) || empty($device['names'])) {
+            continue;
+        }
+        foreach ($device['names'] as $name) {
+            $devices[$name] = $device['function'];
+        }
+    }
+
+    /*
+     * Queues are set up to order interfaces according to their
+     * dependencies / requirements of devices or other interfaces.
+     * Some queues may overlap, but they are laid out in full to
+     * make sure that the configuration flow is as clean as possible.
+     * See individual notes in the queued handling below.
+     */
+
+    $hardware = []; /* hardware devices */
+    $virtual = []; /* software devices */
+    $track6 = []; /* trackers without bridges */
+    $bridge = []; /* bridges that may be trackers, but not dhcp6c interfaces */
+    $dhcp6c = []; /* dhcp6c interfaces load last */
+
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
+        if (strstr($ifcfg['if'], 'vxlan')) {
+            // XXX device configuration is responsible for interface setup too when trying to init all.
+            continue;
+        }
+
+        /* XXX use this to figure out when bridges can be configured */
+        $interfaces[$if] = $ifcfg['if'];
+
+        if (!empty($devices[$ifcfg['if']]) && !strstr($ifcfg['if'], 'bridge')) {
+            $virtual[$ifcfg['if']] = $if;
+            continue;
+        }
+
+        $is_track6 = !empty($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == 'track6';
+        if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
+            $track6[$ifcfg['if']] = $if;
+            continue;
+        }
+
+        $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
+        if (strstr($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
+            $bridge[$ifcfg['if']] = $if;
+            continue;
+        } elseif ($is_dhcp6c) {
+            $dhcp6c[$ifcfg['if']] = $if;
+            continue;
+        }
+
+        $hardware[$ifcfg['if']] = $if;
+    }
+
     interfaces_loopback_configure($verbose);
     interfaces_create_wireless_clones($verbose);
     interfaces_lagg_configure($verbose);
@@ -705,61 +745,35 @@ function interfaces_configure($verbose = false)
     plugins_configure('openvpn_prepare', $verbose);
     plugins_configure('vxlan_prepare', $verbose);
 
-    /*
-     * Queues are set up to order interfaces according to their
-     * dependencies / requirements of devices or other interfaces.
-     * Some queues may overlap, but they are laid out in full to
-     * make sure that the configuration flow is as clean as possible.
-     * See individual notes in the queued handling below.
-     */
+    /* run through priority lists */
+    foreach ([$hardware, $virtual, $track6, $bridge, $dhcp6c] as $list) {
+        foreach ($list as $device => $if) {
+            /* pre-op: configuring the underlying device */
+            if (!empty($devices[$device])) {
+                log_msg("Device $device required for $if, configuring now", LOG_ERR);
+                call_user_func_array($devices[$device]['function'], [$devices[$device]['name']]);
+                unset($devices[$device]);
+            }
 
-    $virtual = []; /* software devices */
-    $track6 = []; /* trackers without bridges */
-    $bridge = []; /* bridges that may be trackers, but not dhcp6c interfaces */
-    $dhcp6c = []; /* dhcp6c interfaces load last */
-
-    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
-        if (strstr($ifcfg['if'], 'gre') || strstr($ifcfg['if'], 'gif') || strstr($ifcfg['if'], 'ovpn')) {
-            $virtual[] = $if;
-            continue;
-        } elseif (strstr($ifcfg['if'], 'vxlan')) {
-            // XXX device configuration is responsible for interface setup too when trying to init all.
-            continue;
-        }
-
-        $is_track6 = !empty($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == 'track6';
-        if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
-            $track6[] = $if;
-            continue;
-        }
-
-        $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
-        if (strstr($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
-            $bridge[] = $if;
-            continue;
-        } elseif ($is_dhcp6c) {
-            $dhcp6c[] = $if;
-            continue;
-        }
-
-        /* everything else requires no queued handling and is available immediately */
-        interface_configure($verbose, $if);
-    }
-
-    /* XXX if we adhere to ordering we don't need this as monolithic block */
-    interfaces_vips_configure($verbose);
-    interfaces_gif_configure($verbose);
-    interfaces_gre_configure($verbose);
-    interfaces_bridge_configure($verbose);
-
-    foreach ([$virtual, $track6, $bridge, $dhcp6c] as $list) {
-        foreach ($list as $if) {
-            interface_configure($verbose, $if);
+            /* post-op: removing associated devices and current interface */
+            foreach (interface_configure($verbose, $if) as $loaded) {
+                if (!empty($devices[$loaded])) {
+                    log_msg("Device $loaded loaded by $if, skipping now", LOG_ERR);
+                    unset($devices[$loaded]);
+                }
+            }
+            unset($interfaces[$if]);
         }
     }
 
     /* XXX temporary plugin spot for device configuration, see plugins_devices() */
     plugins_configure('ipsec_prepare', $verbose);
+
+    /* last but not least start all unconfigured devices */
+    foreach ($devices as $name => $function) {
+        log_msg("Device $name is not assigned, configuring late", LOG_ERR);
+        call_user_func_array($function, [$name]);
+    }
 }
 
 function interface_vip_bring_down($vip)
@@ -2097,6 +2111,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     global $config;
 
     $wancfg = $config['interfaces'][$interface];
+    $loaded = [];
 
     if (!isset($wancfg['enable'])) {
         return;
@@ -2277,41 +2292,42 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* always reconfigure VIPs since late boot configuration may need it too */
     interfaces_vips_configure(false, $interface);
 
-    if (!file_exists("/var/run/booting")) {
-        $gres = link_interface_to_gre($interface);
-        foreach ($gres as $gre) {
-            interface_gre_configure($gre);
-        }
+    $gres = link_interface_to_gre($interface);
+    foreach ($gres as $gre) {
+        _interfaces_gre_configure($gre);
+        $loaded[] = $gre['greif'];
+    }
 
-        $gifs = link_interface_to_gif($interface);
-        foreach ($gifs as $gif) {
-            interface_gif_configure($gif);
-        }
+    $gifs = link_interface_to_gif($interface);
+    foreach ($gifs as $gif) {
+        _interfaces_gif_configure($gif);
+        $loaded[] = $gif['gifif'];
+    }
 
-        $bridge = link_interface_to_bridge($interface);
-        if (!empty($bridge)) {
-            /* XXX interface_bridge_configure() is probably cleaner */
-            interface_bridge_add_member($bridge, $realif);
-        }
+    $bridge = link_interface_to_bridge($interface);
+    if (!empty($bridge)) {
+        /* XXX _interfaces_bridge_configure() is probably cleaner */
+        interface_bridge_add_member($bridge, $realif);
+        /* XXX bridges can only load if all interfaces are there */
     }
 
     if ($verbose) {
         echo "done.\n";
     }
 
-    if (!file_exists("/var/run/booting")) {
-        if ($reload) {
-            system_routing_configure($verbose, $interface);
-            plugins_configure('ipsec', $verbose, array($interface));
-            plugins_configure('dhcp', $verbose);
-            plugins_configure('dns', $verbose);
-            /* XXX move these up the call stack */
-            configdp_run('dyndns reload', array($interface));
-            configdp_run('rfc2136 reload', array($interface));
-        }
+    if (!file_exists('/var/run/booting') && $reload) {
+        system_routing_configure($verbose, $interface);
+        plugins_configure('ipsec', $verbose, array($interface));
+        plugins_configure('dhcp', $verbose);
+        plugins_configure('dns', $verbose);
+        /* XXX move these up the call stack */
+        configdp_run('dyndns reload', array($interface));
+        configdp_run('rfc2136 reload', array($interface));
     }
 
     interfaces_staticarp_configure($interface);
+
+    return $loaded;
 }
 
 function interface_track6_configure($interface = 'lan', $lancfg, $reload = false)
