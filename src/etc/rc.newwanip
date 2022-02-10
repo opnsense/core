@@ -89,6 +89,7 @@ foreach ($gifs as $gif) {
 
 $bridge = link_interface_to_bridge($interface);
 if (!empty($bridge)) {
+    /* XXX interface_bridge_configure() is probably cleaner */
     interface_bridge_add_member($bridge, $interface_real);
 }
 

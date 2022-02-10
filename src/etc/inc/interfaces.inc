@@ -523,6 +523,14 @@ function interface_lagg_configure($lagg)
 
     foreach ($members as $member) {
         if (!empty($interface_stats[$member])) {
+            /*
+             * XXX A LAGG does not allow to set the MTU on its ports individually
+             * so we would rather set the MTU on the LAGG after adding all ports.
+             * Thus we should avoid runtime entanglement of MTU of ports to find
+             * the smallest one since they already follow the LAGG setting despite
+             * showing something else in ifconfig and defaulting to 1500 from the
+             * LAGG side anyway.
+             */
             legacy_interface_mtu($member, $mtu);
             configure_interface_hardware($member);
             interfaces_bring_up($member);
@@ -2282,6 +2290,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
         $bridge = link_interface_to_bridge($interface);
         if (!empty($bridge)) {
+            /* XXX interface_bridge_configure() is probably cleaner */
             interface_bridge_add_member($bridge, $realif);
         }
     }
