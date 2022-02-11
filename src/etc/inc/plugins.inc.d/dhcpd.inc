@@ -2009,7 +2009,7 @@ function dhcpd_leases($inet = 4)
             if (strpos($line, $token) === 0) {
                 $section = [];
             } elseif (strpos($line, '}') === 0 && count($section) > 0) {
-                $content[] = implode($section, '');
+                $content[] = implode('', $section);
             }
             $section[] = rtrim($line, "\n;");
         }
