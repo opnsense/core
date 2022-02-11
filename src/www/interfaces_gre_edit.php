@@ -39,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($a_gres[$_GET['id']])) {
         $id = $_GET['id'];
     }
-    $pconfig = array();
+    $pconfig = [];
     // copy fields
-    $copy_fields = array('if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr');
+    $copy_fields = ['if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr'];
     foreach ($copy_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_gres[$id][$fieldname]) ? $a_gres[$id][$fieldname] : null;
     }
@@ -51,12 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['id'];
     }
 
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "if tunnel-remote-addr tunnel-remote-net tunnel-local-addr");
-    $reqdfieldsn = array(gettext("Parent interface"),gettext("Local address"),gettext("Remote tunnel address"),gettext("Remote tunnel network"), gettext("Local tunnel address"));
+    $reqdfieldsn = [gettext('Parent interface'),gettext('Local address'),gettext('Remote tunnel address'),gettext('Remote tunnel network'), gettext('Local tunnel address')];
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -75,15 +75,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        $gre = array();
-        $copy_fields = array('if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr');
+        $gre = [];
+        $copy_fields = ['if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr'];
         foreach ($copy_fields as $fieldname) {
             $gre[$fieldname] = isset($pconfig[$fieldname]) ? $pconfig[$fieldname] : null;
         }
 
-        $gre['greif'] = interface_gre_configure($gre);
-        ifgroup_setup();
-        if ($gre['greif'] == "" || !stristr($gre['greif'], "gre")) {
+        if (empty($gre['greif'])) {
+            $gre['greif'] = legacy_interface_create('gre'); /* XXX find another strategy */
+        }
+
+        if (empty($gre['greif']) || strpos($gre['greif'], 'gre') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -92,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gres[] = $gre;
             }
             write_config();
+            interface_gre_configure($gre);
+            ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
