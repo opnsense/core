@@ -2114,7 +2114,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $loaded = [];
 
     if (!isset($wancfg['enable'])) {
-        return;
+        return $loaded;
     }
 
     $wandescr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
@@ -2142,7 +2142,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         (strpos($realhwif, '/') === 0 && !file_exists($realhwif))
     ) {
         log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realhwif));
-        return;
+        return $loaded;
     }
 
     if ($verbose) {
