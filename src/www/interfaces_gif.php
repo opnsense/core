@@ -115,7 +115,7 @@ legacy_html_escape_form_data($a_gifs);
                   $i = 0;
                   foreach ($a_gifs as $gif): ?>
                     <tr>
-                      <td><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($gif['if']));?></td>
+                      <td><?= html_safe(convert_friendly_interface_to_friendly_descr(explode('_vip', $gif['if'])[0])) ?></td>
                       <td><?=$gif['remote-addr'];?></td>
                       <td><?=$gif['descr'];?></td>
                       <td class="text-nowrap">
