@@ -565,8 +565,23 @@ function interfaces_gre_configure($device)
 
 function _interfaces_gre_configure($gre)
 {
-    /* XXX we miss a reference here for IP alias since 'if' is the alias address only, look up in VIPs? */
-    interfaces_bring_up(get_real_interface(explode('_vip', $gre['if'])[0])); /* XXX overreach? */
+    /*
+     * The model used by GRE stuffs the alias IP into 'if' and we have
+     * no way of directly seeing the interface (handled slightly better
+     * with GIF) so we need to look it up here.  We can decide to ditch
+     * this or change it to match GIF but for now just retain what we have.
+     */
+    $parent = explode('_vip', $gre['if'])[0];
+    if (is_ipaddr($parent)) {
+        foreach (get_configured_ip_aliases_list() as $ip => $int) {
+            if ($ip == $parent) {
+                $parent = $int;
+                break;
+            }
+        }
+    }
+
+    interfaces_bring_up(get_real_interface($parent)); /* XXX overreach? */
 
     /* XXX avoid destroy/create */
     legacy_interface_destroy($gre['greif']);
