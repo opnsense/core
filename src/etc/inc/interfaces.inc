@@ -3849,7 +3849,7 @@ function link_interface_to_gif($interface)
 
     if (isset($config['gifs']['gif'])) {
         foreach ($config['gifs']['gif'] as $gif) {
-            if ($gif['if'] == $interface) {
+            if (explode('_vip', $gif['if'])[0] == $interface) {
                 $result[] = $gif;
             }
         }
