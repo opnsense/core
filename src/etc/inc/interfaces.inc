@@ -4105,10 +4105,10 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (!empty($ifinfo['ipv6'])) {
-            list ($primary6, $unused, $subnet6) = interfaces_primary_address6($ifdescr, $all_intf_details);
+            list ($primary6,, $bits6) = interfaces_primary_address6($ifdescr, $all_intf_details);
             if (!empty($primary6)) {
                 $ifinfo['ipaddrv6'] = $primary6;
-                $ifinfo['subnetv6'] = $subnet6;
+                $ifinfo['subnetv6'] = $bits6;
             }
             foreach ($ifinfo['ipv6'] as $ipv6addr) {
                 if (!empty($ipv6addr['link-local'])) {
