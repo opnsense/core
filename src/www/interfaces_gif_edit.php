@@ -39,24 +39,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($a_gifs[$_GET['id']])) {
         $id = $_GET['id'];
     }
-    $pconfig = array();
+    $pconfig = [];
 
     // copy fields
-    $copy_fields = array('gifif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr');
+    $copy_fields = ['if', 'gifif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr'];
     foreach ($copy_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_gifs[$id][$fieldname]) ? $a_gifs[$id][$fieldname] : null;
     }
+
     // bool fields
     $pconfig['link2'] = isset($a_gifs[$id]['link2']);
     $pconfig['link1'] = isset($a_gifs[$id]['link1']);
 
-    // construct interface
+    // append interface alias if needed
     if (!empty($a_gifs[$id]['ipaddr'])) {
-        $pconfig['if'] = $pconfig['if'] . '|' . $a_gifs[$id]['ipaddr'];
-    } elseif (!empty($a_gifs[$id]['if'])) {
-        $pconfig['if'] = $a_gifs[$id]['if'];
-    } else {
-        $pconfig['if'] = null;
+        $pconfig['if'] .= '|' . $a_gifs[$id]['ipaddr'];
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate and save form data
@@ -64,12 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['id'];
     }
 
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "if tunnel-remote-addr tunnel-remote-net tunnel-local-addr");
-    $reqdfieldsn = array(gettext("Parent interface,Local address, Remote tunnel address, Remote tunnel network, Local tunnel address"));
+    $reqdfieldsn = [gettext('Parent interface,Local address, Remote tunnel address, Remote tunnel network, Local tunnel address')];
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -96,9 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        $gif = array();
+        $gif = [];
         // copy fields
-        $copy_fields = array('tunnel-local-addr', 'tunnel-remote-addr', 'tunnel-remote-net', 'remote-addr', 'descr', 'gifif');
+        $copy_fields = ['tunnel-local-addr', 'tunnel-remote-addr', 'tunnel-remote-net', 'remote-addr', 'descr', 'gifif'];
         foreach ($copy_fields as $fieldname) {
             $gif[$fieldname] = $pconfig[$fieldname];
         }
@@ -108,15 +105,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // interface and optional bind address
         if (strpos($pconfig['if'], '|') !== false) {
-            list($gif['if'], $gif['ipaddr']) = explode("|",$pconfig['if']);
+            list($gif['if'], $gif['ipaddr']) = explode('|', $pconfig['if']);
         } else {
             $gif['if'] = $pconfig['if'];
             $gif['ipaddr'] = null;
         }
 
-        $gif['gifif'] = interface_gif_configure($gif);
-        ifgroup_setup();
-        if ($gif['gifif'] == "" || !stristr($gif['gifif'], "gif")) {
+        if (empty($gif['gifif'])) {
+            $gif['gifif'] = legacy_interface_create('gif'); /* XXX find another strategy */
+        }
+
+        if (empty($gif['gifif']) || strpos($gif['gifif'], 'gif') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -125,6 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gifs[] = $gif;
             }
             write_config();
+            interface_gif_configure($gif);
+            ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
