@@ -35,8 +35,8 @@ require_once("filter.inc");
 $a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list
-$ifacelist = array();
-foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+$ifacelist = [];
+foreach (legacy_config_get_interfaces(['virtual' => false, 'enable' => true]) as $intf => $intfdata) {
     if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
         $ifacelist[$intf] = $intfdata['descr'];
     }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
     }
     // copy fields 1-on-1
-    $copy_fields = array('descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt', 'span');
+    $copy_fields = ['descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt', 'span'];
     foreach ($copy_fields as $fieldname) {
         if (isset($a_bridges[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_bridges[$id][$fieldname];
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($a_bridges[$id][$fieldname])) {
             $pconfig[$fieldname] = explode(',', $a_bridges[$id][$fieldname]);
         } else {
-            $pconfig[$fieldname] = array();
+            $pconfig[$fieldname] = [];
         }
     }
 
@@ -90,14 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['id'];
     }
 
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "members");
-    $reqdfieldsn = array(gettext("Member Interfaces"));
+    $reqdfieldsn = [gettext('Member Interfaces')];
 
-    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
     $not_between_int = function($val, $min, $max) {
         return !is_numeric($val) || $val < $min || $val > $max;
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // 1 on 1 copy
-        $copy_fields = array('descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt');
+        $copy_fields = ['descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt'];
         foreach ($copy_fields as $fieldname) {
             if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != '') {
                 $bridge[$fieldname] = $pconfig[$fieldname];
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // simple array fields
-        $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
+        $array_fields = ['members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'];
         foreach ($array_fields as $fieldname) {
             if(!empty($pconfig[$fieldname])) {
                 $bridge[$fieldname] = implode(',', $pconfig[$fieldname]);
@@ -208,9 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        interface_bridge_configure($bridge);
-        ifgroup_setup();
-        if ($bridge['bridgeif'] == "" || !stristr($bridge['bridgeif'], "bridge")) {
+        if (empty($bridge['bridgeif'])) {
+            $bridge['bridgeif'] = legacy_interface_create('bridge'); /* XXX find another strategy */
+        }
+
+        if (empty($bridge['bridgeif']) || strpos($bridge['bridgeif'], 'bridge') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -219,6 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_bridges[] = $bridge;
             }
             write_config();
+            interface_bridge_configure($bridge);
+            ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
@@ -270,7 +274,7 @@ $(document).ready(function() {
                       <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-                        $bridge_interfaces = array();
+                        $bridge_interfaces = [];
                         foreach ($a_bridges as $idx => $bridge_item) {
                             if (!isset($id) || $idx != $id) {
                                 $bridge_interfaces = array_merge(explode(',', $bridge_item['members']), $bridge_interfaces);
