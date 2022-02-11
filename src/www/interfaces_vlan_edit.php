@@ -97,13 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $vlan['vlanif'] = "{$pconfig['if']}_vlan{$pconfig['tag']}";
         if (isset($id)) {
             if (($a_vlans[$id]['if'] != $pconfig['if']) || ($a_vlans[$id]['tag'] != $pconfig['tag']) || ($a_vlans[$id]['pcp'] != $pconfig['pcp'])) {
-                if (!empty($a_vlans[$id]['vlanif'])) {
-                    $confif = convert_real_interface_to_friendly_interface_name($a_vlans[$id]['vlanif']);
-                    legacy_interface_destroy($a_vlans[$id]['vlanif']);
-                } else {
-                    legacy_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
-                    $confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
-                }
+                $confif = convert_real_interface_to_friendly_interface_name($a_vlans[$id]['vlanif']);
+                legacy_interface_destroy($a_vlans[$id]['vlanif']);
                 if ($confif != '') {
                     $config['interfaces'][$confif]['if'] = $vlan['vlanif'];
                 }
