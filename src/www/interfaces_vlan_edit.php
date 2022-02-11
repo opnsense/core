@@ -108,8 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               * Since VLAN name is calculated we do not need to fetch one from the
               * system.  However, we would still like to know if the system can create
               * another VLAN if it is being added like is done for other devices.
-              * Eventually we want to change VLAN device names in the newer FreeBSD
-              * parentX.ID style.
+              * Eventually we want to change VLAN device names to a simpler "vlanX" style.
               */
              $vlan['vlanif'] = legacy_interface_create('vlan', $vlan['vlanif']); /* XXX find another strategy */
         }
