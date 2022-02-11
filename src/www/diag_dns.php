@@ -43,7 +43,7 @@ if (!empty($_REQUEST['host'])) {
         $dns_servers = array();
         exec("/usr/bin/grep nameserver /etc/resolv.conf | /usr/bin/cut -f2 -d' '", $dns_servers);
         foreach ($dns_servers as $dns_server) {
-            $query_time = exec("/usr/bin/drill {$host_esc} " . escapeshellarg("@" . trim($dns_server)) . " | /usr/bin/grep Query | /usr/bin/cut -d':' -f2");
+            $query_time = exec("/usr/local/bin/drill {$host_esc} " . escapeshellarg("@" . trim($dns_server)) . " | /usr/bin/grep Query | /usr/bin/cut -d':' -f2");
             if ($query_time == "") {
                 $query_time = gettext("No response");
             }
@@ -55,7 +55,7 @@ if (!empty($_REQUEST['host'])) {
         if (is_ipaddr($host)) {
             $resolved[] = "PTR " . gethostbyaddr($host);
         } elseif (is_hostname($host)) {
-            exec("(/usr/bin/drill {$host_esc} AAAA; /usr/bin/drill {$host_esc} A) | /usr/bin/grep 'IN' | /usr/bin/grep -v ';' | /usr/bin/grep -v 'SOA' | /usr/bin/awk '{ print $4 \" \" $5 }'", $resolved);
+            exec("(/usr/local/bin/drill {$host_esc} AAAA; /usr/local/bin/drill {$host_esc} A) | /usr/bin/grep 'IN' | /usr/bin/grep -v ';' | /usr/bin/grep -v 'SOA' | /usr/bin/awk '{ print $4 \" \" $5 }'", $resolved);
         }
     }
 }
