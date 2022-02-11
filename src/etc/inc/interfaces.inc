@@ -683,9 +683,23 @@ function interface_gre_configure(&$gre, $grekey = "")
         return -1;
     }
 
-    $realif = get_real_interface($gre['if']);
+    /*
+     * The model used by GRE stuffs the alias IP into 'if' and we have
+     * no way of directly seeing the interface (handled slightly better
+     * with GIF) so we need to look it up here.  We can decide to ditch
+     * this or change it to match GIF but for now just retain what we have.
+     */
+    $parent = explode('_vip', $gre['if'])[0];
+    if (is_ipaddr($parent)) {
+        foreach (get_configured_ip_aliases_list() as $ip => $int) {
+            if ($ip == $parent) {
+                $parent = $int;
+                break;
+            }
+        }
+    }
 
-    interfaces_bring_up($realif);
+    interfaces_bring_up(get_real_interface($parent)); /* XXX overreach? */
 
     if (file_exists("/var/run/booting") || !empty($gre['greif'])) {
         legacy_interface_destroy($gre['greif']);
@@ -3828,11 +3842,21 @@ function link_interface_to_gre($interface)
 {
     global $config;
 
+    $aliaslist = get_configured_ip_aliases_list();
     $result = [];
 
     if (isset($config['gres']['gre'])) {
         foreach ($config['gres']['gre'] as $gre) {
-            if ($gre['if'] == $interface) {
+            $parent = explode('_vip', $gre['if'])[0];
+            if (is_ipaddr($parent)) {
+                foreach ($aliaslist as $ip => $int) {
+                    if ($ip == $parent) {
+                        $parent = $int;
+                        break;
+                    }
+                }
+            }
+            if ($parent == $interface) {
                 $result[] = $gre;
             }
         }
