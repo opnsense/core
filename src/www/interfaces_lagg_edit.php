@@ -153,8 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $lagg['laggif'] = $a_laggs[$id]['laggif'];
         }
 
-        $lagg['laggif'] = interface_lagg_configure($lagg);
-        if ($lagg['laggif'] == "" || !stristr($lagg['laggif'], "lagg")) {
+        if (empty($lagg['laggif'])) {
+            $lagg['laggif'] = legacy_interface_create('lagg'); /* XXX find another strategy */
+        }
+
+        if (empty($lagg['laggif']) || strpos($lagg['laggif'], 'lagg') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -162,8 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $a_laggs[] = $lagg;
             }
-
             write_config();
+            interface_lagg_configure($lagg);
             $confif = convert_real_interface_to_friendly_interface_name($lagg['laggif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
