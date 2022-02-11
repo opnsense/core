@@ -3610,14 +3610,19 @@ function link_interface_to_gre($interface)
 {
     global $config;
 
+    $aliaslist = get_configured_ip_aliases_list();
     $result = [];
 
     if (isset($config['gres']['gre'])) {
         foreach ($config['gres']['gre'] as $gre) {
             $parent = explode('_vip', $gre['if'])[0];
             if (is_ipaddr($parent)) {
-                /* XXX requires a proper runtime setup or VIP lookup */
-                $parent = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($parent));
+                foreach ($aliaslist as $ip => $int) {
+                    if ($ip == $parent) {
+                        $parent = $int;
+                        break;
+                    }
+                }
             }
             if ($parent == $interface) {
                 $result[] = $gre;
