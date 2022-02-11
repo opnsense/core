@@ -30,20 +30,10 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function gre_inuse($gre_intf)
-{
-    foreach (legacy_config_get_interfaces() as $if => $intf) {
-        if ($intf['if'] == $gre_intf) {
-            return true;
-        }
-    }
-    return false;
-}
-
 $a_gres = &config_read_array('gres', 'gre') ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     if (!empty($a_gres[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -127,14 +117,12 @@ legacy_html_escape_form_data($a_gres);
                   foreach ($a_gres as $gre): ?>
                     <tr>
                       <td>
-<?php
-                      if (is_ipaddr($gre['if'])):?>
-                        [<?=htmlspecialchars($gre['if']);?>]
-<?php
-                      else:?>
-                        <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($gre['if']));?>
-<?php
-                      endif;?>
+<?php if (is_ipaddr($gre['if'])): ?>
+<?php   $interface = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($gre['if'])); ?>
+<?php else: ?>
+<?php   $interface = explode('_vip', $gre['if'])[0]; ?>
+<?php endif ?>
+                        <?= html_safe(convert_friendly_interface_to_friendly_descr($interface)) ?>
                       </td>
                       <td><?=$gre['remote-addr'];?></td>
                       <td><?=$gre['descr'];?></td>
