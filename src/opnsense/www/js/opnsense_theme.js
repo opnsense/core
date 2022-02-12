@@ -52,8 +52,10 @@ $(document).ready(function () {
             if (that.next('div').hasClass('in')) {
                 /* no action needed */
             } else {
-                var divHeight = that.next('div').height(),
-                divTop = that.offset().top,
+                var offsetTop = that.offset().top,
+                winscrTop = $(window).scrollTop(),
+                divHeight = that.next('div').height(),
+                divTop = (offsetTop - winscrTop),
                 currentHeight = (divTop + divHeight),
                 thatTrigger = that.trigger('click');
                 close_submenu(this);
