@@ -52,10 +52,12 @@ $(document).ready(function () {
             if (that.next('div').hasClass('in')) {
                 /* no action needed */
             } else {
-                var divHeight = that.next('div').height(),
-                divTop = that.offset().top,
-                currentHeight = (divTop + divHeight),
-                thatTrigger = that.trigger('click');
+                var offsetTop = that.offset().top;
+                var winscrTop = $(window).scrollTop();
+                var divHeight = that.next('div').height();
+                var divTop = (offsetTop - winscrTop);
+                var currentHeight = (divTop + divHeight);
+                var thatTrigger = that.trigger('click');
                 close_submenu(this);
                 if (currentHeight > (winHeight - li_itemH)) {
                     var divPos = (divHeight > divTop) ? - ((divHeight - divTop) - li_itemH) : 3,
