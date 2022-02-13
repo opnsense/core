@@ -75,8 +75,6 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     return;
 }
 
-interfaces_vips_configure(false, $interface);
-
 $gres = link_interface_to_gre($interface);
 foreach ($gres as $gre) {
     _interfaces_gre_configure($gre);

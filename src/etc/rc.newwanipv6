@@ -75,8 +75,6 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     return;
 }
 
-interfaces_vips_configure(false, $interface);
-
 if (count(link_interface_to_track6($interface, true))) {
     plugins_configure('dhcp', false, array('inet6'));
 }

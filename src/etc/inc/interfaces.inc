@@ -1434,7 +1434,7 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($verbose = false, $interface = '')
+function interfaces_vips_configure($verbose = false, $interface = 'wan')
 {
     global $config;
 
@@ -1446,7 +1446,7 @@ function interfaces_vips_configure($verbose = false, $interface = '')
     $anyproxyarp = false;
 
     foreach ($config['virtualip']['vip'] as $vip) {
-        if (empty($interface) || $vip['interface'] == $interface) {
+        if ($vip['interface'] == $interface) {
             switch ($vip['mode']) {
                 case 'proxyarp':
                     $anyproxyarp = true;
