@@ -233,7 +233,10 @@ class Alias(object):
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
                 if os.path.isfile(self._filename_alias_content):
-                    undo_content = open(self._filename_alias_content, 'r').read()
+                    try:
+                        undo_content = open(self._filename_alias_content, 'r').read()
+                    except UnicodeDecodeError:
+                        undo_content = ""
                 else:
                     undo_content = ""
                 try:
