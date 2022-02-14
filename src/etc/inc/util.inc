@@ -948,7 +948,7 @@ function log_error($error)
 * RESULT
 *   null
 ******/
-function log_msg($msg, $prio = LOG_ERR)
+function log_msg($msg, $prio = LOG_WARNING)
 {
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
