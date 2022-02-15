@@ -35,8 +35,6 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-system_console_mute();
-
 if (set_networking_interfaces_ports()) {
     /* need to stop local servers to prevent faulty leases */
     killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
@@ -50,5 +48,3 @@ if (set_networking_interfaces_ports()) {
     plugins_configure('vpn', true);
     rrd_configure(true);
 }
-
-system_console_unmute();
