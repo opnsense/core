@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!in_array($pconfig['syncookies'], ['always', 'adaptive'])) {
             $input_errors[] = sprintf(gettext("Unknown syncookie type %s.", $pconfig['syncookies']));
         }
-        if ((empty($pconfig['syncookies_adaptstart']) && !empty($pconfig['syncookies_adaptstart'])) || (!empty($pconfig['syncookies_adaptstart']) && empty($pconfig['syncookies_adaptend']))) {
+        if ($pconfig['syncookies'] == 'adaptive' && (empty($pconfig['syncookies_adaptstart']) || empty($pconfig['syncookies_adaptend']))) {
             $input_errors[] = gettext("Syncookie Adaptive values must be set together.");
         }
         if (!empty($pconfig['syncookies_adaptstart']) && !is_numericint($pconfig['syncookies_adaptstart'])) {
