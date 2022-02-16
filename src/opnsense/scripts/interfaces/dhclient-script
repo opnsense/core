@@ -225,7 +225,7 @@ add_new_resolv_conf() {
 	rm -f /tmp/${interface}_nameserver
 	rm -f /tmp/${interface}_searchdomain
 
-	if [ "$(pluginctl -g system.dnsallowoverride)" != "1" ]; then
+	if [ "$(/usr/local/sbin/pluginctl -g system.dnsallowoverride)" != "1" ]; then
 	        # prevent installing DNS information when not allowed
 		return 0
 	fi
