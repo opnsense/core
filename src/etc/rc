@@ -80,18 +80,15 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 		continue;
 	fi
 
-	# translate labels into devices names
+	# normalize devices names
 	FS_LABEL=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/(gpt|ufs)\/.+$/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
 	if [ -n "${FS_LABEL}" ]; then
-		FS_PART=$(glabel status -as | grep ${FS_LABEL} | awk '{ print $3 }')
-		FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^[a-z]+[0-9]+/) { print substr( $0, RSTART, RLENGTH )}')
+		FS_PART=$(glabel status -as | awk '$1 == "'${FS_LABEL}'" { print $3 }')
+	else
+		FS_PART=${FS_PART##/dev/}
 	fi
 
-	# normalize devices names
-	if [ -z "${FS_DEV}" ]; then
-		FS_PART=${FS_PART##/dev/}
-		FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^[a-z]+[0-9]+/) { print substr( $0, RSTART, RLENGTH )}')
-	fi
+	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^[a-z]+[0-9]+/) { print substr( $0, RSTART, RLENGTH )}')
 
 	if echo "${FS_MORE}" | grep -iq nosoft; then
 		# appending "# nosoft" to the /etc/fstab entry
@@ -242,7 +239,7 @@ rm /var/run/booting
 /usr/local/etc/rc.syshook start
 
 echo -n "Root file system: "
-mount | grep ' on / ' | awk '{ print $1 }'
+mount | awk '$3 == "/" { print $1 }'
 date
 
 /usr/local/sbin/opnsense-shell banner
