@@ -766,7 +766,7 @@ function interfaces_configure($verbose = false)
             /* pre-op: configuring the underlying device */
             if (!empty($devices[$device])) {
                 log_msg("Device $device required for $if, configuring now", LOG_ERR);
-                call_user_func_array($devices[$device]['function'], [$devices[$device]['name']]);
+                call_user_func_array($devices[$device], [$device]);
                 unset($devices[$device]);
             }
 
