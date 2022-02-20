@@ -74,6 +74,7 @@
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
       });
       $("#severity_filter").change(function(){
+          $('#severity_filter').attr('disabled',true);
           if (window.localStorage) {
               localStorage.setItem('log_severity_{{module}}_{{scope}}', $("#severity_filter").val());
           }
@@ -97,6 +98,10 @@
                   $("#severity_filter").val("Debug").change();
               }
           });
+          setTimeout(function() {
+              $('#severity_filter').attr('disabled',false);
+              $('#severity_filter_container').find('a[role="option"]').css('cursor', '');
+          }, 500);
       });
 
       $("#flushlog").on('click', function(event){
@@ -156,6 +161,12 @@
 
           let header_val = filter_exact ? m_header : s_header;
           select.selectpicker({ header: header_val });
+
+          select.on('shown.bs.select', function () {
+              $('#severity_filter_container').find('a[role="option"]').click(function() {
+                  $('#severity_filter_container').find('a[role="option"]').css('cursor', 'not-allowed');
+              });
+          });
 
           // attach event handler each time header created
           $("#exact_severity").on("click", function(event) {
