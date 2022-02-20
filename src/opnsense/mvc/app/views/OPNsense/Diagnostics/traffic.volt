@@ -264,7 +264,15 @@ POSSIBILITY OF SUCH DAMAGE.
                               .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0)
                               .data('intf', intf);
                             tr.append($("<td/>").html(intf_label));
-                            tr.append($("<td/>").text(item.address));
+                            if (item.rname) {
+                                tr.append(
+                                  $("<td/>").append(
+                                      $("<span/>").text(item.rname), $("<small/>").text("("+item.address+")")
+                                  )
+                                );
+                            } else {
+                                tr.append($("<td/>").text(item.address));
+                            }
                             tr.append($("<td class='bps_in'/>").text("0b"));
                             tr.append($("<td class='bps_out'/>").text("0b"));
                             tr.append($("<td class='bps_max_in'/>").text("0b"));
