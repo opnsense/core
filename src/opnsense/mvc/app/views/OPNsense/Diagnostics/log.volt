@@ -51,7 +51,7 @@
               sorting:false,
               rowSelect: false,
               selection: false,
-              rowCount:[20,50,100,200,500,1000,-1],
+              rowCount:[20,50,100,200,500,1000,5000],
               formatters:{
                   page: function (column, row) {
                       if ($("input.search-field").val() !== "" || $('#severity_filter').val().length > 0) {
