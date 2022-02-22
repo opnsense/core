@@ -45,7 +45,7 @@ class VlanInterfaceField extends BaseListField
             $ifnames = [];
             if (!empty($configHandle->interfaces)) {
                 foreach ($configHandle->interfaces->children() as $ifname => $node) {
-                    $ifnames[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+                    $ifnames[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
                 }
             }
             self::$interface_devices = [];
