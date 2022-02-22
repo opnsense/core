@@ -159,21 +159,6 @@ function &getGroupEntry($name)
     return array();
 }
 
-function &getGroupEntryByGID($gid)
-{
-    global $config;
-
-    if (isset($config['system']['group'])) {
-        foreach ($config['system']['group'] as & $group) {
-            if ($group['gid'] == $gid) {
-                return $group;
-            }
-        }
-    }
-
-    return false;
-}
-
 function get_user_privileges(&$user)
 {
     if (!isset($user['priv']) || !is_array($user['priv'])) {
@@ -292,10 +277,6 @@ function local_sync_accounts()
             }
         }
     }
-
-    /* make sure the all group exists */
-    $allgrp = getGroupEntryByGID(1998);
-    local_group_set($allgrp, true);
 
     /* sync all local users */
     if (is_array($config['system']['user'])) {
@@ -556,7 +537,7 @@ function local_group_del_user($user)
     }
 }
 
-function local_group_set($group, $reset = false)
+function local_group_set($group)
 {
     if (!isset($group['name']) || !isset($group['gid'])) {
         return;
@@ -566,7 +547,7 @@ function local_group_set($group, $reset = false)
     $group_gid = $group['gid'];
     $group_members = '';
 
-    if (!$reset && !empty($group['member']) && count($group['member']) > 0) {
+    if (!empty($group['member']) && count($group['member']) > 0) {
         $group_members = implode(',', $group['member']);
     }
 
