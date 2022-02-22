@@ -410,18 +410,6 @@
             <pattern>interfaces_ppps_edit.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
-    <page-interfaces-vlan>
-        <name>Interfaces: VLAN</name>
-        <patterns>
-            <pattern>interfaces_vlan.php*</pattern>
-        </patterns>
-    </page-interfaces-vlan>
-    <page-interfaces-vlan-edit>
-        <name>Interfaces: VLAN: Edit</name>
-        <patterns>
-            <pattern>interfaces_vlan_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-vlan-edit>
     <page-interfaces>
         <name>Interfaces: WAN</name>
         <patterns>
