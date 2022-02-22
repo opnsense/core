@@ -40,6 +40,7 @@ function crypto_modules()
     $modules = array(
         'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
         'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
+        'qat' => gettext('Intel QuickAssist Technology'),
         'safe' => gettext('SafeNet Crypto Accelerator'),
     );
     $available = array();
@@ -73,7 +74,7 @@ function thermal_modules()
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
-    $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
+    $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? explode(',', $config['system']['crypto_hardware']) : [];
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_var']);
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
@@ -101,8 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], crypto_modules())) {
-        $input_errors[] = gettext("Please select a valid Cryptographic Accelerator.");
+    if (!empty($pconfig['crypto_hardware'])) {
+        if (count(array_intersect($pconfig['crypto_hardware'], crypto_modules())) == count($pconfig['crypto_hardware'])) {
+            $input_errors[] = gettext('Please select a valid Cryptographic Accelerator.');
+	}
+    } else {
+        $pconfig['crypto_hardware'] = [];
     }
 
     if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], thermal_modules())) {
@@ -120,8 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['powerd_battery_mode'] = $pconfig['powerd_battery_mode'];
         $config['system']['powerd_normal_mode'] = $pconfig['powerd_normal_mode'];
 
-        if ($pconfig['crypto_hardware']) {
-            $config['system']['crypto_hardware'] = $pconfig['crypto_hardware'];
+        if (!empty($pconfig['crypto_hardware'])) {
+            $config['system']['crypto_hardware'] = implode(',', $pconfig['crypto_hardware']);
         } elseif (isset($config['system']['crypto_hardware'])) {
             unset($config['system']['crypto_hardware']);
         }
@@ -252,10 +257,9 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_crypto_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Hardware acceleration') ?></td>
                 <td>
-                  <select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
-                    <option value=""><?=gettext("None"); ?></option>
+                  <select name="crypto_hardware[]" id="crypto_hardware" class="selectpicker" multiple="multiple" data-style="btn-default" title="<?= html_safe(gettext('None')) ?>">
 <?php foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr): ?>
-                    <option value="<?= html_safe($cryptomod_name) ?>" <?=$pconfig['crypto_hardware'] == $cryptomod_name ? "selected=\"selected\"" :"";?>>
+                    <option value="<?= html_safe($cryptomod_name) ?>" <?= in_array($cryptomod_name, $pconfig['crypto_hardware']) ? 'selected="selected"' : '' ?>>
                       <?="{$cryptomod_descr} ({$cryptomod_name})"; ?>
                     </option>
 <?php endforeach ?>
