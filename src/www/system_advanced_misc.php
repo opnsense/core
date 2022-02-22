@@ -38,12 +38,9 @@ require_once("interfaces.inc");
 function crypto_modules()
 {
     $modules = array(
-        'aesni' => gettext('AES-NI CPU-based Acceleration'),
-        'glxsb' => gettext('AMD Geode LX Security Block'),
         'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
         'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
         'safe' => gettext('SafeNet Crypto Accelerator'),
-        'ubsec' => gettext('Broadcom and BlueSteel uBsec 5x0x crypto accelerator'),
     );
     $available = array();
 
