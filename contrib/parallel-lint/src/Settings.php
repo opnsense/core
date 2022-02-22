@@ -152,16 +152,16 @@ class Settings
                         $settings->aspTags = true;
                         break;
 
-                    case '--exclude':
-                        $settings->excluded[] = $arguments->getNext();
-                        break;
-
                     case '-e':
                         $settings->extensions = array_map('trim', explode(',', $arguments->getNext()));
                         break;
 
                     case '-j':
                         $settings->parallelJobs = max((int) $arguments->getNext(), 1);
+                        break;
+
+                    case '--exclude':
+                        $settings->excluded[] = $arguments->getNext();
                         break;
 
                     case '--colors':
@@ -176,16 +176,16 @@ class Settings
                         $settings->showProgress = false;
                         break;
 
+                    case '--checkstyle':
+                        $settings->format = self::FORMAT_CHECKSTYLE;
+                        break;
+
                     case '--json':
                         $settings->format = self::FORMAT_JSON;
                         break;
 
                     case '--gitlab':
                         $settings->format = self::FORMAT_GITLAB;
-                        break;
-
-                    case '--checkstyle':
-                        $settings->format = self::FORMAT_CHECKSTYLE;
                         break;
 
                     case '--git':
