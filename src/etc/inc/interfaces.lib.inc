@@ -367,6 +367,13 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
             $result[$current_interface]['groups'] = $line_parts;
+        } elseif (preg_match("/vlan: (.*)\Wvlanproto:\W(.*) vlanpcp:\W(.*) parent interface:\W(.*)$/", $line, $matches)) {
+            $result[$current_interface]['vlan'] = [
+                "tag" => $matches[1],
+                "proto" => $matches[2],
+                "pcp" => $matches[3],
+                "parent" => $matches[4],
+            ];
         } elseif (strpos($line, "\tcarp: ") !== false) {
             if (empty($result[$current_interface]["carp"])) {
                 $result[$current_interface]["carp"] = [];
