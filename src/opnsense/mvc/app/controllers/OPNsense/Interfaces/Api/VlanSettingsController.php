@@ -88,7 +88,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             $result = $this->setBase("vlan", "vlan", $uuid, ["vlanif" => $new_vlanif]);
             // store interface name for apply action
             if ($result['result'] != 'failed' && $old_vlanif != $new_vlanif) {
-                file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND|LOCK_EX);
+                file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND | LOCK_EX);
             }
         }
         return $result;
@@ -116,7 +116,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             $result = $this->delBase("vlan", $uuid);
             // store interface name for apply action
             if ($result['result'] != 'failed') {
-                file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND|LOCK_EX);
+                file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND | LOCK_EX);
             }
             return $result;
         }

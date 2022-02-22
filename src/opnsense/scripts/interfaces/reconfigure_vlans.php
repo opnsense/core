@@ -61,7 +61,7 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
     if (empty($ifdetails['vlan'])) {
         continue;
     }
-    if (isset($all_vlans[$ifname])){
+    if (isset($all_vlans[$ifname])) {
         $vlan = $all_vlans[$ifname];
         $cvlan = $ifdetails['vlan'];
         if (empty($vlan)) {
@@ -69,8 +69,8 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
             legacy_interface_destroy($ifname);
         } elseif ($vlan['pcp'] != $cvlan['pcp']) {
             // option 2: pcp changed, which can be altered instantly
-            exec('/sbin/ifconfig ' . escapeshellarg($vlan['vlanif']) . ' vlanpcp ' . escapeshellarg($vlan['pcp']). ' 2>&1', $out, $ret);
-        } elseif ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']){
+            exec('/sbin/ifconfig ' . escapeshellarg($vlan['vlanif']) . ' vlanpcp ' . escapeshellarg($vlan['pcp']) . ' 2>&1', $out, $ret);
+        } elseif ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']) {
             // option 3: changed vlan, recreate with appropriate settings
             // XXX: legacy code used interface_configure() in these cases, but since you can't change a tag or a parent
             //      for an assigned interface. At the moment that doesn't seem to make much sense

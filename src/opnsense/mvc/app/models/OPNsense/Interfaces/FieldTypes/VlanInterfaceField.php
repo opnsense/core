@@ -53,7 +53,8 @@ class VlanInterfaceField extends BaseListField
             if (!empty($ifconfig)) {
                 foreach ($ifconfig as $ifname => $details) {
                     // XXX: skip same interface types as legacy, may need to revise later
-                    if (strpos($ifname, "_vlan") > 1 || strpos($ifname, "lo") === 0 || strpos($ifname, "enc") === 0 ||
+                    if (
+                        strpos($ifname, "_vlan") > 1 || strpos($ifname, "lo") === 0 || strpos($ifname, "enc") === 0 ||
                         strpos($ifname, "pflog") === 0 || strpos($ifname, "pfsync") === 0 ||
                         strpos($ifname, "bridge") === 0 ||
                         strpos($ifname, "gre") === 0 || strpos($ifname, "gif") === 0 || strpos($ifname, "ipsec") === 0
