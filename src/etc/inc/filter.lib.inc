@@ -156,7 +156,7 @@ function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject
     $aliases[] = $aliasname;
     $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
-        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port') {
+        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
             foreach (explode("\n", $aliased['content']) as $address) {
                 if (is_alias($address)) {
                     if (!in_array($address, $aliases)) {

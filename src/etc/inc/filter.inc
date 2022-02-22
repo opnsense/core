@@ -663,7 +663,11 @@ function filter_generate_aliases()
                 file_notice(sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']));
                 break;
             case "port":
-                $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], array(), $aliasObject));
+                $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], [], $aliasObject));
+                if (empty($tmp_ports)) {
+                    // we can't create empty port tables, so when it's empty we should make sure it can't match
+                    $tmp_ports = "0 <> 65535";
+                }
                 $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                 break;
             default:
