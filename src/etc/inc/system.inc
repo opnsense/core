@@ -836,8 +836,10 @@ function system_kernel_configure($verbose = false)
     );
 
     if (!empty($config['system']['crypto_hardware'])) {
-        log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
-        $mods[] = $config['system']['crypto_hardware'];
+        foreach (explode(',', $config['system']['crypto_hardware']) as $crypto) {
+            log_error(sprintf('Loading %s cryptographic accelerator module.', $crypto));
+            $mods[] = $crypto;
+        }
     }
 
     if (!empty($config['system']['thermal_hardware'])) {
