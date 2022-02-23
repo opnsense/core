@@ -527,8 +527,8 @@ function filter_core_rules_system($fw, $defaults)
                 break;
         }
     }
-    // loopback
-    $fw->registerFilterRule(5, array('interface' => 'lo0', 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
+    // loopback. dont log internal communications
+    $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
     // out from this Firewall
     $fw->registerFilterRule(
         5,
