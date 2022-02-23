@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,9 +57,24 @@ class HostnameField extends BaseField
     private $internalAsList = false;
 
     /**
-     * @var bool wildcard (any) enabled
+     * @var bool IP address allowed
      */
     protected $internalIpAllowed = true;
+
+    /**
+     * @var bool wildcard (*) enabled
+     */
+    protected $internalHostWildcardAllowed = false;
+
+    /**
+     * @var bool wildcard (*.my.top.level.domain) enabled
+     */
+    protected $internalFqdnWildcardAllowed = false;
+
+    /**
+     * @var bool zone root (@) enabled
+     */
+    protected $internalZoneRootAllowed = false;
 
     /**
      * ip addresses allowed
@@ -67,11 +82,34 @@ class HostnameField extends BaseField
      */
     public function setIpAllowed($value)
     {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalIpAllowed = true;
-        } else {
-            $this->internalIpAllowed = false;
-        }
+        $this->internalIpAllowed = trim(strtoupper($value)) == "Y";
+    }
+
+    /**
+     * host wildcard (*) allowed
+     * @param string $value Y/N
+     */
+    public function setHostWildcardAllowed($value)
+    {
+        $this->internalHostWildcardAllowed = trim(strtoupper($value)) == "Y";
+    }
+
+    /**
+     * fqdn (prefix) wildcard (*.my.top.level.domain) allowed
+     * @param string $value Y/N
+     */
+    public function setFqdnWildcardAllowed($value)
+    {
+        $this->internalFqdnWildcardAllowed = trim(strtoupper($value)) == "Y";
+    }
+
+    /**
+     * zone root (@) allowed
+     * @param string $value Y/N
+     */
+    public function setZoneRootAllowed($value)
+    {
+        $this->internalZoneRootAllowed = trim(strtoupper($value)) == "Y";
     }
 
     /**
@@ -98,11 +136,7 @@ class HostnameField extends BaseField
      */
     public function setAsList($value)
     {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalAsList = true;
-        } else {
-            $this->internalAsList = false;
-        }
+        $this->internalAsList = trim(strtoupper($value)) == "Y";
     }
 
     /**
@@ -113,7 +147,7 @@ class HostnameField extends BaseField
     {
         if ($this->internalAsList) {
             // return result as list
-            $result = array();
+            $result = [];
             foreach (explode(',', $this->internalValue) as $net) {
                 $result[$net] = array("value" => $net, "selected" => 1);
             }
@@ -135,7 +169,10 @@ class HostnameField extends BaseField
             $validators[] = new HostValidator(array(
                 'message' => $this->internalValidationMessage,
                 'split' => $this->internalFieldSeparator,
-                'allowip' => $this->internalIpAllowed
+                'allowip' => $this->internalIpAllowed,
+                'hostwildcard' => $this->internalHostWildcardAllowed,
+                'fqdnwildcard' => $this->internalFqdnWildcardAllowed,
+                'zoneroot' => $this->internalZoneRootAllowed
             ));
         }
         return $validators;
