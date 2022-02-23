@@ -94,7 +94,7 @@ while getopts bmpz OPT; do
 	esac
 done
 
-shift $((${OPTIND} - 1))
+shift $((OPTIND - 1))
 
 DO_DEV=${1}
 
