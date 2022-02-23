@@ -163,6 +163,26 @@ function legacy_vlan_tag($ifs, $member, $tag, $pcp)
     }
 }
 
+function legacy_vlan_remove_tag($ifs)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' -vlandev';
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+    }
+}
+
+function legacy_vlan_pcp($ifs, $pcp)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlanpcp ' . escapeshellarg($pcp);
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+    }
+}
+
 function legacy_interface_stats($ifs = null)
 {
     if ($ifs != null) {

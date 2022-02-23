@@ -67,14 +67,15 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
         if (empty($vlan)) {
             // option 1: removed vlan
             legacy_interface_destroy($ifname);
-        } elseif ($vlan['pcp'] != $cvlan['pcp']) {
-            // option 2: pcp changed, which can be altered instantly
-            exec('/sbin/ifconfig ' . escapeshellarg($vlan['vlanif']) . ' vlanpcp ' . escapeshellarg($vlan['pcp']) . ' 2>&1', $out, $ret);
         } elseif ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']) {
-            // option 3: changed vlan, recreate with appropriate settings
+            // option 2: changed vlan, unlink and relink
             // XXX: legacy code used interface_configure() in these cases, but since you can't change a tag or a parent
             //      for an assigned interface. At the moment that doesn't seem to make much sense
-            interface_vlan_configure($vlan);
+            legacy_vlan_remove_tag($vlan['vlanif']);
+            legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp']);
+        } elseif ($vlan['pcp'] != $cvlan['pcp']) {
+            // option 3: only pcp changed, which can be altered instantly
+            legacy_vlan_pcp($vlan['vlanif'], $vlan['pcp']);
         }
         unset($all_vlans[$ifname]);
     }
