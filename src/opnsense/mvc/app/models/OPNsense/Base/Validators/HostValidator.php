@@ -50,6 +50,9 @@ class HostValidator extends AbstractValidator implements ValidatorInterface
     {
         $result = true;
         $msg = $this->getOption('message');
+        $allow_hostwildcard = $this->getOption('hostwildcard');
+        $allow_fqdnwildcard = $this->getOption('fqdnwildcard');
+        $allow_zoneroot = $this->getOption('zoneroot');
         $fieldSplit = $this->getOption('split', null);
         if ($fieldSplit == null) {
             $values = array($validator->getValue($attribute));
@@ -60,8 +63,14 @@ class HostValidator extends AbstractValidator implements ValidatorInterface
             // set filter options
             $filterOptDomain = FILTER_FLAG_HOSTNAME;
             $filterOptIp = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
-
-            if (filter_var($value, FILTER_VALIDATE_DOMAIN, $filterOptDomain) === false) {
+            if ($allow_fqdnwildcard && substr($value, 0, 2) == '*.') {
+                $value = substr($value, 2);
+            }
+            if ($allow_zoneroot && $value == '@') {
+                $result = true;
+            } elseif ($allow_hostwildcard && $value == '*') {
+                $result = true;
+            } elseif (filter_var($value, FILTER_VALIDATE_DOMAIN, $filterOptDomain) === false) {
                 if ($this->getOption('allowip') === true) {
                     if (filter_var($value, FILTER_VALIDATE_IP, $filterOptIp) === false) {
                         $result = false;

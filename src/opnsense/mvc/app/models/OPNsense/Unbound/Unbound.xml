@@ -81,7 +81,7 @@
                 </enabled>
                 <hostname type="HostnameField">
                     <Required>N</Required>
-                    <WildcardAllowed>Y</WildcardAllowed>
+                    <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>
