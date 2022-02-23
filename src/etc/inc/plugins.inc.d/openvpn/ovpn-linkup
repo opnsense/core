@@ -5,7 +5,10 @@ if [ -n "${route_vpn_gateway}" ]; then
 elif [ -n "${ifconfig_remote}" ]; then
 	/bin/echo ${ifconfig_remote} > /tmp/${1}_router
 elif [ -n "${ifconfig_local}" ]; then
-	/usr/local/bin/python3 -c "import netaddr; import sys; print(netaddr.IPNetwork('%s/%s'%(sys.argv[1], sys.argv[2]))[1])" ${ifconfig_local} ${ifconfig_netmask} > /tmp/${1}_router
+	# XXX: We can't reliably determine the tunnels endpoint, other than parsing ifconfig.
+	#      Use our standard parser to request the tunnels other end. Eventually we could pass this to configd if
+	#      needed, but openvpn has elevated rights anyway at the moment.
+	/usr/local/etc/inc/plugins.inc.d/openvpn/tunnel_endpoint.php ${1} > /tmp/${1}_router
 elif [ "${dev_type}" = "tun" -a -n "${5}" ]; then
 	/bin/echo ${5} > /tmp/${1}_router
 fi
