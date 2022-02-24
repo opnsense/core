@@ -42,9 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (is_interface_assigned($a_vlans[$id]['vlanif'])) {
             $input_errors[] = gettext("This VLAN cannot be deleted because it is assigned as an interface.");
         } else {
-            if (does_interface_exist($a_vlans[$id]['vlanif'])) {
-                legacy_interface_destroy($a_vlans[$id]['vlanif']);
-            }
+            legacy_interface_destroy($a_vlans[$id]['vlanif']);
             unset($a_vlans[$id]);
             write_config();
             header(url_safe('Location: /interfaces_vlan.php'));

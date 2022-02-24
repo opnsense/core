@@ -1700,10 +1700,7 @@ function interface_wireless_clone($realif, $wlcfg)
     }
 
     if ($needs_clone) {
-        /* remove previous instance if it exists */
-        if (does_interface_exist($realif)) {
-            legacy_interface_destroy($realif);
-        }
+        legacy_interface_destroy($realif);
 
         log_error("Cloning new wireless interface {$realif}");
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
@@ -2741,9 +2738,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     $rd6brgw = "{$rd6prefix_isp}{$wancfg['gateway-6rd']}";
 
     $stfiface = "{$interface}_stf";
-    if (does_interface_exist($stfiface)) {
-        legacy_interface_destroy($stfiface);
-    }
+    legacy_interface_destroy($stfiface);
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
 
@@ -2839,9 +2834,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
     $stfiface = "{$interface}_stf";
-    if (does_interface_exist($stfiface)) {
-        legacy_interface_destroy($stfiface);
-    }
+    legacy_interface_destroy($stfiface);
     legacy_interface_create('stf', $stfiface);
     legacy_interface_flags($stfiface, 'link2');
 
