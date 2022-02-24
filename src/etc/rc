@@ -186,9 +186,6 @@ fi
 # run the config importer during early startup
 /usr/local/sbin/opnsense-importer -b
 
-# enable console output if it was muted
-/sbin/conscontrol mute off > /dev/null
-
 # all sorts of maintenance tasks for /var
 /usr/local/etc/rc.subr.d/var
 

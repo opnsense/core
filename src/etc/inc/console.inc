@@ -84,6 +84,13 @@ function is_interface_mismatch()
 
 function set_networking_interfaces_ports($probe = false)
 {
+    exec('/sbin/conscontrol mute on');
+    _set_networking_interfaces_ports($probe);
+    exec('/sbin/conscontrol mute off');
+}
+
+function _set_networking_interfaces_ports($probe = false)
+{
     global $config;
 
     $fp = fopen('php://stdin', 'r');
