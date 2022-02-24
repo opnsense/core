@@ -188,9 +188,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['uniqid'] = uniqid();
 
         /* mobile client */
-        if (isset($_GET['mobile'])) {
-            $pconfig['mobile'] = true;
+        foreach ($config['ipsec']['phase1'] as $phase1ent) {
+            if ($phase1ent['ikeid'] == $pconfig['ikeid']) {
+                $pconfig['mobile'] = true;
+                break;
+            }
         }
+
         // init empty
         foreach (explode(",", $phase2_fields) as $fieldname) {
             $fieldname = trim($fieldname);
