@@ -152,6 +152,7 @@ done
 
 if kldstat -qm zfs; then
 	mount -uw /
+	zpool import -Na
 	zfs mount -va
 	# maybe there is a mountpoint in fstab
 	# that requires ZFS to be fully set up
