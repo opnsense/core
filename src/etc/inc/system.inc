@@ -230,22 +230,11 @@ function system_resolvconf_generate($verbose = false)
     /* setup static routes for DNS servers. */
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
-        /* setup static routes for dns servers */
         $dnsgw = "dns{$dnscounter}gw";
-        if (isset($syscfg[$dnsgw])) {
+        if (!empty($syscfg[$dnsgw])) {
             $gwname = $syscfg[$dnsgw];
-            if (($gwname != '') && ($gwname != 'none')) {
-                $gatewayip = $gateways->getAddress($gwname);
-                if (is_ipaddrv4($gatewayip)) {
-                    /* dns server array starts at 0 */
-                    $dnscountermo = $dnscounter - 1;
-                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
-                }
-                if (is_ipaddrv6($gatewayip)) {
-                    /* dns server array starts at 0 */
-                    $dnscountermo = $dnscounter - 1;
-                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
-                }
+            if ($gwname != 'none') {
+                system_host_route($syscfg['dnsserver'][$dnscounter - 1], $gateways->getAddress($gwname));
             }
         }
     }
