@@ -205,7 +205,7 @@
     <optimization>normal</optimization>
     <hostname>OPNsense</hostname>
     <domain>localdomain</domain>
-    <dnsallowoverride/>
+    <dnsallowoverride>1</dnsallowoverride>
     <group>
       <name>admins</name>
       <description><![CDATA[System Administrators]]></description>
