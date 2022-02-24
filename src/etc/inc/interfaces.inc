@@ -2758,23 +2758,25 @@ fi
 case \$REASON in
 REQUEST)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    rm -f /tmp/${wanif}_nameserverv6 /tmp/{$wanif}_pdinfo /tmp/${wanif}_searchdomainv6
+    rm -f /tmp/{$wanif}_pdinfo /tmp/${wanif}_searchdomainv6
     if [ -n "\${PDINFO}" ]; then
         echo \${PDINFO} > /tmp/{$wanif}_pdinfo
     fi
     if [ -n "\${new_domain_name}" ]; then
         echo \${new_domain_name} > /tmp/${wanif}_searchdomainv6
     fi
+    /usr/local/opnsense/scripts/interfaces/nameserver.sh -d ${wanif} 6
     if [ -n "\${new_domain_name_servers}" ]; then
         for NAMESERVER in \${new_domain_name_servers}; do
-            echo \${NAMESERVER} >> /tmp/${wanif}_nameserverv6
+            /usr/local/opnsense/scripts/interfaces/nameserver.sh -a \${NAMESERVER} ${wanif} 6
         done
     fi
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    rm -f /tmp/${wanif}_nameserverv6 /tmp/{$wanif}_pdinfo /tmp/${wanif}_searchdomainv6
+    /usr/local/opnsense/scripts/interfaces/nameserver.sh -d ${wanif} 6
+    rm -f /tmp/{$wanif}_pdinfo /tmp/${wanif}_searchdomainv6
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)

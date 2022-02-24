@@ -758,6 +758,7 @@
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py
 /usr/local/opnsense/scripts/interfaces/mpd.script
+/usr/local/opnsense/scripts/interfaces/nameserver.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
