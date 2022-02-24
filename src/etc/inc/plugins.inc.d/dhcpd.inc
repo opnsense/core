@@ -730,15 +730,15 @@ EOPP;
             continue;
         }
 
-        list ($ifcfgip, $ifcfgnet) = interfaces_primary_address($dhcpif, $ifconfig_details);
+        list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
 
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
             log_error("Warning! dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}");
             continue;
         }
 
-        list ($subnet, $ifcfgsn) = explode('/', $ifcfgnet);
         $subnetmask = gen_subnet_mask($ifcfgsn);
+        $subnet = explode('/', $ifcfgnet)[0];
 
         $all_pools = array();
         $all_pools[] = $dhcpifconf;
