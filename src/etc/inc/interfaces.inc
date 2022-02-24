@@ -3438,7 +3438,6 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
 
 function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
 {
-
     /* Apply Interface Substitutions */
     $dhclientconf = str_replace("{interface}", "{$wanif}", $dhclientconf);
 
