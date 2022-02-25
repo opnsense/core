@@ -963,9 +963,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
     }
 
     $ipseccfg = $config['ipsec'];
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
-    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
-    $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : array();
+    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
+    $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
     $aggressive_psk = false; // if one of the phase 1 entries has aggressive/psk combination, this will be set true
 
     if (!isset($ipseccfg['enable'])) {
@@ -1157,8 +1157,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if (!empty($cfgservers)) {
                 $strongswanTree['charon']['plugins']['attr']['dns'] = implode(",", $cfgservers);
             }
-            unset($cfgservers);
-            $cfgservers = array();
+            $cfgservers = [];
             if (!empty($a_client['wins_server1'])) {
                 $cfgservers[] = $a_client['wins_server1'];
             }
@@ -1168,7 +1167,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if (!empty($cfgservers)) {
                 $strongswanTree['charon']['plugins']['attr']['nbns'] = implode(",", $cfgservers);
             }
-            unset($cfgservers);
 
             if (!empty($a_client['dns_domain'])) {
                 $strongswanTree['charon']['plugins']['attr']['# Search domain and default domain'] = '';
@@ -1251,27 +1249,25 @@ function ipsec_configure_do($verbose = false, $interface = '')
         $strongswan = generate_strongswan_conf($strongswanTree);
         $strongswan .= "\ninclude strongswan.opnsense.d/*.conf\n";
         @file_put_contents("/usr/local/etc/strongswan.conf", $strongswan);
-        unset($strongswan);
 
         /* generate CA certificates files */
-        if (isset($config['ca'])) {
-            foreach ($config['ca'] as $ca) {
-                if (!isset($ca['crt'])) {
-                    log_error(sprintf('Error: Invalid certificate info for %s', $ca['descr']));
-                    continue;
-                }
-                $cert = base64_decode($ca['crt']);
-                $x509cert = openssl_x509_parse(openssl_x509_read($cert));
-                if (!is_array($x509cert) || !isset($x509cert['hash'])) {
-                    log_error(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']));
-                    continue;
-                }
+        $cafiles = [];
+        foreach (isset($config['ca']) ? $config['ca'] : [] as $ca) {
+            $cert = base64_decode($ca['crt']);
+            $x509cert = openssl_x509_parse(openssl_x509_read($cert));
+            if (is_array($x509cert) && isset($x509cert['hash'])) {
                 $fname = "{$capath}/{$x509cert['hash']}.0.crt";
+                $cafiles[] = $fname;
                 if (!@file_put_contents($fname, $cert)) {
                     log_error(sprintf('Error: Cannot write IPsec CA file for %s', $ca['descr']));
-                    continue;
                 }
-                unset($cert);
+            } else {
+                log_error(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']));
+            }
+        }
+        foreach (glob("{$capath}/*.0.crt") as $fname) {
+            if (!in_array($fname, $cafiles)) {
+                unlink($fname);
             }
         }
 
