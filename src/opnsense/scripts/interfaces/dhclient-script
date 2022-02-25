@@ -215,21 +215,16 @@ add_new_routes() {
 add_new_resolv_conf() {
 	$LOGGER "Creating resolv.conf"
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh -d ${interface}
+	ARGS="-i ${interface} -4nd"
+	for nameserver in ${new_domain_name_servers}; do
+		ARGS="${ARGS} -a ${nameserver}"
+	done
 
-	if [ -n "$new_domain_name_servers" ]; then
-		for nameserver in $new_domain_name_servers; do
-			# only add the nameservers to persistent storage and
-			# let the system decide if routes need to be installed
-			/usr/local/opnsense/scripts/interfaces/nameserver.sh -a ${nameserver} ${interface}
-		done
-	fi
+	/usr/local/opnsense/scripts/interfaces/nameserver.sh ${ARGS}
 
-	rm -f /tmp/${interface}_searchdomain
+	ARGS="-i ${interface} -4sd ${new_domain_name:+"-a ${new_domain_name}"}"
 
-	if [ -n "$new_domain_name" ]; then
-		echo $new_domain_name > /tmp/${interface}_searchdomain
-	fi
+	/usr/local/opnsense/scripts/interfaces/nameserver.sh ${ARGS}
 
 	return 0
 }

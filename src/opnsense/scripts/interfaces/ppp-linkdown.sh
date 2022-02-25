@@ -20,7 +20,7 @@ if [ "${AF}" = "inet" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh -d ${IF} 4
+	/usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${IF} -4 -d
 
 	rm -f /tmp/${IF}_router
 elif [ "${AF}" = "inet6" ]; then
@@ -33,7 +33,7 @@ elif [ "${AF}" = "inet6" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh -d ${IF} 6
+	/usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${IF} -6 -d
 
 	rm -f /tmp/${IF}_routerv6
 

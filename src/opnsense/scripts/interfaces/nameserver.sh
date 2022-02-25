@@ -23,65 +23,86 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# -a attach contents
-# -d undo contents
-# -v print contents
 
-DO="-v"
-IP=
+# requirements:
+#   -4 IPv4 (default)
+#   -6 IPv6
+#   -i <interface>
 
-case "${1}" in
--a)
-	DO="-a"
-	shift
-	IP=${1}
-	shift
-	;;
--d)
-	DO="-d"
-	shift
-	;;
--v)
-	DO="-v"
-	shift
-	;;
--*)
-	echo "unknwon option '${1}'"
-	exit 1
-	;;
-*)
-	;;
-esac
+# commands:
+#   -a <content> attach (multiple)
+#   -d undo contents
+#   -n nameserver mode (default)
+#   -s searchdomain mode
+#   (none of the above: print contents)
 
-IF=${1}
-AF=inet
+DO_CONTENTS=
+DO_DELETE=
+DO_MODE=
+
+AF=
+MD=
 EX=
+IF=
 
-if [ "${2:-4}" = 6 ]; then
-	AF=inet6
-	EX=v6
+# default to IPv4 with nameserver mode
+set -- -4 -n ${@}
+
+while getopts 46a:di:ns OPT; do
+	case ${OPT} in
+	4)
+		AF=inet
+		EX=
+		;;
+	6)
+		AF=inet6
+		EX=v6
+		;;
+	a)
+		DO_CONTENTS="${DO_CONTENTS} ${OPTARG}"
+		;;
+	d)
+		DO_DELETE="-d"
+		;;
+	i)
+		IF=${OPTARG}
+		;;
+	n)
+		DO_MODE="-n"
+		MD="nameserver"
+		;;
+	s)
+		DO_MODE="-s"
+		MD="searchdomain"
+		;;
+	*)
+		echo "Unknown option: ${OPT}" >&2
+		exit 1
+		;;
+	esac
+done
+
+if [ -z "${IF}" ]; then
+	echo "Missing option: -i" >&2
+	exit 1
 fi
 
-FILE="/tmp/${IF:?}_nameserver${EX}"
+FILE="/tmp/${IF}_${MD}${EX}"
 
-if [ ! -f ${FILE} -a ${DO} != "-a" ]; then
-	return
-fi
-
-case "${DO}" in
--a)
-	echo "${IP}" >> ${FILE}
-	;;
--d)
-	for IP in $(cat ${FILE}); do
-		# flush routes here to make sure they are recycled properly
-		route delete -"${AF}" "${IP}"
-	done
+if [ -n "${DO_DELETE}" ]; then
+        if [ "${DO_MODE}" = "-n" -a -f ${FILE} ]; then
+		for CONTENT in $(cat ${FILE}); do
+			# flush routes here to make sure they are recycled properly
+			route delete -${AF} "${CONTENT}"
+		done
+	fi
 	rm -f ${FILE}
-	;;
--v)
+fi
+
+for CONTENT in ${DO_CONTENTS}; do
+	echo "${CONTENT}" >> ${FILE}
+done
+
+if [ -z "${DO_CONTENTS}${DO_DELETE}" -a -f ${FILE} ]; then
 	cat ${FILE}
-	;;
-*)
-	;;
-esac
+fi
