@@ -945,7 +945,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
     /* clear stale state files associated with this interface */
     @unlink("/tmp/{$realifv6}_nameserverv6");
-    @unlink("/tmp/{$realifv6}_pdinfo");
+    @unlink("/tmp/{$realifv6}_pdinfov6");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_searchdomainv6");
     @unlink("/tmp/{$realif}_nameserver");
@@ -2759,9 +2759,9 @@ case \$REASON in
 REQUEST)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
     if [ -n "\${PDINFO}" ]; then
-        echo \${PDINFO} > /tmp/{$wanif}_pdinfo
+        echo \${PDINFO} > /tmp/{$wanif}_pdinfov6
     else
-        rm -f /tmp/{$wanif}_pdinfo
+        rm -f /tmp/{$wanif}_pdinfov6
     fi
     ARGS="-i ${wanif} -6nd"
     for NAMESERVER in \${new_domain_name_servers}; do
@@ -2776,7 +2776,7 @@ EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
     /usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${wanif} -6nd
     /usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${wanif} -6sd
-    rm -f /tmp/{$wanif}_pdinfo
+    rm -f /tmp/{$wanif}_pdinfov6
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
@@ -3906,7 +3906,7 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         /* XXX there are more magic files */
-        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_pdinfo");
+        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_pdinfov6");
         if (!empty($aux)) {
             $ifinfo['pdinfo'] = $aux;
         }
