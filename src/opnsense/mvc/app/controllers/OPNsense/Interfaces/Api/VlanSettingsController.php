@@ -38,10 +38,28 @@ class VlanSettingsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'vlan';
     protected static $internalModelClass = 'OPNsense\Interfaces\Vlan';
 
-    private function generateVlanIfName()
+    private function generateVlanIfName($current=null)
     {
         $tmp = $this->request->getPost("vlan");
-        return "{$tmp['if']}_vlan{$tmp['tag']}";
+        $prefix = (strpos($tmp['if'], 'vlan') === false ? "vlan" : "qinq");
+        if ($current != null && (string)$current->vlanif == "{$tmp['if']}_vlan{$tmp['tag']}") {
+            // keep legacy naming
+            return "{$tmp['if']}_vlan{$tmp['tag']}";
+        } elseif ($current != null && strpos((string)$current->vlanif, '_vlan') === false &&
+            strpos((string)$current->vlanif, $prefix) === 0
+        ) {
+            // new naming convention and same type, name stays the same
+            return (string)$current->vlanif;
+        } else {
+            // autonumber new
+            $ifid = 0;
+            foreach ($this->getModel()->vlan->iterateItems() as $node) {
+                if (strpos((string)$node->vlanif . "_", $prefix) === 0) {
+                    $ifid = max($ifid, (int)explode("_", (string)$node->vlanif)[1]);
+                }
+            }
+            return $prefix . "_" . ($ifid+1);
+        }
     }
 
     private function interfaceAssigned($if)
@@ -66,8 +84,10 @@ class VlanSettingsController extends ApiMutableModelControllerBase
     {
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
-        $new_vlanif = $this->generateVlanIfName();
+        $new_vlanif = $this->generateVlanIfName($node);
         if ($old_vlanif != null && $old_vlanif != $new_vlanif && $this->interfaceAssigned($old_vlanif)) {
+            // Reassignment is only an issue when naming changes. These additional validations only apply
+            // for legacy interface nameing (e.g. <interface>_vlan_<tag>) and type changes vlan verses qinq.
             $tmp = $this->request->getPost("vlan");
             if ($tmp['tag'] != (string)$node->tag) {
                 $result = [

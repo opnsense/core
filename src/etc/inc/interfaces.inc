@@ -182,7 +182,16 @@ function interfaces_vlan_configure($verbose = false)
         echo 'Configuring VLAN interfaces...';
         flush();
     }
-
+    // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
+    usort($config['vlans']['vlan'], function ($a, $b) {
+        $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1 ;
+        $bqinq = strpos($b['vlanif'], 'vlan') !== false ? 0 : 1 ;
+        if ($aqinq === $bqinq) {
+            return $a['vlanif'] <=> $b['vlanif'];
+        } else {
+            return $aqinq <=> $bqinq;
+        }
+    });
     foreach ($config['vlans']['vlan'] as $vlan) {
         interface_vlan_configure($vlan);
     }
@@ -196,12 +205,11 @@ function interface_vlan_configure($vlan)
 {
     interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
-    /* XXX avoid destroy/create */
+    /* destroy is a safety precaution, when confguring via api or gui this function should only be called on new vlans */
     legacy_interface_destroy($vlan['vlanif']);
     legacy_interface_create('vlan', $vlan['vlanif']);
 
-    $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
-    legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $pcp);
+    legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp']);
 
     interfaces_bring_up($vlan['vlanif']);
 }
