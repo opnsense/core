@@ -916,7 +916,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr class="auth_opt auth_eap_tls_caref">
-                    <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate Authority"); ?></td>
+                    <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote Certificate Authority"); ?></td>
                     <td>
                       <select name="caref">
                       <?php
