@@ -147,9 +147,6 @@ fi
 # run the config importer during early startup
 /usr/local/sbin/opnsense-importer -b
 
-# enable console output if it was muted
-/sbin/conscontrol mute off > /dev/null
-
 # all sorts of maintenance tasks for /var
 /usr/local/etc/rc.subr.d/var
 
@@ -200,7 +197,7 @@ rm /var/run/booting
 /usr/local/etc/rc.syshook start
 
 echo -n "Root file system: "
-mount | grep ' on / ' | awk '{ print $1 }'
+mount | awk '$3 == "/" { print $1 }'
 date
 
 /usr/local/sbin/opnsense-shell banner
