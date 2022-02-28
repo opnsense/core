@@ -449,7 +449,11 @@ ensure-stable:
 	fi
 
 diff: ensure-stable
-	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
+	@if [ "$$(git tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
+		git diff --stat -p ${diff_ARGS:[1]}; \
+	else \
+		git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}; \
+	fi
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
@@ -482,7 +486,7 @@ rebase:
 	@git rebase -i
 	@git checkout master
 
-log:
+log ensure-stable:
 	@git log --stat -p stable/${CORE_ABI}
 
 push:
