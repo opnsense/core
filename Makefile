@@ -485,6 +485,11 @@ rebase:
 log:
 	@git log --stat -p stable/${CORE_ABI}
 
+push:
+	@git checkout stable/${CORE_ABI}
+	@git push
+	@git checkout master
+
 test: want-phpunit7-php${CORE_PHP}
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
