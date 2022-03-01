@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2016-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2022 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -46,7 +46,7 @@ changelog_checksum()
 	echo $(sha256 -q "${1}" 2> /dev/null || true)
 }
 
-changelog_fetch()
+changelog_url()
 {
 	CORE_ABI=$(opnsense-version -a)
 	SYS_ABI=$(opnsense-verify -a)
@@ -58,11 +58,15 @@ changelog_fetch()
 		URLPREFIX=$(opnsense-update -M)
 	fi
 
-	URL="${URLPREFIX}/sets/changelog.txz"
+	echo "${URLPREFIX}/sets/changelog.txz"
+}
 
+changelog_fetch()
+{
 	mkdir -p ${DESTDIR}
 
 	CHECKSUM=$(changelog_checksum ${DESTDIR}/changelog.txz)
+	URL=$(changelog_url)
 
 	${FETCH} -mo ${DESTDIR}/changelog.txz "${URL}"
 
@@ -99,6 +103,8 @@ elif [ "${COMMAND}" = "remove" ]; then
 	changelog_remove
 elif [ "${COMMAND}" = "list" ]; then
 	changelog_show index.json
+elif [ "${COMMAND}" = "url" ]; then
+	changelog_url
 elif [ "${COMMAND}" = "html" -a -n "${VERSION}" ]; then
 	changelog_show "$(basename ${VERSION}).htm"
 elif [ "${COMMAND}" = "text" -a -n "${VERSION}" ]; then
