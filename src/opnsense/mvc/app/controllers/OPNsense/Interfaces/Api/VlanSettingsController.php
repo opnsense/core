@@ -85,7 +85,20 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $new_vlanif = $this->generateVlanIfName($node);
-        if ($old_vlanif != null && $old_vlanif != $new_vlanif && $this->interfaceAssigned($old_vlanif)) {
+        $children = 0;
+        foreach ($this->getModel()->vlan->iterateItems() as $node) {
+            if ((string)$node->if == $old_vlanif) {
+                $children++;
+            }
+        }
+        if ($old_vlanif != null && $old_vlanif != $new_vlanif && $children > 0) {
+            $result = [
+              "result" => "failed",
+              "validations" => [
+                  "vlan.vlanif" => gettext("This VLAN cannot be deleted because it is used in QinQ interfaces.")
+              ]
+            ];
+        } elseif ($old_vlanif != null && $old_vlanif != $new_vlanif && $this->interfaceAssigned($old_vlanif)) {
             // Reassignment is only an issue when naming changes. These additional validations only apply
             // for legacy interface nameing (e.g. <interface>_vlan_<tag>) and type changes vlan verses qinq.
             $tmp = $this->request->getPost("vlan");
@@ -130,7 +143,15 @@ class VlanSettingsController extends ApiMutableModelControllerBase
     {
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
-        if ($old_vlanif != null && $this->interfaceAssigned($old_vlanif)) {
+        $children = 0;
+        foreach ($this->getModel()->vlan->iterateItems() as $node) {
+            if ((string)$node->if == $old_vlanif) {
+                $children++;
+            }
+        }
+        if ($children > 0) {
+            throw new UserException(gettext("This VLAN cannot be deleted because it is used in QinQ interfaces."));
+        } elseif ($old_vlanif != null && $this->interfaceAssigned($old_vlanif)) {
             throw new UserException(gettext("This VLAN cannot be deleted because it is assigned as an interface."));
         } else {
             $result = $this->delBase("vlan", $uuid);
