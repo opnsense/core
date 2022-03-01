@@ -66,7 +66,7 @@
          *************************************************************************************************************/
 
         $("#grid-dot").UIBootgrid(
-                {   'search':'/api/unbound/settings/searchDot',
+                {   'search':'/api/unbound/settings/searchDot/',
                     'get':'/api/unbound/settings/getDot/',
                     'set':'/api/unbound/settings/setDot/',
                     'add':'/api/unbound/settings/addDot/',
@@ -74,6 +74,13 @@
                     'toggle':'/api/unbound/settings/toggleDot/'
                 }
         );
+
+        /* Hide/unhide verify field based on type */
+        if ("{{selected_forward}}" == "forward") {
+            $('tr[id="row_dot.verify"]').addClass('hidden');
+        } else {
+            $('tr[id="row_dot.verify"]').removeClass('hidden');
+        }
 
         {% if (selected_uuid|default("") != "") %}
             openDialog('{{selected_uuid}}');
@@ -103,9 +110,12 @@
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
                 <th data-column-id="server" data-type="string">{{ lang._('Address') }}</th>
                 <th data-column-id="port" data-type="int">{{ lang._('Port') }}</th>
+                {% if (selected_forward|default("") == "") %}
                 <th data-column-id="verify" data-type="int">{{ lang._('Hostname') }}</th>
+                {% endif %}
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             </tr>
@@ -122,6 +132,10 @@
             </tr>
             </tfoot>
         </table>
+    </div>
+    <div id="infosection" class="tab-content col-xs-12 __mb">
+        {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
+        are considered duplicates. One of these zones will be ignored.') }}
     </div>
     <div class="col-md-12">
         <hr/>

@@ -36,32 +36,65 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Unbound\Unbound';
     protected static $internalModelName = 'unbound';
 
-    public function searchDotAction()
+    private string $type = "dot";
+
+    /*
+     * Catch all Dot API endpoints and redirect them to Forward for
+     * backwards compatibility and infer the type from the request.
+     * If no type is provided, default to dot.
+     */
+    public function __call($method, $args)
     {
-        return $this->searchBase('dots.dot', array('enabled', 'server', 'port', 'verify'));
+        if (substr($method, -6) == 'Action') {
+            $fn = preg_replace('/Dot/', 'Forward', $method);
+            if (method_exists(get_class($this), $fn)) {
+                if (substr($this->request->getHTTPReferer(), -7) == 'forward') {
+                    $this->type = "forward";
+                }
+                return $this->$fn(...$args);
+            }
+        }
     }
 
-    public function getDotAction($uuid = null)
+    public function searchForwardAction()
+    {
+        $filter_fn = function ($record) {
+            return $record->type == $this->type;
+        };
+
+        return $this->searchBase(
+            'dots.dot',
+            array('enabled', 'server', 'port', 'verify', 'type', 'domain'),
+            null,
+            $filter_fn
+        );
+    }
+
+    public function getForwardAction($uuid = null)
     {
         return $this->getBase('dot', 'dots.dot', $uuid);
     }
 
-    public function addDotAction()
+    public function addForwardAction()
     {
-        return $this->addBase('dot', 'dots.dot');
+        return $this->addBase('dot', 'dots.dot',
+            [ "type" => $this->type ]
+        );
     }
 
-    public function delDotAction($uuid)
+    public function delForwardAction($uuid)
     {
         return $this->delBase('dots.dot', $uuid);
     }
 
-    public function setDotAction($uuid)
+    public function setForwardAction($uuid)
     {
-        return $this->setBase('dot', 'dots.dot', $uuid);
+        return $this->setBase('dot', 'dots.dot', $uuid,
+            [ "type" => $this->type ]
+        );
     }
 
-    public function toggleDotAction($uuid, $enabled = null)
+    public function toggleForwardAction($uuid, $enabled = null)
     {
         return $this->toggleBase('dots.dot', $uuid, $enabled);
     }
