@@ -49,7 +49,6 @@ class M1_0_2 extends BaseModelMigration
         if (!empty($node->dots) && !empty($node->dots->dot)) {
             foreach ($model->dots->dot->iterateItems() as $dot) {
                 $dot->type = "dot";
-                $dot->domain = "";
             }
         }
     }

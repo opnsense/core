@@ -48,7 +48,7 @@ class SettingsController extends ApiMutableModelControllerBase
         if (substr($method, -6) == 'Action') {
             $fn = preg_replace('/Dot/', 'Forward', $method);
             if (method_exists(get_class($this), $fn)) {
-                if (substr($this->request->getHTTPReferer(), -7) == 'forward') {
+                if (preg_match("/forward/i", $this->request->getHTTPReferer())) {
                     $this->type = "forward";
                 }
                 return $this->$fn(...$args);

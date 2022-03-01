@@ -32,9 +32,9 @@ use OPNsense\Base\IndexController;
 
 class DotController extends IndexController
 {
-    public function indexAction($selected = null)
+    public function indexAction()
     {
-        $this->view->selected_forward = $selected;
+        $this->view->selected_forward = "";
         $this->view->formDialogEdit = $this->getForm('dialogDot');
         $this->view->pick('OPNsense/Unbound/dot');
     }
