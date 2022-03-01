@@ -486,7 +486,7 @@ rebase:
 	@git rebase -i
 	@git checkout master
 
-log ensure-stable:
+log: ensure-stable
 	@git log --stat -p stable/${CORE_ABI}
 
 push:
