@@ -205,6 +205,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 $result['rowCount'] = count($result['rows']);
                 $result['total'] = $result['total_rows'];
                 $result['current'] = (int)$currentPage;
+                unset($result['total_rows']);
                 return $result;
             }
         }
