@@ -765,6 +765,7 @@ function interfaces_configure($verbose = false)
         foreach ($list as $device => $if) {
             /* pre-op: configuring the underlying device */
             if (!empty($devices[$device])) {
+                /* XXX devices could depend on other devices */
                 log_msg("Device $device required for $if, configuring now", LOG_ERR);
                 call_user_func_array($devices[$device], [$device]);
                 unset($devices[$device]);
@@ -786,6 +787,7 @@ function interfaces_configure($verbose = false)
 
     /* last but not least start all unconfigured devices */
     foreach ($devices as $name => $function) {
+        /* XXX devices could depend on other devices */
         log_msg("Device $name is not assigned, configuring late", LOG_ERR);
         call_user_func_array($function, [$name]);
     }
