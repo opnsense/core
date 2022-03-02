@@ -52,7 +52,8 @@ class VlanInterfaceField extends BaseListField
             $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
             if (!empty($ifconfig)) {
                 foreach ($ifconfig as $ifname => $details) {
-                    if (strpos($ifname, "qinq") === 0 || strpos($ifname, "lo") === 0 || strpos($ifname, "enc") === 0 ||
+                    if (
+                        strpos($ifname, "qinq") === 0 || strpos($ifname, "lo") === 0 || strpos($ifname, "enc") === 0 ||
                         strpos($ifname, "pflog") === 0 || strpos($ifname, "pfsync") === 0 ||
                         strpos($ifname, "bridge") === 0 ||
                         strpos($ifname, "gre") === 0 || strpos($ifname, "gif") === 0 || strpos($ifname, "ipsec") === 0

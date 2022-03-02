@@ -184,8 +184,8 @@ function interfaces_vlan_configure($verbose = false)
     }
     // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
     usort($config['vlans']['vlan'], function ($a, $b) {
-        $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1 ;
-        $bqinq = strpos($b['vlanif'], 'vlan') !== false ? 0 : 1 ;
+        $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1;
+        $bqinq = strpos($b['vlanif'], 'vlan') !== false ? 0 : 1;
         if ($aqinq === $bqinq) {
             return $a['vlanif'] <=> $b['vlanif'];
         } else {

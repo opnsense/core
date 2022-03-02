@@ -38,14 +38,15 @@ class VlanSettingsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'vlan';
     protected static $internalModelClass = 'OPNsense\Interfaces\Vlan';
 
-    private function generateVlanIfName($current=null)
+    private function generateVlanIfName($current = null)
     {
         $tmp = $this->request->getPost("vlan");
         $prefix = (strpos($tmp['if'], 'vlan') === false ? "vlan" : "qinq");
         if ($current != null && (string)$current->vlanif == "{$tmp['if']}_vlan{$tmp['tag']}") {
             // keep legacy naming
             return "{$tmp['if']}_vlan{$tmp['tag']}";
-        } elseif ($current != null && strpos((string)$current->vlanif, '_vlan') === false &&
+        } elseif (
+            $current != null && strpos((string)$current->vlanif, '_vlan') === false &&
             strpos((string)$current->vlanif, $prefix) === 0
         ) {
             // new naming convention and same type, name stays the same
@@ -58,7 +59,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
                     $ifid = max($ifid, (int)explode("_", (string)$node->vlanif)[1]);
                 }
             }
-            return $prefix . "_" . ($ifid+1);
+            return $prefix . "_" . ($ifid + 1);
         }
     }
 
