@@ -295,13 +295,7 @@ function _interfaces_bridge_configure($bridge)
     /* Calculate smaller mtu and enforce it */
     $mtu = null;
     foreach ($members as $member) {
-        $realif = get_real_interface($member);
-        $opts = legacy_interface_stats($realif);
-        if (substr($realif, 0, 3) == "gif") {
-            if ($opts['mtu'] <= 1500) {
-                continue;
-            }
-        }
+        $opts = legacy_interface_stats(get_real_interface($member));
         if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
             $mtu = $opts['mtu'];
         }
@@ -321,6 +315,7 @@ function _interfaces_bridge_configure($bridge)
             continue;
         }
 
+        /* XXX why can we not iterate this once for MTU check and interface add */
         $realif = get_real_interface($member);
         if (!does_interface_exist($realif)) {
             log_error('realif not defined in interfaces bridge - up');
@@ -455,7 +450,8 @@ function interface_bridge_add_member($bridgeif, $interface)
     $mtu = legacy_interface_stats($bridgeif)['mtu'];
     $mtum = legacy_interface_stats($interface)['mtu'];
 
-    if ($mtu != $mtum && !(substr($interface, 0, 3) == "gif" && $mtu <= 1500)) {
+    /* XXX needs testing... what does "m" mean anyway? */
+    if ($mtu != $mtum) {
         legacy_interface_mtu($interface, $mtu);
     }
 
