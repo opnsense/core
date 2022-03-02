@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gres[] = $gre;
             }
             write_config();
-            interface_gre_configure($gre);
+            interfaces_gre_configure($gre['greif']);
             ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
             if ($confif != '') {

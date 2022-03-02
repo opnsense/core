@@ -131,16 +131,47 @@ function core_services()
     return $services;
 }
 
+function core_device_names($key, $sections)
+{
+    $names = [];
+
+    foreach (call_user_func_array('config_read_array', $sections) as $dev) {
+        $names[] = $dev[$key];
+    }
+
+    return $names;
+}
+
 function core_devices()
 {
     $devices = array();
 
     # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^bridge', 'volatile' => true);
+    $devices[] = [
+        'names' => core_device_names('bridgeif', ['bridges', 'bridged']),
+        'function' => 'interfaces_bridge_configure',
+        'pattern' => '^bridge',
+        'volatile' => true,
+    ];
+
+    $devices[] = [
+        'names' => core_device_names('gifif', ['gifs', 'gif']),
+        'function' => 'interfaces_gif_configure',
+        'configurable' => false,
+        'pattern' => '^gif',
+        'volatile' => true,
+    ];
+
+    $devices[] = [
+        'names' => core_device_names('greif', ['gres', 'gre']),
+        'function' => 'interfaces_gre_configure',
+        'configurable' => false,
+        'pattern' => '^gre',
+        'volatile' => true,
+    ];
+
     $devices[] = array('pattern' => '^cua', 'volatile' => true);
     $devices[] = array('pattern' => '^enc', 'volatile' => true);
-    $devices[] = array('pattern' => '^gif', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^gre', 'volatile' => true, 'configurable' => false);
     $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
     $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
     $devices[] = array('pattern' => '^lagg', 'volatile' => true);
@@ -154,8 +185,8 @@ function core_devices()
     $devices[] = array('pattern' => '^wg', 'volatile' => true);
     $devices[] = array('pattern' => '^zt', 'volatile' => true);
     $devices[] = array('pattern' => '_stf', 'volatile' => true);
+    $devices[] = array('pattern' => '_vlan', 'volatile' => true);
     $devices[] = array('pattern' => '_wlan', 'volatile' => true);
-    $devices[] = array('pattern' => 'vlan', 'volatile' => true);
 
     return $devices;
 }

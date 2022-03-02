@@ -78,14 +78,19 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
 interfaces_vips_configure(false, $interface);
 
 $gres = link_interface_to_gre($interface);
-array_walk($gres, 'interface_gre_configure');
+foreach ($gres as $gre) {
+    _interfaces_gre_configure($gre);
+}
 
 $gifs = link_interface_to_gif($interface);
-array_walk($gifs, 'interface_gif_configure');
+foreach ($gifs as $gif) {
+    _interfaces_gif_configure($gif);
+}
 
-$bridgetmp = link_interface_to_bridge($interface);
-if (!empty($bridgetmp)) {
-    interface_bridge_add_member($bridgetmp, $interface_real);
+$bridge = link_interface_to_bridge($interface);
+if (!empty($bridge)) {
+    /* XXX _interfaces_bridge_configure() is probably cleaner */
+    interface_bridge_add_member($bridge, $interface_real);
 }
 
 system_resolvconf_generate();
