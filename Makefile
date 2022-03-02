@@ -93,6 +93,9 @@ CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
+CORE_DEVEL?=	master
+CORE_STABLE?=	stable/${CORE_ABI}
+
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
 CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}
 
@@ -442,57 +445,57 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endfor
 
 ensure-stable:
-	@if ! git show-ref --verify --quiet refs/heads/stable/${CORE_ABI}; then \
-		git update-ref refs/heads/stable/${CORE_ABI} refs/remotes/origin/stable/${CORE_ABI}; \
-		git config branch.stable/${CORE_ABI}.merge refs/heads/stable/${CORE_ABI}; \
-		git config branch.stable/${CORE_ABI}.remote origin; \
+	@if ! git show-ref --verify --quiet refs/heads/${CORE_STABLE}; then \
+		git update-ref refs/heads/${CORE_STABLE} refs/remotes/origin/${CORE_STABLE}; \
+		git config branch.${CORE_STABLE}.merge refs/heads/${CORE_STABLE}; \
+		git config branch.${CORE_STABLE}.remote origin; \
 	fi
 
 diff: ensure-stable
 	@if [ "$$(git tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
 		git diff --stat -p ${diff_ARGS:[1]}; \
 	else \
-		git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}; \
+		git diff --stat -p ${CORE_STABLE} ${.CURDIR}/${diff_ARGS:[1]}; \
 	fi
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
 .if exists(${MFC})
 	@cp -r ${MFC} ${MFCDIR}
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@rm -rf ${MFC}
 	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
 	@git add -f .
 	@if ! git diff --quiet HEAD; then \
-		git commit -m "${MFC}: sync with master"; \
+		git commit -m "${MFC}: sync with ${CORE_DEVEL}"; \
 	fi
 .else
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@if ! git cherry-pick -x ${MFC}; then \
 		git cherry-pick --abort; \
 	fi
 .endif
-	@git checkout master
+	@git checkout ${CORE_DEVEL}
 .endfor
 
 stable:
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 
-master:
-	@git checkout master
+devel ${CORE_DEVEL}:
+	@git checkout ${CORE_DEVEL}
 
 rebase:
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@git rebase -i
-	@git checkout master
+	@git checkout ${CORE_DEVEL}
 
 log: ensure-stable
-	@git log --stat -p stable/${CORE_ABI}
+	@git log --stat -p ${CORE_STABLE}
 
 push:
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@git push
-	@git checkout master
+	@git checkout ${CORE_DEVEL}
 
 test: want-phpunit7-php${CORE_PHP}
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
