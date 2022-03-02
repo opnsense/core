@@ -134,8 +134,9 @@
         </table>
     </div>
     <div id="infosection" class="tab-content col-xs-12 __mb">
-        {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
-        are considered duplicates. One of these zones will be ignored.') }}
+        {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Custom Forwarding and DNS over TLS
+        are considered duplicates, DNS over TLS will be preferred. Also, Enabling DNS Query Forwarding in General will override all entries 
+        specified here except for entries with a domain.') }}
     </div>
     <div class="col-md-12">
         <hr/>
