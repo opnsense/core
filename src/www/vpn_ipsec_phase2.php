@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* mobile client */
         foreach ($config['ipsec']['phase1'] as $phase1ent) {
-            if ($phase1ent['ikeid'] == $pconfig['ikeid']) {
+            if ($phase1ent['ikeid'] == $pconfig['ikeid'] && isset($phase1ent['mobile'])) {
                 $pconfig['mobile'] = true;
                 break;
             }
