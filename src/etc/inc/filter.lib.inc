@@ -275,11 +275,14 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
     // CARP defaults
-    $fw->registerFilterRule(
-        1,
-        array('protocol' => 'carp', 'direction' => 'any', 'descr' => 'CARP defaults', '#ref' => 'firewall_virtual_ip.php'),
-        $defaults['pass']
-    );
+    foreach (['ff02::12', '224.0.0.18'] as $to) {
+        $fw->registerFilterRule(
+            1,
+            ['protocol' => 'carp', 'direction' => 'any', 'to' => $to, 'descr' => 'CARP defaults',
+                '#ref' => 'firewall_virtual_ip.php'],
+            $defaults['pass']
+        );
+    }
 
     // Lockout rules
     $fw->registerFilterRule(
