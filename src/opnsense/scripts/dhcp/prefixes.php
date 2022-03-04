@@ -30,12 +30,13 @@
 require_once 'util.inc';
 
 $leases_file = "/var/dhcpd/var/db/dhcpd6.leases";
+$dhcpd_log = "/var/log/dhcpd/latest.log";
 if (!file_exists($leases_file)) {
     exit(1);
 }
 
 $duid_arr = [];
-foreach (file($leases_file) as $line) {
+foreach (new SplFileObject($leases_file) as $line) {
     if (preg_match("/^(ia-[np][ad])[ ]+\"(.*?)\"/i ", $line, $duidmatch)) {
         $type = $duidmatch[1];
         $duid = $duidmatch[2];
@@ -92,20 +93,15 @@ if (count($routes) > 0) {
     }
 }
 
-exec('opnsense-log dhcpd 2> /dev/null', $log, $ret);
-
-if ($ret > 0) {
-    $log = [];
-}
-
 $expires = [];
-
-foreach ($log as $line) {
-    if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
-        if (in_array($expire[1], $routes)) {
-            continue;
+if (is_file($dhcpd_log)) {
+    foreach (new SplFileObject($dhcpd_log) as $line) {
+        if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
+            if (in_array($expire[1], $routes)) {
+                continue;
+            }
+            $expires[$expire[1]] = $expire[1];
         }
-        $expires[$expire[1]] = $expire[1];
     }
 }
 
