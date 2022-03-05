@@ -5,4 +5,4 @@ if [ ! -e /var/run/configd.pid ]; then
 	exit 1
 fi
 
-exec /usr/local/opnsense/service/configd_ctl.py "${@}"
+exec /usr/local/opnsense/service/configd_ctl.py "${@}" | sed 's/configd_ctl.py/configctl/g'
