@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['prefixrange_length'] = $config['dhcpdv6'][$if]['prefixrange']['prefixlength'];
     }
     $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'domain', 'domainsearchlist', 'ddnsdomain',
-        'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'bootfile_url', 'netmask',
+        'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsclientupdates', 'bootfile_url', 'netmask',
         'numberoptions', 'dhcpv6leaseinlocaltime', 'staticmap', 'minsecs');
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
@@ -264,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // simple 1-on-1 copy
             $config_copy_fieldsnames = array('defaultleasetime', 'maxleasetime', 'netmask', 'domainsearchlist',
-              'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'bootfile_url',
+              'ddnsdomain', 'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsclientupdates', 'bootfile_url',
               'dhcpv6leaseinlocaltime', 'minsecs');
             foreach ($config_copy_fieldsnames as $fieldname) {
                 if (!empty($pconfig[$fieldname])) {
@@ -648,6 +648,16 @@ include("head.inc");
                           foreach (array("hmac-md5", "hmac-sha512") as $algorithm) :?>
                               <option value="<?=$algorithm;?>" <?=$pconfig['ddnsdomainalgorithm'] == $algorithm ? "selected=\"selected\"" :"";?>>
                                 <?=$algorithm;?>
+                              </option>
+<?php
+                          endforeach; ?>
+                          </select><br />
+                          <?=gettext("Choose how the server should handle updates from clients.");?><br />
+                          <select name='ddnsclientupdates' id="ddnsclientupdates" class="selectpicker">
+<?php
+                          foreach (array("allow", "deny", "ignore") as $clientupdates) :?>
+                              <option value="<?=$clientupdates;?>" <?=$pconfig['ddnsclientupdates'] == $clientupdates ? "selected=\"selected\"" :"";?>>
+                                <?=$clientupdates;?>
                               </option>
 <?php
                           endforeach; ?>

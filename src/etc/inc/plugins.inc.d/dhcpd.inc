@@ -766,6 +766,10 @@ EOPP;
             } else {
                 $newzone['domain-name'] = $config['system']['domain'];
             }
+            if (!empty($dhcpifconf['ddnsclientupdates'])) {
+                $dnscfg .= "  {$dhcpifconf['ddnsclientupdates']} client-updates;\n";
+            }
+            
             $revsubnet = array_reverse(explode(".", $subnet));
             $subnetmask_rev = array_reverse(explode('.', $subnetmask));
             foreach ($subnetmask_rev as $octet) {
@@ -1500,6 +1504,9 @@ EOD;
                 $newzone['domain-name'] = $dhcpv6ifconf['ddnsdomain'];
             } else {
                 $newzone['domain-name'] = $config['system']['domain'];
+            }
+            if (!empty($dhcpv6ifconf['ddnsclientupdates'])) {
+                $dnscfgv6 .= "  {$dhcpv6ifconf['ddnsclientupdates']} client-updates;\n";
             }
 
             $subnetv6 = explode("/", $networkv6)[0];

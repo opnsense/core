@@ -56,7 +56,7 @@ function reconfigure_dhcpd()
 
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
-  'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
+  'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsclientupdates', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
   'filename32arm', 'filename64arm', 'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport',
   'omapialgorithm', 'omapikey', 'minsecs');
@@ -907,6 +907,20 @@ include("head.inc");
                             }
                           }?>
                           <option value="<?=$algorithm;?>" <?=$selected;?>><?=$algorithm;?></option>
+<?php
+                        endforeach; ?>
+                        </select><br />
+                        <?=gettext("Choose how the server should handle updates from clients.");?><br />
+                        <select name='ddnsclientupdates' id="ddnsclientupdates" class="selectpicker">
+<?php
+                        foreach (array("allow", "deny", "ignore") as $clientupdates) :
+                          $selected = "";
+                          if (! empty($pconfig['ddnsclientupdates'])) {
+                            if ($pconfig['ddnsclientupdates'] == $clientupdates) {
+                              $selected = "selected=\"selected\"";
+                            }
+                          }?>
+                          <option value="<?=$clientupdates;?>" <?=$selected;?>><?=$clientupdates;?></option>
 <?php
                         endforeach; ?>
                         </select>
