@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,local_group
             ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching,buffer,keepalive";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain
             ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
-            ,cso_login_matching";
+            ,cso_login_matching,buffer,keepalive";
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);
             if (!isset($pconfig[$fieldname])) {
@@ -369,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,verbosity_level,wins_server1,tlsmode
-                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
+                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching,buffer,keepalive";
 
             foreach (explode(",", $copy_fields) as $fieldname) {
                 $fieldname = trim($fieldname);

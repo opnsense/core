@@ -142,6 +142,9 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             switch ($this->config['compression']) {
                 case 'no':
                 case 'adaptive':
+                case 'none':
+                    $conf[] = "allow-compression no";
+                    break;
                 case 'yes':
                     $conf[] = "comp-lzo " . $this->config['compression'];
                     break;
@@ -153,6 +156,21 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
                     break;
             }
         }
+
+        if (!empty($this->config['keepalive'])) {
+            switch ($this->config['keepalive']) {
+            case 'short':
+                $conf[] = "keepalive 5 30";
+                break;
+            case 'long':
+                $conf[] = "keepalive 15 90";
+                break;
+            }
+        } else {
+        $conf[] = "keepalive 10 60";
+        }
+
+
 
         if (!empty($this->config['plain_config'])) {
             foreach (preg_split('/\r\n|\r|\n/', $this->config['plain_config']) as $line) {
