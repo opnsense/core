@@ -138,6 +138,7 @@ function openvpn_compression_modes()
 {
     return array(
         '' => gettext('No Preference'),
+        'no' => sprintf(gettext('Disabled')),
         'pfc' => sprintf(gettext('Partial - Packet framing for compression (%s)'), '--compress'),
         'lz4' => sprintf(gettext('Enabled - LZ4 algorithm (%s)'), '--compress lz4'),
         'lz4-v2' => sprintf(gettext('Enabled - LZ4 v2 algorithm (%s)'), '--compress lz4-v2'),
@@ -819,6 +820,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     if (!empty($settings['compression'])) {
         switch ($settings['compression']) {
             case 'no':
+                $conf .= "compression no\n";
+                break;
             case 'adaptive':
             case 'yes':
                 $conf .= "comp-lzo {$settings['compression']}\n";
