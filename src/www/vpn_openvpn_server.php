@@ -1282,6 +1282,28 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
+                      <td style="width:22%"><a id="help_for_buffer" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Buffer"); ?></td>
+                      <td>
+                        <select name="buffer" class="selectpicker">
+<?php
+                        foreach (openvpn_buffer_settings() as $cmode => $cmodedesc):
+                            $selected = "";
+                            if ($cmode == $pconfig['buffer']) {
+                                $selected = " selected=\"selected\"";
+                            }
+                          ?>
+                            <option value="<?= $cmode ?>" <?= $selected ?>><?= $cmodedesc ?></option>
+<?php
+                        endforeach; ?>
+                        </select>
+                        <div class="hidden" data-for="help_for_buffer">
+                            <?=gettext("Increase buffers for OpenVPN which helps improve speed and reliability."); ?>
+                        </div>
+                      </td>
+                    </tr>
+
+
+                    <tr>
                       <td style="width:22%"><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
                       <td>
                         <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?> />

@@ -151,6 +151,17 @@ function openvpn_compression_modes()
     );
 }
 
+function openvpn_buffer_settings()
+{
+    return array(
+        '' => gettext('No Preference'),
+        '512000' => sprintf(gettext('512K')),
+        '1024000' => sprintf(gettext('1MB')),
+        '2048000' => sprintf(gettext('2MB')),
+    );
+}
+
+
 function openvpn_get_protocols()
 {
     return array('UDP', 'UDP4', 'UDP6', 'TCP', 'TCP4', 'TCP6');
@@ -833,6 +844,11 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 $conf .= "compress {$settings['compression']}\n";
                 break;
         }
+    }
+
+    if (!empty($settings['buffer'])) {
+        $conf .= "sndbuf {$settings['compression']}\n";
+        $conf .= "rcvbuf {$settings['compression']}\n";
     }
 
     if ($settings['passtos']) {
