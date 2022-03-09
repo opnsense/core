@@ -1301,6 +1301,27 @@ $( document ).ready(function() {
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <td style="width:22%"><a id="help_for_keepalive" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Keepalive"); ?></td>
+                      <td>
+                        <select name="keepalive" class="selectpicker">
+<?php
+                        foreach (openvpn_keepalive_settings() as $cmode => $cmodedesc):
+                            $selected = "";
+                            if ($cmode == $pconfig['keepalive']) {
+                                $selected = " selected=\"selected\"";
+                            }
+                          ?>
+                            <option value="<?= $cmode ?>" <?= $selected ?>><?= $cmodedesc ?></option>
+<?php
+                        endforeach; ?>
+                        </select>
+                        <div class="hidden" data-for="help_for_keepalive">
+                            <?=gettext("Change keepalive settings for connection liveness checking."); ?>
+                        </div>
+                      </td>
+                    </tr>
+
 
 
                     <tr>

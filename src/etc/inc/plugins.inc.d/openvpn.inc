@@ -161,6 +161,14 @@ function openvpn_buffer_settings()
     );
 }
 
+function openvpn_keepalive_settings()
+{
+    return array(
+        'standard' => gettext('Standard'),
+        'short' => gettext('Short'),
+        'long' => gettext('Long'),
+    );
+}
 
 function openvpn_get_protocols()
 {
@@ -503,7 +511,20 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "script-security 3\n";
     $conf .= "daemon\n";
+
+    if (!empty($settings['keepalive'])) {
+        switch ($settings['keepalive']) {
+            case 'short':
+                $conf .= "keepalive 5 30\n";
+                break;
+            case 'long':
+                $conf .= "keepalive 15 90\n";
+                break;
+        }
+    } else {
     $conf .= "keepalive 10 60\n";
+    }
+
     $conf .= "ping-timer-rem\n";
     $conf .= "persist-tun\n";
     $conf .= "persist-key\n";
