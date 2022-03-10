@@ -1473,7 +1473,7 @@ function interfaces_vips_configure($verbose = false, $interface = 'wan')
     }
 }
 
-function interface_ipalias_configure(&$vip)
+function interface_ipalias_configure($vip)
 {
     global $config;
 
