@@ -96,7 +96,7 @@ $dhcpd_log = trim(shell_exec('opnsense-log -n dhcpd'));
 $expires = [];
 
 if (empty($dhcpd_log)) {
-    exit (1);
+    exit(1);
 }
 
 foreach (new SplFileObject($dhcpd_log) as $line) {
