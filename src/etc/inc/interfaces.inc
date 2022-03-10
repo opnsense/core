@@ -441,23 +441,27 @@ function _interfaces_bridge_configure($bridge)
     interfaces_bring_up($bridge['bridgeif']);
 }
 
-function interface_bridge_add_member($bridgeif, $interface)
+function interface_bridge_add_member($bridgeif, $realif)
 {
-    if (!does_interface_exist($bridgeif) || !does_interface_exist($interface)) {
+    $ifconfig_details = legacy_interfaces_details();
+
+    if (empty(ifconfig_details[$bridgeif]) || empty(ifconfig_details[$realif])) {
         return;
     }
 
-    $mtu = legacy_interface_stats($bridgeif)['mtu'];
-    $mtum = legacy_interface_stats($interface)['mtu'];
+    configure_interface_hardware($realif);
 
-    /* XXX needs testing... what does "m" mean anyway? */
-    if ($mtu != $mtum) {
-        legacy_interface_mtu($interface, $mtu);
+    /*
+     * The MTU of the first member interface to be added is used as the bridge
+     * MTU.  All additional members are required to have exactly the same MTU
+     * value.
+     */
+    if (ifconfig_details[$bridgeif]['mtu'] != ifconfig_details[$realif]['mtu']) {
+        legacy_interface_mtu($realif, ifconfig_details[$bridgeif]['mtu']);
     }
 
-    configure_interface_hardware($interface);
-    interfaces_bring_up($interface);
-    legacy_bridge_member($bridgeif, $interface);
+    interfaces_bring_up($realif);
+    legacy_bridge_member($bridgeif, $realif);
 }
 
 function interfaces_lagg_configure($verbose = false)
