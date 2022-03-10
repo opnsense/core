@@ -1500,7 +1500,7 @@ function interface_ipalias_configure(&$vip)
     mwexec("/sbin/ifconfig " . escapeshellarg($if) . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
 }
 
-function interface_carp_configure(&$vip)
+function interface_carp_configure($vip)
 {
     if ($vip['mode'] != 'carp') {
         return;
@@ -1534,8 +1534,6 @@ function interface_carp_configure(&$vip)
     } elseif (is_ipaddrv6($vip['subnet'])) {
         mwexec("/sbin/ifconfig {$realif} inet6 " . escapeshellarg($vip['subnet']) . " prefixlen " . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
     }
-
-    return $realif;
 }
 
 function interface_wireless_clone($realif, $wlcfg)
