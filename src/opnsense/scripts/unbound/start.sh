@@ -26,11 +26,26 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-set -e
-
 # prepare and startup unbound, so we can easily background it
 
-chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key
+# if the root.key file is missing or damaged, run unbound-anchor
+/usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null 
+
+if [ $? -eq 1 ]; then
+	# unbound-anchor has undefined behaviour if file is corrupted, start clean 
+	rm -f /var/unbound/root.key
+
+	# if we are in forwarding mode, prefer to use the configured system nameservers
+	if [ $(/usr/local/sbin/pluginctl -g unbound.forwarding) ]; then
+		OPT_RESOLVE="-Rf /etc/resolv.conf"
+	fi
+	
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE}
+fi
+
+# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
+# exit on failure after this point
+set -e
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
     chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
