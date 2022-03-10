@@ -323,8 +323,8 @@ function _interfaces_bridge_configure($bridge)
         }
 
         /* make sure the parent interface is up */
-        legacy_interface_mtu($realif, $mtu);
         configure_interface_hardware($realif);
+        legacy_interface_mtu($realif, $mtu);
         interfaces_bring_up($realif);
         legacy_bridge_member($bridge['bridgeif'], $realif);
     }
@@ -445,7 +445,7 @@ function interface_bridge_add_member($bridgeif, $realif)
 {
     $ifconfig_details = legacy_interfaces_details();
 
-    if (empty(ifconfig_details[$bridgeif]) || empty(ifconfig_details[$realif])) {
+    if (empty($ifconfig_details[$bridgeif]) || empty($ifconfig_details[$realif])) {
         return;
     }
 
@@ -456,8 +456,8 @@ function interface_bridge_add_member($bridgeif, $realif)
      * MTU.  All additional members are required to have exactly the same MTU
      * value.
      */
-    if (ifconfig_details[$bridgeif]['mtu'] != ifconfig_details[$realif]['mtu']) {
-        legacy_interface_mtu($realif, ifconfig_details[$bridgeif]['mtu']);
+    if ($ifconfig_details[$bridgeif]['mtu'] != $ifconfig_details[$realif]['mtu']) {
+        legacy_interface_mtu($realif, $ifconfig_details[$bridgeif]['mtu']);
     }
 
     interfaces_bring_up($realif);
