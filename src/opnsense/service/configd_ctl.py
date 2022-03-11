@@ -44,8 +44,8 @@ from modules import syslog_error, syslog_notice
 __author__ = 'Ad Schellevis'
 
 configd_socket_name = '/var/run/configd.socket'
-configd_socket_wait = 20
-
+# defaults to historic behavour of configctl, could be parameter
+configd_socket_wait = 0
 
 def exec_config_cmd(exec_command):
     """ execute command using configd socket
@@ -79,7 +79,7 @@ def exec_config_cmd(exec_command):
         sock.close()
 
 
-parser = argparse.ArgumentParser(prog="configctl")
+parser = argparse.ArgumentParser()
 parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
@@ -92,7 +92,7 @@ parser.add_argument(
 parser.add_argument("command", help="command(s) to execute", nargs="+")
 args = parser.parse_args()
 
-syslog.openlog("configctl")
+syslog.openlog(os.path.basename(sys.argv[0]))
 
 # set a timeout to the socket
 socket.setdefaulttimeout(120)
@@ -109,7 +109,6 @@ while not os.path.exists(configd_socket_name):
 if not os.path.exists(configd_socket_name):
     print('configd socket missing (@%s)'%configd_socket_name, file=sys.stderr)
     sys.exit(-1)
-
 
 # command(s) to execute
 if args.m:
