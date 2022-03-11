@@ -2230,6 +2230,26 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* XXX maybe spoofmac, media and promisc can live here too? */
     configure_interface_hardware($realhwif, $ifconfig_details);
 
+    /*
+     * Make sure tunnel address is set when interface is configured as
+     * these lie outside the normal ipaddr/ipaddrv6 configuration schema.
+     *
+     * Actually this does not fix what the previous comment states:
+     *
+     * Here we repair the situation where virtual devices have been
+     * set up before their dependent interfaces have actually been
+     * configured before they are allowed to be configured due to
+     * long dependency: hwdev -> lan -> gifdev -> opt1
+     *
+     * For legacy reasons opt1 is configured before lan due to IPv6
+     * tracking decisions in interfaces_configure() which leads to
+     * a defunct tunnel if we do not restart it here.
+     *
+     * Eventually this should go away as the second half of ticket #5540.
+     */
+    interfaces_gre_configure($realhwif);
+    interfaces_gif_configure($realhwif);
+
     switch ($wancfg['ipaddr']) {
         case 'dhcp':
             interface_dhcp_configure($interface);
