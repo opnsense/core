@@ -26,6 +26,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+set -e
+
 # prepare and startup unbound, so we can easily background it
 
 # if the root.key file is missing or damaged, run unbound-anchor
@@ -38,12 +40,10 @@ if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; t
 		OPT_RESOLVE="-Rf /etc/resolv.conf"
 	fi
 	
-	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE}
+	# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
+	# always let this succeed 
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE} || true
 fi
-
-# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
-# exit on failure after this point
-set -e
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
     chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
