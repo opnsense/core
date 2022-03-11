@@ -48,7 +48,7 @@ IF=
 # default to IPv4 with nameserver mode
 set -- -4 -n ${@}
 
-while getopts 46a:di:ns OPT; do
+while getopts 46a:di:nprs OPT; do
 	case ${OPT} in
 	4)
 		AF=inet
@@ -70,6 +70,14 @@ while getopts 46a:di:ns OPT; do
 	n)
 		DO_MODE="-n"
 		MD="nameserver"
+		;;
+	p)
+		DO_MODE="-p"
+		MD="prefix"
+		;;
+	r)
+		DO_MODE="-r"
+		MD="router"
 		;;
 	s)
 		DO_MODE="-s"
