@@ -84,7 +84,7 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
 // configure new
 foreach ($all_vlans as $ifname => $vlan) {
     if (!empty($vlan)) {
-        interface_vlan_configure($vlan);
+        _interfaces_vlan_configure($vlan);
     }
 }
 

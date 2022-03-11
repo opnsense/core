@@ -182,6 +182,8 @@ function interfaces_vlan_configure($verbose = false)
         echo 'Configuring VLAN interfaces...';
         flush();
     }
+
+    /* XXX sorting vlans here on top of $config seems prone to further side effects */
     // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
     usort($config['vlans']['vlan'], function ($a, $b) {
         $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1;
@@ -192,8 +194,9 @@ function interfaces_vlan_configure($verbose = false)
             return $aqinq <=> $bqinq;
         }
     });
+
     foreach ($config['vlans']['vlan'] as $vlan) {
-        interface_vlan_configure($vlan);
+        _interfaces_vlan_configure($vlan);
     }
 
     if ($verbose) {
@@ -201,7 +204,7 @@ function interfaces_vlan_configure($verbose = false)
     }
 }
 
-function interface_vlan_configure($vlan)
+function _interfaces_vlan_configure($vlan)
 {
     interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
