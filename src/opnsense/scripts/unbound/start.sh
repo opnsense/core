@@ -34,7 +34,7 @@ if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; t
 	rm -f /var/unbound/root.key
 
 	# if we are in forwarding mode, prefer to use the configured system nameservers
-	if [ $(/usr/local/sbin/pluginctl -g unbound.forwarding) ]; then
+	if [ -n "$(/usr/local/sbin/pluginctl -g unbound.forwarding)" ]; then
 		OPT_RESOLVE="-Rf /etc/resolv.conf"
 	fi
 	
