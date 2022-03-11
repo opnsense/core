@@ -178,6 +178,11 @@ function system_resolvconf_generate($verbose = false)
     $resolvconf = '';
     $search = [];
 
+    mwexecf(
+        '/etc/rc.d/ip6addrctl %s',
+        isset($syscfg['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
+    );
+
     if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
         $search[] = $syscfg['domain'];

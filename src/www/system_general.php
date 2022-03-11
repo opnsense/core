@@ -228,7 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_timezone_configure();
         system_trust_configure();
 
-        prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
         system_resolvconf_generate();

@@ -100,7 +100,6 @@ plugins_configure('dhcp', true);
 plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
 
-prefer_ipv4_or_ipv6();
 plugins_configure('monitor', true);
 filter_configure_sync(true);
 plugins_configure('vpn', true);
