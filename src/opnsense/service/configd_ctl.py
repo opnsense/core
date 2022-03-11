@@ -79,7 +79,7 @@ def exec_config_cmd(exec_command):
         sock.close()
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(prog="configctl")
 parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
