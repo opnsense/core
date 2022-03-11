@@ -29,9 +29,7 @@
 # prepare and startup unbound, so we can easily background it
 
 # if the root.key file is missing or damaged, run unbound-anchor
-/usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null 
-
-if [ $? -eq 1 ]; then
+if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
 	# unbound-anchor has undefined behaviour if file is corrupted, start clean 
 	rm -f /var/unbound/root.key
 
