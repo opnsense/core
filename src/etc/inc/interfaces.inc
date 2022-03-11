@@ -481,7 +481,7 @@ function interfaces_lagg_configure($verbose = false)
     }
 
     foreach ($config['laggs']['lagg'] as $lagg) {
-        interface_lagg_configure($lagg);
+        _interfaces_lagg_configure($lagg);
     }
 
     if ($verbose) {
@@ -489,7 +489,7 @@ function interfaces_lagg_configure($verbose = false)
     }
 }
 
-function interface_lagg_configure($lagg)
+function _interfaces_lagg_configure($lagg)
 {
     if (empty($lagg['members'])) {
         /* XXX really necessary? we would like our LAGG anyway */
