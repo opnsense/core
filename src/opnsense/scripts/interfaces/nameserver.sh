@@ -76,14 +76,14 @@ while getopts 46a:di:ns OPT; do
 		MD="searchdomain"
 		;;
 	*)
-		echo "Unknown option: ${OPT}" >&2
+		echo "Usage: man ${0##*/}" >&2
 		exit 1
 		;;
 	esac
 done
 
 if [ -z "${IF}" ]; then
-	echo "Missing option: -i" >&2
+	echo "Usage: man ${0##*/}" >&2
 	exit 1
 fi
 

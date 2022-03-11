@@ -2780,15 +2780,15 @@ REQUEST)
     for NAMESERVER in \${new_domain_name_servers}; do
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh \${ARGS}
+    /usr/local/sbin/ifctl \${ARGS}
     ARGS="-i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}"
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh \${ARGS}
+    /usr/local/sbin/ifctl \${ARGS}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${wanif} -6nd
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${wanif} -6sd
+    /usr/local/sbin/ifctl -i ${wanif} -6nd
+    /usr/local/sbin/ifctl -i ${wanif} -6sd
     rm -f /tmp/{$wanif}_pdinfov6
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;

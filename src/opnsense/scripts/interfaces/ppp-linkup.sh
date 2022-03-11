@@ -2,7 +2,6 @@
 
 export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
-
 DNS1=
 if echo "${6}" | grep -q dns1; then
 	DNS1="-a $(echo "${6}" | awk '{print $2}')"
@@ -20,8 +19,7 @@ if [ "${2}" = "inet" ]; then
 		rm -f /tmp/${1}_router
 	fi
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${1} -4 -d ${DNS1} ${DNS2}
-
+	/usr/local/sbin/ifctl -ni ${1} -4 -d ${DNS1} ${DNS2}
 	/usr/local/sbin/configctl -d interface newip ${1}
 elif [ "${2}" = "inet6" ]; then
 	if [ -n "${4}" ]; then
@@ -31,8 +29,7 @@ elif [ "${2}" = "inet6" ]; then
 		rm -f /tmp/${1}_routerv6
 	fi
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${1} -6 -d ${DNS1} ${DNS2}
-
+	/usr/local/sbin/ifctl -ni ${1} -6 -d ${DNS1} ${DNS2}
 	/usr/local/sbin/configctl -d interface newipv6 ${1}
 fi
 

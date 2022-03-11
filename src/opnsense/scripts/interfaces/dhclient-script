@@ -220,11 +220,11 @@ add_new_resolv_conf() {
 		ARGS="${ARGS} -a ${nameserver}"
 	done
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh ${ARGS}
+	/usr/local/sbin/ifctl ${ARGS}
 
 	ARGS="-i ${interface} -4sd ${new_domain_name:+"-a ${new_domain_name}"}"
 
-	/usr/local/opnsense/scripts/interfaces/nameserver.sh ${ARGS}
+	/usr/local/sbin/ifctl ${ARGS}
 
 	return 0
 }
