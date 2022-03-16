@@ -745,6 +745,7 @@
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py
 /usr/local/opnsense/scripts/interfaces/mpd.script
+/usr/local/opnsense/scripts/interfaces/nameserver.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
@@ -1707,6 +1708,7 @@
 /usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.svg
 /usr/local/sbin/carp_service_status
 /usr/local/sbin/configctl
+/usr/local/sbin/ifctl
 /usr/local/sbin/opnsense-beep
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
