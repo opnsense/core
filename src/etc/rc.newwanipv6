@@ -84,8 +84,9 @@ system_hosts_generate();
 
 $cacheip_file = "/tmp/{$interface_real}_oldipv6";
 $cacheip = trim(@file_get_contents($cacheip_file));
+$intf_ipaddr = $config['interfaces'][$interface]['ipaddrv6'];
 
-if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
+if ($ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp6')) {
     if ($ip == $cacheip) {
         if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
             /* PPP reconnect loop avoidance */
