@@ -46,7 +46,7 @@ echo "Mounting filesystems..."
 # tunefs may refuse otherwise
 mount -fr / 2> /dev/null
 
-GROWFS_MARKER=/.probe.for.growfs.nano
+GROWFS_MARKER=/.probe.for.growfs
 ROOT_IS_UFS=
 
 while read FS_PART FS_MNT FS_TYPE FS_MORE; do
