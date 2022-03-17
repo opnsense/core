@@ -63,7 +63,7 @@ grow_partition()
 # tunefs may refuse otherwise
 mount -fr / 2> /dev/null
 
-GROWFS_MARKER=/.probe.for.growfs.nano
+GROWFS_MARKER=/.probe.for.growfs
 ROOT_IS_UFS=
 ROOT_IS_ZFS=$(
 	df -hT | while read FS TYPE SIZE USED AVAIL CAP MOUNT MORE; do
