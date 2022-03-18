@@ -318,7 +318,7 @@ BOUND|RENEW|REBIND|REBOOT)
 	#if is_default_interface; then
 		add_new_resolv_conf
 	#fi
-	/usr/local/etc/rc.newwanip $interface
+	/usr/local/sbin/configctl -d interface newip $interface
 	;;
 
 EXPIRE|FAIL)
@@ -360,11 +360,11 @@ TIMEOUT)
 			fi
 			add_new_routes
 			if ! is_default_interface; then
-				/usr/local/etc/rc.newwanip $interface
+				/usr/local/sbin/configctl -d interface newip $interface
 				exit_with_hooks 0
 			fi
 			if add_new_resolv_conf; then
-				/usr/local/etc/rc.newwanip $interface
+				/usr/local/sbin/configctl -d interface newip $interface
 				exit_with_hooks 0
 			fi
 		fi
