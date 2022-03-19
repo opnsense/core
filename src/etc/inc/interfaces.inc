@@ -147,6 +147,7 @@ function interfaces_loopback_configure($verbose = false)
     }
 
     legacy_interface_setaddress('lo0', '127.0.0.1');
+    interfaces_vips_configure('lo0');
     legacy_interface_flags('lo0', 'up');
 
     if ($verbose) {
@@ -1323,14 +1324,9 @@ EOD;
     }
 }
 
-function interfaces_carp_setup($verbose = false)
+function interfaces_carp_setup()
 {
     global $config;
-
-    if ($verbose) {
-        echo 'Configuring CARP settings...';
-        flush();
-    }
 
     if (!empty($config['hasync']['pfsyncinterface'])) {
         $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
@@ -1352,10 +1348,6 @@ function interfaces_carp_setup($verbose = false)
         }
     } else {
         mwexec('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');
-    }
-
-    if ($verbose) {
-        echo "done.\n";
     }
 }
 
@@ -1401,7 +1393,7 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($verbose = false, $interface = 'wan')
+function interfaces_vips_configure($interface)
 {
     global $config;
 
@@ -1432,7 +1424,7 @@ function interfaces_vips_configure($verbose = false, $interface = 'wan')
     }
 
     if ($carp_setup) {
-        interfaces_carp_setup($verbose);
+        interfaces_carp_setup();
     }
 
     if ($anyproxyarp) {
@@ -2315,10 +2307,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
+    interfaces_vips_configure($interface);
     interfaces_bring_up($realif);
-
-    /* always reconfigure VIPs since late boot configuration may need it too */
-    interfaces_vips_configure(false, $interface);
 
     $gres = link_interface_to_gre($interface);
     foreach ($gres as $gre) {
