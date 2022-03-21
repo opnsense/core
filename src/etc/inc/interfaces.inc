@@ -821,6 +821,8 @@ function interfaces_configure($verbose = false)
                 if (!empty($devices[$loaded])) {
                     log_msg("Device $loaded loaded by $if, skipping now", LOG_ERR);
                     unset($devices[$loaded]);
+                } else {
+                    log_msg("Device $loaded reloaded by $if, already skipped", LOG_ERR);
                 }
             }
             unset($interfaces[$if]);
