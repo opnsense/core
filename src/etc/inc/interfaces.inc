@@ -2167,21 +2167,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         return $loaded;
     }
 
+    /* XXX mpd5 $realhwif may be a device node path */
+
     if ($verbose) {
         echo sprintf('Configuring %s interface...', $wandescr);
         flush();
     }
 
-    /* XXX mpd5 $realhwif may be a device node path */
-
-    if (!file_exists('/var/run/booting') && substr($realif, 0, 4) != 'ovpn') {
+    if (!empty($wancfg['ipaddr'])) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
-        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
+    }
 
-        /* only bring down the interface when both v4 and v6 are set to NONE */
-        if (empty($wancfg['ipaddr']) && empty($wancfg['ipaddrv6'])) {
-            interface_bring_down($interface);
-        }
+    if (!empty($wancfg['ipaddrv6'])) {
+        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     }
 
     if (!$linkupevent) {
