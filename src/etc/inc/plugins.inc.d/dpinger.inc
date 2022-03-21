@@ -87,7 +87,7 @@ function dpinger_configure()
     );
 }
 
-function dpinger_configure_do($verbose = false, $gwname = null)
+function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
     if ($verbose) {
         echo 'Setting up gateway monitors...';
@@ -229,7 +229,7 @@ function dpinger_configure_do($verbose = false, $gwname = null)
          * may differ from the daemon's standards.
          */
         require_once("rrd.inc");
-        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd");
+        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd", $bootup);
 
         /* log warnings via syslog */
         $params  = '-S ';
