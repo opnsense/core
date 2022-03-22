@@ -56,6 +56,11 @@
                 <Required>N</Required>
             </whitelists>
         </dnsbl>
+        <forwarding>
+            <enabled type="LegacyLinkField">
+                <Source>unbound.forwarding</Source>
+            </enabled>
+        </forwarding>
         <dots>
             <dot type="ArrayField">
                 <enabled type="BooleanField">

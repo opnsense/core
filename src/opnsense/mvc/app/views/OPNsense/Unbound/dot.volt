@@ -27,6 +27,49 @@
 <script>
 
     $( document ).ready(function() {
+        $('tr[id="row_forwarding.info"]').addClass('hidden');
+        /* Handle retrieval and saving of the single system forwarding checkbox */
+        let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/getSystemForward"};
+        mapDataToFormUI(data_get_map).done(function(data) {
+            /* only called on page load */
+            if (data.frm_ForwardingSettings.forwarding.enabled) {
+                toggle_nameservers(true);
+            }
+        });
+
+        $(".forwarding-enabled").click(function() {
+            saveFormToEndpoint(url="/api/unbound/settings/toggleSystemForward", formid='frm_ForwardingSettings');
+
+            let checked = ($(this).is(':checked'));
+            toggle_nameservers(checked);
+        });
+
+        function toggle_nameservers(checked) {
+            if (checked) {
+                ajaxGet(url="/api/unbound/settings/getNameservers", {}, callback=function(data, status) {
+                    $('tr[id="row_forwarding.info"]').removeClass('hidden');
+                    if (data.length && !data.includes('')) {
+                        $('div[id="control_label_forwarding.info"]').append(
+                            "<span>{{ lang._('The following nameservers are used:') }}</span>"
+                        );
+                        $('span[id="forwarding.info"]').append(
+                            "<div><b>" + data.join(", ") + "</b></div>"
+                        );
+                    } else {
+                        $('div[id="control_label_forwarding.info"]').append(
+                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: General setup</a></span>"
+                        );
+                    }
+
+                });
+            } else {
+                $('tr[id="row_forwarding.info"]').addClass('hidden');
+                $('div[id="control_label_forwarding.info"]').children().not(':first').remove();
+                $('span[id="forwarding.info"]').children().remove();
+            }
+        }
+
+
         /**
          * inline open dialog, go back to previous page on exit
          */
@@ -61,6 +104,7 @@
             });
 
         }
+
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
@@ -74,6 +118,8 @@
                     'toggle':'/api/unbound/settings/toggleDot/'
                 }
         );
+
+        $("div.actionBar").parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Custom forwarding') }}</div>'));
 
         /* Hide/unhide verify field based on type */
         if ("{{selected_forward}}" == "forward") {
@@ -100,13 +146,22 @@
 
 </script>
 
+<style>
+    .theading-text {
+        font-weight: 800;
+        font-style: bold;
+    }
+</style>
 
-<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#grid-dot">{{ lang._('Servers') }}</a></li>
-</ul>
-<div class="tab-content content-box">
+<div class="tab-content content-box col-xs-12 __mb">
+    {# include base forwarding form #}
+    {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
+</div>
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
+<div class="tab-content content-box col-xs-12 __mb">
     <div id="dot" class="tab-pane fade in active">
         <table id="grid-dot" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+            <tr>
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
@@ -131,12 +186,14 @@
                 </td>
             </tr>
             </tfoot>
+            </tr>
         </table>
     </div>
     <div id="infosection" class="tab-content col-xs-12 __mb">
         {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Custom Forwarding and DNS over TLS
-        are considered duplicates, DNS over TLS will be preferred. Also, Enabling DNS Query Forwarding in General will override all entries 
-        specified here except for entries with a domain.') }}
+        are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
+        in %s or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.')
+        | format('<a href="/system_general.php">System: General setup</a>') }}
     </div>
     <div class="col-md-12">
         <hr/>

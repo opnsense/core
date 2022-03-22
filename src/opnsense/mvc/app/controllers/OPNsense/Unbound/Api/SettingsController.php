@@ -30,6 +30,8 @@
 namespace OPNsense\Unbound\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 class SettingsController extends ApiMutableModelControllerBase
 {
@@ -37,6 +39,59 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'unbound';
 
     private string $type = "dot";
+
+    public function toggleSystemForwardAction() {
+        if ($this->request->isPost() && $this->request->hasPost('forwarding')) {
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+
+            $val = $this->request->getPost('forwarding')['enabled'];
+
+            /* Write to config exactly as legacy would */
+            $config->unbound->forwarding = !empty($val);
+            if ($val != "1") {
+                /* legacy uses isset() */
+                unset($config->unbound->forwarding);
+            }
+
+            /* save and release lock */
+            Config::getInstance()->save();
+        }
+
+    }
+
+    public function getSystemForwardAction() {
+        $config = Config::getInstance()->object();
+        return array("forwarding" =>
+            array( "enabled" =>
+                empty($config->unbound->forwarding) ? 0 : 1
+            )
+        );
+    }
+
+    public function getNameserversAction() {
+        if ($this->request->isGet()) {
+            $backend = new Backend();
+            $nameservers = json_decode(trim($backend->configdRun("system list nameservers")));
+
+            if ($nameservers !== null) {
+                $result = array();
+                $config = Config::getInstance()->object();
+                if (isset($config->system->dnsallowoverride)) {
+                    foreach ($nameservers->dynamic as $dynamic) {
+                        $result[] = $dynamic;
+                    }
+                }
+                foreach ($nameservers->static as $static) {
+                    $result[] = $static;
+                }
+
+                return $result;
+            }
+        }
+        return array("message" => "Unable to run configd action");
+    }
 
     /*
      * Catch all Dot API endpoints and redirect them to Forward for
