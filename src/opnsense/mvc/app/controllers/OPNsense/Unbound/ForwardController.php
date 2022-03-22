@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,11 +30,11 @@ namespace OPNsense\Unbound;
 
 use OPNsense\Base\IndexController;
 
-class DotController extends IndexController
+class ForwardController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->selected_forward = "";
+        $this->view->selected_forward = "forward";
         $this->view->forwardingForm = $this->getForm('forwarding');
         $this->view->formDialogEdit = $this->getForm('dialogDot');
         $this->view->pick('OPNsense/Unbound/dot');
