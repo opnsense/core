@@ -38,7 +38,7 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Unbound\Unbound';
     protected static $internalModelName = 'unbound';
 
-    private string $type = "dot";
+    private $type = 'dot';
 
     public function toggleSystemForwardAction() {
         if ($this->request->isPost() && $this->request->hasPost('forwarding')) {
