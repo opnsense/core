@@ -37,7 +37,12 @@ if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; t
 
 	# if we are in forwarding mode, prefer to use the configured system nameservers
 	if [ -n "$(/usr/local/sbin/pluginctl -g unbound.forwarding)" ]; then
-		OPT_RESOLVE="-Rf /etc/resolv.conf"
+	  if [ ! -f /var/unbound/resolv.conf.root ]; then
+	    # fall back to regular resolv.conf file
+		  OPT_RESOLVE="-Rf /etc/resolv.conf"
+		else
+		  OPT_RESOLVE="-Rf /var/unbound/resolv.conf.root"
+		fi
 	fi
 	
 	# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
