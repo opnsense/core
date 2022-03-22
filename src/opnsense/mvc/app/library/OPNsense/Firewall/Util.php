@@ -243,7 +243,7 @@ class Util
     {
         $pattern = '/^(?:(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])\.)*(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])$/iu';
         $parts = explode(".", $domain);
-        if (ctype_digit($parts[0]) && ctype_digit($parts[count($parts)-1])) {
+        if (ctype_digit($parts[0]) && ctype_digit($parts[count($parts) - 1])) {
             // according to rfc1123 2.1
             //   a valid host name can never have the dotted-decimal form #.#.#.#, since at least the highest-level
             //   component label will be alphabetic.
