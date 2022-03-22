@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -56,12 +56,30 @@
                 <Required>N</Required>
             </whitelists>
         </dnsbl>
+        <forwarding>
+            <enabled type="LegacyLinkField">
+                <Source>unbound.forwarding</Source>
+            </enabled>
+        </forwarding>
         <dots>
             <dot type="ArrayField">
                 <enabled type="BooleanField">
                     <Required>Y</Required>
                     <default>1</default>
                 </enabled>
+                <type type="OptionField">
+                    <Required>Y</Required>
+                    <default>dot</default>
+                    <OptionValues>
+                        <dot>DNS over TLS</dot>
+                        <forward>Forward</forward>
+                    </OptionValues>
+                </type>
+                <domain type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                </domain>
                 <server type="NetworkField">
                     <Required>Y</Required>
                 </server>
@@ -149,7 +167,7 @@
                 </server>
                 <description type="TextField">
                     <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </host>
@@ -211,7 +229,7 @@
                 </server>
                 <description type="TextField">
                     <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </domain>

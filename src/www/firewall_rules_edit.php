@@ -246,6 +246,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['reply-to']) && $pconfig['reply-to'] != '__disable__') {
         $input_errors[] = gettext("You can not assign a reply-to destination to a rule that applies to IPv4 and IPv6");
+    } elseif (!empty($pconfig['gateway']) && !empty($pconfig['reply-to']) && $pconfig['reply-to'] != '__disable__') {
+        $input_errors[] = gettext('You can not assign a reply-to destination to a rule that uses a gateway.');
     } elseif (!empty($pconfig['reply-to']) && is_ipaddr($gateways->getAddress($pconfig['reply-to']))) {
         if ($pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6($gateways->getAddress($pconfig['reply-to']))) {
             $input_errors[] = gettext('You can not assign the IPv4 reply-to destination to an IPv6 filter rule.');

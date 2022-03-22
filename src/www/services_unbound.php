@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
     $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
-    $pconfig['forwarding'] = isset($a_unboundcfg['forwarding']);
     $pconfig['reglladdr6'] = empty($a_unboundcfg['noreglladdr6']);
     $pconfig['regdhcp'] = isset($a_unboundcfg['regdhcp']);
     $pconfig['regdhcpstatic'] = isset($a_unboundcfg['regdhcpstatic']);
@@ -117,7 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
-            $a_unboundcfg['forwarding'] = !empty($pconfig['forwarding']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
             $a_unboundcfg['regdhcpstatic'] = !empty($pconfig['regdhcpstatic']);
@@ -318,16 +316,6 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
-                        <td>
-                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable Forwarding Mode') ?>
-                          <div class="hidden" data-for="help_for_forwarding">
-                            <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
                         <td><a id="help_for_local_zone_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Zone Type"); ?></td>
                         <td>
                           <select name="local_zone_type" size="3" class="selectpicker" >
@@ -379,14 +367,10 @@ include_once("head.inc");
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <?= sprintf(gettext('If Unbound is enabled, the DHCP'.
+                          <?= gettext('If Unbound is enabled, the DHCP'.
                           ' service (if enabled) will automatically serve the LAN IP'.
                           ' address as a DNS server to DHCP clients so they will use'.
-                          ' Unbound resolver. If forwarding is enabled, Unbound'.
-                          ' will use the DNS servers entered in %sSystem: General setup%s'.
-                          ' or those obtained via DHCP or PPP on WAN if the "Allow'.
-                          ' DNS server list to be overridden by DHCP/PPP on WAN"'.
-                          ' is checked.'),'<a href="system_general.php">','</a>');?>
+                          ' Unbound resolver.');?>
                         </td>
                       </tr>
                     </tbody>

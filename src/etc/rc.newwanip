@@ -146,8 +146,9 @@ ifgroup_setup();
 
 $cacheip_file = "/tmp/{$interface_real}_oldip";
 $cacheip = trim(@file_get_contents($cacheip_file));
+$intf_ipaddr = $config['interfaces'][$interface]['ipaddr'];
 
-if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddr'])) {
+if ($ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp')) {
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
     filter_configure_sync();

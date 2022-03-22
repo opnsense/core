@@ -214,7 +214,7 @@ class HandlerClient(threading.Thread):
             pass
         except Exception:
             print(traceback.format_exc())
-            syslog_error('unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (
+            syslog_notice('unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (
                 result, exec_command, exec_action, exec_params, self.message_uuid, traceback.format_exc()
             ))
         finally:

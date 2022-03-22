@@ -79,7 +79,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20200119
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20200313
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210104
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210629
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210629
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210903
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
@@ -379,6 +379,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DnsblController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DotController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/ForwardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverridesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
@@ -386,6 +387,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -574,6 +576,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
@@ -841,6 +844,7 @@
 /usr/local/opnsense/scripts/syslog/log_archive
 /usr/local/opnsense/scripts/system/dh_parameters.sh
 /usr/local/opnsense/scripts/system/list_interrupts.py
+/usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/system/sysctl.py
@@ -1724,6 +1728,7 @@
 /usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.svg
 /usr/local/sbin/carp_service_status
 /usr/local/sbin/configctl
+/usr/local/sbin/ifctl
 /usr/local/sbin/opnsense-beep
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
@@ -1732,6 +1737,8 @@
 /usr/local/sbin/opnsense-version
 /usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
+/usr/local/share/man/man8/configctl.8.gz
+/usr/local/share/man/man8/ifctl.8.gz
 /usr/local/share/man/man8/opnsense-beep.8.gz
 /usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/share/man/man8/opnsense-installer.8.gz

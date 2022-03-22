@@ -1290,16 +1290,6 @@ function get_staticroutes($returnsubnetsonly = false)
     return $allstaticroutes;
 }
 
-function prefer_ipv4_or_ipv6()
-{
-    global $config;
-
-    mwexecf(
-        '/etc/rc.d/ip6addrctl %s',
-        isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
-    );
-}
-
 function is_fqdn($fqdn)
 {
     $hostname = false;
@@ -1326,7 +1316,7 @@ function is_install_media()
      * Despite unionfs underneath, / is still not writeable,
      * making the following the perfect test for install media.
      */
-    $file = '/.probe.for.install.media';
+    $file = '/.probe.for.readonly';
 
     if (file_exists($file)) {
         return false;

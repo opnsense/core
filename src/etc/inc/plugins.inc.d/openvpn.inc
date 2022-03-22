@@ -920,10 +920,6 @@ function openvpn_restart($mode, $settings, $carp_event = false)
             log_error(sprintf('OpenVPN %s %s instance start timed out.', $mode, $vpnid));
         }
     }
-
-    if (!file_exists("/var/run/booting")) {
-        configd_run("filter reload");
-    }
 }
 
 function openvpn_delete($mode, &$settings)
@@ -1102,6 +1098,7 @@ function openvpn_configure_single($id)
                 }
                 openvpn_reconfigure($mode, $settings);
                 openvpn_restart($mode, $settings);
+                configd_run('filter reload'); /* XXX really needed? */
                 return;
             }
         }
@@ -1142,6 +1139,8 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
             }
         }
     }
+
+    configd_run('filter reload'); /* XXX really needed? */
 
     if ($verbose) {
         echo "done.\n";

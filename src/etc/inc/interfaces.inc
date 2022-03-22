@@ -147,6 +147,7 @@ function interfaces_loopback_configure($verbose = false)
     }
 
     legacy_interface_setaddress('lo0', '127.0.0.1');
+    interfaces_vips_configure('lo0');
     legacy_interface_flags('lo0', 'up');
 
     if ($verbose) {
@@ -182,6 +183,8 @@ function interfaces_vlan_configure($verbose = false)
         echo 'Configuring VLAN interfaces...';
         flush();
     }
+
+    /* XXX sorting vlans here on top of $config seems prone to further side effects */
     // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
     usort($config['vlans']['vlan'], function ($a, $b) {
         $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1;
@@ -192,8 +195,9 @@ function interfaces_vlan_configure($verbose = false)
             return $aqinq <=> $bqinq;
         }
     });
+
     foreach ($config['vlans']['vlan'] as $vlan) {
-        interface_vlan_configure($vlan);
+        _interfaces_vlan_configure($vlan);
     }
 
     if ($verbose) {
@@ -201,7 +205,7 @@ function interfaces_vlan_configure($verbose = false)
     }
 }
 
-function interface_vlan_configure($vlan)
+function _interfaces_vlan_configure($vlan)
 {
     interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
@@ -323,8 +327,8 @@ function _interfaces_bridge_configure($bridge)
         }
 
         /* make sure the parent interface is up */
-        legacy_interface_mtu($realif, $mtu);
         configure_interface_hardware($realif);
+        legacy_interface_mtu($realif, $mtu);
         interfaces_bring_up($realif);
         legacy_bridge_member($bridge['bridgeif'], $realif);
     }
@@ -441,23 +445,27 @@ function _interfaces_bridge_configure($bridge)
     interfaces_bring_up($bridge['bridgeif']);
 }
 
-function interface_bridge_add_member($bridgeif, $interface)
+function interface_bridge_add_member($bridgeif, $realif)
 {
-    if (!does_interface_exist($bridgeif) || !does_interface_exist($interface)) {
+    $ifconfig_details = legacy_interfaces_details();
+
+    if (empty($ifconfig_details[$bridgeif]) || empty($ifconfig_details[$realif])) {
         return;
     }
 
-    $mtu = legacy_interface_stats($bridgeif)['mtu'];
-    $mtum = legacy_interface_stats($interface)['mtu'];
+    configure_interface_hardware($realif);
 
-    /* XXX needs testing... what does "m" mean anyway? */
-    if ($mtu != $mtum) {
-        legacy_interface_mtu($interface, $mtu);
+    /*
+     * The MTU of the first member interface to be added is used as the bridge
+     * MTU.  All additional members are required to have exactly the same MTU
+     * value.
+     */
+    if ($ifconfig_details[$bridgeif]['mtu'] != $ifconfig_details[$realif]['mtu']) {
+        legacy_interface_mtu($realif, $ifconfig_details[$bridgeif]['mtu']);
     }
 
-    configure_interface_hardware($interface);
-    interfaces_bring_up($interface);
-    legacy_bridge_member($bridgeif, $interface);
+    interfaces_bring_up($realif);
+    legacy_bridge_member($bridgeif, $realif);
 }
 
 function interfaces_lagg_configure($verbose = false)
@@ -474,7 +482,7 @@ function interfaces_lagg_configure($verbose = false)
     }
 
     foreach ($config['laggs']['lagg'] as $lagg) {
-        interface_lagg_configure($lagg);
+        _interfaces_lagg_configure($lagg);
     }
 
     if ($verbose) {
@@ -482,7 +490,7 @@ function interfaces_lagg_configure($verbose = false)
     }
 }
 
-function interface_lagg_configure($lagg)
+function _interfaces_lagg_configure($lagg)
 {
     if (empty($lagg['members'])) {
         /* XXX really necessary? we would like our LAGG anyway */
@@ -780,6 +788,8 @@ function interfaces_configure($verbose = false)
                 if (!empty($devices[$loaded])) {
                     log_msg("Device $loaded loaded by $if, skipping now", LOG_ERR);
                     unset($devices[$loaded]);
+                } else {
+                    log_msg("Device $loaded reloaded by $if, already skipped", LOG_ERR);
                 }
             }
             unset($interfaces[$if]);
@@ -951,7 +961,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
     /* clear stale state files associated with this interface */
     @unlink("/tmp/{$realifv6}_nameserverv6");
-    @unlink("/tmp/{$realifv6}_pdinfov6");
+    @unlink("/tmp/{$realifv6}_prefixv6");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_searchdomainv6");
     @unlink("/tmp/{$realif}_nameserver");
@@ -1316,14 +1326,9 @@ EOD;
     }
 }
 
-function interfaces_carp_setup($verbose = false)
+function interfaces_carp_setup()
 {
     global $config;
-
-    if ($verbose) {
-        echo 'Configuring CARP settings...';
-        flush();
-    }
 
     if (!empty($config['hasync']['pfsyncinterface'])) {
         $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
@@ -1345,10 +1350,6 @@ function interfaces_carp_setup($verbose = false)
         }
     } else {
         mwexec('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');
-    }
-
-    if ($verbose) {
-        echo "done.\n";
     }
 }
 
@@ -1394,7 +1395,7 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($verbose = false, $interface = 'wan')
+function interfaces_vips_configure($interface)
 {
     global $config;
 
@@ -1425,7 +1426,7 @@ function interfaces_vips_configure($verbose = false, $interface = 'wan')
     }
 
     if ($carp_setup) {
-        interfaces_carp_setup($verbose);
+        interfaces_carp_setup();
     }
 
     if ($anyproxyarp) {
@@ -2166,21 +2167,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         return $loaded;
     }
 
+    /* XXX mpd5 $realhwif may be a device node path */
+
     if ($verbose) {
         echo sprintf('Configuring %s interface...', $wandescr);
         flush();
     }
 
-    /* XXX mpd5 $realhwif may be a device node path */
-
-    if (!file_exists('/var/run/booting') && substr($realif, 0, 4) != 'ovpn') {
+    if (!empty($wancfg['ipaddr'])) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
-        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
+    }
 
-        /* only bring down the interface when both v4 and v6 are set to NONE */
-        if (empty($wancfg['ipaddr']) && empty($wancfg['ipaddrv6'])) {
-            interface_bring_down($interface);
-        }
+    if (!empty($wancfg['ipaddrv6'])) {
+        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     }
 
     if (!$linkupevent) {
@@ -2308,10 +2307,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
     }
 
+    interfaces_vips_configure($interface);
     interfaces_bring_up($realif);
-
-    /* always reconfigure VIPs since late boot configuration may need it too */
-    interfaces_vips_configure(false, $interface);
 
     $gres = link_interface_to_gre($interface);
     foreach ($gres as $gre) {
@@ -2764,25 +2761,20 @@ fi
 case \$REASON in
 REQUEST)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    if [ -n "\${PDINFO}" ]; then
-        echo \${PDINFO} > /tmp/{$wanif}_pdinfov6
-    else
-        rm -f /tmp/{$wanif}_pdinfov6
-    fi
-    ARGS="-i ${wanif} -6nd"
+    ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh \${ARGS}
-    ARGS="-i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}"
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh \${ARGS}
+    /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
+    /usr/local/sbin/ifctl -i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}
+    /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${wanif} -6nd
-    /usr/local/opnsense/scripts/interfaces/nameserver.sh -i ${wanif} -6sd
-    rm -f /tmp/{$wanif}_pdinfov6
+    /usr/local/sbin/ifctl -i ${wanif} -6nd
+    /usr/local/sbin/ifctl -i ${wanif} -6sd
+    /usr/local/sbin/ifctl -i ${wanif} -6pd
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
@@ -2837,9 +2829,9 @@ if [ -z "\${1}" ]; then
     exit 0
 fi
 if [ -n "\${2}" ]; then
-    echo \${2} > /tmp/\${1}_routerv6
     echo \${2} > /tmp/\${1}_defaultgwv6
 fi
+/usr/local/sbin/ifctl -i \${1} -6rd \${2:+"-a \${2}"}
 if [ -f /var/run/dhcp6c.pid ]; then
     if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
         rm -f /var/run/dhcp6c.pid
@@ -3912,9 +3904,9 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         /* XXX there are more magic files */
-        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_pdinfov6");
+        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_prefixv6");
         if (!empty($aux)) {
-            $ifinfo['pdinfo'] = $aux;
+            $ifinfo['prefixv6'] = $aux;
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];

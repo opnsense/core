@@ -296,10 +296,10 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<?php if (array_key_exists('pdinfo', $ifinfo)): ?>
+<?php if (array_key_exists('prefixv6', $ifinfo)): ?>
                     <tr>
                       <td><?= gettext('IPv6 delegated prefix') ?></td>
-                      <td><?= $ifinfo['pdinfo'] ?></td>
+                      <td><?= $ifinfo['prefixv6'] ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>

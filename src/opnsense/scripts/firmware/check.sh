@@ -298,7 +298,7 @@ else
         fi
 
         if [ -n "${base_to_reboot}" ]; then
-            base_to_delete="$(opnsense-update -vk base)"
+            base_to_delete="$(opnsense-update -vb)"
             base_is_size="$(opnsense-update -bfSr ${base_to_reboot})"
             if [ "${base_to_reboot}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall

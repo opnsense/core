@@ -23,22 +23,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
-# requirements:
-#   -4 IPv4 (default)
-#   -6 IPv6
-#   -i <interface>
-
-# commands:
-#   -a <content> attach (multiple)
-#   -d undo contents
-#   -n nameserver mode (default)
-#   -s searchdomain mode
-#   (none of the above: print contents)
-
 DO_CONTENTS=
 DO_DELETE=
 DO_MODE=
+DO_VERBOSE=
 
 AF=
 MD=
@@ -48,7 +36,7 @@ IF=
 # default to IPv4 with nameserver mode
 set -- -4 -n ${@}
 
-while getopts 46a:di:ns OPT; do
+while getopts 46a:di:nprsV OPT; do
 	case ${OPT} in
 	4)
 		AF=inet
@@ -71,23 +59,44 @@ while getopts 46a:di:ns OPT; do
 		DO_MODE="-n"
 		MD="nameserver"
 		;;
+	p)
+		DO_MODE="-p"
+		MD="prefix"
+		;;
+	r)
+		DO_MODE="-r"
+		MD="router"
+		;;
 	s)
 		DO_MODE="-s"
 		MD="searchdomain"
 		;;
+	V)
+		DO_VERBOSE="-V"
+		;;
 	*)
-		echo "Unknown option: ${OPT}" >&2
+		echo "Usage: man ${0##*/}" >&2
 		exit 1
 		;;
 	esac
 done
 
-if [ -z "${IF}" ]; then
-	echo "Missing option: -i" >&2
-	exit 1
+if [ -n "${DO_VERBOSE}" ]; then
+	set -x
 fi
 
-FILE="/tmp/${IF}_${MD}${EX}"
+FILE="/tmp/${IF:-*}_${MD}${EX}"
+
+if [ -z "${IF}" ]; then
+	# list all interfaces that have the requested file
+	for FOUND in $(find -s /tmp -name "${FILE#/tmp/}"); do
+		FOUND=${FOUND#/tmp/}
+		echo ${FOUND%%_*}
+	done
+
+	# wait for further user input using "-i"
+	exit 0
+fi
 
 if [ -n "${DO_DELETE}" ]; then
         if [ "${DO_MODE}" = "-n" -a -f ${FILE} ]; then

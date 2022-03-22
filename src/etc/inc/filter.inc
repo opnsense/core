@@ -95,12 +95,11 @@ function filter_rules_sort()
 function filter_configure()
 {
     /*
-     * NOTE: Check here for bootup status since this should not be triggered during bootup.
-     *   The reason is that rc.bootup calls filter_configure_sync directly which does this too.
+     * Defer this to configd which will avoid this call on bootup when
+     * this should not be triggered.  The reason is that rc.bootup calls
+     * filter_configure_sync() directly which does this too.
      */
-    if (!file_exists("/var/run/booting")) {
-        configd_run('filter reload');
-    }
+    configd_run('filter reload');
 }
 
 /**
