@@ -994,7 +994,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
 
     /* clear stale state files associated with this interface */
     @unlink("/tmp/{$realifv6}_nameserverv6");
-    @unlink("/tmp/{$realifv6}_pdinfo");
+    @unlink("/tmp/{$realifv6}_prefixv6");
     @unlink("/tmp/{$realifv6}_routerv6");
     @unlink("/tmp/{$realifv6}_searchdomainv6");
     @unlink("/tmp/{$realif}_nameserver");
@@ -2789,23 +2789,20 @@ fi
 case \$REASON in
 REQUEST)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    rm -f /tmp/${wanif}_nameserverv6 /tmp/{$wanif}_pdinfo /tmp/${wanif}_searchdomainv6
-    if [ -n "\${PDINFO}" ]; then
-        echo \${PDINFO} > /tmp/{$wanif}_pdinfo
-    fi
-    if [ -n "\${new_domain_name}" ]; then
-        echo \${new_domain_name} > /tmp/${wanif}_searchdomainv6
-    fi
-    if [ -n "\${new_domain_name_servers}" ]; then
-        for NAMESERVER in \${new_domain_name_servers}; do
-            echo \${NAMESERVER} >> /tmp/${wanif}_nameserverv6
-        done
-    fi
+    ARGS=
+    for NAMESERVER in \${new_domain_name_servers}; do
+        ARGS="\${ARGS} -a \${NAMESERVER}"
+    done
+    /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
+    /usr/local/sbin/ifctl -i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}
+    /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    rm -f /tmp/${wanif}_nameserverv6 /tmp/{$wanif}_pdinfo /tmp/${wanif}_searchdomainv6
+    /usr/local/sbin/ifctl -i ${wanif} -6nd
+    /usr/local/sbin/ifctl -i ${wanif} -6sd
+    /usr/local/sbin/ifctl -i ${wanif} -6pd
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
@@ -2860,9 +2857,9 @@ if [ -z "\${1}" ]; then
     exit 0
 fi
 if [ -n "\${2}" ]; then
-    echo \${2} > /tmp/\${1}_routerv6
     echo \${2} > /tmp/\${1}_defaultgwv6
 fi
+/usr/local/sbin/ifctl -i \${1} -6rd \${2:+"-a \${2}"}
 if [ -f /var/run/dhcp6c.pid ]; then
     if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
         rm -f /var/run/dhcp6c.pid
@@ -3935,9 +3932,9 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         /* XXX there are more magic files */
-        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_pdinfo");
+        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_prefixv6");
         if (!empty($aux)) {
-            $ifinfo['pdinfo'] = $aux;
+            $ifinfo['prefixv6'] = $aux;
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];
