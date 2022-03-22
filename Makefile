@@ -464,6 +464,7 @@ mfc: ensure-stable clean-mfcdir
 	@cp -r ${MFC} ${MFCDIR}
 	@git checkout ${CORE_STABLE}
 	@rm -rf ${MFC}
+	@mkdir -p $$(dirname ${MFC})
 	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
 	@git add -f .
 	@if ! git diff --quiet HEAD; then \
