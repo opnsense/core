@@ -20,8 +20,8 @@ if [ "${AF}" = "inet" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	/usr/local/sbin/ifctl -ni ${IF} -4 -d
-	rm -f /tmp/${IF}_router
+	/usr/local/sbin/ifctl -i ${IF} -4nd
+	/usr/local/sbin/ifctl -i ${IF} -4rd
 elif [ "${AF}" = "inet6" ]; then
 	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
 		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)
@@ -38,8 +38,8 @@ elif [ "${AF}" = "inet6" ]; then
 		ifconfig ${IF} ${FAMILY} ${ADDR} -alias
 	done
 
-	/usr/local/sbin/ifctl -ni ${IF} -6 -d
-	rm -f /tmp/${IF}_routerv6
+	/usr/local/sbin/ifctl -i ${IF} -6nd
+	/usr/local/sbin/ifctl -i ${IF} -6rd
 fi
 
 /usr/local/sbin/configctl -d dns reload

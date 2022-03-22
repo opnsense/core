@@ -12,24 +12,19 @@ if echo "${7}" | grep -q dns2; then
 	DNS2="-a $(echo "${7}" | awk '{print $2}')"
 fi
 
-if [ "${2}" = "inet" ]; then
-	if [ -n "${4}" ]; then
-		echo ${4} > /tmp/${1}_router
-	else
-		rm -f /tmp/${1}_router
-	fi
+ROUTER=
+if [ -n "${4}" ]; then
+	# XXX if this is link-local why bother stripping the required scope?
+	ROUTER="-a $(echo ${4} | cut -d% -f1)"
+fi
 
-	/usr/local/sbin/ifctl -ni ${1} -4 -d ${DNS1} ${DNS2}
+if [ "${2}" = "inet" ]; then
+	/usr/local/sbin/ifctl -i ${1} -4nd ${DNS1} ${DNS2}
+	/usr/local/sbin/ifctl -i ${1} -4rd ${ROUTER}
 	/usr/local/sbin/configctl -d interface newip ${1}
 elif [ "${2}" = "inet6" ]; then
-	if [ -n "${4}" ]; then
-		# XXX if this is link local why bother stripping the required scope?
-		echo ${4} | cut -d% -f1 > /tmp/${1}_routerv6
-	else
-		rm -f /tmp/${1}_routerv6
-	fi
-
-	/usr/local/sbin/ifctl -ni ${1} -6 -d ${DNS1} ${DNS2}
+	/usr/local/sbin/ifctl -i ${1} -6nd ${DNS1} ${DNS2}
+	/usr/local/sbin/ifctl -i ${1} -6rd ${ROUTER}
 	/usr/local/sbin/configctl -d interface newipv6 ${1}
 fi
 
