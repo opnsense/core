@@ -192,8 +192,7 @@
     <div id="infosection" class="tab-content col-xs-12 __mb">
         {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Custom Forwarding and DNS over TLS
         are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
-        in %s or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.')
-        | format('<a href="/system_general.php">System: General setup</a>') }}
+        in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
     </div>
     <div class="col-md-12">
         <hr/>
