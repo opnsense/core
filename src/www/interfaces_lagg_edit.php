@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_laggs[] = $lagg;
             }
             write_config();
-            interface_lagg_configure($lagg);
+            _interfaces_lagg_configure($lagg);
             $confif = convert_real_interface_to_friendly_interface_name($lagg['laggif']);
             if ($confif != '') {
                 interface_configure(false, $confif);

@@ -494,7 +494,7 @@ function interfaces_lagg_configure($verbose = false, $realif = '')
             continue;
         }
 
-        interface_lagg_configure($lagg);
+        _interfaces_lagg_configure($lagg);
     }
 
     if ($verbose) {
@@ -502,7 +502,7 @@ function interfaces_lagg_configure($verbose = false, $realif = '')
     }
 }
 
-function interface_lagg_configure(&$lagg)
+function _interfaces_lagg_configure($lagg)
 {
     if (!is_array($lagg)) {
         return -1;
