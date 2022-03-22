@@ -171,13 +171,9 @@ function interfaces_vlan_priorities()
     return $priorities;
 }
 
-function interfaces_vlan_configure($verbose = false, $realif = '')
+function interfaces_vlan_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && !strstr($realif, '_vlan')) {
-        return;
-    }
 
     if (!isset($config['vlans']['vlan'])) {
         return;
@@ -187,17 +183,21 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
         echo 'Configuring VLAN interfaces...';
         flush();
     }
-    $ints = legacy_interface_listget();
+
+    /* XXX sorting vlans here on top of $config seems prone to further side effects */
+    // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
+    usort($config['vlans']['vlan'], function ($a, $b) {
+        $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1;
+        $bqinq = strpos($b['vlanif'], 'vlan') !== false ? 0 : 1;
+        if ($aqinq === $bqinq) {
+            return $a['vlanif'] <=> $b['vlanif'];
+        } else {
+            return $aqinq <=> $bqinq;
+        }
+    });
+
     foreach ($config['vlans']['vlan'] as $vlan) {
-        if (empty($vlan['vlanif'])) {
-            $vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
-        }
-
-        if (!empty($realif) && $realif != $vlan['vlanif']) {
-            continue;
-        }
-
-        interface_vlan_configure($vlan, $ints);
+        _interfaces_vlan_configure($vlan);
     }
 
     if ($verbose) {
@@ -205,34 +205,17 @@ function interfaces_vlan_configure($verbose = false, $realif = '')
     }
 }
 
-function interface_vlan_configure(&$vlan, $intfs = null)
+function _interfaces_vlan_configure($vlan)
 {
-    if (!is_array($vlan)) {
-        log_error('VLAN: called with wrong options. Problems with config!');
-        return;
-    }
-    $if = $vlan['if'];
-    $vlanif = empty($vlan['vlanif']) ? "{$if}_vlan{$vlan['tag']}" : $vlan['vlanif'];
+    interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
-    if (empty($if)) {
-        log_error('interface_vlan_configure called with if undefined.');
-        return;
-    }
+    /* destroy is a safety precaution, when confguring via api or gui this function should only be called on new vlans */
+    legacy_interface_destroy($vlan['vlanif']);
+    legacy_interface_create('vlan', $vlan['vlanif']);
 
-    interfaces_bring_up($if);
+    legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp']);
 
-    $ints = empty($intfs) ? legacy_interface_listget() : $intfs;
-    if (!empty($vlanif) && in_array($vlanif, $ints)) {
-        legacy_interface_destroy($vlanif);
-    }
-
-    legacy_interface_create('vlan', $vlanif);
-    $pcp = isset($vlan['pcp']) ? $vlan['pcp'] : 0;
-    legacy_vlan_tag($vlanif, $if, $vlan['tag'], $pcp);
-
-    interfaces_bring_up($vlanif);
-
-    return $vlanif;
+    interfaces_bring_up($vlan['vlanif']);
 }
 
 function interfaces_test_wireless_capability($if, $cap)
