@@ -40,7 +40,8 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private $type = 'dot';
 
-    public function toggleSystemForwardAction() {
+    public function toggleSystemForwardAction()
+    {
         if ($this->request->isPost() && $this->request->hasPost('forwarding')) {
             $this->sessionClose();
             Config::getInstance()->lock();
@@ -58,10 +59,10 @@ class SettingsController extends ApiMutableModelControllerBase
             /* save and release lock */
             Config::getInstance()->save();
         }
-
     }
 
-    public function getSystemForwardAction() {
+    public function getSystemForwardAction()
+    {
         $config = Config::getInstance()->object();
         return array("forwarding" =>
             array( "enabled" =>
@@ -70,7 +71,8 @@ class SettingsController extends ApiMutableModelControllerBase
         );
     }
 
-    public function getNameserversAction() {
+    public function getNameserversAction()
+    {
         if ($this->request->isGet()) {
             $backend = new Backend();
             $nameservers = json_decode(trim($backend->configdRun("system list nameservers")));
@@ -132,7 +134,9 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function addForwardAction()
     {
-        return $this->addBase('dot', 'dots.dot',
+        return $this->addBase(
+            'dot',
+            'dots.dot',
             [ "type" => $this->type ]
         );
     }
@@ -144,7 +148,10 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setForwardAction($uuid)
     {
-        return $this->setBase('dot', 'dots.dot', $uuid,
+        return $this->setBase(
+            'dot',
+            'dots.dot',
+            $uuid,
             [ "type" => $this->type ]
         );
     }
