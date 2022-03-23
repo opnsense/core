@@ -257,6 +257,7 @@ EOF;
 
     $forward_conf = '';
     $forward_local = '';
+    $resolv = '';
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
 
@@ -273,7 +274,6 @@ EOF;
         }
 
         if (!empty($dnsservers)) {
-            $resolv = '';
             $forward_conf .= <<<EOD
 # Forwarding
 forward-zone:
@@ -292,10 +292,10 @@ EOD;
                 }
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
             }
-
-            file_put_contents("/var/unbound/resolv.conf.root", $resolv, LOCK_EX);
         }
     }
+
+    file_put_contents("/var/unbound/resolv.conf.root", $resolv, LOCK_EX);
 
     $so_reuseport = empty(system_sysctl_get()['net.inet.rss.enabled']) ? 'yes' : 'no';
 
