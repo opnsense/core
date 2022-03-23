@@ -869,9 +869,11 @@ function get_interface_list($only_active = false, $include_dmesg = false)
       'ppp',
       'pppoe',
       'pptp',
+      'qinq',
       'sl',
       'tap',
       'tun',
+      'vlan',
     ];
 
     $ifnames_up = legacy_interface_listget('up');

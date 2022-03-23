@@ -448,7 +448,7 @@ function configure_interface_hardware($ifs, $intf_details = null)
 
     $hwsettings = $config['system'];
 
-    if (strstr($ifs, '_vlan') || strpos($ifs, '/') === 0) {
+    if (strstr($ifs, 'vlan') || strstr($ifs, 'qinq') || strpos($ifs, '/') === 0) {
         /* skip checksumming  */
         return;
     }
@@ -502,7 +502,7 @@ function configure_interface_hardware($ifs, $intf_details = null)
             legacy_interface_flags($ifs, 'lro', false);
         }
 
-        // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected
+        // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
         if (!isset($hwsettings['disablevlanhwfilter']) || $hwsettings['disablevlanhwfilter'] == 1) {
             // probe already selected options
             $selected_opts = [];

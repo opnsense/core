@@ -866,15 +866,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
             }
 
-            if (strstr($a_interfaces[$if]['if'], '_vlan')) {
+            if (strstr($a_interfaces[$if]['if'], 'vlan') || strstr($a_interfaces[$if]['if'], 'qinq')) {
                 list ($parentif) = interface_parent_devices($if);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
-                    $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
+                    $input_errors[] = gettext("MTU of a VLAN should not be bigger than parent interface.");
                 }
             } else {
                 foreach ($config['interfaces'] as $idx => $ifdata) {
-                    if ($idx == $if || !strstr($ifdata['if'], '_vlan')) {
+                    if ($idx == $if || !strstr($ifdata['if'], 'vlan') || !strstr($ifdata['if'], 'qinq')) {
                         continue;
                     }
 

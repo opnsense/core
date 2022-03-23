@@ -185,7 +185,7 @@ function core_devices()
     $devices[] = array('pattern' => '^wg', 'volatile' => true);
     $devices[] = array('pattern' => '^zt', 'volatile' => true);
     $devices[] = array('pattern' => '_stf', 'volatile' => true);
-    $devices[] = array('pattern' => '_vlan', 'volatile' => true);
+    $devices[] = array('pattern' => '_vlan|^vlan|^qinq', 'volatile' => true);
     $devices[] = array('pattern' => '_wlan', 'volatile' => true);
 
     return $devices;
