@@ -53,13 +53,13 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             return (string)$current->vlanif;
         } else {
             // autonumber new
-            $ifid = -1;
+            $ifid = 0;
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
                 if (strpos((string)$node->vlanif, $prefix) === 0) {
                     $ifid = max($ifid, (int)filter_var((string)$node->vlanif, FILTER_SANITIZE_NUMBER_INT));
                 }
             }
-            return $prefix . ($ifid + 1);
+            return sprintf("%s0%d", $prefix , ($ifid + 1));
         }
     }
 
