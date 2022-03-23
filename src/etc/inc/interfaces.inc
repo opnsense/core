@@ -468,13 +468,9 @@ function interface_bridge_add_member($bridgeif, $realif)
     legacy_bridge_member($bridgeif, $realif);
 }
 
-function interfaces_lagg_configure($verbose = false, $realif = '')
+function interfaces_lagg_configure($verbose = false)
 {
     global $config;
-
-    if (!empty($realif) && substr($realif, 0, 4) != 'lagg') {
-        return;
-    }
 
     if (!isset($config['laggs']['lagg'])) {
         return;
@@ -485,15 +481,7 @@ function interfaces_lagg_configure($verbose = false, $realif = '')
         flush();
     }
 
-    foreach ($config['laggs']['lagg'] as $i => $lagg) {
-        if (empty($lagg['laggif'])) {
-            $lagg['laggif'] = "lagg{$i}";
-        }
-
-        if (!empty($realif) && $realif != $lagg['laggif']) {
-            continue;
-        }
-
+    foreach ($config['laggs']['lagg'] as $lagg) {
         _interfaces_lagg_configure($lagg);
     }
 
