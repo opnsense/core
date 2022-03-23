@@ -2287,7 +2287,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         $intf_details = $ifconfig_details[$realhwif];
         $mtu = $wancfg['mtu'];
 
-        if (strstr($realif, '_vlan')) {
+        if (strstr($realif, 'vlan') || strstr($realif, 'qinq')) {
             $parent_realif = interface_parent_devices($interface)[0];
             $parent_details = $ifconfig_details[$parent_realif];
 
@@ -3377,7 +3377,8 @@ function interface_parent_devices($interface)
 
     $realif = get_real_interface($interface);
 
-    if (strstr($realif, '_vlan')) {
+    if (strstr($realif, 'vlan') || strstr($realif, 'qinq')) {
+        /* XXX maybe if we have a qinq type return both parents? */
         foreach (config_read_array('vlans', 'vlan') as $vlan) {
             if ($realif == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];

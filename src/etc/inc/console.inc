@@ -165,7 +165,7 @@ EOD;
 
         if (isset($config['vlans']['vlan'][0])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
-                $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = [
+                $iflist_all[$vlan['vlanif']] = [
                     'dmesg' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
                     'mac' => '00:00:00:00:00:00',
                 ];

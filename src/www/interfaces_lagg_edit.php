@@ -331,7 +331,7 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_lagghash" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash Layers"); ?>
                     <td>
                         <select name="lagghash[]" title="<?=gettext("Default");?>" multiple="multiple" class="selectpicker proto proto_lacp proto_loadbalance">
-                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst mac address and optional vlan number."); ?></option>
+                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst MAC address and optional VLAN number."); ?></option>
                             <option value="l3" <?=in_array('l3', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L3: src/dst address for IPv4 or IPv6."); ?></option>
                             <option value="l4" <?=in_array('l4', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L4: src/dst port for TCP/UDP/SCTP."); ?></option>
                         </select>

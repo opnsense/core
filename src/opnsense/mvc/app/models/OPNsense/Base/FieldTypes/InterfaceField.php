@@ -86,8 +86,8 @@ class InterfaceField extends BaseListField
     }
 
     /**
-     *  collect parents for vlan interfaces
-     *  @return array named array containing device and vlan interfaces
+     *  collect parents for VLAN interfaces
+     *  @return array named array containing device and VLAN interfaces
      */
     private function getConfigVLANInterfaces()
     {
