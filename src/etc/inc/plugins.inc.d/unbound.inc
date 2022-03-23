@@ -257,7 +257,7 @@ EOF;
 
     $forward_conf = '';
     $forward_local = '';
-    $resolv = '';
+    $resolv_conf_root = '';
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
 
@@ -288,14 +288,14 @@ EOD;
                      * These servers all use port 53 so exclude localhost from being queried for bootstrapping
                      * in our custom resolv.conf file as Unbound doesn't exist yet.
                      */
-                    $resolv .= "nameserver $dnsserver\n";
+                    $resolv_conf_root .= "nameserver $dnsserver\n";
                 }
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
             }
         }
     }
 
-    file_put_contents("/var/unbound/resolv.conf.root", $resolv, LOCK_EX);
+    file_put_contents("/var/unbound/resolv.conf.root", $resolv_conf_root, LOCK_EX);
 
     $so_reuseport = empty(system_sysctl_get()['net.inet.rss.enabled']) ? 'yes' : 'no';
 
