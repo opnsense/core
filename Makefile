@@ -498,6 +498,9 @@ push:
 	@git push
 	@git checkout ${CORE_DEVEL}
 
+migrate:
+	@src/opnsense/mvc/script/run_migrations.php
+
 test: want-phpunit7-php${CORE_PHP}
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \

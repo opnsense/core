@@ -1,5 +1,5 @@
 <model>
-    <mount>//vlans</mount>
+    <mount>/vlans</mount>
     <version>1.0.0</version>
     <description>
         VLAN configuration
