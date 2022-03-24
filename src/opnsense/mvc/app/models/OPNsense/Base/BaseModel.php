@@ -316,7 +316,15 @@ abstract class BaseModel
         if ($model_xml->getName() != "model") {
             throw new ModelException('model xml ' . $model_filename . ' seems to be of wrong type');
         }
-        $this->internal_mountpoint = $model_xml->mount;
+        /*
+         *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
+         *       mountpoints starting with a single /
+         */
+        if (strpos($model_xml->mount, "//") === 0) {
+            $this->internal_mountpoint = $model_xml->mount;
+        } else {
+            $this->internal_mountpoint = "/opnsense{$model_xml->mount}";
+        }
 
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
@@ -328,7 +336,7 @@ abstract class BaseModel
 
         // use an xpath expression to find the root of our model in the config.xml file
         // if found, convert the data to a simple structure (or create an empty array)
-        $tmp_config_data = $internalConfigHandle->xpath($model_xml->mount);
+        $tmp_config_data = $internalConfigHandle->xpath($this->internal_mountpoint);
         if ($tmp_config_data->length > 0) {
             $config_array = simplexml_import_dom($tmp_config_data->item(0));
         } else {
@@ -483,6 +491,7 @@ abstract class BaseModel
         // calculate root node from mountpoint
         $xml_root_node = "";
         $str_parts = explode("/", str_replace("//", "/", $this->internal_mountpoint));
+
         for ($i = 0; $i < count($str_parts); $i++) {
             if ($str_parts[$i] != "") {
                 $xml_root_node .= "<" . $str_parts[$i] . ">";
@@ -495,6 +504,7 @@ abstract class BaseModel
         }
 
         $xml = new SimpleXMLElement($xml_root_node);
+
         $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
         // add this model's version to the newly created xml structure
         if (!empty($this->internal_current_model_version)) {
