@@ -43,23 +43,24 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         $tmp = $this->request->getPost('vlan');
         $prefix = (strpos($tmp['if'], 'vlan') === false ? 'vlan' : 'qinq');
         if ($current != null && (string)$current->vlanif == "{$tmp['if']}_vlan{$tmp['tag']}") {
-            // keep legacy naming
+            /* keep legacy naming */
             return "{$tmp['if']}_vlan{$tmp['tag']}";
         } elseif (
             $current != null && strpos((string)$current->vlanif, '_vlan') === false &&
             strpos((string)$current->vlanif, $prefix) === 0
         ) {
-            // new naming convention and same type, name stays the same
+            /* new naming convention and same type, name stays the same */
             return (string)$current->vlanif;
         } else {
-            // autonumber new
+            /* auto-number new device */
             $ifid = 0;
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
                 if (strpos((string)$node->vlanif, $prefix) === 0) {
                     $ifid = max($ifid, (int)filter_var((string)$node->vlanif, FILTER_SANITIZE_NUMBER_INT));
                 }
             }
-            return sprintf("%s0%d", $prefix , ($ifid + 1));
+            /* intentionally insert "0" between prefix and index */
+            return sprintf('%s0%d', $prefix, $ifid + 1);
         }
     }
 
@@ -122,7 +123,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             }
         } else {
             $result = $this->setBase('vlan', 'vlan', $uuid, ['vlanif' => $new_vlanif]);
-            // store interface name for apply action
+            /* store interface name for apply action */
             if ($result['result'] != 'failed' && $old_vlanif != $new_vlanif) {
                 file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND | LOCK_EX);
             }
@@ -132,9 +133,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function addItemAction()
     {
-        return $this->addBase('vlan', 'vlan', [
-            "vlanif" =>  $this->generateVlanIfName()
-        ]);
+        return $this->addBase('vlan', 'vlan', ['vlanif' => $this->generateVlanIfName()]);
     }
 
     public function getItemAction($uuid = null)
@@ -158,7 +157,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             throw new UserException(gettext("This VLAN cannot be deleted because it is assigned as an interface."));
         } else {
             $result = $this->delBase('vlan', $uuid);
-            // store interface name for apply action
+            /* store interface name for apply action */
             if ($result['result'] != 'failed') {
                 file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND | LOCK_EX);
             }
