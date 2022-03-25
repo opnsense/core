@@ -30,6 +30,7 @@
 $changelogfile = '/usr/local/opnsense/changelog/index.json';
 
 list ($series, $version) = explode(' ', trim(shell_exec('opnsense-version -Vv')));
+$version = explode('_', $version)[0];
 
 $ret = json_decode(@file_get_contents($changelogfile), true);
 if ($ret != null) {
