@@ -39,48 +39,6 @@ use OPNsense\Core\Config;
 class TunnelController extends ApiControllerBase
 {
     /***
-     * generic legacy search action, reads post variables for filters and page navigation.
-     */
-    private function search($records)
-    {
-        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
-        $currentPage = intval($this->request->getPost('current', 'int', 1));
-        $offset = ($currentPage - 1) * $itemsPerPage;
-        $entry_keys = array_keys($records);
-        if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
-            $searchPhrase = (string)$this->request->getPost('searchPhrase');
-            $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $records) {
-                foreach ($records[$key] as $itemval) {
-                    if (stripos($itemval, $searchPhrase) !== false) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-        }
-        $formatted = array_map(function ($value) use (&$records) {
-            foreach ($records[$value] as $ekey => $evalue) {
-                $item[$ekey] = $evalue;
-            }
-            return $item;
-        }, array_slice($entry_keys, $offset, $itemsPerPage));
-
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
-            $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($formatted, $keys[0]);
-            array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $formatted);
-        }
-
-        return [
-           'total' => count($entry_keys),
-           'rowCount' => $itemsPerPage,
-           'current' => $currentPage,
-           'rows' => $formatted,
-        ];
-    }
-
-    /***
      * search phase 1 entries in legacy config returning a standard structure as we use in the mvc variant
      */
     public function searchPhase1Action()
@@ -160,7 +118,7 @@ class TunnelController extends ApiControllerBase
                 $idx++;
             }
         }
-        return $this->search($items);
+        return $this->searchRecordsetBase($items);
     }
 
     /***
@@ -292,7 +250,7 @@ class TunnelController extends ApiControllerBase
                 $p2idx++;
             }
         }
-        return $this->search($items);
+        return $this->searchRecordsetBase($items);
     }
 
     /**
