@@ -78,18 +78,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $nameservers = json_decode(trim($backend->configdRun("system list nameservers")));
 
             if ($nameservers !== null) {
-                $result = array();
-                $config = Config::getInstance()->object();
-                if (isset($config->system->dnsallowoverride)) {
-                    foreach ($nameservers->dynamic as $dynamic) {
-                        $result[] = $dynamic;
-                    }
-                }
-                foreach ($nameservers->static as $static) {
-                    $result[] = $static;
-                }
-
-                return $result;
+                return $nameservers;
             }
         }
         return array("message" => "Unable to run configd action");

@@ -259,19 +259,7 @@ EOF;
     $forward_local = '';
     $resolv_conf_root = '';
     if (isset($config['unbound']['forwarding'])) {
-        $dnsservers = array();
-
-        if (isset($config['system']['dnsallowoverride'])) {
-            foreach (get_nameservers() as $nameserver) {
-                $dnsservers[] = $nameserver;
-            }
-        }
-
-        if (!empty($config['system']['dnsserver'][0])) {
-            foreach ($config['system']['dnsserver'] as $nameserver) {
-                $dnsservers[] = $nameserver;
-            }
-        }
+        $dnsservers = get_nameservers();
 
         if (!empty($dnsservers)) {
             $forward_conf .= <<<EOD
