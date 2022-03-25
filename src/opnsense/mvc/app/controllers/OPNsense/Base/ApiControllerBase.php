@@ -39,6 +39,68 @@ use OPNsense\Auth\AuthenticationFactory;
  */
 class ApiControllerBase extends ControllerRoot
 {
+
+    /***
+     * Recordset (array in array) search wrapper
+     * @param string $path path to search, relative to this model
+     * @param array $fields fieldnames to search through in result
+     * @param string|null $defaultSort default sort field name
+     * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
+     * @return array
+     */
+    protected function searchRecordsetBase(
+        $records,
+        $fields = null,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL)
+    {
+        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $currentPage = intval($this->request->getPost('current', 'int', 1));
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        $entry_keys = array_keys($records);
+        $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
+        $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
+            if (is_callable($filter_funct) && !$filter_funct($record)) {
+                // not applicable according to $filter_funct()
+                return false;
+            } elseif (!empty($searchPhrase)) {
+                foreach ($records[$key] as $itemkey => $itemval) {
+                    if (stripos($itemval, $searchPhrase) !== false && (empty($fields) || in_array($itemkey, $fields))) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return true;
+            }
+        });
+        $formatted = array_map(function ($value) use (&$records) {
+            foreach ($records[$value] as $ekey => $evalue) {
+                $item[$ekey] = $evalue;
+            }
+            return $item;
+        }, array_slice($entry_keys, $offset, $itemsPerPage));
+
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+            $keys = array_keys($this->request->getPost('sort'));
+            $order = $this->request->getPost('sort')[$keys[0]];
+            $keys = array_column($formatted, $keys[0]);
+            array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $formatted);
+        } elseif (!empty($defaultSort)) {
+            $keys = array_column($formatted, $defaultSort);
+            array_multisort($keys, SORT_ASC, $sort_flags, $formatted);
+        }
+
+        return [
+           'total' => count($entry_keys),
+           'rowCount' => $itemsPerPage,
+           'current' => $currentPage,
+           'rows' => $formatted,
+        ];
+    }
+
     /**
      * parse raw json type content to POST data depending on content type
      * (only for api calls)

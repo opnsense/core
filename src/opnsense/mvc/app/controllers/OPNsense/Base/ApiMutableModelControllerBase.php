@@ -1,8 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2016-2022 Deciso B.V.
  * Copyright (C) 2016 IT-assistans Sverige AB
- * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2018 Fabian Franz
  * All rights reserved.
  *
