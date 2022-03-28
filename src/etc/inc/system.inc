@@ -174,7 +174,6 @@ function system_resolvconf_generate($verbose = false)
         flush();
     }
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $syscfg = config_read_array('system');
     $resolvconf = '';
     $search = [];
@@ -199,17 +198,12 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
-    if (isset($syscfg['dnsallowoverride'])) {
-        $search = array_merge($search, get_searchdomains());
-    }
+    $search = array_merge($search, get_searchdomains());
 
     foreach (get_nameservers(null, true) as $dnsserver) {
         $host = !empty($dnsserver['host']) ? $dnsserver['host'] : $dnsserver;
         $resolvconf .= "nameserver {$host}\n";
-
-        if (!empty($dnsserver['gateway'])) {
-            $routes[] = $dnsserver;
-        }
+        $routes[] = $dnsserver;
     }
 
     if (count($search)) {
@@ -302,9 +296,14 @@ function get_zoneinfo()
 
 function get_searchdomains()
 {
-    $master_list = array();
-
     $search_list = glob('/tmp/*_searchdomain*');
+    $syscfg = config_read_array('system');
+    $master_list = [];
+
+    if (!isset($syscfg['dnsallowoverride'])) {
+        /* do not return domains as required by configuration */
+        $search_list = [];
+    }
 
     if (is_array($search_list)) {
         foreach ($search_list as $fdns) {
@@ -326,34 +325,12 @@ function get_searchdomains()
 function get_nameservers($interface = null, $with_gateway = false)
 {
     global $config;
-    $master_list = array();
-
-    $dns_lists = glob('/tmp/*_nameserver*');
-    $dns_static = [];
-    $exclude_interfaces = [];
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-
+    $dns_lists = glob('/tmp/*_nameserver*');
     $syscfg = config_read_array('system');
-
-    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
-        $dnsgw = "dns{$dnscounter}gw";
-        if (!empty($syscfg[$dnsgw])) {
-            $gwname = $syscfg[$dnsgw];
-            $entry = $syscfg['dnsserver'][$dnscounter - 1];
-            if ($gwname != 'none') {
-                $dns_static[] = [
-                    'host' => $entry,
-                    'gw_addr' => $gateways->getAddress($gwname),
-                    'if' => $gateways->getInterface($gwname)
-                ];
-            } else if (!empty($entry)) {
-                $dns_static[] = $entry;
-            }
-        }
-    }
-
-    $dns_static_new = $dns_static;
+    $exclude_interfaces = [];
+    $master_list = [];
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
@@ -363,20 +340,14 @@ function get_nameservers($interface = null, $with_gateway = false)
             "/tmp/{$realif}_nameserver",
             "/tmp/{$realifv6}_nameserverv6",
         ];
-
-        /* this interface can also be assigned multiple manual dns servers */
-        $dns_static_new = [];
-        foreach ($dns_static as $static) {
-            if (isset($static['if']) && $static['if'] == $realif) {
-                $dns_static_new[] = $static;
-            }
-        }
+    } elseif (!isset($syscfg['dnsallowoverride'])) {
+        /* do not return servers as required by configuration */
+        $dns_lists = [];
     }
 
-    $dns_static = $dns_static_new;
-
-    if (isset($config['system']['dnsallowoverride_exclude'])) {
-        foreach (explode(',', $config['system']['dnsallowoverride_exclude']) as $intf) {
+    if (isset($syscfg['dnsallowoverride_exclude'])) {
+        /* by design this only works on "dnsallowoverride" servers, not static ones */
+        foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
                 $exclude_interfaces[] = get_real_interface($intf);
                 $exclude_interfaces[] = get_real_interface($intf, 'inet6');
@@ -385,10 +356,6 @@ function get_nameservers($interface = null, $with_gateway = false)
     }
 
     foreach ($dns_lists as $fdns) {
-        if (!isset($syscfg['dnsallowoverride'])) {
-            continue;
-        }
-
         $intf = explode('_', basename($fdns))[0];
         if (in_array($intf, $exclude_interfaces)) {
             continue;
@@ -408,7 +375,7 @@ function get_nameservers($interface = null, $with_gateway = false)
         foreach ($contents as $dns) {
             if (!empty($dns) && is_ipaddr($dns)) {
                 if ($with_gateway) {
-                    $master_list[] = ['type' => 'dynamic', 'host' => $dns, 'gateway' => $gw];
+                    $master_list[] = ['host' => $dns, 'gateway' => $gw];
                 } else {
                     $master_list[] = $dns;
                 }
@@ -416,15 +383,39 @@ function get_nameservers($interface = null, $with_gateway = false)
         }
     }
 
-    foreach ($dns_static as $static) {
-        if (isset($static['if']) && in_array($static['if'], $exclude_interfaces)) {
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
+        $dns = $syscfg['dnsserver'][$dnscounter - 1];
+        if (empty($dns)) {
             continue;
         }
 
-        if ($with_gateway && isset($static['gw_addr'])) {
-            $master_list[] = ['type' => 'static', 'host' => $static['host'], 'gateway' => $static['gw_addr']];
+        $gwkey = "dns{$dnscounter}gw";
+        $gateway = null;
+
+        if (!empty($syscfg[$gwkey]) && $syscfg[$gwkey] != 'none') {
+            $dnsif = $gateways->getInterfaceName($syscfg[$gwkey]);
+            $dnsgw = $gateways->getAddress($syscfg[$gwkey]);
+
+            if (empty($dnsif) || empty($dnsgw)) {
+                /* do not present servers for defunct gateways */
+                continue;
+            }
+
+            if (!empty($interface) && $interface != $dnsif) {
+                /* not looking for this one */
+                continue;
+            }
+
+            $gateway = $dnsgw;
+        } elseif (!empty($interface)) {
+            /* not attached to any interface */
+            continue;
+        }
+
+        if ($with_gateway) {
+            $master_list[] = ['host' => $dns, 'gateway' => $gateway];
         } else {
-            $master_list[] = isset($static['host']) ? $static['host'] : $static;
+            $master_list[] = $dns;
         }
     }
 
@@ -433,8 +424,6 @@ function get_nameservers($interface = null, $with_gateway = false)
 
 function system_hosts_generate($verbose = false)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Generating /etc/hosts...';
         flush();
@@ -661,8 +650,6 @@ function system_staticroutes_configure($interface = '')
 
 function system_syslog_start($verbose = false)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Configuring system logging...';
         flush();

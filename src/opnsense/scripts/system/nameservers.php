@@ -32,6 +32,4 @@ require_once 'system.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
 
-$result = get_nameservers();
-
-echo json_encode($result) . PHP_EOL;
+echo json_encode(get_nameservers()) . PHP_EOL;
