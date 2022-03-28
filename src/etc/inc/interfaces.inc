@@ -1399,7 +1399,7 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($interface)
+function interfaces_vips_configure($interface, $family = null)
 {
     global $config;
 
@@ -1411,21 +1411,27 @@ function interfaces_vips_configure($interface)
     $anyproxyarp = false;
 
     foreach ($config['virtualip']['vip'] as $vip) {
-        if ($vip['interface'] == $interface) {
-            switch ($vip['mode']) {
-                case 'proxyarp':
-                    $anyproxyarp = true;
-                    break;
-                case 'ipalias':
-                    interface_ipalias_configure($vip);
-                    break;
-                case 'carp':
-                    if (!$carp_setup) {
-                        $carp_setup = true;
-                    }
-                    interface_carp_configure($vip);
-                    break;
-            }
+        if ($vip['interface'] != $interface) {
+            continue;
+        }
+
+        if ($family === 4 && strpos($vip['subnet'], ':') !== false) {
+            continue;
+        } elseif ($family === 6 && strpos($vip['subnet'], ':') === false) {
+            continue;
+        }
+
+        switch ($vip['mode']) {
+            case 'proxyarp':
+                $anyproxyarp = true;
+                break;
+            case 'ipalias':
+                interface_ipalias_configure($vip);
+                break;
+            case 'carp':
+                $carp_setup = true;
+                interface_carp_configure($vip);
+                break;
         }
     }
 
