@@ -67,7 +67,7 @@ function list_interfaces()
     $config_sections['openvpn.openvpn-client'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpnc', 'key' => 'vpnid', 'format' => 'ovpnc%s (OpenVPN Client %s)'];
     $config_sections['openvpn.openvpn-server'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpns', 'key' => 'vpnid', 'format' => 'ovpns%s (OpenVPN Server %s)'];
     $config_sections['ppps.ppp'] = ['descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type'];
-    $config_sections['vlans.vlan'] = ['descr' => 'vlanif,descr', 'key' => 'vlanif', 'format' => '%s (%s)'];
+    $config_sections['vlans.vlan'] = ['descr' => 'vlanif,descr,if,tag', 'key' => 'vlanif', 'format' => gettext('%s %s (Parent: %s, Tag: %s)')];
     $config_sections['wireless.clone'] = ['descr' => 'cloneif,descr', 'key' => 'cloneif', 'format' => '%s (%s)'];
 
     // add physical network interfaces
