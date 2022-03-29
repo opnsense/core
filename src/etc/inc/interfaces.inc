@@ -2827,9 +2827,9 @@ if [ -z "\${1}" ]; then
     exit 0
 fi
 if [ -n "\${2}" ]; then
+    /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
     echo \${2} > /tmp/\${1}_defaultgwv6
 fi
-/usr/local/sbin/ifctl -i \${1} -6rd \${2:+"-a \${2}"}
 if [ -f /var/run/dhcp6c.pid ]; then
     if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
         rm -f /var/run/dhcp6c.pid
