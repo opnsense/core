@@ -110,7 +110,7 @@ class AliasController extends ApiMutableModelControllerBase
         $selected_aliases = array_keys($response['alias']['content']);
         foreach ($this->getModel()->aliasIterator() as $alias) {
             // external aliases can't be nested (always empty according to our administration)
-            if (!in_array($alias['name'], $selected_aliases) && $alias['type'] != "external") {
+            if (!in_array($alias['name'], $selected_aliases)) {
                 $response['alias']['content'][$alias['name']] = [
                   "selected" => 0, "value" => $alias['name']
                 ];

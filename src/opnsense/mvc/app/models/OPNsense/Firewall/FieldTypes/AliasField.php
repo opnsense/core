@@ -66,6 +66,21 @@ class AliasField extends ArrayField
         parent::__construct($ref, $tagname);
     }
 
+    private function addStatsFields($node)
+    {
+        // generate new unattached fields, which are only usable to read data from (not synched to config.xml)
+        $current_items = new IntegerField();
+        $current_items->setInternalIsVirtual();
+        $last_updated = new TextField();
+        $last_updated->setInternalIsVirtual();
+        if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
+            $current_items->setValue(self::$current_stats[(string)$node->name]['count']);
+            $last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
+        }
+        $node->addChildNode('current_items', $current_items);
+        $node->addChildNode('last_updated', $last_updated);
+    }
+
     protected function actionPostLoadingEvent()
     {
         if (self::$current_stats === null) {
@@ -77,17 +92,7 @@ class AliasField extends ArrayField
         }
         foreach ($this->internalChildnodes as $node) {
             if (!$node->getInternalIsVirtual()) {
-                // generate new unattached fields, which are only usable to read data from (not synched to config.xml)
-                $current_items = new IntegerField();
-                $current_items->setInternalIsVirtual();
-                $last_updated = new TextField();
-                $last_updated->setInternalIsVirtual();
-                if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
-                    $current_items->setValue(self::$current_stats[(string)$node->name]['count']);
-                    $last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
-                }
-                $node->addChildNode('current_items', $current_items);
-                $node->addChildNode('last_updated', $last_updated);
+                $this->addStatsFields($node);
             }
         }
         return parent::actionPostLoadingEvent();
@@ -111,6 +116,7 @@ class AliasField extends ArrayField
                 }
                 $container_node->addChildNode($key, $node);
             }
+            $this->addStatsFields($container_node);
             $result[$aliasName] = $container_node;
         }
         return $result;
