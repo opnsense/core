@@ -228,8 +228,6 @@ function system_resolvconf_generate($verbose = false)
 
     rename($tempfile, '/etc/resolv.conf');
 
-    /* XXX check for overlapping host routes */
-
     /* setup static routes for DNS servers as configured */
     foreach ($routes as $route) {
         system_host_route($route['host'], $route['gateway']);
@@ -341,12 +339,12 @@ function get_nameservers($interface = null, $with_gateway = false)
             "/tmp/{$realifv6}_nameserverv6",
         ];
     } elseif (!isset($syscfg['dnsallowoverride'])) {
-        /* do not return servers as required by configuration */
+        /* do not return dynamic servers as required by configuration */
         $dns_lists = [];
     }
 
     if (isset($syscfg['dnsallowoverride_exclude'])) {
-        /* by design this only works on "dnsallowoverride" servers, not static ones */
+        /* by design this only works on dynamic servers, not static ones */
         foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
                 $exclude_interfaces[] = get_real_interface($intf);
@@ -356,6 +354,7 @@ function get_nameservers($interface = null, $with_gateway = false)
     }
 
     foreach ($dns_lists as $fdns) {
+        /* inspect dynamic servers registered in the system files */
         $intf = explode('_', basename($fdns))[0];
         if (in_array($intf, $exclude_interfaces)) {
             continue;
@@ -366,26 +365,29 @@ function get_nameservers($interface = null, $with_gateway = false)
             continue;
         }
 
-        /* router file is there for things using nameserver file */
+        /* router file is available for connectivity creating nameserver files */
         $gw = trim(@file_get_contents(str_replace('_nameserver', '_router', $fdns)));
         if (is_linklocal($gw) && strpos($gw, '%') === false) {
             $gw .= "%{$intf}";
         }
 
         foreach ($contents as $dns) {
-            if (!empty($dns) && is_ipaddr($dns)) {
-                if ($with_gateway) {
-                    $master_list[] = ['host' => $dns, 'gateway' => $gw];
-                } else {
-                    $master_list[] = $dns;
-                }
+            if (empty($dns) || !is_ipaddr($dns)) {
+                continue;
+            }
+
+            if ($with_gateway) {
+                $master_list[] = ['host' => $dns, 'gateway' => $gw];
+            } else {
+                $master_list[] = $dns;
             }
         }
     }
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
+        /* inspect static servers and optional gateway assignment */
         $dns = $syscfg['dnsserver'][$dnscounter - 1];
-        if (empty($dns)) {
+        if (empty($dns) || !is_ipaddr($dns)) {
             continue;
         }
 
@@ -393,6 +395,7 @@ function get_nameservers($interface = null, $with_gateway = false)
         $gateway = null;
 
         if (!empty($syscfg[$gwkey]) && $syscfg[$gwkey] != 'none') {
+            /* if a gateway is attached figure out the interface and address */
             $dnsif = $gateways->getInterfaceName($syscfg[$gwkey]);
             $dnsgw = $gateways->getAddress($syscfg[$gwkey]);
 
@@ -408,7 +411,7 @@ function get_nameservers($interface = null, $with_gateway = false)
 
             $gateway = $dnsgw;
         } elseif (!empty($interface)) {
-            /* not attached to any interface */
+            /* discard because not attached to any interface */
             continue;
         }
 
@@ -418,6 +421,8 @@ function get_nameservers($interface = null, $with_gateway = false)
             $master_list[] = $dns;
         }
     }
+
+    /* XXX check for overlapping host routes in gateway mode? */
 
     return array_unique($master_list, SORT_REGULAR);
 }
