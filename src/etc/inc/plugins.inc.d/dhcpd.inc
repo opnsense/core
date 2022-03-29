@@ -227,11 +227,13 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             continue;
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
+            $radvdconf .= "# Skipping disabled interface {$dhcpv6if}\n";
             continue;
         } elseif (isset($blacklist[$dhcpv6if])) {
             $radvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
             continue;
         } elseif (!isset($dhcpv6ifconf['ramode']) || $dhcpv6ifconf['ramode'] == 'disabled') {
+            $radvdconf .= "# Skipping unset interface {$dhcpv6if}\n";
             continue;
         }
 
@@ -240,6 +242,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
         $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) ? $dhcpv6ifconf['rainterface'] : $dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+            $radvdconf .= "# Skipping addressless interface {$dhcpv6if}\n";
             continue;
         }
 
@@ -450,8 +453,10 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
+            $radvdconf .= "# Skipping defunct interface {$if}\n";
             continue;
         } elseif (!isset($config['interfaces'][$if]['enable'])) {
+            $radvdconf .= "# Skipping disabled interface {$if}\n";
             continue;
         } elseif (isset($blacklist[$if])) {
             $radvdconf .= "# Skipping blacklisted interface {$if}\n";
