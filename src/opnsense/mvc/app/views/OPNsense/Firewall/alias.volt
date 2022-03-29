@@ -508,6 +508,7 @@
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
+                                <option value="internal">{{ lang._('Internal (product)') }}</option>
                             </select>
                         </div>
                     </div>

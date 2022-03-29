@@ -37,6 +37,7 @@
                         <networkgroup>Network group</networkgroup>
                         <mac>MAC address</mac>
                         <external>External (advanced)</external>
+                        <internal>Internal (product)</internal>
                         <dynipv6host>Dynamic IPv6 Host</dynipv6host>
                     </OptionValues>
                     <Constraints>

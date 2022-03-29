@@ -34,41 +34,37 @@ use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 use OPNsense\Base\FieldTypes\IntegerField;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 class AliasField extends ArrayField
 {
-    private static $reservedItems = [
-        "bogons" => [
-            "enabled" => "1",
-            "name" => "bogons",
-            "type" => "external",
-            "description" => "bogon networks (internal)",
-            "content" => ""
-        ],
-        "bogonsv6" => [
-            "enabled" => "1",
-            "name" => "bogonsv6",
-            "type" => "external",
-            "description" => "bogon networks IPv6 (internal)",
-            "content" => ""
-        ],
-        "virusprot" => [
-            "enabled" => "1",
-            "name" => "virusprot",
-            "type" => "external",
-            "description" => "overload table for rate limiting (internal)",
-            "content" => ""
-        ],
-        "sshlockout" => [
-            "enabled" => "1",
-            "name" => "sshlockout",
-            "type" => "external",
-            "description" => "abuse lockout table (internal)",
-            "content" => ""
-        ]
-    ];
+    private static $reservedItems = [];
 
     private static $current_stats = null;
+
+    public function __construct($ref = null, $tagname = null)
+    {
+        foreach (glob(__DIR__ . "/../static_aliases/*.json") as $filename) {
+            $payload = json_decode(file_get_contents($filename), true);
+            if (is_array($payload)) {
+                foreach ($payload as $aliasname => $content) {
+                    self::$reservedItems[$aliasname] = $content;
+                }
+            }
+        }
+        foreach (Config::getInstance()->object()->interfaces->children() as $k => $n) {
+            $table_name = sprintf("__%s_network", $k);
+            $table_desc = !empty((string)$n->descr) ? (string)$n->descr : $k;
+            self::$reservedItems[$table_name] = [
+                "enabled" => "1",
+                "name" => $table_name,
+                "type" => "internal",
+                "description" => sprintf("%s %s", $table_desc, gettext("net")),
+                "content" => ""
+            ];
+        }
+        parent::__construct($ref, $tagname);
+    }
 
     protected function actionPostLoadingEvent()
     {
