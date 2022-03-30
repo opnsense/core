@@ -197,9 +197,9 @@ class Voucher extends Base implements IAuthConnector
                 // create a map of easy to read characters
                 $characterMap = '';
                 while (strlen($characterMap) < 256) {
-                    $random_bytes = openssl_random_pseudo_bytes(10000);
-                    for ($i = 0; $i < strlen($random_bytes); $i++) {
-                        $chr_ord = ord($random_bytes[$i]);
+                    $bytes = random_bytes(10000);
+                    for ($i = 0; $i < strlen($bytes); $i++) {
+                        $chr_ord = ord($bytes[$i]);
                         if (
                             ($chr_ord >= 50 && $chr_ord <= 57) || // 2..9
                             ($chr_ord >= 65 && $chr_ord <= 72) || // A..H
@@ -209,7 +209,7 @@ class Voucher extends Base implements IAuthConnector
                             ($chr_ord >= 109 && $chr_ord <= 110) || // m..n
                             ($chr_ord >= 112 && $chr_ord <= 122)  // p..z
                         ) {
-                            $characterMap .= $random_bytes[$i];
+                            $characterMap .= $bytes[$i];
                         }
                     }
                 }
@@ -220,11 +220,11 @@ class Voucher extends Base implements IAuthConnector
                 // create map of random readable characters
                 $characterMap = '';
                 while (strlen($characterMap) < 256) {
-                    $random_bytes = openssl_random_pseudo_bytes(10000);
-                    for ($i = 0; $i < strlen($random_bytes); $i++) {
-                        $chr_ord = ord($random_bytes[$i]);
-                        if ($chr_ord >= 33 && $chr_ord <= 125 && !in_array($random_bytes[$i], $doNotUseChr)) {
-                            $characterMap .= $random_bytes[$i];
+                    $bytes = random_bytes(10000);
+                    for ($i = 0; $i < strlen($bytes); $i++) {
+                        $chr_ord = ord($bytes[$i]);
+                        if ($chr_ord >= 33 && $chr_ord <= 125 && !in_array($bytes[$i], $doNotUseChr)) {
+                            $characterMap .= $bytes[$i];
                         }
                     }
                 }
@@ -235,14 +235,14 @@ class Voucher extends Base implements IAuthConnector
             $expirytime = $expirytime == 0 ? 0 : $expirytime + time();
             while ($vouchersGenerated < $count) {
                 $generatedUsername = '';
-                $random_bytes = openssl_random_pseudo_bytes($this->usernameLength);
-                for ($j = 0; $j < strlen($random_bytes); $j++) {
-                    $generatedUsername .= $characterMap[ord($random_bytes[$j])];
+                $bytes = random_bytes($this->usernameLength);
+                for ($j = 0; $j < strlen($bytes); $j++) {
+                    $generatedUsername .= $characterMap[ord($bytes[$j])];
                 }
                 $generatedPassword = '';
-                $random_bytes = openssl_random_pseudo_bytes($this->passwordLength);
-                for ($j = 0; $j < strlen($random_bytes); $j++) {
-                    $generatedPassword .= $characterMap[ord($random_bytes[$j])];
+                $bytes = random_bytes($this->passwordLength);
+                for ($j = 0; $j < strlen($bytes); $j++) {
+                    $generatedPassword .= $characterMap[ord($bytes[$j])];
                 }
 
                 if (!$this->userNameExists($generatedUsername)) {
