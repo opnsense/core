@@ -193,41 +193,10 @@ class Voucher extends Base implements IAuthConnector
     {
         $response = array();
         if ($this->dbHandle != null) {
+            $characterMap = '!#$%()*+,-./0123456789:;=?@ABCDEFGHIJKLMNPQRSTUVWXYZ[\]_abcdefghijkmnopqrstuvwxyz';
             if ($this->simplePasswords) {
-                // create a map of easy to read characters
-                $characterMap = '';
-                while (strlen($characterMap) < 256) {
-                    $bytes = random_bytes(10000);
-                    for ($i = 0; $i < strlen($bytes); $i++) {
-                        $chr_ord = ord($bytes[$i]);
-                        if (
-                            ($chr_ord >= 50 && $chr_ord <= 57) || // 2..9
-                            ($chr_ord >= 65 && $chr_ord <= 72) || // A..H
-                            ($chr_ord >= 74 && $chr_ord <= 78) || // J..N
-                            ($chr_ord >= 80 && $chr_ord <= 90) || // P..Z
-                            ($chr_ord >= 97 && $chr_ord <= 107) || // a..k
-                            ($chr_ord >= 109 && $chr_ord <= 110) || // m..n
-                            ($chr_ord >= 112 && $chr_ord <= 122)  // p..z
-                        ) {
-                            $characterMap .= $bytes[$i];
-                        }
-                    }
-                }
-            } else {
-                // list of characters to skip for random generator
-                $doNotUseChr = array('<', '>', '{', '}', '&', 'l' , 'O' ,'`', '\'', '|' ,'^', '"');
-
-                // create map of random readable characters
-                $characterMap = '';
-                while (strlen($characterMap) < 256) {
-                    $bytes = random_bytes(10000);
-                    for ($i = 0; $i < strlen($bytes); $i++) {
-                        $chr_ord = ord($bytes[$i]);
-                        if ($chr_ord >= 33 && $chr_ord <= 125 && !in_array($bytes[$i], $doNotUseChr)) {
-                            $characterMap .= $bytes[$i];
-                        }
-                    }
-                }
+                // a map of easy to read characters
+                $characterMap = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz';
             }
 
             // generate new vouchers
@@ -235,14 +204,12 @@ class Voucher extends Base implements IAuthConnector
             $expirytime = $expirytime == 0 ? 0 : $expirytime + time();
             while ($vouchersGenerated < $count) {
                 $generatedUsername = '';
-                $bytes = random_bytes($this->usernameLength);
-                for ($j = 0; $j < strlen($bytes); $j++) {
-                    $generatedUsername .= $characterMap[ord($bytes[$j])];
+                for ($j = 0; $j < $this->usernameLength; $j++) {
+                    $generatedUsername .= $characterMap[random_int(0, strlen($characterMap) - 1)];
                 }
                 $generatedPassword = '';
-                $bytes = random_bytes($this->passwordLength);
-                for ($j = 0; $j < strlen($bytes); $j++) {
-                    $generatedPassword .= $characterMap[ord($bytes[$j])];
+                for ($j = 0; $j < $this->passwordLength; $j++) {
+                    $generatedPassword .= $characterMap[random_int(0, strlen($characterMap) - 1)];
                 }
 
                 if (!$this->userNameExists($generatedUsername)) {
