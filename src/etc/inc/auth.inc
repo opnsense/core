@@ -433,7 +433,7 @@ function local_user_set_password(&$user, $password = null)
 {
     if ($password == null) {
         /* generate a random password */
-        $bytes = openssl_random_pseudo_bytes(50);
+        $bytes = random_bytes(50);
         $password = pack('H*', bin2hex($bytes));
     }
 

@@ -88,8 +88,8 @@ class API extends Base implements IAuthConnector
                 }
                 $item = $apikeys->addChild('item');
 
-                $newKey = base64_encode(openssl_random_pseudo_bytes(60));
-                $newSecret = base64_encode(openssl_random_pseudo_bytes(60));
+                $newKey = base64_encode(random_bytes(60));
+                $newSecret = base64_encode(random_bytes(60));
 
                 $item->addChild('key', $newKey);
                 $item->addChild('secret', crypt($newSecret, '$6$'));
