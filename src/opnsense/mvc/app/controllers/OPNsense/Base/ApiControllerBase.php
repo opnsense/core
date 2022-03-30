@@ -39,7 +39,6 @@ use OPNsense\Auth\AuthenticationFactory;
  */
 class ApiControllerBase extends ControllerRoot
 {
-
     /***
      * Recordset (array in array) search wrapper
      * @param string $path path to search, relative to this model
@@ -54,8 +53,8 @@ class ApiControllerBase extends ControllerRoot
         $fields = null,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL)
-    {
+        $sort_flags = SORT_NATURAL
+    ) {
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = ($currentPage - 1) * $itemsPerPage;
