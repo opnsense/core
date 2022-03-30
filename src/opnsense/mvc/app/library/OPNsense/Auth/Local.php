@@ -158,8 +158,7 @@ class Local extends Base implements IAuthConnector
                 // expired user
                 return false;
             }
-            $passwd = crypt($password, (string)$userObject->password);
-            if ($passwd == (string)$userObject->password) {
+            if (password_verify($password, (string)$userObject->password)) {
                 // password ok, return successfully authentication
                 return true;
             }

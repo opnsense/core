@@ -171,8 +171,7 @@ class API extends Base implements IAuthConnector
                 // expired user
                 return false;
             }
-            $passwd = crypt($password, $apiSecret);
-            if ($passwd == $apiSecret) {
+            if (password_verify($password, $apiSecret)) {
                 // password ok, return successfully authentication
                 $this->lastAuthProperties['username'] = (string)$userObject->name;
                 return true;

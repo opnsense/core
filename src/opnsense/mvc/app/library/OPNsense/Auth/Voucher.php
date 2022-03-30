@@ -380,8 +380,7 @@ class Voucher extends Base implements IAuthConnector
         $result = $stmt->execute();
         $row = $result->fetchArray();
         if ($row != null) {
-            $passwd = crypt($password, (string)$row['password']);
-            if ($passwd == (string)$row['password']) {
+            if (password_verify($password, (string)$row['password'])) {
                 // correct password, check validity
                 if ($row['starttime'] == null) {
                     // initial login, set starttime for counter
