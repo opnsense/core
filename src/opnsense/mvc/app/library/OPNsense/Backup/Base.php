@@ -40,7 +40,7 @@ abstract class Base
      * @param string $params parameters to openssl command
      * @param string $pass passphrase to use
      * @param string $input stdin to openssl process
-     * @return string base64 encoded output from openssl
+     * @return string output from openssl
      */
     private function opensslEnc($params, $pass, $input)
     {
