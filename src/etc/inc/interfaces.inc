@@ -2947,7 +2947,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
     $interface_statement .= "};\n";
 
     $id_assoc_statement_address = "";
-    if ($wancfg['adv_dhcp6_id_assoc_statement_address_enable'] != '') {
+    if (!empty($wancfg['adv_dhcp6_id_assoc_statement_address_enable'])) {
         $id_assoc_statement_address .= "id-assoc na ";
         if (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_address_id'])) {
             $id_assoc_statement_address .= "{$wancfg['adv_dhcp6_id_assoc_statement_address_id']}";
@@ -4350,7 +4350,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
 
     $interfaces_a = config_read_array('interfaces');
 
-    if (isset($interfaces_a[$interface]['dhcp6prefixonly'])) {
+    if (isset($interfaces_a[$interface]['dhcp6prefixonly']) || empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) {
         /* extend the search scope for a viable GUA to tracking interfaces */
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
