@@ -6,7 +6,7 @@
         <style>forwarding-enabled</style>
         <help>
             The configured system nameservers will be used to forward queries to.
-            This will override any entry in the grid below.
+            This will override any entry in the grid below, except for entries with a specific domain.
         </help>
     </field>
     <field>
