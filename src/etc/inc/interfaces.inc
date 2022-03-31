@@ -2735,14 +2735,6 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $cleanup = false)
     $id = interface_dhcpv6_id($interface);
     $syscfg = config_read_array('system');
 
-    $dhcp6cconf = DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id);
-
-    // DHCP6 Config File Advanced
-    if ($wancfg['adv_dhcp6_config_advanced']) {
-        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id);
-    }
-
-    // DHCP6 Config File Override
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
         if (file_exists($dhcp6cfile)) {
@@ -2751,6 +2743,10 @@ function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $cleanup = false)
         } else {
             log_error("DHCP6 config file override does not exist: '{$dhcp6cfile}'");
         }
+    } elseif (!empty($wancfg['adv_dhcp6_config_advanced'])) {
+        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id);
+    } else {
+        $dhcp6cconf = DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id);
     }
 
     if (!$cleanup) {
@@ -4350,8 +4346,13 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
 
     $interfaces_a = config_read_array('interfaces');
 
-    if (isset($interfaces_a[$interface]['dhcp6prefixonly']) || empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) {
-        /* extend the search scope for a viable GUA to tracking interfaces */
+    if (
+        empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
+        ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
+        empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
+        isset($interfaces_a[$interface]['dhcp6prefixonly']))
+    ) {
+        /* extend the search scope for a non-NA mode to tracking interfaces */
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
 
