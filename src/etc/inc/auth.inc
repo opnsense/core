@@ -436,8 +436,13 @@ function local_user_set_password(&$user, $password = null)
         $bytes = random_bytes(50);
         $password = pack('H*', bin2hex($bytes));
     }
-
-    $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 10 ]);
+    $cost = 10;
+    do {
+        $timer = hrtime(true);
+        $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
+        $timer = (hrtime(true) - $timer) / 10 ** 9;
+        $cost++;
+    } while ($timer < 0.2 && $cost < 32);
     if ($hash !== false) {
         $user['password'] = $hash;
     }
