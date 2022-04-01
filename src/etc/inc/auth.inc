@@ -438,6 +438,7 @@ function local_user_set_password(&$user, $password = null)
 
     $cost = 10;
     do {
+        /* increase bcrypt cost until it takes at least 0.2 seconds */
         $timer = hrtime(true);
         $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost++ ]);
         $timer = (hrtime(true) - $timer) / 10 ** 9;
