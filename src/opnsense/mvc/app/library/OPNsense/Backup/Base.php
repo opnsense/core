@@ -161,7 +161,6 @@ abstract class Base
                 $temp = hash($hashAlgo, $temp . $password . $salt, true);
                 $key .= $temp;
             }
-
         }
         $iv = substr($key, $keyLength, $ivLength);
         $key = substr($key, 0, $keyLength);
@@ -170,19 +169,18 @@ abstract class Base
 
     private function opensslDecrypt(string $data, string $password, string $cipher, string $hashAlgo, ?int $iterations): ?string
     {
-        if ($cipher === 'aes-256-gcm') {
-            $saltOffset = 0;
-            $saltLength = 16;
-            $tagLength = 16;
-        } elseif ($cipher === 'aes-256-cbc') {
+        $saltOffset = 0;
+        $saltLength = 16;
+        $tagLength = 16;
+        if ($cipher === 'aes-256-cbc') {
             // Prior to version XXX ?
             $saltOffset = 8; // skip b'Salted__'
             $saltLength = 8;
             $tagLength = 0;
         }
         $data = base64_decode($data);
-        if (!isset($saltOffset) || strlen($data) < $saltOffset + $saltLength + $tagLength) {
-            // unknown cipher or not enough data
+        if (strlen($data) < $saltOffset + $saltLength + $tagLength) {
+            // not enough data
             return null;
         }
         $salt = substr($data, $saltOffset, $saltLength);
