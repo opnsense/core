@@ -29,22 +29,22 @@
     $( document ).ready(function() {
         $('tr[id="row_forwarding.info"]').addClass('hidden');
         /* Handle retrieval and saving of the single system forwarding checkbox */
-        let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/getSystemForward"};
+        let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
             /* only called on page load */
-            if (data.frm_ForwardingSettings.forwarding.enabled) {
-                toggle_nameservers(true);
+            if (data.frm_ForwardingSettings.unbound.forwarding.enabled == "1") {
+                toggleNameservers(true);
             }
         });
 
         $(".forwarding-enabled").click(function() {
-            saveFormToEndpoint(url="/api/unbound/settings/toggleSystemForward", formid='frm_ForwardingSettings');
+            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
 
             let checked = ($(this).is(':checked'));
-            toggle_nameservers(checked);
+            toggleNameservers(checked);
         });
 
-        function toggle_nameservers(checked) {
+        function toggleNameservers(checked) {
             if (checked) {
                 ajaxGet(url="/api/unbound/settings/getNameservers", {}, callback=function(data, status) {
                     $('tr[id="row_forwarding.info"]').removeClass('hidden');

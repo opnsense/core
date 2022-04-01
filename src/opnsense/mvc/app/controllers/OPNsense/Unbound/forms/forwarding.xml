@@ -1,6 +1,6 @@
 <form>
     <field>
-        <id>forwarding.enabled</id>
+        <id>unbound.forwarding.enabled</id>
         <label>Use System Nameservers</label>
         <type>checkbox</type>
         <style>forwarding-enabled</style>

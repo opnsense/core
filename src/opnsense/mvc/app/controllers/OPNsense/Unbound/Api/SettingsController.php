@@ -40,37 +40,6 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private $type = 'dot';
 
-    public function toggleSystemForwardAction()
-    {
-        if ($this->request->isPost() && $this->request->hasPost('forwarding')) {
-            $this->sessionClose();
-            Config::getInstance()->lock();
-            $config = Config::getInstance()->object();
-
-            $val = $this->request->getPost('forwarding')['enabled'];
-
-            /* Write to config exactly as legacy would */
-            $config->unbound->forwarding = !empty($val);
-            if ($val != "1") {
-                /* legacy uses isset() */
-                unset($config->unbound->forwarding);
-            }
-
-            /* save and release lock */
-            Config::getInstance()->save();
-        }
-    }
-
-    public function getSystemForwardAction()
-    {
-        $config = Config::getInstance()->object();
-        return array("forwarding" =>
-            array( "enabled" =>
-                empty($config->unbound->forwarding) ? 0 : 1
-            )
-        );
-    }
-
     public function getNameserversAction()
     {
         if ($this->request->isGet()) {

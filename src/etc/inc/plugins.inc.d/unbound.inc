@@ -255,10 +255,13 @@ EOF;
         $include_dhcpleases = '';
     }
 
+    $unbound_mdl = new \OPNsense\Unbound\Unbound();
+    $unbound_enabled = (string)$unbound_mdl->forwarding->enabled;
+
     $forward_conf = '';
     $forward_local = '';
     $resolv_conf_root = '';
-    if (isset($config['unbound']['forwarding'])) {
+    if ($unbound_enabled) {
         $dnsservers = get_nameservers();
 
         if (!empty($dnsservers)) {
