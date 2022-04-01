@@ -291,6 +291,7 @@ class Alias(object):
                 ['/sbin/pfctl', '-t', self.get_name(), '-T', 'replace', '%s:network' % self._interface],
                 capture_output=True
             )
+        # collect current table contents for selected types
         if self.get_type() in ['interface_net', 'external']:
             pfctl_cmd = ['/sbin/pfctl', '-t', self.get_name(), '-T', 'show']
             for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):

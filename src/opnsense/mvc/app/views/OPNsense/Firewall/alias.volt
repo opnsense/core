@@ -67,7 +67,9 @@
             ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
-                    $("#network_content").append($("<option/>").val(alias).text(value));
+                    let $opt = $("<option/>").val(alias).text(value.name);
+                    $opt.data('subtext', value.description);
+                    $("#network_content").append($opt);
                 });
                 $("#network_content").selectpicker('refresh');
             });
