@@ -439,9 +439,8 @@ function local_user_set_password(&$user, $password = null)
     $cost = 10;
     do {
         $timer = hrtime(true);
-        $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost ]);
+        $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => $cost++ ]);
         $timer = (hrtime(true) - $timer) / 10 ** 9;
-        $cost++;
     } while ($timer < 0.2 && $cost < 32);
     if ($hash !== false) {
         $user['password'] = $hash;
