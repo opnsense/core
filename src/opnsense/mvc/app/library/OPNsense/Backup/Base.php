@@ -93,7 +93,11 @@ abstract class Base
                         $hash = strtolower($value);
                         break;
                     case 'pbkdf2':
-                        $pbkdf2 = $value;
+                        $pbkdf2 = filter_var(
+                            $value,
+                            FILTER_VALIDATE_INT,
+                            array('options' => array('min_range' => 1, 'default' => null))
+                        );
                         break;
                     default:
                         /* skip unknown */
@@ -172,7 +176,7 @@ abstract class Base
         $saltOffset = 0;
         $saltLength = 16;
         $tagLength = 16;
-        if (!in_array($cipher, openssl_get_cipher_methods())) {
+        if (!in_array($cipher, openssl_get_cipher_methods()) || !in_array($hashAlgo, hash_algos())) {
             return null;
         }
         if ($cipher === 'aes-256-cbc') {
