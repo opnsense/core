@@ -172,6 +172,9 @@ abstract class Base
         $saltOffset = 0;
         $saltLength = 16;
         $tagLength = 16;
+        if (!in_array($cipher, openssl_get_cipher_methods())) {
+            return null;
+        }
         if ($cipher === 'aes-256-cbc') {
             // Prior to version XXX ?
             $saltOffset = 8; // skip b'Salted__'
