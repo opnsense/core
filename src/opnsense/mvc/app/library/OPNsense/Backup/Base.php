@@ -158,7 +158,7 @@ abstract class Base
             // Prior to version XXX ?
             $key = $temp = '';
             while (strlen($key) < $keyLength + $ivLength) {
-                $temp = md5($temp . $password . $salt, true);
+                $temp = hash($hashAlgo, $temp . $password . $salt, true);
                 $key .= $temp;
             }
 
