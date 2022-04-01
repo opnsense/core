@@ -36,6 +36,44 @@ namespace OPNsense\Backup;
 abstract class Base
 {
     /**
+     * openssl enc command
+     * @param string $params parameters to openssl command
+     * @param string $pass passphrase to use
+     * @param string $input stdin to openssl process
+     * @return string output from openssl
+     */
+    private function opensslEnc($params, $pass, $input)
+    {
+        $tmpFile = tempnam(sys_get_temp_dir(), 'php-encrypt');
+        if (!$tmpFile) {
+            return null;
+        }
+        $result = null;
+        file_put_contents($tmpFile, $pass);
+        $cmd = '/usr/local/bin/openssl enc -a -A ' . $params . ' -pass file:' . escapeshellarg($tmpFile);
+        $descriptorspec = array(
+            0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+            1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+            2 => array("pipe", "w")   // stderr
+        );
+        $process = proc_open($cmd, $descriptorspec, $pipes);
+        if (is_resource($process)) {
+            // $pipes now looks like this:
+            // 0 => writeable handle connected to child stdin
+            // 1 => readable handle connected to child stdout
+            fwrite($pipes[0], $input);
+            fclose($pipes[0]);
+            $output = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            if (proc_close($process) === 0) {
+                $result = $output;
+            }
+        }
+        @unlink($tmpFile);
+        return $result;
+    }
+
+    /**
      * encrypt+encode base64
      * @param string $data to encrypt
      * @param string $pass passphrase to use
@@ -44,46 +82,31 @@ abstract class Base
      */
     public function encrypt($data, $pass, $tag = 'config.xml')
     {
-        $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
-        @unlink("{$file}.enc");
-
         /* current encryption defaults, change as needed */
         $cipher = 'aes-256-cbc';
         $hash = 'sha512';
         $pbkdf2 = '100000';
 
-        file_put_contents("{$file}.dec", $data);
-        exec(
-            sprintf(
-                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass pass:%s',
-                escapeshellarg($cipher),
-                escapeshellarg($hash),
-                escapeshellarg($pbkdf2),
-                escapeshellarg("{$file}.dec"),
-                escapeshellarg("{$file}.enc"),
-                escapeshellarg($pass)
-            ),
-            $unused,
-            $retval
+        $params = sprintf(
+            '-e -%s -md %s -pbkdf2 -iter %s',
+            escapeshellarg($cipher),
+            escapeshellarg($hash),
+            escapeshellarg($pbkdf2)
         );
-        @unlink("{$file}.dec");
-
-        if (file_exists("{$file}.enc") && !$retval) {
+        $output = $this->opensslEnc($params, $pass, $data);
+        if (!is_null($output)) {
             $version = trim(shell_exec('opnsense-version -Nv'));
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
             $result .= "Cipher: " . strtoupper($cipher) . "\n";
             $result .= "PBKDF2: " . $pbkdf2 . "\n";
             $result .= "Hash: " . strtoupper($hash) . "\n\n";
-            $result .= chunk_split(base64_encode(file_get_contents("{$file}.enc")), 76, "\n");
+            $result .= chunk_split($output, 76, "\n");
             $result .= "---- END {$tag} ----\n";
-            @unlink("{$file}.enc");
             return $result;
-        } else {
-            syslog(LOG_ERR, 'Failed to encrypt data!');
-            @unlink("{$file}.enc");
-            return null;
         }
+        syslog(LOG_ERR, 'Failed to encrypt data!');
+        return null;
     }
 
     /**
@@ -95,9 +118,6 @@ abstract class Base
      */
     public function decrypt($data, $pass, $tag = 'config.xml')
     {
-        $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
-        @unlink("{$file}.dec");
-
         $data = explode("\n", $data);
 
         /* pre-21.7 compat defaults, do not change */
@@ -131,33 +151,19 @@ abstract class Base
             }
         }
 
-        $data = implode("\n", $data);
-
-        file_put_contents("{$file}.enc", base64_decode($data));
-        exec(
-            sprintf(
-                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass pass:%s',
-                escapeshellarg($cipher),
-                escapeshellarg($hash),
-                $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
-                escapeshellarg("{$file}.enc"),
-                escapeshellarg("{$file}.dec"),
-                escapeshellarg($pass)
-            ),
-            $unused,
-            $retval
+        $data = implode('', $data);
+        $params = sprintf(
+            '-d -%s -md %s %s',
+            escapeshellarg($cipher),
+            escapeshellarg($hash),
+            $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2)
         );
-        @unlink("{$file}.enc");
-
-        if (file_exists("{$file}.dec") && !$retval) {
-            $result = file_get_contents("{$file}.dec");
-            @unlink("{$file}.dec");
-            return $result;
-        } else {
-            syslog(LOG_ERR, 'Failed to decrypt data!');
-            @unlink("{$file}.dec");
-            return null;
+        $output = $this->opensslEnc($params, $pass, $data);
+        if (!is_null($output)) {
+            return $output;
         }
+        syslog(LOG_ERR, 'Failed to decrypt data!');
+        return null;
     }
 
     /**
