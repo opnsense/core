@@ -433,9 +433,9 @@ function local_user_set_password(&$user, $password = null)
 {
     if ($password == null) {
         /* generate a random password */
-        $bytes = random_bytes(50);
-        $password = pack('H*', bin2hex($bytes));
+        $password = random_bytes(50);
     }
+
     $cost = 10;
     do {
         $timer = hrtime(true);
