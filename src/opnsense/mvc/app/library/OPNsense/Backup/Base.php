@@ -36,44 +36,6 @@ namespace OPNsense\Backup;
 abstract class Base
 {
     /**
-     * openssl enc command
-     * @param string $params parameters to openssl command
-     * @param string $pass passphrase to use
-     * @param string $input stdin to openssl process
-     * @return string output from openssl
-     */
-    private function opensslEnc($params, $pass, $input)
-    {
-        $tmpFile = tempnam(sys_get_temp_dir(), 'php-encrypt');
-        if (!$tmpFile) {
-            return null;
-        }
-        $result = null;
-        file_put_contents($tmpFile, $pass);
-        $cmd = '/usr/local/bin/openssl enc -a -A ' . $params . ' -pass file:' . escapeshellarg($tmpFile);
-        $descriptorspec = array(
-            0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-            1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-            2 => array("pipe", "w")   // stderr
-        );
-        $process = proc_open($cmd, $descriptorspec, $pipes);
-        if (is_resource($process)) {
-            // $pipes now looks like this:
-            // 0 => writeable handle connected to child stdin
-            // 1 => readable handle connected to child stdout
-            fwrite($pipes[0], $input);
-            fclose($pipes[0]);
-            $output = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-            if (proc_close($process) === 0) {
-                $result = $output;
-            }
-        }
-        @unlink($tmpFile);
-        return $result;
-    }
-
-    /**
      * encrypt+encode base64
      * @param string $data to encrypt
      * @param string $pass passphrase to use
@@ -83,17 +45,11 @@ abstract class Base
     public function encrypt($data, $pass, $tag = 'config.xml')
     {
         /* current encryption defaults, change as needed */
-        $cipher = 'aes-256-cbc';
+        $cipher = 'aes-256-gcm';
         $hash = 'sha512';
         $pbkdf2 = '100000';
 
-        $params = sprintf(
-            '-e -%s -md %s -pbkdf2 -iter %s',
-            escapeshellarg($cipher),
-            escapeshellarg($hash),
-            escapeshellarg($pbkdf2)
-        );
-        $output = $this->opensslEnc($params, $pass, $data);
+        $output = $this->opensslEncrypt($data, $pass, $cipher, $hash, $pbkdf2);
         if (!is_null($output)) {
             $version = trim(shell_exec('opnsense-version -Nv'));
             $result = "---- BEGIN {$tag} ----\n";
@@ -127,7 +83,7 @@ abstract class Base
 
         foreach ($data as $key => $val) {
             if (strpos($val, ':') !== false) {
-                list ($header, $value) = explode(':', $val);
+                list($header, $value) = explode(':', $val);
                 $value = trim($value);
                 switch (strtolower(trim($header))) {
                     case 'cipher':
@@ -152,13 +108,7 @@ abstract class Base
         }
 
         $data = implode('', $data);
-        $params = sprintf(
-            '-d -%s -md %s %s',
-            escapeshellarg($cipher),
-            escapeshellarg($hash),
-            $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2)
-        );
-        $output = $this->opensslEnc($params, $pass, $data);
+        $output = $this->opensslDecrypt($data, $pass, $cipher, $hash, $pbkdf2);
         if (!is_null($output)) {
             return $output;
         }
@@ -196,5 +146,74 @@ abstract class Base
             $result[] = (string)$validation_message;
         }
         return $result;
+    }
+
+    private function keyAndIV(string $hashAlgo, string $password, string $salt, ?int $iterations, int $ivLength): array
+    {
+        // AES-256 keys are always 32 bytes
+        $keyLength = 32;
+        if (!is_null($iterations)) {
+            $key = hash_pbkdf2($hashAlgo, $password, $salt, $iterations, $keyLength + $ivLength, true);
+        } else {
+            // Prior to version XXX ?
+            $key = $temp = '';
+            while (strlen($key) < $keyLength + $ivLength) {
+                $temp = md5($temp . $password . $salt, true);
+                $key .= $temp;
+            }
+
+        }
+        $iv = substr($key, $keyLength, $ivLength);
+        $key = substr($key, 0, $keyLength);
+        return [$key, $iv];
+    }
+
+    private function opensslDecrypt(string $data, string $password, string $cipher, string $hashAlgo, ?int $iterations): ?string
+    {
+        if ($cipher === 'aes-256-gcm') {
+            $saltOffset = 0;
+            $saltLength = 16;
+            $tagLength = 16;
+        } elseif ($cipher === 'aes-256-cbc') {
+            // Prior to version XXX ?
+            $saltOffset = 8; // skip b'Salted__'
+            $saltLength = 8;
+            $tagLength = 0;
+        }
+        $data = base64_decode($data);
+        if (!isset($saltOffset) || strlen($data) < $saltOffset + $saltLength + $tagLength) {
+            // unknown cipher or not enough data
+            return null;
+        }
+        $salt = substr($data, $saltOffset, $saltLength);
+        $tag = substr($data, $saltOffset + $saltLength, $tagLength);
+        $data = substr($data, $saltOffset + $saltLength + $tagLength);
+        [$key, $iv] = $this->keyAndIV($hashAlgo, $password, $salt, $iterations, openssl_cipher_iv_length($cipher));
+        $result = openssl_decrypt(
+            $data,
+            $cipher,
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag
+        );
+        return $result === false ? null : $result;
+    }
+
+    private function opensslEncrypt(string $data, string $password, string $cipher, string $hashAlgo, int $iterations): ?string
+    {
+        $salt = random_bytes(16);
+        [$key, $iv] = $this->keyAndIV($hashAlgo, $password, $salt, $iterations, openssl_cipher_iv_length($cipher));
+        $result = openssl_encrypt(
+            $data,
+            $cipher,
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag,
+            '',
+            16
+        );
+        return $result === false ? null : base64_encode($salt . $tag . $result);
     }
 }
