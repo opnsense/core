@@ -152,20 +152,23 @@ abstract class Base
         return $result;
     }
 
-    private function keyAndIV(string $hashAlgo, string $password, string $salt, ?int $iterations, int $ivLength): array
+    private function keyAndIV(string $cipher, string $hashAlgo, string $password, string $salt, ?int $iterations): array
     {
-        // AES-256 keys are always 32 bytes
+        /* AES-256 key size is 32 bytes */
         $keyLength = 32;
+        $ivLength = openssl_cipher_iv_length($cipher);
+
         if (!is_null($iterations)) {
             $key = hash_pbkdf2($hashAlgo, $password, $salt, $iterations, $keyLength + $ivLength, true);
         } else {
-            // Prior to version XXX ?
+            /* pre-21.7 */
             $key = $temp = '';
             while (strlen($key) < $keyLength + $ivLength) {
                 $temp = hash($hashAlgo, $temp . $password . $salt, true);
                 $key .= $temp;
             }
         }
+
         $iv = substr($key, $keyLength, $ivLength);
         $key = substr($key, 0, $keyLength);
         return [$key, $iv];
@@ -173,27 +176,32 @@ abstract class Base
 
     private function opensslDecrypt(string $data, string $password, string $cipher, string $hashAlgo, ?int $iterations): ?string
     {
+        /* aes-256-gcm defaults */
         $saltOffset = 0;
         $saltLength = 16;
         $tagLength = 16;
+
         if (!in_array($cipher, openssl_get_cipher_methods()) || !in_array($hashAlgo, hash_algos())) {
+            /* ciher or hash not supported */
             return null;
         }
         if ($cipher === 'aes-256-cbc') {
-            // Prior to version XXX ?
-            $saltOffset = 8; // skip b'Salted__'
+            /* pre- XXX */
+            $saltOffset = 8; // skip 'Salted__'
             $saltLength = 8;
             $tagLength = 0;
         }
+
         $data = base64_decode($data);
         if (strlen($data) < $saltOffset + $saltLength + $tagLength) {
-            // not enough data
+            /* not enough data */
             return null;
         }
         $salt = substr($data, $saltOffset, $saltLength);
         $tag = substr($data, $saltOffset + $saltLength, $tagLength);
         $data = substr($data, $saltOffset + $saltLength + $tagLength);
-        [$key, $iv] = $this->keyAndIV($hashAlgo, $password, $salt, $iterations, openssl_cipher_iv_length($cipher));
+        [$key, $iv] = $this->keyAndIV($cipher, $hashAlgo, $password, $salt, $iterations);
+
         $result = openssl_decrypt(
             $data,
             $cipher,
@@ -208,7 +216,8 @@ abstract class Base
     private function opensslEncrypt(string $data, string $password, string $cipher, string $hashAlgo, int $iterations): ?string
     {
         $salt = random_bytes(16);
-        [$key, $iv] = $this->keyAndIV($hashAlgo, $password, $salt, $iterations, openssl_cipher_iv_length($cipher));
+        [$key, $iv] = $this->keyAndIV($cipher, $hashAlgo, $password, $salt, $iterations);
+
         $result = openssl_encrypt(
             $data,
             $cipher,
