@@ -56,17 +56,32 @@ class VlanInterfaceField extends BaseListField
                         strpos($ifname, "qinq") === 0 || strpos($ifname, "lo") === 0 || strpos($ifname, "enc") === 0 ||
                         strpos($ifname, "pflog") === 0 || strpos($ifname, "pfsync") === 0 ||
                         strpos($ifname, "bridge") === 0 ||
-                        strpos($ifname, "gre") === 0 || strpos($ifname, "gif") === 0 || strpos($ifname, "ipsec") === 0
+                        in_array('pointopoint', $details['flags'])
                     ) {
                         continue;
                     }
-                    self::$interface_devices[$ifname] = sprintf(
-                        "%s (%s) [%s]",
-                        $ifname,
-                        $details['macaddr'],
-                        !empty($ifnames[$ifname]) ? $ifnames[$ifname] : ""
-                    );
+                    if (empty($details['vlan'])) {
+                        self::$interface_devices[$ifname] = sprintf(
+                            "%s (%s)%s",
+                            $ifname,
+                            $details['macaddr'],
+                            !empty($ifnames[$ifname]) ? sprintf(' [%s]', $ifnames[$ifname]) : ''
+                        );
+                    }
                 }
+            }
+            // append not yet applied vlan interfaces
+            foreach ($this->getParentModel()->vlan->iterateItems() as $key => $vlan) {
+                if (strpos((string)$vlan->vlanif, 'qinq') === 0) {
+                    continue;
+                }
+                self::$interface_devices[(string)$vlan->vlanif] = sprintf(
+                    gettext('%s (Tag: %s, Parent: %s)%s'),
+                    (string)$vlan->vlanif,
+                    (string)$vlan->tag,
+                    (string)$vlan->if,
+                    !empty($ifnames[(string)$vlan->vlanif]) ? sprintf(' [%s]', $ifnames[(string)$vlan->vlanif]) : ''
+                );
             }
         }
         $this->internalOptionList = self::$interface_devices;
