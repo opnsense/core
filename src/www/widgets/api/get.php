@@ -31,6 +31,7 @@
   collected data.
 */
 
+header("Content-Type: application/json");
 header("Last-Modified: " . gmdate( "D, j M Y H:i:s" ) . " GMT" );
 header("Expires: " . gmdate( "D, j M Y H:i:s", time() ) . " GMT" );
 header("Cache-Control: no-store, no-cache, must-revalidate" );
