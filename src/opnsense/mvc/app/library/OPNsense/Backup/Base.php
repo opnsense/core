@@ -47,7 +47,7 @@ abstract class Base
         /* current encryption defaults, change as needed */
         $cipher = 'aes-256-gcm';
         $hash = 'sha512';
-        $pbkdf2 = '100000';
+        $pbkdf2 = 100000;
 
         $output = $this->opensslEncrypt($data, $pass, $cipher, $hash, $pbkdf2);
         if (!is_null($output)) {
