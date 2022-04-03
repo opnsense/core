@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2017-2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2022 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import requests
 import ipaddress
 import dns.resolver
 import syslog
+import subprocess
 from hashlib import md5
 from dns.exception import DNSException
 from . import geoip
@@ -240,9 +241,10 @@ class Alias(object):
                 else:
                     undo_content = ""
                 try:
+                    self._resolve_content = self.pre_process()
                     address_parser = self.get_parser()
-                    for item in self.items():
-                        if address_parser:
+                    if address_parser:
+                        for item in self.items():
                             for address in address_parser(item):
                                 self._resolve_content.add(address)
                     # resolve hostnames (async) if there are any in the collected set
@@ -263,7 +265,7 @@ class Alias(object):
         return list(self._resolve_content)
 
     def get_parser(self):
-        """ fetch address parser to use, None if alias type is not handled here
+        """ fetch address parser to use, None if alias type is not handled here or only during pre processing
             :return: function or None
         """
         if self._type in ['host', 'network', 'networkgroup']:
@@ -278,6 +280,24 @@ class Alias(object):
             return ArpCache().iter_addresses
         else:
             return None
+
+    def pre_process(self):
+        """ alias type pre processors
+            :return: set initial alias content
+        """
+        result = set()
+        if self.get_type() == 'interface_net':
+            subprocess.run(
+                ['/sbin/pfctl', '-t', self.get_name(), '-T', 'replace', '%s:network' % self._interface],
+                capture_output=True
+            )
+        # collect current table contents for selected types
+        if self.get_type() in ['interface_net', 'external']:
+            pfctl_cmd = ['/sbin/pfctl', '-t', self.get_name(), '-T', 'show']
+            for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
+                result.add(line.strip())
+
+        return result
 
     def get_type(self):
         """ get type of alias

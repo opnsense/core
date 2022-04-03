@@ -162,25 +162,12 @@ class Alias extends BaseModel
      */
     public function aliasIterator()
     {
-        $use_legacy = true;
         foreach ($this->aliases->alias->iterateItems() as $alias) {
             $record = array();
             foreach ($alias->iterateItems() as $key => $value) {
                 $record[$key] = (string)$value;
             }
             yield $record;
-            $use_legacy = false;
-        }
-        // MVC not used (yet) return legacy type aliases
-        if ($use_legacy) {
-            $cfgObj = Config::getInstance()->object();
-            if (!empty($cfgObj->aliases->alias)) {
-                foreach ($cfgObj->aliases->children() as $alias) {
-                    $alias = (array)$alias;
-                    $alias['content'] = !empty($alias['address']) ? str_replace(" ", "\n", $alias['address']) : null;
-                    yield $alias;
-                }
-            }
         }
     }
 
