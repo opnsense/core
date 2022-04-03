@@ -109,12 +109,13 @@ class AliasController extends ApiMutableModelControllerBase
         $response = $this->getBase("alias", "aliases.alias", $uuid);
         $selected_aliases = array_keys($response['alias']['content']);
         foreach ($this->getModel()->aliasIterator() as $alias) {
-            // external aliases can't be nested (always empty according to our administration)
-            if (!in_array($alias['name'], $selected_aliases) && $alias['type'] != "external") {
+            if (!in_array($alias['name'], $selected_aliases)) {
                 $response['alias']['content'][$alias['name']] = [
                   "selected" => 0, "value" => $alias['name']
                 ];
             }
+            // append descriptions
+            $response['alias']['content'][$alias['name']]['description'] = $alias['description'];
         }
         return $response;
     }
@@ -216,10 +217,13 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function listNetworkAliasesAction()
     {
-        $result = array();
+        $result = [];
         foreach ($this->getModel()->aliases->alias->iterateItems() as $alias) {
             if (!in_array((string)$alias->type, ['external', 'port'])) {
-                $result[(string)$alias->name] = (string)$alias->name;
+                $result[(string)$alias->name] = [
+                    "name" => (string)$alias->name,
+                    "description" => (string)$alias->description
+                ];
             }
         }
         ksort($result);
