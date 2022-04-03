@@ -45,10 +45,7 @@ class IpsecController extends IndexController
     public function statusAction()
     {
         $acl = new ACL();
-        $this->view->allow_connection = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/searchConnection");
         $this->view->allow_connect = $acl->isPageAccessible($this->session->get("Username"), "/api/ipsec/connection/connect");
-        $this->view->allow_sad = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/searchSad");
-        $this->view->allow_spd = $acl->isPageAccessible($this->session->get("Username"), "/api/diagnostics/ipsec/searchSpd");
         $this->view->pick('OPNsense/Diagnostics/ipsec_status');
     }
 }

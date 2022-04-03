@@ -48,7 +48,7 @@
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
-         const formatters = {
+        const formatters = {
             direction: function (column, row) {
                 if (row[column.id] == 'out') {
                     return "<span class=\"fa fa-arrow-left\" title=\"{{lang._('out')}}\" data-toggle=\"tooltip\"></span>";
@@ -251,31 +251,24 @@
 </script>
 
 <ul class="nav nav-tabs" id="maintabs" data-tabs="tabs">
-    {% if allow_connection %}
     <li>
         <a data-toggle="tab" data-grid="grid-overview" href="#overview" id="overview-tab">
             {{ lang._('Status Overview') }} <i class="fa tab-icon "></i>
         </a>
     </li>
-    {%- endif %}
-    {% if allow_sad %}
     <li>
         <a data-toggle="tab" data-grid="grid-sad" href="#sad" id="sad-tab">
             {{ lang._('Security Associations') }} <i class="fa tab-icon "></i>
         </a>
     </li>
-    {%- endif %}
-    {% if allow_spd %}
     <li>
         <a data-toggle="tab" data-grid="grid-spd" href="#spd" id="spd-tab">
             {{ lang._('Security Policies') }} <i class="fa tab-icon "></i>
         </a>
     </li>
-    {%- endif %}
 </ul>
 
 <div class="tab-content content-box">
-    {% if allow_connection %}
     <div class="tab-pane" id="overview" role="tabpanel">
         <table id="grid-overview" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
@@ -320,9 +313,7 @@
           </tbody>
         </table>
     </div>
-    {% endif %}
 
-    {% if allow_sad %}
     <div class="tab-pane" id="sad" role="tabpanel">
         <table id="grid-sad" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
@@ -347,9 +338,7 @@
           </tbody>
         </table>
     </div>
-    {% endif %}
 
-    {% if allow_spd %}
     <div class="tab-pane" id="spd" role="tabpanel">
         <table id="grid-spd" class="table table-condensed table-hover table-striped table-responsive">
           <thead>
@@ -370,5 +359,4 @@
           </tbody>
         </table>
     </div>
-    {% endif %}
 </div>
