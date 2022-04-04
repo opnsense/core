@@ -129,6 +129,8 @@ CORE_COPYRIGHT_YEARS?=	2014-2022
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
+CORE_DEPENDS_PHP74=	php74-openssl php74-json
+
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
@@ -162,9 +164,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
 			php${CORE_PHP}-google-api-php-client \
-			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
-			php${CORE_PHP}-openssl \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
 			php${CORE_PHP}-phalcon4 \
@@ -175,6 +175,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
+			${CORE_DEPENDS_PHP${CORE_PHP}} \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
