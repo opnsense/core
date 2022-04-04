@@ -141,40 +141,44 @@ function list_interfaces()
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
-        /* if interface is already used redirect */
         foreach (legacy_config_get_interfaces() as $ifname => $ifdata) {
+            /* if interface is already used redirect */
             if ($ifdata['if'] == $_POST['if_add']) {
                 header(url_safe('Location: /interfaces_assign.php'));
                 exit;
             }
         }
 
-        /* find next free optional interface number */
-        for ($i = 1; $i <= count($config['interfaces']); $i++) {
-            if (empty($config['interfaces']["opt{$i}"])) {
-                break;
+        if (!does_interface_exist($_POST['if_add'])) {
+            $input_errors[] = sprintf(gettext('The interface "%s" does not exist. Make sure to apply its configuration first.'), $_POST['if_add']);
+        }
+
+        if (count($input_errors) == 0) {
+            /* find next free optional interface number */
+            for ($i = 1; $i <= count($config['interfaces']); $i++) {
+                if (empty($config['interfaces']["opt{$i}"])) {
+                    break;
+                }
             }
-        }
 
-        $newifname = 'opt' . $i;
-        $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
-        $config['interfaces'][$newifname] = array();
-        $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
-        $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
-        $interfaces = list_interfaces();
-        if ($interfaces[$_POST['if_add']]['section'] == 'ppps.ppp') {
-            $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
-        }
-        if (match_wireless_interface($_POST['if_add'])) {
-            $config['interfaces'][$newifname]['wireless'] = array();
-            interface_sync_wireless_clones($config['interfaces'][$newifname], false);
-        }
+            $newifname = 'opt' . $i;
+            $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
+            $config['interfaces'][$newifname] = array();
+            $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
+            $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
+            $interfaces = list_interfaces();
+            if ($interfaces[$_POST['if_add']]['section'] == 'ppps.ppp') {
+                $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
+            }
+            if (match_wireless_interface($_POST['if_add'])) {
+                $config['interfaces'][$newifname]['wireless'] = array();
+                interface_sync_wireless_clones($config['interfaces'][$newifname], false);
+            }
 
-        write_config();
-        header(url_safe('Location: /interfaces_assign.php'));
-        exit;
+            write_config();
+        }
     } elseif (!empty($_POST['id']) && !empty($_POST['action']) && $_POST['action'] == 'del' & !empty($config['interfaces'][$_POST['id']]) ) {
         // ** Delete interface **
         $id = $_POST['id'];
@@ -315,7 +319,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
                   }
 
-
                   if ($reloadif) {
                       if (match_wireless_interface($ifport)) {
                           interface_sync_wireless_clones($config['interfaces'][$ifname], false);
@@ -351,6 +354,8 @@ foreach ($intfkeys as $portname) {
     $portused = false;
     if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
         $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
+    } elseif (empty($ifdetails[$portname])) {
+        $interfaces[$portname]['status'] = 'no carrier';
     }
     foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
