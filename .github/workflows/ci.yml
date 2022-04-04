@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-versions: ['7.4']
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup PHP
+      uses: shivammathur/setup-php@2.18.0
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extensions: psr, phalcon
+        tools: phpunit
+    - name: PHPUnit
+      run: |
+        sudo mkdir -p /conf
+        sudo chown $USER /conf
+        sudo mkdir -p /usr/local/etc/
+        sudo cp src/etc/config.xml.sample /usr/local/etc/config.xml
+        sudo mkdir -p /usr/local/opnsense
+        sudo cp -a contrib /usr/local/opnsense/
+        cd src/opnsense/mvc/tests
+        phpunit -c PHPunit.xml
