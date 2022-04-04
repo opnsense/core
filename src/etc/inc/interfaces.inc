@@ -2857,15 +2857,14 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
 {
     $dhcp6cconf = "interface {$wanif} {\n";
 
-    /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
-    if ($wancfg['ipaddrv6'] == "slaac") {
+    if ($wancfg['ipaddrv6'] == 'slaac') {
+        /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
         $dhcp6cconf .= "  information-only;\n";
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
         $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
         $dhcp6cconf .= "};\n";
     } else {
-        /* skip address request if this is set */
         if (!isset($wancfg['dhcp6prefixonly'])) {
             $dhcp6cconf .= "  send ia-na {$id}; # request stateful address\n";
         }
@@ -2876,7 +2875,6 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
         $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
-
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
@@ -2884,11 +2882,16 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
         }
 
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
-            /* Setup the prefix delegation */
             $dhcp6cconf .= "id-assoc pd {$id} {\n";
             if (isset($wancfg['dhcp6-ia-pd-send-hint'])) {
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
+            }
+            if (isset($wancfg['dhcp6-prefix-id']) && is_numeric($wancfg['dhcp6-prefix-id'])) {
+                    $dhcp6cconf .= "  prefix-interface {$wanif} {\n";
+                    $dhcp6cconf .= "    sla-id {$wancfg['dhcp6-prefix-id']};\n";
+                    $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
+                    $dhcp6cconf .= "  };\n";
             }
             foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
                 if (is_numeric($lancfg['track6-prefix-id'])) {
@@ -4350,7 +4353,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
         empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
         ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
         empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
-        isset($interfaces_a[$interface]['dhcp6prefixonly']))
+        (isset($interfaces_a[$interface]['dhcp6prefixonly']) && !isset($interfaces_a[$interface]['dhcp6-prefix-id'])))
     ) {
         /* extend the search scope for a non-NA mode to tracking interfaces */
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));

@@ -43,6 +43,16 @@
                         request['type'] = $('#type_filter').val();
                     }
                     return request;
+                },
+                formatters: {
+                    "commands": function (column, row) {
+                        if (row.uuid.includes('-') === true) {
+                            // exclude buttons for internal aliases (which uses names instead of valid uuid's)
+                            return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                                '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                        }
+                    },
                 }
             }
         });
@@ -57,7 +67,9 @@
             ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
-                    $("#network_content").append($("<option/>").val(alias).text(value));
+                    let $opt = $("<option/>").val(alias).text(value.name);
+                    $opt.data('subtext', value.description);
+                    $("#network_content").append($opt);
                 });
                 $("#network_content").selectpicker('refresh');
             });
@@ -508,6 +520,7 @@
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
+                                <option value="internal">{{ lang._('Internal (product)') }}</option>
                             </select>
                         </div>
                     </div>
