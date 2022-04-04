@@ -51,7 +51,7 @@ class M1_0_2 extends BaseModelMigration
                 $dot->type = "dot";
             }
         }
-        
+
         if (isset($config->unbound->forwarding)) {
             $model->forwarding->enabled = "1";
             unset($config->unbound->forwarding);
