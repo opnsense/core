@@ -60,11 +60,30 @@ class VlanInterfaceField extends BaseListField
                     ) {
                         continue;
                     }
-                    self::$interface_devices[$ifname] = sprintf(
-                        "%s (%s) [%s]",
-                        $ifname,
-                        $details['macaddr'],
-                        !empty($ifnames[$ifname]) ? $ifnames[$ifname] : ""
+                    if (empty($details['vlan'])) {
+                        self::$interface_devices[$ifname] = sprintf(
+                            "%s (%s) [%s]",
+                            $ifname,
+                            $details['macaddr'],
+                            !empty($ifnames[$ifname]) ? $ifnames[$ifname] : ""
+                        );
+                    } else {
+                        self::$interface_devices[$ifname] = sprintf(
+                            "%s (%s) [%s]",
+                            $ifname,
+                            sprintf("tag: %s, if: %s", $details['vlan']['tag'], $details['vlan']['parent']),
+                            !empty($ifnames[$ifname]) ? $ifnames[$ifname] : ""
+                        );
+                    }
+                }
+            }
+            // append not yet applied vlan interfaces
+            foreach ($this->getParentModel()->vlan->iterateItems() as $key => $vlan) {
+                if (strpos((string)$vlan->vlanif, "qinq") !== 0 && !isset(self::$interface_devices[(string)$vlan->vlanif])) {
+                    self::$interface_devices[(string)$vlan->vlanif] = sprintf(
+                        "%s (%s) []",
+                        (string)$vlan->vlanif,
+                        sprintf("tag: %s, if: %s", (string)$vlan->tag, (string)$vlan->if)
                     );
                 }
             }
