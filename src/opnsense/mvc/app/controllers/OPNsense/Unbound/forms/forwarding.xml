@@ -11,7 +11,7 @@
         </help>
     </field>
     <field>
-        <id>forwarding.info</id>
+        <id>unbound.forwarding.info</id>
         <type>info</type>
         <label></label>
     </field>

@@ -27,7 +27,7 @@
 <script>
 
     $( document ).ready(function() {
-        $('tr[id="row_forwarding.info"]').addClass('hidden');
+        $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
         /* Handle retrieval and saving of the single system forwarding checkbox */
         let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
@@ -47,25 +47,25 @@
         function toggleNameservers(checked) {
             if (checked) {
                 ajaxGet(url="/api/unbound/settings/getNameservers", {}, callback=function(data, status) {
-                    $('tr[id="row_forwarding.info"]').removeClass('hidden');
+                    $('tr[id="row_unbound.forwarding.info"]').removeClass('hidden');
                     if (data.length && !data.includes('')) {
-                        $('div[id="control_label_forwarding.info"]').append(
+                        $('div[id="control_label_unbound.forwarding.info"]').append(
                             "<span>{{ lang._('The following nameservers are used:') }}</span>"
                         );
-                        $('span[id="forwarding.info"]').append(
+                        $('span[id="unbound.forwarding.info"]').append(
                             "<div><b>" + data.join(", ") + "</b></div>"
                         );
                     } else {
-                        $('div[id="control_label_forwarding.info"]').append(
+                        $('div[id="control_label_unbound.forwarding.info"]').append(
                             "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: General setup</a></span>"
                         );
                     }
 
                 });
             } else {
-                $('tr[id="row_forwarding.info"]').addClass('hidden');
-                $('div[id="control_label_forwarding.info"]').children().not(':first').remove();
-                $('span[id="forwarding.info"]').children().remove();
+                $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
+                $('div[id="control_label_unbound.forwarding.info"]').children().not(':first').remove();
+                $('span[id="unbound.forwarding.info"]').children().remove();
             }
         }
 
