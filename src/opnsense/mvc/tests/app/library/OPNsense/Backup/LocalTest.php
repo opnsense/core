@@ -1,6 +1,11 @@
 <?php
 
-namespace tests\OPNsense\Backup\Local;
+namespace OPNsense\Backup;
+
+function shell_exec($s)
+{
+    return '0.0dev';
+}
 
 class BackupLocalTest extends \PHPUnit\Framework\TestCase
 {
