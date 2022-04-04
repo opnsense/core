@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!does_interface_exist($_POST['if_add'])) {
-            $input_errors[] = sprintf(gettext('The interface "%s" does not exist yet. Make sure to apply its configuration first.'), $_POST['if_add']);
+            $input_errors[] = sprintf(gettext('The interface "%s" does not exist. Make sure to apply its configuration first.'), $_POST['if_add']);
         }
 
         if (count($input_errors) == 0) {
@@ -354,6 +354,8 @@ foreach ($intfkeys as $portname) {
     $portused = false;
     if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
         $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
+    } elseif (empty($ifdetails[$portname])) {
+        $interfaces[$portname]['status'] = 'no carrier';
     }
     foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
