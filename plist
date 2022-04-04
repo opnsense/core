@@ -521,6 +521,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php

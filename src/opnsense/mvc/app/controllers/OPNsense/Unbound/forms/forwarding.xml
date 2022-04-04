@@ -7,6 +7,7 @@
         <help>
             The configured system nameservers will be used to forward queries to.
             This will override any entry in the grid below, except for entries with a specific domain.
+            DNS over TLS will never be used for any query bound for a system nameserver.
         </help>
     </field>
     <field>

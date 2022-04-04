@@ -88,13 +88,16 @@ function legacy_html_escape_form_data(&$settings)
  */
 function legacy_list_aliases($type)
 {
-    $result = array();
+    $result = [];
 
     foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-        if ($type == "port" && preg_match("/port/i", $alias['type'])) {
-            $result[] = array('name' => $alias['name'], 'type' => $alias['type']);
+        if ($alias['type'] == 'internal') {
+            // XXX: skip internal aliases while still defined as "networks" in the rules pages
+            continue;
+        } elseif ($type == "port" && preg_match("/port/i", $alias['type'])) {
+            $result[] = ['name' => $alias['name'], 'type' => $alias['type']];
         } elseif ($type != "port" && !preg_match("/port/i", $alias['type'])) {
-            $result[] = array('name' => $alias['name'], 'type' => $alias['type']);
+            $result[] = ['name' => $alias['name'], 'type' => $alias['type']];
         }
     }
 
