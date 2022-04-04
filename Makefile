@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -129,7 +129,8 @@ CORE_COPYRIGHT_YEARS?=	2014-2022
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
-CORE_DEPENDS_PHP74=	php74-openssl php74-json
+CORE_DEPENDS_PHP74=	php74-phalcon4 php74-openssl php74-json
+CORE_DEPENDS_PHP80=	php80-phalcon
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
@@ -167,7 +168,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
-			php${CORE_PHP}-phalcon4 \
 			php${CORE_PHP}-phpseclib \
 			php${CORE_PHP}-session \
 			php${CORE_PHP}-simplexml \
