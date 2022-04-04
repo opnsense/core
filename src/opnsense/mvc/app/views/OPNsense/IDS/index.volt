@@ -411,6 +411,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                 selection:false,
                                 rowCount: [7,50,100,250,500,1000,5000],
                                 requestHandler:addAlertQryFilters,
+                                labels: {
+                                    infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
+                                },
                                 formatters:{
                                     info: function (column, row) {
                                         return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo bootgrid-tooltip\" title=\"{{ lang._('View') }}\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";

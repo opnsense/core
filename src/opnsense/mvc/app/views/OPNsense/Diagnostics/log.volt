@@ -52,6 +52,9 @@
               rowSelect: false,
               selection: false,
               rowCount:[20,50,100,200,500,1000,5000],
+              labels: {
+                  infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
+              },
               formatters:{
                   page: function (column, row) {
                       if ($("input.search-field").val() !== "" || $('#severity_filter').val().length > 0) {
