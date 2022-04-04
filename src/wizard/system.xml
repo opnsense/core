@@ -155,9 +155,6 @@ if (!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserve
 if (!empty($input_errors)) {
     $stepid--;
 } else {
-    if (isset($config['unbound']['forwarding'])) {
-        unset($config['unbound']['forwarding']);
-    }
     if (isset($config['dnsmasq']['enable'])) {
         unset($config['dnsmasq']['enable']);
     }

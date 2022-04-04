@@ -57,8 +57,9 @@
             </whitelists>
         </dnsbl>
         <forwarding>
-            <enabled type="LegacyLinkField">
-                <Source>unbound.forwarding</Source>
+            <enabled type="BooleanField">
+                <default>0</default>
+                <Required>N</Required>
             </enabled>
         </forwarding>
         <dots>
