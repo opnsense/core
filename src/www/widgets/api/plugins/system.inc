@@ -171,10 +171,11 @@ function system_api_firmware()
     $ret = gettext('Click to check for updates.');
 
     $product = json_decode(configd_run('firmware product'), true);
+    $current = explode('_', $product['product_version'])[0];
 
     /* information from changelog, more accurate for production release */
     $from_changelog = !empty($product['product_latest']) &&
-        $product['product_latest'] != $product['product_version'];
+        $product['product_latest'] != $current;
 
     /* update status from last check, also includes major releases */
     $from_check = !empty($product['product_check']['upgrade_sets']) ||
