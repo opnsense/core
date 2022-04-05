@@ -1,12 +1,12 @@
 <form>
     <field>
         <id>vlan.vlanif</id>
-        <label>deviceId</label>
+        <label>Device</label>
         <type>info</type>
     </field>
     <field>
         <id>vlan.if</id>
-        <label>Parent interface</label>
+        <label>Parent</label>
         <type>dropdown</type>
         <help>Only VLAN capable interfaces will be shown.</help>
     </field>
