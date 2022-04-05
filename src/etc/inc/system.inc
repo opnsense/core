@@ -383,8 +383,6 @@ function get_nameservers($interface = null)
 
 function system_hosts_generate($verbose = false)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Generating /etc/hosts...';
         flush();
@@ -606,8 +604,6 @@ function system_staticroutes_configure($interface = '')
 
 function system_syslog_start($verbose = false)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Configuring system logging...';
         flush();
