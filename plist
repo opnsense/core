@@ -379,9 +379,15 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DnsblController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DotController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/ForwardController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverridesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -569,6 +575,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
@@ -614,6 +622,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dnsbl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dot.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overrides.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
@@ -835,6 +844,7 @@
 /usr/local/opnsense/scripts/syslog/log_archive
 /usr/local/opnsense/scripts/system/dh_parameters.sh
 /usr/local/opnsense/scripts/system/list_interrupts.py
+/usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/system/sysctl.py
@@ -997,8 +1007,10 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/miscellaneous.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/unbound_dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
@@ -1813,9 +1825,6 @@
 /usr/local/www/services_unbound.php
 /usr/local/www/services_unbound_acls.php
 /usr/local/www/services_unbound_advanced.php
-/usr/local/www/services_unbound_domainoverride_edit.php
-/usr/local/www/services_unbound_host_edit.php
-/usr/local/www/services_unbound_overrides.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_habackup.php

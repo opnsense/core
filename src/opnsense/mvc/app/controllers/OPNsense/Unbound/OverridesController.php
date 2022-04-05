@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2022 Stephan de Wit <stephan.de.wit@deciso.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,13 @@ namespace OPNsense\Unbound;
 
 use OPNsense\Base\IndexController;
 
-class DotController extends IndexController
+class OverridesController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->selected_forward = "";
-        $this->view->forwardingForm = $this->getForm('forwarding');
-        $this->view->formDialogEdit = $this->getForm('dialogDot');
-        $this->view->pick('OPNsense/Unbound/dot');
+        $this->view->pick('OPNsense/Unbound/overrides');
+        $this->view->formDialogHostOverride = $this->getForm("dialogHostOverride");
+        $this->view->formDialogHostAlias = $this->getForm("dialogHostAlias");
+        $this->view->formDialogDomainOverride = $this->getForm("dialogDomainOverride");
     }
 }

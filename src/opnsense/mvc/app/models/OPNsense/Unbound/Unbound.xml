@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -56,12 +56,31 @@
                 <Required>N</Required>
             </whitelists>
         </dnsbl>
+        <forwarding>
+            <enabled type="BooleanField">
+                <default>0</default>
+                <Required>N</Required>
+            </enabled>
+        </forwarding>
         <dots>
             <dot type="ArrayField">
                 <enabled type="BooleanField">
                     <Required>Y</Required>
                     <default>1</default>
                 </enabled>
+                <type type="OptionField">
+                    <Required>Y</Required>
+                    <default>dot</default>
+                    <OptionValues>
+                        <dot>DNS over TLS</dot>
+                        <forward>Forward</forward>
+                    </OptionValues>
+                </type>
+                <domain type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                </domain>
                 <server type="NetworkField">
                     <Required>Y</Required>
                 </server>
@@ -73,6 +92,149 @@
                 </verify>
             </dot>
         </dots>
+        <hosts>
+            <host type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <hostname type="HostnameField">
+                    <Required>N</Required>
+                    <HostWildcardAllowed>Y</HostWildcardAllowed>
+                </hostname>
+                <domain type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                </domain>
+                <rr type="OptionField">
+                    <Required>Y</Required>
+                    <default>A</default>
+                    <OptionValues>
+                        <A>A (IPv4 address)</A>
+                        <AAAA>AAAA (IPv6 address)</AAAA>
+                        <MX>MX (Mail server)</MX>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <reference>mxprio.check001</reference>
+                        </check001>
+                        <check002>
+                            <reference>mx.check001</reference>
+                        </check002>
+                        <check003>
+                            <reference>server.check001</reference>
+                        </check003>
+                        <check004>
+                            <reference>server.check002</reference>
+                        </check004>
+                    </Constraints>
+                </rr>
+                <mxprio type="IntegerField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The field MX Priority is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>MX</check>
+                        </check001>
+                    </Constraints>
+                </mxprio>
+                <mx type="HostnameField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The field MX Host is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>MX</check>
+                        </check001>
+                    </Constraints>
+                </mx>
+                <server type="NetworkField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The field IP address is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>A</check>
+                        </check001>
+                        <check002>
+                            <ValidationMessage>The field IP address is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>AAAA</check>
+                        </check002>
+                    </Constraints>
+                </server>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </host>
+        </hosts>
+        <aliases>
+            <alias type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <host type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.Unbound.Unbound</source>
+                            <items>hosts.host</items>
+                            <display>domain</display>
+                        </host>
+                    </Model>
+                    <Required>Y</Required>
+                </host>
+                <hostname type="HostnameField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The host field is required if a domain has not been specified.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>domain</field>
+                            <check></check>
+                        </check001>
+                    </Constraints>
+                    <WildcardAllowed>Y</WildcardAllowed>
+                </hostname>
+                <domain type="TextField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The domain field is required if a host has not been specified.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>hostname</field>
+                            <check></check>
+                        </check001>
+                    </Constraints>
+                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                </domain>
+            </alias>
+        </aliases>
+        <domains>
+            <domain type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <domain type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                </domain>
+                <server type="NetworkField">
+                    <Required>Y</Required>
+                </server>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </domain>
+        </domains>
         <miscellaneous>
             <privatedomain type="CSVListField">
                     <Required>N</Required>

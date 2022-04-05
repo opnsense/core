@@ -1,7 +1,8 @@
+#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,17 +27,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound;
+require_once 'config.inc';
+require_once 'system.inc';
+require_once 'util.inc';
+require_once 'interfaces.inc';
 
-use OPNsense\Base\IndexController;
-
-class DotController extends IndexController
-{
-    public function indexAction()
-    {
-        $this->view->selected_forward = "";
-        $this->view->forwardingForm = $this->getForm('forwarding');
-        $this->view->formDialogEdit = $this->getForm('dialogDot');
-        $this->view->pick('OPNsense/Unbound/dot');
-    }
-}
+echo json_encode(get_nameservers()) . PHP_EOL;
