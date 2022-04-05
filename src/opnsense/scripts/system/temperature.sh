@@ -27,7 +27,14 @@
 CMD=${1}
 
 if [ "${CMD}" = 'rrd' ]; then
-	sysctl -n dev.cpu.0.temperature | sed 's/C//g'
+	for i in dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU
+	do
+		temp=`sysctl -i -n $i | sed 's/C//g'`
+		if [ ! -z $temp ]; then
+			echo $temp
+			break
+		fi
+	done
 else
 	# The grep is opportunistic, but at least we only grep the
 	# variable names and not their content at the same time.
