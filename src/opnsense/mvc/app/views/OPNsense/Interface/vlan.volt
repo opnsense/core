@@ -16,8 +16,8 @@
       <thead>
           <tr>
               <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-              <th data-column-id="if" data-type="string">{{ lang._('Parent Interface') }}</th>
-              <th data-column-id="vlanif" data-type="string" data-visible="false">{{ lang._('Interface') }}</th>
+              <th data-column-id="vlanif" data-type="string">{{ lang._('Device') }}</th>
+              <th data-column-id="if" data-type="string">{{ lang._('Parent') }}</th>
               <th data-column-id="tag" data-type="string">{{ lang._('Tag') }}</th>
               <th data-column-id="pcp" data-type="string">{{ lang._('PCP') }}</th>
               <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>

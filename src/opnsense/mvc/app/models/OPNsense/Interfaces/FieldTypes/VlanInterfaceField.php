@@ -62,10 +62,10 @@ class VlanInterfaceField extends BaseListField
                     }
                     if (empty($details['vlan'])) {
                         self::$interface_devices[$ifname] = sprintf(
-                            "%s (%s) [%s]",
+                            "%s (%s)%s",
                             $ifname,
                             $details['macaddr'],
-                            !empty($ifnames[$ifname]) ? $ifnames[$ifname] : ""
+                            !empty($ifnames[$ifname]) ? sprintf(' [%s]', $ifnames[$ifname]) : ''
                         );
                     }
                 }
@@ -76,9 +76,11 @@ class VlanInterfaceField extends BaseListField
                     continue;
                 }
                 self::$interface_devices[(string)$vlan->vlanif] = sprintf(
-                    gettext('%s (Tag: %s, Parent: %s) [%s]'),
-                    (string)$vlan->vlanif, (string)$vlan->tag, (string)$vlan->if,
-		    !empty($ifnames[(string)$vlan->vlanif]) ? $ifnames[(string)$vlan->vlanif] : ''
+                    gettext('%s (Tag: %s, Parent: %s)%s'),
+                    (string)$vlan->vlanif,
+                    (string)$vlan->tag,
+                    (string)$vlan->if,
+                    !empty($ifnames[(string)$vlan->vlanif]) ? sprintf(' [%s]', $ifnames[(string)$vlan->vlanif]) : ''
                 );
             }
         }
