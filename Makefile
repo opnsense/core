@@ -341,8 +341,8 @@ upgrade-check:
 		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
 		exit 1; \
 	fi
-	@if [ "$$(${VERSIONBIN} -v)" = "${CORE_PKGVERSION}" ]; then \
-		echo "Installed version already matches ${CORE_PKGVERSION}" >&2; \
+	@if [ "$$(${VERSIONBIN} -vH)" = "${CORE_PKGVERSION} ${CORE_HASH}" ]; then \
+		echo "Installed version already matches ${CORE_PKGVERSION} ${CORE_HASH}" >&2; \
 		exit 1; \
 	fi
 
