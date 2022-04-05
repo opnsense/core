@@ -177,6 +177,7 @@ function system_resolvconf_generate($verbose = false)
     $syscfg = config_read_array('system');
     $resolvconf = '';
     $search = [];
+    $routes = [];
 
     mwexecf(
         '/etc/rc.d/ip6addrctl %s',
@@ -197,17 +198,12 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
-    if (isset($syscfg['dnsallowoverride'])) {
-        $search = array_merge($search, get_searchdomains());
-        foreach (get_nameservers() as $nameserver) {
-            $resolvconf .= "nameserver $nameserver\n";
-        }
-    }
+    $search = array_merge($search, get_searchdomains());
 
-    if (isset($syscfg['dnsserver'][0])) {
-        foreach ($syscfg['dnsserver'] as $ns) {
-            $resolvconf .= "nameserver $ns\n";
-        }
+    foreach (get_nameservers(null, true) as $dnsserver) {
+        $host = !empty($dnsserver['host']) ? $dnsserver['host'] : $dnsserver;
+        $resolvconf .= "nameserver {$host}\n";
+        $routes[] = $dnsserver;
     }
 
     if (count($search)) {
@@ -232,27 +228,9 @@ function system_resolvconf_generate($verbose = false)
 
     rename($tempfile, '/etc/resolv.conf');
 
-    /* setup static routes for DNS servers. */
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
-        /* setup static routes for dns servers */
-        $dnsgw = "dns{$dnscounter}gw";
-        if (isset($syscfg[$dnsgw])) {
-            $gwname = $syscfg[$dnsgw];
-            if (($gwname != '') && ($gwname != 'none')) {
-                $gatewayip = $gateways->getAddress($gwname);
-                if (is_ipaddrv4($gatewayip)) {
-                    /* dns server array starts at 0 */
-                    $dnscountermo = $dnscounter - 1;
-                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
-                }
-                if (is_ipaddrv6($gatewayip)) {
-                    /* dns server array starts at 0 */
-                    $dnscountermo = $dnscounter - 1;
-                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
-                }
-            }
-        }
+    /* setup static routes for DNS servers as configured */
+    foreach ($routes as $route) {
+        system_host_route($route['host'], $route['gateway']);
     }
 
     if ($verbose) {
@@ -313,9 +291,14 @@ function get_zoneinfo()
 
 function get_searchdomains()
 {
-    $master_list = array();
-
     $search_list = glob('/tmp/*_searchdomain*');
+    $syscfg = config_read_array('system');
+    $master_list = [];
+
+    if (!isset($syscfg['dnsallowoverride'])) {
+        /* do not return domains as required by configuration */
+        $search_list = [];
+    }
 
     if (is_array($search_list)) {
         foreach ($search_list as $fdns) {
@@ -334,13 +317,15 @@ function get_searchdomains()
     return array_unique($master_list);
 }
 
-function get_nameservers($interface = null)
+function get_nameservers($interface = null, $with_gateway = false)
 {
     global $config;
-    $master_list = array();
 
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $dns_lists = glob('/tmp/*_nameserver*');
+    $syscfg = config_read_array('system');
     $exclude_interfaces = [];
+    $master_list = [];
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
@@ -350,10 +335,14 @@ function get_nameservers($interface = null)
             "/tmp/{$realif}_nameserver",
             "/tmp/{$realifv6}_nameserverv6",
         ];
+    } elseif (!isset($syscfg['dnsallowoverride'])) {
+        /* do not return dynamic servers as required by configuration */
+        $dns_lists = [];
     }
 
-    if (isset($config['system']['dnsallowoverride_exclude'])) {
-        foreach (explode(',', $config['system']['dnsallowoverride_exclude']) as $intf) {
+    if (isset($syscfg['dnsallowoverride_exclude'])) {
+        /* by design this only works on dynamic servers, not static ones */
+        foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
                 $exclude_interfaces[] = get_real_interface($intf);
                 $exclude_interfaces[] = get_real_interface($intf, 'inet6');
@@ -362,6 +351,7 @@ function get_nameservers($interface = null)
     }
 
     foreach ($dns_lists as $fdns) {
+        /* inspect dynamic servers registered in the system files */
         $intf = explode('_', basename($fdns))[0];
         if (in_array($intf, $exclude_interfaces)) {
             continue;
@@ -371,14 +361,67 @@ function get_nameservers($interface = null)
         if (!is_array($contents)) {
             continue;
         }
+
+        /* router file is available for connectivity creating nameserver files */
+        $gw = trim(@file_get_contents(str_replace('_nameserver', '_router', $fdns)));
+        if (is_linklocal($gw) && strpos($gw, '%') === false) {
+            $gw .= "%{$intf}";
+        }
+
         foreach ($contents as $dns) {
-            if (!empty($dns) && is_ipaddr($dns)) {
+            if (empty($dns) || !is_ipaddr($dns)) {
+                continue;
+            }
+
+            if ($with_gateway) {
+                $master_list[] = ['host' => $dns, 'gateway' => $gw];
+            } else {
                 $master_list[] = $dns;
             }
         }
     }
 
-    return array_unique($master_list);
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
+        /* inspect static servers and optional gateway assignment */
+        $dns = $syscfg['dnsserver'][$dnscounter - 1];
+        if (empty($dns) || !is_ipaddr($dns)) {
+            continue;
+        }
+
+        $gwkey = "dns{$dnscounter}gw";
+        $gateway = null;
+
+        if (!empty($syscfg[$gwkey]) && $syscfg[$gwkey] != 'none') {
+            /* if a gateway is attached figure out the interface and address */
+            $dnsif = $gateways->getInterfaceName($syscfg[$gwkey]);
+            $dnsgw = $gateways->getAddress($syscfg[$gwkey]);
+
+            if (empty($dnsif) || empty($dnsgw)) {
+                /* do not present servers for defunct gateways */
+                continue;
+            }
+
+            if (!empty($interface) && $interface != $dnsif) {
+                /* not looking for this one */
+                continue;
+            }
+
+            $gateway = $dnsgw;
+        } elseif (!empty($interface)) {
+            /* discard because not attached to any interface */
+            continue;
+        }
+
+        if ($with_gateway) {
+            $master_list[] = ['host' => $dns, 'gateway' => $gateway];
+        } else {
+            $master_list[] = $dns;
+        }
+    }
+
+    /* XXX check for overlapping host routes in gateway mode? */
+
+    return array_unique($master_list, SORT_REGULAR);
 }
 
 function system_hosts_generate($verbose = false)
