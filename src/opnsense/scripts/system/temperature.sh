@@ -26,12 +26,17 @@
 
 CMD=${1}
 
+SYSCTLS="
+dev.cpu.0.temperature
+hw.acpi.thermal.tz0.temperature
+hw.temperature.CPU
+"
+
 if [ "${CMD}" = 'rrd' ]; then
-	for i in dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU
-	do
-		temp=`sysctl -i -n $i | sed 's/C//g'`
-		if [ ! -z $temp ]; then
-			echo $temp
+	for SYSCTL in ${SYSCTLS}; do
+		TEMP=$(sysctl -i -n ${SYSCTL} | sed 's/C//g')
+		if [ -n "${TEMP}" ]; then
+			echo ${TEMP}
 			break
 		fi
 	done
