@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 20152-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -148,7 +148,7 @@ class AccessController extends ApiControllerBase
                             // try this auth method
                             $isAuthenticated = $authServer->authenticate(
                                 $userName,
-                                $this->request->getPost("password", "string")
+                                $this->request->getPost("password")
                             );
 
                             // check group when group enforcement is set
