@@ -129,8 +129,10 @@ CORE_COPYRIGHT_YEARS?=	2014-2022
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
-CORE_DEPENDS_PHP74=	php74-phalcon4 php74-openssl php74-json
+# transition helpers for PHP 8/Phalcon 5 migration
+CORE_DEPENDS_PHP74=	php74-json php74-openssl php74-phalcon${CORE_PHALCON}
 CORE_DEPENDS_PHP80=	php80-phalcon
+CORE_PHALCON?=		4
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
