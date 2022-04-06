@@ -28,7 +28,7 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use Phalcon\Filter;
+use Phalcon\Filter\Filter;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;

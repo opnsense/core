@@ -1,6 +1,6 @@
 <?php
 
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;

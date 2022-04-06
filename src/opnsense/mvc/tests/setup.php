@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Di\FactoryDefault;
 
 ini_set('display_errors', 1);

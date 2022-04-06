@@ -32,8 +32,8 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
-use Phalcon\Validation\Validator\Regex;
-use Phalcon\Validation\Validator\ExclusionIn;
+use Phalcon\Filter\Validation\Validator\Regex;
+use Phalcon\Filter\Validation\Validator\ExclusionIn;
 
 /**
  * Class AliasNameField

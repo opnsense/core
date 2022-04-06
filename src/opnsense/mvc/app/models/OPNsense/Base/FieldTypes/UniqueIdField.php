@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\InclusionIn;
+use Phalcon\Filter\Validation\Validator\InclusionIn;
 
 /**
  * Class UniqueIdField

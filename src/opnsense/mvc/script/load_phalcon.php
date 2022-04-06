@@ -26,8 +26,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Loader;
+use Phalcon\Di\FactoryDefault;
+use Phalcon\Autoload\Loader;
 
 $di = new FactoryDefault();
 $phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");

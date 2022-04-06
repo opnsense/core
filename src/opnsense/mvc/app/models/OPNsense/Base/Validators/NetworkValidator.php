@@ -30,8 +30,8 @@
 
 namespace OPNsense\Base\Validators;
 
-use Phalcon\Validation\AbstractValidator;
-use Phalcon\Validation\ValidatorInterface;
+use Phalcon\Filter\Validation\AbstractValidator;
+use Phalcon\Filter\Validation\ValidatorInterface;
 use Phalcon\Messages\Message;
 
 /**
@@ -49,11 +49,11 @@ class NetworkValidator extends AbstractValidator implements ValidatorInterface
      *      netMaskRequired : true, false (default)
      *
      *
-     * @param \Phalcon\Validation $validator
+     * @param \Phalcon\Filter\Validation $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate(\Phalcon\Filter\Validation $validator, $attribute): bool
     {
         $result = true;
         $msg = $this->getOption('message');

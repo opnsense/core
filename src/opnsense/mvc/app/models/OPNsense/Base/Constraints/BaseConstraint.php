@@ -28,8 +28,8 @@
 
 namespace OPNsense\Base\Constraints;
 
-use Phalcon\Validation\AbstractValidator;
-use Phalcon\Validation\ValidatorInterface;
+use Phalcon\Filter\Validation\AbstractValidator;
+use Phalcon\Filter\Validation\ValidatorInterface;
 use Phalcon\Messages\Message;
 
 abstract class BaseConstraint extends AbstractValidator implements ValidatorInterface
@@ -51,10 +51,10 @@ abstract class BaseConstraint extends AbstractValidator implements ValidatorInte
     }
 
     /**
-     * @param \Phalcon\Validation $validator
+     * @param \Phalcon\Filter\Validation $validator
      * @param $attribute
      */
-    protected function appendMessage(\Phalcon\Validation $validator, $attribute)
+    protected function appendMessage(\Phalcon\Filter\Validation $validator, $attribute)
     {
         $message = $this->getOption('ValidationMessage');
         $name = $this->getOption('name');

@@ -43,7 +43,7 @@ class TemplateController extends ApiMutableModelControllerBase
     /**
      * save template
      * @return array status
-     * @throws \Phalcon\Validation\Exception on validation issues
+     * @throws \Phalcon\Filter\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */

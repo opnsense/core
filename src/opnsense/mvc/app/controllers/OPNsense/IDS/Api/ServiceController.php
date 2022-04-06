@@ -33,7 +33,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Cron\Cron;
 use OPNsense\IDS\IDS;
-use Phalcon\Filter;
+use Phalcon\Filter\Filter;
 use Phalcon\Filter\FilterFactory;
 
 /**
@@ -52,7 +52,7 @@ class ServiceController extends ApiMutableServiceControllerBase
      * @return array result status
      * @throws \Exception when configd action fails
      * @throws \OPNsense\Base\ModelException when unable to construct model
-     * @throws \Phalcon\Validation\Exception when one or more model validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when one or more model validations fail
      */
     public function reconfigureAction()
     {
