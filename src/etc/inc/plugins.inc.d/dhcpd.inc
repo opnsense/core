@@ -575,7 +575,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
     }
 }
 
-function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = array())
+function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
 
@@ -589,11 +589,11 @@ function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = ar
 
     mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', '/var/dhcpd');
 
-    if ($family == 'all' || $family == 'inet') {
+    if ($family == null || $family == 'inet') {
         dhcpd_dhcp4_configure($verbose);
     }
 
-    if ($family == 'all' || $family == 'inet6') {
+    if ($family == null || $family == 'inet6') {
         dhcpd_dhcp6_configure($verbose, $blacklist);
         dhcpd_radvd_configure($verbose, $blacklist);
     }
@@ -1682,13 +1682,13 @@ EOD;
     }
 }
 
-function dhcpd_dhcrelay_configure($verbose = false, $family = 'all')
+function dhcpd_dhcrelay_configure($verbose = false, $family = null)
 {
-    if ($family == 'all' || $family == 'inet') {
+    if ($family == null || $family == 'inet') {
         dhcpd_dhcrelay4_configure($verbose);
     }
 
-    if ($family == 'all' || $family == 'inet6') {
+    if ($family == null || $family == 'inet6') {
         dhcpd_dhcrelay6_configure($verbose);
     }
 }
