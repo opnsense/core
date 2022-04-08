@@ -1251,6 +1251,10 @@ EOD;
         $dhcpdconf .= dhcpd_zones($ddns_zones);
     }
 
+    foreach (glob('/usr/local/etc/dhcpd.opnsense.d/*.conf') as $file) {
+        $dhcpdconf .= "\n\n# including custom file {$file}\n" . file_get_contents($file);
+    }
+
     @file_put_contents('/var/dhcpd/etc/dhcpd.conf', $dhcpdconf);
     @touch('/var/dhcpd/var/db/dhcpd.leases');
     @unlink('/var/dhcpd/var/run/dhcpd.pid');
@@ -1670,6 +1674,10 @@ EOD;
         $dhcpdv6conf .= dhcpd_zones($ddns_zones, "inet6");
     } else {
         $dhcpdv6conf .= "\nddns-update-style none;\n";
+    }
+
+    foreach (glob('/usr/local/etc/dhcpd6.opnsense.d/*.conf') as $file) {
+        $dhcpdv6conf .= "\n\n# including custom file {$file}\n" . file_get_contents($file);
     }
 
     @file_put_contents('/var/dhcpd/etc/dhcpdv6.conf', $dhcpdv6conf);
