@@ -1091,6 +1091,13 @@ EOD;
                 '00:0b' => 'filename64arm',
             ];
 
+            if (!empty($dhcpifconf['filenameipxe'])) {
+                $dhcpdconf .= "  if exists user-class and option user-class = \"iPXE\" {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filenameipxe']}\";\n";
+                $dhcpdconf .= "  }";
+                $conditional = true;
+            }
+
             foreach ($filemap as $arch => $file) {
                 if (empty($dhcpifconf[$file])) {
                     continue;
@@ -1103,6 +1110,7 @@ EOD;
 
                 $conditional = true;
             }
+
             if ($conditional) {
                 if (!empty($dhcpifconf['filename'])) {
                     $dhcpdconf .= "  else {\n";
