@@ -225,7 +225,7 @@
                     <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
-                <server type="NetworkField">
+                <server type=".\UnboundServerField">
                     <Required>Y</Required>
                 </server>
                 <description type="TextField">
