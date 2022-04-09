@@ -144,7 +144,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disconnectppps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disconnect dailup interfaces') ?></td>
+                  <td><a id="help_for_disconnectppps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disconnect dialup interfaces') ?></td>
                   <td>
                     <input type="checkbox" name="disconnectppps" value="on" <?= !empty($pconfig['disconnectppps']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_disconnectppps">
