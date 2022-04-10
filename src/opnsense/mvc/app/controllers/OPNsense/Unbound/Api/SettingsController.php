@@ -210,7 +210,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setHostAliasAction($uuid)
     {
-        return $this->setBase('alias', 'aliases.alias');
+        return $this->setBase('alias', 'aliases.alias', $uuid);
     }
 
     public function toggleHostAliasAction($uuid, $enabled = null)
