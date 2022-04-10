@@ -184,7 +184,8 @@
                         <host>
                             <source>OPNsense.Unbound.Unbound</source>
                             <items>hosts.host</items>
-                            <display>domain</display>
+                            <display>hostname,domain</display>
+                            <display_format>%s.%s</display_format>
                         </host>
                     </Model>
                     <Required>Y</Required>
