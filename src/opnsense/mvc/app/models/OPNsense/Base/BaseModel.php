@@ -568,6 +568,10 @@ abstract class BaseModel
             foreach ($messages as $msg) {
                 $exception_msg_part = "[" . get_class($this) . ":" . $msg->getField() . "] ";
                 $exception_msg_part .= $msg->getMessage();
+                $field_value = $this->getNodeByReference($msg->getField());
+                if (!empty($field_value)) {
+                    $exception_msg_part .= sprintf("{%s}", $field_value);
+                }
                 $exception_msg .= "$exception_msg_part\n";
                 // always log validation errors
                 $logger->error($exception_msg_part);
