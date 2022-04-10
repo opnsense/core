@@ -176,7 +176,7 @@ class SettingsController extends ApiMutableModelControllerBase
         }
         return $this->searchBase(
             'aliases.alias',
-            ['enabled', 'host', 'hostname', 'domain'],
+            ['enabled', 'host', 'hostname', 'domain', 'description'],
             "sequence",
             $filter_func
         );
