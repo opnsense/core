@@ -52,17 +52,19 @@ class UnboundServerField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
-        $validators[] = new CallbackValidator([
-            "callback" => function ($value) {
-                $parts = explode("@", $value);
-                if (count($parts) == 2 && (!Util::isIpAddress($parts[0]) || !Util::isPort($parts[1]))) {
-                    return [gettext("A valid IP address and port must be specified, for example 192.168.100.10@5353.")];
-                } elseif (count($parts) != 2 && !Util::isIpAddress($value)) {
-                    return [gettext("A valid IP address must be specified, for example 192.168.100.10.")];
+        if ($this->internalValue != null) {
+            $validators[] = new CallbackValidator([
+                "callback" => function ($value) {
+                    $parts = explode("@", $value);
+                    if (count($parts) == 2 && (!Util::isIpAddress($parts[0]) || !Util::isPort($parts[1]))) {
+                        return [gettext("A valid IP address and port must be specified, for example 192.168.100.10@5353.")];
+                    } elseif (count($parts) != 2 && !Util::isIpAddress($value)) {
+                        return [gettext("A valid IP address must be specified, for example 192.168.100.10.")];
+                    }
+                    return [];
                 }
-                return [];
-            }
-        ]);
+            ]);
+        }
         return $validators;
     }
 }
