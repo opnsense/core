@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -271,7 +271,11 @@ function plugins_configure($hook, $verbose = false, $args = array())
                             $argf,
                             implode(',', array_slice($args, 0, $argc))
                         ));
-                        call_user_func_array($argf, array_slice($args, 0, $argc));
+                        try {
+                            call_user_func_array($argf, array_slice($args, 0, $argc));
+                        } catch (\Error $e) {
+                            error_log($e);
+                        }
                     }
                 }
             }
@@ -314,7 +318,11 @@ function plugins_run($hook, $verbose = false, $args = array())
                         $argf,
                         implode(',', array_slice($args, 0, $argc))
                     ));
-                    $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                    try {
+                        $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                    } catch (\Error $e) {
+                        error_log($e);
+                    }
                 }
             }
         }
