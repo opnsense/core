@@ -232,6 +232,7 @@
                 </domain>
                 <server type=".\UnboundServerField">
                     <Required>Y</Required>
+                    <ValidationMessage>A valid IP must be specified.</ValidationMessage>
                 </server>
                 <description type="TextField">
                     <Required>N</Required>
