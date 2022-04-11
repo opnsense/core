@@ -145,7 +145,7 @@ core)
 		target_abi_major=${product_abi%%.*}
 		target_abi_minor=${product_abi#*.}
 
-		IS_BUSINESS=$(echo ${product_name} | grep -c -- '-business')
+		IS_BUSINESS=$(echo ${product_id} | grep -c -- '-business')
 		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.mirror | \
 		    grep -c 'opnsense-update\.deciso\.com')
 
