@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2021-2022 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,14 @@ HOST=${HOST%%/*}
 IPV4=$(host -t A ${HOST} | head -n 1 | cut -d\  -f4)
 IPV6=$(host -t AAAA ${HOST} | head -n 1 | cut -d\  -f5)
 
+# do not taint existing repository state by using an isolated database folder
+export PKG_DBDIR=/tmp/firmware.repo.check
+rm -rf ${PKG_DBDIR}
+mkdir -p ${PKG_DBDIR}
+
 echo "***GOT REQUEST TO AUDIT CONNECTIVITY***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 	echo "Checking connectivity for host: ${HOST} -> ${IPV4}" | ${TEE} ${LOCKFILE}
 	(ping ${POPT} ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
@@ -47,6 +53,7 @@ if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 else
 	echo "No IPv4 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi
+
 if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
 	echo "Checking connectivity for host: ${HOST} -> ${IPV6}" | ${TEE} ${LOCKFILE}
 	(ping6 ${POPT} ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
@@ -55,4 +62,5 @@ if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
 else
 	echo "No IPv6 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi
+
 echo '***DONE***' >> ${LOCKFILE}
