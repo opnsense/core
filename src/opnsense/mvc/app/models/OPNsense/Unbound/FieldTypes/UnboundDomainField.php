@@ -40,7 +40,6 @@ use OPNsense\Firewall\Util;
  */
 class UnboundDomainField extends BaseField
 {
-
     protected $internalIsContainer = false;
 
     public function getValidators()
@@ -53,7 +52,7 @@ class UnboundDomainField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator([
-                "callback" => function($data) {
+                "callback" => function ($data) {
                     if (substr($data, 0, 6) == '_msdcs') {
                         $subdomain = substr($data, 7);
                         if (substr($data, 6, 1) != '.' || !Util::isDomain($subdomain)) {
