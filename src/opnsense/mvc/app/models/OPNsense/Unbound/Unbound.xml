@@ -199,7 +199,7 @@
                             <check></check>
                         </check001>
                     </Constraints>
-                    <WildcardAllowed>Y</WildcardAllowed>
+                    <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Constraints>
