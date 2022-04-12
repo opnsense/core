@@ -34,7 +34,6 @@ use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Firewall\Util;
 
-
 /**
  * Class UnboundServerField
  * @package OPNsense\Unbound\FieldTypes

@@ -136,7 +136,8 @@ class ModelRelationField extends BaseListField
 
                         $uuid = $node->getAttributes()['uuid'];
                         self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
-                            $displayFormat, $descriptions
+                            $displayFormat,
+                            $descriptions
                         );
                     }
                 }
