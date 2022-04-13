@@ -300,7 +300,7 @@ else
         if [ -n "${base_to_reboot}" ]; then
             base_to_delete="$(opnsense-update -vb)"
             base_is_size="$(opnsense-update -bfSr ${base_to_reboot})"
-            if [ "${base_to_reboot}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
+            if [ "${base_to_reboot}${force_all}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
                     packages_upgraded=${packages_upgraded}","
@@ -322,7 +322,7 @@ else
         if [ -n "${kernel_to_reboot}" ]; then
             kernel_to_delete="$(opnsense-update -vk)"
             kernel_is_size="$(opnsense-update -fkSr ${kernel_to_reboot})"
-            if [ "${kernel_to_reboot}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
+            if [ "${kernel_to_reboot}${force_all}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
                     packages_upgraded=${packages_upgraded}","
