@@ -1617,7 +1617,6 @@ EOD;
                     if ($need_ddns_updates) {
                         $dhcpdv6conf .= "  ddns-hostname {$dhhostname};\n";
                     }
-                    $dhcpdv6conf .= "  set hostname-override = config-option host-name;\n";
                 }
                 if (!empty($sm['filename'])) {
                     $dhcpdv6conf .= "  filename \"{$sm['filename']}\";\n";
