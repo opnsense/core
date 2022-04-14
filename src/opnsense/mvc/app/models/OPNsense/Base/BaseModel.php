@@ -33,7 +33,6 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Syslog;
-use Phalcon\Validation;
 use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
@@ -448,13 +447,7 @@ abstract class BaseModel
             }
         }
 
-        if (count($validation_data) > 0) {
-            $messages = $validation->validate($validation_data);
-        } else {
-            $messages = new Messages();
-        }
-
-        return $messages;
+        return $validation->validate($validation_data);
     }
 
     /**
@@ -577,7 +570,7 @@ abstract class BaseModel
                 $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
-                throw new Validation\Exception($exception_msg);
+                throw new Phalcon\Validation\Exception($exception_msg);
             }
         }
         $this->internalSerializeToConfig();
