@@ -573,7 +573,7 @@ abstract class BaseModel
                 $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
-                throw new Validation\Exception($exception_msg);
+                throw new Phalcon\Validation\Exception($exception_msg);
             }
         }
         $this->internalSerializeToConfig();
