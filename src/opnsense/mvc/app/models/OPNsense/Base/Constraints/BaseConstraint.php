@@ -29,7 +29,7 @@
 namespace OPNsense\Base\Constraints;
 
 use Phalcon\Filter\Validation\AbstractValidator;
-use Phalcon\Filter\Validation\ValidatorInterface;
+use OPNsense\Phalcon\Filter\Validation\ValidatorInterface;
 use Phalcon\Messages\Message;
 
 abstract class BaseConstraint extends AbstractValidator implements ValidatorInterface

@@ -1,6 +1,13 @@
 <?php
 
-return new \Phalcon\Config\Config(array(
+include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/PhalconGenerator.php');
+PhalconGenerator::generateClasses();
+
+/* Autoloader doesn't exist yet */
+include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Config/Config.php');
+include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Autoload/Loader.php');
+
+return new OPNsense\Phalcon\Config\Config(array(
     'application' => array(
         'controllersDir' => __DIR__ . '/../../app/controllers/',
         'modelsDir'      => __DIR__ . '/../../app/models/',
@@ -17,3 +24,4 @@ return new \Phalcon\Config\Config(array(
         'simulate_mode'  => false
     )
 ));
+

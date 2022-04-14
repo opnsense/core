@@ -41,7 +41,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
      */
     public function validateThrow($field)
     {
-        $validation = new \Phalcon\Filter\Validation();
+        $validation = new \OPNsense\Phalcon\Filter\Validation();
         foreach ($field->getValidators() as $validator) {
             $validation->add("testfield", $validator);
         }
@@ -63,7 +63,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
     public function validate($field)
     {
         $result = array();
-        $validation = new \Phalcon\Filter\Validation();
+        $validation = new \OPNsense\Phalcon\Filter\Validation();
         foreach ($field->getValidators() as $validator) {
             $validation->add("testfield", $validator);
         }

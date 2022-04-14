@@ -31,7 +31,7 @@
 namespace OPNsense\Base\Validators;
 
 use Phalcon\Filter\Validation\AbstractValidator;
-use Phalcon\Filter\Validation\ValidatorInterface;
+use OPNsense\Phalcon\Filter\Validation\ValidatorInterface;
 use Phalcon\Messages\Message;
 
 /**

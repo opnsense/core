@@ -40,7 +40,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
     // lesser then
     public function test_if_it_validates_number_ranges_correctly_with_lt_and_no_error()
     {
-        $validator = new \Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Phalcon\Filter\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
@@ -50,7 +50,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
 
     public function test_if_it_validates_number_ranges_correctly_with_lt_and_error()
     {
-        $validator = new \Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Phalcon\Filter\Validation();
         $validate = $this->make_validator(3, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
@@ -60,7 +60,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
     // greater then
     public function test_if_it_validates_number_ranges_correctly_with_gt_and_no_error()
     {
-        $validator = new \Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Phalcon\Filter\Validation();
         $validate = $this->make_validator(5, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
@@ -70,7 +70,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
 
     public function test_if_it_validates_number_ranges_correctly_with_gt_and_error()
     {
-        $validator = new \Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Phalcon\Filter\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();

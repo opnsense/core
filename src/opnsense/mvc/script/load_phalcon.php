@@ -27,12 +27,11 @@
  */
 
 use Phalcon\Di\FactoryDefault;
-use Phalcon\Autoload\Loader;
 
 $di = new FactoryDefault();
 $phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
 
-$loader = new Loader();
+$loader = new OPNsense\Phalcon\Autoload\Loader();
 $loader->setDirectories(
     array(
         $phalcon_config->application->controllersDir,
