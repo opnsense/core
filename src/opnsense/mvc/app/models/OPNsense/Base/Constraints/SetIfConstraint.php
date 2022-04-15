@@ -45,11 +45,11 @@ class SetIfConstraint extends BaseConstraint
      *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
      *   &lt;check&gt;the value to check for as a string (for example the value of a OptionField)&lt;/check&gt;
      *
-     * @param \Phalcon\Filter\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Filter\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
         $field_name = $this->getOption('field');

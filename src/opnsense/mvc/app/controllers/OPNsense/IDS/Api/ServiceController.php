@@ -68,7 +68,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 // update cron relation (if this doesn't break consistency)
                 $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "*", "0");
 
-                if ($mdlCron->performValidation()->count() == 0) {
+                if (count($mdlCron->performValidation()) == 0) {
                     $mdlCron->serializeToConfig();
                     // save data to config, do not validate because the current in memory model doesn't know about the
                     // cron item just created.

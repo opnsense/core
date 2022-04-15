@@ -37,14 +37,12 @@ class PhalconGenerator
             'Phalcon\\Di' => 'Phalcon\\Di\\Di',
             'Phalcon\\Security\\Random' => 'Phalcon\\Encryption\\Security\\Random',
             'Phalcon\\Filter' => 'Phalcon\\Filter\\Filter',
-            'Phalcon\\Validation' => 'Phalcon\\Filter\\Validation',
             'Phalcon\\Validation\\Validator\\PresenceOf' => 'Phalcon\\Filter\\Validation\\Validator\\PresenceOf',
             'Phalcon\\Validation\\Validator\\ExclusionIn' => 'Phalcon\\Filter\\Validation\\Validator\\ExclusionIn',
             'Phalcon\\Validation\\Validator\\Regex' => 'Phalcon\\Filter\\Validation\\Validator\\Regex',
             'Phalcon\\Validation\\Validator\\InclusionIn' => 'Phalcon\\Filter\\Validation\\Validator\\InclusionIn',
             'Phalcon\\Validation\\Validator\\Email' => 'Phalcon\\Filter\\Validation\\Validator\\Email',
             'Phalcon\\Validation\\Validator\\Numericality' => 'Phalcon\\Filter\\Validation\\Validator\\Numericality',
-            'Phalcon\\Validation\\ValidatorInterface' => 'Phalcon\\Filter\\Validation\\ValidatorInterface',
             'Phalcon\\Validation\\Exception' => 'Phalcon\\Filter\\Validation\\Exception',
             'Phalcon\\Logger' => 'Phalcon\\Logger\\Logger'
         ];
@@ -81,7 +79,6 @@ class PhalconGenerator
                     : '';
 
                 $namespaceBase = substr_replace($new, "", -strlen($fileName) - 1);
-                $classKeyword = $fileName == "ValidatorInterface" ? "interface" : "class";
 
                 $class = <<<EOF
                 <?php
@@ -91,16 +88,17 @@ class PhalconGenerator
                 use {$new} as Phalcon{$fileName};
                 use {$old} as Phalcon{$fileName}4;
 
-                if ({$classKeyword}_exists("{$new}", false)) {
-                    {$classKeyword} {$fileName}Wrapper extends Phalcon{$fileName} {}
+                if (class_exists("{$new}", false)) {
+                    class {$fileName}Wrapper extends Phalcon{$fileName} {}
                 } else {
-                    {$classKeyword} {$fileName}Wrapper extends Phalcon{$fileName}4 {}
+                    class {$fileName}Wrapper extends Phalcon{$fileName}4 {}
                 }
 
-                {$classKeyword} {$fileName} extends {$fileName}Wrapper
+                class {$fileName} extends {$fileName}Wrapper
                 {
                     {$call}
                 }
+
                 EOF;
 
                 fwrite($file, trim($class)) ;

@@ -40,41 +40,41 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
     // lesser then
     public function test_if_it_validates_number_ranges_correctly_with_lt_and_no_error()
     {
-        $validator = new \OPNsense\Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(null, $messages);
+        $this->assertEquals([], $messages);
         $this->assertEquals(true, $ret);
     }
 
     public function test_if_it_validates_number_ranges_correctly_with_lt_and_error()
     {
-        $validator = new \OPNsense\Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(3, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(1, $messages->count());
+        $this->assertEquals(1, count($messages));
         $this->assertEquals(true, $ret);
     }
     // greater then
     public function test_if_it_validates_number_ranges_correctly_with_gt_and_no_error()
     {
-        $validator = new \OPNsense\Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(5, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(null, $messages);
+        $this->assertEquals([], $messages);
         $this->assertEquals(true, $ret);
     }
 
     public function test_if_it_validates_number_ranges_correctly_with_gt_and_error()
     {
-        $validator = new \OPNsense\Phalcon\Filter\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(1, $messages->count());
+        $this->assertEquals(1, count($messages));
         $this->assertEquals(true, $ret);
     }
 

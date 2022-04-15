@@ -29,11 +29,11 @@
 namespace OPNsense\Base;
 
 use Exception;
+use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
-use OPNsense\Phalcon\Filter\Validation;
 use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
@@ -426,8 +426,8 @@ abstract class BaseModel
      */
     public function performValidation($validateFullModel = false)
     {
-        // create a Phalcon validator and collect all model validations
-        $validation = new Validation();
+        // create a wrapped validator and collect all model validations.
+        $validation = new \OPNsense\Base\Validation();
         $validation_data = array();
         $all_nodes = $this->internalData->getFlatNodes();
 
@@ -451,7 +451,7 @@ abstract class BaseModel
         if (count($validation_data) > 0) {
             $messages = $validation->validate($validation_data);
         } else {
-            $messages = new Messages();
+            $messages = [];
         }
 
         return $messages;
@@ -563,7 +563,7 @@ abstract class BaseModel
         // If for some reason the developer chooses to ignore the errors, let's at least log there something
         // wrong in this model.
         $messages = $this->performValidation($validateFullModel);
-        if ($messages->count() > 0) {
+        if (count($messages) > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
                 $exception_msg_part = "[" . get_class($this) . ":" . $msg->getField() . "] ";
@@ -573,7 +573,7 @@ abstract class BaseModel
                 $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
-                throw new Phalcon\Validation\Exception($exception_msg);
+                throw new \OPNsense\Phalcon\Filter\Validation\Exception($exception_msg);
             }
         }
         $this->internalSerializeToConfig();

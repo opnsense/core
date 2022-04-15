@@ -73,8 +73,11 @@ class Validation
     public function validate($data)
     {
         $this->data = $data;
-        // XXX: version check
-        $validation = new \Phalcon\Validation();
+
+        $validation = explode('.', phpversion("phalcon"))[0] < 5
+            ? new \Phalcon\Validation()
+            : new \Phalcon\Filter\Validation();
+
         $validation->bind($this, $data);
 
         foreach ($data as $key => $value) {
@@ -100,5 +103,13 @@ class Validation
     public function getValue($attribute)
     {
         return isset($this->data[$attribute]) ? $this->data[$attribute] : null;
+    }
+
+    /**
+     * Only used by tests
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 }

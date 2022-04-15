@@ -126,7 +126,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $uuid = $mdlCron->newDailyJob("Proxy", "proxy fetchacls", "fetch proxy acls", "1");
                 $mdlProxy->forward->acl->remoteACLs->UpdateCron = $uuid;
 
-                if ($mdlCron->performValidation()->count() == 0) {
+                if (count($mdlCron->performValidation()) == 0) {
                     $mdlCron->serializeToConfig();
                     // save data to config, do not validate because the current in memory model doesn't know about the
                     // cron item just created.

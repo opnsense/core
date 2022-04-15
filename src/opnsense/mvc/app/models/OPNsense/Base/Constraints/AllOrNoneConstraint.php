@@ -39,11 +39,11 @@ class AllOrNoneConstraint extends BaseConstraint
     /**
      * Executes validation
      *
-     * @param \Phalcon\Filter\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Filter\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
         if ($node) {

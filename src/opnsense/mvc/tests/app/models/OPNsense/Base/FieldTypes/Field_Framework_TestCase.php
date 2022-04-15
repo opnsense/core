@@ -41,7 +41,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
      */
     public function validateThrow($field)
     {
-        $validation = new \OPNsense\Phalcon\Filter\Validation();
+        $validation = new \OPNsense\Base\Validation();
         foreach ($field->getValidators() as $validator) {
             $validation->add("testfield", $validator);
         }
@@ -49,7 +49,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
         $messages = $validation->validate(array("testfield" => (string)$field));
         if (count($messages)) {
             foreach ($messages as $message) {
-                throw new \Phalcon\Filter\Validation\Exception($message->getType());
+                throw new \OPNsense\Phalcon\Filter\Validation\Exception($message->getType());
             }
         }
         return;
@@ -63,7 +63,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
     public function validate($field)
     {
         $result = array();
-        $validation = new \OPNsense\Phalcon\Filter\Validation();
+        $validation = new \OPNsense\Base\Validation();
         foreach ($field->getValidators() as $validator) {
             $validation->add("testfield", $validator);
         }
