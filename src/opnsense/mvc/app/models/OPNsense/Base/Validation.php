@@ -36,6 +36,9 @@ class Validation
     public function __construct($validators = [])
     {
         $this->validators = $validators;
+        $this->phalcon_validation = explode('.', phpversion("phalcon"))[0] < 5
+            ? new \Phalcon\Validation()
+            : new \Phalcon\Filter\Validation();
     }
 
     /**
@@ -58,10 +61,14 @@ class Validation
      */
     public function add($key, $validator)
     {
-        if (empty($this->validators[$key])){
-            $this->validators[$key] = [];
+        if (is_a($validator, "OPNsense\Base\BaseValidator")) {
+            if (empty($this->validators[$key])){
+                $this->validators[$key] = [];
+            }
+            $this->validators[$key][] = $validator;
+        } else {
+            $this->phalcon_validation->add($key, $validator);
         }
-        $this->validators[$key][] = $validator;
         return $this;
     }
 
@@ -73,25 +80,15 @@ class Validation
     public function validate($data)
     {
         $this->data = $data;
-
-        $validation = explode('.', phpversion("phalcon"))[0] < 5
-            ? new \Phalcon\Validation()
-            : new \Phalcon\Filter\Validation();
-
-        $validation->bind($this, $data);
-
         foreach ($data as $key => $value) {
             if (!empty($this->validators[$key])) {
                 foreach ($this->validators[$key] as $validator) {
-                    if (is_a($validator, "OPNsense\Base\BaseValidator")) {
-                        $validator->validate($this, $key);
-                    } else {
-                        $validator->validate($validation, $key);
-                    }
+                    $validator->validate($this, $key);
                 }
             }
         }
-        $phalconMsgs = $validation->getMessages();
+        // XXX: temporary dual validation
+        $phalconMsgs = $this->phalcon_validation->validate($data);
         if  (!empty($phalconMsgs)) {
             foreach ($phalconMsgs as $phalconMsg) {
                 $this->messages[] = $phalconMsg;
