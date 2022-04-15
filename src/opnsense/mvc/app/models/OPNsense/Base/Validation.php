@@ -28,17 +28,20 @@
 
 namespace OPNsense\Base;
 
+use Phalcon\Messages\Messages;
 
 class Validation
 {
     private $validators = [];
-    private $messages = [];
+    private $messages = null;
     public function __construct($validators = [])
     {
         $this->validators = $validators;
         $this->phalcon_validation = explode('.', phpversion("phalcon"))[0] < 5
             ? new \Phalcon\Validation()
             : new \Phalcon\Filter\Validation();
+        $this->messages = new Messages();
+        $this->data = [];
     }
 
     /**
@@ -47,8 +50,7 @@ class Validation
      */
     public function appendMessage($message)
     {
-        $this->messages[] = $message;
-        $this->data = [];
+        $this->messages->appendMessage($message);
     }
 
     /**
