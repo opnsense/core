@@ -117,9 +117,9 @@ class AliasUtilController extends ApiControllerBase
             array_key_exists('ip', $this->request->getPost('sort')) &&
             $this->request->getPost('sort')['ip'] === 'desc'
         ) {
-            rsort($entry_keys);
+            rsort($entry_keys, SORT_NATURAL);
         } else {
-            sort($entry_keys);
+            sort($entry_keys, SORT_NATURAL);
         }
 
         $formatted_full = array_map(function ($value) use (&$entries) {
