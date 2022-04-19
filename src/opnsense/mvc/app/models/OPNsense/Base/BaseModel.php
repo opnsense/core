@@ -447,13 +447,7 @@ abstract class BaseModel
             }
         }
 
-        if (count($validation_data) > 0) {
-            $messages = $validation->validate($validation_data);
-        } else {
-            $messages = new Messages();
-        }
-
-        return $messages;
+        return $validation->validate($validation_data);
     }
 
     /**
