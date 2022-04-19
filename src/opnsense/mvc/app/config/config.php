@@ -1,8 +1,5 @@
 <?php
 
-include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/PhalconGenerator.php');
-PhalconGenerator::generateClasses();
-
 /* Autoloader doesn't exist yet */
 include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Config/Config.php');
 include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Autoload/Loader.php');
