@@ -124,10 +124,10 @@ class AliasUtilController extends ApiControllerBase
             $sort_order = $this->request->getPost('sort')[$sortcolumn];
             if (!empty(array_column($formatted_full, $sortcolumn))) {
                 array_multisort(
-                  array_column($formatted_full, $sortcolumn),
-                  $sort_order == 'asc' ? SORT_ASC : SORT_DESC,
-                  SORT_NATURAL,
-                  $formatted_full
+                    array_column($formatted_full, $sortcolumn),
+                    $sort_order == 'asc' ? SORT_ASC : SORT_DESC,
+                    SORT_NATURAL,
+                    $formatted_full
                 );
             }
         }

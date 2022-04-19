@@ -36,7 +36,7 @@ abstract class BaseValidator
         $this->options = $options;
     }
 
-    public function getOption($option, $default=null)
+    public function getOption($option, $default = null)
     {
         return isset($this->options[$option]) ? $this->options[$option] : $default;
     }
