@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\NetworkAliasField;
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use OPNsense\Core\Config;
 
 class NetworkAliasFieldTest extends Field_Framework_TestCase

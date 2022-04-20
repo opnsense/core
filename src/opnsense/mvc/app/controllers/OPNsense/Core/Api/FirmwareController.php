@@ -351,7 +351,7 @@ class FirmwareController extends ApiControllerBase
 
         $this->sessionClose(); // long running action, close session
 
-        $filter = new \Phalcon\Filter([
+        $filter = new \OPNsense\Phalcon\Filter\Filter([
             'version' => function ($value) {
                 return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
             }
@@ -383,7 +383,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'scrub' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -554,7 +554,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -624,7 +624,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -654,7 +654,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -682,7 +682,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -715,7 +715,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -786,7 +786,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'scrub' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }

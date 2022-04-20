@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn;
 
 /**
  * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
