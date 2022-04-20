@@ -21,4 +21,3 @@ return new OPNsense\Phalcon\Config\Config(array(
         'simulate_mode'  => false
     )
 ));
-
