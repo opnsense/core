@@ -258,14 +258,16 @@ $( document ).ready(function() {
 <?php endif ?>
                 </td>
                 <td>
-<?php if (empty($tunable['type'])): ?>
+<?php if (empty($tunable['type']) && strpos($tunable['tunable'], '.') !== false): ?>
                   <span class="text-danger"><?= gettext('unsupported') ?></span>
-<?php elseif ($tunable['type'] == 'w'): ?>
+<?php elseif ($tunable['type'] === 'w'): ?>
                   <?= gettext('runtime') ?>
-<?php elseif ($tunable['type'] == 't'): ?>
+<?php elseif ($tunable['type'] === 't'): ?>
                   <?= gettext('boot-time') ?>
-<?php elseif ($tunable['type'] == 'r'): ?>
+<?php elseif ($tunable['type'] === 'r'): ?>
                   <span class="text-danger"><?= gettext('read-only') ?></span>
+<?php else: ?>
+                  <?= gettext('environment') ?>
 <?php endif ?>
                 </td>
                 <td>
