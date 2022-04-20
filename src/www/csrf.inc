@@ -71,7 +71,7 @@ class LegacyCSRF
 
     private function newToken()
     {
-        $random = new \Phalcon\Security\Random();
+        $random = new \OPNsense\Phalcon\Encryption\Security\Random();
         // only request new token when session has none
         if (empty($_SESSION['$PHALCON/CSRF/KEY$']) || empty($_SESSION['$PHALCON/CSRF$'])) {
             $_SESSION['$PHALCON/CSRF$'] = $random->base64Safe(16);
