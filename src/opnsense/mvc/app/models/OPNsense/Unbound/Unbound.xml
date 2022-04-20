@@ -184,7 +184,8 @@
                         <host>
                             <source>OPNsense.Unbound.Unbound</source>
                             <items>hosts.host</items>
-                            <display>domain</display>
+                            <display>hostname,domain</display>
+                            <display_format>%s.%s</display_format>
                         </host>
                     </Model>
                     <Required>Y</Required>
@@ -198,7 +199,7 @@
                             <check></check>
                         </check001>
                     </Constraints>
-                    <WildcardAllowed>Y</WildcardAllowed>
+                    <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Constraints>
@@ -212,6 +213,11 @@
                     <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
             </alias>
         </aliases>
         <domains>
@@ -220,13 +226,13 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
-                <domain type="TextField">
+                <domain type=".\UnboundDomainField">
                     <Required>Y</Required>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
-                <server type="NetworkField">
+                <server type=".\UnboundServerField">
                     <Required>Y</Required>
+                    <ValidationMessage>A valid IP must be specified.</ValidationMessage>
                 </server>
                 <description type="TextField">
                     <Required>N</Required>

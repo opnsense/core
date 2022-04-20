@@ -175,7 +175,7 @@ class Alias(object):
             if (time.time() - fstat.st_mtime) < (86400 - 90):
                 do_update = False
         if do_update:
-            syslog.syslog(syslog.LOG_ERR, 'geoip updated (files: %(file_count)d lines: %(address_count)d)' % geoip.download_geolite())
+            syslog.syslog(syslog.LOG_NOTICE, 'geoip updated (files: %(file_count)d lines: %(address_count)d)' % geoip.download_geolite())
 
         for proto in self._proto.split(','):
             geoip_filename = "/usr/local/share/GeoIP/alias/%s-%s" % (geoitem, proto)

@@ -372,6 +372,14 @@ abstract class BaseField
     }
 
     /**
+     * force field to act as unchanged (skip validations)
+     */
+    public function markUnchanged()
+    {
+        $this->internalInitialValue = $this->internalValue;
+    }
+
+    /**
      * check if field content has changed
      * @return bool change indicator
      */

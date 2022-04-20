@@ -126,7 +126,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             'hosts.host',
             ['enabled', 'hostname', 'domain', 'rr', 'mxprio', 'mx', 'server', 'description'],
-            "sequence"
+            'hostname',
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
@@ -176,9 +178,10 @@ class SettingsController extends ApiMutableModelControllerBase
         }
         return $this->searchBase(
             'aliases.alias',
-            ['enabled', 'host', 'hostname', 'domain'],
-            "sequence",
-            $filter_func
+            ['enabled', 'host', 'hostname', 'domain', 'description'],
+            "hostname",
+            $filter_func,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
@@ -210,7 +213,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setHostAliasAction($uuid)
     {
-        return $this->setBase('alias', 'aliases.alias');
+        return $this->setBase('alias', 'aliases.alias', $uuid);
     }
 
     public function toggleHostAliasAction($uuid, $enabled = null)
@@ -225,7 +228,9 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->searchBase(
             'domains.domain',
             ['enabled', 'domain', 'server', 'description'],
-            "sequence"
+            "domain",
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 

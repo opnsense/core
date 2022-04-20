@@ -228,6 +228,14 @@ else
 	echo "No plugins found." | ${TEE} ${LOCKFILE}
 fi
 
+echo ">>> Check locked packages" | ${TEE} ${LOCKFILE}
+LOCKED=$(pkg lock -lq 2>&1)
+if [ -n "${LOCKED}" ]; then
+	(echo "${LOCKED}") | ${TEE} ${LOCKFILE}
+else
+	echo "No locks found." | ${TEE} ${LOCKFILE}
+fi
+
 echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
 (pkg check -dan 2>&1) | ${TEE} ${LOCKFILE}
 

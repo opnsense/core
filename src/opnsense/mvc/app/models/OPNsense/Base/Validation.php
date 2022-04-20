@@ -64,7 +64,7 @@ class Validation
     public function add($key, $validator)
     {
         if (is_a($validator, "OPNsense\Base\BaseValidator")) {
-            if (empty($this->validators[$key])){
+            if (empty($this->validators[$key])) {
                 $this->validators[$key] = [];
             }
             $this->validators[$key][] = $validator;
@@ -91,7 +91,7 @@ class Validation
         }
         // XXX: temporary dual validation
         $phalconMsgs = $this->phalcon_validation->validate($data);
-        if  (!empty($phalconMsgs)) {
+        if (!empty($phalconMsgs)) {
             foreach ($phalconMsgs as $phalconMsg) {
                 $this->messages[] = $phalconMsg;
             }

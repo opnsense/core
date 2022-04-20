@@ -575,7 +575,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
     }
 }
 
-function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = array())
+function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
 {
     $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
 
@@ -589,11 +589,11 @@ function dhcpd_dhcp_configure($verbose = false, $family = 'all', $blacklist = ar
 
     mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', '/var/dhcpd');
 
-    if ($family == 'all' || $family == 'inet') {
+    if ($family == null || $family == 'inet') {
         dhcpd_dhcp4_configure($verbose);
     }
 
-    if ($family == 'all' || $family == 'inet6') {
+    if ($family == null || $family == 'inet6') {
         dhcpd_dhcp6_configure($verbose, $blacklist);
         dhcpd_radvd_configure($verbose, $blacklist);
     }
@@ -1091,6 +1091,13 @@ EOD;
                 '00:0b' => 'filename64arm',
             ];
 
+            if (!empty($dhcpifconf['filenameipxe'])) {
+                $dhcpdconf .= "  if exists user-class and option user-class = \"iPXE\" {\n";
+                $dhcpdconf .= "    filename \"{$dhcpifconf['filenameipxe']}\";\n";
+                $dhcpdconf .= "  }";
+                $conditional = true;
+            }
+
             foreach ($filemap as $arch => $file) {
                 if (empty($dhcpifconf[$file])) {
                     continue;
@@ -1103,6 +1110,7 @@ EOD;
 
                 $conditional = true;
             }
+
             if ($conditional) {
                 if (!empty($dhcpifconf['filename'])) {
                     $dhcpdconf .= "  else {\n";
@@ -1241,6 +1249,10 @@ EOD;
         $dhcpdconf .= "ddns-update-style interim;\n";
         $dhcpdconf .= "update-static-leases on;\n";
         $dhcpdconf .= dhcpd_zones($ddns_zones);
+    }
+
+    foreach (glob('/usr/local/etc/dhcpd.opnsense.d/*.conf') as $file) {
+        $dhcpdconf .= "\n\n# including custom file {$file}\n" . file_get_contents($file);
     }
 
     @file_put_contents('/var/dhcpd/etc/dhcpd.conf', $dhcpdconf);
@@ -1664,6 +1676,10 @@ EOD;
         $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
 
+    foreach (glob('/usr/local/etc/dhcpd6.opnsense.d/*.conf') as $file) {
+        $dhcpdv6conf .= "\n\n# including custom file {$file}\n" . file_get_contents($file);
+    }
+
     @file_put_contents('/var/dhcpd/etc/dhcpdv6.conf', $dhcpdv6conf);
     @touch('/var/dhcpd/var/db/dhcpd6.leases');
     @unlink('/var/dhcpd/var/run/dhcpdv6.pid');
@@ -1682,13 +1698,13 @@ EOD;
     }
 }
 
-function dhcpd_dhcrelay_configure($verbose = false, $family = 'all')
+function dhcpd_dhcrelay_configure($verbose = false, $family = null)
 {
-    if ($family == 'all' || $family == 'inet') {
+    if ($family == null || $family == 'inet') {
         dhcpd_dhcrelay4_configure($verbose);
     }
 
-    if ($family == 'all' || $family == 'inet6') {
+    if ($family == null || $family == 'inet6') {
         dhcpd_dhcrelay6_configure($verbose);
     }
 }

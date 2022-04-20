@@ -114,6 +114,7 @@ class AliasField extends ArrayField
                 if (isset($aliasContent[$key])) {
                     $node->setValue($aliasContent[$key]);
                 }
+                $node->markUnchanged();
                 $container_node->addChildNode($key, $node);
             }
             $this->addStatsFields($container_node);

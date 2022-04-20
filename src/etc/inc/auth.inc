@@ -433,8 +433,7 @@ function local_user_set_password(&$user, $password = null)
 {
     if ($password == null) {
         /* generate a random password */
-        $bytes = random_bytes(50);
-        $password = pack('H*', bin2hex($bytes));
+        $password = random_bytes(50);
     }
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 10 ]);

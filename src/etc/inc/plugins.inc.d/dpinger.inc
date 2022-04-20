@@ -82,9 +82,9 @@ function dpinger_defaults()
 
 function dpinger_configure()
 {
-    return array(
-        'monitor' => array('dpinger_configure_do'),
-    );
+    return [
+        'monitor' => ['dpinger_configure_do:3'],
+    ];
 }
 
 function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)

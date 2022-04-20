@@ -2831,7 +2831,7 @@ if [ -z "\${1}" ]; then
     exit 0
 fi
 if [ -n "\${2}" ]; then
-    # Note that the router file can be written by ppp-linup.sh or
+    # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
     /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
     # XXX stop modifying defaultgw files in scripts
