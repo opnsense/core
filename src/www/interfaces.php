@@ -2781,7 +2781,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_dhcp6vlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <label for="dhcp6vlanprio"><?= gettext('Use VLAN priority') ?></label></td>
                           <td>
-                            <select name="dhcp6vlanprio">
+                            <select name="dhcp6vlanprio" id="dhcp6vlanprio">
                               <option value="" <?= "{$pconfig['dhcp6vlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
 <?php
                               foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
