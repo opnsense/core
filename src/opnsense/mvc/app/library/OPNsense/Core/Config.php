@@ -28,8 +28,8 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Logger;
+use Phalcon\Di\FactoryDefault;
+use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 
 /**

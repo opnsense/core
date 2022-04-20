@@ -28,7 +28,7 @@
 
 namespace OPNsense\Syslog\Api;
 
-use Phalcon\Filter;
+use OPNsense\Phalcon\Filter\Filter;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
@@ -72,7 +72,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update destination with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setDestinationAction($uuid)
@@ -84,7 +84,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Add new destination and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      */
     public function addDestinationAction()
     {
@@ -94,7 +94,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete destination by uuid
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delDestinationAction($uuid)
@@ -107,7 +107,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleDestinationAction($uuid, $enabled = null)

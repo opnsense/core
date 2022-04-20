@@ -30,23 +30,22 @@
 
 namespace OPNsense\Base\Validators;
 
-use Phalcon\Validation\AbstractValidator;
-use Phalcon\Validation\ValidatorInterface;
+use OPNsense\Base\BaseValidator;
 use Phalcon\Messages\Message;
 
 /**
  * Class NetworkValidator validate domain and hostnames
  * @package OPNsense\Base\Validators
  */
-class HostValidator extends AbstractValidator implements ValidatorInterface
+class HostValidator extends BaseValidator
 {
     /**
      *
-     * @param \Phalcon\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $result = true;
         $msg = $this->getOption('message');

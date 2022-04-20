@@ -31,14 +31,24 @@ namespace OPNsense\Base;
 abstract class BaseValidator
 {
     private $options = [];
-    public function __construct($options)
+
+    public function __construct($options = [])
     {
         $this->options = $options;
     }
 
+
     public function getOption($option, $default = null)
     {
         return isset($this->options[$option]) ? $this->options[$option] : $default;
+    }
+
+    /**
+     * Only used by tests
+     */
+    public function setOption($key, $value)
+    {
+        $this->options[$key] = $value;
     }
 
     abstract public function validate($validator, $attribute): bool;

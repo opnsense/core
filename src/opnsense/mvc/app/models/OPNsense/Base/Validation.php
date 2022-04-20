@@ -37,7 +37,9 @@ class Validation
     public function __construct($validators = [])
     {
         $this->validators = $validators;
-        $this->phalcon_validation = new \Phalcon\Validation();
+        $this->phalcon_validation = explode('.', phpversion("phalcon"))[0] < 5
+            ? new \Phalcon\Validation()
+            : new \Phalcon\Filter\Validation();
         $this->messages = new Messages();
         $this->data = [];
     }
@@ -100,5 +102,13 @@ class Validation
     public function getValue($attribute)
     {
         return isset($this->data[$attribute]) ? $this->data[$attribute] : null;
+    }
+
+    /**
+     * Only used by tests
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 }

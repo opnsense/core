@@ -74,7 +74,7 @@ class NetflowController extends ApiControllerBase
     /**
      * update netflow configuration fields
      * @return array
-     * @throws \Phalcon\Validation\Exception
+     * @throws \Phalcon\Filter\Validation\Exception
      */
     public function setconfigAction()
     {
