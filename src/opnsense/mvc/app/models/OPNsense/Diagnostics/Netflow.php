@@ -54,8 +54,8 @@ class Netflow extends BaseModel
                 $ptagname = $parentNode->getInternalXMLTagName();
                 $tagname = $node->getInternalXMLTagName();
                 if ($ptagname == 'capture' && in_array($tagname, array('interfaces', 'egress_only'))) {
-                    $intf_list = explode(',', (string)$parentNode->interfaces);
-                    $egress_list  = explode(',', (string)$parentNode->egress_only);
+                    $intf_list = !empty((string)$parentNode->interfaces) ? explode(',', (string)$parentNode->interfaces) : [];
+                    $egress_list  = !empty((string)$parentNode->egress_only) ? explode(',', (string)$parentNode->egress_only) : [];
                 }
             }
         }
