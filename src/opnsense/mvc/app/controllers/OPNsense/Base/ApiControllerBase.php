@@ -84,10 +84,14 @@ class ApiControllerBase extends ControllerRoot
             $keys = array_keys($this->request->getPost('sort'));
             $order = $this->request->getPost('sort')[$keys[0]];
             $keys = array_column($formatted, $keys[0]);
-            array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $formatted);
+            if (!empty($keys)) {
+                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $formatted);
+            }
         } elseif (!empty($defaultSort)) {
             $keys = array_column($formatted, $defaultSort);
-            array_multisort($keys, SORT_ASC, $sort_flags, $formatted);
+            if (!empty($keys)) {
+                array_multisort($keys, SORT_ASC, $sort_flags, $formatted);
+            }
         }
 
         return [
