@@ -304,9 +304,7 @@ while : ; do
 			echo "The pool could not be mounted."
 			POOL=
 		fi
-	fi
-
-	if [ -z "${PART}" -a -z "${POOL}" ]; then
+	else
 		if [ -n "${DO_DEV}" ]; then
 			bootstrap_and_exit 1
 		fi
@@ -315,8 +313,9 @@ while : ; do
 	fi
 
 	if [ -n "${DO_MANUAL}" ]; then
-		echo "# Manual shell mode, old file system available at ${MNT}"
+		echo "# Manual shell mode, selected file system available at ${MNT}"
 		${SHELL}
+		break
 	elif [ -n "${DO_PASSWORD}" ]; then
 		if [ -f "${MNT}/usr/local/sbin/opnsense-shell" ]; then
 			mount -t devfs devfs ${MNT}/dev
