@@ -55,6 +55,11 @@
             <whitelists type="CSVListField">
                 <Required>N</Required>
             </whitelists>
+            <address type="NetworkField">
+                <Required>N</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+            </address>
         </dnsbl>
         <forwarding>
             <enabled type="BooleanField">
