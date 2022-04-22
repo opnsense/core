@@ -157,13 +157,26 @@ import_start()
 {
 	local DEV=${1}
 
+	# We are going to make an educated guess about the enclosed
+	# file system.  The types "msdos" and "cd9660" are meant as
+	# fallbacks to try, but by no means meant to be correct.
+	# Correctness stems from the selection of the device given,
+	# so that e.g. a CD will not have any attached partitions,
+	# but we do not actually check for the device node name.
+
+	export PART=
+	export TYPE=
+	export POOL=
+
 	if [ -e "/dev/${DEV}s1a" ]; then
 		# MBR UFS
 		export PART="/dev/${DEV}s1a"
+		export TYPE="ufs"
 		return 0
 	elif [ -e "/dev/${DEV}p3" ]; then
 		# GPT UFS
 		export PART="/dev/${DEV}p3"
+		export TYPE="ufs"
 		return 0
 	elif [ "$(echo ${POOLS} | grep -c "^${DEV} ")" != "0" ]; then
 		# ZFS POOL
@@ -172,12 +185,17 @@ import_start()
 	elif [ -e "/dev/${DEV}s1" ]; then
 		# MBR MSDOS
 		export PART="/dev/${DEV}s1"
-		export MSDOS="yes"
+		export TYPE="msdos"
 		return 0
 	elif [ -e "/dev/${DEV}p1" ]; then
 		# GPT MSDOS
 		export PART="/dev/${DEV}p1"
-		export MSDOS="yes"
+		export TYPE="msdos"
+		return 0
+	elif [ -e "/dev/${DEV}" ]; then
+		# ISO 9660
+		export PART="/dev/${DEV}"
+		export TYPE="cd9660"
 		return 0
 	fi
 
@@ -185,10 +203,7 @@ import_start()
 }
 
 
-DEV=
 DEVS=
-PART=
-POOL=
 POOLS=
 
 if [ -n "${DO_ZFS}" ]; then
@@ -258,18 +273,14 @@ while : ; do
 
 	mkdir -p ${MNT}
 
-	if [ -n "${PART}" ]; then
+	if [ -n "${PART}" -a -n "${TYPE}" ]; then
 		echo "Starting import for partition '${PART}'."
 		echo
 
-		TYPE="ufs"
-
-		if [ -z "${MSDOS}" ]; then
+		if [ "${TYPE}" = "ufs" ]; then
 			echo -n "Running fsck..."
 			fsck -t ${TYPE} -y ${PART} > /dev/null
 			echo "done."
-		else
-			TYPE="msdosfs"
 		fi
 
 		if ! mount -t ${TYPE} ${PART} ${MNT}; then
@@ -347,7 +358,7 @@ while : ; do
 		done
 
 		for FILE in $(find /conf/sshd -type f -name '*key'); do
-			# fixup permissions in MSDOS case
+			# fixup possibly unsupported file system permissions
 			chmod 600 ${FILE}
 		done
 
