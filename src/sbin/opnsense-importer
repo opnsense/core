@@ -37,6 +37,7 @@ fi
 DO_BOOT=
 DO_MANUAL=
 DO_PASSWORD=
+DO_VERBOSE=
 DO_ZFS=
 
 bootstrap_and_exit()
@@ -73,7 +74,7 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-while getopts bmpz OPT; do
+while getopts bmpzV OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
@@ -83,6 +84,9 @@ while getopts bmpz OPT; do
 		;;
 	p)
 		DO_PASSWORD="-p"
+		;;
+	V)
+		DO_VERBOSE="-V"
 		;;
 	z)
 		DO_ZFS="-z"
@@ -95,6 +99,10 @@ while getopts bmpz OPT; do
 done
 
 shift $((OPTIND - 1))
+
+if [ -n "${DO_VERBOSE}" ]; then
+	set -x
+fi
 
 DO_DEV=${1}
 
