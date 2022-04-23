@@ -86,9 +86,12 @@ if __name__ == '__main__':
         r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))$'
     )
 
+    ip_pattern = re.compile(r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$')
+
     startup_time = time.time()
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
     blocklist_items = set()
+    blocklist_address = '0.0.0.0'
     if os.path.exists('/tmp/unbound-blocklists.conf'):
         cnf = ConfigParser()
         cnf.read('/tmp/unbound-blocklists.conf')
@@ -140,13 +143,16 @@ if __name__ == '__main__':
                     syslog.LOG_NOTICE,
                     'blocklist download %(uri)s (lines: %(lines)d exclude: %(skip)d block: %(blocklist)d)' % file_stats
                 )
+        if cnf.has_section('blocklist'):
+            if ip_pattern.match(cnf['blocklist']['address']):
+                blocklist_address = cnf['blocklist']['address']
 
     # write out results
     with open("/usr/local/etc/unbound.opnsense.d/dnsbl.conf", 'w') as unbound_outf:
         if blocklist_items:
             unbound_outf.write('server:\n')
             for entry in blocklist_items:
-                unbound_outf.write("local-data: \"%s A 0.0.0.0\"\n" % entry)
+                unbound_outf.write("local-data: \"%s A %s\"\n" % (entry, blocklist_address))
 
     syslog.syslog(syslog.LOG_NOTICE, "blocklist download done in %0.2f seconds (%d records)" % (
         time.time() - startup_time, len(blocklist_items)

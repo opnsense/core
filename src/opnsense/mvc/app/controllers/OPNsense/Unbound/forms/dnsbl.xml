@@ -21,6 +21,12 @@
         <help>List of domains from where blocklist will be downloaded.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.address</id>
+        <label>Blocklist Address</label>
+        <type>text</type>
+        <help>Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0)</help>
+    </field>
+    <field>
         <id>unbound.dnsbl.whitelists</id>
         <label>Whitelist Domains</label>
         <type>select_multiple</type>
