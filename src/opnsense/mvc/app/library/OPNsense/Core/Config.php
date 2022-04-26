@@ -503,9 +503,10 @@ class Config extends Singleton
      * backup current config
      * @return string target filename
      */
-    public function backup()
+    public function backup($timestamp = null)
     {
-        $timestamp = microtime(true);
+	$timestamp = $timestamp ? $timestamp : microtime(true);
+        //$timestamp = microtime(true);
         $target_dir = dirname($this->config_file) . "/backup/";
 
         if (!file_exists($target_dir)) {
@@ -649,9 +650,9 @@ class Config extends Singleton
     public function save($revision = null, $backup = true)
     {
         $this->checkvalid();
-
+        $time = microtime(true);
         // update revision information ROOT.revision tag, align timestamp to backup output
-        $this->updateRevision($revision, null, microtime(true));
+        $this->updateRevision($revision, null, $time);
 
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
@@ -660,7 +661,7 @@ class Config extends Singleton
                 fwrite($this->config_file_handle, (string)$this);
                 // flush, unlock, but keep the handle open
                 fflush($this->config_file_handle);
-                $backup_filename = $backup ? $this->backup() : null;
+                $backup_filename = $backup ? $this->backup($time) : null;
                 if ($backup_filename) {
                     $this->auditLogChange($backup_filename, $revision);
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
