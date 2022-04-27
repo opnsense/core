@@ -305,7 +305,7 @@ function get_wireless_channel_info($interface) {
     return($wireless_channels);
 }
 
-$ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
+$ifdescrs = legacy_config_get_interfaces(['virtual' => false]);
 
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
@@ -319,8 +319,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-    $pconfig = array();
-    $std_copy_fieldnames = array(
+    $pconfig = [];
+    $std_copy_fieldnames = [
         'adv_dhcp6_authentication_statement_algorithm',
         'adv_dhcp6_authentication_statement_authname',
         'adv_dhcp6_authentication_statement_protocol',
@@ -392,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
-    );
+    ];
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
     }
@@ -700,7 +700,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $reqdfieldsn = array(gettext("IPv6 address"),gettext("Subnet bit count"),gettext("Gateway"));
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
-            case "dhcp6":
+            case 'dhcp6':
                 if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
                 }
@@ -735,7 +735,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 break;
-            case "track6":
+            case 'track6':
                 if (!empty($pconfig['track6-prefix-id--hex']) && !ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
@@ -2687,7 +2687,7 @@ include("head.inc");
                           <td>
                             <select name="dhcp6-ia-pd-len" class="selectpicker" data-style="btn-default" id="dhcp6-ia-pd-len">
 <?php
-                            foreach(array(
+                            foreach([
                               0 => '64',
                               1 => '63',
                               2 => '62',
@@ -2706,7 +2706,7 @@ include("head.inc");
                               15 => '49',
                               16 => '48',
                               'none' => gettext('None'),
-                            ) as $bits => $length): ?>
+                            ] as $bits => $length): ?>
                               <option value="<?=$bits;?>" <?= "{$bits}" === "{$pconfig['dhcp6-ia-pd-len']}" ? 'selected="selected"' : '' ?>>
                                   <?=$length;?>
                               </option>
@@ -3000,7 +3000,7 @@ include("head.inc");
                             if (empty($pconfig['track6-prefix-id'])) {
                                 $pconfig['track6-prefix-id'] = 0;
                             }
-                            $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("%x", $pconfig['track6-prefix-id']);?>
+                            $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex'] : sprintf("%x", $pconfig['track6-prefix-id']); ?>
                             <div class="input-group" style="max-width:348px">
                               <div class="input-group-addon">0x</div>
                               <input name="track6-prefix-id--hex" type="text" class="form-control" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
