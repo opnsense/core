@@ -2273,10 +2273,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 }
                 break;
             case '6rd':
-                interface_6rd_configure($interface, $wancfg);
+                interface_6rd_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             case '6to4':
-                interface_6to4_configure($interface, $wancfg);
+                interface_6to4_configure($interface, $wancfg, $reload || $linkupevent);
                 break;
             case 'track6':
                 interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
@@ -2495,7 +2495,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
     mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
 }
 
-function interface_6rd_configure($interface = 'wan', $wancfg)
+function interface_6rd_configure($interface = 'wan', $wancfg, $update = false)
 {
     if (!is_array($wancfg)) {
         return;
@@ -2548,7 +2548,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
     }
     legacy_interface_mtu($stfiface, $mtu);
 
-    # use original prefix length for network address to avoid setting the same subnet as on the LAN side (/64 prefix)
+    /* use original prefix length for network address to avoid setting the same subnet as on the LAN side (/64 prefix) */
     mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
@@ -2562,13 +2562,10 @@ function interface_6rd_configure($interface = 'wan', $wancfg)
         system_host_route($wancfg['gateway-6rd'], $ip4gateway);
     }
 
-    /* configure dependent interfaces */
-    if (!file_exists("/var/run/booting")) {
-        link_interface_to_track6($interface, true);
-    }
+    link_interface_to_track6($interface, $update);
 }
 
-function interface_6to4_configure($interface = 'wan', $wancfg)
+function interface_6to4_configure($interface = 'wan', $wancfg, $update = false)
 {
     if (!is_array($wancfg)) {
         return;
@@ -2655,9 +2652,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
         system_host_route('192.88.99.1', $ip4gateway);
     }
 
-    if (!file_exists("/var/run/booting")) {
-        link_interface_to_track6($interface, true);
-    }
+    link_interface_to_track6($interface, $update);
 }
 
 function interface_dhcpv6_configure($interface = 'wan', $wancfg)
@@ -3568,7 +3563,7 @@ function get_interface_number_track6($wanif, $targetif)
 
 function link_interface_to_track6($wanif, $update = false)
 {
-    $list = array();
+    $list = [];
 
     if (empty($wanif)) {
         return $list;
@@ -3580,7 +3575,7 @@ function link_interface_to_track6($wanif, $update = false)
         return $list;
     }
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $lanif => $lancfg) {
+    foreach (legacy_config_get_interfaces(['virtual' => false]) as $lanif => $lancfg) {
         if (!isset($lancfg['enable']) || empty($lancfg['ipaddrv6'])) {
             continue;
         }
@@ -3591,12 +3586,12 @@ function link_interface_to_track6($wanif, $update = false)
     }
 
     if ($update) {
-        if ($wancfg['ipaddrv6'] == 'slaac') {
-            plugins_configure('dhcp', false, array('inet6'));
-        }
-
         foreach ($list as $lanif => $lancfg) {
             interface_track6_configure($lanif, $lancfg);
+        }
+
+        if (count($list)) {
+            plugins_configure('dhcp', false, ['inet6']);
         }
     }
 
