@@ -2890,12 +2890,6 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
             }
-            if (isset($wancfg['dhcp6-prefix-id']) && is_numeric($wancfg['dhcp6-prefix-id'])) {
-                    $dhcp6cconf .= "  prefix-interface {$wanif} {\n";
-                    $dhcp6cconf .= "    sla-id {$wancfg['dhcp6-prefix-id']};\n";
-                    $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
-                    $dhcp6cconf .= "  };\n";
-            }
             foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
                 if (is_numeric($lancfg['track6-prefix-id'])) {
                     $trackifv6 = get_real_interface($friendly, 'inet6');
@@ -4356,7 +4350,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
         empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
         ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
         empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
-        (isset($interfaces_a[$interface]['dhcp6prefixonly']) && !isset($interfaces_a[$interface]['dhcp6-prefix-id'])))
+        isset($interfaces_a[$interface]['dhcp6prefixonly']))
     ) {
         /* extend the search scope for a non-NA mode to tracking interfaces */
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));

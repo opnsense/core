@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Deciso B.V.
+ * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2010 Erik Fonnesbeck
  * Copyright (C) 2008-2010 Ermal Luçi
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
@@ -366,7 +366,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'alias-subnet',
         'descr',
         'dhcp6-ia-pd-len',
-        'dhcp6-prefix-id',
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
@@ -408,7 +407,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
-    $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
     /*
@@ -706,26 +704,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
                 }
-                if (isset($pconfig['dhcp6-prefix-id--hex']) && $pconfig['dhcp6-prefix-id--hex'] != '') {
-                    if (!ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
-                        $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
-                    } else {
-                        $ipv6_delegation_length = calculate_ipv6_delegation_length($if);
-                        if ($ipv6_delegation_length >= 0) {
-                            $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
-                            $dhcp6_prefix_id = intval($pconfig['dhcp6-prefix-id--hex'], 16);
-                            if ($dhcp6_prefix_id < 0 || $dhcp6_prefix_id >= $ipv6_num_prefix_ids) {
-                                $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
-                            }
-                        }
-                        foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
-                            if ($trackcfg['track6-prefix-id'] == $dhcp6_prefix_id) {
-                                $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
-                                break;
-                            }
-                        }
-                    }
-                }
                 break;
             case '6rd':
                 if (empty($pconfig['gateway-6rd']) || !is_ipaddrv4($pconfig['gateway-6rd'])) {
@@ -772,11 +750,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
                                 $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                                 break;
-                            }
-                        }
-                        if (isset($config['interfaces'][$pconfig['track6-interface']]['dhcp6-prefix-id'])) {
-                            if ($config['interfaces'][$pconfig['track6-interface']]['dhcp6-prefix-id'] == $track6_prefix_id) {
-                                $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                             }
                         }
                     }
@@ -1165,9 +1138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
-                    }
-                    if (isset($pconfig['dhcp6-prefix-id--hex']) && ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
-                        $new_config['dhcp6-prefix-id'] = intval($pconfig['dhcp6-prefix-id--hex'], 16);
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -2704,11 +2674,11 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6-ia-pd-send-hint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Send IPv6 prefix hint"); ?></td>
+                          <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Request only an IPv6 prefix"); ?></td>
                           <td>
-                            <input name="dhcp6-ia-pd-send-hint" type="checkbox" id="dhcp6-ia-pd-send-hint" value="yes" <?=!empty($pconfig['dhcp6-ia-pd-send-hint']) ? "checked=\"checked\"" : "";?> />
-                            <div class="hidden" data-for="help_for_dhcp6-ia-pd-send-hint">
-                              <?=gettext("Send an IPv6 prefix hint to indicate the desired prefix size for delegation"); ?>
+                            <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
+                            <div class="hidden" data-for="help_for_dhcp6prefixonly">
+                              <?= gettext('Only request an IPv6 prefix; do not request an IPv6 address.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2749,23 +2719,11 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Request only an IPv6 prefix"); ?></td>
+                          <td><a id="help_for_dhcp6-ia-pd-send-hint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Send IPv6 prefix hint"); ?></td>
                           <td>
-                            <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
-                            <div class="hidden" data-for="help_for_dhcp6prefixonly">
-                              <?= gettext('Only request an IPv6 prefix; do not request an IPv6 address.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6-prefix-id" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Prefix ID"); ?></td>
-                          <td>
-                            <div class="input-group" style="max-width:348px">
-                              <div class="input-group-addon">0x</div>
-                              <input name="dhcp6-prefix-id--hex" type="text" class="form-control" id="dhcp6-prefix-id--hex" value="<?= html_safe($pconfig['dhcp6-prefix-id--hex']) ?>" />
-                            </div>
-                            <div class="hidden" data-for="help_for_dhcp6-prefix-id">
-                              <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                            <input name="dhcp6-ia-pd-send-hint" type="checkbox" id="dhcp6-ia-pd-send-hint" value="yes" <?=!empty($pconfig['dhcp6-ia-pd-send-hint']) ? "checked=\"checked\"" : "";?> />
+                            <div class="hidden" data-for="help_for_dhcp6-ia-pd-send-hint">
+                              <?=gettext("Send an IPv6 prefix hint to indicate the desired prefix size for delegation"); ?>
                             </div>
                           </td>
                         </tr>
