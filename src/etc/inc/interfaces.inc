@@ -1027,11 +1027,6 @@ function interface_ppps_configure($interface)
         return;
     }
 
-    /* do not re-configure the interface if we are booting and it's already been started */
-    if (file_exists('/var/run/booting') && isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
-        return;
-    }
-
     $ports = explode(',', $ppp['ports']);
     if ($ppp['type'] != "ppp") {
         foreach ($ports as $pid => $port) {
