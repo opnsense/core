@@ -4317,9 +4317,16 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
     $ifcfgip = $network = $subnetbits = null;
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-        if ($addr['family'] != 'inet' || $addr['alias']) {
+        if ($addr['family'] != 'inet') {
             continue;
         }
+
+        /*
+         * In IPv4 the strict ordering for addresses is ensured so that
+         * we do include IP alias or CARP addresses.  If the need arises
+         * to get to a "dynamic" primary address we could add another
+         * argument for callers to enforce alias exclusion.
+         */
 
         $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
         $subnetbits = $addr['bits'];
