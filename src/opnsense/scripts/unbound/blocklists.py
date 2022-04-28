@@ -147,7 +147,6 @@ if __name__ == '__main__':
     # write out results
     with open("/usr/local/etc/unbound.opnsense.d/dnsbl.conf", 'w') as unbound_outf:
         if blocklist_items:
-            unbound_outf.write('server:\n')
             for entry in blocklist_items:
                 unbound_outf.write("local-data: \"%s A %s\"\n" % (entry, destination_address))
 
