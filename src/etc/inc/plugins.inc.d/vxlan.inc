@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,11 +36,20 @@ function vxlan_configure()
 
 function vxlan_devices()
 {
-    $devices = array();
+    $names = [];
 
-    $devices[] = array('pattern' => '^vxlan', 'volatile' => true, 'configurable' => true);
+    foreach (iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems()) as $vxlan) {
+        $names[] = "vxlan{$vxlan->deviceId}";
+    }
 
-    return $devices;
+    return [[
+        'function' => 'vxlan_configure_interface',
+        'configurable' => true,
+        'pattern' => '^vxlan',
+        'volatile' => true,
+        'type' => 'vxlan',
+        'names' => $names,
+    ]];
 }
 
 function vxlan_configure_interface($verbose = false)

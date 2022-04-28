@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018-2021 Deciso B.V.
+ * Copyright (C) 2018-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -144,14 +144,14 @@ function core_device_names($key, $sections)
 
 function core_devices()
 {
-    $devices = array();
+    $devices = [];
 
-    # XXX is a plugin collection...
     $devices[] = [
         'names' => core_device_names('bridgeif', ['bridges', 'bridged']),
         'function' => 'interfaces_bridge_configure',
         'pattern' => '^bridge',
         'volatile' => true,
+        'type' => 'bridge',
     ];
 
     $devices[] = [
@@ -160,6 +160,7 @@ function core_devices()
         'configurable' => false,
         'pattern' => '^gif',
         'volatile' => true,
+        'type' => 'gif',
     ];
 
     $devices[] = [
@@ -168,8 +169,10 @@ function core_devices()
         'configurable' => false,
         'pattern' => '^gre',
         'volatile' => true,
+        'type' => 'gre',
     ];
 
+    # XXX is a plugin collection...
     $devices[] = array('pattern' => '^cua', 'volatile' => true);
     $devices[] = array('pattern' => '^enc', 'volatile' => true);
     $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
