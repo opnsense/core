@@ -210,6 +210,12 @@ class ApiControllerBase extends ControllerRoot
                                 $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
                                     " not accessible for user " . $authResult['username'] . " using api key " .
                                     $apiKey);
+                                // not authenticated
+                                $this->response->setStatusCode(403, "Forbidden");
+                                $this->response->setContentType('application/json', 'UTF-8');
+                                $this->response->setJsonContent(['status'  => 403,'message' => 'Forbidden']);
+                                $this->response->send();
+                                return false;
                             } else {
                                 // authentication + authorization successful.
                                 // pre validate request and communicate back to the user on errors
@@ -255,17 +261,18 @@ class ApiControllerBase extends ControllerRoot
             // not authenticated
             $this->response->setStatusCode(401, "Unauthorized");
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(array(
-                'status'  => 401,
-                'message' => 'Authentication Failed',
-            ));
+            $this->response->setJsonContent(['status'  => 401, 'message' => 'Authentication Failed']);
             $this->response->send();
             return false;
         } else {
             // handle UI ajax requests
             // use session data and ACL to validate request.
             if (!$this->doAuth()) {
-                $this->response->setStatusCode(401, "Unauthorized");
+                if (!$this->session->has("Username")) {
+                    $this->response->setStatusCode(401, "Unauthorized");
+                } else {
+                    $this->response->setStatusCode(403, "Forbidden");
+                }
                 return false;
             }
 
