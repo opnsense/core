@@ -88,7 +88,6 @@ class Validation
             foreach ($validators as $validator) {
                 $validator->validate($this, $field);
             }
-
         }
 
         // XXX: temporary dual validation
