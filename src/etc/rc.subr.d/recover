@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -263,11 +263,17 @@ function recover_rebuild()
 
 function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini)
 {
-    echo "===> Restoring /etc/group\n";
-    file_put_contents('/etc/group', $etc_group);
+    $partial_restore = [
+        '/etc/group' => $etc_group,
+        '/etc/master.passwd' => $etc_master_passwd,
+    ];
 
-    echo "===> Restoring /etc/master.passwd\n";
-    file_put_contents('/etc/master.passwd', $etc_master_passwd);
+    foreach ($partial_restore as $file => $content) {
+        if (!file_exists($file) || filesize($file) === 0) {
+            echo "===> Restoring $file\n";
+            file_put_contents($file, $content);
+        }
+    }
 
     echo "===> Restoring /etc/shells\n";
     file_put_contents('/etc/shells', $etc_shells);
