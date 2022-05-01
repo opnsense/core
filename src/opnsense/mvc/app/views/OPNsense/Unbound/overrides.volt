@@ -100,6 +100,9 @@ $( document ).ready(function() {
                 del:'/api/unbound/settings/delHostAlias/',
                 toggle:'/api/unbound/settings/toggleHostAlias/',
                 options: {
+                    labels: {
+                        noResults: "{{ lang._('No results found for selected host or none selected') }}"
+                    },
                     selection: true,
                     multiSelect: true,
                     rowSelect: true,
