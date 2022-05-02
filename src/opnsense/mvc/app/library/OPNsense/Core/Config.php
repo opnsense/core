@@ -193,7 +193,10 @@ class Config extends Singleton
             $node = $this->simplexml;
             // invalidate object on warnings/errors (prevent save from happening)
             set_error_handler(
-                function () {
+                function ($errno, $errstr, $errfile, $errline) {
+                    syslog(LOG_ERR, sprintf(
+                        "Config serialize error [%d] %s @ %s : %s", $errno, $errstr, $errfile, $errline
+                    ));
                     $this->statusIsValid = false;
                 }
             );
@@ -209,7 +212,11 @@ class Config extends Singleton
             if ($itemKey === '@attributes') {
                 // copy xml attributes
                 foreach ($itemValue as $attrKey => $attrValue) {
-                    $node->addAttribute($attrKey, $attrValue);
+                    if (isset($node->attributes()[$attrKey])) {
+                        $node->attributes()->$attrKey = $attrValue;
+                    } else {
+                        $node->addAttribute($attrKey, $attrValue);
+                    }
                 }
                 continue;
             } elseif (strstr($itemKey, '@attributes') !== false) {
@@ -217,7 +224,11 @@ class Config extends Singleton
                 if (count($node->$origname)) {
                     // copy xml attributes
                     foreach ($itemValue as $attrKey => $attrValue) {
-                        $node->$origname->addAttribute($attrKey, $attrValue);
+                        if (isset($node->$origname->attributes()[$attrKey])) {
+                            $node->$origname->attributes()->$attrKey = $attrValue;
+                        } else {
+                            $node->$origname->addAttribute($attrKey, $attrValue);
+                        }
                     }
                 }
                 continue;
