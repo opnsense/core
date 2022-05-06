@@ -36,7 +36,7 @@ $dhcp_lease_file = "/var/dhcpd/var/db/dhcpd.leases";
 $opts = getopt('d::f::hms', []);
 
 if (isset($opts['h']) || empty($opts)) {
-    echo "Usage: cleanup_leases4 [-h]\n\n";
+    echo "Usage: cleanup_leases4.php [-h]\n\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-m cleanup static mac addresses\n";
     echo "\t-s restart service (required when service is active)\n";

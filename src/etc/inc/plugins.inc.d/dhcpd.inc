@@ -1261,7 +1261,7 @@ EOD;
 
     /* fire up dhcpd in a chroot */
     if (count($dhcpdifs) > 0) {
-        mwexec('/usr/local/opnsense/scripts/dhcp/cleanup_leases4 -m');
+        mwexec('/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php -m');
         mwexec('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
     }
 
