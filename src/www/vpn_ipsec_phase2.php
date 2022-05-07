@@ -166,10 +166,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ealgos'] = [];
         }
 
-        if (isset($config['ipsec']['phase2'][$p2index]['mobile'])) {
-            $pconfig['mobile'] = true;
-        }
-
         if (!empty($_GET['dup'])) {
             $pconfig['uniqid'] = uniqid();
         }
@@ -187,20 +183,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['lifetime'] = "3600";
         $pconfig['uniqid'] = uniqid();
 
-        /* mobile client */
-        foreach ($config['ipsec']['phase1'] as $phase1ent) {
-            if ($phase1ent['ikeid'] == $pconfig['ikeid'] && isset($phase1ent['mobile'])) {
-                $pconfig['mobile'] = true;
-                break;
-            }
-        }
-
         // init empty
         foreach (explode(",", $phase2_fields) as $fieldname) {
             $fieldname = trim($fieldname);
             if (!isset($pconfig[$fieldname])) {
                 $pconfig[$fieldname] = null;
             }
+        }
+    }
+    /* mobile client */
+    foreach ($config['ipsec']['phase1'] as $phase1ent) {
+        if ($phase1ent['ikeid'] == $pconfig['ikeid'] && isset($phase1ent['mobile'])) {
+            $pconfig['mobile'] = true;
+            break;
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -427,9 +422,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($ph2ent['hash-algorithm-option']);
         }
 
-        if (isset($pconfig['mobile'])) {
-            $ph2ent['mobile'] = true;
-        }
         // attach or generate reqid
         if ($p2index !== null && !empty($config['ipsec']['phase2'][$p2index]['reqid'])) {
             $ph2ent['reqid'] = $config['ipsec']['phase2'][$p2index]['reqid'];

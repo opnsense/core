@@ -378,7 +378,7 @@ function ipsec_parse_phase2($ikeid)
         foreach ($a_phase2 as $ph2ent) {
             if ($ph1ent['ikeid'] != $ph2ent['ikeid'] || isset($ph2ent['disabled'])) {
                 continue;
-            } elseif (isset($ph2ent['mobile']) && !isset($a_client['enable'])) {
+            } elseif (isset($ph1ent['mobile']) && !isset($a_client['enable'])) {
                 continue;
             } elseif (in_array($ph2ent['mode'], ['tunnel', 'tunnel6'])) {
                 $leftsubnet_data = ipsec_idinfo_to_cidr($ph2ent['localid'], false, $ph2ent['mode']);
@@ -388,7 +388,7 @@ function ipsec_parse_phase2($ikeid)
                     continue;
                 }
                 $result['leftsubnets'][] = $leftsubnet_data;
-                if (!isset($ph2ent['mobile'])) {
+                if (!isset($ph1ent['mobile'])) {
                     $result['rightsubnets'][] = ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode']);
                 }
             } elseif ($ph2ent['mode'] == 'route-based') {
@@ -410,13 +410,13 @@ function ipsec_parse_phase2($ikeid)
                     $tmpsubnet = ipsec_get_phase1_src($ph1ent);
                     $result['leftsubnets'][] = $tmpsubnet;
                 }
-                if (!isset($ph2ent['mobile'])) {
+                if (!isset($ph1ent['mobile'])) {
                     $result['rightsubnets'][] = $ph1ent['remote-gateway'];
                 }
             }
             $uniqids[] = $ph2ent['uniqid'];
 
-            if (isset($ph2ent['mobile']) && isset($a_client['pfs_group'])) {
+            if (isset($ph1ent['mobile']) && isset($a_client['pfs_group'])) {
                 $ph2ent['pfsgroup'] = $a_client['pfs_group'];
             }
             if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'esp') {
@@ -1136,7 +1136,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             $net_list = array();
             if (isset($a_client['net_list'])) {
                 foreach ($a_phase2 as $ph2ent) {
-                    if (!isset($ph2ent['disabled']) && isset($ph2ent['mobile'])) {
+                    if (!isset($ph2ent['disabled']) && isset($ph1ent['mobile'])) {
                         $net_list[] = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     }
                 }
